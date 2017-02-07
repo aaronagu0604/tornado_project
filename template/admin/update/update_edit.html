@@ -1,0 +1,97 @@
+{% extends "layout/admin.html" %}
+{% block content %}
+<style>
+    .mb5{ margin-bottom: 5px;}
+</style>
+<script language="javascript" type="text/javascript" src="/style2/js/My97DatePicker/WdatePicker.js"></script>
+<script>
+    function checkSubmit(){
+        var content = $("#content").val();
+        if(content==""){
+            alert("请先填写您的问题描述！");
+            return false;
+        }
+        else{
+            if(content.length>500){
+                alert("问题描述不能超出500个字符哟！");
+                return false;
+            }
+        }
+        return true;
+    }
+</script>
+<div class="row">
+    <ol class="breadcrumb">
+        <li><a href="/admin/update">更新管理</a></li>
+        <li class="active">
+            发布更新
+        </li>
+    </ol>
+</div>
+<div class="row">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">基本信息
+            </h3>
+        </div>
+        <div class="panel-body">
+
+            <form action="" method="post" enctype="multipart/form-data">
+                {{xsrf()}}
+                <div class="form-group has-success">
+                    <label class="control-label">版本名称</label>
+                    <input type="text" name="name" class="form-control" value="{{t.name}}"  required placeholder="版本名称" style="width:480px;" />
+                </div>
+
+                <div class="form-group has-success">
+                    <label class="control-label">版本号</label>
+                    <input type="text" name="version" class="form-control" value="{{t.version }}"    placeholder="版本号" style="width:480px;" />
+                </div>
+                <div class="form-group has-success">
+                    <label class="control-label">文件路径</label>
+                    <input type="text" name="path" class="form-control" value="{{t.path or '/style2/'}}"    placeholder="文件路径" style="width:480px;" />
+                </div>
+                <div class="form-group has-success">
+                    <label class="control-label">是否强制更新</label>
+                    <input type="text" name="isForce" class="form-control" value="{{t.isForce}}"    placeholder="true/false" style="width:480px;" />
+                </div>
+                <div class="form-group has-success">
+                    <label class="control-label">更新说明</label>
+                    <textarea class="form-control" name="instructions" placeholder="增加了某某功能，修复了某某bug。" rows="10" cols="30" style="width:480px;border-radius:4px;border-color:#3C763D;padding:10px;">{{t.instructions}}</textarea>
+                </div>
+                <div class="form-group has-success">
+                    <label class="control-label">客户端类型</label>
+                    <label class="radio-inline" style="margin-right:5px;">
+                        <input type="radio" name="client" value="android_c" {%if not t %}checked{%endif%} {% if t and t.client=='android_c' %} checked  {% endif %} >android C端
+                    </label>
+                    <label class="radio-inline" style="margin-right:5px;">
+                        <input type="radio" name="client"  value="android_b" {% if t and t.client=='android_b' %} checked  {% endif %} >android B端
+                    </label>
+                    <label class="radio-inline" style="margin-right:5px;">
+                        <input type="radio" name="client"  value="ios_c" {% if t and t.client=='ios_c' %} checked  {% endif %} >ios C端
+                    </label>
+                    <label class="radio-inline" style="margin-right:5px;">
+                        <input type="radio" name="client"  value="ios_b" {% if t and t.client=='ios_b' %} checked  {% endif %} >ios B端
+                    </label>
+                </div>
+                <div class="form-group has-success">
+                    <label class="control-label">版本是否可用</label>
+                    <label class="radio-inline" style="margin-right:5px;">
+                        <input type="radio" name="state"  value="1" {% if t and t.state==1 %} checked  {% endif %} >可用
+                    </label>
+                    <label class="radio-inline" style="margin-right:5px;">
+                        <input type="radio" name="state" value="0" {%if not t %}checked{%endif%}  {% if t and t.state==0 %} checked  {% endif %} >不可用
+                    </label>
+                </div>
+                <div class="form-group has-success">
+                    <input type="submit" name="sub" value="提 交" style="width:90px;height:36px;border:1px solid #438bca;background:#438bca;color:#fff;border-radius:4px;font-size:16px;margin-right:30px;">
+                    <input type="reset" name="sub" value="重 置" style="width:90px;height:36px;border:1px solid #438bca;background:none;color:#438bca;border-radius:4px;font-size:16px;">
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}

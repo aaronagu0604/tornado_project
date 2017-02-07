@@ -1,0 +1,253 @@
+{% extends "layout/admin.html" %}
+{% block content %}
+<link href="/style2/css/store_bigimg.css" rel="stylesheet">
+<script type="text/javascript" src="/style2/js/jquery-1.9.1.min.js"></script>
+<script type="text/javascript" src="/style2/js/bigimg.js"></script>
+
+<div class="mskeLayBg"></div>
+<div class="row">
+    <nav>
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">
+                {%if store_id>0%}
+                查看
+                {%else%}
+                添加
+                {%endif%}
+                服务门店
+            </a>
+        </div>
+    </nav>
+</div>
+<div class="row">
+    <div class="panel panel-primary">
+        <div class="panel-body">
+
+            {%set messages=handler.get_flashed_messages() %}
+            {%if messages%}
+            <div class="msg" style="color:red;">
+                {% for type, msg in messages%}
+                <span>{{msg}}</span>
+                {% endfor %}
+            </div>
+            {%endif%}
+
+            <form action="" method="post" enctype="multipart/form-data">
+                {{xsrf()}}
+                <div class="form-group has-success">
+                    <label class="control-label">登录名</label>
+                    <input style="width:480px;" type="text" name="username" class="form-control" value="{{fuser.username}}" {{ fuser and "readonly" or "" }} required  placeholder="经销商登录名，默认登录密码eofan123456" />
+                </div>
+                <div class="form-group has-success">
+                    <label class="control-label">门店名称</label>
+                    <input style="width:480px;" type="text" name="name" class="form-control" value="{{storenew.name}}"  required placeholder="门店名称" />
+                    <input name="fid" type="hidden" value="{{fid}}">
+                </div>
+                <div class="form-group has-success">
+                    <label class="control-label">用户角色</label>
+                    {% if fuser.grade==1 %}
+                    <input style="width:480px;" type="text" name="usergrade" class="form-control" value="门店" required/>
+                    {% elif fuser.grade==3 %}
+                    <input style="width:480px;" type="text" name="usergrade" class="form-control" value="代理商" required/>
+                    {% elif fuser.grade==4 %}
+                    <input style="width:480px;" type="text" name="usergrade" class="form-control" value="银行服务商" required/>
+                    {% elif fuser.grade==5 %}
+                    <input style="width:480px;" type="text" name="usergrade" class="form-control" value="super代理商" required/>
+                    {% else %}
+                    <input style="width:480px;" type="text" name="usergrade" class="form-control" value="其它" required/>
+
+                    {% endif %}
+                </div>
+                <div class="form-group has-success">
+                    <label class="control-label">经销商地址</label>
+                    <div class="input-group">
+                        <select name="province_code" id="province_code" onchange="province_change(this.value,0)" data-default="{{default_province}}" required style="width:150px;height:32px;border-radius: 4px;margin-right:15px;">
+                            <option value="">--请选择省份--</option>
+                            {% for area in areas %}
+                            <option value="{{area.code}}" {{area.code==default_province and 'selected' or ''}}>{{area.name}}</option>
+                            {% endfor %}
+                        </select>
+                        <select name="city_code" id="city_code" onchange="city_change(this.value,0)" data-default="{{default_city}}" required style="width:150px;height:32px;border-radius: 4px;margin-right:15px;">
+                            <option value="">--请选择城市--</option>
+                        </select>
+                        <select name="district_code" id="district_code" data-default="{{default_district}}" required style="width:150px;height:32px;border-radius: 4px;">
+                            <option value="">--请选择区县--</option>
+                        </select>
+                    </div>
+                    <input style="width:480px;margin-top:10px;" type="text" name="address" class="form-control" value="{{storenew.address}}" required  placeholder="经销商地址" />
+                </div>
+
+                <div class="form-group has-success">
+                    <label class="control-label">GPS位置坐标</label>
+                    <input style="width:480px;display:block;" type="text" name="x" class="form-control" value="{{storenew.x}}"  required placeholder="经度坐标" />
+                    <input style="width:480px;margin-top:10px;display:block;" type="text" name="y" class="form-control" value="{{storenew.y}}"  required placeholder="纬度坐标" />
+                </div>
+                <div class="form-group has-success">
+                    <label class="control-label">业务类型</label>
+                    <div class="input-group">
+                        <select style="width:150px;height:32px;border-radius: 4px;" class="form-control" name="business_type" id="business_type">
+                            <option value="0" {{storenew.business_type == 0 and 'selected' or ' '}}>普通业务</option>
+                            <option value="1" {{storenew.business_type == 1 and 'selected' or ' '}}>保险业务</option>
+                            <option value="2" {{storenew.business_type == 2 and 'selected' or ' '}}>板喷业务</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="aa"></div>
+                <div class="mskelayBox">
+                    <div class="mske_html">
+                    </div>
+
+                    <div id="tool">
+                        <a href="###" id="arr_left" onclick="funrotateEvent('example','left')">向左</a>
+                        <a href="###" id="arr_right" onclick="funrotateEvent('example','right')">向右</a>
+                    </div>
+                    <img class="mskeClaose" src="/style2/images/mke_close.png" width="27" height="27" />
+                </div>
+
+                <div class="form-group has-success">
+                    <label class="control-label">门店图片</label>
+                    <img class="preview" id="img_image" src="{{storenew.image}}" width="80" height="80" style="display:block;">
+                    <input type="hidden" id="hdn_image" name="image" required value="{{storenew.image}}" />
+                </div>
+
+                <div class="form-group has-success">
+                    <label class="control-label">法人代表</label>
+                    <img class="preview" id="img_legal" src="{{storenew.image_legal}}" width="80" height="80" style="display:block;">
+                    <input type="hidden" id="hdn_legal" name="legal" value="{{storenew.image_legal}}" />
+                </div>
+
+                <div class="form-group has-success">
+                    <label class="control-label">营业执照</label>
+                    <img class="preview" id="img_license" src="{{storenew.image_license}}" width="80" height="80" style="display:block;">
+                    <input type="hidden" id="hdn_license" name="license" value="{{storenew.image_license}}" />
+                </div>
+
+                <span class="hidden" style="diplay:none">
+				<img id="example"/>
+				</span>
+                <div class="form-group has-success">
+                    <label class="control-label">
+                        详细介绍
+                    </label>
+                    <div style="margin-left: 0px;width: 80%;">
+                        <textarea  style="width: 480px;" class="xheditor-simple1" rows="12" name="intro" id="intro">{{storenew.intro}}</textarea>
+                    </div>
+                </div>
+                <div class="form-group has-success">
+                    <label class="control-label" style="margin-right:20px;">状态</label>
+                    <input type="radio" id="nostatus" name="status" value="0" {{fuser.isactive == 0 and 'checked' or '' }}><label for="nostatus" style="margin-right:20px;">禁用</label>
+                    <input type="radio" id="yesstatus" name="status" value="1" {{fuser.isactive == 1 and 'checked' or '' }}><label for="yesstatus">正常</label>
+                </div>
+
+                <div class="form-group has-success">
+                    <input style="width:90px;height:32px;border:1px solid #438bca;border-radius:4px;background:#438bca;color:#fff;margin-right:30px;font-size:16px;" type="submit" name="sub" value="保 存">
+                    <input type="reset" name="sub" value="重 置" style="width:90px;height:32px;border:1px solid #438bca;border-radius:4px;background:#fff;color:#438bca;font-size:16px;">
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+{% block js %}
+<script src="/style2/xheditor/xheditor-1.2.2.min.js"></script>
+<script src="/style2/xheditor/xheditor_lang/zh-cn.js"></script>
+<script>
+    $(function(){
+        init_province();
+        $('#intro').xheditor({tools:'Source,Fullscreen,Img,|,Blocktag,Fontface,FontSize,Bold,Italic,Underline,Strikethrough,FontColor,|,Align,List,Outdent,Indent,Link,Unlink',upBtnText:"浏览", html5Upload:false, upImgUrl:"/ajax/upload",upImgExt:"jpg,gif,png"});
+    });
+function submit_check(){
+    var name = $("#name").val();
+    var district_code = $("#district_code").val();
+    var address = $("#address").val();
+    var link_man = $("#link_man").val();
+    var image = $("#hdn_image").val();
+    var legal = $("#hdn_legal").val();
+    var license = $("#hdn_license").val();
+    if(name == ''){
+        alert("请输入门店名称！");
+        return false;
+    }
+    if(district_code == 0){
+        alert("请选择所在地区！");
+        return false;
+    }
+    if(address == '' ){
+        alert("请输入详细地址！");
+        return false;
+    }
+    if(link_man == ''){
+        alert("请输入联系人！");
+        return false;
+    }
+    if(image == ''){
+        alert("请上传门店图片！");
+        return false;
+    }
+    if(legal == ''){
+        alert("请上传营业执照！");
+        return false;
+    }
+    if(license == ''){
+        alert("请上传法人身份证照片！");
+        return false;
+    }
+    return true;
+}
+function init_province(){
+    var province_code=$("#province_code").attr("data-default");
+    var city_code=$("#city_code").attr("data-default");
+    var district_code=$("#district_code").attr("data-default");
+    if(province_code.length>0){
+        province_change(province_code, city_code);
+        if(parseInt(city_code)){
+            city_change(city_code, district_code)
+        }
+    }
+}
+function province_change(id, default_id){
+//    var id = $(obj).val();
+    $("#district_code > option").remove();
+    $("#district_code").append("<option value=\"0\">--请选择区县--</option>");
+    $("#city_code > option").remove();
+    $("#city_code").append("<option value=\"0\">--请选择城市--</option>");
+    if(id > 0){
+        GetSubAreas(id, "city_code", default_id);
+    }
+}
+function city_change(id, default_id){
+//    var id = $(obj).val();
+    $("#district_code > option").remove();
+    $("#district_code").append("<option value=\"0\">--请选择区县--</option>");
+    if(id > 0){
+        GetSubAreas(id, "district_code", default_id);
+    }
+}
+function GetSubAreas(id,ddl_id, default_id) {
+//    alert(default_id);
+    $.get("/ajax/GetSubAreas", { pcode: id,  t: Math.random() }, function (data) {
+        data = jQuery.parseJSON(data);
+        if(data.flag==1){
+            for(var i=0; i< data.data.length; i++){
+                if(default_id.length>0){
+                    if(data.data[i]["code"]==default_id){
+                        $("#" + ddl_id).append("<option value=\"" + data.data[i]["code"] + "\" selected>" + data.data[i]["name"] + "</option>");
+                    }
+                    else{
+                        $("#" + ddl_id).append("<option value=\"" + data.data[i]["code"] + "\">" + data.data[i]["name"] + "</option>");
+                    }
+                }
+                else {
+                    $("#" + ddl_id).append("<option value=\"" + data.data[i]["code"] + "\">" + data.data[i]["name"] + "</option>");
+                }
+            }
+        }
+        else{
+            alert(data.msg)
+        }
+    });
+}
+</script>
+{% endblock %}

@@ -1,0 +1,120 @@
+{% extends "layout/admin.html" %}
+{% block css %}
+<link href="/style2/css/plugins/dataTables.bootstrap.css" rel="stylesheet">
+{% endblock %}
+{% block content %}
+
+<script language="javascript" type="text/javascript" src="/style2/js/My97DatePicker/WdatePicker.js"></script>
+
+<div class="row">
+   <nav>
+   <div>
+      <a class="navbar-brand" href="/admin/skus?status=1" style="color: #333;">按SKU查看(线上)</a>
+      <a class="navbar-brand" href="/admin/inventory_skus?status=0">按SKU查看(线下)</a>
+      <a class="navbar-brand" href="/admin/sum_skus" style="color: #333;">按SKU查看(全部)</a>
+   </div>
+   <div class="pull-right">
+
+      <form class="navbar-form navbar-left" action="" method="get" role="search">
+          <input id="bt_export" type="button" value="导出EXCEL"  />
+          <div class="btn-group btn-group-mg">
+            <a type="button" class="btn btn-mg btn-default {% if category=='01' %} active {% endif %}" href="/admin/inventory_skus?status={{status}}&category=01&begindate={{begindate}}&enddate={{enddate}}">水果</a>
+            <a type="button" class="btn btn-mg btn-default {% if category=='02' %} active {% endif %}" href="/admin/inventory_skus?status={{status}}&category=02&begindate={{begindate}}&enddate={{enddate}}">蔬菜</a>
+            <a type="button" class="btn btn-mg btn-default {% if category=='' %} active {% endif %}" href="/admin/inventory_skus?status={{status}}&category=&begindate={{begindate}}&enddate={{enddate}}">全部</a>
+        </div>
+          <div class="btn-group btn-group-xs">
+              <a type="button" class="btn btn-default {% if status==0 or status==1 or status==2 or status==3 %} active {% endif %}" href="/admin/inventory_skus?status=3&category={{category}}&begindate={{begindate}}&enddate={{enddate}}">未完成</a>
+              <a type="button" class="btn btn-default {% if status==4 %} active {% endif %}" href="/admin/inventory_skus?status=4&category={{category}}&begindate={{begindate}}&enddate={{enddate}}">已完成</a>
+          </div>
+
+         <div class="input-group">
+             <input type="text" name="begindate" id="begindate" value="{{begindate}}" class="Wdate form-control"  onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" placeholder="开始时间" style="width:160px; height: 34px;" />
+             <input type="hidden" name="status" id="status" class="form-control" value="{{status}}">
+             <input type="text" name="enddate" id="enddate" value="{{enddate}}" class="Wdate form-control" onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" style="width:160px; height: 34px;" placeholder="截至时间" />
+             <span class="input-group-btn">
+                 <button class="btn btn-default" type="submit">
+                     <i class="fa fa-search"></i>
+                 </button>
+            </span>
+         </div>
+      </form>
+   </div>
+</nav>
+</div>
+<div class="row">
+    <div class="panel panel-primary">
+    <div class="panel-body">
+        <div class="table-responsive">
+        <table class="table table-hover" id="tb_users">
+            <thead>
+                <tr>
+                    <th>产品</th>
+                    <th>规格</th>
+                    <th>提取规格</th>
+                    <th>库存量（斤）</th>
+                    <th>单价（斤）</th>
+                    <th>份数</th>
+                    <th>需采购量（斤）</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for s in skus -%}
+            <tr>
+              <td>
+                  <label class="checkbox-inline">
+                      {{s.name}} (SKU:{{s.sku}})
+                  </label>
+              </td>
+              <td>{{s.standards[0].name}}</td>
+              <td>{{'%.0f' % s.standards[0].weight}}</td>
+              <td>{{s.quantity1}}</td>
+              <td>{{s.standards[0].ourprice}}</td>
+              <td>{{'%.0f' % s.quantity}}</td>
+              <td>{{ ((s.quantity * s.standards[0].weight) / 500) - s.quantity1 }}斤</td>
+            </tr>
+			{%- endfor %}
+            </tbody>
+        </table>
+        </div>
+    </div>
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<script>
+    function request(paras){
+        var url = location.href;
+        var paraString = url.substring(url.indexOf("?")+1,url.length).split("&");
+        var paraObj = {}
+        for (i=0; j=paraString[i]; i++){
+            paraObj[j.substring(0,j.indexOf("=")).toLowerCase()] = j.substring(j.indexOf("=")+1,j.length);
+        }
+        var returnValue = paraObj[paras.toLowerCase()];
+            if(typeof(returnValue)=="undefined"){
+            return "-1";
+        }else{
+            return returnValue;
+        }
+    };
+
+    $(document).ready(function() {
+        $('#bt_export').bind('click', function () {
+            $(this).attr("disabled",true);
+            $(this).val("正在导出Excel");
+            $.get("/ajax/orders/exportskuinventory?status={{status}}&category={{category}}&begindate={{begindate}}&enddate={{enddate}}",
+                function (data) {
+                    var obj = jQuery.parseJSON(data);
+                    if (obj.err == 0) {
+                        alert('生成成功，点击下载连接，下载数据文件！');
+                        window.open("/upload/" + obj.msg);
+                    }
+                    else {
+                        alert('生成失败：' + obj.msg);
+                    }
+                    $("#bt_export").attr("disabled",false);
+                    $("#bt_export").val("导出Excel");
+                });
+        });
+    });
+</script>
+{% endblock %}

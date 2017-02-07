@@ -1,0 +1,96 @@
+{% extends "layout/admin.html" %}
+{% block content %}
+<div class="row">
+    <ol class="breadcrumb">
+        <li><a href="/admin/pages">静态页面</a></li>
+        <li class="active">[{{p.name}}]</li>
+    </ol>
+</div>
+        <div style="color: red; font-size: 0.6em; margin-bottom: 25px;">
+                    {%set messages=handler.get_flashed_messages() %}
+                    {%-if messages-%}
+                        <div>
+                            {% for type, msg in messages%}
+                                {{msg}}
+                            {% endfor %}
+                        </div>
+                    {%-endif-%}
+                </div>
+<div class="row" style="float:left;">
+    <form class="form-horizontal" role="form" action="/admin/editpage/{{p.id or 0}}" method="post">
+        {{xsrf()}}
+   <div class="form-group">
+      <label class="col-sm-2 control-label">名称</label>
+      <div class="col-sm-10">
+         <input class="form-control" name="pname" type="text" value="{{p.name}}" required style="width:480px;">
+      </div>
+   </div>
+   <div class="form-group">
+      <label class="col-sm-2 control-label">
+         标题
+      </label>
+      <div class="col-sm-10">
+         <input class="form-control" name="title" type="text" value="{{p.title}}" required style="width:480px;">
+      </div>
+   </div>
+   <div class="form-group">
+      <label class="col-sm-2 control-label">
+         访问路径
+      </label>
+      <div class="col-sm-10">
+         <input class="form-control" name="pslug" type="text" value="{{p.slug}}" required {{ p.slug and 'readonly' }} style="width:480px;">
+      </div>
+   </div>
+      <div class="form-group">
+         <label  class="col-sm-2 control-label">
+           关键字
+         </label>
+         <div class="col-sm-10">
+            <textarea class="form-control" rows="3" name="pmetakeywords" style="width:480px;">{{p.metakeywords}}</textarea>
+         </div>
+      </div>
+      <div class="form-group">
+         <label class="col-sm-2 control-label">
+            meta description
+         </label>
+         <div class="col-sm-10">
+            <input type="text" class="form-control" name="pmetadescription" value="{{p.metadescription}}" style="width:480px;">
+         </div>
+      </div>
+   <div class="form-group">
+      <label class="col-sm-2 control-label" >
+         meta title
+      </label>
+      <div class="col-sm-10">
+         <input type="text" class="form-control" name="pmetatitle" value="{{p.metatitle}}" style="width:480px;">
+      </div>
+   </div>
+   <div class="form-group">
+      <label class="col-sm-2 control-label">
+         页面内容
+      </label>
+      <div class="col-sm-10">
+        <textarea class="form-control"  rows="10" name="pcontent" id="pcontent" style="width:480px;">{{p.content}}</textarea>
+      </div>
+   </div>
+
+<button type="submit" style="width:90px;height:36px;margin-left:110px;margin-top:20px;background:#438bca;color:#fff;border:none;border-radius:4px;font-size:16px;">保存</button>
+
+</form>
+</div>
+{% endblock %}
+{% block js %}
+<script src="/style2/xheditor/xheditor-1.2.2.min.js"></script>
+<script src="/style2/xheditor/xheditor_lang/zh-cn.js"></script>
+<script src="/style2/js/jquery.ocupload.js?v=1"></script>
+<script>
+    $(function() {
+        var xsrf = '{{handler.xsrf_token}}';
+        $('#pcontent').xheditor({
+            tools: 'Source,Fontface,FontSize,Bold,Italic,Underline,FontColor,BackColor,|,Align,Outdent,Indent,|,Fullscreen',
+            html5Upload: false
+        });
+    });
+</script>
+
+{% endblock %}

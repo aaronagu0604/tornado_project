@@ -1,0 +1,340 @@
+{% extends "layout/admin.html" %}
+{% block css %}
+<style>
+    .buy_number_input, .add_cart.buyer_button .unsellable, .track_click, .ilikewrap {
+        background: url(/style2/images/mall_product_v4.png) no-repeat;
+    }
+    .buy_number_input {
+        height: 28px;
+        background-position: -198px 0;
+        float: left;
+        width: 105px;
+        display: inline;
+        margin-left: 5px;
+    }
+    .buy_number_input span {
+        display: inline;
+        float: left;
+        height: 28px;
+        width: 28px;
+        cursor: pointer;
+    }
+    .buy_number_input input {
+        float: left;
+        display: inline;
+        width: 49px;
+        height: 28px;
+        text-align: center;
+        line-height: 28px;
+        border: 0 none;
+        overflow: hidden;
+        background: transparent;
+        margin-top: 1px;
+        font-size: 14px;
+        color: #080808;
+    }
+    .btn-group .btn input[type=checkbox] {
+        position: absolute;
+        clip: rect(0,0,0,0);
+        pointer-events: none;
+    }
+    .btn-primary:active, .btn-primary.active, .open>.dropdown-toggle.btn-primary {
+        color: #fff;
+        background-color: #c9302c;
+        border-color: #ac2925;
+    }
+    .btn-primary:focus/*.btn-primary:hover, */{
+        color: #fff;
+        background-color: #3071a9;
+        border-color: #285e8e;
+    }
+    .panel-footer {
+        padding: 8px 0px;
+    }
+    #share{position:fixed;_position:absolute;_top:
+    expression(eval(document.documentElement.scrollTop+document.documentElement.clientHeight)-34+"px");
+        bottom:34px;left:96%;width:30px;zoom:1.5; z-index: 999;}
+
+    .panel-right-tt {
+        display: inline;
+        padding: 3px 0px 3px 5px;
+        background-color: #fff;
+        border: none;
+    }
+    .padding0{padding: 0px;}
+    .paddingl0{padding-left: 0px;}
+    .panel-heading{padding: 0px 0px 0px 5px;}
+    .panel-primary{margin-bottom: 5px;}
+    .product-price{font-weight: bold;}
+    .btn-primary {
+        background-color: #fff;
+        border-color: #fff;
+        color: #000;
+    }
+    .panel-body{width: 100%;}
+#share a{
+	/*background-image:url(/style2/images/share.png);background-repeat:no-repeat;display:block;width:30px;height:30px;margin-bottom:2px;overflow:hidden;text-indent:-999px;*/
+	-webkit-transition: all 0.2s ease-in-out;
+	-moz-transition: all 0.2s ease-in-out;
+	-o-transition: all 0.2s ease-in-out;
+	-ms-transition: all 0.2s ease-in-out;
+	transition: all 0.2s ease-in-out;
+    cursor: pointer;
+}
+#share .sina{background-position:0 0;position:absolute;bottom:32px;}
+#share a.sina:hover{background-position:-30px 0;}
+#share .tencent{background-position:0 -30px;position:absolute;bottom:0;}
+#share a.tencent:hover{background-position:-30px -30px;}
+#share a#totop{background-position:0 -120px;position:absolute;bottom:64px;cursor:pointer;}
+#share a#totop:hover{background-position:-30px -120px;}
+.table{margin-bottom: 0px;}
+
+</style>
+{% endblock %}
+{% block content %}
+<div class="row">
+    <nav>
+        <a class="navbar-brand" href="/admin/bulk_store_sel">返回选择大客户</a>
+        <div class="pull-left navbar-form">
+
+             <a type="button" href="#fruit" class="btn btn-outline btn-default btn-xs">水果</a>
+             <a type="button" href="#vegetables" class="btn btn-outline btn-default btn-xs">蔬菜</a>
+            <input type="text" placeholder="请输入要搜索的产品名称或拼音缩写" class="form-control" size="30" id="searchkey">
+        </div>
+        <div class="pull-right navbar-form">
+            <a type="button" href="/admin/bulk_order_add/{{storeid}}" class="btn btn-danger">选好了，去申请</a>
+        </div>
+    </nav>
+</div>
+
+<form class="form-horizontal" id="form" method="post" action="">
+    {{xsrf()}}
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-success" id="fruit">
+                <div class="panel-heading" style="padding: 10px 10px;">
+                    <h3 class="panel-title">水果　</h3><a name="#fruit"></a>
+                </div>
+                <div class="panel-body btn-group"  data-toggle="buttons">
+            {% for c in products1 %}
+            <div class="col-lg-6 paddingl0 productsearchbox" data-name="{{c.name}}" data-tags="{{c.tags}}">
+                <div class="panel panel-primary" style="text-align: center;float: left;width:100%;">
+
+                        {%if c.is_index==1 %}
+                    <label class="btn btn-primary item_product col-lg-9 active">
+                        <input type="checkbox" class="chk" checked="false" autocomplete="off">
+                        {%else%}
+                    <label class="btn btn-primary item_product col-lg-9">
+                        <input type="checkbox" class="chk" autocomplete="off">
+                        {%endif%}
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="text-left"  style="min-width:162px;">
+                                    <input type="hidden" class="product-id" value="{{c.id}}">
+                                    <input type="hidden" class="psid" value="{{c.id}}">
+                                    <div class="product-name col-lg-7 padding0">{{c.name}}
+                                        {% if c.status==2 %}
+                                        <span style="color: red;">[下]</span>
+                                        {% elif c.status==1 %}
+                                        <span style="color: green;">[上]</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-lg-2 padding0">￥<span class="product-price">{{c.storeprice}}</span></div>
+                                    <div class="col-lg-3 padding0"> 千克 </div>
+                                </div>
+                            </div>
+                        </div>
+                    </label>
+                        <div class="panel-footer panel-right-tt col-lg-3">
+                            <div class="btn-group btn-group-xs">
+                                <div class="buy_number_input">
+                                    <span id="decrease_num" title="减少"></span>
+                                    <input class="product-number" id="buy_number" data-pid="{{c.id}}" value="{{c.quantity}}" maxlength="4"  />
+                                    <span id="increase_num" title="增加"></span>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+            </div>
+            {% endfor %}
+                </div>
+            </div>
+            <div class="panel panel-warning" id="vegetables">
+                <div class="panel-heading" style="padding: 10px;">
+                    <h3 class="panel-title">蔬菜　</h3><a name="#vegetables"></a>
+                </div>
+                <div class="panel-body btn-group"  data-toggle="buttons">
+            {% for c in products2 %}
+            <div class="col-lg-6 paddingl0 productsearchbox" data-name="{{c.name}}" data-tags="{{c.tags}}">
+                <div class="panel panel-primary" style="text-align: center;float: left;width:100%;">
+                        {%if c.is_index==1 %}
+                    <label class="btn btn-primary item_product col-lg-9 active">
+                        <input type="checkbox" class="chk" checked="false" autocomplete="off">
+                        {%else%}
+                    <label class="btn btn-primary item_product col-lg-9">
+                        <input type="checkbox" class="chk" autocomplete="off">
+                        {%endif%}
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="text-left"  style="min-width:162px;">
+                                    <input type="hidden" class="product-id" value="{{c.id}}">
+                                    <input type="hidden" class="psid" value="{{c.id}}">
+                                    <div class="product-name col-lg-7 padding0">{{c.name}}
+                                        {% if c.status==2 %}
+                                        <span style="color: red;">[下]</span>
+                                        {% elif c.status==1 %}
+                                        <span style="color: green;">[上]</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-lg-2 padding0">￥<span class="product-price">{{c.storeprice}}</span></div>
+                                    <div class="col-lg-3 padding0">千克 </div>
+                                </div>
+                            </div>
+                        </div>
+                    </label>
+                        <div class="panel-footer panel-right-tt col-lg-3">
+                            <div class="btn-group btn-group-xs" style="z-index:100;">
+                                <div class="buy_number_input">
+                                    <span id="decrease_num" title="减少"></span>
+                                    <input class="product-number" id="buy_number" data-pid="{{c.id}}" value="{{c.quantity}}" maxlength="4" />
+                                    <span id="increase_num" title="增加"></span>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+            </div>
+            {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <input type="hidden" id="hidpid" name="hidpid" value="">
+    <input type="hidden" id="orderPrice" name="orderPrice" value="">
+</form>
+<div id="share">
+	<a id="totop" title="返回顶部">返回顶部</a>
+	<a class="sina" title="水果">水果</a>
+	<a  class="tencent" title="蔬菜">蔬菜</a>
+</div>
+
+{% endblock %}
+{% block js %}
+<script>
+    $(function() {
+        //首先将#back-to-top隐藏
+        $("#totop").hide();
+        //当滚动条的位置处于距顶部100像素以下时，跳转链接出现，否则消失
+        $(window).scroll(function(){
+            if ($(window).scrollTop()>50){
+                $("#totop").fadeIn();
+            }else{
+                $("#totop").fadeOut();
+            }
+        });
+        //当点击跳转链接后，回到页面顶部位置
+        $("#totop").click(function(){
+            $('body,html').animate({scrollTop:0},500);
+            return false;
+        });
+        $(".sina,#btnFruit").click(function(){
+            $('body,html').animate({scrollTop:$('#fruit').offset().top},500);
+            return false;
+        });
+        $(".tencent,#btnVegetables").click(function(){
+            $('body,html').animate({scrollTop:$('#vegetables').offset().top},500);
+            return false;
+        });
+
+        $(".item_product").click(function(){
+            var id = $(this).find(".product-id").val();
+            var psid = $(this).find(".psid").val();
+            var quantity = $(this).nextAll().find(".product-number").val();
+            //'/upload/'+obj.sku+'/'+obj.cover
+            if($(this).find(".chk").prop("checked")==false){
+//                $(this).attr("class","btn btn-primary item_product col-lg-9 active");
+                $.get("/admin/ajax/storeAddCart", { pid: id, quantity: quantity, psid: psid, type: 4,storeid:{{storeid}},isadd:1, t: Math.random() }, function (data) {
+                    if(data < 1)
+                    {
+                        alert("添加错误，请重新选择！");
+                    }
+                    else{
+                    }
+//                    storeGetCartCount();
+                });
+//                quantityKeyup();
+            }else{
+//                $(this).attr("class","btn btn-primary item_product col-lg-9");
+                $.get("/admin/ajax/storeAddCart", { pid: id, quantity: quantity, psid: psid,type: 4,storeid:{{storeid}},isadd:0, t: Math.random() }, function (data) {
+                    if(data < 1)
+                    {
+                        alert("移除错误！");
+                    }
+                    else{
+                    }
+//                    storeGetCartCount();
+                });
+            }
+        });
+
+        $(".buy_number_input").each(function () {
+            $(this).children("#decrease_num").bind('click', function () {
+                var q = $(this).next();
+                var ovalue = parseFloat(q.val());
+                if (ovalue > 1) {
+                    q.val(ovalue - 1);
+                    if (ovalue > 0) {
+                        var pid = q.attr("data-pid");
+                        updatePFCartNum(pid, q.val());
+                    }
+                }
+            });
+            $(this).children("#increase_num").bind('click', function () {
+                var q = $(this).prev();
+                var ovalue = parseFloat(q.val());
+                if (ovalue < 9999) {
+                    q.val(ovalue + 1);
+                    if (ovalue <= 9999) {
+                        var pid = q.attr("data-pid");
+                        updatePFCartNum(pid, q.val());
+                    }
+                }
+            });
+            $(this).children("#buy_number").bind('keyup', function () {
+//                var q = $(this).prev();
+                $(this).val($(this).val().replace(/[^\d.]/g,''))
+                var ovalue = parseFloat($(this).val());
+//                alert(ovalue)
+                if(isNaN(ovalue)||ovalue<=0){
+                    $(this).val("1")
+                    ovalue=1;
+                }
+                if (ovalue <= 9999&&ovalue >0) {
+                    var pid= $(this).attr("data-pid");
+                    updatePFCartNum(pid,ovalue);
+                }
+            });
+        });
+        function updatePFCartNum(pid ,num){
+            $.get("/admin/ajax/storeUpdateCartNum", { pid: pid, quantity: num,type: 4,storeid:{{storeid}}, t: Math.random() }, function (data) {
+//                    storeGetCartCount();
+                });
+        }
+
+        $("#searchkey").bind("keyup",function(){
+            $(".productsearchbox").each(function(){
+                var searchkey=$("#searchkey").val();
+                searchkey=searchkey.toUpperCase();
+                var name=$(this).attr("data-name");
+                var tags=$(this).attr("data-tags");
+                if(searchkey==""||name.indexOf(searchkey)>=0||tags.indexOf(searchkey)>=0){
+                    $(this).show();
+                }
+                else{
+                    $(this).hide();
+                }
+            });
+        });
+    });
+
+</script>
+{% endblock %}

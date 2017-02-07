@@ -1,0 +1,237 @@
+{% extends "layout/admin.html" %}
+{% block content %}
+<div class="row">
+    <nav>
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">编辑优惠劵</a>
+        </div>
+    </nav>
+</div>
+<div class="row">
+    <div class="panel panel-primary">
+        <div class="panel-body">
+
+            {%set messages=handler.get_flashed_messages() %}
+            {%if messages%}
+            <div class="msg" style="color:red;">
+                {% for type, msg in messages%}
+                <span>{{msg}}</span>
+                {% endfor %}
+            </div>
+            {%endif%}
+
+            <form action="" method="post" enctype="multipart/form-data">
+                {{xsrf()}}
+                <div class="form-group has-success">
+                    <label class="col-sm-2 control-label">产品名称</label>
+                    <div class="col-sm-10">
+                        <div class="ui-widget">
+                        <select id="combobox" class="form-control" name="product">
+                            <option value="{{cp and cp.product.id or ''}}">{{cp and cp.product.name or '--请选择--'}}</option>
+                            {% for c in products %}
+                            <option value="{{c.id}};{{c.defaultstandard}}">{{c.name}} {{c.tags}}</option>
+                            {% endfor %}
+                        </select>
+                        </div>
+                    </div>
+                </div><br><br>
+                <div class="form-group has-success">
+                    <label class="col-sm-2 control-label">优惠劵名称</label>
+                    <div class="col-sm-10">
+                        <input type="text" id="name" name="name" class="form-control" value="{{cp.name or ''}}"  required placeholder="优惠劵名称" />
+                    </div>
+                </div>
+                <br><br>
+                <div class="form-group has-success" style="text-align: center;">
+                    <input type="submit" name="sub" value="提交" class="btn btn-outline btn-primary btn-sm">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<link href="/style2/js/jquery-ui/jquery-ui-1.9.2.custom.min.css" rel="stylesheet" type="text/css"/>
+<script src="/style2/xheditor/xheditor-1.2.2.min.js"></script>
+<script src="/style2/xheditor/xheditor_lang/zh-cn.js"></script>
+<script src="/style2/js/jquery.ocupload.js?v=1"></script>
+<script src="/style2/js/jquery-ui-1.9.2.custom.min.js" language="javascript"></script>
+<script language="javascript" type="text/javascript" src="/style2/js/My97DatePicker/WdatePicker.js"></script>
+<style>
+	.ui-combobox {
+		position: relative;
+		display: inline-block;
+        width:300px;
+	}
+	.ui-combobox-toggle {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		margin-left: -1px;
+		padding: 0;
+		/* adjust styles for IE 6/7 */
+		*height: 1.7em;
+		*top: 0.1em;
+	}
+	.ui-combobox-input {
+		margin: 0;
+		padding: 0.3em;
+        width:300px;
+	}
+    .demo-description {
+        clear: both;
+        padding: 12px;
+        font-size: 1.3em;
+        line-height: 1.4em;
+    }
+
+    .ui-draggable, .ui-droppable {
+        background-position: top;
+    }
+
+	</style>
+<script>
+
+    (function( $ ) {
+		$.widget( "ui.combobox", {
+			_create: function() {
+				var input,
+					that = this,
+					select = this.element.hide(),
+					selected = select.children( ":selected" ),
+					value = selected.val() ? selected.text() : "",
+					wrapper = this.wrapper = $( "<span>" )
+						.addClass( "ui-combobox" )
+						.insertAfter( select );
+				function removeIfInvalid(element) {
+					var value = $( element ).val(),
+						matcher = new RegExp( "^" + $.ui.autocomplete.escapeRegex( value ) + "$", "i" ),
+						valid = false;
+					select.children( "option" ).each(function() {
+						if ( $( this ).text().match( matcher ) ) {
+							this.selected = valid = true;
+							return false;
+						}
+					});
+					if ( !valid ) {
+						// remove invalid value, as it didn't match anything
+						$( element )
+							.val( "" )
+							.attr( "title", value + " 没有匹配项" )
+							.tooltip( "open" );
+						select.val( "" );
+						setTimeout(function() {
+							input.tooltip( "close" ).attr( "title", "" );
+						}, 2500 );
+						input.data( "autocomplete" ).term = "";
+						return false;
+					}
+				}
+
+				input = $( "<input>" )
+					.appendTo( wrapper )
+					.val( value )
+					.attr( "title", "" )
+					.addClass( "ui-state-default ui-combobox-input" )
+					.autocomplete({
+						delay: 0,
+						minLength: 0,
+						source: function( request, response ) {
+							var matcher = new RegExp( $.ui.autocomplete.escapeRegex(request.term), "i" );
+							response( select.children( "option" ).map(function() {
+								var text = $( this ).text();
+								if ( this.value && ( !request.term || matcher.test(text) ) )
+									return {
+										label: text.replace(
+											new RegExp(
+												"(?![^&;]+;)(?!<[^<>]*)(" +
+												$.ui.autocomplete.escapeRegex(request.term) +
+												")(?![^<>]*>)(?![^&;]+;)", "gi"
+											), "<strong>$1</strong>" ),
+										value: text,
+										option: this
+									};
+							}) );
+						},
+						select: function( event, ui ) {
+							ui.item.option.selected = true;
+							that._trigger( "selected", event, {
+								item: ui.item.option
+							});
+						},
+						change: function( event, ui ) {
+                            var pid_ps = $("#combobox").val();
+                            var ps = $("#product_standard").val(pid_ps.split(';')[1]);
+                            pid_ps.val(pid_ps.split(';')[0]);
+							if ( !ui.item )
+								return removeIfInvalid( this );
+						}
+					})
+					.addClass( "ui-widget ui-widget-content ui-corner-left" );
+
+				input.data( "autocomplete" )._renderItem = function( ul, item ) {
+					return $( "<li>" )
+						.data( "item.autocomplete", item )
+						.append( "<a>" + item.label + "</a>" )
+						.appendTo( ul );
+				};
+
+				$( "<a>" )
+					.attr( "tabIndex", -1 )
+					.attr( "title", "Show All Items" )
+					.tooltip()
+					.appendTo( wrapper )
+					.button({
+						icons: {
+							primary: "ui-icon-triangle-1-s"
+						},
+						text: false
+					})
+					.removeClass( "ui-corner-all" )
+					.addClass( "ui-corner-right ui-combobox-toggle" )
+					.click(function() {
+						// close if already visible
+						if ( input.autocomplete( "widget" ).is( ":visible" ) ) {
+							input.autocomplete( "close" );
+							removeIfInvalid( input );
+							return;
+						}
+
+						// work around a bug (likely same cause as #5265)
+						$( this ).blur();
+
+						// pass empty string as value to search for, displaying all results
+						input.autocomplete( "search", "" );
+						input.focus();
+					});
+
+					input
+						.tooltip({
+							position: {
+								of: this.button
+							},
+							tooltipClass: "ui-state-highlight"
+						});
+			},
+
+			destroy: function() {
+				this.wrapper.remove();
+				this.element.show();
+				$.Widget.prototype.destroy.call( this );
+			}
+		});
+	})( jQuery );
+
+    $(document).ready(function(){
+        $( "#combobox" ).combobox();
+
+        var myDate = new Date();
+        var strMonth = myDate.getMonth()>9?(myDate.getMonth()+1):'0' + (myDate.getMonth()+1);
+        var strDay = myDate.getDate()>9?myDate.getDate().toString():'0' + myDate.getDate();
+        var c_time = $("#addtime").val();
+        if(c_time == '')
+            $("#addtime").val(myDate.getFullYear() + '-' + strMonth + '-' + strDay);
+    });
+
+</script>
+{% endblock %}

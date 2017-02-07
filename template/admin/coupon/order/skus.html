@@ -1,0 +1,123 @@
+{% extends "layout/admin.html" %}
+{% block css %}
+<link href="/style2/css/plugins/dataTables.bootstrap.css" rel="stylesheet">
+{% endblock %}
+{% block content %}
+
+<script language="javascript" type="text/javascript" src="/style2/js/My97DatePicker/WdatePicker.js"></script>
+
+<div class="row">
+   <nav>
+   <div>
+      <a class="navbar-brand" href="#">按SKU查看订单信息</a>
+   </div>
+   <div class="pull-right">
+
+      <form class="navbar-form navbar-left" action="" method="get" role="search">
+          <input id="bt_export" type="button" value="导出EXCEL"  />
+          <div class="btn-group btn-group-mg">
+            <a type="button" class="btn btn-mg btn-default {% if category=='01' %} active {% endif %}" href="/admin/skus?status={{status}}&category=01">水果</a>
+            <a type="button" class="btn btn-mg btn-default {% if category=='02' %} active {% endif %}" href="/admin/skus?status={{status}}&category=02">蔬菜</a>
+        </div>
+          <div class="btn-group btn-group-xs">
+              <a type="button" class="btn btn-default {% if status==0 %} active {% endif %}" href="/admin/skus?status=0&category={{category}}">待付款</a>
+              <a type="button" class="btn btn-default {% if status==1 %} active {% endif %}" href="/admin/skus?status=1&category={{category}}">待处理</a>
+              <a type="button" class="btn btn-default {% if status==2 %} active {% endif %}" href="/admin/skus?status=2&category={{category}}">正在处理</a>
+              <a type="button" class="btn btn-default {% if status==3 %} active {% endif %}" href="/admin/skus?status=3&category={{category}}">已发货</a>
+          </div>
+
+         <div class="input-group">
+             <input type="text" name="begindate" id="begindate" value="{{begindate}}" class="Wdate form-control"  onClick="WdatePicker()" placeholder="开始时间" style="width:105px; height: 34px;" />
+             <input type="hidden" name="statuscheck" id="statuscheck" class="form-control" value="">
+             <input type="text" name="enddate" id="enddate" value="{{enddate}}" class="Wdate form-control" onClick="WdatePicker()" style="width:105px; height: 34px;" placeholder="截至时间" />
+             <span class="input-group-btn">
+                 <button class="btn btn-default" type="submit">
+                     <i class="fa fa-search"></i>
+                 </button>
+            </span>
+         </div>
+      </form>
+   </div>
+</nav>
+</div>
+<div class="row">
+    <div class="panel panel-primary">
+    <div class="panel-body">
+        <div class="table-responsive">
+        <table class="table table-hover" id="tb_users">
+            <thead>
+                <tr>
+                    <th>产品</th>
+                    <th>规格</th>
+                    <th>提取规格</th>
+                    <th>库存量（斤）</th>
+                    <th>份数</th>
+                    <th>需采购量（斤）</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for s in skus -%}
+            <tr>
+              <td>
+                  <label class="checkbox-inline">
+                      {{s.name}} (SKU:{{s.sku}})
+                  </label>
+              </td>
+              <td>{{s.standards[0].name}}</td>
+              <td>{{s.standards[0].weight}}</td>
+              <td>{{s.quantity1}}</td>
+              <td>{{s.quantity}}</td>
+              <td>{{ ((s.quantity * s.standards[0].weight) / 500) - s.quantity1 }}斤</td>
+            </tr>
+			{%- endfor %}
+            </tbody>
+        </table>
+        </div>
+    </div>
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<script>
+    function request(paras){
+        var url = location.href;
+        var paraString = url.substring(url.indexOf("?")+1,url.length).split("&");
+        var paraObj = {}
+        for (i=0; j=paraString[i]; i++){
+            paraObj[j.substring(0,j.indexOf("=")).toLowerCase()] = j.substring(j.indexOf("=")+1,j.length);
+        }
+        var returnValue = paraObj[paras.toLowerCase()];
+            if(typeof(returnValue)=="undefined"){
+            return "-1";
+        }else{
+            return returnValue;
+        }
+    };
+
+    $(function(){
+        $("#statuscheck").val(request('status'));
+        if(!request('begindate'))
+        {$("#begindate").val(request('begindate'));}
+        if(!request('enddate'))
+        {$("#enddate").val(request('enddate'));}
+    });
+
+    $(document).ready(function() {
+        $('#bt_export').bind('click', function () {
+            //var paras = {'status':{{status}}, 'category':'{{category}}' };
+            $.get("/ajax/orders/exportsku?status={{status}}&category={{category}}",
+
+                    function (data) {
+                        var obj = jQuery.parseJSON(data);
+                        if (obj.err == 0) {
+                            alert('生成成功，点击下载连接，下载数据文件！');
+                            window.open("/upload/" + obj.msg);
+                        }
+                        else {
+                            alert('生成失败：' + obj.msg);
+                        }
+                    });
+        });
+    });
+</script>
+{% endblock %}

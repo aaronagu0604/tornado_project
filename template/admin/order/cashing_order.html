@@ -1,0 +1,274 @@
+{% extends "layout/admin.html" %}
+{% block css %}
+	<link rel="stylesheet" type="text/css" href="/style2/order/css/integral.css"/>
+
+	<!--[if lt IE 9]>
+	<script type="text/javascript" src="/style/order/js/html5shiv.min.js"></script>
+	<script type="text/javascript" src="/style/order/js/respond.min.js"></script>
+	<![endif]-->
+
+	<script type="text/javascript" src="/style2/order/js/jquery.min.js"></script>
+	<script type="text/javascript" src="/style2/order/js/bootstrap.min.js"></script>
+	
+	<script type="text/javascript" src="/style2/order/js/yui-min.js"></script> 
+	
+<script>
+YUI({
+    modules: {
+        'trip-calendar': {
+            fullpath: '/style2/order/js/trip-calendar.js',
+            type    : 'js',
+            requires: ['trip-calendar-css']
+        },
+        'trip-calendar-css': {
+            fullpath: '/style2/order/css/trip-calendar.css',
+            type    : 'css'
+        }
+    }
+}).use('trip-calendar', function(Y) {
+
+    /**
+     * 弹出式日历实例
+     * 将日历与指定的触发元素绑定
+     * 日历可根据浏览器窗口大小，自动调整显示位置
+     */
+    var oCal = new Y.TripCalendar({
+        //绑定日历的节点，支持选择器模式，可批量设置（必选）
+        triggerNode: '.J_Item, #J_Item-1, #J_Item-2, button_rq, .J_Link'
+    });
+    
+    oCal.on('dateclick', function(e) {
+        this.getCurrentNode().setAttribute('data-date', e.date);
+    });
+    
+    //显示日历时自定义事件
+    oCal.on('show', function() {
+        var v = this.getCurrentNode().getAttribute('data-date');
+        this.set('date', v || new Date);
+        this.set('selectedDate', v).render();
+    });
+    
+    //解决chrome的foucs事件bug
+    Y.on('click', function(e) {
+        e.currentTarget.focus();
+    }, 'button_rq, .J_Link');
+});
+
+function left_btnx(n)
+{
+ var a_num=document.getElementById("ul_classification").getElementsByTagName("li");
+ for(i=0;i<a_num.length;i++)
+ {
+ a_num[i].className=i==n?"select":"";
+ }
+}
+function left_btny(n)
+{
+ var a_num=document.getElementById("ul_state").getElementsByTagName("li");
+ for(i=0;i<a_num.length;i++)
+ {
+ a_num[i].className=i==n?"select":"";
+ }
+}
+</script>
+	
+{% endblock %}
+{% block content %}
+
+ <div class="row main">
+	 <div>
+        <a class="navbar-brand" href="#">积分兑现记录</a>
+    </div>
+	 <div class="content">
+		 <form class="form-inline" role="form" action="" method="post">
+			 <div class="form-group">
+			     <label>选择地区</label>
+			     <select class="form-control" name="province_code" id="province_code" onchange="province_change(this.value,0)" data-default="{{default_province}}" style="width:150px;">
+				 	 <option value="">--请选择省份--</option>
+				     {% for area in items %}
+	                 <option value="{{area.code}}" {{area.code==default_province and 'selected' or ''}}>{{area.name}}</option>
+	                 {% endfor %}
+			     </select>
+			     <select class="form-control" name="city_code" id="city_code" data-default="{{default_city}}" style="width:150px;">
+				     <option value="">--请选择城市--</option>
+			     </select>
+		     </div>
+			 <label style="margin-left:10px;">日期</label>
+			 <input type="text" class="J_Item form-control" autocomplete="off" placeholder="请选择日期" />
+			 <button type="button" class="btn btn-primary">查询</button>
+		 </form>
+			 
+		 <table class="table table-hover text-center">
+			 <thead>
+				 <tr>
+					 <th>交易流水号</th>
+					 <th>用户账户</th>
+					 <th>地区</th>
+					 <th>门店</th>
+					 <th>花费积分</th>
+					 <th>兑现金额（元）</th>
+					 <th>时间</th>
+				 </tr>
+			 </thead>
+	 
+			 <tbody>
+			 <tr>
+				 <td>U117511051105</td>
+				 <td>U117511051105</td>
+				 <td>陕西西安</td>
+				 <td>XXX修理厂</td>
+				 <td>300</td>
+				 <td>300</td>
+				 <td>2016-11-25&nbsp;&nbsp;&nbsp;09:45:48</td>
+			 </tr>
+			 
+			 <tr>
+				 <td>U117511051105</td>
+				 <td>U117511051105</td>
+				 <td>陕西渭南</td>
+				 <td>XXX修理厂</td>
+				 <td>300</td>
+				 <td>300</td>
+				 <td>2016-11-25&nbsp;&nbsp;&nbsp;09:45:48</td>
+			 </tr>
+			 
+			 <tr>
+				 <td>U117511051105</td>
+				 <td>U117511051105</td>
+				 <td>陕西宝鸡</td>
+				 <td>XXX修理厂</td>
+				 <td>300</td>
+				 <td>300</td>
+				 <td>2016-11-25&nbsp;&nbsp;&nbsp;09:45:48</td>
+			 </tr>
+			 
+			 </tbody>
+		 </table>
+		 
+		 <div class="col-sm-6">
+            <div class="dataTables_info" role="alert" aria-live="polite" aria-relevant="all">
+                当前：第{{page}}页 / {{totalpage}}页，合计{{total}}条
+            </div>
+        </div>
+        <div style="float:right;">
+            <div class="dataTables_paginate paging_simple_numbers">
+                <ul class="pagination  pagination-sm" id="pageUl" />
+            </div>
+        </div>
+	 </div>
+ </div>
+	
+{% endblock %}
+{% block js %}
+<script src="/style2/js/jquery.twbsPagination.min.js"></script>
+<script type="text/javascript">
+   $(document).ready(function() {
+        $('#pageUl').twbsPagination({
+            first:'首页',
+            prev:'上一页',
+            next:'下一页',
+            last:'尾页',
+            totalPages: {{totalpage}},
+            startPage: {{page}},
+            visiblePages: 8,
+            onPageClick: function (event, page) {
+                self.location="/admin/insuranceadmin?keyword={{keyword or ''}}&province_code={{default_province or ''}}&city_code={{default_city or ''}}&district_code={{default_district or ''}}&checkbox={{checkbox or ''}}&insuranceC={{insuranceC or ''}}&page="+page;
+            }
+        });
+    });
+
+    $(function(){
+    init_province();
+        var r = {{result |default('-1')}};
+        if(r == '1')
+        {
+            alert('保存成功！');
+            //location.reload();
+        }
+        else if(r == '0'){
+            alert('保存失败！');
+        }
+    });
+
+function init_province(){
+    var province_code=$("#province_code").attr("data-default");
+    var city_code=$("#city_code").attr("data-default");
+
+    if(province_code.length>0){
+        console.debug(city_code)
+        province_change(province_code, city_code);
+    }
+}
+function province_change(id, default_id){
+    $("#city_code > option").remove();
+    $("#city_code").append("<option value=\"0\">--请选择城市--</option>");
+    if(id > 0){
+        console.debug(default_id)
+        GetSubAreas(id, "city_code", default_id);
+    }
+}
+
+function GetSubAreas(id,ddl_id, default_id) {
+    $.get("/ajax/GetSubAreas", { pcode: id,  t: Math.random() }, function (data) {
+        data = jQuery.parseJSON(data);
+        if(data.flag==1){
+            for(var i=0; i< data.data.length; i++){
+                if(default_id.length>0){
+                    console.debug(data.data[i]["code"])
+                    if(data.data[i]["code"]+'%'==default_id){
+                        console.debug(default_id)
+                        $("#" + ddl_id).append("<option value=\"" + data.data[i]["code"] + "\" selected>" + data.data[i]["name"] + "</option>");
+                    }
+                    else{
+                        console.debug('not default id')
+                        $("#" + ddl_id).append("<option value=\"" + data.data[i]["code"] + "\">" + data.data[i]["name"] + "</option>");
+                    }
+                }
+                else {
+                    console.debug('default id length < 0')
+                    $("#" + ddl_id).append("<option value=\"" + data.data[i]["code"] + "\">" + data.data[i]["name"] + "</option>");
+                }
+            }
+        }
+        else{
+            alert(data.msg)
+        }
+    });
+}
+</script>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

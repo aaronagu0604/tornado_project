@@ -1,0 +1,111 @@
+{% extends "layout/admin.html" %}
+{% block css %}
+<link href="/style2/css/plugins/dataTables.bootstrap.css" rel="stylesheet">
+<script language="javascript" type="text/javascript" src="/style2/js/My97DatePicker/WdatePicker.js"></script>
+<style>
+    .hz{color:#129a00; font-weight: bold;}
+</style>
+{% endblock %}
+{% block content %}
+<div class="row">
+   <nav>
+   <div>
+      <a class="navbar-brand" href="#">会员下单情况</a>
+   </div>
+   <div class="pull-right">
+      <form class="navbar-form navbar-left" action="" method="get" role="search">
+         <div class="input-group custom-search-form">
+             <span class="input-group-addon">注册日期</span>
+             <input type="text" name="begindate" id="begindate" value="{{begindate}}" class="Wdate form-control"  onClick="WdatePicker()" style="width:135px; height: 34px;"  placeholder="注册截至日期" />
+             <span class="input-group-addon">排序方式</span>
+             <select class="form-control" style="width:108px;" id="order_sign" name="order_sign">
+                <option value="0" {{order_sign=='0' and 'selected'}}>单数降序</option>
+                <option value="1" {{order_sign=='1' and 'selected'}}>单数升序</option>
+                <option value="2" {{order_sign=='2' and 'selected'}}>金额降序</option>
+                <option value="3" {{order_sign=='3' and 'selected'}}>金额升序</option>
+                <option value="4" {{order_sign=='4' and 'selected'}}>注册时间降序</option>
+                <option value="5" {{order_sign=='5' and 'selected'}}>注册时间升序</option>
+                <option value="6" {{order_sign=='6' and 'selected'}}>间隔天数降序</option>
+                <option value="7" {{order_sign=='7' and 'selected'}}>间隔天数升序</option>
+                <option value="8" {{order_sign=='8' and 'selected'}}>间隔周数降序</option>
+                <option value="9" {{order_sign=='9' and 'selected'}}>间隔周数升序</option>
+            </select>
+             <span class="input-group-btn">
+                 <button class="btn btn-default" type="submit" id="bt_submit">
+                     <i class="fa fa-search"></i>
+                 </button>
+            </span>
+         </div>
+      </form>
+   </div>
+</nav>
+</div>
+<div class="row">
+    <div class="panel panel-primary">
+    <div class="panel-body">
+        <div class="table-responsive">
+        <table class="table table-hover" id="tb_users">
+            <thead>
+                <tr>
+                    <th>用户</th>
+                    <th>注册时间</th>
+                    <th>下单数</th>
+                    <th>最后下单时间</th>
+                    <th>间隔天数</th>
+                    <th>间隔周</th>
+                    <th>下单总金额</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% if list %}
+            {% for u in list -%}
+                <tr>
+
+                    <td>{{u.username}}</td>
+                    <td>{{u.signuped | datetimeformat}}</td>
+                    <td>{{u.order_count}}</td>
+                    <td>{{u.max_ordered | datetimeformat}}</td>
+                    <td>{{u.max_ordered > 0 and '%.0f' % ((datetime - u.max_ordered)/(24*60*60)) or ''}}</td>
+                    <td>{{u.max_ordered > 0 and '%.1f' % ((datetime - u.max_ordered)/(24*60*60)/7) or ''}}</td>
+                    <td>{{u.order_price > 0 and '%.2f' %  u.order_price or 0}}</td>
+            </tr>
+			{%- endfor %}
+            {% endif %}
+            </tbody>
+        </table>
+            <div>
+                <div class="col-sm-4">
+                    <div class="dataTables_info" role="alert" aria-live="polite" aria-relevant="all">
+                        当前：第{{page}}页 / {{totalpage}}页，合计{{total}}条
+                    </div>
+                </div>
+                <div class="col-sm-8">
+                    <div class="dataTables_paginate paging_simple_numbers">
+                        <ul class="pagination  pagination-sm" id="pageUl" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<script src="/style2/js/jquery.twbsPagination.min.js"></script>
+        <script>
+    $(document).ready(function() {
+        $('#pageUl').twbsPagination({
+            first:'首页',
+            prev:'上一页',
+            next:'下一页',
+            last:'尾页',
+            totalPages: {{totalpage}},
+            startPage: {{page}},
+            visiblePages: 8,
+            onPageClick: function (event, page) {
+                    self.location="/admin/report/user/order?page="+page + "&begindate={{begindate}}&order_sign={{order_sign}}";
+                }
+        });
+    });
+    </script>
+{% endblock %}

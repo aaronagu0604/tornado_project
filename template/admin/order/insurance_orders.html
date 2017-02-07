@@ -1,0 +1,295 @@
+{% extends "layout/admin.html" %}
+{% block css %}
+<link href="/style2/css/plugins/dataTables.bootstrap.css" rel="stylesheet">
+<style>
+#province_code,#city_code{
+   height:34px;
+   margin-left: 0px;
+   transform:translateY(2px);
+   -webkit-transform:translateY(2px);
+   border-radius:4px;
+   border-color:#ccc;
+}
+.table th{ 
+	text-align:center;
+} 
+</style>
+{% endblock %}
+{% block content %}
+
+<script language="javascript" type="text/javascript" src="/style2/js/jquery.min.js"></script>
+<script language="javascript" type="text/javascript" src="/style2/js/My97DatePicker/WdatePicker.js"></script>
+
+<div class="row">
+    <nav>
+        <div>
+            <a class="navbar-brand" href="#">保险订单</a>
+        </div>
+
+        <div class="pull-right">
+            <form class="navbar-form navbar-left" action="" method="get" role="search">
+                <input type="hidden" name="page" value="1">
+                <label class="num">地区：</label>
+                <select name="province_code" id="province_code" onchange="province_change(this.value,0)" data-default="{{default_province}}" style="width:120px;">
+                    <option value="">--请选择省份--</option>
+                    {% for area in items %}
+                    <option value="{{area.code}}" {{area.code==default_province and 'selected' or ''}}>{{area.name}}</option>
+                    {% endfor %}
+                </select>
+                <select name="city_code" id="city_code" data-default="{{default_city}}" style="width:120px;">
+                    <option value="">--请选择城市--</option>
+                </select>
+                <div class="btn-group btn-group-xs">
+                    {% if state == 'processing' %}
+                    <a type="button" class="btn btn-default {% if status==0 %} active {% endif %}"
+                       href="/admin/insurances/processing?status=0&keyword={{keyword}}" style="padding:8px 4px;border:1px solid #ccc;border-bottom-left-radius:4px;border-top-left-radius:4px;">待确认</a>
+                    <a type="button" class="btn btn-default {% if status==1 %} active {% endif %}"
+                       href="/admin/insurances/processing?status=1&keyword={{keyword}}" style="padding:8px 4px;border:1px solid #ccc;border-left:none;">待付款</a>
+                    <a type="button" class="btn btn-default {% if status==2 %} active {% endif %}"
+                       href="/admin/insurances/processing?status=2&keyword={{keyword}}" style="padding:8px 4px;border:1px solid #ccc;border-left:none;">已付款</a>
+                    {% else %}
+                    <a type="button" class="btn btn-default {% if status==3 %} active {% endif %}"
+                       href="/admin/insurances/file?status=3&keyword={{keyword}}" style="padding:8px 4px;border:1px solid #ccc;border-left:none;">已办理</a>
+                    <a type="button" class="btn btn-default {% if status==-1 %} active {% endif %}"
+                       href="/admin/insurances/file?keyword={{keyword}}" style="padding:8px 4px;border:1px solid #ccc;border-left:none;border-bottom-right-radius:4px;border-top-right-radius:4px;">全部</a>
+                    {% endif %}
+                </div>
+
+                <div class="input-group">
+                    <input type="text" name="begindate" id="begindate" value="{{begindate}}" class="Wdate form-control"  onClick="WdatePicker()" style="width:110px; height: 34px;margin-right:5px;border:1px solid #ccc;border-radius:4px;" placeholder="开始日期"/>
+                    <input type="hidden" name="statuscheck" id="statuscheck" class="form-control" value="">
+                    <input type="text" name="enddate" id="enddate" value="{{enddate}}" class="Wdate form-control" onClick="WdatePicker()" style="width:110px; height:34px;margin-right:5px;border:1px solid #ccc;border-radius:4px;" placeholder="截止日期"/>
+                    <input type="text" name="keyword" class="form-control" placeholder="订单号" value="{{keyword or ''}}" style="width:165px;height:34px;border:1px solid #ccc;border-bottom-left-radius:4px;border-top-left-radius:4px;" />
+                    <span class="input-group-btn">
+                <button class="btn btn-default" type="submit">
+                     <i class="fa fa-search"></i>
+                 </button>
+            </span>
+                </div>
+            </form>
+        </div>
+
+    </nav>
+</div>
+<div class="row">
+    <div class="panel panel-primary">
+        <div class="table-responsive">
+            <table class="table table-hover" id="tb_users" cellpadding="0" cellspacing="0" border="0" style="text-align:center;">
+                <thead>
+                <tr style="background:#528acb;color:#fff;text-align:center;height:38px;line-height:38px;">
+                    <th style="width:10%;text-align:center;">订单号</th>
+                    <th style="width:8%;text-align:center;">用户账户</th>
+                    <th style="width:8%;text-align:center;">门店地址</th>
+                    <th style="width:8%;text-align:center;">下单时间</th>
+                    <th style="width:8%;text-align:center;">支付时间</th>
+                    <th style="width:7%;text-align:center;">保险名称</th>
+                    <th style="width:6%;text-align:center;">保险价格</th>
+                    <th style="width:8%;text-align:center;">订单状态</th>
+                    <th style="width:8%;text-align:center;">优惠方式</th>
+                    <th style="width:8%;text-align:center;">支付方式</th>
+                    <th style="width:10%;text-align:center;">本地备注</th>
+                    <th style="width:10%;text-align:center;">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for o in orders %}
+                <tr>
+                    <td>
+                        <label class="checkbox-inline">
+                            {{o.ordernum}}
+                            {% if o.store %}
+                            <br><span style="color: #ff5231;">({{o.store.name}})</span>
+                            {% endif %}
+                        </label>
+                    </td>
+                    <td><a href="/admin/user/{{o.user.id}}" target="_blank">{{o.user.username}}</a>
+                    <td>
+                        {% set a = Area.get(code = o.store.area_code) %}
+                        {% if a.pid %}
+                            {% set addr = a.pid.name+' '+a.name %}
+                            {% if a.pid.pid %}
+                                {% set addr = a.pid.pid.name+' '+a.pid.name %}
+                            {% endif %}
+                        {% else %}
+                            {% set addr = a.name %}
+                        {% endif %}
+                        {{ addr }}
+                    </td>
+                    <td>
+                        {{o.ordered|datetimeformat}}
+                    </td>
+                    <td>
+                        {% if o.paytime == 0 %}
+                        --
+                        {% else %}
+                        {{o.paytime|datetimeformat}}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {{o.insurance.name}}
+                    </td>
+                    <td>{{o.price}}</td>
+                    <td>
+                        {% if o.status==0 %}
+                        待确认
+                        {% elif o.status==1  %}
+                        待付款
+                        {% elif o.status==2 %}
+                        付款完成
+                        {% elif o.status==3 %}
+                        已办理
+                        {% elif o.status==5 %}
+                        已取消
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if o.LubeOrScore == 2 %}
+                        佣金返积分
+                        {% elif o.LubeOrScore == 1 %}
+                        佣金返油
+                        {% else %}
+                        无
+                        {% endif %}
+                    </td>
+                    <td>
+						{% if o.status==2 or o.status==3 %}
+                        {% if o.payment==1 %}
+                        <div>支付宝支付</div>
+                        {% elif o.payment==5 %}
+                        <div>积分支付</div>
+                        {% elif o.payment==6 %}
+                        <div>微信支付</div>
+                        {% elif o.payment==7 %}
+                        <div>银联支付</div>
+                        {%endif%}
+						{% endif %}
+                    </td>
+                    <td>
+                        {{o.localsummary or ''}}
+                        {% if o.status==5 %}
+                        <div>取消原因：{{o.cancelreason}}</div>
+                        {%endif%}
+                    </td>
+                    <td>
+                        <a href="/admin/insurance/{{o.id}}?state={{state}}&status={{status}}&page={{page}}" class="btn btn-outline btn-primary btn-xs">详情</a>
+                        {% if status==1 or status==0 %}
+                        <a href="/admin/delinsurance/{{o.id}}?status={{status}}&page={{page}}" onclick="return confirm('确定关闭？');"
+                           class="btn btn-outline btn-primary btn-xs">关闭</a>
+                        {% elif status==2 %}
+                        <a href="/admin/delinsurance/{{o.id}}?status={{status}}&page={{page}}" onclick="return confirm('确定完成？');"
+                           class="btn btn-outline btn-primary btn-xs">完成</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <div>
+                <div class="col-sm-4">
+                    <div class="dataTables_info" role="alert" aria-live="polite" aria-relevant="all">
+                        当前：第{{page}}页 / {{totalpage}}页，合计{{total}}条
+                    </div>
+                </div>
+                <div class="col-sm-8">
+                    <div class="dataTables_paginate paging_simple_numbers">
+                        <ul class="pagination  pagination-sm" id="pageUl" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--</div>-->
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<script src="/style2/js/jquery.twbsPagination.min.js"></script>
+<script>
+    $(document).ready(function() {
+        //console.debug('------------');
+        var province_code=$("#province_code").attr("data-default");
+        var city_code=$("#city_code").attr("data-default");
+        //var district_code=$("#district_code").attr("data-default");
+        //console.debug(province_code);
+        if(province_code.length>0){
+            console.debug(city_code);
+            province_change(province_code, city_code);
+        }
+
+        {% if totalpage==0 %}
+        {% set totalpage=1 %}
+        {% endif %}
+
+        $('#pageUl').twbsPagination({
+            first:'首页',
+            prev:'上一页',
+            next:'下一页',
+            last:'尾页',
+            totalPages: {{totalpage}},
+            startPage: {{page}},
+            visiblePages: 8,
+            onPageClick: function (event, page) {
+                self.location="/admin/insurances/{{state}}?status={{status}}&begindate={{begindate or ''}}&enddate={{enddate or ''}}&keyword={{keyword or ''}}&province_code={{default_province or ''}}&city_code={{default_city or ''}}&page="+page;
+            }
+        });
+
+    $('#checkall').bind('click',function () {
+        $('#tb_users :checkbox').prop('checked',this.checked);
+    });
+    var xsrf='{{handler.xsrf_token}}';
+    });
+
+function province_change(id, default_id){
+//    var id = $(obj).val();
+    $("#city_code > option").remove();
+    $("#city_code").append("<option value=\"0\">--请选择城市--</option>");
+    if(id > 0){
+        GetSubAreas(id, "city_code", default_id);
+    }
+}
+function GetSubAreas(id,ddl_id, default_id) {
+    $.get("/ajax/GetSubAreas", { pcode: id,  t: Math.random() }, function (data) {
+        data = jQuery.parseJSON(data);
+        if(data.flag==1){
+            for(var i=0; i< data.data.length; i++){
+                if(default_id.length>0){
+                    if(data.data[i]["code"]==default_id){
+                        $("#" + ddl_id).append("<option value=\"" + data.data[i]["code"] + "\" selected>" + data.data[i]["name"] + "</option>");
+                    }
+                    else{
+                        $("#" + ddl_id).append("<option value=\"" + data.data[i]["code"] + "\">" + data.data[i]["name"] + "</option>");
+                    }
+                }
+                else {
+                    $("#" + ddl_id).append("<option value=\"" + data.data[i]["code"] + "\">" + data.data[i]["name"] + "</option>");
+                }
+            }
+        }
+        else{
+            alert(data.msg)
+        }
+    });
+}
+
+    function request(paras){
+        var url = location.href;
+        var paraString = url.substring(url.indexOf("?")+1,url.length).split("&");
+        var paraObj = {};
+        for (i=0; j=paraString[i]; i++){
+            paraObj[j.substring(0,j.indexOf("=")).toLowerCase()] = j.substring(j.indexOf("=")+1,j.length);
+        }
+        var returnValue = paraObj[paras.toLowerCase()];
+        if(typeof(returnValue)=="undefined"){
+            return "-1";
+        }else{
+            return returnValue;
+        }
+    };
+
+    $("#statuscheck").val(request('status'));
+    if(!request('begindate'))
+    {$("#begindate").val(request('begindate'));}
+    if(!request('enddate'))
+    {$("#enddate").val(request('enddate'));}
+
+</script>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends "layout/admin.html" %}
+{% block content %}
+<div class="row">
+   <nav>
+   <div class="navbar-header">
+      <a class="navbar-brand" href="#">修改手机首页广告</a>
+   </div>
+</nav>
+</div>
+<div class="row">
+    <div class="panel panel-primary">
+    <div class="panel-body">
+
+        {%set messages=handler.get_flashed_messages() %}
+        {%if messages%}
+            <div class="msg">
+                {% for type, msg in messages%}
+                    <span>{{msg}}</span>
+                {% endfor %}
+            </div>
+        {%endif%}
+
+        <form action="" method="post" enctype="multipart/form-data">
+            {{xsrf()}}
+            <div class="form-group has-success">
+            <label class="control-label">图片</label>
+            <input type="file" class="form-control"  name="file">
+            </div>
+            <div class="form-group has-success">
+            <label class="control-label">图片描述</label>
+            <input type="text" class="form-control"  name="imgalt" value="{{ad.imgalt}}" />
+            </div>
+            <div class="form-group has-success">
+            <label class="control-label">打开方式</label>
+                <select name="atype">
+                    <option value="1" {% if mode['key']=='1' %} selected {% endif%}>产品详情</option>
+                    <option value="2" {% if mode['key']=='2' %} selected {% endif%}>分类列表</option>
+                    <option value="3" {% if mode['key']=='3' %} selected {% endif%}>弹出页面</option>
+                    <option value="4" {% if mode['key']=='4' %} selected {% endif%}>预售详情</option>
+                </select>
+                <span style="color: red;">如需点击广告图片不跳转，打开方式选择“弹出页面”，并保持下面内容为空</span>
+                <input type="text" class="form-control"  name="url" value="{{mode['value']}}" placeholder="根据所选方式填写内容" >
+            </div>
+            <div class="form-group has-success">
+            <label class="control-label">排列顺序  数字越大越靠前</label>
+            <input type="text" class="form-control"  name="sort" value="{{ad.sort}}"/>
+            </div>
+            <div class="form-group has-success">
+            <input type="submit" name="sub" value="提交" class="btn btn-outline btn-primary btn-sm">
+            </div>
+        </form>
+    </div>
+    </div>
+</div>
+{% endblock %}

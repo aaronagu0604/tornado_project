@@ -1,0 +1,130 @@
+{% extends "layout/admin.html" %}
+{% block css %}
+<link href="/style2/css/plugins/dataTables.bootstrap.css" rel="stylesheet">
+<link href="/style2/css/select2.css" rel="stylesheet"/>
+{{xsrf()}}
+<style>
+#num{
+    width:130px;
+    height:30px;
+    border:1px solid #aaa;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+    transform:translateY(3px);
+    -webkit-transform:translateY(3px);
+}
+#btn{
+    height:30px;
+    line-height:15px;
+    background:#528ACB;
+    color:#fff;
+}
+</style>
+{% endblock %}
+{% block content %}
+
+<div class="row">
+    <nav>
+        <div>
+            <a class="navbar-brand" href="#">保单汇总</a>
+            <input type=button value=返回 style="background:#438bca;color:#fff;border:none;border-radius:4px;margin-top:10px;" onclick="window.history.back()">
+        </div>
+    </nav>
+</div>
+<div class="row">
+
+    <div>
+        <td> &nbsp;&nbsp;&nbsp;统计：共计{{itList[0]}}单，全险{{itList[1]}}单, 单交强险{{itList[2]}}单，单商业险{{itList[3]}}单，其它{{itList[4]}}单 </td>
+    </div>
+    <div class="panel panel-primary">
+        <div class="table-responsive">
+            <table class="table table-hover" id="tb_need_pay_back_orders" style="text-align:center;">
+                <thead>
+                <tr style="background:#528ACB;color:#fff;">
+                    <th style="text-align:center;">订单号</th>
+                    <th style="text-align:center;">下单门店</th>
+                    <th style="text-align:center;">门店地址</th>
+                    <th style="text-align:center;">保险公司</th>
+                    <th style="text-align:center;">金额</th>
+                    <th style="text-align:center;">返佣方式</th>
+                    <th style="text-align:center;">支付方式</th>
+                    <th style="text-align:center;">状态</th>
+                    <th style="text-align:center;">险别</th>
+                    <th style="text-align:center;">支付时间</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for io in ios %}
+                <tr>
+                    <td>{{ io.ordernum }}</td>
+                    <td>{{ io.store.name }}</td>
+                    <td>{{ Area().get_detailed_address(io.store.area_code) }}</td>
+                    <td>{{ io.insurance.name }}</td>
+                    <td>{{ io.price }}</td>
+                    {% if io.LubeOrScore==1 %}
+                    <td>返油</td>
+                    {% elif io.LubeOrScore==2 %}
+                    <td>返积分</td>
+                    {% else %}
+                    <td>默认返油</td>
+                    {% endif %}
+                    {% if io.payment==1 %}
+                    <td>支付宝</td>
+                    {% elif io.payment==6 %}
+                    <td>微信支付</td>
+                    {% elif io.payment==7 %}
+                    <td>银联支付</td>
+                    {% endif %}
+                    {% if io.status == 2 %}
+                    <td> <font color="#FF0000">已支付</font> </td>
+                    {% elif io.status == 3 %}
+                    <td>已完成</td>
+                    {% endif %}
+                    {% if io.forceIprc>0 and io.businessIprc>0 %}
+                    <td style="color:#0000CD;">全险</td>
+                    {% elif io.forceIprc>0 %}
+                    <td style="color:#006400;">单交强</td>
+                    {% elif io.businessIprc>0 %}
+                    <td style="color:#FFD700;">单商业</td>
+                    {% else %}
+                    <td style="color:#FF0000;">其它</td>
+                    {% endif %}
+                    <td>{{ time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(io.paytime)) }}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <br/>
+    <br/>
+
+</div>
+{% endblock %}
+
+{% block js %}
+<script src="/style2/js/jquery.twbsPagination.min.js"></script>
+<script type="text/javascript">
+	$(document).ready(function() {
+	    var xsrf='{{handler.xsrf_token}}';
+		$('#bt_export').bind('click', function () {
+            $.get("/ajax/orders/refereeOrder",{sql: JSON.stringify(sql), _xsrf: xsrf, keyword: '{{keyword}}'},
+            function (data) {
+                var obj = jQuery.parseJSON(data);
+                if (obj.err == 0) {
+                    alert('生成成功，点击下载连接，下载数据文件！');
+                    window.open("/upload/" + obj.msg);
+                }
+                else {
+                    alert('生成失败：' + obj.msg);
+                }
+            });
+        });
+    });
+
+</script>
+
+
+{% endblock %}

@@ -1,0 +1,106 @@
+{% extends "layout/admin.html" %}
+{% block js %}
+        <script type="text/javascript">
+        function GetSubAreas(pcode,has_sub) {
+            if(has_sub!=1)
+                return;
+            $.get("/ajax/GetSubAreas", { pcode: pcode, is_site:1,  t: Math.random() }, function (data) {
+                data = jQuery.parseJSON(data);
+                if(data.flag==1)                {
+                    // alert(data.data)
+                    isex=$("#span" + pcode).attr("data-ex");
+                    code=$("#span"+ pcode).attr("data-code");
+                    blank=$("#span"+ pcode).attr("data-blank");
+                    blank=blank+"--";
+                    if(isex*1==0){
+                        $("#span"+pcode).text("-");
+                        $("#span"+pcode).attr("data-ex","1")
+                        var html=""
+                        for(var i=0; i< data.data.length; i++){
+                            html+="<tr id=\"tr"+data.data[i]["code"]+"\">";
+                            html+="  <td style=\"cursor:normal\" onclick=\"GetSubAreas("+data.data[i]["pid"]+","+data.data[i]["id"]+",0)\">";
+                            html+="      <span id=\"span"+data.data[i]["pid"]+"_"+data.data[i]["id"]+"\" data-blank=\""+blank+"\" data-ex=\"0\" data-code=\""+data.data[i]["code"]+"\">";
+                            html += "-" ;
+
+                            html+="</span>"+  blank + data.data[i]["name"];
+                            html+="  </td>";
+                            html+=" <td>"+data.data[i]["code"]+"</td>";
+                            html+="  <td>"+data.data[i]["sort"]+"</td>";
+                            html+="  <td>"+data.data[i]["spell"]+"/"+data.data[i]["spell_abb"]+"</td>";
+                            if(data.data[i]["is_site"]*1==1){
+                                html+="  <td>是</td>";
+                            }
+                            else{
+                                html+="  <td>否</td>";
+                            }
+                            html+="</tr>";
+                        }
+                        $(html).insertAfter("#tr"+code);
+                    }
+                    else{
+                        $("#span"+pcode).text("+");
+                        $("tr[id^='tr"+code+"'][id!='tr"+code+"']").remove();
+                        $("#span"+pcode).attr("data-ex","0")
+                    }
+                }
+                else{
+                    alert(data.msg)
+                }
+            });
+        }
+    </script>
+{% endblock %}
+{% block content %}
+<div class="row">
+    {%set messages=handler.get_flashed_messages() %}
+    {%if messages%}
+        <div class="msg" style="color: red; font-size: 1.0em; margin-top: 25px;">
+            {% for type, msg in messages%}
+                <span>{{msg}}</span>
+            {% endfor %}
+        </div>
+    {%endif%}
+   <nav>
+   <div class="navbar-header" style="float: left">
+      <a class="navbar-brand" href="#">站点管理</a>
+   </div>
+      <div class="navbar-header" style="float: right;margin-top:15px;">
+          <a href="/admin/area_add/0" style="padding:5px 8px;border:1px solid #438bca;border-radius:4px;color:#438bca;font-size:16px;">添加区域</a>
+      </div>
+</nav>
+</div>
+<div class="row">
+    <div class="panel panel-primary">
+    <!--<div class="panel-body">-->
+        <div class="table-responsive">
+        <table class="table table-hover" id="tb_users" cellpadding="0" cellspacing="0" border="0" style="text-align:center;width:100%;">
+            <thead>
+                <tr style="background:#528acb;color:#fff;text-align:center;height:38px;line-height:38px;">
+                    <th style="width:15%;text-align:center;">名称</th>
+                    <th style="width:10%;text-align:center;">编码</th>
+                    <th style="width:10%;text-align:center;">排序</th>
+                    <th style="width:25%;text-align:center;">拼音/简拼</th>
+                    <th style="width:10%;text-align:center;">是否站点</th>
+                    <th style="width:30%;text-align:center;">操作</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for item in items -%}
+            <tr id="tr{{item.code}}">
+              <td onclick="GetSubAreas('{{item.code}}',1)" style="cursor:{{item.has_sub==1 and 'pointer' or 'normal'}}">
+                  <span id="span{{item.code}}" data-blank="" data-ex="0" data-code="{{item.code}}">+</span>{{item.name}}
+              </td>
+              <td>{{item.code}}</td>
+              <td>{{item.sort}}</td>
+              <td>{{item.spell}}/{{item.spell_abb}}</td>
+              <td>{{item.is_site==1 and '是' or '否' }}</td>
+              <td><a href="/admin/area_add/{{item.code}}" style="padding:4px 5px;border:1px solid #438bca;color:#438bca;border-radius:4px;font-size:12px;text-decoration:none;">修改</a></td>
+            </tr>
+			{%- endfor %}
+            </tbody>
+        </table>
+        </div>
+    <!--</div>-->
+    </div>
+</div>
+{% endblock %}

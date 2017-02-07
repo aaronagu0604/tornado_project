@@ -1,0 +1,94 @@
+{% extends "layout/admin.html" %}
+{% block content %}
+
+
+<div class="row">
+    <nav>
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">编辑车辆司机费用</a>
+        </div>
+    </nav>
+</div>
+<div class="row">
+    <div class="panel panel-primary">
+        <div class="panel-body">
+
+            {%set messages=handler.get_flashed_messages() %}
+            {%if messages%}
+            <div class="msg" style="color:red;">
+                {% for type, msg in messages%}
+                <span>{{msg}}</span>
+                {% endfor %}
+            </div>
+            {%endif%}
+
+            <form action="" method="post" enctype="multipart/form-data">
+                {{xsrf()}}
+
+                <div class="form-group has-success">
+                    <label class="control-label">工作日期</label>
+                    <input type="text" name="work_date" id="work_date" value="{{work_date}}" class="Wdate form-control"  onClick="WdatePicker()" style="width:205px; height: 34px;" required placeholder="工作日期"  />
+                </div>
+
+                <div class="form-group has-success">
+                    <label class="control-label">司机姓名</label>
+                    <input type="text" name="name" class="form-control" value="{{co.name}}"  required  placeholder="工人姓名" />
+                </div>
+
+                <div class="form-group has-success">
+                    <label class="control-label">行驶里程（公里）</label>
+                    <input type="text" name="mileage" class="form-control mileage" value="{{co.mileage or 0.0}}"  required  placeholder="行驶里程" title="请输入数字" pattern="^([1-9][\d]{0,7}|0)(\.[\d]{1,2})?$" />
+                </div>
+
+                <div class="form-group has-success">
+                    <label class="control-label">加油费（元）</label>
+                    <input type="text" name="oli" class="form-control oli" value="{{co.oli or 0.0}}"  required  placeholder="加油费" title="请输入数字" pattern="^([1-9][\d]{0,7}|0)(\.[\d]{1,2})?$" />
+                </div>
+
+                <div class="form-group has-success">
+                    <label class="control-label">停车费（元）</label>
+                    <input type="text" name="parking_fee" class="form-control" value="{{co.parking_fee or 0.0}}"  required  placeholder="停车费" title="请输入数字" pattern="^([1-9][\d]{0,7}|0)(\.[\d]{1,2})?$" />
+                </div>
+
+                <div class="form-group has-success">
+                    <label class="control-label">过路费（元）</label>
+                    <input type="text" name="tolls" class="form-control" value="{{co.tolls or 0.0}}"  required  placeholder="过路费" title="请输入数字" pattern="^([1-9][\d]{0,7}|0)(\.[\d]{1,2})?$" />
+                </div>
+
+                <div class="form-group has-success">
+                    <label class="control-label">司机工资（元）</label>
+                    <input type="text" name="wage" class="form-control" value="{{co.wage or 0.0}}"  required  placeholder="司机工资" title="请输入数字" pattern="^([1-9][\d]{0,7}|0)(\.[\d]{1,2})?$" />
+                </div>
+
+                <div class="form-group has-success">
+                    <input type="submit" name="sub" value="提 交" class="btn btn-outline btn-primary btn-sm">
+                    <!--<input type="reset" name="sub" value="重 置" class="btn btn-outline btn-primary btn-sm">-->
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script>
+    $(function(){
+         var myDate = new Date();
+            var strMonth = myDate.getMonth()>9?(myDate.getMonth()+1):'0' + (myDate.getMonth()+1);
+            var strDay = myDate.getDate()>9?myDate.getDate().toString():'0' + myDate.getDate();
+            var c_time = $("#work_date").val();
+            if(c_time == '')
+                $("#work_date").val(myDate.getFullYear() + '-' + strMonth + '-' + strDay);
+        $(".mileage").bind('keyup',function(){
+            $(".oli").val((parseInt($(this).val()) * 0.6).toFixed(2));
+        });
+        $(".mileage").change(function(){
+            $(".oli").val((parseInt($(this).val()) * 0.6).toFixed(2));
+        });
+     });
+</script>
+{% endblock %}

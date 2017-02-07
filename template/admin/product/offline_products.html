@@ -1,0 +1,183 @@
+{% extends "layout/admin.html" %}
+{% block css %}
+<link href="/style2/css/plugins/dataTables.bootstrap.css" rel="stylesheet">
+<style>
+    .green{color: green;}
+</style>
+{% endblock %}
+{% block content %}
+<div class="row">
+    <nav>
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">门店商品管理</a>
+        </div>
+        <div class="pull-right">
+            <form class="navbar-form navbar-left" action="" method="get" role="search">
+                <div class="btn-group btn-group-mg">
+                    <input type="hidden" name="status" value="{{status}}">
+                    <input type="hidden" name="page" value="{{page}}">
+                    <!--<a type="button" class="btn btn-mg btn-default {% if status==-1 %} active {% endif %}" href="/admin/offline_products?status=-1&page=1&begindate={{begindate}}&enddate={{enddate}}&barcode={{barcode or ''}}&keyword={{keyword or ''}}">全部</a>-->
+                    <a type="button" class="btn btn-mg btn-default {% if status==0 or status==1 or status==2 %} active {% endif %}" href="/admin/offline_products?status=0">库存</a>
+                    <!--<a type="button" class="btn btn-mg btn-default {% if status==1 %} active {% endif %}" href="/admin/offline_products?status=1&page=1&begindate={{begindate}}&enddate={{enddate}}&barcode={{barcode or ''}}&keyword={{keyword or ''}}">出仓库</a>-->
+                    <!--<a type="button" class="btn btn-mg btn-default {% if status==2 %} active {% endif %}" href="/admin/offline_products?status=2&page=1&begindate={{begindate}}&enddate={{enddate}}&barcode={{barcode or ''}}&keyword={{keyword or ''}}">入门店</a>-->
+                    <a type="button" class="btn btn-mg btn-default {% if status==3 %} active {% endif %}" href="/admin/offline_products?status=3">售出</a>
+                    <a type="button" class="btn btn-mg btn-default {% if status==4 or status==5 %} active {% endif %}" href="/admin/offline_products?status=4">其它</a>
+                    <!--<a type="button" class="btn btn-mg btn-default {% if status==5 %} active {% endif %}" href="/admin/offline_products?status=5&page=1&begindate={{begindate}}&enddate={{enddate}}&barcode={{barcode or ''}}&keyword={{keyword or ''}}">耗损</a>-->
+                </div>
+
+                <div class="input-group custom-search-form">
+                    <input type="text" name="begindate" id="begindate" value="{{begindate}}" class="Wdate form-control"  onClick="WdatePicker()" style="width:105px; height: 34px;" />
+
+                    <input type="text" name="enddate" id="enddate" value="{{enddate}}" class="Wdate form-control" onClick="WdatePicker()" style="width:105px; height: 34px;" />
+
+                    <select data-id="{{store_id}}" class="form-control" placeholder="选择店铺" name="store_id" style="width:110px;">
+                        <option value="0" {{store_id ==0 and 'selected'}} >选择店铺</option>
+                        {% for o in stores -%}
+                        <option value="{{o.id}}" {{o.id == store_id and 'selected'}}>{{o.name}}</option>
+                        {%- endfor %}
+                    </select>
+                    <input type="text" name="barcode" class="form-control" style="width:100px;" value="{{barcode or ''}}" pattern="^\d{1,13}$" title="请输入1-13位数字" placeholder="按条码" />
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="submit">
+                        <i class="fa fa-search"></i>
+                </button>
+            </span>
+                </div>
+            </form>
+        </div>
+    </nav>
+</div>
+<div style="color: red; font-size: 1.0em; margin-bottom: 25px;">
+    {%set messages=handler.get_flashed_messages() %}
+    {%-if messages-%}
+    <div id="err_div">
+        {% for type, msg in messages%}
+        {{msg}}
+        {% endfor %}
+    </div>
+    {%-endif-%}
+</div>
+<div class="row">
+    <div class="panel panel-primary">
+        <div class="panel-body">
+            <div class="table-responsive">
+                <table class="table table-hover" id="tb_users">
+                    <thead>
+                    <tr>
+                        <th>条码</th>
+                        <th>商品名称</th>
+                        <th>所属店铺</th>
+                        <th>状态</th>
+                        <th>价格（份）</th>
+                        <th>重量</th>
+                        {% if status==2 %}
+                        <th>入门店时间</th>
+                        {% elif status==3 %}
+                        <th>售出时间</th>
+                        {% elif status==4 %}
+                        <th>退回时间</th>
+                        {% else %}
+                        <th>出仓库时间</th>
+                        {%endif%}
+                        <th>取消原因</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for p in products -%}
+                    <tr>
+                        <td>
+                            {{p.barcode}}
+                        </td>
+                        <td>
+                            {{p.product.name}}
+                        </td>
+                        <td>
+                            {{p.store.name}}
+                        </td>
+                        <td>
+                            {% if p.status==0 %}
+                            标准化
+                            {% elif p.status==1 %}
+                            出仓库
+                            {% elif p.status==2 %}
+                            入门店
+                            {% elif p.status==3 %}
+                            售出
+                            {% elif p.status==4 %}
+                            退回
+                            {% elif p.status==5 %}
+                            耗损
+                            {%endif%}
+                        </td>
+                        <td>
+                            <p>{{p.price}}</p>
+                        </td>
+                        <td>
+                            <p>{{p.weight}}</p>
+                        </td>
+                        {% if status==2 %}
+                        <td>
+                            <p>{{p.in_time | datetimeformat}}</p>
+                        </td>
+                        {% elif status==3 %}
+                        <td>
+                            <p>{{p.sale_time | datetimeformat}}</p>
+                        </td>
+                        {% elif status==4 %}
+                        <td>
+                            <p>{{p.cancel_time | datetimeformat}}</p>
+                        </td>
+                        {% else %}
+                        <td>
+                            <p>{{p.out_time | datetimeformat}}</p>
+                        </td>
+                        {%endif%}
+                        <td>
+                            <p>{{p.cancel_reason}}</p>
+                        </td>
+
+                    </tr>
+                    {%- endfor %}
+                    </tbody>
+                </table>
+                <div>
+                    <div class="col-sm-6">
+                        <div class="dataTables_info" role="alert" aria-live="polite" aria-relevant="all">
+                            当前：第{{page}}页 / {{totalpage}}页，合计{{total}}条
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="dataTables_paginate paging_simple_numbers">
+                            <ul class="pagination  pagination-sm" id="pageUl" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<script src="/style2/js/jquery.twbsPagination.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#pageUl').twbsPagination({
+            first:'首页',
+            prev:'上一页',
+            next:'下一页',
+            last:'尾页',
+            totalPages: {{totalpage}},
+            startPage: {{page}},
+            visiblePages: 8,
+            onPageClick: function (event, page) {
+                self.location="/admin/offline_products?status={{status}}&store_id={{store_id}}&begindate={{begindate}}&enddate={{enddate}}&barcode={{barcode or ''}}&keyword={{keyword or ''}}&page="+page;
+            }
+        });
+    });
+
+    var xsrf='{{handler.xsrf_token}}';
+    $(function(){
+
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,336 @@
+{% extends "layout/admin.html" %}
+{% block content %}
+<div class="row">
+    <ol class="breadcrumb">
+        <li><a href="/admin/library/in_list">入库管理</a></li>
+        <li class="active">
+            [{{ p.name|default('产品入库') }}]
+        </li>
+    </ol>
+</div>
+<div style="color: red; font-size: 0.6em; margin-bottom: 25px;">
+    {%set messages=handler.get_flashed_messages() %}
+    {%-if messages-%}
+    <div id="err_div">
+        {% for type, msg in messages%}
+        {{msg}}
+        {% endfor %}
+    </div>
+    {%-endif-%}
+</div>
+<div class="row">
+    <form class="form-horizontal" role="form" action="/admin/library/add/{{p.id|default('0')}}" method="post">
+        {{xsrf()}}
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">基本信息
+                    <button type="submit" class="btn btn-outline btn-primary btn-xs">保存</button>
+                </h3>
+            </div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">产品名称</label>
+                    <div class="col-sm-10">
+                        <div class="ui-widget">
+                        <select id="combobox" class="form-control" name="product">
+                            <option value="{{ p and p.product.id or ''}}">{{ p and p.product.name or '--请选择--'}}</option>
+                            {% for c in products %}
+                            <option value="{{c.id}}">{{c.name}} - {{c.tags}}({{c.status==1 and '上架' or '下架'}})</option>
+                            {% endfor %}
+                        </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" style="color:#cc0000;">
+                        入库毛重（斤）
+                    </label>
+                    <div class="col-sm-10">
+                        <input class="form-control" name="gross_weight" id="gross_weight" type="text" placeholder="入库毛重不能为空"
+                               value="{{p.gross_weight}}" required >
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" style="color: #08901C;">
+                        入库净重（斤）
+                    </label>
+                    <div class="col-sm-10">
+                        <input class="form-control" name="quantity" id="quantity" type="text" placeholder="入库净重不能为空"
+                               value="{{p.quantity}}" required >
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" >
+                        采购价格（元）
+                    </label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" name="price" id="price" value="{{p.price}}" placeholder="采购价格不能为空" required >
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" >
+                        折合每斤（元）
+                    </label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" name="unitprice" id="unitprice" value="{{p.unitprice}}" placeholder="折合每斤不能为空" required >
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                        采购来源
+                    </label>
+                    <div class="col-sm-10">
+                        <label class="radio-inline">
+                            <input type="radio" name="product_from" id="fromA"  value="A" {% if p.args=='A' %} checked {%else%}checked{% endif %} >批发市场
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="product_from" id="fromB"  value="B" {% if p.args=='B' %} checked  {% endif %} >直采
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" >
+                        采购时间
+                    </label>
+                    <div class="col-sm-10">
+                        <input type="text" name="addtime" id="addtime" value="{{ p and p.addtime|dateformat or ''}}" class="Wdate form-control"  onClick="WdatePicker()" style="height: 34px;" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label  class="col-sm-2 control-label">
+                        采购员
+                    </label>
+                    <div class="col-sm-10">
+                        <input class="form-control" type="text" rows="3" id="buyer" name="buyer" value="{{p.buyer}}" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
+{% block js %}
+<link href="/style2/js/jquery-ui/jquery-ui-1.9.2.custom.min.css" rel="stylesheet" type="text/css"/>
+{#<script src="/style2/js/jquery-1.8.3.min.js"></script>#}
+<script src="/style2/xheditor/xheditor-1.2.2.min.js"></script>
+<script src="/style2/xheditor/xheditor_lang/zh-cn.js"></script>
+<script src="/style2/js/jquery.ocupload.js?v=1"></script>
+<script src="/style2/js/jquery-ui-1.9.2.custom.min.js" language="javascript"></script>
+<script language="javascript" type="text/javascript" src="/style2/js/My97DatePicker/WdatePicker.js"></script>
+<style>
+	.ui-combobox {
+		position: relative;
+		display: inline-block;
+        width:300px;
+	}
+	.ui-combobox-toggle {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		margin-left: -1px;
+		padding: 0;
+		/* adjust styles for IE 6/7 */
+		*height: 1.7em;
+		*top: 0.1em;
+	}
+	.ui-combobox-input {
+		margin: 0;
+		padding: 0.3em;
+        width:300px;
+	}
+    .demo-description {
+        clear: both;
+        padding: 12px;
+        font-size: 1.3em;
+        line-height: 1.4em;
+    }
+
+    .ui-draggable, .ui-droppable {
+        background-position: top;
+    }
+
+	</style>
+<script>
+
+    (function( $ ) {
+        $("#quantity").change(function(){
+            var price = $("#price").val();
+            var quantity = $("#quantity").val();
+            $("#unitprice").val((price/quantity).toFixed(2));
+        });
+        $("#price").change(function(){
+            var price = $("#price").val();
+            var quantity = $("#quantity").val();
+            $("#unitprice").val((price/quantity).toFixed(2));
+        });
+		$.widget( "ui.combobox", {
+			_create: function() {
+				var input,
+					that = this,
+					select = this.element.hide(),
+					selected = select.children( ":selected" ),
+					value = selected.val() ? selected.text() : "",
+					wrapper = this.wrapper = $( "<span>" )
+						.addClass( "ui-combobox" )
+						.insertAfter( select );
+
+				function removeIfInvalid(element) {
+					var value = $( element ).val(),
+						matcher = new RegExp( "^" + $.ui.autocomplete.escapeRegex( value ) + "$", "i" ),
+						valid = false;
+					select.children( "option" ).each(function() {
+						if ( $( this ).text().match( matcher ) ) {
+							this.selected = valid = true;
+							return false;
+						}
+					});
+					if ( !valid ) {
+						// remove invalid value, as it didn't match anything
+						$( element )
+							.val( "" )
+							.attr( "title", value + " 没有匹配项" )
+							.tooltip( "open" );
+						select.val( "" );
+						setTimeout(function() {
+							input.tooltip( "close" ).attr( "title", "" );
+						}, 2500 );
+						input.data( "autocomplete" ).term = "";
+						return false;
+					}
+				}
+
+				input = $( "<input>" )
+					.appendTo( wrapper )
+					.val( value )
+					.attr( "title", "" )
+					.addClass( "ui-state-default ui-combobox-input" )
+					.autocomplete({
+						delay: 0,
+						minLength: 0,
+						source: function( request, response ) {
+							var matcher = new RegExp( $.ui.autocomplete.escapeRegex(request.term), "i" );
+							response( select.children( "option" ).map(function() {
+								var text = $( this ).text();
+								if ( this.value && ( !request.term || matcher.test(text) ) )
+									return {
+										label: text.replace(
+											new RegExp(
+												"(?![^&;]+;)(?!<[^<>]*)(" +
+												$.ui.autocomplete.escapeRegex(request.term) +
+												")(?![^<>]*>)(?![^&;]+;)", "gi"
+											), "<strong>$1</strong>" ),
+										value: text,
+										option: this
+									};
+							}) );
+						},
+						select: function( event, ui ) {
+							ui.item.option.selected = true;
+							that._trigger( "selected", event, {
+								item: ui.item.option
+							});
+						},
+						change: function( event, ui ) {
+							if ( !ui.item )
+								return removeIfInvalid( this );
+						}
+					})
+					.addClass( "ui-widget ui-widget-content ui-corner-left" );
+
+				input.data( "autocomplete" )._renderItem = function( ul, item ) {
+					return $( "<li>" )
+						.data( "item.autocomplete", item )
+						.append( "<a>" + item.label + "</a>" )
+						.appendTo( ul );
+				};
+
+				$( "<a>" )
+					.attr( "tabIndex", -1 )
+					.attr( "title", "Show All Items" )
+					.tooltip()
+					.appendTo( wrapper )
+					.button({
+						icons: {
+							primary: "ui-icon-triangle-1-s"
+						},
+						text: false
+					})
+					.removeClass( "ui-corner-all" )
+					.addClass( "ui-corner-right ui-combobox-toggle" )
+					.click(function() {
+						// close if already visible
+						if ( input.autocomplete( "widget" ).is( ":visible" ) ) {
+							input.autocomplete( "close" );
+							removeIfInvalid( input );
+							return;
+						}
+
+						// work around a bug (likely same cause as #5265)
+						$( this ).blur();
+
+						// pass empty string as value to search for, displaying all results
+						input.autocomplete( "search", "" );
+						input.focus();
+					});
+
+					input
+						.tooltip({
+							position: {
+								of: this.button
+							},
+							tooltipClass: "ui-state-highlight"
+						});
+			},
+
+			destroy: function() {
+				this.wrapper.remove();
+				this.element.show();
+				$.Widget.prototype.destroy.call( this );
+			}
+		});
+	})( jQuery );
+
+    $(document).ready(function(){
+        $( "#combobox" ).combobox();
+
+        $('#pintro').xheditor({tools:'Source,Fullscreen,Img', html5Upload:false, upImgUrl:"/ajax/upload/{{p.sku}}",upImgExt:"jpg,gif,png"});
+
+        var myUpload = $('#fileupload').upload({
+            name: 'filedata',
+            action: '/ajax/product/pic/{{p.id}}',
+            enctype: 'multipart/form-data',
+            autoSubmit: true,
+            onClick: function(){
+
+            },
+            onSelect: function(){
+                var ext = myUpload.filename().substr(myUpload.filename().length - 3, 3).toLowerCase();
+                if (ext != 'jpg' || ext != 'gif' || ext != 'png')
+                {
+                    return false;
+                }
+            },
+            onComplete: function(response) {
+                eval('var c = ' + response);
+                if (c.id > 0) {
+
+                    $('#pic-box').append('<div class="col-lg-2 .col-xs-12"><div class="panel panel-default"><div class="panel-heading center-block"><img src="/upload/' + c.path + '" width="80" height="80"></div><div class="panel-footer"><div class="btn-group btn-group-xs"><a type="button" class="btn btn-default" href="/admin/delpic/'+c.id+'">删除</a><a type="button" class="btn btn-default" href="/admin/primarypic/'+c.id+'">设为主图</a></div></div></div></div>');
+
+                }
+                else{
+                    alert(c.path);
+                }
+
+            }
+        });
+
+        var myDate = new Date();
+        var strMonth = myDate.getMonth()>9?(myDate.getMonth()+1):'0' + (myDate.getMonth()+1);
+        var strDay = myDate.getDate()>9?myDate.getDate().toString():'0' + myDate.getDate();
+        var c_time = $("#addtime").val();
+        if(c_time == '')
+            $("#addtime").val(myDate.getFullYear() + '-' + strMonth + '-' + strDay);
+    });
+
+</script>
+{% endblock %}

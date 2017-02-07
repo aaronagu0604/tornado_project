@@ -1,0 +1,123 @@
+{% extends "layout/admin.html" %}
+{% block js %}
+<script type="text/javascript">
+    function GetSubAreas(pcode,has_sub) {
+        if(has_sub!=1)
+            return;
+        $.get("/ajax/GetSubScoreAreas", { pcode: pcode,  t: Math.random() }, function (data) {
+            data = jQuery.parseJSON(data);
+            if(data.flag==1)                {
+                // alert(data.data)
+                isex=$("#span" + pcode).attr("data-ex");
+                code=$("#span"+ pcode).attr("data-code");
+                blank=$("#span"+ pcode).attr("data-blank");
+                blank=blank+"&nbsp;&nbsp;——";
+                if(isex*1==0){
+                    $("#span"+pcode).attr("data-ex","1")
+                    var html=""
+                    for(var i=0; i< data.data.length; i++){
+                        html+="<tr id=\"tr"+data.data[i]["code"]+"\">";
+                        if(data.data[i]["has_sub"]*1==1) {
+                            html+="  <td align=left style=\"cursor:pointer\" onclick=\"GetSubAreas('"+data.data[i]["code"]+"')\">";
+                        }else {
+                            html+="  <td align=left style=\"cursor:normal\" onclick=\"GetSubAreas('"+data.data[i]["code"]+"')\">";
+                        }
+                        html+="</span>"+  blank + data.data[i]["name"];
+                        console.debug(i)
+                        console.debug(data.data[i]["is_scorearea"])
+                        if(data.data[i]["is_scorearea"]*1==1){
+                            html+="  <td><img src='/style2/yes.png'></td>";
+                        }else{
+                                html+="  <td><img src='/style2/no.png'></td>";
+                        }
+                        html+="  <td>";
+                        html+="      <a href=\"/admin/changeareascorestatu/"+data.data[i]["id"]+"?status=1\">开通</a>";
+                        html+="      <a href=\"/admin/changeareascorestatu/"+data.data[i]["id"]+"?status=0\">关闭</a>";
+                        html+="</td>";
+                        if(data.data[i]["is_lubearea"]*1==1){
+                            html+="  <td><img src='/style2/yes.png'></td>";
+                        }else{
+                            html+="  <td><img src='/style2/no.png'></td>";
+                        }
+                        html+="  <td>";
+                        html+="      <a href=\"/admin/changearealubestatu/"+data.data[i]["id"]+"?status=1\">开通</a>";
+                        html+="      <a href=\"/admin/changearealubestatu/"+data.data[i]["id"]+"?status=0\">关闭</a>";
+                        html+="</td>";
+                    }
+                    $(html).insertAfter("#tr"+code);
+                }
+                else{
+                    $("tr[id^='tr"+code+"'][id!='tr"+code+"']").remove();
+                    $("#span"+pcode).attr("data-ex","0")
+                }
+            }
+            else{
+                alert(data.msg)
+            }
+        });
+    }
+    window.onload=GetSubAreas('{{defultCode}}',{{defultSub}});
+</script>
+{% endblock %}
+{% block content %}
+<div class="row">
+    {%set messages=handler.get_flashed_messages() %}
+    {%if messages%}
+    <div class="msg" style="color: red; font-size: 1.0em; margin-top: 25px;">
+        {% for type, msg in messages%}
+        <span>{{msg}}</span>
+        {% endfor %}
+    </div>
+    {%endif%}
+</div>
+<div class="row">
+
+    
+    <div class="panel panel-primary">
+        <div class="table-responsive">
+            <table class="table table-hover" id="tb_users" cellpadding="0" cellspacing="0" border="0" style="text-align:center;width:100%;">
+                <thead>
+                <tr style="background:#528acb;color:#fff;text-align:center;height:38px;line-height:38px;">
+                    <th style="width:15%;text-align:center;">名称</th>
+                    <th style="width:10%;text-align:center;">是否开通积分功能</th>
+                    <th style="width:30%;text-align:center;">返积分操作</th>
+                    <th style="width:10%;text-align:center;">是否开通返油功能</th>
+                    <th style="width:30%;text-align:center;">返油操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for item in items -%}
+                <tr id="tr{{item.code}}">
+                    <td align=left onclick="GetSubAreas('{{item.code}}',{{item.has_sub}})" style="color:#438bca;cursor:{{item.has_sub==1 and 'pointer' or 'normal'}}">
+                        &nbsp;&nbsp;<span id="span{{item.code}}"  data-blank="" data-ex="0" data-code="{{item.code}}"></span>{{item.name}}
+                    </td>
+                    <td>
+                        {% if item.is_scorearea==1 %}
+                        <img src='/style2/yes.png'>
+                        {% else %}
+                        <img src='/style2/no.png'>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="/admin/changeareascorestatu/{{item.id}}?status=1" style="padding:4px 5px;border:1px solid #438bca;color:#438bca;border-radius:4px;font-size:12px;text-decoration:none;">开通全省</a>
+                        <a href="/admin/changeareascorestatu/{{item.id}}?status=0"style="padding:4px 5px;border:1px solid #438bca;color:#438bca;border-radius:4px;font-size:12px;text-decoration:none;">关闭全省</a>
+                    </td>
+                    <td>
+                        {% if item.is_lubearea==1 %}
+                        <img src='/style2/yes.png'>
+                        {% else %}
+                        <img src='/style2/no.png'>
+                        {% endif %}
+					</td>
+                    <td>
+                        <a href="/admin/changearealubestatu/{{item.id}}?status=1"style="padding:4px 5px;border:1px solid #438bca;color:#438bca;border-radius:4px;font-size:12px;text-decoration:none;">开通全省</a>
+                        <a href="/admin/changearealubestatu/{{item.id}}?status=0"style="padding:4px 5px;border:1px solid #438bca;color:#438bca;border-radius:4px;font-size:12px;text-decoration:none;">关闭全省</a>
+                    </td>
+                </tr>
+                {%- endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

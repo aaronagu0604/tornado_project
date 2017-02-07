@@ -1,0 +1,56 @@
+{% extends "layout/admin.html" %}
+{% block content %}
+<div class="row">
+    <nav>
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">媒体推广编辑</a>
+        </div>
+    </nav>
+</div>
+<div class="row">
+    <div class="panel panel-primary">
+        <div class="panel-body">
+
+            {%set messages=handler.get_flashed_messages() %}
+            {%if messages%}
+            <div class="msg">
+                {% for type, msg in messages%}
+                <span>{{msg}}</span>
+                {% endfor %}
+            </div>
+            {%endif%}
+
+            <form action="" method="post" enctype="multipart/form-data">
+                {{xsrf()}}
+                <div class="form-group has-success" style="display:none;">
+                    <label class="control-label">图片</label>
+                    <input type="file" class="form-control"  name="file" style="width:480px;" />
+                </div>
+                <div class="form-group has-success" style="display:none;">
+                    <label class="control-label">图片描述</label>
+                    <input type="text" class="form-control"  name="imgalt" value="{{ad.imgalt}}"style="width:480px;" />
+                </div>
+                <div class="form-group has-success">
+                    <label class="control-label">新闻标题</label>
+                    <input type="text" class="form-control"  name="title" value="{{ad.title}}" style="width:480px;" />
+                </div>
+                <div class="form-group has-success" style="display:none;">
+                    <label class="control-label">访问地址</label>
+                    <input type="text" class="form-control"  name="url" value="{{ad.url}}" style="width:480px;" />
+                </div>
+                <div class="form-group has-success">
+                    <label class="control-label">内容</label>
+                    <textarea type="text" name="content" class="form-control" style="width:480px;height:150px;" required="" placeholder="新闻内容" title="请输入新闻内容">{{ad.content}}</textarea>
+                </div>
+                <div class="form-group has-success">
+                    <label class="control-label">排序</label>
+                    <input type="text" class="form-control"  name="sort" value="{{ad.sort}}" onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')" style="width:480px;" />
+                </div>
+                <div class="form-group has-success">
+                    <input type="submit" name="sub" value="提交" class="btn btn-outline btn-primary btn-sm" style="width:90px;height:32px;background:#438bca;color:#fff;border:none;border-radius:4px;font-size:16px;">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

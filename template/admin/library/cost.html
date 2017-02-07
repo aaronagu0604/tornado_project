@@ -1,0 +1,51 @@
+{% extends "layout/admin.html" %}
+{% block css %}
+<link href="/style2/css/plugins/dataTables.bootstrap.css" rel="stylesheet">
+<style type="text/css">
+    .actual{width:100px;}
+</style>
+{% endblock %}
+{% block content %}
+
+<div class="row">
+   <nav>
+   <div>
+      <a class="navbar-brand" href="javascript:void(0);">其他花费</a>
+       <a class="btn btn-xs btn-info" href="/admin/addcost/0">添加</a>
+   </div>
+</nav>
+</div>
+
+<div class="row">
+    <div class="panel panel-primary">
+    <div class="panel-body">
+        <div class="table-responsive">
+        <table class="table table-hover" id="tb_car">
+            <thead>
+                <tr>
+                    <th>日期</th>
+                    <th>人工成本</th>
+                    <th>车辆成本</th>
+                    <th>耗材成本</th>
+                    <th style="text-align: center;">操作</th>
+                </tr>
+                {% for s in items -%}
+                <tr>
+                  <td>{{s.updatedtime|dateformat}}</td>
+                  <td>{{s.people_cost}}</td>
+                  <td>{{s.car_cost}}</td>
+                  <td>{{s.haocai}}</td>
+                  <td>
+                      <a class="btn btn-xs btn-default" href="javascript:if(confirm('确认删除吗?'))window.location='/admin/cost/delete/{{s.id}}'">删除</a></td>
+                </tr>
+                {%- endfor %}
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+        </div>
+    </div>
+    </div>
+</div>
+{% endblock %}

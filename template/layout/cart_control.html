@@ -1,0 +1,57 @@
+
+<div id="global_user_cart" class="user_cart" style=" height: 36px; line-height: 36px;">
+    <span class="info1">
+        <i class="cart"></i>购物车有<em id="cartNum">{{count}}</em>件商品<i class="arrow"></i>
+    </span><a href="/cart/show" class="btn btn-warning"><span>去结算</span></a>
+    <div class="user_cart_inner" id="header_cartlist" style="opacity: 1; display: none;">
+        {%- if count > 0 -%}
+        <div style=" max-height: 350px;overflow-y:auto;overflow-x:hidden;">
+        <ul>
+            {%- for cartitem in cartitems -%}
+            <li>
+                <a href="{% if cartitem['store_name'] %}/store_product/{{cartitem['pid']}}{%else%}/product/{{cartitem['psid']}}{%endif%}" target="_blank" class="pic">
+                    <img src="/upload/{{cartitem['sku']}}/{{cartitem['imgurl']}}" height="60" width="60" alt="{{cartitem['name']}}">
+                </a>
+                <a href="{% if cartitem['store_name'] %}/store_product/{{cartitem['pid']}}{%else%}/product/{{cartitem['psid']}}{%endif%}" target="_blank" class="tit">{{cartitem['name']}}</a>
+                <div class="prop"><em class="price" title="单价">¥{{cartitem['price']}}</em>
+                    <span class="count">数量<em>×{{cartitem['quantity']}}</em></span>
+                </div>
+            </li>
+            {%- endfor -%}
+            {%- for gift in gift_items -%}
+            <li>
+                <a href="/product/{{gift['psid']}}" target="_blank" class="pic">
+                    <img src="/upload/{{gift['sku']}}/{{gift['imgurl']}}" height="60" width="60" alt="{{gift['name']}}">
+                </a>
+                <a href="/product/{{gift['psid']}}" target="_blank" class="tit">{{gift['name']}}</a>
+                <div class="prop"><em class="price" title="单价">¥{{gift['price']}}</em>
+                    <span class="count">数量<em>×{{gift['quantity']}}</em></span>
+                </div>
+            </li>
+            {%- endfor -%}
+        </ul>
+        </div>
+        <div class="user_cart_funs">
+            <div class="total">共有<em>{{count}}</em>件商品  购物车小计：<em class="price">¥{{totalprice}}</em>
+            </div>
+            <div class="btns">
+                <a href="/cart/show"><span class="btn btn-warning">去购物车并结算</span></a>
+            </div>
+        </div>
+        {%- else -%}
+        <div class="no_product">
+            <i class="big_cart"></i>
+            <span>您的购物车中没有商品，<a href="/category">马上购买</a></span>
+        </div>
+        {%- endif -%}
+    </div>
+</div>
+<script>
+    //$(function(){
+        $('.user_cart').hover(function(){
+            $("#header_cartlist").show();
+        },function(){
+            $("#header_cartlist").hide();
+        });
+    //});
+</script>

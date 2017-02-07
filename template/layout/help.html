@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>{% block title %}车装甲 {% endblock %}</title>
+    <meta name="keywords" content="{% block keyword %}{% endblock %}" />
+    <meta name="description" content="{% block description %}{% endblock %}" />
+    <link href="/style2/css/qcreset.css" rel="stylesheet" type="text/css" />
+    <link href="/style2/css/qcbase.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="/style2/js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="/style2/js/qiche/haux.min.js"></script>
+    <script type="text/javascript" src="/style2/js/qiche/pmall.js"></script>
+    <script type="text/javascript" src="/style2/js/qiche/haux.component.slider.js"></script>
+    <script type="text/javascript" src="/style2/js/qiche/haux.component.switch.js"></script>
+    <script type="text/javascript" src="/style2/js/qiche/haux.component.tab.js"></script>
+    <script type="text/javascript" src="/style2/js/qiche/haux.component.linkagedisplay.js"></script>
+    <style type="text/css">
+        .categorys dl#category-box {
+            display: block;
+        }
+
+        div.lotteries {
+            margin: 0;
+            height: 170px;
+            overflow: hidden;
+            border-bottom: 1px solid #ccc;
+            border-right: 1px solid #ccc;
+        }
+
+            div.lotteries dl {
+                border: 0;
+            }
+
+                div.lotteries dl a, div.lotteries dl span {
+                    display: inline-block;
+                    width: 175px;
+                    over-flow: hidden;
+                    white-space: no-wrap;
+                    line-height: 28px;
+                }
+
+                div.lotteries dl dt {
+                    margin: 0;
+                    padding: 0 10px;
+                    background: #f7f7f7;
+                    color: #f40;
+                }
+
+                div.lotteries dl span {
+                    text-align: right;
+                    width: 50px;
+                }
+
+        .brand-list {
+            clear: both;
+            position: relative;
+            top: -1px;
+            border: 1px solid #ccc;
+            overflow: hidden;
+        }
+
+            .brand-list table {
+            }
+
+            .brand-list td {
+                width: 100px;
+                height: 97px;
+                vertical-align: middle;
+                text-align: center;
+            }
+
+                .brand-list td img {
+                    height: 45px;
+                }
+
+        .slider-box {
+            margin: 0;
+        }
+
+            .slider-box .visible-content ul li {
+                height: 240px;
+            }
+
+        #scroll-advs {
+            border-bottom: 1px solid #ccc;
+        }
+
+            #scroll-advs .visible-content ul li {
+                height: 85px;
+                width: 250px;
+                border-right: 1px solid #ccc;
+            }
+
+        .promotions {
+            margin: 0;
+            border-width: 0 1 0 1;
+            ;
+            height: 100px;
+            overflow: hidden;
+        }
+
+            .promotions dl dt {
+                margin: 0;
+                background: url(images/m-bg1.png) 0 -1271px repeat-x;
+                padding: 0 10px;
+            }
+
+            .promotions dt a {
+                position: absolute;
+                right: 5px;
+                color: #36c;
+                font-weight: normal;
+                font-size: 12px;
+                font-family: SimSun 微软雅黑;
+            }
+
+        .prime-promo {
+            height: 55px;
+            border-right: 1px solid #ccc;
+        }
+
+        #tyre-search, #shop-categories, #tyre-list, #quick-tyre-search {
+            margin: 20px 0 0;
+            height: 250px;
+            border: 0;
+        }
+
+        #care-categories, #care-list, #hot-services, #shop-categories, #shop-list, #hot-promotions {
+            margin: 20px 0 0;
+            height: 492px;
+            border: 0;
+        }
+
+            #care-categories dl, #care-list dl, #hot-services dl, #shop-categories dl, #shop-list dl, #hot-promotions dl {
+                background: #efefef;
+                border-bottom: 1px solid #ccc;
+                overflow: hidden;
+            }
+
+            #hot-services dl, #hot-promotions dl {
+                border-left: 0;
+                top: 2px;
+                border-top: 0;
+                background: white;
+            }
+
+            #tyre-search h3, #care-categories dt, #shop-categories dt, #care-categories dt, #tyre-list dt.tab-label {
+                height: 40px;
+                border-bottom: 3px solid #f70;
+                line-height: 40px;
+                font-size: 22px;
+                text-indent: 40px;
+                position: relative;
+                font-family: 微软雅黑;
+                font-weight: bold;
+                background: white;
+            }
+
+                #tyre-search h3 i, #care-categories dt i, #shop-categories dt i {
+                    position: absolute;
+                    display: block;
+                    left: 0px;
+                    width: 34px;
+                    height: 34px;
+                    background: url(images/m-bg2.png) 0 -1964px no-repeat;
+                    top: 2px;
+                }
+
+                #care-categories dt i {
+                    background-position: 0 -2037px;
+                }
+
+                #shop-categories dt i {
+                    background-position: 0 -2110px;
+                }
+
+        #tyre-search {
+            margin-bottom: 0;
+        }
+
+            #tyre-search select {
+                height: 28px;
+                margin: 10px 0 0px 30px;
+                width: 123px;
+            }
+
+            #tyre-search button {
+                height: 28px;
+                background: #f40;
+                color: white;
+                padding: 0 10px;
+                border-radius: 4px;
+                border: 0;
+                width: 55px;
+                margin: 10px 0 10px 130px;
+                letter-spacing: 2px;
+            }
+
+            #tyre-search .tab-box {
+                margin: 0;
+                border-top: 0;
+                top: 44px;
+            }
+
+                #tyre-search .tab-box dl dt.tab-label {
+                    padding-left: 0;
+                    padding-right: 0;
+                    width: 98px;
+                    text-align: center;
+                }
+
+        #tyre-list dl, #care-list dl, #shop-list dl {
+            background: white;
+        }
+
+        #tyre-list dt.tab-label, #care-list dt.tab-label, #shop-list dt.tab-label {
+            height: 40px;
+            width: 187px;
+            text-align: center;
+            padding: 0;
+            border-top: 0;
+            line-height: 40px;
+            font-size: 14px;
+            font-family: 微软雅黑;
+            color: #666;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-indent: 0;
+        }
+
+        #tyre-list dt.tab-label {
+            width: 150px;
+        }
+
+        #tyre-list dt.selected, #care-list dt.selected, #shop-list dt.selected {
+            border: 0;
+            border-bottom: 3px solid #f70;
+            bottom: 0;
+            color: #f40;
+        }
+
+            #tyre-list dt.selected i, #care-list dt.selected i, #shop-list dt.selected i {
+                border: 6px solid white;
+                display: block;
+                width: 0;
+                height: 0;
+                border-bottom-color: #f70;
+                position: absolute;
+                left: 50%;
+                bottom: 0;
+                margin-left: -6px;
+            }
+
+        #tyre-list dl dd.selected, #care-list dl dd.selected, #shop-list dl dd.selected {
+            position: absolute;
+            top: 40px;
+            left: 0;
+            right: 0;
+            border-top: 3px solid #f70;
+            border-bottom: 1px solid #ccc;
+        }
+
+		
+
+        #prime-slider .visible-content .scroll-content {
+            height: 240px;
+        }
+
+        .pro-block-1 a {
+            border-right: 1px solid #ccc;
+            border-bottom: 1px solid #ccc;
+            border-top: 0;
+            border-left: 0;
+        }
+
+        #recent-reviews dl, #recent-consults dl, #online-guides dl {
+            height: 410px;
+            overflow: hidden;
+            border-top: 3px solid #999;
+        }
+
+            #recent-reviews dl dt, #recent-consults dl dt, #online-guides dl dt {
+                text-indent: 30px;
+                background: url(images/m-bg2.png) 10px -2178px no-repeat;
+            }
+
+            #recent-consults dl dt {
+                background-position-y: -2293px;
+            }
+
+            #online-guides dl dt {
+                background-position-y: -2236px;
+            }
+
+        #recent-consults dl {
+        }
+
+        #online-guides {
+            margin-left: 6px;
+        }
+
+        #hot-services dl dt, #hot-promotions dl dt {
+            background: url(images/m-bg1.png) 0 -1326px repeat-x;
+            margin: 0;
+            padding: 0 10px;
+            color: white;
+            height: 38px;
+            line-height: 38px;
+            border-bottom: 3px solid #f70;
+            position: relative;
+        }
+
+            #hot-services dl dt a, #hot-promotions dl dt a {
+                font-size: 12px;
+                position: absolute;
+                right: 5px;
+                color: white;
+                font-family: SimSun 微软雅黑;
+                font-weight: normal;
+            }
+
+        #search-by-type {
+            border-right: 0;
+        }
+
+        .list-box dl.col-2 dd, .list-box dl.col-3 dd {
+            width: 40%;
+        }
+
+        #shadow-box {
+            position: absolute;
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 2000;
+            background: #333;
+            opacity: 0.3;
+            filter: alpha(opacity=30);
+        }
+
+        #notice-box {
+            position: absolute;
+            position: fixed;
+            width: 900px;
+            top: 100px;
+            left: 50%;
+            margin-left: -450px;
+            z-index: 2001;
+            border: 5px solid #666;
+        }
+
+            #notice-box img {
+                width: 100%;
+            }
+
+            #notice-box button {
+                position: absolute;
+                background: #f50;
+                border: 1px solid #ccc;
+                font-size: 18px;
+                bottom: 15px;
+                padding: 5px;
+                left: 50%;
+                width: 200px;
+                margin-left: -100px;
+                letter-spacing: 10px;
+                font-family: 微软雅黑;
+                border-radius: 6px;
+                color: white;
+            }
+        .pro_base {
+            background-color: #71a33b;
+            margin-bottom: 10px;
+        }
+    </style>
+    {% block css %} {% endblock %}
+    {% block js %} {% endblock %}
+    <script type="text/javascript">
+        var _home = '';
+
+        {% if show_menu == 1 %}
+        haux.dom.addBodyLoadAction(function () {
+            var catBoxElement = document.getElementById("category-box");
+            catBoxElement.onmouseover = null;
+            catBoxElement.onmouseout = null;
+            var catLabelElement = document.getElementById("category-label");
+            catLabelElement.onmouseover = null;
+            catLabelElement.onmouseout = null;
+
+            var sliderObj = new haux.component.Slider({
+                element: document.getElementById("prime-slider"),
+                animation: "vertical",
+                flashTime: 500
+            });
+            sliderObj.startAutoSwitch();
+
+            var switchObj = new haux.component.Switch({
+                element: document.getElementById("scroll-advs"),
+                flashTime: 1000,
+                switchCount: 3
+            });
+            switchObj.startAutoSwitch();
+        })
+        {% endif %}
+
+        function closeNoticeBox() {
+            document.getElementById("shadow-box").style.display = "none";
+            document.getElementById("notice-box").style.display = "none";
+        }
+
+        function PostCityID(city_id){
+            $("#city_id").val(city_id);
+            $("#formCityID").submit();
+        }
+
+        var flag = 0;
+        $(function(){
+            {% if show_menu != 1 %}
+            $(".categorys").hover(function(){
+                $("#category-box").show();
+            },function(){
+                $("#category-box").hide();
+            });
+            {% endif %}
+            $("#cart_body").mouseover(function() {
+                if(flag == 0){
+                    flag = 1;
+                    setTimeout($("#cart_body").load("/cartcontrol?t=" + Math.random()),1000);
+                }
+            });
+            $.get("/ajax/GetSites",function(data){
+                data = jQuery.parseJSON(data);
+                if(data.flag==1){
+                    var citys=[]
+                    var htmlProvince="";
+                    for(var i=0; i< data.data.length; i++){
+                        htmlProvince=htmlProvince+"<dt>"+data.data[i].name+"</dt>";
+                        htmlProvince=htmlProvince+"<dd>";//<a href=\"/index.html?cityId=2277\">深圳市</a> <a href=\"/index.html?cityId=2391\">东莞市</a>
+                        citys=data.data[i].citys;
+                        for(var j=0;j<citys.length;j++){
+                            htmlProvince=htmlProvince+"<a href=\"javascript:void(0);\" onclick=\"PostCityID("+citys[j].id+")\">"+citys[j].name+"</a> ";
+                        }
+                        htmlProvince=htmlProvince+"    <div class=\"clear\"></div>";
+                        htmlProvince=htmlProvince+"</dd>";
+                    }
+                    $("#city-list").html(htmlProvince);
+                }
+                else{
+                    alert(data.msg)
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="top-banner">
+        <div class="container-24">
+            <ul class="quick-menu-l">
+                {% if user%}
+                <li>欢迎你,<a id="wel_username" href="/user/profile">{{user.username}}</a> <a id="user_logout" href="/signout">退出&nbsp;</a> </li>
+                {% else %}
+                <li><a href="/signin" class="login">登录车装甲</a> <a href="/signup" class="regist">免费注册</a> </li>
+                {% endif %}
+                <li class="phone"><a>手机访问 </a></li>
+            </ul>
+            <ul class="quick-menu-r">
+                <li><a href="/user/order">我的订单</a> </li>
+                <li><a href="/user/fav">收藏夹</a> </li>
+                {% if user and user.grade==0%}
+                <li><a href="/user/apply_store">我要开店</a> </li>
+                {% endif %}
+                <li><a>帮助中心</a> </li>
+                <li><a></a>服务电话：4000-000-999 </li>
+            </ul>
+        </div>
+    </div>
+    <div class="header container-24">
+        <a id="logo" href="/"></a>
+        {% if is_select_city!=1 %}
+        <div class="city-info">
+            <h3><b></b>{{handler.get_secure_cookie("city_name")}} </h3>
+
+            <form action="/select_city" method="post" id="formCityID">
+                {{xsrf()}}
+                <input type="hidden" name="city_id" id="city_id">
+            </form>
+            <a class="swith-city" id="switch-city-list" href="/select_city">切换城市 </a>
+            <dl class="option-list" id="city-list">
+            </dl>
+        </div>
+        {% endif %}
+        <div class="slogan">
+            <div class="form">
+                <form name="search" action="/category/0" method="get" id="search" target="_top">
+                    <input style="color: rgb(153, 153, 153);" autocomplete="off" id="key" name="keyword" class="text" type="text" />
+                    <button type="submit" class="button cw-icon"><i></i>搜索</button>
+                </form>
+            </div>
+            <div class="hotwords">
+                {% for k in module.KeyWords() %}
+                <a target="_blank" href="/category/0?keyword={{k.keywords}}">{{k.keywords}}</a>
+                {% endfor %}
+            </div>
+        </div>
+        <div id="cart_body" class="dorpdown">
+            {{ module.MyCart() }}
+        </div>
+    </div>
+    <div class="main-nav">
+        <div class="container-24">
+            <div class="categorys grid-4">
+                <h3 id="category-label">全部分类 </h3>
+                <dl class="category-box" id="category-box" style="padding-bottom:6px;display: {% if show_menu != 1 %}none{% endif %}">
+                    {{module.ShowMenu()}}
+                    <dd id="catalog-shadow-mask" class="shadow-mask"></dd>
+                </dl>
+            </div>
+            <ul class="nav-items alpha omega grid-15">
+                <li class="current"><a href="/">网站首页</a> </li>
+                <li><a href="/category/1">配件商城 </a></li>
+                <li><a href="/category/2">汽车服务 </a></li>
+                <li><a href="/store">服务门店 </a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="container-24">
+        <div class="clearfix wrap container">
+        {% block content %}{% endblock %}
+        <div class="sliderbar">
+        <!-- 分类 -->
+        <div id="help_slider" class="slider help_slider">
+            <div class="title active">
+                <h2><a href="#"><i class="help_ico"></i>用户帮助中心</a></h2>
+                <i class="line"></i>
+            </div>
+            <div class="inner">
+                <ul>
+                    <li>
+                        <div class="pro_base"><a href="/help/shopping#jytk" class="tit">购物指南</a><a href="javascript:;" class="trigger "><span>展开/收起</span></a></div>
+                        <dl class="pro_sublist">
+                            <dd><a href="/help/shopping#jytk" rel="nofollow"><i></i>交易条款</a></dd>
+                            <dd><a href="/help/shopping#gwxz" rel="nofollow"><i></i>购物须知</a></dd>
+                            <dd><a href="/help/shopping#gwlc" rel="nofollow"><i></i>购物流程</a></dd>
+                            <dd><a href="/help/shopping#sppj" rel="nofollow"><i></i>商品评价</a></dd>
+
+                        </dl>
+                    </li>
+
+
+                    <li>
+                        <div class="pro_base"><a href="/help/delivery#ptpsfw" class="tit">配送服务</a><a href="javascript:;" class="trigger "><span>展开/收起</span></a></div>
+                        <dl class="pro_sublist">
+                            <dd><a href="/help/delivery#ptpsfw" rel="nofollow">配送范围</a>            <i></i></dd>
+                            <dd><a href="/help/delivery#pssj" rel="nofollow">配送时间</a>              <i></i></dd>
+                            <dd><a href="/help/delivery#psfsjfy" rel="nofollow">配送方式及费用</a>     <i></i></dd>
+
+                        </dl>
+                    </li>
+
+
+                    <li>
+                        <div class="pro_base"><a href="/help/pay#dsfwszf" class="tit">支付方式</a><a href="javascript:;" class="trigger "><span>展开/收起</span></a></div>
+                        <dl class="pro_sublist">
+                            <dd><a href="/help/pay#dsfwszf" rel="nofollow">第三方网上支付 </a> <i></i></dd>
+                            <dd><a href="/help/pay#hdfk" rel="nofollow">货到付款 </a> <i></i></dd>
+                            <dd><a href="/help/pay#syjfzf" rel="nofollow">积分支付 </a> <i></i></dd>
+                            <dd><a href="/help/pay#ptzhyezf" rel="nofollow">平台账户支付</a> <i></i></dd>
+
+                        </dl>
+                    </li>
+
+
+
+                    <li>
+                        <div class="pro_base"><a href="/help/service#fwcl" class="tit">售后服务</a><a href="javascript:;" class="trigger "><span>展开/收起</span></a></div>
+                        <dl class="pro_sublist">
+                            <dd><a href="/help/service#fwcl" rel="nofollow">服务承诺</a>   <i></i></dd>
+                            <dd><a href="/help/service#yhyjs" rel="nofollow">验货与拒收</a><i></i></dd>
+                            <dd><a href="/help/service#thhyz" rel="nofollow">退换货原则</a><i></i></dd>
+                            <dd><a href="/help/service#thhlc" rel="nofollow">退换货流程</a><i></i></dd>
+
+                        </dl>
+                    </li>
+
+
+
+                    <li>
+                        <div class="pro_base"><a href="/help/member#hyqyhyw" class="tit">会员相关</a><a href="javascript:;" class="trigger "><span>展开/收起</span></a></div>
+                        <dl class="pro_sublist">
+                            <dd><a href="/help/member#hyqyhyw" rel="nofollow">会员权利和义务</a>  <i></i></dd>
+                            <dd><a href="/help/member#jfsm" rel="nofollow">积分说明</a> <i></i></dd>
+                            <dd><a href="/help/member#hydjsm" rel="nofollow">会员等级说明</a> <i></i></dd>
+                        </dl>
+                    </li>
+                    <li>
+                        <div class="pro_base"><a href="/help/media" class="tit">媒体报道</a><a href="javascript:;" class="trigger "><span>展开/收起</span></a></div>
+                    </li>
+                    <li>
+                        <div class="pro_base"><a href="/help/about#gsjj" class="tit">关于我们</a><a href="javascript:;" class="trigger "><span>展开/收起</span></a></div>
+                        <dl class="pro_sublist">
+                            <dd><a href="/help/about#gsjj" rel="nofollow">公司简介</a><i></i></dd>
+                            <dd><a href="/help/about#ptln" rel="nofollow">平台理念</a><i></i></dd>
+                            <dd><a href="/help/about#jyly" rel="nofollow">经营领域</a><i></i></dd>
+                            <dd><a href="/help/about#lxwm" rel="nofollow">联系我们</a><i></i></dd>
+                        </dl>
+                    </li>
+
+
+
+
+                </ul>
+            </div>
+
+
+
+        </div>
+    </div>
+
+    <div style="clear: both"></div>
+</div>
+<script>
+    jQuery(function ($) {
+        var shell = $('#help_slider');
+        if (!shell.length) { return; }
+        shell.find('.pro_sublist').each(function (i) {
+            var self = $(this);
+            self.data('maxHeight', self.height()).css('overflow', 'hidden');
+            if (this.parentNode.className.indexOf('current') < 0) {
+                self.css('height', 0);
+            }
+        });
+        shell.delegate('a.trigger', 'click', function (e) {
+            e.preventDefault();
+            var isExtended = this.className.indexOf('open') > -1,
+                 panel = $('.pro_sublist', this.parentNode.parentNode);
+            panel.stop().show().animate({
+                height: isExtended ? 0 : panel.data('maxHeight'),
+                opacity: isExtended ? 0 : 1
+            }, 200, function () {
+                if (isExtended) {
+                    panel.hide();
+                }
+            });
+            this.className = isExtended ? 'trigger' : 'trigger open';
+        });
+    });
+</script>
+
+    </div>
+    <div class="clear"></div>
+    <div class="online-help">
+        <div class="container-20 ">
+            <div class="grid-5">
+                <i></i>
+                <dl>
+                    <dt><a target="_blank">购物流程</a> </dt>
+                    <dd><a href="#" target="_blank">购物流程</a> </dd>
+                    <dd><a href="#" target="_blank">配送/安装说明</a> </dd>
+                    <dd><a href="#" target="_blank">安装网点</a> </dd>
+                    <dd><a href="#" target="_blank">支付方式</a> </dd>
+                    <dd><a href="#" target="_blank">常见问题</a> </dd>
+                </dl>
+            </div>
+            <div class="grid-5" style="display: none">
+                <i></i>
+                <dl>
+                    <dt><a href="#" target="_blank">支付&配送</a> </dt>
+                    <dd><a href="#" target="_blank">安装后付款</a> </dd>
+                    <dd><a href="#" target="_blank">在线支付配</a> </dd>
+                    <dd><a href="#" target="_blank">服务说明</a> </dd>
+                    <dd><a href="#" target="_blank">上门服务说明</a></dd>
+                </dl>
+            </div>
+            <div class="grid-5">
+                <i></i>
+                <dl>
+                    <dt><a target="_blank">关于我们</a></dt>
+                    <dd><a href="#" target="_blank">公司简介</a></dd>
+                    <dd><a href="#" target="_blank">联系我们</a></dd>
+                    <dd><a href="#" target="_blank">招聘人才</a></dd>
+                    <dd><a href="#" target="_blank">十分钟生活圈</a></dd>
+                    <dd><a target="_blank" href="#">登录商家后台</a></dd>
+                </dl>
+            </div>
+            <div class="grid-5">
+                <i></i>
+                <dl>
+                    <dt><a target="_blank">售后服务</a></dt>
+                    <dd><a href="#" target="_blank">产品保修</a></dd>
+                    <dd><a href="#" target="_blank">申请退款说明</a></dd>
+                    <dd><a href="#" target="_blank">投诉建议</a></dd>
+                </dl>
+            </div>
+            <div class="grid-5">
+                <i></i>
+                <dl>
+                    <dt><a target="_blank">特色服务</a></dt>
+                    <dd><a href="#" target="_blank">加急订单说明</a></dd>
+                    <dd><a href="#" target="_blank">免费服务项目</a></dd>
+                    <dd><a href="#" target="_blank">消费积分说明</a></dd>
+                    <dd><a href="#" target="_blank">车装甲APP下载</a></dd>
+                </dl>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="special-box">
+        <div class="container-20 ">
+            <dl class="special-1">
+                <dt>正品有保证 <i></i></dt>
+                <dd>正品行货 质量保证</dd>
+            </dl>
+            <dl class="special-2">
+                <dt>服务在身边 <i></i></dt>
+                <dd>专业咨询 便捷体验</dd>
+            </dl>
+            <dl class="special-3">
+                <dt>省钱更省心 <i></i></dt>
+                <dd>海量商品 无忧消费</dd>
+            </dl>
+        </div>
+    </div>
+    <div class="footer container-24">
+        <p class="rights">Copyright© 2002-2015 ，车装甲公司版权所有  京ICP备14101111号 </p>
+        <div class="authentication">
+            <a href='http://netadreg.gzaic.gov.cn/ntmm/WebSear/WebLogoPub.aspx?logo=440101101022014121100239' target="_blank">
+                <img src="/style2/images/b1.png" height="40" />
+            </a><a key="550fe5f1efbfb02b131db1e0" logo_size="124x47" logo_type="business" href="http://www.anquan.org/authenticate/cert/?site=www.91htw.com&at=business" target="_blank">
+                <img src="/style2/images/b2.png" height="40" />
+            </a><a href="https://ss.knet.cn/verifyseal.dll?sn=e15032544190058064wqr2000000&amp;ct=df&amp;a=1&amp;pa=0.13916513207368553" target="_blank" kx_type="图标式" style="display: inline-block;">
+                <img src="/style2/images/b3.png" height="40" />
+            </a>
+        </div>
+    </div>
+</body>
+</html>

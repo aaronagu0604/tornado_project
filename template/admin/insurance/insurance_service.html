@@ -1,0 +1,198 @@
+﻿{% extends "layout/admin.html" %}
+{% block css %}
+<link rel="stylesheet" type="text/css" href="/style2/insurance/css/bxzhpz_right.css"/>
+<style>
+.insurance .ul_insurance{
+	width:100%;
+	height:110px;
+}
+.ul_insurance li{
+	float:left;
+	width:30%;
+	margin-top:25px;
+}
+.ul_insurance li label{
+	font-size:16px;
+	font-weight:normal;
+}
+.ul_insurance li .num{
+	width:200px;
+	height:28px;
+	padding-left:10px;
+	border:1px solid #aaa;
+	-moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+	border-radius: 4px;
+}
+</style>
+{% endblock %}
+{% block content %}
+
+<div class="row">
+    <div>
+        <a class="navbar-brand" href="#">添加保险服务商</a>
+    </div>
+    <div class="content">
+        <form id="cpfb_form" action="" method="post"  autocomplete="off">
+            {{xsrf()}}
+            <div class="insurance">
+                <ul class="ul_insurance">
+                    <li>
+                        <!--<input class="num"  type="hidden" value=""/>-->
+                        <label>保险公司：</label>
+                        <select class="num" id="iName" name="iName">
+                            {% for insurance in insurances %}
+                            <option value="{{insurance.name}}">{{insurance.name}}</option>
+                            {% endfor %}
+                        </select>
+                    </li>
+                    <li>
+                        <label>登录账号：</label>
+                        <input type="text" name="accountNum" style="position:absolute;top:-999px"/>
+                        <input class="num" id="numberUser" type="text" name="accountNum" value="" required placeholder="登录账号"  autocomplete="off"/>
+                    </li>
+                    <li>
+                        <label>密码：</label>
+                        <input class="num" id="pass" type="password" name="passWd" value="" required placeholder="密码"/>
+                    </li>
+                    <li>
+                        <label>银行卡账号：</label>
+                        <input class="num" id="card" type="text" name="bankNum" value="" required placeholder="银行卡账号"/>
+                    </li>
+                    <li>
+                        <label>预留手机号：</label>
+                        <input class="num" id="phone" type="text" name="phoneNum" value="" required placeholder="预留手机号"/>
+                    </li>
+                </ul>
+            </div>
+            <div id="InputsWrapper">
+                <ul class="region clearfix">
+                    <li>所在地区：
+                        <select name="province_code0" id="province_code"
+                                onchange="province_change(this.value,0,'district_code','city_code')"
+                                data-default="{{default_province}}" required style="width:150px;height:28px;margin-top:10px;border-radius:4px;font-size:14px;">
+                            <option value="">--请选择省份--</option>
+                            {% for area in items %}
+                            <option value="{{area.code}}" {{area.code==default_province and 'selected' or ''}}>{{area.name}}</option>
+                            {% endfor %}
+                        </select>
+                        <select name="city_code0" id="city_code" onchange="city_change(this.value,0,'district_code')"
+                                data-default="{{default_city}}"
+                                style="width:150px;height:28px;margin-top: 10px;border-radius:4px;font-size:14px;">
+                            <option value="">--请选择城市--</option>
+                        </select>
+                        <select name="district_code0" id="district_code" data-default="{{default_district}}"
+                                style="width:150px;height:28px;margin-top: 10px;border-radius:4px;font-size:14px;">
+                            <option value="">--请选择区县--</option>
+                        </select>
+                    <li>
+                </ul>
+            </div>
+            <ul class="region clearfix">
+                <li class="xzfbdq"><a id="AddMoreFileBox" href="#"><img src="/style2/images/jia.png"/>新增地区</a></li>
+            </ul>
+
+            <button class="butx round" name="submit" type="submit">保存</button>
+            <button class="buty round" name="submit" type="reset">取消</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block js %}
+<!-- /*********jquery点击链接无刷新添加内容*********/ -->
+<script type="text/javascript">
+    $(document).ready(function() {
+        var Max      = 7;
+        var InputsWrapper   = $("#InputsWrapper");
+        var x = InputsWrapper.length;
+        var Count=0;
+        var xsrf = '{{handler.xsrf_token}}';
+        
+        $("#AddMoreFileBox").click(function (e){
+            if(x <= Max)
+            {
+                var html='';
+                var districtCode = 'district_code'+x;
+                var cityCode = 'city_code'+x;
+                console.log('---------------------------------')
+
+                html +='<ul class="region del_region clearfix">';
+                html += '<li id="code">所在地区：';
+                html += '<select name="province_code'+x+'" id="province_code'+x+'" onchange="province_change(this.value, 0, \''+districtCode+'\', \''+cityCode+'\')" required style="width:150px;height:28px;margin-left: 5px;margin-top: 10px;border-radius:4px;font-size:14px;" >';
+                html += '<option value="">--请选择省份--</option>';
+                html += '{% for area in items %}';
+                html += '<option value="{{area.code}}" {{area.code==default_province and 'selected' or ''}}>{{area.name}}</option>';
+                html += '{% endfor %}';
+                html += '</select>';
+
+                html += '<select name="city_code'+x+'" id="city_code'+x+'" onchange="city_change(this.value, 0, \''+districtCode+'\')" style="width:150px;height:28px;margin-left:5px;margin-top:10px;border-radius:4px;font-size:14px;" >';
+                html += '<option value="">--请选择城市--</option>';
+                html += '</select>';
+
+                html += '<select name="district_code'+x+'" id="district_code'+x+'" style="width:150px;height:28px;margin-left:5px;margin-top:10px;border-radius:4px;font-size:14px;">';
+                html += '<option value="">--请选择区县--</option>';
+                html += '</select>';
+                html += '</li>';
+                html += '<a href="#" class="removeclass">删除</a>';
+                html += '</ul>';
+                $("#InputsWrapper").append(html);
+                x++;
+            }
+            return false;
+        });
+    
+        //删除方法
+        $("body").on("click",".removeclass", function(e){
+            if( x > 1 ) {
+                    $(this).parent('ul').remove();
+                    x--;
+            }
+            return false;
+        });
+    });
+
+
+    function province_change(id, default_id, district_code, city_code){
+        $("#"+district_code+" > option").remove();
+        $("#"+district_code).append("<option value=\"0\">--请选择区县--</option>");
+        $("#"+city_code+" > option").remove();
+        $("#"+city_code).append("<option value=\"0\">--请选择城市--</option>");
+        if(id > 0){
+            GetSubAreas(id, ""+city_code, default_id);
+        }
+    }
+    function city_change(id, default_id, district_code){
+        $("#"+district_code+" > option").remove();
+        $("#"+district_code).append("<option value=\"0\">--请选择区县--</option>");
+        if(id > 0){
+            GetSubAreas(id, ""+district_code, default_id);
+        }
+    }
+
+    function GetSubAreas(id,ddl_id, default_id) {
+        $.get("/ajax/GetSubAreas", { pcode: id,  t: Math.random() }, function (data) {
+            data = jQuery.parseJSON(data);
+            if(data.flag==1){
+                for(var i=0; i< data.data.length; i++){
+                    if(default_id.length>0){
+                        if(data.data[i]["code"]==default_id){
+                            $("#" + ddl_id).append("<option value=\"" + data.data[i]["code"] + "\" selected>" + data.data[i]["name"] + "</option>");
+                        }
+                        else{
+                            $("#" + ddl_id).append("<option value=\"" + data.data[i]["code"] + "\">" + data.data[i]["name"] + "</option>");
+                        }
+                    }
+                    else {
+                        $("#" + ddl_id).append("<option value=\"" + data.data[i]["code"] + "\">" + data.data[i]["name"] + "</option>");
+                    }
+                }
+            }
+            else{
+                alert(data.msg)
+            }
+        });
+    }
+</script>
+{% endblock %}

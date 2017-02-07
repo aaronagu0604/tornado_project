@@ -1,0 +1,128 @@
+{% extends "layout/admin.html" %}
+{% block css %}
+<link href="/style2/css/plugins/dataTables.bootstrap.css" rel="stylesheet">
+{% endblock %}
+{% block content %}
+<div class="row">
+   <nav>
+   <div>
+      <a class="navbar-brand" href="#">评价管理</a>
+   </div>
+   <div class="pull-right">
+      <form class="navbar-form navbar-left" action="" method="get" role="search">
+          <input id="bt_export" class="btn btn-info" type="button" value="导出EXCEL" />
+          <div class="btn-group btn-group">
+            <a type="button" class="btn btn-default {{status==-1 and 'active'}}" href="/admin/comment?begindate={{begindate}}&enddate={{enddate}}&uid={{uid or ''}}&pid={{pid or ''}}">全部评价</a>
+            <a type="button" class="btn btn-default {{status==2 and 'active'}}" href="/admin/comment?status=2&begindate={{begindate}}&enddate={{enddate}}&uid={{uid or ''}}&pid={{pid or ''}}">已审核</a>
+            <a type="button" class="btn btn-default {{status==1 and 'active'}}" href="/admin/comment?status=1&begindate={{begindate}}&enddate={{enddate}}&uid={{uid or ''}}&pid={{pid or ''}}">未审核</a>
+          </div>
+          <div class="input-group">
+              <input type="text" name="begindate" id="begindate" value="{{begindate}}" class="Wdate form-control"  onClick="WdatePicker()" style="width:110px; height: 34px;"  placeholder="开始日期" />
+              <span class="input-group-addon">至</span>
+              <input type="text" name="enddate" id="enddate" value="{{enddate}}" class="Wdate form-control"  onClick="WdatePicker()" style="width:110px; height: 34px;"  placeholder="截至日期" />
+              <span class="input-group-btn">
+                 <button class="btn btn-default" type="submit" id="bt_submit">
+                     <i class="fa fa-search"></i>
+                 </button>
+            </span>
+          </div>
+      </form>
+   </div>
+</nav>
+</div>
+<div class="row">
+    <div class="panel panel-primary">
+    <div class="panel-body">
+        <div class="table-responsive">
+        <table class="table table-hover" id="tb_users">
+            <thead>
+                <tr>
+                    <th>用户名</th>
+                    <th>评价商品</th>
+                    <th>综合得分</th>
+                    <th>评价内容</th>
+                    <th>提交时间</th>
+                    <th>状态</th>
+                    <th>回复</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for c in cs -%}
+            <tr>
+              <td><a name="username" href="/admin/comment?uid={{c.user.id}}&begindate={{begindate}}&enddate={{enddate}}&pid={{pid or ''}}">{{c.user.username}}</a>
+                <br><a href="/admin/user/{{c.user.id}}" target="_blank">用户信息</a>
+              </td>
+              <td><a href="/admin/comment?pid={{c.product.id}}&begindate={{begindate}}&enddate={{enddate}}&uid={{uid or ''}}">{{c.product.name}}</a>
+                <!--<a href="/product/{{c.product.defaultstandard}}" target="_blank">查看</a>-->
+              </td>
+              <td>{{(c.qualityscore+c.speedscore+c.pricescore+c.servicescore)/4}}</td>
+              <td>{{c.comment|escape}}</td>
+              <td>{{c.created|datetimeformat}}</td>
+              <td>{% if c.status == 1 -%}未审核{%- elif c.status == 2 -%}<span style="color:#129a00;">已审核</span>{%- elif c.status == 3 -%}<span style="color:#cc0000;">未通过</span>{%-endif%}</td>
+              <td>{{c.reply_content or ''}}</td>
+              <td><a class="btn btn-outline btn-primary btn-xs" href="/admin/commentcheck/{{c.id}}?status=2&page={{page}}&uid={{uid or ''}}&pid={{pid or ''}}&begindate={{begindate}}&enddate={{enddate}}">通过</a>
+                  <a class="btn btn-outline btn-primary btn-xs" href="/admin/commentcheck/{{c.id}}?status=3&page={{page}}&uid={{uid or ''}}&pid={{pid or ''}}&begindate={{begindate}}&enddate={{enddate}}">不通过</a>
+                  <a class="btn btn-outline btn-primary btn-xs" href="/admin/comment_reply/{{c.id}}?page={{page}}&uid={{uid or ''}}&pid={{pid or ''}}&begindate={{begindate}}&enddate={{enddate}}">回复</a></td>
+            </tr>
+			{%- endfor %}
+            </tbody>
+        </table>
+            <div>
+                <div class="col-sm-4">
+                    <div class="dataTables_info" role="alert" aria-live="polite" aria-relevant="all">
+                        当前：第{{page}}页 / {{totalpage}}页，合计{{total}}条
+                    </div>
+                </div>
+                <div class="col-sm-8">
+                    <div class="dataTables_paginate paging_simple_numbers">
+                        <ul class="pagination  pagination-sm" id="pageUl" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<script src="/style2/js/jquery.twbsPagination.min.js"></script>
+<script language="javascript" type="text/javascript" src="/style2/js/My97DatePicker/WdatePicker.js"></script>
+        <script>
+    $(document).ready(function() {
+        $('#pageUl').twbsPagination({
+            first:'首页',
+            prev:'上一页',
+            next:'下一页',
+            last:'尾页',
+            totalPages: {{totalpage}},
+            startPage: {{page}},
+            visiblePages: 8,
+            onPageClick: function (event, page) {
+                    self.location="/admin/comment?page="+page+"&uid={{uid or ''}}&pid={{pid or ''}}&begindate={{begindate}}&enddate={{enddate}}";
+                }
+        });
+    });
+    $(function(){
+        $('#bt_export').bind('click', function () {
+            var sql = {'status':{{status}}, 'begindate':'{{begindate}}', 'enddate':'{{enddate}}', 'uid':'{{uid}}', 'pid':'{{pid}}' };
+            var xsrf='{{handler.xsrf_token}}';
+            $.post("/ajax/comment/export",{
+                sql: JSON.stringify(sql),
+                _xsrf: xsrf
+            },
+            function (data) {
+                var obj = jQuery.parseJSON(data);
+                if (obj.err == 0) {
+                    alert('生成成功，点击下载连接，下载数据文件！');
+                    window.open("/upload/" + obj.msg);
+                }
+                else {
+                    alert('生成失败：' + obj.msg);
+                }
+            });
+        });
+    });
+    </script>
+
+{% endblock %}

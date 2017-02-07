@@ -1,0 +1,331 @@
+{% extends "layout/admin.html" %}
+
+{% block content %}
+<script language="javascript" type="text/javascript" src="/style2/js/My97DatePicker/WdatePicker.js"></script>
+<div class="row">
+    <nav>
+        <div>
+        <a class="navbar-brand" href="#">订单报告</a>
+        </div>
+            <div class="pull-right">
+      <form class="navbar-form navbar-left" action="" method="get" role="search">
+         <div class="input-group custom-search-form">
+             <span class="input-group-addon">从</span>
+             <input type="text" name="begindate" id="begindate" value="{{begindate}}" class="Wdate form-control"  onClick="WdatePicker()" style="width:105px; height: 34px;" />
+
+                <span class="input-group-addon">至</span>
+             <input type="text" name="enddate" id="enddate" value="{{enddate}}" class="Wdate form-control"  onClick="WdatePicker()" style="width:105px; height: 34px;" />
+
+             <span class="input-group-btn">
+                 <button class="btn btn-default" type="submit" id="bt_submit">
+                     <i class="fa fa-search"></i>
+                 </button>
+            </span>
+         </div>
+      </form>
+   </div>
+    </nav>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">每日订单量统计</h3>
+            </div>
+            <div class="panel-body">
+                <div id="chart_order" style="height: 350px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">下单时间统计</h3>
+            </div>
+            <div class="panel-body">
+                <div id="chart_order_day" style="height: 250px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-4">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">订单信息</h3>
+                        </div>
+                        <div class="panel-body">
+                            <table class="table table-condensed">
+                                <tbody>
+                                    <tr>
+                                        <td>有效订单总数：</td>
+                                        <th>
+                                            {{report_o['ordertotal']}}
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <td>客单价（元）：</td>
+                                        <th>
+                                            {{report_o['orderprice']}}
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <td>客单重量（斤）：</td>
+                                        <th>
+                                            {{report_o['orderweight']}}
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <td>补单数量：</td>
+                                        <th>
+                                            {{report_o['orderext']}}
+                                        </th>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+    <div class="col-lg-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <span class="pull-left">订单价格排行（元）</span>
+                <a href="#" onclick="openPopChart(1)"><span class="pull-right">更多<i class="fa fa-arrow-circle-right"></i></span></a>
+                <div class="clearfix"></div>
+            </div>
+            <div class="panel-body">
+                <table class="table table-condensed">
+                    <tbody>
+                    {% for o in report_o['price_order'] -%}
+                        <tr>
+                            <td><a href="/admin/order/{{o.id}}" target="_blank">{{o.ordernum}}</a></td>
+                            <th>{{o.price}}</th>
+                        </tr>
+                    {%- endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <span class="pull-left">订单重量排行（斤）</span>
+                <a href="#" onclick="openPopChart(2)"><span class="pull-right">更多<i class="fa fa-arrow-circle-right"></i></span></a>
+                <div class="clearfix"></div>
+            </div>
+            <div class="panel-body">
+                <table class="table table-condensed">
+                    <tbody>
+                        {% for o in report_o['weight_order'] -%}
+                        <tr>
+                            <td><a href="/admin/order/{{o.id}}" target="_blank">{{o.ordernum}}</a></td>
+                            <th>{{o.weight}}</th>
+                        </tr>
+                        {%- endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-4">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">支付方式统计</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div id="chart_payment" style="height: 280px;"></div>
+                        </div>
+                    </div>
+                </div>
+    <div class="col-lg-4">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">下单方式统计</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div id="chart_from" style="height: 280px;"></div>
+                        </div>
+                    </div>
+                </div>
+</div>
+
+{% endblock %}
+{% block js %}
+<script src="/style2/js/amcharts.js"></script>
+<script src="/style2/js/layer/layer.min.js" type="text/javascript"></script>
+<script>
+    $(document).ready(function(){
+        var myDate = new Date();
+        var strMonth = myDate.getMonth()>9?(myDate.getMonth()+1):'0' + (myDate.getMonth()+1);
+        var strDay = myDate.getDate()>9?myDate.getDate().toString():'0' + myDate.getDate();
+        var c_time = $("#enddate").val();
+        if(c_time == '') {
+            $("#begindate").val('2015-01-13');
+            $("#enddate").val(myDate.getFullYear() + '-' + strMonth + '-' + strDay);
+        }
+        $.ajax({
+                type: "get",
+                dataType: "json",
+                async: false,
+                url: "/admin/report/orderchart?begindate="+$("#begindate").val()+"&enddate="+$("#enddate").val()+"&r=" + Math.random(),
+                success: function (msg) {
+                    var data = msg;//jQuery.parseJSON(msg);
+                    var popChart = new AmCharts.AmSerialChart();
+                    popChart.dataProvider = data.chart_all;
+                    popChart.categoryField = "date";
+
+                    var categoryAxis = popChart.categoryAxis;
+                    categoryAxis.axisColor = "#438EB9";
+                    categoryAxis.labelRotation = 45;
+
+                    var valueAxis = new AmCharts.ValueAxis();
+                    valueAxis.axisColor = "#E76049";
+                    valueAxis.dashLength = 1;
+                    valueAxis.integersOnly = true;
+                    popChart.addValueAxis(valueAxis);
+
+                    var graph1 = new AmCharts.AmGraph();
+                    graph1.lineColor = "#CB1B04";
+                    graph1.balloonText = "总订单数量: [[value]]";
+                    graph1.bullet = "round";
+                    graph1.bulletSize = 7;
+                    graph1.lineThickness = 2;
+                    graph1.valueField = "allcount";
+                    graph1.title = "每日订单数量";
+                    popChart.addGraph(graph1);
+
+                    var graph2 = new AmCharts.AmGraph();
+                    graph2.lineColor = "#419641";
+                    graph2.balloonText = "网站订单数量: [[value]]";
+                    graph2.bullet = "round";
+                    graph2.bulletSize = 7;
+                    graph2.lineThickness = 2;
+                    graph2.valueField = "webcount";
+                    graph2.title = "每日网站订单";
+                    popChart.addGraph(graph2);
+
+                    var graph3 = new AmCharts.AmGraph();
+                    graph3.lineColor = "#2ba9e1";
+                    graph3.balloonText = "手机订单数量: [[value]]";
+                    graph3.bullet = "round";
+                    graph3.bulletSize = 7;
+                    graph3.lineThickness = 2;
+                    graph3.valueField = "phonecount";
+                    graph3.title = "每日手机订单";
+                    popChart.addGraph(graph3);
+
+                    var graph4 = new AmCharts.AmGraph();
+                    graph4.lineColor = "#CD0D74";
+                    graph4.balloonText = "后台下单数量: [[value]]";
+                    graph4.bullet = "round";
+                    graph4.bulletSize = 7;
+                    graph4.lineThickness = 2;
+                    graph4.valueField = "syscount";
+                    graph4.title = "每日后台订单";
+                    popChart.addGraph(graph4);
+
+                    var chartCursor = new AmCharts.ChartCursor();//添加鼠标移动过以后的事件
+                    popChart.addChartCursor(chartCursor);
+
+                    var legend = new AmCharts.AmLegend();//设置图例
+                    legend.align = "left";
+                    popChart.addLegend(legend);
+                    popChart.write("chart_order");
+
+                    /*********下单时间统计***********/
+                    var dayChart = new AmCharts.AmSerialChart();
+                    dayChart.dataProvider = data.chart_day;
+                    dayChart.categoryField = "hour";
+
+                    var categoryAxis2 = popChart.categoryAxis;
+                    categoryAxis2.axisColor = "#438EB9";
+                    categoryAxis2.labelRotation = 45;
+
+                    var valueAxis2 = new AmCharts.ValueAxis();
+                    valueAxis2.axisColor = "#E76049";
+                    valueAxis2.dashLength = 1;
+                    valueAxis2.integersOnly = true;
+                    dayChart.addValueAxis(valueAxis2);
+
+                    var graph4 = new AmCharts.AmGraph();
+                    graph4.lineColor = "#CB1B04";
+                    graph4.balloonText = "总订单数量: [[value]]";
+                    graph4.bullet = "round";
+                    graph4.bulletSize = 7;
+                    graph4.lineThickness = 2;
+                    graph4.valueField = "count";
+                    dayChart.addGraph(graph4);
+
+                    var chartCursor1 = new AmCharts.ChartCursor();//添加鼠标移动过以后的事件
+                    dayChart.addChartCursor(chartCursor1);
+                    dayChart.write("chart_order_day");
+
+                    /***************支付方式统计***************/
+
+                    var chart = new AmCharts.AmPieChart();
+                    //数据源
+                    chart.dataProvider = data.chart_payment;
+                    chart.titleField = "payment";
+                    chart.valueField = "count";
+                    chart.labelsEnabled = false;
+                    chart.colors = ["#FF0F00", "#4B0C25", "#FF6600", "#990000", "#FF9E01", "#CA9726", "#FCD202", "#F8FF01", "#57032A", "#B0DE09", "#000000", "#04D215", "#333333", "#0D8ECF", "#999999", "#0D52D1", "#DDDDDD", "#2A0CD0", "#754DEB", "#8A0CCF", "#CD0D74"];
+                    //图例
+                    legend = new AmCharts.AmLegend();
+                    legend.align = "center";
+                    legend.markerType = "circle";
+                    chart.addLegend(legend);
+                    //把图画到页面
+                    chart.write("chart_payment");
+
+                    /***************下单方式统计***************/
+
+                    chart = new AmCharts.AmPieChart();
+                    //数据源
+                    chart.dataProvider = data.chart_from;
+                    chart.titleField = "from";
+                    chart.valueField = "count";
+                    chart.labelsEnabled = false;
+                    chart.colors = ["#FF0F00", "#4B0C25", "#FF6600", "#990000", "#FF9E01", "#CA9726", "#FCD202", "#F8FF01", "#57032A", "#B0DE09", "#000000", "#04D215", "#333333", "#0D8ECF", "#999999", "#0D52D1", "#DDDDDD", "#2A0CD0", "#754DEB", "#8A0CCF", "#CD0D74"];
+                    //图例
+                    legend = new AmCharts.AmLegend();
+                    legend.align = "center";
+                    legend.markerType = "circle";
+                    chart.addLegend(legend);
+                    //把图画到页面
+                    chart.write("chart_from");
+                }
+            });
+    });
+
+    function openPopChart(type) {
+        var title = '';
+        if(type==1)
+        {
+            title = "订单价格排行 [" + $("#begindate").val() + " 至 " + $("#enddate").val() + "]";
+        }
+        else
+        {
+            title = "订单重量排行 [" + $("#begindate").val() + " 至 " + $("#enddate").val() + "]";
+        }
+        $.layer({
+            type: 2,
+            shadeClose: true,
+            title: [title, 'background:#c00;'],
+            closeBtn: [1, true],
+            shade: [0.8, '#000'],
+            border: [0],
+            offset: ['20px',''],
+            area: ['500px', ($(window).height() - 50) +'px'],
+            iframe: {src:  "/admin/report/order/pop?type=" + type + "&begindate="+$("#begindate").val()+
+                                "&enddate="+$("#enddate").val()+"&r=" + Math.random()}
+        });
+    }
+
+</script>
+{% endblock %}

@@ -1,0 +1,93 @@
+{% extends "layout/admin.html" %}
+{% block css %}
+<link href="/style2/css/plugins/dataTables.bootstrap.css" rel="stylesheet">
+<style>
+    .green{color: green;}
+</style>
+{% endblock %}
+{% block content %}
+<div class="row">
+   <nav>
+   <div class="navbar-header" style="float: left">
+      <a class="navbar-brand" href="#">品牌管理</a>
+   </div>
+      <div class="navbar-header" style="float: right;margin-top:15px;">
+          <a href="/admin/edit_pinpai/0" style="padding:5px 10px;border:1px solid #528ACB;border-radius:4px;color:#528ACB;">添加品牌</a>
+      </div>
+</nav>
+</div>
+<div class="row">
+    <div class="panel panel-primary">
+    <!--<div class="panel-body">-->
+    {%set messages=handler.get_flashed_messages() %}
+        {%if messages%}
+            <div class="msg">
+                {% for type, msg in messages%}
+                    <span style="color:red;">{{msg}}</span>
+                {% endfor %}
+            </div>
+        {%endif%}
+        <div class="table-responsive">
+        <table class="table table-hover" id="tb_users" cellpadding="0" cellspacing="0" border="0" style="text-align:center;width:100%;">
+            <thead>
+                <tr style="background:#528acb;color:#fff;text-align:center;height:38px;line-height:38px;">
+                    <th style="width:15%;text-align:center;">编号</th>
+                    <th style="width:15%;text-align:center;">品牌名</th>
+                    <th style="width:15%;text-align:center;">英文名</th>
+                    <th style="width:20%;text-align:center;">Logo</th>
+                    <th style="width:20%;text-align:center;">品牌分类</th>
+                    <th style="width:15%;text-align:center;">操作</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for p in ps -%}
+            <tr>
+              <td>{{p.id}}</td>
+              <td>{{p.name }}</td>
+              <td>{{p.engname or ''}}</td>
+                <td><img src="{{p.logo}}" width="100" height="60"></td>
+                <td>{{ p.ptype and p.ptype.name }}</td>
+              <td>
+                  <a href="/admin/edit_pinpai/{{p.id}}" style="padding:4px 8px;border:1px solid #528ACB;color:#528ACB;border-radius:4px;font-size:14px;">修改</a>
+                  <a href="/admin/delete_pinpai/{{p.id}}" onclick="return confirm('确定删除此品牌?')" style="padding:4px 8px;border:1px solid #528ACB;color:#528ACB;border-radius:4px;font-size:14px;">删除</a>
+              </td>
+            </tr>
+			{%- endfor %}
+            </tbody>
+        </table>
+                <div>
+                    <div class="col-sm-6">
+                        <div class="dataTables_info" role="alert" aria-live="polite" aria-relevant="all">
+                            当前：第{{page}}页 / {{totalpage}}页，合计{{total}}条
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="dataTables_paginate paging_simple_numbers">
+                            <ul class="pagination  pagination-sm" id="pageUl" />
+                        </div>
+                    </div>
+                </div>
+        </div>
+    <!--</div>-->
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<script src="/style2/js/jquery.twbsPagination.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#pageUl').twbsPagination({
+            first:'首页',
+            prev:'上一页',
+            next:'下一页',
+            last:'尾页',
+            totalPages: {{totalpage}},
+            startPage: {{page}},
+            visiblePages: 8,
+            onPageClick: function (event, page) {
+                self.location="/admin/pinpai?page="+page;
+            }
+        });
+    });
+</script>
+{% endblock %}

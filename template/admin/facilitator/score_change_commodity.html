@@ -1,0 +1,102 @@
+{% extends "layout/admin.html" %}
+{% block css %}
+<link rel="stylesheet" type="text/css" href="/style2/facilitator/css/fbsp_right.css"/>
+<link href="/style2/facilitator/css/select2.css" rel="stylesheet"/>
+<style>
+ul{
+	list-style:none;
+}
+
+</style>
+{% endblock %}
+{% block content %}
+
+<div class="row">
+
+    <div>
+        <a class="navbar-brand" href="#">修改商品</a>
+    </div>
+
+    <div class="content">
+        <form id="cpfb_form" action="" method="post">
+            {{xsrf()}}
+            <div class="inner">
+                <div id="InputsWrapper">
+                    <ul class="region clearfix" style="margin-left:-40px;">
+                        <li><span style="width:160px;display:block;float:left;">门店名称：</span>{{ ps.store.name }}</li>
+                        <li><span style="width:160px;display:block;float:left;">门店所在区域：</span>{{ Area().get_detailed_address(ps.store.area_code) }}</li>
+
+                        <li><span style="width:160px;display:block;float:left;">商品ID：</span>{{ ps.id }}</li>
+                        <li><span style="width:160px;display:block;float:left;">商品名称：</span>{{ ps.product.name }} {{ ps.name }}</li>
+                        <li><span style="width:160px;display:block;float:left;">商品发布区域：</span>{{ Area().get_detailed_address(ps.area_code) }}</li>
+                        <li><span style="width:160px;display:block;float:left;">商品类型：</span>
+
+	  		<label><input type="checkbox"  name="ps-style" style="display: none;"/>
+	  			   <img id=redio_yes src="images/login_yes.png" onclick="myfun(this.id)" />在售商品</label>
+	  		<label style="margin-left: 30px;"><input type="checkbox"  name="ps-style" style="display: none;"/>
+	  			   <img  id=redio_no src="images/login_no.png" onclick="myfun1(this.id)" /> 积分商品</label></span></li>
+
+
+            <input class="insurance" name="checkbox" type="checkbox" value="true" {% if checkbox=="true" %} checked {% endif %} style="transform:translateY(8px);-webkit-transform:translateY(8px);"/>
+            <label class="num" style="margin-left:-50px;">保险服务商</label>
+
+                        <li><span id="is_sale0" style="width:160px;display:block;float:left;">是否在售商品：</span>
+                            <input type="text" value="{{ps.is_sale}}" id="is_sale" name="is_sale" onfocus="this.style.borderColor='#00A73B';" onblur="this.style.borderColor='#aaa';"/>
+                        </li>
+                        <li><span id="is_score0" style="width:160px;display:block;float:left;">是否积分商品：</span>
+                            <input type="text" value="{{ps.is_score}}" id="is_score" name="is_score" onfocus="this.style.borderColor='#00A73B';" onblur="this.style.borderColor='#aaa';"/>
+                        </li>
+
+                        <li><span id="pf_price0" style="width:160px;display:block;float:left;">商品价格：</span>
+                            <input type="text" required value="{{ps.pf_price}}" id="pf_price" name="pf_price" onfocus="this.style.borderColor='#00A73B';" onblur="this.style.borderColor='#aaa';"/>
+                        </li>
+                        <li><span id="scoreNum" style="width:160px;display:block;float:left;">兑换积分：</span>
+                            <input type="text" required value="{{ps.scoreNum}}" name="scoreNum" onfocus="this.style.borderColor='#00A73B';" onblur="this.style.borderColor='#aaa';"/>
+                        </li>
+                        <li><span id="quantity0" style="width:160px;display:block;float:left;">库存：</span>
+                            <input type="text" value="{{ps.quantity}}" id="quantity" name="quantity" onfocus="this.style.borderColor='#00A73B';" onblur="this.style.borderColor='#aaa';"/>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <button class="butx round" name="submit" type="submit" id="btnx" onclick="return check()">保存</button>
+            <button class="buty round" name="submit" type="reset" id="btny">取消</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+{% block js %}
+<script type="text/javascript" src="/style2/js/bgtexiao.js"></script>
+<script type="text/javascript" src="/style2/js/areax.js"></script>
+<script type="text/javascript" src="/style2/js/fbsp.js"></script>
+<script type="text/javascript" src="/style2/js/area.js"></script>
+<script type="text/javascript" src="/style2/js/location.js"></script>
+<script type="text/javascript" src="/style2/js/select2.js"></script>
+<script type="text/javascript" src="/style2/js/select2_locale_zh-CN.js"></script>
+
+<!-- /*********jquery点击链接无刷新添加内容*********/ -->
+<script type="text/javascript">
+  
+   //复选框按钮替换成图片
+     function myfun(sId){
+     	var oImg = document.getElementsByTagName('img');
+     	if(oImg[0].id == sId){
+     		oImg[0].previousSibling.previousSibling.checked = true;
+     		oImg[0].src = "images/login_yes.png";
+     		oImg[1].src = "images/login_no.png";
+     	}
+     }
+     function myfun1(sId){
+     	var oImg = document.getElementsByTagName('img');
+     	if(oImg[1].id == sId){
+     		oImg[1].previousSibling.previousSibling.checked = true;
+     		oImg[1].src = "images/login_yes.png" ;
+     		oImg[0].src = "images/login_no.png" ;
+     	}
+     }
+
+</script>
+{% endblock %}
+

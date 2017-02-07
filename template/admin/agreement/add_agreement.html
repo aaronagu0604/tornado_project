@@ -1,0 +1,262 @@
+{% extends "layout/admin.html" %}
+{% block css %}
+	<link rel="stylesheet" type="text/css" href="/style2/agreement/css/agreement.css"/>
+
+	<!--[if lt IE 9]>
+	<script type="text/javascript" src="/style/agreement/js/html5shiv.min.js"></script>
+	<script type="text/javascript" src="/style/agreement/js/respond.min.js"></script>
+	<![endif]-->
+
+	<script type="text/javascript" src="/style2/agreement/js/jquery.min.js"></script>
+	<script type="text/javascript" src="/style2/agreement/js/bootstrap.min.js"></script>
+{% endblock %}
+{% block content %}
+
+ <div class="row main">
+	 <div>
+        <a class="navbar-brand" href="#">新增/修改车保养协议</a>
+    </div>
+	 <div class="content">
+		 <form class="form-inline" role="form" action="" method="post">
+			 <div class="form-group">
+			     <label>选择地区</label>
+			     <select class="form-control" name="province_code" id="province_code" onchange="province_change(this.value,0)" data-default="{{default_province}}" style="width:150px;">
+				 	 <option value="">--请选择省份--</option>
+				     {% for area in items %}
+	                 <option value="{{area.code}}" {{area.code==default_province and 'selected' or ''}}>{{area.name}}</option>
+	                 {% endfor %}
+			     </select>
+			     <select class="form-control" name="city_code" id="city_code" data-default="{{default_city}}" style="width:150px;">
+				     <option value="">--请选择城市--</option>
+			     </select>
+		     </div>
+		 
+		 <table class="table table-hover text-center">
+			 <thead>
+				 <tr>
+					 <th>购买险种</th>
+					 <th>保险公司</th>
+					 <th>车主油品型号</th>
+					 <th>修理厂油品型号</th>
+					 <th>商业险保费（金额/元）</th>
+				 </tr>
+			 </thead>
+	 
+			 <tbody>
+			 <tr>
+				 <td>单交强险</td>
+				 <td><input type="text" class="form-control" placeholder="人保/国寿"></td>
+				 <td><input type="text" class="form-control" placeholder="ZIC X5特级"></td>
+				 <td><input type="text" class="form-control" placeholder="ZIC X5特级"></td>
+				 <td>
+					<span>起始<input type="text" class="form-control small">元</span>
+					<span>结束<input type="text" class="form-control small">元</span>
+					<span>间隔<input type="text" class="form-control small">元</span>
+				 </td>
+			 </tr>
+			 
+			 <tr>
+				 <td>单商业险</td>
+				 <td><input type="text" class="form-control" placeholder="人保/国寿"></td>
+				 <td><input type="text" class="form-control" placeholder="ZIC X5特级"></td>
+				 <td><input type="text" class="form-control" placeholder="ZIC X5特级"></td>
+				 <td>
+					<span>起始<input type="text" class="form-control small">元</span>
+					<span>结束<input type="text" class="form-control small">元</span>
+					<span>间隔<input type="text" class="form-control small">元</span>
+				 </td>
+			 </tr>
+			 
+			 <tr>
+				 <td>交强险+商业险</td>
+				 <td><input type="text" class="form-control" placeholder="人保/国寿"></td>
+				 <td><input type="text" class="form-control" placeholder="ZIC X5特级"></td>
+				 <td><input type="text" class="form-control" placeholder="ZIC X5特级"></td>
+				 <td>
+					<span>起始<input type="text" class="form-control small">元</span>
+					<span>结束<input type="text" class="form-control small">元</span>
+					<span>间隔<input type="text" class="form-control small">元</span>
+				 </td>
+			 </tr>
+			 
+			 </tbody>
+		 </table>
+		 <button type="button" class="btn btn-primary" style="margin-bottom:80px;">生成表单</button>
+		 
+		 <table class="table table-hover text-center">
+			 <thead>
+				 <tr>
+					 <th>购买险种</th>
+					 <th>商业险保费（金额/元）</th>
+					 <th>保险公司</th>
+					 <th>车主油品型号</th>
+					 <th>车主油品数量</th>
+					 <th>修理厂油品型号</th>
+					 <th>修理厂油品数量</th>
+				 </tr>
+			 </thead>
+	 
+			 <tbody>
+			 <tr>
+				 <td>单交强险</td>
+				 <td><input type="text" class="form-control" placeholder=""></td>
+				 <td><input type="text" class="form-control" placeholder="人保/国寿"></td>
+				 <td><input type="text" class="form-control" placeholder="ZIC X5特级"></td>
+				 <td><input type="text" class="form-control small" placeholder="0"></td>
+				 <td><input type="text" class="form-control" placeholder="ZIC X5特级"></td>
+				 <td><input type="text" class="form-control small" placeholder="1"></td>
+			 </tr>
+			 
+			 <tr>
+				 <td>单商业险</td>
+				 <td><input type="text" class="form-control" placeholder="1200-1499"></td>
+				 <td><input type="text" class="form-control" placeholder="人保/国寿"></td>
+				 <td><input type="text" class="form-control" placeholder="ZIC X5特级"></td>
+				 <td><input type="text" class="form-control small" placeholder="0"></td>
+				 <td><input type="text" class="form-control" placeholder="ZIC X5特级"></td>
+				 <td><input type="text" class="form-control small" placeholder="3"></td>
+			 </tr>
+			 
+			 <tr>
+				 <td>单商业险</td>
+				 <td><input type="text" class="form-control" placeholder="1500-1999"></td>
+				 <td><input type="text" class="form-control" placeholder="人保/国寿"></td>
+				 <td><input type="text" class="form-control" placeholder="ZIC X5特级"></td>
+				 <td><input type="text" class="form-control small" placeholder="0"></td>
+				 <td><input type="text" class="form-control" placeholder="ZIC X5特级"></td>
+				 <td><input type="text" class="form-control small" placeholder="3"></td>
+			 </tr>
+			 
+			 <tr>
+				 <td>单商业险</td>
+				 <td><input type="text" class="form-control" placeholder="2000-2499"></td>
+				 <td><input type="text" class="form-control" placeholder="人保/国寿"></td>
+				 <td><input type="text" class="form-control" placeholder="ZIC X5特级"></td>
+				 <td><input type="text" class="form-control small" placeholder="1"></td>
+				 <td><input type="text" class="form-control" placeholder="ZIC X5特级"></td>
+				 <td><input type="text" class="form-control small" placeholder="2"></td>
+			 </tr>
+			 
+			 <tr>
+				 <td>交强险+商业险</td>
+				 <td><input type="text" class="form-control" placeholder="1200-1499"></td>
+				 <td><input type="text" class="form-control" placeholder="人保/国寿"></td>
+				 <td><input type="text" class="form-control" placeholder="ZIC X5特级"></td>
+				 <td><input type="text" class="form-control small" placeholder="1"></td>
+				 <td><input type="text" class="form-control" placeholder="ZIC X5特级"></td>
+				 <td><input type="text" class="form-control small" placeholder="3"></td>
+			 </tr>
+			 
+			 <tr>
+				 <td>交强险+商业险</td>
+				 <td><input type="text" class="form-control" placeholder="1500-1999"></td>
+				 <td><input type="text" class="form-control" placeholder="人保/国寿"></td>
+				 <td><input type="text" class="form-control" placeholder="ZIC X5特级"></td>
+				 <td><input type="text" class="form-control small" placeholder="3"></td>
+				 <td><input type="text" class="form-control" placeholder="ZIC X5特级"></td>
+				 <td><input type="text" class="form-control small" placeholder="4"></td>
+			 </tr>
+			 
+			 <tr>
+				 <td>交强险+商业险</td>
+				 <td><input type="text" class="form-control" placeholder="2000-2499"></td>
+				 <td><input type="text" class="form-control" placeholder="人保/国寿"></td>
+				 <td><input type="text" class="form-control" placeholder="ZIC X5特级"></td>
+				 <td><input type="text" class="form-control small" placeholder="2"></td>
+				 <td><input type="text" class="form-control" placeholder="ZIC X5特级"></td>
+				 <td><input type="text" class="form-control small" placeholder="3"></td>
+			 </tr>
+			 
+			 </tbody>
+		 </table>
+		 <button type="button" class="btn btn-primary" style="margin-bottom:20px;">保存</button>
+		 </form>
+	 </div>
+ </div>
+	
+{% endblock %}
+{% block js %}
+<script type="text/javascript">
+
+function init_province(){
+    var province_code=$("#province_code").attr("data-default");
+    var city_code=$("#city_code").attr("data-default");
+
+    if(province_code.length>0){
+        console.debug(city_code)
+        province_change(province_code, city_code);
+    }
+}
+function province_change(id, default_id){
+    $("#city_code > option").remove();
+    $("#city_code").append("<option value=\"0\">--请选择城市--</option>");
+    if(id > 0){
+        console.debug(default_id)
+        GetSubAreas(id, "city_code", default_id);
+    }
+}
+
+function GetSubAreas(id,ddl_id, default_id) {
+    $.get("/ajax/GetSubAreas", { pcode: id,  t: Math.random() }, function (data) {
+        data = jQuery.parseJSON(data);
+        if(data.flag==1){
+            for(var i=0; i< data.data.length; i++){
+                if(default_id.length>0){
+                    console.debug(data.data[i]["code"])
+                    if(data.data[i]["code"]+'%'==default_id){
+                        console.debug(default_id)
+                        $("#" + ddl_id).append("<option value=\"" + data.data[i]["code"] + "\" selected>" + data.data[i]["name"] + "</option>");
+                    }
+                    else{
+                        console.debug('not default id')
+                        $("#" + ddl_id).append("<option value=\"" + data.data[i]["code"] + "\">" + data.data[i]["name"] + "</option>");
+                    }
+                }
+                else {
+                    console.debug('default id length < 0')
+                    $("#" + ddl_id).append("<option value=\"" + data.data[i]["code"] + "\">" + data.data[i]["name"] + "</option>");
+                }
+            }
+        }
+        else{
+            alert(data.msg)
+        }
+    });
+}
+</script>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,74 @@
+
+
+<div class="cw-icon"><i class="ci-left"></i><i class="ci-right">&gt;</i><i class="ci-count" id="shopping-amount">{{count}}</i>
+    <a target="_blank" href="/cart/show">我的购物车</a> </div>
+<div class="dorpdown-layer">
+    <div class="spacer"></div>
+    {%- if count > 0 -%}
+    <div id="settleup-content">
+        <div class="smt">
+            <h4 class="fl">最新加入的商品</h4>
+        </div>
+        <div class="smc">
+            <ul id="mcart-sigle">
+            </ul>
+            <ul id="mcart-gift">
+            </ul>
+            <ul id="mcart-mj">
+                <!--<li class="dt">-->
+                <!--<div class="fl"><span class="hl-green">满减</span> 已购满699元，已减25元</div>-->
+                <!--<div class="fr"><em>小计：￥1099.00</em></div>-->
+                <!--<div class="clr"></div>-->
+                <!--</li>-->
+                {%- for cartitem in cartitems -%}
+                <li>
+                    <div class="p-img fl">
+                        <a href="/product/{{cartitem['psid']}}" target="_blank">
+                            <img src="{{cartitem['imgurl']}}" alt="" height="50" width="50"></a>
+                    </div>
+                    <div class="p-name fl"><span></span><a href="/product/{{cartitem['psid']}}" title="{{cartitem['name']}}" target="_blank">{{cartitem['name']}}</a></div>
+                    <div class="p-detail fr ar">
+                        <span class="p-price"><strong>￥{{cartitem['price']}}</strong>×{{cartitem['quantity']}}</span>
+                        <br>
+                        <a class="delete" data-id="{{cartitem['psid']}}" onclick="remove_cart({{cartitem['psid']}});" href="#delete">删除</a>
+                    </div>
+                    <!--<div class="gift"><a href="http://item.jd.com/1288199.html" target="_blank">[赠品] 轮胎安装服务</a></div>-->
+                </li>
+                {%- endfor -%}
+                {%- for gift in gift_items -%}
+                <li>
+                    <div class="p-img fl">
+                        <a href="/product/{{gift['psid']}}" target="_blank">
+                            <img src="{{gift['imgurl']}}" alt="" height="50" width="50"></a>
+                    </div>
+                    <div class="p-name fl"><span></span><a href="/product/{{gift['psid']}}" title="{{gift['name']}}" target="_blank">{{gift['name']}}</a></div>
+                    <div class="p-detail fr ar">
+                        <span class="p-price"><strong>￥{{gift['price']}}</strong>×{{gift['quantity']}}</span>
+                        <br>
+                        <a class="delete" data-id="{{gift['psid']}}" onclick="remove_cart({{cartitem['psid']}});" href="#delete">删除</a>
+                    </div>
+                </li>
+                {%- endfor -%}
+            </ul>
+        </div>
+        <div class="smb ar">
+            <div class="p-total">共<b>{{count}}</b>件商品　共计<strong>￥ {{totalprice}}</strong></div>
+            <a href="/cart/show" title="去购物车" id="btn-payforgoods">去购物车</a>
+        </div>
+        {%- else -%}
+        <div class="prompt">
+            <div class="nogoods"><b></b>购物车中还没有商品，赶紧选购吧！</div>
+        </div>
+        {%- endif -%}
+    </div>
+</div>
+<script>
+    var xsrf='{{handler.xsrf_token}}';
+    function remove_cart(psid){
+        $.post("/ajax/removeCar", {psid:psid,poid:'', t:Math.random(), _xsrf : xsrf}, function(data){
+            if (data == 1){
+                $("#cart_body").load("/cartcontrol?t=" + Math.random());
+            }
+        });
+    }
+</script>

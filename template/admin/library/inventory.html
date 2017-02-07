@@ -1,0 +1,124 @@
+{% extends "layout/admin.html" %}
+{% block css %}
+<link href="/style2/css/plugins/dataTables.bootstrap.css" rel="stylesheet">
+<style type="text/css">
+    .actual{width:100px;}
+</style>
+{% endblock %}
+{% block content %}
+
+<div class="row" style="font-family: 'microsoft yahei';">
+   <nav>
+   <div>
+      <a class="navbar-brand" href="javascript:void(0);">库存盘点</a>
+   </div>
+</nav>
+<div class="btn-group btn-group-mg" style="padding: 10px 0 0 10px;;">
+<a type="button" class="btn btn-mg btn-default {% if status==0 %} active {% endif %}" href="/admin/library/inventory?status=0&sku={{sku}}">全部</a>
+<a type="button" class="btn btn-mg btn-default {% if status==1 %} active {% endif %}" href="/admin/library/inventory?status=1&sku={{sku}}">上架</a>
+<a type="button" class="btn btn-mg btn-default {% if status==2 %} active {% endif %}" href="/admin/library/inventory?status=2&sku={{sku}}">下架</a>
+</div>
+<div class="btn-group btn-group-mg" style="padding: 10px 0 0 10px;;">
+<a type="button" class="btn btn-mg btn-default {% if sku=='00' %} active {% endif %}" href="/admin/library/inventory?sku=00&status={{status}}">全部</a>
+<a type="button" class="btn btn-mg btn-default {% if sku=='02' %} active {% endif %}" href="/admin/library/inventory?sku=02&status={{status}}">蔬菜</a>
+<a type="button" class="btn btn-mg btn-default {% if sku=='01' %} active {% endif %}" href="/admin/library/inventory?sku=01&status={{status}}">水果</a>
+</div>
+    <div class="btn-group btn-group-mg" style="padding: 10px 0 0 10px;;">
+        <a class="btn btn-mg btn-default" id="export_products">导出数据</a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="panel panel-primary">
+    <div class="panel-body">
+        <div class="table-responsive">
+        <table class="table table-hover" id="tb_users">
+            <thead>
+                <tr>
+                    <th>产品ID</th>
+                    <th>产品名称</th>
+                    <th>SKU</th>
+                    <th>规格（克）</th>
+                    <th>当前库存（斤）</th>
+                    <th>实际库存（斤）</th>
+                    <th style="text-align: center;">操作</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for p in products -%}
+            <tr style="background-color: {{ p.updatedtime|dateformat == time.strftime('%Y-%m-%d',time.localtime(time.time())) and '#009768' or '#FFF'}}" id="tr{{p.id}}">
+              <td>{{p.id}}</td>
+              <td>
+                  <label class="checkbox-inline">
+                      {{p.name}}
+                  </label>
+              </td>
+              <td>{{p.sku}}</td>
+              <td>{{p.weight}}</td>
+              <td>{{p.quantity}}</td>
+              <td><input class="form-control actual" name="actual" type="text" placeholder="实际库存不能为空"
+                               value="{{p.quantity}}" required></td>
+            <td style="text-align: right;"><input type="button" class="btn btn-info updateInfo" data="{{p.id}}" data-oq="{{p.quantity}}" value="修改" />
+                <a class="btn btn-info" href="/admin/library/loss/{{p.id}}" style="display: none;" />损耗情况</a>
+            </td>
+            </tr>
+            {%- endfor %}
+            </tbody>
+        </table>
+        </div>
+    </div>
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<script>
+    var xsrf='{{handler.xsrf_token}}';
+    function request(paras){
+        var url = location.href;
+        var paraString = url.substring(url.indexOf("?")+1,url.length).split("&");
+        var paraObj = {}
+        for (i=0; j=paraString[i]; i++){
+            paraObj[j.substring(0,j.indexOf("=")).toLowerCase()] = j.substring(j.indexOf("=")+1,j.length);
+        }
+        var returnValue = paraObj[paras.toLowerCase()];
+            if(typeof(returnValue)=="undefined"){
+            return "-1";
+        }else{
+            return returnValue;
+        }
+    };
+
+    $(".updateInfo").click(function(){
+        var pid = $(this).attr("data");
+        var actual = $(this).parents('tr').find('.actual').val();
+        var oq = $(this).attr("data-oq");
+        $.post('/ajax/update_inventory',{_xsrf:xsrf,pid:pid,quantity:actual,oq:oq},function(data){
+            if(data == "success"){
+                alert("修改成功");
+                $('#tr'+pid).css("background-color","#009768");
+                location.href = '/admin/library/inventory'+'#tr'+pid;
+            }else{
+                alert(data);
+            }
+        });
+    });
+
+    $(function() {
+        $("#export_products").click(function () {
+            debugger;
+            var status = request("status");
+            var sku = request("sku");
+            $.post('/ajax/export/products', {_xsrf: xsrf, sku: sku, status: status}, function (data) {
+                var obj = jQuery.parseJSON(data);
+                if (obj.err == 0) {
+                    alert('生成成功，请保存CSV文件！');
+                    window.open("/upload/" + obj.msg);
+                }
+                else {
+                    alert('导出失败：' + obj.msg);
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

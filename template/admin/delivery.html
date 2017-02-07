@@ -1,0 +1,40 @@
+{% extends "layout/admin.html" %}
+{% block content %}
+<div class="row">
+   <nav>
+   <div>
+      <a class="navbar-brand" href="#">物流管理</a>
+   </div>
+</nav>
+</div>
+<div class="row">
+    <div class="panel panel-primary">
+    <div class="panel-body">
+        <div class="table-responsive">
+        <table class="table table-hover" id="tb_users">
+            <thead>
+                <tr>
+                    <th>物流公司名称</th>
+                    <th>正在派送订单</th>
+                    <th>已派送订单</th>
+                    <th>有效订单号</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for d in deliverys -%}
+              <tr>
+              <td>{{d.name}}</td>
+              <td>
+                {{d.counting}}
+              </td>
+                  <td>{{d.counted}}</td>
+                  <td>{{remaining}}</td>
+            </tr>
+			{%- endfor %}
+            </tbody>
+        </table>
+        </div>
+    </div>
+    </div>
+</div>
+{% endblock %}

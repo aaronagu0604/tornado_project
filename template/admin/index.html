@@ -1,0 +1,78 @@
+{% extends "layout/admin.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="page-header">汇总信息</h3>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">今日信息</h3>
+            </div>
+            <div class="panel-body">
+                <table class="table table-condensed">
+                    <tbody>
+                        <tr>
+                            <td>新用户：</td>
+                            <th>{{report['day_new_users']}}</th>
+                        </tr>
+                        <tr>
+                            <td>待付款订单：</td>
+                            <th>
+                                31
+                            </th>
+                        </tr>
+                        <tr>
+                            <td>待处理订单：</td>
+                            <th>89</th>
+                        </tr>
+                        <tr>
+                            <td>代发货订单：</td>
+                            <th>
+                                0
+                            </th>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">本月信息</h3>
+            </div>
+            <div class="panel-body">
+                <table class="table table-condensed">
+                    <tbody>
+                        <tr>
+                            <td>新用户：</td>
+                            <th>37</th>
+                        </tr>
+                        <tr>
+                            <td>待付款订单：</td>
+                            <th>
+                                31
+                            </th>
+                        </tr>
+                        <tr>
+                            <td>待处理订单：</td>
+                            <th>89</th>
+                        </tr>
+                        <tr>
+                            <td>代发货订单：</td>
+                            <th>
+                                0
+                            </th>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

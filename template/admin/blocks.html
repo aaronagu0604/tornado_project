@@ -1,0 +1,43 @@
+{% extends "layout/admin.html" %}
+{% block css %}
+<link href="/style2/css/plugins/dataTables.bootstrap.css" rel="stylesheet">
+{% endblock %}
+{% block content %}
+<div class="row">
+   <nav>
+   <div>
+      <a class="navbar-brand" href="#">首页展示设计</a>
+   </div>
+</nav>
+</div>
+<div class="row">
+    <div class="panel panel-primary">
+    <div class="panel-body">
+        <div class="table-responsive">
+        <table class="table table-hover" id="tb_users">
+            <thead>
+                <tr>
+                    <th>名称</th>
+                    <th>关键字</th>
+                    <th>编辑人</th>
+                    <th>编辑时间</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for b in blocks -%}
+              <tr>
+              <td>{{b.name}}</td>
+              <td>{{b.key}}</td>
+              <td>{{b.updatedby.name}}</td>
+              <td>{{b.updatedtime|datetimeformat}}</td>
+              <td><a type="button" class="btn btn-default" href="/admin/block/{{b.id}}">修改</a></td>
+            </tr>
+			{%- endfor %}
+            </tbody>
+        </table>
+        </div>
+    </div>
+    </div>
+</div>
+{% endblock %}

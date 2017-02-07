@@ -1,0 +1,74 @@
+{% extends "layout/admin.html" %}
+{% block content %}
+
+
+<div class="row">
+    <nav>
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">编辑批发市场信息</a>
+        </div>
+    </nav>
+</div>
+<div class="row">
+    <div class="panel panel-primary">
+        <div class="panel-body">
+
+            {%set messages=handler.get_flashed_messages() %}
+            {%if messages%}
+            <div class="msg" style="color:red;">
+                {% for type, msg in messages%}
+                <span>{{msg}}</span>
+                {% endfor %}
+            </div>
+            {%endif%}
+
+            <form action="" method="post" enctype="multipart/form-data">
+                {{xsrf()}}
+
+
+                <div class="form-group has-success">
+                    <label class="control-label">人工成本（元）</label>
+                    <input type="text" name="people_cost" class="form-control" value="{{co.people_cost or 0.0}}"  required placeholder="人工成本" />
+                </div>
+
+                <div class="form-group has-success">
+                    <label class="control-label">车辆成本（元）</label>
+                    <input type="text" name="car_cost" class="form-control" value="{{co.car_cost or 0.0}}"    placeholder="车辆成本" />
+                </div>
+
+                <div class="form-group has-success">
+                    <label class="control-label">耗材成本（元）</label>
+                    <input type="text" name="haocai" class="form-control" value="{{co.haocai or 0.0}}"    placeholder="耗材成本" />
+                </div>
+
+                <div class="form-group has-success">
+                    <label class="control-label">时间</label>
+                    <input type="date" name="updatedtime" id="updatedtime" class="form-control" value="{{co.updatedtime and co.updatedtime|dateformat or ''}}"    placeholder="时间" />
+                </div>
+
+                <div class="form-group has-success">
+                    <input type="submit" name="sub" value="提 交" class="btn btn-outline btn-primary btn-sm">
+                    <!--<input type="reset" name="sub" value="重 置" class="btn btn-outline btn-primary btn-sm">-->
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script>
+    $(function(){
+         var myDate = new Date();
+            var strMonth = myDate.getMonth()>9?(myDate.getMonth()+1):'0' + (myDate.getMonth()+1);
+            var strDay = myDate.getDate()>9?myDate.getDate().toString():'0' + myDate.getDate();
+            var c_time = $("#updatedtime").val();
+            if(c_time == '')
+                $("#updatedtime").val(myDate.getFullYear() + '-' + strMonth + '-' + strDay);
+     });
+</script>
+{% endblock %}

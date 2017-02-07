@@ -1,0 +1,109 @@
+{% extends "layout/admin.html" %}
+{% block css %}
+<link href="/style2/css/plugins/dataTables.bootstrap.css" rel="stylesheet">
+<style type="text/css">
+    .actual{width:100px;}
+</style>
+{% endblock %}
+{% block content %}
+<script language="javascript" type="text/javascript" src="/style2/js/My97DatePicker/WdatePicker.js"></script>
+<div class="row">
+   <nav>
+       <div>
+          <h3><span class="navbar-brand">直采报表</span></h3>
+       </div>
+       <div class="pull-right">
+           <form class="navbar-form navbar-left" action="" method="get" role="search">
+               <div class="input-group custom-search-form">
+                   <input type="text" name="begindate" id="begindate" value="{{begindate}}" class="Wdate form-control"  onClick="WdatePicker()" style="width:125px; height: 34px;" />
+                   <input type="text" name="enddate" id="enddate" value="{{enddate}}" class="Wdate form-control"  onClick="WdatePicker()" style="width:125px; height: 34px;" />
+                   <span class="input-group-btn">
+                       <button class="btn btn-default" type="submit" id="bt_submit">
+                            <i class="fa fa-search"></i>
+                       </button>
+                    </span>
+               </div>
+           </form>
+       </div>
+   </nav>
+</div>
+
+<div class="row">
+    <div class="panel panel-primary">
+    <div class="panel-body">
+        <div class="table-responsive">
+        <table class="table table-hover" id="tb_people">
+            <thead>
+                <tr>
+                    <th>商品名称</th>
+                    <th>地点</th>
+                    <th>销量(斤)</th>
+                    <th>保质天数</th>
+                    <th>销售价格</th>
+                    <th>每份重量</th>
+                    <th>采购价格</th>
+                    <th>状态</th>
+                    <th>直菜价格</th>
+                    <th>最低直采量(斤)</th>
+                    <th>批发价格</th>
+                </tr>
+
+            </thead>
+            <tbody>
+                {% for n in q %}
+                <tr>
+                    <td><a target="_blank" href="/admin/product/{{n.id}}">{{n.name}}</a></td>
+                    <td>{{n.producer}}</td>
+                    <td>{{n.s_weight}}</td>
+                    <td>{{n.bz_days}}</td>
+                    <td>{{n.s_price}}</td>
+                    <td>{{'%.0f' % n.weight}}克</td>
+                    <td>{{n.c_price or ''}}</td>
+                    <td>{{n.status == 1 and '上架' or '下架'}}</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        </div>
+    </div>
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<script src="/style2/js/jquery.twbsPagination.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            var begin = '{{begindate}}';
+            var end = '{{enddate}}';
+            if (begin == '')
+                $("#begindate").val(getBeforeDate(7));
+            if (end == '')
+                $("#enddate").val(getBeforeDate(0));
+        });
+        function getBeforeDate(n){
+            var n = n;
+            var d = new Date();
+            var year = d.getFullYear();
+            var mon=d.getMonth()+1;
+            var day=d.getDate();
+            if(day <= n){
+                    if(mon>1) {
+                       mon=mon-1;
+                    }
+                   else {
+                     year = year-1;
+                     mon = 12;
+                     }
+                   }
+                  d.setDate(d.getDate()-n);
+                  year = d.getFullYear();
+                  mon=d.getMonth()+1;
+                  day=d.getDate();
+             s = year+"-"+(mon<10?('0'+mon):mon)+"-"+(day<10?('0'+day):day);
+             return s;
+        }
+    </script>
+{% endblock %}

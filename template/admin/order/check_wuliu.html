@@ -1,0 +1,120 @@
+{% extends "layout/admin.html" %}
+{% block css %}
+<link href="/style2/css/plugins/dataTables.bootstrap.css" rel="stylesheet">
+{% endblock %}
+{% block content %}
+
+<div class="row">
+   <nav>
+   <div>
+      <a class="navbar-brand" href="#">查看订单</a>
+       <label class="navbar-brand">
+           <input type="checkbox" id="checkall">全选
+       </label>
+
+   </div>
+       <div class="pull-right">
+       </div>
+   <div class="pull-right">
+
+   </div>
+</nav>
+</div>
+<div class="row">
+    <div class="panel panel-primary">
+    <div class="panel-body">
+        <div class="table-responsive">
+        <table class="table table-hover" id="tb_users">
+            <thead>
+                <tr>
+                    <th>订单号</th>
+                    <th>用户账户</th>
+                    <th>下单时间</th>
+                    <th>订单详情</th>
+                    <th>订单金额</th>
+                    <th>运费</th>
+                    <th>支付方式</th>
+                    <th>收货方信息</th>
+                    <th>订单状态</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for o in orders -%}
+
+                <tr>
+              <td>
+                  <label class="checkbox-inline">
+                      <input type="checkbox" name="order_id_list" value="{{o.id}}">{{o.ordernum}}
+                      {% if o.flag==1 %}
+                        <i style="color: red;" class="fa fa-flag fa-fw" title="{{o.summary|null}}"></i>
+                      {% elif o.flag==2 %}
+                            <i style="color: blue;" class="fa fa-flag fa-fw" title="{{o.summary|null}}"></i>
+                      {% elif o.flag==3 %}
+                            <i style="color: #149904;" class="fa fa-flag fa-fw" title="{{o.summary|null}}"></i>
+                      {% elif o.flag==4 %}
+                            <i style="color: #751b4c;" class="fa fa-flag fa-fw" title="{{o.summary|null}}"></i>
+                      {% elif o.flag==5 %}
+                             <i style="color: #eea236;" class="fa fa-flag fa-fw" title="{{o.summary|null}}"></i>
+                      {% elif o.flag==6 %}
+                            <i style="color: #b4c5bf;" class="fa fa-flag fa-fw" title="{{o.summary|null}}"></i>
+                      {% endif %}
+
+                  </label>
+              </td>
+              <td>{{o.user.username}}</td>
+              <td>{{o.ordered|datetimeformat}}</td>
+              <td>
+                  {% for i in o.items %}
+                  <div>{{i.product.name}} X {{i.quantity}}</div>
+                  {% endfor %}
+              </td>
+              <td>{{o.currentprice}}</td>
+              <td>{{o.shippingprice}}</td>
+              <td>
+                  {% if o.payment==0 %}
+                        货到付款
+                  {% elif o.payment==1 %}
+                        支付宝
+                  {% elif o.payment==2 %}
+                        账户余额
+                  {% elif o.payment==3 %}
+                        网银支付
+                  {%endif%}
+              </td>
+              <td>
+                  <div>
+                      {{o.address.name}} - {{o.address.mobile}}
+                  </div>
+              </td>
+              <td>
+                  {% if o.status==0 and o.payment==1 %}
+                    待付款
+                  {% elif o.status==1 or (o.status==0 and o.payment==0) %}
+                    待处理
+                  {% elif o.status==2 %}
+                    正在处理
+                  {% elif o.status==3 %}
+                    已发货
+                  {% elif o.status==4 %}
+                    已完成
+                  {% elif o.status==5 %}
+                    已取消
+                  {% endif %}
+              </td>
+              <td>
+                <a href="/admin/order/{{o.id}}" class="btn btn-outline btn-primary btn-xs">详情</a>
+              </td>
+            </tr>
+			{%- endfor %}
+            </tbody>
+        </table>
+        </div>
+    </div>
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<script src="/style2/js/jquery.twbsPagination.min.js"></script>
+
+{% endblock %}

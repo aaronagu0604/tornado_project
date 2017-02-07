@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>车装甲管理系统</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="/style2/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- MetisMenu CSS -->
+    <link href="/style2/css/plugins/metisMenu/metisMenu.min.css" rel="stylesheet">
+
+    <!-- Timeline CSS -->
+    <link href="/style2/css/plugins/timeline.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="/style2/css/sb-admin-2.css" rel="stylesheet">
+
+    <!-- Morris Charts CSS -->
+    <link href="/style2/css/plugins/morris.css" rel="stylesheet">
+
+    <link href="/style2/css/chosen.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="/style2/font-awesome-4.1.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    {% block css %}{% endblock %}
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body style="font-family: 'microsoft yahei', arial">
+
+<div id="wrapper">
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/admin">车装甲管理系统</a>
+            <a class="navbar-brand" href="javascript:void(0);" id="controlLeft">隐藏左栏</a>
+        </div>
+        <!-- /.navbar-header -->
+
+        <ul class="nav navbar-top-links navbar-right">
+            <li>
+                <a href="/admin/topic?status=0&page=1">
+                    <i class="fa fa-bell fa-fw"></i>待处理问题 [<span style="color:red;">{{ handler.get_active_topic_count() }}</span>] <i class="fa fa-caret-down"></i>
+                </a>
+
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fa fa-user fa-fw"></i> {{admin.realname}} <i class="fa fa-caret-down"></i>
+                </a>
+            </li>
+            <li>
+                <a href="/admin/logout">
+                    <i class="fa fa-power-off fa-fw"></i> 退出 <i class="fa fa-caret-down"></i>
+                </a>
+            </li>
+        </ul>
+
+        <div class="navbar-default sidebar" id="leftTree" role="navigation">
+            <div class="sidebar-nav navbar-collapse">
+                <ul class="nav" id="side-menu">
+                    <li {% if active=='withdraw' or active=='users' or active=='feedback' or active=='factory'
+                        or active=='sms_send' or active=='interview' or active=='store'%}
+                        class="active"{% endif %}">
+                    <a href="#"><i class="fa fa-user fa-fw"></i>&nbsp;&nbsp;&nbsp;用户管理
+                        <span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level">
+                        <li>
+                            <a {% if active=='users' %} class="active"{% endif %} href="/admin/users"></i>&nbsp;&nbsp;&nbsp;车主管理</a>
+                        </li>
+                        <li >
+                            <a {% if active=='factory' %} class="active"{% endif %} href="/admin/factory"></i>&nbsp;&nbsp;&nbsp;厂家管理</a>
+                        </li>
+                        <li>
+                            <a {% if active=='store' %} class="active"{% endif %} href="/admin/stores"></i>&nbsp;&nbsp;&nbsp;门店管理</a>
+                        </li>
+                        <li>
+                            <a {% if active=='sms_send' %} class="active"{% endif %} href="/admin/sms_send"></i>&nbsp;&nbsp;&nbsp;消息群发</a>
+                        </li>
+                        <li style="display: none;">
+                            <a {% if active=='interview' %} class="active"{% endif %} href="/admin/interview"></i>&nbsp;&nbsp;&nbsp;访谈记录</a>
+                        </li>
+                    	{% if handler.vrole('AD') %}
+                        <li>
+                            <a {% if active=='withdraw' %} class="active"{% endif %} href="/admin/withdraw"></i>&nbsp;&nbsp;&nbsp;提现管理</a>
+                        </li>
+                    	{% endif %}
+                    </ul>
+                    </li>
+                    {% if handler.vrole('ADY') %}
+                    <li {% if active=='update' or active=='admin_user' or active=='circle' or active=='question' or
+                        active=='ad_helpCenter' or active=='ad_type' or active=='ads' or active=='brand' or
+                        active=='area' or active=='site' or active=='blocks' or active=='hot_search' or
+                        active == 'categorys' or active == 'pages' or active=='coupon' or active=='comment' or
+                        active=='consult' or active=='raffle' or active=='medias' %} class="active" {%endif %}>
+                    <a  href="#"><i class="fa fa-briefcase fa-fw"></i>&nbsp;&nbsp;&nbsp;网站管理
+                        <span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level">
+                        {% if handler.vrole('AD') %}
+                        <li>
+                            <a {% if active=='admin_user' %}class="active" {% endif %}href="/admin/admin_user/0">&nbsp;&nbsp;&nbsp;后台用户管理</a>
+                        </li>
+                        {% endif %}
+                        {% if handler.vrole('ADY') %}
+                        <li style="display: none;">
+                            <a {% if active=='blocks' %}class="active"{% endif %} href="/admin/blocks">&nbsp;&nbsp;&nbsp;首页展示设计</a>
+                        </li>
+                        {% endif %}
+                        {% if handler.vrole('ADY') %}
+                        <li>
+                            <a {% if active=='ad_helpCenter' %}class="active"{% endif %} href="/admin/helpcenter">&nbsp;&nbsp;&nbsp;帮助中心管理</a>
+                        </li>
+                        <li>
+                            <a {% if active=='ad_type' %}class="active"{% endif %} href="/admin/ad_type">&nbsp;&nbsp;&nbsp;广告位管理</a>
+                        </li>
+                        <li>
+                            <a {% if active=='ads' %}class="active"{% endif %} href="/admin/ads">&nbsp;&nbsp;&nbsp;广告管理</a>
+                        </li>
+                        <li>
+                            <a {% if active=='brand' %}class="active"{% endif %} href="/admin/brand">&nbsp;&nbsp;&nbsp;品牌车型管理</a>
+                        </li>
+                        <li>
+                            <a {% if active=='area' %}class="active"{% endif %} href="/admin/area">&nbsp;&nbsp;&nbsp;区域管理</a>
+                        </li>
+                        <li>
+                            <a {% if active=='site' %}class="active"{% endif %} href="/admin/site">&nbsp;&nbsp;&nbsp;站点管理</a>
+                        </li>
+                        <li>
+                            <a {% if active=='medias' %} class="active"{% endif %} href="/admin/medias"></i>&nbsp;&nbsp;&nbsp;媒体报道</a>
+                        </li>
+                        {% endif %}
+                        {% if handler.vrole('ADY') %}
+                        <li style="display: none;">
+                            <a {% if active=='comment' %}class="active"{% endif %} href="/admin/comment?status=1">&nbsp;&nbsp;&nbsp;商品评价管理</a>
+                        </li>
+                        {% endif %}
+                        {% if handler.vrole('ADY') %}
+                        <li style="display: none;">
+                            <a {% if active=='consult' %}class="active"{% endif %} href="/admin/consult">&nbsp;&nbsp;&nbsp;售后咨询</a>
+                        </li>
+                        {% endif %}
+                        {% if handler.vrole('ADY') %}
+                        <li style="display: none;">
+                            <a {% if active=='raffle' %} class="active"{% endif %} href="/admin/product/raffle_list"></i>&nbsp;&nbsp;&nbsp;获奖信息</a>
+                        </li>
+                        {% endif %}
+                        {% if handler.vrole('ADY') %}
+                        <li style="display: none;">
+                            <a {% if active=='coupon' %}class="active"{% endif %} href="/admin/coupon"></i>&nbsp;&nbsp;&nbsp;优惠劵管理</a>
+                        </li>
+                        {% endif %}
+                        {% if handler.vrole('ADY') %}
+                        <li>
+                            <a {% if active=='hot_search' %}class="active"{% endif %} href="/admin/hot_search">&nbsp;&nbsp;&nbsp;热门搜索</a>
+                        </li>
+                        {% endif %}
+                        {% if handler.vrole('AD') %}
+                        <li>
+                            <a {% if active=='categorys' %}class="active"{% endif %} href="/admin/categorys">&nbsp;&nbsp;&nbsp;分类管理</a>
+                        </li>
+                        {% endif %}
+                        {% if handler.vrole('AD') %}
+                        <li>
+                            <a {% if active=='pages' %}class="active"{% endif %} href="/admin/pages">&nbsp;&nbsp;&nbsp;静态页面</a>
+                        </li>
+                        {% endif %}
+                        {% if handler.vrole('AD') %}
+                        <li>
+                            <a {% if active=='question' %}class="active"{% endif %} href="/admin/question">&nbsp;&nbsp;&nbsp;问答管理</a>
+                        </li>
+                        {% endif %}
+                        {% if handler.vrole('AD') %}
+                        <li>
+                            <a {% if active=='circle' %}class="active"{% endif %} href="/admin/circle">&nbsp;&nbsp;&nbsp;圈子管理</a>
+                        </li>
+                        {% endif %}
+                        {% if handler.vrole('ADY') %}
+                        <li>
+                            <a {% if active=='update' %}class="active"{% endif %} href="/admin/update">&nbsp;&nbsp;&nbsp;更新管理</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                    </li>
+                    {% endif %}
+                    {% if handler.vrole('ADYK') %}
+                    <li {% if active=='pinpaitype' or active=='pinpai' or active=='ps'  or  active=='reserve' %}class="active"{% endif %}>
+                        <a  href="#"><i class="fa fa-picture-o fa-fw"></i>&nbsp;&nbsp;&nbsp;商品管理
+                            <span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            {% if handler.vrole('ADYKC') %}
+                            <li>
+                                <a {% if active=='pinpaitype' %} class="active"{% endif %} href="/admin/pinpaitype"></i>&nbsp;&nbsp;&nbsp;配件品牌分类</a>
+                            </li>
+                            <li>
+                                <a {% if active=='pinpai' %} class="active"{% endif %} href="/admin/pinpai"></i>&nbsp;&nbsp;&nbsp;配件品牌</a>
+                            </li>
+                            <li>
+                                <a {% if active=='ps' %} class="active"{% endif %} href="/admin/products"></i>&nbsp;&nbsp;&nbsp;商品管理</a>
+                            </li>
+
+                            {% endif %}
+                        </ul>
+                    </li>
+                    {% endif %}
+                    {% if handler.vrole('ADY') %}
+                    <li {% if active=='m_ads' or active == 'm_blocks' %}class="active"{% endif %} style="display:none;">
+                    <a  href="#"><i class="fa fa-qrcode fa-fw"></i>&nbsp;&nbsp;&nbsp;手机App
+                        <span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level">
+
+                        <li>
+                            <a {% if active=='m_ads' %}class="active"{% endif %} href="/admin/mobile/ads">&nbsp;&nbsp;&nbsp;手机广告管理</a>
+                        </li>
+                        <li>
+                            <a {% if active=='m_blocks' %}class="active"{% endif %} href="/admin/mobile/blocks">&nbsp;&nbsp;&nbsp;手机展示设计</a>
+                        </li>
+                    </ul>
+                    </li>
+                    {% endif %}
+                    {% if handler.vrole('ADYKFBC') %}
+                    <li {% if active=='orders' or active=='skus' or active=='order_payback' or active=='insurance' or active=='insurancefile' or active=='banpen' or active=='gifts' or active=='inventory_orders' or active=='bulk_product_sel' %}class="active"{% endif %}>
+                        <a href="#"><i class="fa fa-align-justify fa-fw"></i>&nbsp;&nbsp;&nbsp;订单管理
+                            <span class="fa arrow"></span>
+                        </a>
+                        <ul class="nav nav-second-level">
+                            {% if handler.vrole('ADYKFBC') %}
+                            <li>
+                                <a {% if active=='orders' %}class="active"{% endif %} href="/admin/orders?status=2">普通商品订单</a>
+                            </li>
+                            <li>
+                                <a {% if active=='insurance' %}class="active"{% endif %} href="/admin/insurances/processing?status=0">保险订单处理</a>
+                            </li>
+                            <li>
+                                <a {% if active=='insurancefile' %}class="active"{% endif %} href="/admin/insurances/file?status=3">保险订单归档</a>
+                            </li>
+                            <li>
+                                <a {% if active=='banpen' %}class="active"{% endif %} href="/admin/banpen?status=0">按钣喷订单查看</a>
+                            </li>
+                            <li>
+                                <a {% if active=='order_payback' %}class="active"{% endif %} href="/admin/order_payback">待退款订单</a>
+                            </li>
+                            {% endif %}
+                            {% if handler.vrole('ADYCK') %}
+                            <li style="display: none;">
+                                <a {% if active=='gifts' %}class="active"{% endif %} href="/admin/gifts">赠品管理</a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </li>
+                    {% endif %}
+
+                    {% if handler.vrole('ADY') %}
+                    <li {% if active=='facilitatorlist' or active=='isrcfacilitatorlist' %}class="active"{% endif %}>
+                        <a href="#"><i class="fa fa-book fa-fw"></i>&nbsp;&nbsp;&nbsp;服务商管理
+                            <span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            {% if handler.vrole('ADYKC') %}
+                            <li>
+                                <a {% if active=='facilitatorlist' %} class="active"{% endif %} href="/admin/facilitatorlist"></i>&nbsp;&nbsp;&nbsp;普通商品服务商列表</a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </li>
+                    {% endif %}
+
+                    {% if handler.vrole('ADYKC') %}
+                    <li {% if active=='insuranceadmin' %}class="active"{% endif %}>
+                        <a href="#"><i class="fa fa-unlock fa-fw"></i>&nbsp;&nbsp;&nbsp;保险账户管理
+                            <span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            {% if handler.vrole('ADYKC') %}
+                            <li>
+                                <a {% if active=='insuranceadmin' %} class="active"{% endif %} href="/admin/insuranceadmin"></i>&nbsp;&nbsp;&nbsp;保险账户列表</a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </li>
+                    {% endif %}
+
+
+
+                    {% if handler.vrole('ADYKC') %}
+                    <li {% if active=='insuranceadmin' %}class="active"{% endif %}>
+                        <a href="#"><i class="fa fa-cab fa-fw"></i>&nbsp;&nbsp;&nbsp;车保养协议
+                            <span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            {% if handler.vrole('ADYKC') %}
+                            <li>
+                                <a {% if active=='agreementshow' %} class="active"{% endif %} href="/admin/agreementshow"></i>&nbsp;&nbsp;&nbsp;车保养协议</a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </li>
+                    {% endif %}
+
+
+                    {% if handler.vrole('AD') %}
+                    <li {% if active=='scoreproducts' or active=='scorelists' or active=="scorefacilitatorlist"  or active=="scoreorders" or active=="integralshow" or active=="cashingshow" or active=="scorearea" or active=="scorehistory" %}class="active"{% endif %}>
+                        <a href="#"><i class="fa fa-yen fa-fw"></i>&nbsp;&nbsp;&nbsp;积分管理
+                            <span class="fa arrow"></span>
+                        </a>
+                        <ul class="nav nav-second-level">
+                            {% if handler.vrole('AD') %}
+                            <li>
+                                <a {% if active=='scorelists' %}class="active"{% endif %} href="/admin/scorelists">积分商品列表</a>
+                            </li>
+                            <li>
+                                <a {% if active=='scoreproducts' %}class="active"{% endif %} href="/admin/scoreproducts">积分商品管理</a>
+                            </li>
+                            <li>
+                                <a {% if active=='scorefacilitatorlist' %}class="active"{% endif %} href="/admin/scorefacilitatorlist">发布积分商品</a>
+                            </li>
+                            <li>
+                                <a {% if active=='scoreorders' %}class="active"{% endif %} href="/admin/scoreorders?status=2">积分商品订单</a>
+                            </li>
+                            <li>
+                                <a {% if active=='integralshow' %} class="active"{% endif %} href="/admin/integralshow">积分生成规则</a>
+                            </li>
+                            <li>
+                                <a {% if active=='cashingshow' %} class="active"{% endif %} href="/admin/cashingshow">积分兑现规则</a>
+                            </li>
+                            <li>
+                                <a {% if active=='scorearea' %}class="active"{% endif %} href="/admin/scorearea">积分地区配置</a>
+                            </li>
+                            <li>
+                                <a {% if active=='scorehistory' %}class="active"{% endif %} href="/admin/scorehistory?status=1">积分出纳记录</a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </li>
+                    {% endif %}
+
+
+                    {% if handler.vrole('ADY') %}
+                    <!-- style="display: none;"  -->
+                    <li {% if active=='r_user' or active=='r_summary' or active=='r_sale' or active=='r_product'
+                            or active=='r_log' or active=='r_order' or active=='r_user_order' or active=='r_invoice'
+                            or active=='refereeReport' or active=='insuranceReport' or active=='areaReport' %}class="active"{% endif %}>
+                        <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i>&nbsp;&nbsp;&nbsp;统计报表<span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            {% if handler.vrole('AD') %}
+                            <li>
+                                <a {% if active=='refereeReport' %} class="active"{% endif %} href="/admin/report/referee"></i>&nbsp;&nbsp;&nbsp;推广人员销售统计</a>
+                            </li>
+                            <li>
+                                <a {% if active=='insuranceReport' %} class="active"{% endif %} href="/admin/report/insuranceOrder"></i>&nbsp;&nbsp;&nbsp;保单销售统计</a>
+                            </li>
+                            <li>
+                                <a {% if active=='areaReport' %} class="active"{% endif %} href="/admin/report/areaorder"></i>&nbsp;&nbsp;&nbsp;保单销售统计</a>
+                            </li>
+                            {% endif %}
+                            <li>
+                                <a {% if active=='r_user' %}class="active"{% endif %} href="/admin/report/user">会员报告</a>
+                            </li>
+                            <li>
+                                <a {% if active=='r_user_order' %}class="active"{% endif %} href="/admin/report/user/order">会员下单情况</a>
+                            </li>
+                            <li>
+                                <a {% if active=='r_order' %}class="active"{% endif %} href="/admin/report/order">订单报告</a>
+                            </li>
+                            {% if handler.vrole('ADF+') %}
+                            <li>
+                                <a {% if active=='r_product' %}class="active"{% endif %} href="/admin/report/product">产品报告</a>
+                            </li>
+                            {% endif %}
+                            {% if handler.vrole('ADF') %}
+                            <li>
+                                <a {% if active=='r_sale' %}class="active"{% endif %} href="/admin/report/sale">销售报告</a>
+                            </li>
+                            {% endif %}
+                            {% if handler.vrole('ADF') %}
+                            <li>
+                                <a {% if active=='r_invoice' %}class="active"{% endif %} href="/admin/report/invoice_total">采购销售报告</a>
+                            </li>
+                            {% endif %}
+                            <li>
+                                <a {% if active=='r_log' %}class="active"{% endif %} href="/admin/report/log">操作日志</a>
+                            </li>
+                        </ul>
+                    </li>
+                    {% endif %}
+                    <li>
+                        <a {% if active=='password' %}class="active"{% endif %} href="/admin/password"><i class="fa fa-eye fa-fw"></i>&nbsp;&nbsp;&nbsp;修改密码</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div id="page-wrapper">
+        {% block content %}&nbsp;{% endblock %}
+    </div>
+
+</div>
+
+
+<script src="/style2/js/jquery-1.11.1.min.js"></script>
+
+<script src="/style2/js/chosen.jquery.js"></script>
+<script language="javascript" type="text/javascript" src="/style2/js/My97DatePicker/WdatePicker.js"></script>
+
+<script type="text/javascript">
+        $(function(){
+            var status = 0;
+            $("#controlLeft").click(function() {
+                if (status == 0) {
+                    $("#leftTree").hide();
+                    $("#controlLeft").html('显示左栏');
+                    $("#page-wrapper").css('margin','0');
+                    status = 1;
+                }else{
+                    $("#leftTree").show();
+                    $("#controlLeft").html('隐藏左栏');
+                    $("#page-wrapper").css('margin','0 0 0 250px');
+                    status = 0;
+                }
+            });
+        });
+        var config = {
+            '.chosen-select': {},
+            '.chosen-select-deselect': { allow_single_deselect: true },
+            '.chosen-select-no-single': { disable_search_threshold: 10 },
+            '.chosen-select-no-results': { no_results_text: 'Oops, nothing found!' },
+            '.chosen-select-width': { width: "95%" }
+        }
+        for (var selector in config) {
+            $(selector).chosen(config[selector]);
+        }
+	</script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/style2/js/bootstrap.min.js"></script>
+
+<!-- Metis Menu Plugin JavaScript -->
+<script src="/style2/js/plugins/metisMenu/metisMenu.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/style2/js/sb-admin-2.js"></script>
+{% block js %}{% endblock %}
+
+<link rel="stylesheet" href="/style2/css/jquery.confirm.css" type="text/css" media="screen" />
+<script type="text/javascript" src="/style2/js/jquery.confirm.js"></script>
+</body>
+
+</html>

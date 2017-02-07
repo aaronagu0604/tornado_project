@@ -1,0 +1,206 @@
+{% extends "layout/admin.html" %}
+{% block content %}
+<div class="row">
+    <ol class="breadcrumb">
+        <li><a href="/admin/user/{{userid}}">返回用户订单信息</a></li>
+        <li class="active">
+            <input type="button" value="保存" id="saveOrder" class="btn btn-outline btn-default btn-xs">
+        </li>
+    </ol>
+</div>
+<div style="color: red; font-size: 0.6em; margin-bottom: 25px;">
+    {%set messages=handler.get_flashed_messages() %}
+    {%-if messages-%}
+        <div>
+            {% for type, msg in messages%}
+                {{msg}}
+            {% endfor %}
+        </div>
+    {%-endif-%}
+</div>
+<form class="form-horizontal" id="form" method="post" action="/admin/order_replace/{{o.id}}">
+{{xsrf()}}
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">订单基本信息</h3>
+            </div>
+            <div class="panel-body">
+                <table class="table table-condensed">
+                    <tbody>
+                        <tr>
+                            <td>收货人：</td>
+                            <th><input type="text" value="{{o.take_name}}" class="form-control" name="take_name">
+                            </th>
+                        </tr>
+                        <tr>
+                            <td>收货地址：</td>
+                            <th><input type="text" value="{{o.take_address}}" class="form-control" name="take_address"></th>
+                        </tr>
+                        <tr>
+                            <td>联系电话：</td>
+                            <th><input type="text" value="{{o.take_tel}}" class="form-control" name="take_tel"></th>
+                        </tr>
+                        <tr>
+                            <td>订单留言：</td>
+                            <th>
+                                <input type="text" value="{{o.message}}" class="form-control" name="message">
+                            </th>
+                        </tr>
+                        <tr>
+                            <td>配送费用：</td>
+                            <th>￥{{o.shippingprice }}</th>
+                        </tr>
+                        <tr>
+                            <td>订单总价：</td>
+                            <th>￥<span id="order_price" name="order_price">0</span></th>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">产品清单　
+                <input type="button" id="addItem" value="增加" class="btn btn-outline btn-default btn-xs"></h3>
+            </div>
+            <div class="panel-body">
+                <table class="table table-hover" id="tb_users">
+                    <thead>
+                        <tr>
+                            <th>产品图片</th>
+                            <th>基本信息</th>
+                            <th>商品现价</th>
+                            <th>补发数量</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr id="trs">
+                            <td>
+                                <img class="product_img" src="" width="80" height="80" />
+                            </td>
+                            <td>
+                                <h3><select class="form-control combobox" name="product">
+                                    <option value="">--请选择--</option>
+                                    {% for c in products %}
+                                    <option value="{{c.id}}">{{c.sku}} - {{c.name}}</option>
+                                    {% endfor %}
+                                </select></h3>
+                            </td>
+                            <td>
+                                <h3><span class="unitPrice">0</span>元</h3>
+                            </td>
+                            <td>
+                                <h3><input type="text" value="1" class="form-control quantity Validform_error" style="width:45px;" data-id="0" data-price="0"  placeholder="请输入数量" required title="请输入非零正整数" pattern="^\+?[1-9][0-9]*$"  name="quantity"></h3>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<input type="hidden" id="hidpid" name="hidpid" value="">
+<input type="hidden" id="orderPrice" name="orderPrice" value="">
+</form>
+{% endblock %}
+{% block js %}
+    <script>
+        $(function() {
+            $("#saveOrder").click(function(){
+                debugger;
+                var item = $('input[name=quantity]');
+                var jsonarr = [];
+                item.each(function(){
+                    var arr = {"pid":$(this).attr('data-id'),"quantity":$(this).val()}
+                    jsonarr.push(arr);
+                });
+                $('#hidpid').val(JSON.stringify(jsonarr));
+                if(jsonarr.length > 0){
+                    $('#form').submit();
+                }
+            });
+            $('#showWL').hover(function () {
+                var h = '';
+                var wlNum = $("#wlNum").val();
+                $.get('/ajax/getwlinfo', {deliverynum: wlNum}, function (data) {
+                    data = eval(data);
+                    data = jQuery.parseJSON(data);
+                    if(data.status != '400') {
+                        var wlInfo = data.data;
+                        for (i = 0; i < wlInfo.length; i++) {
+                            if (i == 0) {
+                                h += '<li style="line-height: 30px; color:#1B730C; background: #E7E7E7; ">' + wlInfo[i].context + '<br />' + wlInfo[i].time + '</li>';
+                            } else {
+                                h += '<li style="line-height: 30px;">' + wlInfo[i].context + '<br />' + wlInfo[i].time + '</li>';
+                            }
+                        }
+                    }else{
+                        h += '<li style="line-height: 30px; color: #cc0000; background: #E7E7E7; ">参数错误：请检查物流单号是否正确。</li>';
+                    }
+                    h = '宅急送 运单号：' + wlNum + '<hr style="margin: 5px;">' + h + '';
+                    $(".showInfo").html(h);
+                    $(".showInfo").show();
+                });
+            }, function () {
+                $(".showInfo").hide();
+            });
+
+            $("#addItem").click(function(){
+                addTr($('#trs').html());
+            });
+            quantityKeyup();
+            cbxChange();
+        });
+        function quantityKeyup(){
+            $('input[name="quantity"]').bind('keyup',function(){
+                var price = 0;
+                var count =$(this).val();
+                $('input[name="quantity"]').each(function(){
+                    price += parseFloat($(this).attr("data-price")) * parseInt($(this).val());
+                });
+                $('#order_price').text(price.toFixed(2));
+                $('#orderPrice').val(price.toFixed(2));
+            });
+        }
+        function cbxChange(){
+            $('.combobox').change(function(){
+                var pid = $(this).val();
+                var product_img = $(this).parents("tr").find(".product_img");
+                var unitPrice = $(this).parents("tr").find(".unitPrice");
+                var quantity = $(this).parents("tr").find(".quantity");
+                $.get('/ajax/getproduct', {pid: pid}, function(data){
+                    var obj = jQuery.parseJSON(data);
+                    if(obj.err != ''){
+                        alery(obj.err);
+                    }else{
+                        product_img.attr('src','/upload/'+obj.sku+'/'+obj.cover);
+                        unitPrice.text(obj.price);
+                        quantity.attr('data-price',obj.price);
+                        quantity.attr('data-id',pid);
+                    }
+
+                    var price = 0;
+                    $('input[name="quantity"]').each(function(){
+                        price += parseFloat($(this).attr("data-price")) * parseInt($(this).val());
+                    });
+                    $('#order_price').text(price.toFixed(2));
+                    $('#orderPrice').val(price.toFixed(2));
+                });
+            });
+        }
+        function addTr(trHtml){
+             var $tr=$("#tb_users tr").eq(-1);
+             if($tr.size()==0){
+                alert("指定的table id或行数不存在！");
+                return;
+             }
+             $tr.after('<tr>'+trHtml+'</tr>');
+            cbxChange();
+            quantityKeyup()
+         }
+    </script>
+{% endblock %}

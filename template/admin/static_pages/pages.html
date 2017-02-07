@@ -1,0 +1,56 @@
+{% extends "layout/admin.html" %}
+{% block content %}
+<div class="row">
+   <nav>
+   <div>
+      <a class="navbar-brand" href="#">静态页面</a>
+       <div class="navbar-header" style="float: right;margin-top:15px;">
+       <a href="/admin/editpage/0" style="padding:5px 8px;border:1px solid #438bca;border-radius:4px;color:#438bca;font-size:16px;">添加</a>
+       </div>
+   </div>
+   <div class="pull-right">
+      <form class="navbar-form navbar-left" action="" method="get" role="search">
+         <div class="input-group custom-search-form">
+             <input type="text" name="keyword" class="form-control" placeholder="按名称查找" />
+             <span class="input-group-btn">
+                 <button class="btn btn-default" type="submit">
+                     <i class="fa fa-search"></i>
+                 </button>
+            </span>
+         </div>
+      </form>
+   </div>
+</nav>
+</div>
+<div class="row">
+    <div class="panel panel-primary">
+    <!--<div class="panel-body">-->
+        <div class="table-responsive">
+        <table class="table table-hover" id="tb_users" cellpadding="0" cellspacing="0" border="0" style="text-align:center;width:100%;">
+            <thead>
+                <tr style="background:#528acb;color:#fff;text-align:center;height:38px;line-height:38px;">
+                    <th style="width:25%;text-align:center;">名称</th>
+                    <th style="width:25%;text-align:center;">访问路径</th>
+                    <th style="width:25%;text-align:center;">关键字</th>
+                    <th style="width:25%;text-align:center;">操作</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for p in pages -%}
+              <tr>
+              <td>{{p.name}}</td>
+              <td>{{p.slug}}</td>
+              <td>{{p.metakeywords}}</td>
+              <td>
+                  <a href="/admin/editpage/{{p.id}}" class="btn btn-outline btn-primary btn-xs">修改</a>
+                <a href="/admin/delpage/{{p.id}}" onclick="return confirm('确定将此记录删除?')" class="btn btn-outline btn-primary btn-xs">删除</a>
+              </td>
+            </tr>
+			{%- endfor %}
+            </tbody>
+        </table>
+        </div>
+    <!--</div>-->
+    </div>
+</div>
+{% endblock %}

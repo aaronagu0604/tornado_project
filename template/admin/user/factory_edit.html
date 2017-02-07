@@ -1,0 +1,182 @@
+{% extends "layout/admin.html" %}
+{% block content %}
+<div class="row">
+    <ol class="breadcrumb">
+        <li><a href="/admin/factory">厂家管理</a></li>
+        <li class="active">
+            [{{ s.name|default('新建厂家') }}]
+        </li>
+    </ol>
+</div>
+<div style="color: red; font-size: 0.6em; margin-bottom: 25px;">
+    {%set messages=handler.get_flashed_messages() %}
+    {%-if messages-%}
+    <div id="err_div">
+        {% for type, msg in messages%}
+        {{msg}}
+        {% endfor %}
+    </div>
+    {%-endif-%}
+</div>
+<div class="row">
+    <form class="form-horizontal" role="form" action="/admin/factory/{{u.id|default('0')}}" method="post" style="margin-left:80px;">
+        {{xsrf()}}
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">基本信息
+                </h3>
+            </div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <p><label class="col-sm-2 control-label">登录用户名</label></p>
+                    <div class="col-sm-6">
+                        <input type="text" size="60" name="username" id="username" required class="t_input" value="{{u.username}}" placeholder="请填写登录用户名" style="width:480px;height:32px;padding-left:10px;border:1px solid #ccc;border-radius: 4px;">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <p><label class="col-sm-2 control-label">密码</label></p>
+                    <div class="col-sm-6">
+                        <input type="text" size="60" name="password" id="password" class="t_input" value="" {% if u %} placeholder="不修改请为空"{%else%} required placeholder="请填写密码"{%endif%} style="width:480px;height:32px;padding-left:10px;border:1px solid #ccc;border-radius: 4px;">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <p><label class="col-sm-2 control-label">手机号</label></p>
+                    <div class="col-sm-6">
+                        <input type="text" size="60" name="mobile" id="mobile" required class="t_input" value="{{u.mobile}}" placeholder="请填写手机号" style="width:480px;height:32px;padding-left:10px;border:1px solid #ccc;border-radius: 4px;">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <p><label class="col-sm-2 control-label">名称</label></p>
+                    <div class="col-sm-6">
+                        <input type="text" size="60" name="name" id="name" required class="t_input" value="{{s.name}}" placeholder="请填写名称" style="width:480px;height:32px;padding-left:10px;border:1px solid #ccc;border-radius: 4px;">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <p><label class="col-sm-2 control-label">类型</label><p>
+                    <div class="col-sm-6">
+                      <select class="form-control" name="grade" id="grade" style="width:480px;height:32px;padding-left:10px;border:1px solid #ccc;border-radius: 4px;">
+                          <option value="2" {{u.grade == 2 and 'selected' or ' '}}>厂商</option>
+                          <option value="3" {{u.grade == 3 and 'selected' or ' '}}>代理商</option>
+                      </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <p><label class="col-sm-2 control-label">业务类型</label></p>
+                    <div class="col-sm-6">
+                      <select class="form-control" name="business_type" id="business_type" style="width:480px;height:32px;padding-left:10px;border:1px solid #ccc;border-radius: 4px;">
+                          <option value="0" {{s.business_type == 0 and 'selected' or ' '}}>普通业务</option>
+                          <option value="1" {{s.business_type == 1 and 'selected' or ' '}}>保险业务</option>
+                          <option value="2" {{s.business_type == 2 and 'selected' or ' '}}>板喷业务</option>
+                      </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <p><label class="col-sm-2 control-label">
+                        所在地区
+                    </label></p>
+                    <div class="col-sm-3">
+                      <select class="form-control" name="province_code" id="province_code" onchange="province_change(this.value,0)" data-default="{{default_province}}" style="width:150px;height:32px;margin-right:15px;border:1px solid #ccc;border-radius: 4px;">
+                          <option value="">--请选择省份--</option>
+                          {% for area in areas %}
+                          <option value="{{area.code}}" {{area.code==default_province and 'selected' or ''}}>{{area.name}}</option>
+                          {% endfor %}
+                      </select>
+                    </div>
+                    <div class="col-sm-3">
+                      <select class="form-control" name="city_code" id="city_code" onchange="city_change(this.value,0)" data-default="{{default_city}}" style="width:150px;height:32px;margin-right:15px;border:1px solid #ccc;border-radius: 4px;">
+                          <option value="">--请选择城市--</option>
+                      </select>
+                    </div>
+                    <div class="col-sm-4">
+                      <select class="form-control" name="district_code" id="district_code" data-default="{{default_district}}" style="width:150px;height:32px;border:1px solid #ccc;border-radius: 4px;">
+                          <option value="">--请选择区县--</option>
+                      </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    </p><label class="col-sm-2 control-label">
+                        详细地址
+                    </label></p>
+                    <div class="col-sm-5">
+                        <input type="text" size="60" name="address" required id="address" class="t_input" value="{{s.address}}" placeholder="请填写门店所在的详细地址" style="width:480px;height:32px;padding-left:10px;border:1px solid #ccc;border-radius: 4px;">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <p><label class="col-sm-2 control-label">
+                        联系人
+                    </label></p>
+                    <div class="col-sm-10">
+                        <input type="text" size="60" name="link_man" required id="link_man" class="t_input" value="{{s.link_man}}" placeholder="请填写联系人" style="width:480px;height:32px;padding-left:10px;border:1px solid #ccc;border-radius: 4px;">
+                    </div>
+                </div>
+            </div>
+        </div>
+		<button type="submit" class="btn btn-outline btn-primary btn-xs" style="width:90px;height:32px;font-size:14px;margin-top:10px;border:none;  background:#438bca;border-radius:4px;color:#fff;">保存</button>
+    </form>
+</div>
+{% endblock %}
+{% block js %}
+<script src="/style2/xheditor/xheditor-1.2.2.min.js"></script>
+<script src="/style2/xheditor/xheditor_lang/zh-cn.js"></script>
+<script src="/style2/js/jquery.ocupload.js?v=1"></script>
+<script language="javascript" type="text/javascript" src="/style2/js/My97DatePicker/WdatePicker.js"></script>
+<script>
+    $(function() {
+        var xsrf = '{{handler.xsrf_token}}';
+        init_province();
+    });
+    function init_province(){
+        var province_code=$("#province_code").attr("data-default");
+        var city_code=$("#city_code").attr("data-default");
+        var district_code=$("#district_code").attr("data-default");
+        if(province_code.length>0){
+            province_change(province_code, city_code);
+            if(parseInt(city_code)){
+                city_change(city_code, district_code)
+            }
+        }
+    }
+    function province_change(id, default_id){
+    //    var id = $(obj).val();
+        $("#district_code > option").remove();
+        $("#district_code").append("<option value=\"0\">--请选择区县--</option>");
+        $("#city_code > option").remove();
+        $("#city_code").append("<option value=\"0\">--请选择城市--</option>");
+        if(id > 0){
+            GetSubAreas(id, "city_code", default_id);
+        }
+    }
+    function city_change(id, default_id){
+    //    var id = $(obj).val();
+        $("#district_code > option").remove();
+        $("#district_code").append("<option value=\"0\">--请选择区县--</option>");
+        if(id > 0){
+            GetSubAreas(id, "district_code", default_id);
+        }
+    }
+    function GetSubAreas(id,ddl_id, default_id) {
+    //    alert(default_id);
+        $.get("/ajax/GetSubAreas", { pcode: id,  t: Math.random() }, function (data) {
+            data = jQuery.parseJSON(data);
+            if(data.flag==1){
+                for(var i=0; i< data.data.length; i++){
+                    if(default_id.length>0){
+                        if(data.data[i]["code"]==default_id){
+                            $("#" + ddl_id).append("<option value=\"" + data.data[i]["code"] + "\" selected>" + data.data[i]["name"] + "</option>");
+                        }
+                        else{
+                            $("#" + ddl_id).append("<option value=\"" + data.data[i]["code"] + "\">" + data.data[i]["name"] + "</option>");
+                        }
+                    }
+                    else {
+                        $("#" + ddl_id).append("<option value=\"" + data.data[i]["code"] + "\">" + data.data[i]["name"] + "</option>");
+                    }
+                }
+            }
+            else{
+                alert(data.msg)
+            }
+        });
+    }
+</script>
+{% endblock %}

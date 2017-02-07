@@ -1,0 +1,197 @@
+{% extends "layout/admin.html" %}
+{% block css %}
+<link href="/style2/css/plugins/dataTables.bootstrap.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="/style2/facilitator/css/cksp_right.css"/>
+<link href="/style2/facilitator/css/select2.css" rel="stylesheet"/>
+<style>
+	ul {
+		list-style: none;
+	}
+	#btn {
+		margin-bottom: 5px;
+	}
+</style>
+{% endblock %}
+{% block content %}
+<div class="row">
+    <div style="margin-left:30px;">
+        <a class="navbar-brand" href="#">查看商品</a>
+
+    </div>
+    <div class="top_content clearfix" style="margin-top:40px;">
+        <ul class="top_ul" style="margin-left:-40px;">
+            <p class="p_bt">
+                服务商信息
+            </p>
+            <li>
+                企业名称：<span>{{s.name}}</span>
+            </li>
+            <li>
+                联系人：<span>{{s.link_man}}</span>
+            </li>
+            <li>
+                联系电话：<span>{{s.mobile}}</span>
+            </li>
+            <li style="width:40%;">
+                地址：<span>{{province}} {{city}} {{s.address}}</span>
+            </li>
+            <li class="li_address">
+                服务区域：<div style="margin:-20px auto 20px 80px;">
+                {% for ssa in ssas %}
+                {% if len(ssa.aid.code)==12 %}
+                <span>{{ Area.get(code=ssa.aid.code[:8]).name }}-{{ ssa.aid.name }}</span>
+                {% else %}
+                <span>{{ ssa.aid.name }}</span>
+                {% endif %}
+                {% endfor %}
+            </div>
+            </li>
+        </ul>
+    </div>
+
+    <form id="cx" action="" method="get">
+        <p>
+            <a {% if active=='facilitatorrelease' %} class="afbsp" {% endif %} href="/admin/scorefacilitatorrelease/{{sid}}"
+               style="border:1px solid #528ACB;border-radius: 4px;padding:5px;"> <img src="/style2/facilitator/images/jia.png" style="margin-top:-3px;"/>发布积分商品</a>
+        </p>
+    </form>
+    <div class="zhcx">
+        <table cellpadding="0" cellspacing="0" border="0" class="bg">
+            <thead>
+            <tr>
+                <th>商品编号</th>
+                <th>商品名称</th>
+                <th>品牌</th>
+                <th>分类</th>
+                <th>规格</th>
+                <th>发布地区</th>
+                <th>积分</th>
+                <th>价格</th>
+                <th style="border: none;">操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for c in commodity %}
+            <tr>
+                <td>{{ c['id'] }}</td>
+                <td>{{ c['name'] }}</td>
+                <td>{{ c['pinpai'] }}</td>
+                <td>{{ c['ptype'] }}</td>
+                <td>
+                    {% for at in c['attribute'] %}
+                    {{ at }}
+                    {% endfor %}
+                </td>
+                {% for ap in c['area_price'] %}
+                <td>
+                    {{ ap }}
+                    <br>
+                </td>
+                <td>
+                    {{ c['area_price'][ap][0] }}
+                    <br>
+                </td>
+                <td>
+                    {{ c['area_price'][ap][1] }}
+                    <br>
+                </td>
+                {% endfor %}
+                <td>
+                    <a class="afbsp" href="/admin/scorefacilitatorchange/{{ c['psid'] }}" style="border:1px solid #528ACB;border-radius: 4px;padding:5px;"> 修改</a>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <div class="col-sm-6">
+            <div class="dataTables_info" role="alert" aria-live="polite" aria-relevant="all">
+                当前：第{{page}}页 / {{totalpage}}页，合计{{total}}条
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="dataTables_paginate paging_simple_numbers">
+                <ul class="pagination  pagination-sm" id="pageUl"/>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript" src="/style2/js/bgtexiao.js"></script>
+<script src="/style2/js/jquery.twbsPagination.min.js"></script>
+<script type="text/javascript">
+	$(document).ready(function() {
+        $('#pageUl').twbsPagination({
+            first:'首页',
+            prev:'上一页',
+            next:'下一页',
+            last:'尾页',
+            totalPages: {{totalpage}},
+            startPage: {{page}},
+            visiblePages: 8,
+            onPageClick: function (event, page) {
+                self.location="/admin/scorefacilitatorquery/{{ sid }}?keyword={{keyword or ''}}&province_code={{default_province or ''}}&city_code={{default_city or ''}}&page="+page;
+            }
+        });
+    });
+
+		function init_province() {
+			var province_code = $("#province_code").attr("data-default");
+			var city_code = $("#city_code").attr("data-default");
+			var district_code = $("#district_code").attr("data-default");
+			if (province_code.length > 0) {
+				province_change(province_code, city_code);
+				if (parseInt(city_code)) {
+					city_change(city_code, district_code)
+				}
+			}
+		}
+
+		function province_change(id, default_id) {
+			//    var id = $(obj).val();
+			$("#district_code > option").remove();
+			$("#district_code").append("<option value=\"0\">--请选择区县--</option>");
+			$("#city_code > option").remove();
+			$("#city_code").append("<option value=\"0\">--请选择城市--</option>");
+			if (id > 0) {
+				GetSubAreas(id, "city_code", default_id);
+			}
+		}
+
+		function city_change(id, default_id) {
+			//    var id = $(obj).val();
+			$("#district_code > option").remove();
+			$("#district_code").append("<option value=\"0\">--请选择区县--</option>");
+			if (id > 0) {
+				GetSubAreas(id, "district_code", default_id);
+			}
+		}
+
+		function GetSubAreas(id, ddl_id, default_id) {
+			//    alert(default_id);
+			$.get("/ajax/GetSubAreas", {
+				pcode : id,
+				t : Math.random()
+			}, function(data) {
+				data = jQuery.parseJSON(data);
+				if (data.flag == 1) {
+					for (var i = 0; i < data.data.length; i++) {
+						if (default_id.length > 0) {
+							if (data.data[i]["code"] == default_id) {
+								$("#" + ddl_id).append("<option value=\"" + data.data[i]["code"] + "\" selected>" + data.data[i]["name"] + "</option>");
+							} else {
+								$("#" + ddl_id).append("<option value=\"" + data.data[i]["code"] + "\">" + data.data[i]["name"] + "</option>");
+							}
+						} else {
+							$("#" + ddl_id).append("<option value=\"" + data.data[i]["code"] + "\">" + data.data[i]["name"] + "</option>");
+						}
+					}
+				} else {
+					alert(data.msg)
+				}
+			});
+		}
+	</script>
+{% endblock %}
+

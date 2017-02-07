@@ -1,0 +1,80 @@
+{% extends "layout/admin.html" %}
+{% block css %}
+<link href="/style2/css/plugins/dataTables.bootstrap.css" rel="stylesheet">
+<style type="text/css">
+    .actual{width:100px;}
+</style>
+{% endblock %}
+{% block content %}
+<script language="javascript" type="text/javascript" src="/style2/js/My97DatePicker/WdatePicker.js"></script>
+<div class="row">
+   <nav>
+       <div>
+          <h3><span class="navbar-brand">当日发货订单数据</span></h3>
+       </div>
+       <div class="pull-right">
+           <form class="navbar-form navbar-left" action="" method="get" role="search">
+               <div class="input-group custom-search-form">
+                   <input type="text" name="begindate" id="begindate" value="{{begindate}}" class="Wdate form-control"  onClick="WdatePicker()" style="width:105px; height: 34px;" />
+               <span class="input-group-btn">
+                   <button class="btn btn-default" type="submit" id="bt_submit">
+                        <i class="fa fa-search"></i>
+                   </button>
+                </span>
+               </div>
+           </form>
+       </div>
+   </nav>
+</div>
+
+<div class="row">
+    <div class="panel panel-primary">
+    <div class="panel-body">
+        <div class="table-responsive">
+        <table class="table table-hover" id="tb_people">
+            <thead>
+                <tr>
+                    <th>商品名称</th>
+                    <th>商品规格</th>
+                    <th>提取规格</th>
+                    <th>每斤价格</th>
+                    <th>每份价格</th>
+                    <th>销售份数</th>
+                    <th>采购价</th>
+                </tr>
+
+            </thead>
+            <tbody>
+                {% for n in q %}
+                <tr>
+                    <td>{{n.pname}}</td>
+                    <td>{{n.psname}}</td>
+                    <td>{{n.weight}}</td>
+                    <td>{{n.uprice}}</td>
+                    <td>{{n.price}}</td>
+                    <td>{{n.sale_quantity}}</td>
+                    <td>{{n.cprice}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        </div>
+    </div>
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<script src="/style2/js/jquery.twbsPagination.min.js"></script>
+    <script>
+        $(document).ready(function() {
+
+            var myDate = new Date();
+            var strMonth = myDate.getMonth()>9?(myDate.getMonth()+1):'0' + (myDate.getMonth()+1);
+            var strDay = myDate.getDate()>9?myDate.getDate().toString():'0' + myDate.getDate();
+            var c_time = $("#begindate").val();
+            if(c_time == '')
+                $("#begindate").val(myDate.getFullYear() + '-' + strMonth + '-' + strDay);
+        });
+
+    </script>
+{% endblock %}

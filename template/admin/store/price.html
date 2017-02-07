@@ -1,0 +1,140 @@
+{% extends "layout/admin.html" %}
+{% block css %}
+<link href="/style2/css/plugins/dataTables.bootstrap.css" rel="stylesheet">
+{% endblock %}
+{% block content %}
+
+<script language="javascript" type="text/javascript" src="/style2/js/jquery.min.js"></script>
+<script language="javascript" type="text/javascript" src="/style2/js/My97DatePicker/WdatePicker.js"></script>
+
+<SCRIPT LANGUAGE="javascript">
+    var xsrf='{{handler.xsrf_token}}';
+</SCRIPT>
+<div class="row">
+    <nav>
+        <a class="navbar-brand" href="javascript:void(0)">价格管理</a>
+        <div class="pull-left navbar-form" style="height:30px; line-height:30px;">
+             <a type="button" href="/admin/store/price?page=1&fillprice=1&store_id={{store_id}}" class="btn btn-outline btn-default btn-xs">所有未设置价格的产品(<span style="color: red;font-size: 14px;">{{totalunprice}}</span>)</a>
+        </div>
+        <div class="pull-right navbar-form">
+            <div class="input-group custom-search-form">
+                <input type="text" name="keyword" id="keyword" class="form-control" placeholder="产品名称" value="{{keyword or ''}}" style="width: 150px;" />
+                <select data-id="{{store_id}}" class="form-control" placeholder="选择店铺" id="store_id" name="store_id" style="width:150px;">
+                    <option value="0" {{store_id ==0 and 'selected'}} >选择店铺</option>
+                    {% for o in stores -%}
+                    <option value="{{o.id}}" {{o.id == store_id and 'selected'}}>{{o.name}}</option>
+                    {%- endfor %}
+                </select>
+                <span class="input-group-btn">
+                     <button class="btn btn-default" type="button" onclick="search();">
+                         <i class="fa fa-search"></i>
+                     </button>
+                </span>
+            </div>
+        </div>
+    </nav>
+</div>
+<div class="row">
+    <div class="panel panel-primary">
+        <div class="panel-body">
+            <div class="table-responsive">
+                <table class="table table-hover" id="tb_users">
+                    <thead>
+                    <tr>
+                        <th>店铺名称</th>
+                        <th>产品名称</th>
+                        <th>易凡价格(元/KG)</th>
+                        <th>我的价格(元/KG)</th>
+                        <th>上架状态(易凡)</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for o in inventorys -%}
+                    <tr>
+                        <td>
+                            {{o.store.name}}
+                        </td>
+                        <td>
+                            {{o.product.name}}
+                        </td>
+                        <td>{{o.product_standard.ourprice*2}}</td>
+                        <td>
+                            <input type="text" id="price{{o.id}}" required value="{{o.price}}" size="5" placeholder="价格不能为空" name="actual"
+                                   class="form-control actual" onkeyup="this.value=this.value.replace(/[^\d|.]/g,'')">
+
+                        </td>
+                        <td>
+                            {%if o.product.status==1 %}
+                                <span style="color: green;">上架</span>
+                            {%else%}
+                                <span style="color: red;">下架</span>
+                            {%endif%}
+                        </td>
+                        <td>
+                            <!--<a href="#" class="btn btn-outline btn-primary btn-xs">查看库存历史</a>-->
+                            <a href="javascript:void(0);" onclick="storeUpdatePrice('{{o.id}}')"  class="btn btn-outline btn-primary btn-xs">修改价格</a>
+                        </td>
+                    </tr>
+                    {%- endfor %}
+                    </tbody>
+                </table>
+                <div>
+                    <div class="col-sm-4">
+                        <div class="dataTables_info" role="alert" aria-live="polite" aria-relevant="all">
+                            当前：第{{page}}页 / {{totalpage}}页，合计{{total}}条
+                        </div>
+                    </div>
+                    <div class="col-sm-8">
+                        <div class="dataTables_paginate paging_simple_numbers">
+                            <ul class="pagination  pagination-sm" id="pageUl" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<script src="/style2/js/jquery.twbsPagination.min.js"></script>
+<script>
+    $(document).ready(function() {
+         $('#pageUl').twbsPagination({
+                    first:'首页',
+                    prev:'上一页',
+                    next:'下一页',
+                    last:'尾页',
+                    totalPages: {{totalpage}},
+            startPage: {{page}},
+            visiblePages: 8,
+            onPageClick: function (event, page) {
+                self.location="/admin/store/price?fillprice={{fillprice}}&keyword={{keyword}}&store_id={{store_id}}&page="+page;
+            }
+        });
+        var xsrf='{{handler.xsrf_token}}';
+    });
+    function search(){
+        var keyword=$("#keyword").val();
+        var store_id=$("#store_id").val();
+        location.href="/admin/store/price?store_id="+store_id+"&keyword="+keyword;
+    }
+    function storeUpdatePrice(isid){
+        var price = parseFloat($("#price"+isid).val());
+        if(isNaN(price)){
+            alert("请输入正确的价格！");
+            $("#price"+isid).focus();
+            return;
+        }
+        $.get("/admin/ajax/adminUpdateStorePrice", { isid: isid, price: price, t: Math.random() }, function (data) {
+            if(data*1==1){
+                alert("修改成功！")
+            }
+            else{
+                alert("修改失败！")
+            }
+        });
+    }
+
+</script>
+{% endblock %}

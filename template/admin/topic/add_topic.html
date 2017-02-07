@@ -1,0 +1,72 @@
+{% extends "layout/admin.html" %}
+{% block content %}
+
+
+<div class="row">
+    <nav>
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">添加/编辑话题</a>
+        </div>
+    </nav>
+</div>
+<div class="row">
+    <div class="panel panel-primary">
+        <div class="panel-body">
+
+            {%set messages=handler.get_flashed_messages() %}
+            {%if messages%}
+            <div class="msg" style="color:red;">
+                {% for type, msg in messages%}
+                <span>{{msg}}</span>
+                {% endfor %}
+            </div>
+            {%endif%}
+
+            <form action="" method="post" enctype="multipart/form-data">
+                {{xsrf()}}
+
+
+                <div class="form-group has-success">
+                    <input type="submit" name="sub" value="提 交" class="btn btn-outline btn-primary btn-sm">
+                    <input type="reset" name="sub" value="重 置" class="btn btn-outline btn-primary btn-sm">
+                </div>
+
+                <div class="form-group has-success">
+                    <label class="control-label">执行人</label>
+                    <select id="combobox" class="form-control" name="executor">
+                        <option value="{{ t and t.executor.id or ''}}">{{ t and t.executor.username or '--请选择--'}}</option>
+                        {% for u in users %}
+                        <option value="{{u.id}}">{{u.username}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group has-success">
+                    <label class="control-label">标题</label>
+                    <input type="text" name="title" class="form-control" value="{{t.title or title}}"  required placeholder="话题标题" />
+                </div>
+
+                <div class="form-group has-success">
+                    <label class="control-label">内容</label>
+                    <input type="text" name="content" class="form-control" value="{{t.content}}"    placeholder="话题内容" />
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script src="/style2/xheditor/xheditor-1.2.2.min.js"></script>
+<script src="/style2/xheditor/xheditor_lang/zh-cn.js"></script>
+<script src="/style2/js/jquery.ocupload.js?v=1"></script>
+<script>
+    $(document).ready(function(){
+
+    });
+
+</script>
+{% endblock %}

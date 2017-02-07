@@ -1,0 +1,339 @@
+{% extends "layout/admin.html" %}
+{% block content %}
+<div class="row">
+    <ol class="breadcrumb">
+        <li><a href="/admin/product/reserve">预售商品</a></li>
+        <li class="active">
+            [活动商品]
+        </li>
+    </ol>
+</div>
+<div style="color: red; font-size: 0.6em; margin-bottom: 25px;">
+    {%set messages=handler.get_flashed_messages() %}
+    {%-if messages-%}
+    <div id="err_div">
+        {% for type, msg in messages%}
+        {{msg}}
+        {% endfor %}
+    </div>
+    {%-endif-%}
+</div>
+<div class="row">
+    <form class="form-horizontal" role="form" action="/admin/product/reserve/edit/{{cid | default('0')}}" method="post">
+        {{xsrf()}}
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">基本信息
+                    <button type="submit" class="btn btn-outline btn-primary">保存</button>
+                </h3>
+            </div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">产品名称</label>
+                    <div class="col-sm-10">
+                        <div class="ui-widget">
+                        <select id="combobox" class="form-control" name="product">
+                            <option value="{{pa and pa.product.id or ''}}">{{pa and pa.product.name or '--请选择--'}}</option>
+                            {% for c in products %}
+                            <option value="{{c.id}};{{c.defaultstandard}}">{{c.name}} {{c.tags}}</option>
+                            {% endfor %}
+                        </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                        活动平台
+                    </label>
+                    <div class="col-sm-10">
+                        <label class="radio-inline">
+                             <input type="radio" name="platform"  value="0" {% if pa and pa.platform==0 %} checked  {% endif %}>
+                             所有平台
+                         </label>
+                          <label class="radio-inline">
+                             <input type="radio" name="platform" value="1" {% if pa and pa.platform==1 %} checked  {% endif %}>
+                              仅网站
+                         </label>
+                          <label class="radio-inline">
+                             <input type="radio" name="platform"  value="2" {% if pa and pa.platform==2 %} checked  {% endif %}>
+                              仅手机
+                         </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                        已预定数量（份）
+                    </label>
+                    <div class="col-sm-10">
+                        <input class="form-control" name="quantity" id="quantity" type="text" placeholder="当前已经预定的商品数量"
+                               value="{{pa.quantity or '0'}}" >
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                        预售价格（元/份）
+                    </label>
+                    <div class="col-sm-4">
+                        <input class="form-control" name="price" id="price" type="text" placeholder="商品价格不能为空" value="{{pa.price}}" required >
+                    </div>
+                    <label class="col-sm-2 control-label">
+                        市场价格（元/份）
+                    </label>
+                    <div class="col-sm-4">
+                        <input class="form-control" name="original_price" id="original_price" type="text" placeholder="市场价格不能为空" value="{{pa.original_price}}" required >
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" >
+                        开始时间
+                    </label>
+                    <div class="col-sm-10">
+                        <input type="text" name="begin_time" id="begin_time" value="{{pa and pa.begin_time | datetimeformat or ''}}" class="Wdate form-control"  onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:00'})" style="width:205px; height: 34px;" placeholder="开始时间不能为空" required />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" >
+                        结束时间
+                    </label>
+                    <div class="col-sm-10">
+                        <input type="text" name="end_time" id="end_time" value="{{pa and pa.end_time | datetimeformat or ''}}" class="Wdate form-control"  onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:00'})" style="width:205px; height: 34px;" placeholder="结束时间不能为空" required />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                        一阶段数量
+                    </label>
+                    <div class="col-sm-10">
+                        <input class="form-control" name="quantity_stage1" id="quantity_stage1" type="text" placeholder="到达第一阶段的数量" value="{{pa.quantity_stage1}}" required >
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                        一阶段价格
+                    </label>
+                    <div class="col-sm-10">
+                        <input class="form-control" name="price_stage1" id="price_stage1" type="text" placeholder="到达第一阶段后价格" value="{{pa.price_stage1}}" required >
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                        二阶段数量
+                    </label>
+                    <div class="col-sm-10">
+                        <input class="form-control" name="quantity_stage2" id="quantity_stage2" type="text" placeholder="到达第二阶段的数量" value="{{pa.quantity_stage2}}" required >
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                        二阶段价格
+                    </label>
+                    <div class="col-sm-10">
+                        <input class="form-control" name="price_stage2" id="price_stage2" type="text" placeholder="到达第二阶段后价格" value="{{pa.price_stage2}}" required >
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" >
+                        开始发货时间
+                    </label>
+                    <div class="col-sm-10">
+                        <input type="text" name="delivery_time" id="delivery_time" value="{{pa and pa.delivery_time | datetimeformat or ''}}" class="Wdate form-control"  onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:00'})" style="width:205px; height: 34px;" placeholder="开始发货时间不能为空" required />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                        图片名称
+                    </label>
+                    <div class="col-sm-10">
+                        <input class="form-control" name="cover" id="cover" type="text" placeholder="图片名称不能为空" value="{{pa.cover}}" required >
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
+{% block js %}
+<link href="/style2/js/jquery-ui/jquery-ui-1.9.2.custom.min.css" rel="stylesheet" type="text/css"/>
+<script src="/style2/xheditor/xheditor-1.2.2.min.js"></script>
+<script src="/style2/xheditor/xheditor_lang/zh-cn.js"></script>
+<script src="/style2/js/jquery.ocupload.js?v=1"></script>
+<script src="/style2/js/jquery-ui-1.9.2.custom.min.js" language="javascript"></script>
+<script language="javascript" type="text/javascript" src="/style2/js/My97DatePicker/WdatePicker.js"></script>
+<style>
+	.ui-combobox {
+		position: relative;
+		display: inline-block;
+        width:300px;
+	}
+	.ui-combobox-toggle {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		margin-left: -1px;
+		padding: 0;
+		/* adjust styles for IE 6/7 */
+		*height: 1.7em;
+		*top: 0.1em;
+	}
+	.ui-combobox-input {
+		margin: 0;
+		padding: 0.3em;
+        width:300px;
+	}
+    .demo-description {
+        clear: both;
+        padding: 12px;
+        font-size: 1.3em;
+        line-height: 1.4em;
+    }
+
+    .ui-draggable, .ui-droppable {
+        background-position: top;
+    }
+
+	</style>
+<script>
+
+    (function( $ ) {
+		$.widget( "ui.combobox", {
+			_create: function() {
+				var input,
+					that = this,
+					select = this.element.hide(),
+					selected = select.children( ":selected" ),
+					value = selected.val() ? selected.text() : "",
+					wrapper = this.wrapper = $( "<span>" )
+						.addClass( "ui-combobox" )
+						.insertAfter( select );
+				function removeIfInvalid(element) {
+					var value = $( element ).val(),
+						matcher = new RegExp( "^" + $.ui.autocomplete.escapeRegex( value ) + "$", "i" ),
+						valid = false;
+					select.children( "option" ).each(function() {
+						if ( $( this ).text().match( matcher ) ) {
+							this.selected = valid = true;
+							return false;
+						}
+					});
+					if ( !valid ) {
+						// remove invalid value, as it didn't match anything
+						$( element )
+							.val( "" )
+							.attr( "title", value + " 没有匹配项" )
+							.tooltip( "open" );
+						select.val( "" );
+						setTimeout(function() {
+							input.tooltip( "close" ).attr( "title", "" );
+						}, 2500 );
+						input.data( "autocomplete" ).term = "";
+						return false;
+					}
+				}
+
+				input = $( "<input>" )
+					.appendTo( wrapper )
+					.val( value )
+					.attr( "title", "" )
+					.addClass( "ui-state-default ui-combobox-input" )
+					.autocomplete({
+						delay: 0,
+						minLength: 0,
+						source: function( request, response ) {
+							var matcher = new RegExp( $.ui.autocomplete.escapeRegex(request.term), "i" );
+							response( select.children( "option" ).map(function() {
+								var text = $( this ).text();
+								if ( this.value && ( !request.term || matcher.test(text) ) )
+									return {
+										label: text.replace(
+											new RegExp(
+												"(?![^&;]+;)(?!<[^<>]*)(" +
+												$.ui.autocomplete.escapeRegex(request.term) +
+												")(?![^<>]*>)(?![^&;]+;)", "gi"
+											), "<strong>$1</strong>" ),
+										value: text,
+										option: this
+									};
+							}) );
+						},
+						select: function( event, ui ) {
+							ui.item.option.selected = true;
+							that._trigger( "selected", event, {
+								item: ui.item.option
+							});
+						},
+						change: function( event, ui ) {
+                            var pid_ps = $("#combobox").val();
+                            var ps = $("#product_standard").val(pid_ps.split(';')[1]);
+                            pid_ps.val(pid_ps.split(';')[0]);
+							if ( !ui.item )
+								return removeIfInvalid( this );
+						}
+					})
+					.addClass( "ui-widget ui-widget-content ui-corner-left" );
+
+				input.data( "autocomplete" )._renderItem = function( ul, item ) {
+					return $( "<li>" )
+						.data( "item.autocomplete", item )
+						.append( "<a>" + item.label + "</a>" )
+						.appendTo( ul );
+				};
+
+				$( "<a>" )
+					.attr( "tabIndex", -1 )
+					.attr( "title", "Show All Items" )
+					.tooltip()
+					.appendTo( wrapper )
+					.button({
+						icons: {
+							primary: "ui-icon-triangle-1-s"
+						},
+						text: false
+					})
+					.removeClass( "ui-corner-all" )
+					.addClass( "ui-corner-right ui-combobox-toggle" )
+					.click(function() {
+						// close if already visible
+						if ( input.autocomplete( "widget" ).is( ":visible" ) ) {
+							input.autocomplete( "close" );
+							removeIfInvalid( input );
+							return;
+						}
+
+						// work around a bug (likely same cause as #5265)
+						$( this ).blur();
+
+						// pass empty string as value to search for, displaying all results
+						input.autocomplete( "search", "" );
+						input.focus();
+					});
+
+					input
+						.tooltip({
+							position: {
+								of: this.button
+							},
+							tooltipClass: "ui-state-highlight"
+						});
+			},
+
+			destroy: function() {
+				this.wrapper.remove();
+				this.element.show();
+				$.Widget.prototype.destroy.call( this );
+			}
+		});
+	})( jQuery );
+
+    $(document).ready(function(){
+        $( "#combobox" ).combobox();
+
+        var myDate = new Date();
+        var strMonth = myDate.getMonth()>9?(myDate.getMonth()+1):'0' + (myDate.getMonth()+1);
+        var strDay = myDate.getDate()>9?myDate.getDate().toString():'0' + myDate.getDate();
+        var c_time = $("#addtime").val();
+        if(c_time == '')
+            $("#addtime").val(myDate.getFullYear() + '-' + strMonth + '-' + strDay);
+    });
+
+</script>
+{% endblock %}

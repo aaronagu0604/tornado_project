@@ -1,0 +1,105 @@
+{% extends "layout/admin.html" %}
+{% block content %}
+<div class="row">
+    <nav>
+        <div class="pull-left">
+            <span class="bar-brand">优惠劵管理</span>
+            <div class="btn-group btn-group">
+                <a type="button" class="btn btn-default {{type!= '2' and 'active'}}" href="/admin/coupon?type=1">优惠券</a>
+                <a type="button" class="btn btn-default {{type=='2' and 'active'}}" href="/admin/coupon?type=2">实物优惠券</a>
+            </div>
+        </div>
+        <div class="pull-right">
+            <a class="btn btn-info" href="/admin/addcoupon/0">添加优惠劵</a>
+            <a class="btn btn-info" href="/admin/addcoupon_real/0">添加实物优惠劵</a>
+        </div>
+    </nav>
+</div>
+<div class="row">
+    <div class="panel panel-primary">
+        <div class="panel-body">
+            <div class="table-responsive">
+                <table class="table table-hover" id="tb_users">
+                    <thead>
+                    <tr>
+                        <th>编号</th>
+                        <th>优惠劵名称</th>
+                        {% if type == '2' %}
+                        <th>商品名称</th>
+                        <th>商品规格</th>
+                        {% else %}
+                        <th>面值</th>
+                        <th>最小值</th>
+                        <th>总数量</th>
+                        {% endif %}
+                        <th>已发放</th>
+                        <th>已使用</th>
+                        <th>发行者</th>
+                        <th>发行时间</th>
+                        <th>状态</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    {% for co in cop -%}
+                    <tr>
+                        <td>{{co.id}}</td>
+                        <td>{{co.name}}</td>
+                        {% if type == '2' %}
+                        <td>{{co.product.name}}</td>
+                        <td>{{co.product_standard.name}}</td>
+                        {% else %}
+                        <td>{{co.price}}</td>
+                        <td>{{co.minprice}}</td>
+                        <td>{{co.total}}</td>
+                        {% endif %}
+                        <td>{{co.quantity}}</td>
+                        <td>{{co.used}}</td>
+                        <td>{{co.createby}}</td>
+                        <td>{{co.createtime|datetimeformat}}</td>
+                        <td>{% if co.status==0 %} 启用 {% else %} <span style="color:red;">禁用</span> {% endif %}</td>
+
+
+                        <td>
+                            {% if co.status==0 %}   <a href="javascript:void(0);" onclick="del('{{co.id}}')">禁用</a> {% else %} {% endif %}
+                            {% if type == '2' %}| <a href="/admin/addcoupon_real/{{co.id}}">修改</a>{% endif %}
+                        </td>
+                    </tr>
+                    {%- endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function del(id) {
+
+        $.confirm({
+            'title': '提示对话框',
+            'message': '您正要禁用此项 <br />禁用后将不会进行还原，请确定继续?',
+            'buttons': {
+                '确定': {
+                    'class': 'blue',
+                    'action': function () {
+
+                        location.href = "/admin/delcoupon/" + id;
+
+                    }
+                },
+                '取消': {
+                    'class': 'gray',
+                    'action': function () { }
+                }
+            }
+        });
+
+    }
+
+</script>
+
+
+{% endblock %}

@@ -1,0 +1,203 @@
+{% extends "layout/admin.html" %}
+{% block css %}
+<link rel="stylesheet" type="text/css" href="/style2/integral/css/add_integral.css"/>
+
+<!--[if lt IE 9]>
+<script type="text/javascript" src="/style/integral/js/html5shiv.min.js"></script>
+<script type="text/javascript" src="/style/integral/js/respond.min.js"></script>
+<![endif]-->
+
+<script type="text/javascript" src="/style2/integral/js/jquery.min.js"></script>
+<script type="text/javascript" src="/style2/integral/js/bootstrap.min.js"></script>
+
+{% endblock %}
+{% block content %}
+
+<div class="row main">
+    <div>
+        <a class="navbar-brand" href="#">新增积分生成规则</a>
+    </div>
+    <div class="content">
+        <h2>新增积分生成规则</h2>
+        <span class="sample">积分规则生成示例：<i>积分&nbsp;=（（交强险-交强险*0.1）*0.2&nbsp;+（商业险-商业险*0.15）*0.22）*（1-0.006-0.1）&nbsp;&nbsp;&nbsp;起兑金额：100.00</i></span>
+        <form class="form-inline" role="form" action="" method="post">
+            {{xsrf()}}
+            <div id="InputsWrapper">
+                <ul class="list-unstyled region" style="margin-top:30px;">
+                    <li>
+                        <label>选择地区</label>
+                        <select class="form-control" required name="province_code0" id="province_code" onchange="province_change(this.value,0,'district_code','city_code')" data-default="{{default_province}}" style="width:150px;">
+                            <option value="">--请选择省份--</option>
+                            {% for area in items %}
+                            <option value="{{area.code}}" {{area.code==default_province and 'selected' or ''}}>{{area.name}}</option>
+                            {% endfor %}
+                        </select>
+                        <select class="form-control" name="city_code0" id="city_code" onchange="city_change(this.value,0,'district_code')" data-default="{{default_city}}" style="width:150px;">
+                            <option value="">--请选择城市--</option>
+                        </select>
+                        <label>保险公司</label>
+                        <select class="form-control" name="iname0">
+                            {% for iname in insurances %}
+                            <option> {{iname.name}} </option>
+                            {% endfor %}
+                        </select>
+                        <p></p>
+                        <label>积分生成规则</label>
+                        <span>积分&nbsp;=（（交强险-交强险*&nbsp;<input type="text" id="forceTaxRate0" class="form-control small" name="forceTaxRate0">）
+                            *&nbsp;<input required type="text" name="forceRate0" class="form-control" placeholder="交返率">&nbsp;+&nbsp;
+                            （商业险-商业险* <input type="text" id="businessTaxRate0" class="form-control small" name="businessTaxRate0">）
+                            *&nbsp;<input required type="text" name="rate0" class="form-control" placeholder="商返率">）&nbsp;*&nbsp;
+                            （1-<input required type="text" name="aliRate0" class="form-control" placeholder="转账费率">-
+                            <input required type="text" name="profitRate0" class="form-control" placeholder="利润率">）
+                            &nbsp;&nbsp;&nbsp;起兑金额&nbsp;
+                            <input type="text" required name="baseMoney0" class="form-control" placeholder="100">
+                        </span>
+                    </li>
+                </ul>
+            </div>
+
+            <!--<ul class="list-unstyled region">-->
+            <!--<li class="xzfbdq" id="AddMoreFileBox"><img src="/style2/integral/images/jia.png" />新增地区</li>-->
+            <!--</ul>-->
+
+            <button type="submit" class="btn btn-primary" style="margin-bottom:20px;">保存</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+{% block js %}
+<script type="text/javascript">
+  $(document).ready(function() {
+		var Max      = 7; 
+		var InputsWrapper   = $("#InputsWrapper"); 
+		var x = InputsWrapper.length;
+
+	$("#AddMoreFileBox").click(function (e){	
+        if(x <= Max) 
+        {
+			var html='';
+            var districtCode = 'district_code'+x;
+            var cityCode = 'city_code'+x;
+			html +='<ul class="list-unstyled region del_region">';
+			html +=	'<li>';
+			html +=	'<label style="margin-right:9px;">选择地区</label>';
+			
+			html +=	'<select class="form-control" name="province_code'+x+'" id="province_code'+x+'" onchange="province_change(this.value, 0, \''+districtCode+'\', \''+cityCode+'\')" style="width:150px;margin-right:4px;">';
+			html += '<option value="">--请选择省份--</option>';
+			html += '{% for area in items %}';
+			html += '<option value="{{area.code}}" {{area.code==default_province and 'selected' or ''}}>{{area.name}}</option>';	
+		    html += '{% endfor %}';
+			html += '</select>';
+
+			html += '<select class="form-control" name="city_code'+x+'" id="city_code'+x+'" onchange="city_change(this.value, 0, \''+districtCode+'\')" style="width:150px;">';
+			html += '<option value="">--请选择城市--</option>';
+			html += '</select>';
+		
+			html +=	'<label style="margin:0 10px 0 33px;">保险公司</label>';
+			html +=	'<select class="form-control" name="iname'+x+'">';
+			html += '{% for iname in insurances %}';
+			html += '<option> {{iname.name}} </option>';
+			html += '{% endfor %}';
+			html +=	'</select>';
+			html +=	'<label style="margin:0 10px 0 33px;">积分生成规则</label>';
+			html += '<span>积分&nbsp;=&nbsp;商业险金额&nbsp;*&nbsp;<input type="text" name="rate'+x+'" class="form-control" placeholder="利润率">&nbsp;-&nbsp;<input type="text" name="serviceCharge'+x+'" class="form-control" placeholder="保底金额">&nbsp;&nbsp;&nbsp;起兑金额&nbsp;<input type="text" name="baseMoney'+x+'" class="form-control" placeholder="100"></span>';
+			html +=	'</li>';
+			html += '<a href="#" class="removeclass">删除</a>';
+			html +='</ul>';
+
+			$("#InputsWrapper").append(html);
+			x++;
+		}	
+	return false;
+        
+});
+	
+//删除方法
+$("body").on("click",".removeclass", function(e){ 
+    if( x > 1 ) {
+            $(this).parent('ul').remove(); 
+            x--; 
+    }
+    return false;
+    });
+});  
+
+
+function province_change(id, default_id, district_code, city_code){
+    $("#"+district_code+" > option").remove();
+    $("#"+district_code).append("<option value=\"0\">--请选择区县--</option>");
+    $("#"+city_code+" > option").remove();
+    $("#"+city_code).append("<option value=\"0\">--请选择城市--</option>");
+    if(id > 0){
+        GetSubAreas(id, ""+city_code, default_id);
+    }
+}
+function city_change(id, default_id, district_code){
+    $("#"+district_code+" > option").remove();
+    $("#"+district_code).append("<option value=\"0\">--请选择区县--</option>");
+    if(id > 0){
+        GetSubAreas(id, ""+district_code, default_id);
+    }
+}
+
+function GetSubAreas(id,ddl_id, default_id) {
+    $.get("/ajax/GetSubAreas", { pcode: id,  t: Math.random() }, function (data) {
+        data = jQuery.parseJSON(data);
+        if(data.flag==1){
+            for(var i=0; i< data.data.length; i++){
+                if(default_id.length>0){
+                    if(data.data[i]["code"]==default_id){
+                        $("#" + ddl_id).append("<option value=\"" + data.data[i]["code"] + "\" selected>" + data.data[i]["name"] + "</option>");
+                    }
+                    else{
+                        $("#" + ddl_id).append("<option value=\"" + data.data[i]["code"] + "\">" + data.data[i]["name"] + "</option>");
+                    }
+                }
+                else {
+                    $("#" + ddl_id).append("<option value=\"" + data.data[i]["code"] + "\">" + data.data[i]["name"] + "</option>");
+                }
+            }
+        }
+        else{
+            alert(data.msg)
+        }
+    });
+}
+</script>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

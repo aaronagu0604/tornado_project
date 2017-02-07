@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>车装甲店铺管理系统</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="/style2/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- MetisMenu CSS -->
+    <link href="/style2/css/plugins/metisMenu/metisMenu.min.css" rel="stylesheet">
+
+    <!-- Timeline CSS -->
+    <link href="/style2/css/plugins/timeline.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="/style2/css/sb-admin-2.css" rel="stylesheet">
+
+    <!-- Morris Charts CSS -->
+    <link href="/style2/css/plugins/morris.css" rel="stylesheet">
+
+     <link href="/style2/css/chosen.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="/style2/font-awesome-4.1.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    {% block css %}{% endblock %}
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+<style>
+    .msg{color:red; padding: 5px;}
+</style>
+
+
+</head>
+
+<body style="font-family: 'microsoft yahei', arial">
+
+    <div id="wrapper">
+
+        <!-- Navigation -->
+        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/store">车装甲管理系统</a>
+                <a class="navbar-brand" href="javascript:void(0);" id="controlLeft">隐藏左栏</a>
+                <span class="navbar-brand" style="color:#00a0ea; font-weight: bold;">{{store.store.name}}</span>
+            </div>
+            <ul class="nav navbar-top-links navbar-right">
+                <li>
+                    <a href="#"><i class="fa fa-bell fa-fw"></i>已选易凡商品
+                    [<span style="color:red;" onclick="location.href='/store/inventory_add'" id="productFenNum">0</span>份
+                    <span style="color:red;" onclick="location.href='/store/bulk_inventory_add'" id="productKGNum">0</span>KG] <i class="fa fa-caret-down"></i>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="fa fa-user fa-fw"></i> {{store.username}} <i class="fa fa-caret-down"></i>
+                    </a>
+                </li>
+                <li>
+                    <a href="/store/logout">
+                        <i class="fa fa-power-off fa-fw"></i> 退出 <i class="fa fa-caret-down"></i>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="navbar-default sidebar" id="leftTree" role="navigation">
+                <div class="sidebar-nav navbar-collapse">
+                    <ul class="nav" id="side-menu">
+
+                        <li {% if active=='product_jfmanager' or active=='categorys' or active=='ps' or active=='price' or  active=='attribute' or  active=='reserve' %}class="active"{% endif %}>
+                            <a  href="#"><i class="fa fa-picture-o fa-fw"></i>&nbsp;&nbsp;&nbsp;商品管理
+                            <span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a {% if active=='ps' %} class="active"{% endif %} href="/store/products"></i>&nbsp;&nbsp;&nbsp;产品管理</a>
+                                </li>
+                                <li>
+                                    <a {% if active=='categorys' %} class="active"{% endif %} href="/store/category"></i>&nbsp;&nbsp;&nbsp;产品分类</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li {% if active=='orders' or active=='skus' or active=='order_payback' or active=='offline' %}class="active"{% endif %}>
+                            <a href="#"><i class="fa fa-align-justify fa-fw"></i>&nbsp;&nbsp;&nbsp;订单管理
+                                <span class="fa arrow"></span>
+                            </a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a {% if active=='orders' %}class="active"{% endif %} href="/store/orders?status=1">线上订单</a>
+                                </li>
+                                <li>
+                                    <a {% if active=='offline' %}class="active"{% endif %} href="/store/order/offline">线下订单</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li {% if active=='inventory' or active=='store_price' or active=='inventory_orders' %}class="active"{% endif %}>
+                            <a href="#"><i class="fa fa-align-justify fa-fw"></i>&nbsp;&nbsp;&nbsp;库存管理
+                                <span class="fa arrow"></span>
+                            </a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a {% if active=='inventory' %}class="active"{% endif %} href="/store/inventory">库存管理</a>
+                                </li>
+                                <li>
+                                    <a {% if active=='inventory_orders' %}class="active"{% endif %} href="/store/inventory/orders?status=0">采购申请</a>
+                                </li>
+                                <li>
+                                    <a {% if active=='store_price' %}class="active"{% endif %} href="/store/price">价格管理</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a {% if active=='password' %}class="active"{% endif %} href="/store/password"><i class="fa fa-eye fa-fw"></i>&nbsp;&nbsp;&nbsp;修改密码</a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.sidebar-collapse -->
+            </div>
+            <!-- /.navbar-static-side -->
+        </nav>
+
+        <div id="page-wrapper">
+            {% block content %}&nbsp;{% endblock %}
+        </div>
+        <!-- /#page-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+
+    <!-- jQuery -->
+    <script src="/style2/js/jquery-1.11.1.min.js"></script>
+
+    <script src="/style2/js/chosen.jquery.js"></script>
+    <script language="javascript" type="text/javascript" src="/style2/js/My97DatePicker/WdatePicker.js"></script>
+
+    <script type="text/javascript">
+        $(function(){
+            var status = 0;
+            $("#controlLeft").click(function() {
+                if (status == 0) {
+                    $("#leftTree").hide();
+                    $("#controlLeft").html('显示左栏');
+                    $("#page-wrapper").css('margin','0');
+                    status = 1;
+                }else{
+                    $("#leftTree").show();
+                    $("#controlLeft").html('隐藏左栏');
+                    $("#page-wrapper").css('margin','0 0 0 250px');
+                    status = 0;
+                }
+            });
+            storeGetCartCount();
+        });
+        var config = {
+            '.chosen-select': {},
+            '.chosen-select-deselect': { allow_single_deselect: true },
+            '.chosen-select-no-single': { disable_search_threshold: 10 },
+            '.chosen-select-no-results': { no_results_text: 'Oops, nothing found!' },
+            '.chosen-select-width': { width: "95%" }
+        }
+        for (var selector in config) {
+            $(selector).chosen(config[selector]);
+        }
+
+        function storeGetCartCount(){
+            $.get("/ajax/storeGetCount", {  }, function (data) {
+                var obj = jQuery.parseJSON(data);
+                if(obj.status==1){
+                    $('#productFenNum').html(obj.FenNum);
+                    $('#productKGNum').html(obj.KGNum);
+                }
+                else{
+                    alert(obj.msg)
+                }
+            });
+        }
+	</script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="/style2/js/bootstrap.min.js"></script>
+
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="/style2/js/plugins/metisMenu/metisMenu.min.js"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script src="/style2/js/sb-admin-2.js"></script>
+    {% block js %}{% endblock %}
+
+         <link rel="stylesheet" href="/style2/css/jquery.confirm.css" type="text/css" media="screen" />
+<script type="text/javascript" src="/style2/js/jquery.confirm.js"></script>
+</body>
+
+</html>

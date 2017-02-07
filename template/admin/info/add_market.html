@@ -1,0 +1,203 @@
+{% extends "layout/admin.html" %}
+{% block content %}
+
+
+<div class="row">
+    <nav>
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">编辑批发市场信息</a>
+        </div>
+    </nav>
+</div>
+<div class="row">
+    <div class="panel panel-primary">
+        <div class="panel-body">
+
+            {%set messages=handler.get_flashed_messages() %}
+            {%if messages%}
+            <div class="msg" style="color:red;">
+                {% for type, msg in messages%}
+                <span>{{msg}}</span>
+                {% endfor %}
+            </div>
+            {%endif%}
+
+            <form action="" method="post" enctype="multipart/form-data">
+                {{xsrf()}}
+
+
+                <div class="form-group has-success">
+                    <input type="checkbox" id="continue" name="continue" checked /><label for="continue">连续添加</label>
+                    <input type="submit" name="sub" value="提 交" class="btn btn-outline btn-primary btn-sm">
+                    <!--<input type="reset" name="sub" value="重 置" class="btn btn-outline btn-primary btn-sm">-->
+                </div>
+
+                <div class="form-group has-success">
+                    <label class="control-label">商品种类</label>
+                    <input type="text" name="product_type" class="form-control" value="{{ca.product_type}}"  required placeholder="商品种类" />
+                </div>
+
+                <div class="form-group has-success">
+                    <label class="control-label">重量（1000千克/吨）</label>
+                    <input type="text" name="weight" class="form-control" value="{{ca.weight or 0.0}}"    placeholder="重量" />
+                </div>
+
+                <div class="form-group has-success">
+                    <label class="control-label">车牌号</label>
+                    <input type="text" name="car_num" class="form-control" value="{{ca.car_num}}"    placeholder="车牌号" />
+                </div>
+
+                <div class="form-group has-success">
+                    <label class="control-label">价格（元）</label>
+                    <input type="text" name="price" class="form-control" value="{{ca.price or 0.0}}"    placeholder="价格" />
+                </div>
+
+                <div class="form-group has-success">
+                    <label class="control-label">批发市场</label>
+                    <select id="combobox" class="form-control" name="address">
+                        <option value="{{ ca and ca.address.id or ''}}">{{ ca and ca.address.name or '--请选择--'}}</option>
+                        {% for c in cas %}
+                        <option value="{{c.id}}">{{c.name}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group has-success">
+                    <label class="control-label">采集时间</label>
+                    <input type="date" name="collect_time" id="collect_time" class="form-control" value="{{ca.collect_time and ca.collect_time|dateformat or ''}}" placeholder="采集时间" />
+                </div>
+
+                <div class="form-group has-success">
+                    <label class="control-label">商品规格</label>
+                    <input type="text" name="product_standard" class="form-control" value="{{ca.product_standard}}"    placeholder="商品规格" />
+                </div>
+
+                <div class="form-group has-success">
+                    <label class="control-label">商品产地</label>
+                    <input type="text" name="product_origin" class="form-control" value="{{ca.product_origin}}"    placeholder="商品产地" />
+                </div>
+
+                <div class="form-group has-success">
+                    <label class="control-label">销量（千克）</label>
+                    <input type="text" name="sales" class="form-control" value="{{ca.sales or 0}}"    placeholder="销量" />
+                </div>
+
+                <div class="form-group has-success">
+                    <label class="control-label">批发商姓名</label>
+                    <input type="text" name="name" class="form-control" value="{{ca.name}}"    placeholder="批发商姓名" />
+                </div>
+
+                <div class="form-group has-success">
+                    <label class="control-label">批发商电话</label>
+                    <input type="text" name="tel" class="form-control" value="{{ca.tel}}"    placeholder="批发商电话" />
+                </div>
+
+              
+
+                <!--<div class="form-group has-success">
+                    <label class="control-label">货物照片</label>
+                    <input type="text" name="product_pic" class="form-control" value="{{ca.product_pic}}"  required placeholder="货物照片" />
+                </div>-->
+
+                <div class="form-group has-success">
+                    <label class="control-label">GPS位置坐标</label>
+                    <input type="text" name="gps" class="form-control" value="{{ca.gps}}"    placeholder="GPS位置坐标" />
+                </div>
+
+                <div class="form-group has-success">
+                    <label class="control-label">合作意向</label>
+                    <div class="form-control">
+                        <input type="radio" id="nobzh" name="intention" value="0" {{ca.intention == 0 and 'checked' }}><label for="nobzh">不愿意</label>
+                        <input type="radio" id="yesbzh" name="intention" value="1" {{ca.intention == 1 and 'checked' }}><label for="yesbzh">愿意</label>
+                    </div>
+                </div>
+
+                <div class="form-group has-success">
+                    <label class="control-label">备注</label>
+                    <input type="text" name="remark" class="form-control" value="{{ca.remark}}"   placeholder="备注" />
+                </div>
+            </form>
+
+        </div>
+        {% if vid != '0' %}
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">图片信息 <a href="" id="fileupload">选择图片</a></h3>
+            </div>
+            <div class="panel-body" id="pic-box">
+                {% if cps %}
+                {% for c in cps -%}
+                <div class="col-lg-2 .col-xs-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading center-block">
+                            <img src="/upload/market/{{ca.address.id}}/{{c.pic_path}}" width="80" height="80">
+                        </div>
+                        <div class="panel-footer">
+                            <div class="btn-group btn-group-xs">
+                                <a type="button" class="btn btn-default" href="/admin/market/delpic/{{c.id}}?cid={{ca.id}}">删除</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {%- endfor %}
+                {% endif %}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script src="/style2/xheditor/xheditor-1.2.2.min.js"></script>
+<script src="/style2/xheditor/xheditor_lang/zh-cn.js"></script>
+<script src="/style2/js/jquery.ocupload.js?v=1"></script>
+<script>
+    $(document).ready(function(){
+        {% if ca %}
+        $('#pintro').xheditor({tools:'Source,Fullscreen,Img', html5Upload:false, upImgUrl:"/ajax/upload/collect/{{ca.address.id}}/",upImgExt:"jpg,gif,png"});
+        {% endif %}
+        var myUpload = $('#fileupload').upload({
+            name: 'filedata',
+            action: '/ajax/collect/pic/{{ca.id}}?type=1&path_child=market',
+            enctype: 'multipart/form-data',
+            autoSubmit: true,
+            onClick: function(){
+
+            },
+            onSelect: function(){
+                var ext = myUpload.filename().substr(myUpload.filename().length - 3, 3).toLowerCase();
+                if (ext != 'jpg' || ext != 'gif' || ext != 'png')
+                {
+                    return false;
+                }
+            },
+            onComplete: function(response) {
+                eval('var c = ' + response);
+                if (c.id > 0) {
+
+                    $('#pic-box').append('<div class="col-lg-2 .col-xs-12"><div class="panel panel-default"><div class="panel-heading center-block"><img src="/upload/market/' + c.path + '" width="80" height="80"></div><div class="panel-footer"><div class="btn-group btn-group-xs"><a type="button" class="btn btn-default" href="/admin/market/delpic/'+c.id+'?cid={{ca.id}}">删除</a></div></div></div></div>');
+
+                }
+                else{
+                    alert(c.path);
+                }
+
+            }
+        });
+        {% if ca == None %}
+        $("#combobox").val("2");
+        {% endif %}
+
+        var myDate = new Date();
+        var strMonth = myDate.getMonth()>9?(myDate.getMonth()+1):'0' + (myDate.getMonth()+1);
+        var strDay = myDate.getDate()>9?myDate.getDate().toString():'0' + myDate.getDate();
+        var c_time = $("#collect_time").val();
+        if(c_time == '')
+            $("#collect_time").val(myDate.getFullYear() + '-' + strMonth + '-' + strDay);
+    });
+
+</script>
+{% endblock %}

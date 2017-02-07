@@ -1,0 +1,109 @@
+{% extends "layout/admin.html" %}
+{% block css %}
+<link href="/style2/css/plugins/dataTables.bootstrap.css" rel="stylesheet">
+<style>
+    .buy_number_input {
+        height: 28px;
+        background-position: -198px 0;
+        float: left;
+        width: 105px;
+        display: inline;
+        margin-left: 5px;
+    }
+    .buy_number_input span {
+        display: inline;
+        float: left;
+        height: 28px;
+        width: 28px;
+        cursor: pointer;
+    }
+    .buy_number_input input {
+        float: left;
+        display: inline;
+        width: 49px;
+        height: 28px;
+        text-align: center;
+        line-height: 28px;
+        border: 0 none;
+        overflow: hidden;
+        background: transparent;
+        margin-top: 1px;
+        font-size: 14px;
+        color: #080808;
+    }
+    .btn-group .btn input[type=checkbox] {
+        position: absolute;
+        clip: rect(0,0,0,0);
+        pointer-events: none;
+    }
+    .btn-primary:active, .btn-primary.active, .open>.dropdown-toggle.btn-primary {
+        color: #fff;
+        background-color: #c9302c;
+        border-color: #ac2925;
+    }
+    .btn-primary:focus/*.btn-primary:hover, */{
+        color: #fff;
+        background-color: #3071a9;
+        border-color: #285e8e;
+    }
+    .panel-footer {
+        padding: 8px 0px;
+    }
+
+
+</style>
+{% endblock %}
+{% block content %}
+<div class="row">
+   <nav>
+   <div>
+      <span class="navbar-brand" >产品列表</span>
+   </div>
+</nav>
+</div>
+<div class="row">
+    <form class="form-horizontal" id="form" method="post" action="">
+        {{xsrf()}}
+        <div class="panel panel-warning" id="vegetables">
+            <div class="panel-heading">
+                <h3 class="panel-title">产品列表　
+                    <select name="attr" class="">
+                        {% for a in attributes%}
+                        <option value="{{a.id}}" {{ attr == a.id and 'selected' or ''}}>{{a.name}}</option>
+                        {% endfor %}
+                    </select>
+                    <input type="submit" class="btn-default btn" value="保存"></h3>
+            </div>
+            <div class="panel-body btn-group"  data-toggle="buttons">
+        {% for c in products %}
+        <div class="col-lg-2 .col-xs-4">
+            <div class="panel panel-primary" style="text-align: center;">
+                <label class="btn btn-primary item_product">
+                    <input type="checkbox" class="chk" name="product_id" value="{{c.product.id}}" autocomplete="off">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="text-left"  style="min-width:162px;">
+                                <input type="hidden" class="product-id" value="{{c.product.id}}">
+                                <input type="hidden" class="product-img" value="{{c.product.cover}}">
+                                <input type="hidden" class="product-sku" value="{{c.product.sku}}">
+                                <h4 class="product-name">{{c.product.name}}</h4>
+                                <div>金额：￥<span class="product-price">{{c.price}}</span></div>
+                                <div>规格：{{(c.name)}} </div>
+                            </div>
+                        </div>
+                    </div>
+                </label>
+            </div>
+        </div>
+        {% endfor %}
+            </div>
+        </div>
+
+    </form>
+</div>
+{% endblock %}
+{% block js %}
+<script>
+
+</script>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends "layout/site.html" %}
+{% block css %}
+<link rel="stylesheet" href="/style2/css/EoFan.css" type="text/css" media="screen">
+{% block subcss %}
+{% endblock %}
+{% endblock %}
+
+
+{% block content %}
+<div class="usercenter">
+    <div class="profile">
+        <!-- agu left column start -->
+        <script type="text/javascript">
+            function left_btn(n){
+                var a_num=document.getElementById("left_btn_box").getElementsByTagName("a");
+                for(i=0;i<a_num.length;i++){
+                    a_num[i].className=i==n?"select":"";
+                }
+            }
+</script>
+        <div class="nav" id="left_btn_box">
+            {% if ugrade == 3 or ugrade == 5 %}
+            <ul class="czj_dh">
+                <li class="li_dh"><img src="/style2/images/left_column/home.png">业务管理</li>
+                <a href="/user/products" class="settings {% if c=='products' %} select {% endif %}"><li class="li_cp"><img src="/style2/images/left_column/cp.png">商品列表<em></em></li></a>
+                <!--<a href="/user/product_from" class="settings {% if c=='product_from' %} select {% endif %}"><li class="li_fb"><img src="/style2/images/left_column/fb.png">发布商品<em></em></li></a>-->
+                <a href="/user/orderlistdealer/0" class="settings {% if c=='orderlistdealer' %} select {% endif %}"><li class="li_dd"><img src="/style2/images/left_column/dd.png">商品订单<em></em></li></a>
+                {% if ugrade == 5 %}
+                <a href="/user/insurance" class="promote {% if c=='user_insurance' %} select {% endif %}"><li class="li_me"><img src="/style2/images/left_column/me.png">保险订单<em></em></li></a>
+                {% endif %}
+            </ul>
+            {% elif ugrade == 1 %}
+            <ul class="czj_dh">
+                <li class="li_dh"><img src="/style2/images/left_column/home.png">商品管理</li>
+                <a href="/user/products" class="settings {% if c=='products' %} select {% endif %}"><li class="li_cp"><img src="/style2/images/left_column/cp.png">商品列表<em></em></li></a>
+                <a href="/user/orderlistdealer/0" class="settings {% if c=='orderlistdealer' %} select {% endif %}"><li class="li_dd"><img src="/style2/images/left_column/dd.png">商品订单<em></em></li></a>
+            </ul>
+            {% elif ugrade == 4 %}
+            <ul class="czj_dh">
+                <li class="li_dh"><img src="/style2/images/left_column/geren.png">保险管理</li>
+                <a href="/user/insurance" class="promote {% if c=='user_insurance' %} select {% endif %}"><li class="li_me"><img src="/style2/images/left_column/me.png">保险订单<em></em></li></a>
+            </ul>
+            {% endif %}
+            <ul class="czj_dh">
+                <li class="li_dh"><img src="/style2/images/left_column/geren.png">个人账户</li>
+                <a href="/user/profile" class="settings {% if c=='profile' %} select {% endif %}"><li class="li_zh"><img src="/style2/images/left_column/zh.png">设置账户信息<em></em></li></a>
+                <a href="/user/profile_store" class="settings {% if c=='profile_store' %} select {% endif %}"><li class="li_md"><img src="/style2/images/left_column/md.png">门店资料修改<em></em></li></a>
+                <a href="/user/message" class="promote {% if c=='message' %} select {% endif %}"><li class="li_me"><img src="/style2/images/left_column/me.png">我的消息<em></em></li></a>
+                <a href="/user/password" class="password {% if c=='password' %} select {% endif %}"><li class="li_mm"><img src="/style2/images/left_column/mm.png">修改密码<em></em></li></a>
+            </ul>
+        </div>
+        <!-- agu left column end -->
+        {% block subcontent %}{% endblock %}
+    </div>
+    <div class="clear"></div>
+</div>
+
+{% endblock %}

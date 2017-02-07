@@ -1,0 +1,70 @@
+{% extends "layout/admin.html" %}
+{% block content %}
+<div class="row">
+    <nav>
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">指派优惠劵</a>
+        </div>
+    </nav>
+</div>
+<div class="row">
+    <div class="panel panel-primary">
+        <div class="panel-body">
+
+            {%set messages=handler.get_flashed_messages() %}
+            {%if messages%}
+            <div class="msg" style="color:red;">
+                {% for type, msg in messages%}
+                <span>{{msg}}</span>
+                {% endfor %}
+            </div>
+            {%endif%}
+
+            <form action="" method="post" enctype="multipart/form-data">
+                {{xsrf()}}
+
+
+                <div class="panel-body">
+
+                    {% for c in cp %}
+
+
+
+                    <div class="col-lg-3 .col-xs-6">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                <div class="row">
+                                    <div class="text-left">
+                                        <h4>金额：￥{{c.coupontotal.price}}</h4>
+                                        <div>适用范围：{{c.coupontotal.name}}</div>
+                                        <div>开始时间：{{(c.coupontotal.starttime|datetimeformat)}} </div>
+                                        <div>结束时间：{{(c.coupontotal.endtime|datetimeformat)}}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-footer">
+
+                                <div class="btn-group btn-group-xs">
+                                    <a type="button" class="btn btn-default" href="/admin/assign/{{uid}}/{{c.id}}">赠送</a>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                    {% endfor %}
+                </div>
+
+
+
+
+
+
+
+
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

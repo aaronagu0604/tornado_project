@@ -1,0 +1,60 @@
+{% extends "layout/admin.html" %}
+{% block css %}
+<link href="/style2/css/plugins/dataTables.bootstrap.css" rel="stylesheet">
+<style type="text/css">
+    .actual{width:100px;}
+</style>
+{% endblock %}
+{% block content %}
+
+<div class="row">
+   <nav>
+   <div>
+      <a class="navbar-brand" href="javascript:void(0);">损耗情况</a>
+   </div>
+</nav>
+</div>
+
+<div class="row">
+    <div class="panel panel-primary">
+    <div class="panel-body">
+        <div class="table-responsive">
+        <table class="table table-hover" id="tb_users">
+            <thead>
+                <tr>
+                    <th>产品ID</th>
+                    <th>产品名称</th>
+                    <th>SKU</th>
+                    <th>当前总采购量</th>
+                    <th>损耗率</th>
+                    <th>盘点时间</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for i in inventory -%}
+            <tr>
+              <td>{{i.product.id}}</td>
+              <td>
+                  <label class="checkbox-inline">
+                      {{i.product.name}}
+                  </label>
+              </td>
+              <td>{{i.product.sku}}</td>
+              <td>{{i.current_total_weight or 0}}</td>
+              <td>{{i.loss}}%</td>
+              <td>{{i.updatedtime | dateformat}}</td>
+            </tr>
+            {%- endfor %}
+            </tbody>
+        </table>
+        </div>
+    </div>
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<script>
+    var xsrf='{{handler.xsrf_token}}';
+
+</script>
+{% endblock %}

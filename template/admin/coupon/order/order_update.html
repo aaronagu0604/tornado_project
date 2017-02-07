@@ -1,0 +1,186 @@
+{% extends "layout/admin.html" %}
+{% block content %}
+<form class="form-horizontal" id="form" method="post" action="/admin/order_update/{{o.id}}">
+{{xsrf()}}
+<div class="row">
+    <ol class="breadcrumb">
+        <li><a href="/admin/user/{{userid}}">返回用户订单信息</a></li>
+        <li class="active">
+            <input type="submit" value="保存" id="saveOrder" class="btn btn-outline btn-default btn-xs">
+        </li>
+    </ol>
+</div>
+<div style="color: red; font-size: 0.6em; margin-bottom: 25px;">
+    {%set messages=handler.get_flashed_messages() %}
+    {%-if messages-%}
+        <div>
+            {% for type, msg in messages%}
+                {{msg}}
+            {% endfor %}
+        </div>
+    {%-endif-%}
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">订单基本信息</h3>
+            </div>
+            <div class="panel-body">
+                <table class="table table-condensed">
+                    <tbody>
+                        <tr>
+                            <td>订单号：</td>
+                            <th>{{o.ordernum}}</th>
+                        </tr>
+                        <tr>
+                            <td>订单状态：</td>
+                            <th>
+                                {% if o.status==0 and o.payment==1 %}
+                                    待付款
+                                  {% elif o.status==1 or (o.status==0 and o.payment==0) %}
+                                    待处理
+                                  {% elif o.status==2 %}
+                                    正在处理
+                                  {% elif o.status==3 %}
+                                    已发货
+                                  {% elif o.status==4 %}
+                                    已完成
+                                  {% elif o.status==5 %}
+                                    已取消
+                                  {% endif %}
+                            </th>
+                        </tr>
+                        <tr>
+                            <td>下单时间：</td>
+                            <th>{{o.ordered|datetimeformat}}</th>
+                        </tr>
+                        <tr>
+                            <td>用户账户：</td>
+                            <th><a target="_blank" href="/admin/user/{{o.user.id}}">{{o.user.username}}</a></th>
+                        </tr>
+                        <tr>
+                            <td>用户IP：</td>
+                            <th>{{o.ip}}</th>
+                        </tr>
+                        <tr>
+                            <td>支付方式：</td>
+                            <th>
+                                {% if o.payment==0 %}
+                                    货到付款
+                              {% elif o.payment==1 %}
+                                    支付宝
+                              {% elif o.payment==2 %}
+                                    账户余额
+                                {% elif o.payment==3 %}
+                                    网银支付
+                              {%endif%}
+                            </th>
+                        </tr>
+                        <tr>
+                            <td>收货人：</td>
+                            <th><input type="text" value="{{o.take_name}}" class="form-control" name="take_name">
+                            </th>
+                        </tr>
+                        <tr>
+                            <td>收货地址：</td>
+                            <th><input type="text" value="{{o.take_address}}" class="form-control" name="take_address"></th>
+                        </tr>
+                        <tr>
+                            <td>联系电话：</td>
+                            <th><input type="text" value="{{o.take_tel}}" class="form-control" name="take_tel"></th>
+                        </tr>
+                        <tr>
+                            <td>订单留言：</td>
+                            <th>
+                                <input type="text" value="{{o.message}}" class="form-control" name="message">
+                            </th>
+                        </tr>
+                        <tr>
+                            <td>订单总重量：</td>
+                            <th>￥{{o.weight }}</th>
+                        </tr>
+                        <tr>
+                            <td>订单实际运费：</td>
+                            <th>￥{{o.freight }}</th>
+                        </tr>
+                        <tr>
+                            <td>订单金额：</td>
+                            <th>￥{{ o.currentprice }}</th>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">产品清单</h3>
+                <a class="btn btn-xl btn-primary btnUpdate" alt="{{o.id}}" data-iid="{{item.id}}">保存</a>
+            </div>
+            <div class="panel-body">
+                <table class="table table-hover" id="tb_users">
+                    <thead>
+                        <tr>
+                            <th>产品图片</th>
+                            <th>基本信息</th>
+                            <th>产品价格</th>
+                            <th>购买数量</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for item in o.items -%}
+                        <tr>
+                            <td>
+                                <img src="/upload/{{item.product.sku}}/{{item.product.cover}}" width="80" height="80" />
+                          </td>
+                        <td>
+                            <h4>{{item.product.name}}<small> (SKU：P{{item.product.id}})</small></h4>
+                            <p>
+                                {{item.product_standard.name}}
+                            </p>
+                        </td>
+                        <td>
+                            <h3>{{item.price}}元</h3>
+                        </td>
+                        <td>
+                            <h3><input class="itemQuantity" type="text" data-id="{{item.id}}" value="{{item.quantity}}" style="width:50px;" />份</h3>
+                        </td>
+                        <td>
+                            <div style="margin-top: 20px;margin-bottom: 10px;">
+                                <a class="btn btn-xl btn-primary btnUpdate" alt="{{o.id}}" data-iid="{{item.id}}">保存</a>
+                                <a class="btn btn-xl btn-warning" href="/admin/del_orderitem/{{item.id}}?oid={{o.id}}">删除</a>
+                            </div>
+                        </td>
+                    </tr>
+                    {%- endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</form>
+{% endblock %}
+{% block js %}
+    <script>
+        $(function() {
+            $('.btnUpdate').click(function () {
+                var iid = $(this).attr('data-iid');
+                var oid = $(this).attr('alt');
+                var quantity = $(this).parents().find(".itemQuantity").val();
+                $.get("/ajax/upd_orderitem", { iid: iid, quantity: quantity, oid: oid, t: Math.random() }, function (data) {
+                    if(data == "-1"){
+                        alert("商品数量错误，请重新选择！");
+                    }else if(data == "-2"){
+                        alert("订单金额不能小于0！");
+                    }else{
+                        location.reload();
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}

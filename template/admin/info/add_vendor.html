@@ -1,0 +1,216 @@
+{% extends "layout/admin.html" %}
+{% block content %}
+
+
+<div class="row">
+    <nav>
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">编辑农户</a>
+        </div>
+    </nav>
+</div>
+<div class="row">
+    <div class="panel panel-primary">
+        <div class="panel-body">
+
+            {%set messages=handler.get_flashed_messages() %}
+            {%if messages%}
+            <div class="msg" style="color:red;">
+                {% for type, msg in messages%}
+                <span>{{msg}}</span>
+                {% endfor %}
+            </div>
+            {%endif%}
+
+            <form action="" method="post" enctype="multipart/form-data">
+                {{xsrf()}}
+
+                 
+
+                <div class="form-group has-success">
+                    <label class="control-label">农户名称</label>
+                    <input type="text" name="name" class="form-control" value="{{cf.name}}"  required placeholder="农户名称" />
+                    <input name="fid" type="hidden" value="{{fid}}">
+                </div>
+
+                <div class="form-group has-success">
+                    <label class="control-label">农户电话</label>
+                    <input type="text" name="tel" class="form-control" value="{{cf.tel}}"   placeholder="农户电话" />
+                </div>
+
+                <div class="form-group has-success">
+                    <label class="control-label">农户地址</label>
+                    <div class="input-group">
+                    <select class="form-control" style="width:120px;" name="province">
+                        <option value="陕西省" selected>陕西省</option>
+                    </select>
+
+                     <select class="form-control" style="width:120px;" name="city"  >
+                        <option value="咸阳市" selected>咸阳市 </option>
+                    </select>
+
+                     <select class="form-control" style="width:120px;" name="county"  >
+                        <option value="泾阳县" selected>泾阳县</option>
+                    </select>
+
+                     <select class="form-control" style="width:120px;" name="town"  >
+                        <option value="云阳镇" selected>云阳镇</option>
+                    </select>
+                     <select class="form-control" style="width:120px;" name="village" id="village"  >
+                        <option value="花马村" selected>花马村</option>
+                        <option value="西花云" >西花云</option>
+                        <option value="南互助" >南互助</option>
+                        <option value="北互助" >北互助</option>
+                        <option value="枣阳村" >枣阳村</option>
+                        <option value="张家屯" >张家屯</option>
+                        <option value="集义村" >集义村</option>
+                        <option value="南丁村" >南丁村</option>
+                        <option value="北丁村" >北丁村</option>
+                        <option value="城角村" >城角村</option>
+                        <option value="仁合村" >仁合村</option>
+                        <option value="小里" >小里  </option>
+                        <option value="大里村" >大里村</option>
+                        <option value="义和村" >义和村</option>
+                        <option value="西卢" >西卢  </option>
+                        <option value="杨效" >杨效  </option>
+                        <option value="白家村" >白家村</option>
+                        <option value="竹园张" >竹园张</option>
+                        <option value="马家村" >马家村</option>
+                        <option value="寇家村" >寇家村</option>
+                        <option value="什字口" >什字口</option>
+                        <option value="闫家村" >闫家村</option>
+                        <option value="毛家村" >毛家村</option>
+                        <option value="纸坊村" >纸坊村</option>
+                        <option value="姚家村" >姚家村</option>
+                        <option value="团结村" >团结村</option>
+                        <option value="马池村" >马池村</option>
+                        <option value="骆驼湾" >骆驼湾</option>
+                        <option value="山庄村" >山庄村</option>
+                        <option value="杨府" >杨府</option>
+                    </select>
+                    </div>
+
+
+
+
+
+                    <input type="text" name="address" class="form-control" value="{{cf.address}}"   placeholder="农户住址" />
+                </div>
+
+                <div class="form-group has-success">
+                    <label class="control-label">GPS位置坐标</label>
+                  <!--  <input type="text" name="gps" class="form-control" value="{{cf.gps}}"  required placeholder="GPS位置坐标" />-->
+
+                    <select class="form-control" name="gps"  id="gps">
+                        <option value="108.83942;34.594569" selected>花马村(108.83942;34.594569)</option>
+                        <option value="6104230102" >西花云</option>
+                        <option value="6104230103" >南互助</option>
+                        <option value="6104230104" >北互助</option>
+                        <option value="6104230105" >枣阳村</option>
+                        <option value="6104230106" >张家屯</option>
+                        <option value="6104230107" >集义村</option>
+                        <option value="6104230108" >南丁村</option>
+                        <option value="6104230109" >北丁村</option>
+                        <option value="6104230110" >城角村</option>
+                        <option value="6104230111" >仁合村</option>
+                        <option value="6104230112" >小里  </option>
+                        <option value="6104230113" >大里村</option>
+                        <option value="6104230114" >义和村</option>
+                        <option value="6104230115" >西卢  </option>
+                        <option value="6104230116" >杨效  </option>
+                        <option value="6104230117" >白家村</option>
+                        <option value="6104230118" >竹园张</option>
+                        <option value="6104230119" >马家村</option>
+                        <option value="6104230120" >寇家村</option>
+                        <option value="6104230121" >什字口</option>
+                        <option value="6104230122" >闫家村</option>
+                        <option value="6104230123" >毛家村</option>
+                        <option value="6104230124" >纸坊村</option>
+                        <option value="6104230125" >姚家村</option>
+                        <option value="6104230126" >团结村</option>
+                        <option value="6104230127" >马池村</option>
+                        <option value="6104230128" >骆驼湾</option>
+                        <option value="山庄村" >山庄村</option>
+                        <option value="杨府" >杨府</option>
+                    </select>
+
+                </div>
+
+                <div class="form-group has-success">
+                    <label class="control-label">是否提供标准化</label>
+                    <div class="form-control">
+                        <input type="radio" id="nobzh" name="is_bzh" value="0" {{cf.is_bzh == 0 and 'checked' or '' }}><label for="nobzh">不提供</label>
+                        <input type="radio" id="yesbzh" name="is_bzh" value="1" {{cf.is_bzh == 1 and 'checked' or '' }}><label for="yesbzh">提供</label>
+                    </div>
+                </div>
+
+                <div class="form-group has-success">
+                    <label class="control-label">备注</label>
+                    <input type="text" name="remark" class="form-control" value="{{cf.remark}}"   placeholder="备注" />
+                </div>
+
+                <div class="form-group has-success">
+                    <input type="submit" name="sub" value="提 交" class="btn btn-outline btn-primary btn-sm">
+                    <input type="reset" name="sub" value="重 置" class="btn btn-outline btn-primary btn-sm">
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">种植信息 <a class="btn btn-outline btn-primary btn-sm" href="/admin/info/plant/0?fid={{fid}}">添加</a></h3>
+        </div>
+        <div class="panel-body">
+            <div class="table-responsive">
+                <table class="table table-hover" id="tb_users">
+                    <thead>
+                    <tr>
+                        <th>种植品种</th>
+                        <th>种植面积</th>
+                        <th>产品规格</th>
+                        <th>预计上市时间</th>
+                        <th>预计产量</th>
+                        <th>预计收价</th>
+                        <th>往年收价</th>
+                        <th>采集时间</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% if cfp %}
+                    {% for c in cfp -%}
+                    <tr>
+                        <td>{{c.plant_type}}</td>
+                        <td>{{c.plant_area}}</td>
+                        <td>{{c.product_standard}}</td>
+                        <td>{{c.anticipated_time}}</td>
+                        <td>{{c.anticipated_output}}</td>
+                        <td>{{c.anticipated_bid_price}}</td>
+                        <td>{{c.old_bid_price}}</td>
+                        <td>{{c.collect_time|dateformat}}</td>
+                        <td><a  class="btn btn-outline btn-primary btn-xs" href="/admin/info/plant/{{c.id}}?fid={{cf.id}}">修改</a></td>
+                    </tr>
+                    {%- endfor %}
+                    {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+    <script>
+        $(function(){
+            var village = '{{cf.village}}';
+            var gps = '{{cf.gps}}';
+            if (village != null){
+                $("#village").val(village);
+            }
+            if(gps != null){
+                $("#gps").val(gps);
+            }
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,34 @@
+<link href="/style2/css/bootstrap.min.css" rel="stylesheet">
+<div style="padding: 4px 10px;">
+    <div class="panel panel-primary">
+    <div class="panel-body">
+<div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>日期</th>
+                    <th>姓名</th>
+                    <th>工时</th>
+                    <th>工资</th>
+                    <th>填写人</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for c in list %}
+                <tr>
+                    <td>{{c.work_date | dateformat}}</td>
+                    <td>{{c.name}}</td>
+                    <td>{{c.work_hour}}</td>
+                    <td>{{c.wage}}</td>
+                    <td>{{c.created_by.username}}</td>
+                </tr>
+                {% endfor %}
+            {% if list.count()==0 %}
+            <tr><td colspan="5">没有人员成本信息</td></tr>
+            {% endif %}
+            </tbody>
+        </table>
+        </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,274 @@
+{% extends "layout/admin.html" %}
+{% block content %}
+<div class="row">
+    <ol class="breadcrumb">
+        <li><a href="/admin/product/{{p.id}}">{{p.name}}</a></li>
+        <li class="active">价格管理</li>
+    </ol>
+</div>
+<div style="color: red; font-size: 0.6em; margin-bottom: 25px;">
+    {%set messages=handler.get_flashed_messages() %}
+    {%-if messages-%}
+    <div>
+        {% for type, msg in messages%}
+        {{msg}}
+        {% endfor %}
+    </div>
+    {%-endif-%}
+</div>
+<div class="row">
+    <form class="form-horizontal" role="form" action="/admin/editprice/{{p.id}}/{{s.id|default('0')}}" method="post" id="formSubmit">
+        {{xsrf()}}
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    {% if s %}
+                    修改价格
+                    {% else %}
+                    新建价格
+                    {% endif %}
+                </h3>
+            </div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <label class="col-sm-1 control-label">规格名称</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" name="sname" type="text" value="{{s.name|null}}" required style="width:480px;height:32px;">
+                    </div>
+                </div>
+                <!--<div class="form-group">-->
+                    <!--<label class="col-sm-2 control-label" >-->
+                        <!--提取规格(克)-->
+                    <!--</label>-->
+                    <!--<div class="col-sm-10">-->
+                        <!--<input type="text" class="form-control" name="sweight" id="sweight" value="{{s.weight}}">-->
+                    <!--</div>-->
+                <!--</div>-->
+
+                <div class="form-group">
+                    <label class="col-sm-1 control-label" >
+                        关联规格列表
+                    </label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" name="srelations" id="srelations" value="{{s.relations or '[]'}}" disabled style="width:480px;height:32px;">
+                        <input type="hidden" id="relations" name="relations" value="{{s.relations or '[]'}}">
+                        <!--<button type="button" class="btn btn-warning" style="margin: 3px;" id="btnRelations">关联规格</button>-->
+                    </div>
+                    <label class="col-sm-2 control-label" >
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-1 control-label">
+                        是否设为精品
+                    </label>
+                    <div class="col-sm-10">
+                        <label class="checkbox-inline col-sm-6">
+                            <input type="checkbox" name="is_recommend" id="is_recommend"  value="1" {% if s.is_recommend==1 %} checked  {% endif %} >是否为精品商品
+                        </label>
+                        <div class="col-sm-6">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-1 control-label">
+                        商品所属
+                    </label>
+                    <div class="col-sm-10"  style="width:480px;margin-left:-20px;">
+                        <label class="checkbox-inline col-sm-3">
+                            <input type="radio" name="is_bargain"  value="0" {% if s.is_bargain==0 %} checked  {% endif %} >普通商品
+                        </label>
+                        <label class="checkbox-inline col-sm-3">
+                            <input type="radio" name="is_bargain"  value="1" {% if s.is_bargain==1 %} checked  {% endif %} >免费商品
+                        </label>
+                        <label class="checkbox-inline col-sm-3">
+                            <input type="radio" name="is_bargain"  value="2" {% if s.is_bargain==2 %} checked  {% endif %} >特价商品
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-1 control-label" >
+                        上下架
+                    </label>
+                    <div class="col-sm-10">
+                        <label class="radio-inline" style="margin-right:30px;">
+                            <input type="radio" value="1" name="sale_status" {{(s.sale_status == 1 or not s) and 'checked' or ''}}>上架
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" value="2" name="sale_status"{{s.sale_status == 2 and 'checked' or ''}}>下架
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-1 control-label" >
+                        库存
+                    </label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" name="quantity" value="{{s.quantity|default('0')}}" placeholder="目前库存数量" style="width:480px;height:32px;">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-1 control-label" >
+                        订单数
+                    </label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" name="orders" value="{{s.orders|default('0')}}" placeholder="订单数" style="width:480px;height:32px;">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-1 control-label" >
+                        每日限购
+                    </label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" name="xgperusernum" value="{{s.xgperusernum|default('10')}}" placeholder="每个用户限购数量，0为不限购" required style="width:480px;height:32px;">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-1 control-label" >
+                        市场价
+                    </label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" name="orginalprice" value="{{s.orginalprice}}" placeholder="用于显示市场价格" required style="width:480px;height:32px;">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-1 control-label" >
+                        销售价（车主）
+                    </label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" name="price" id="price" value="{{s.price}}" placeholder="用于普通用户购买价" required style="width:480px;height:32px;">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-1 control-label" >
+                        销售价（门店）
+                    </label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" name="ourprice" id="ourprice" value="{{s.ourprice}}" placeholder="用于门店购买价" required style="width:480px;height:32px;">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-1 control-label" >
+                        批发价
+                    </label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" name="pf_price" id="pf_price" value="{{s.pf_price}}" placeholder="用于经销商进货" required style="width:480px;height:32px;">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-1 control-label" >
+                    </label>
+                    <div class="col-sm-10">
+                        <button type="submit" style="width:90px;height:36px;background:#428BCF;color:#fff;border-radius:4px;border:none;font-size:16px;">保存</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--<hr>-->
+        <!--<button type="submit" class="btn btn-outline btn-primary">保存</button>-->
+
+    </form>
+</div>
+{% endblock %}
+{% block js %}
+<script>
+    function isPositiveNum(s){//是否为正整数
+    var re = /^[0-9]*[1-9][0-9]*$/ ;
+    return re.test(s)
+    }
+    function isPositiveNumAndZero(s){//是否为正整数+0
+    var re = /^\d+$/ ;
+    return re.test(s)
+    }
+    function isMoney(money){
+    var t=/^\d+(\.\d+)?$/;
+    return t.test(money)
+    }
+    $(function() {
+//        $("#price").blur(function(){
+//            var p = parseFloat($('#price').val())*500/parseFloat($('#sweight').val());
+//            $('#ourprice').val(p.toFixed(1));
+//        });
+//        $("#ourprice").blur(function(){
+//            var p = parseFloat($('#ourprice').val())/500*parseFloat($('#sweight').val());
+//            $('#price').val(p.toFixed(1));
+//        });
+        $("#formSubmit").submit(function(){
+            var err = "";
+            var sname = $("input[name='sname']").val();
+            var quantity = $("input[name='quantity']").val();
+            var orders = $("input[name='orders']").val();
+            var xgperusernum = $("input[name='xgperusernum']").val();
+            var orginalprice = $("input[name='orginalprice']").val();
+            var price = $("input[name='price']").val();
+            var ourprice = $("input[name='ourprice']").val();
+            var pf_price = $("input[name='pf_price']").val();
+            if(sname==""){
+                err+="请输入规格名称！\r";
+            }
+            if(quantity==""){
+                err+="请输入库存数量！\r";
+            }
+            else{
+                if(!isPositiveNumAndZero(quantity)||parseInt(quantity)<0){
+                    err+="库存数量必须大于等于0！\r";
+                }
+            }
+            if(orders==""){
+                err+="请输入订单数！\r";
+            }
+            else{
+                if(!isPositiveNumAndZero(orders)||parseInt(orders)<0){
+                    err+="库存数量必须大于等于0！\r";
+                }
+            }
+            if(xgperusernum==""){
+                err+="请输入限购数量！\r";
+            }
+            else{
+                if(!isPositiveNum(xgperusernum)||parseInt(xgperusernum)<1){
+                    err+="限购数量必须大于0！\r";
+                }
+            }
+            if(orginalprice==""){
+                err+="请输入市场价格！\r";
+            }
+            else{
+                if(!isMoney(orginalprice)||parseFloat(orginalprice)<0){
+                    err+="市场价格必须大于等于0！\r";
+                }
+            }
+            if(price==""){
+                err+="请输入销售价（车主）！\r";
+            }
+            else{
+                if(!isMoney(price)||parseFloat(price)<0){
+                    err+="销售价（车主）必须大于等于0！\r";
+                }
+            }
+            if(ourprice==""){
+                err+="请输入销售价（门店））！\r";
+            }
+            else{
+                if(!isMoney(ourprice)||parseFloat(ourprice)<0){
+                    err+="销售价（门店）必须大于等于0！\r";
+                }
+            }
+            if(pf_price==""){
+                err+="请输入批发价！\r";
+            }
+            else{
+                if(!isMoney(pf_price)||parseFloat(pf_price)<0){
+                    err+="批发价必须大于等于0！\r";
+                }
+            }
+            if(err==""){
+                return true;
+            }
+            else{
+                alert(err);
+                return false;
+            }
+        });
+    });
+</script>
+{% endblock %}

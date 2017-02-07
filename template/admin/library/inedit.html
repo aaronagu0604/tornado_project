@@ -1,0 +1,235 @@
+{% extends "layout/admin.html" %}
+{% block content %}
+<div class="row">
+   <nav>
+   <div class="navbar-header">
+      <a class="navbar-brand" href="#">入库管理-编辑</a>
+   </div>
+             <div class="navbar-header" style="float: right"><a class="navbar-brand" href="/admin/library/in">返回</a></div>
+
+</nav>
+</div>
+
+ {%set messages=handler.get_flashed_messages() %}
+        {%if messages%}
+            <div class="msg" style="color:red;">
+                {% for type, msg in messages%}
+                    <span>{{msg}}</span>
+                {% endfor %}
+            </div>
+        {%endif%}
+
+
+<div class="row">
+    <div class="panel panel-primary">
+    <div class="panel-body">
+        <div class="table-responsive">
+        <table class="table table-hover" id="tb_users">
+            <thead>
+                <tr>
+                     <th style="width:50px;">编号</th>
+                    <th style="width:50px;">编码</th>
+                    <th style="width:80px;">分类名</th>                  
+                    <th style="width:150px;">采购量</th>
+                    <th style="width:150px;">采购价</th>
+                    <th style="width:150px;">实际量</th>
+                    <th>单位</th>
+                     <th style="width:150px;">日期</th>
+                    <th style="width:150px;">操作</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for c in categorys -%}
+    
+                    <tr>
+                      <td> <label id="{{c.id}}id">{{c.id}}</label> </td>       
+                      <td>{{c.categroyid}}</td>
+                      <td> {{c.categroyname}} </td>                  
+                      <td><input style="width:50px;"  disabled   id="{{c.id}}purchase"  value="{{c.purchase}}" /><label   id="{{c.id}}purchaselb" style=" color:red;"></label></td> 
+                      <td><input style="width:50px;" disabled  id="{{c.id}}price" value="{{c.price}}"  /><label id="{{c.id}}pricelb" style=" color:red;"></label></td>         
+                      <td><input style="width:50px;"  disabled id="{{c.id}}actual"  value="{{c.actual}}" /><label id="{{c.id}}actuallb" style=" color:red;"></label></td>       
+                      <td><input style="width:30px;" disabled value="{{c.unit}}"  id="{{c.id}}kg" /></td>       
+                      <td>{{c.created|datetimeformat}}</td>
+                      <td> 
+                         
+
+                          <div id="{{c.id}}edit" >
+ <a href="javascript:void(0)" onclick="setShow('{{c.id}}')"  class="btn btn-success">编辑</a>
+ <a href="javascript:void(0)" onclick="del('{{c.id}}')"  class="btn btn-warning">删除</a>
+
+                          </div>
+                           
+                          <div id="{{c.id}}save" hidden>
+
+                              <a href="javascript:void(0)" onclick="sendMessage('{{c.id}}')" class="btn btn-success">保存</a>
+                              <a href="javascript:void(0)" onclick="cancle('{{c.id}}')" class="btn btn-success">取消</a>
+
+                          </div>
+
+                          <label id="{{c.id}}err" style=" color:red;"></label>
+                      </td>                
+                    </tr>
+        
+			{%- endfor %}
+            </tbody>
+        </table>
+
+            
+
+             
+        </div>
+    </div>
+    </div>
+</div>
+
+
+
+
+<script>
+
+    function del(id)
+    {
+ 
+            $.confirm({
+                'title': '提示对话框',
+                'message': '您正要删除此项 <br />删除后将不会进行还原，请确定继续?',
+                'buttons': {
+                    '确定': {
+                        'class': 'blue',
+                        'action': function () {
+                
+                            location.href = "/admin/library/"+id;
+
+                        }
+                    },
+                    '取消': {
+                        'class': 'gray',
+                        'action': function () { }
+                    }
+                }
+            });
+   
+    }
+
+    function setShow(id)
+    {
+        var iid = id + "id";
+        var purchase = id + "purchase";
+        var price = id + "price";
+        var actual = id + "actual";
+        var kg = id + "kg";
+        var err = id + "err";
+        var name = id + "name";
+        var save = id + "save";
+        var edit = id + "edit";
+
+
+        $("#" + purchase + "").removeAttr("disabled");
+        $("#" + price + "").removeAttr("disabled");
+        $("#" + actual + "").removeAttr("disabled");
+        $("#" + kg + "").removeAttr("disabled");
+        $("#" + save + "").show();
+        $("#" + edit + "").hide();
+
+    }
+
+    function cancle(id)
+    {
+        var iid = id + "id";
+        var purchase = id + "purchase";
+        var price = id + "price";
+        var actual = id + "actual";
+        var kg = id + "kg";
+        var err = id + "err";
+        var name = id + "name";
+        var save = id + "save";
+        var edit = id + "edit";
+
+
+        $("#" + purchase + "").attr("disabled", true);
+        $("#" + price + "").attr("disabled", true);
+        $("#" + actual + "").attr("disabled", true);
+        $("#" + kg + "").attr("disabled", true);
+        $("#" + save + "").hide();
+        $("#" + edit + "").show();
+    }
+    
+
+    function sendMessage(id) {
+
+        var iid = id + "id";
+        var purchase = id + "purchase";
+        var price = id + "price";
+        var actual = id + "actual";
+        var kg = id + "kg";
+        var err = id + "err";
+        var name = id + "name";
+        var save = id + "save";
+        var edit = id + "edit";
+
+
+
+        $("#err_msg").text("");
+        var isMobile = /^-?\d+(.\d{1,2})?$/; //验证格式
+        var purchasestr = $("#" + purchase + "").val();
+        var pricestr = $("#" + price + "").val();
+        var actualstr = $("#" + actual + "").val();
+        var inid = $("#" + iid + "").html();
+
+        if ((purchasestr == null || purchasestr == "") & (pricestr == null || pricestr == "") & (actualstr == null || actualstr == "")) {
+            $("#" + err + "").html("不能为空");
+            return false;
+        }
+        if ((purchasestr == "0") & (pricestr == "0") & (actualstr == "0")) {
+            $("#" + err + "").html("不能全为0");
+            return false;
+        }
+
+
+
+
+        if (isMobile.test(purchasestr) == false) {
+            $("#" + purchase + "lb").html("不能为空，且只能输入数字，如20.2或者20");
+            $("#" + purchase + "").focus();
+            return false;
+        }
+
+        if (isMobile.test(pricestr) == false) {
+            $("#" + price + "lb").html("不能为空，且只能输入数字，如20.2或者20.");
+            $("#" + price + "").focus();
+            return false;
+        }
+
+        if (isMobile.test(actualstr) == false) {
+            $("#" + actual + "lb").html("不能为空，且只能输入数字，如20.2或者20.");
+            $("#" + actual + "").focus();
+            return false;
+        }
+
+
+        //向后台发送处理数据
+        $.get("/ajax/editlibrary",
+              {
+                  purchase: $("#" + purchase + "").val(),
+                  price: $("#" + price + "").val(),
+                  actual: $("#" + actual + "").val(),
+                  kg: $("#" + kg + "").val(),
+                  id: inid
+              },
+              function (data) {
+                  var obj = jQuery.parseJSON(data);
+                  $("#" + err + "").html(obj);
+
+                  $("#" + purchase + "").attr("disabled",true);
+                  $("#" + price + "").attr("disabled", true);
+                  $("#" + actual + "").attr("disabled", true);
+                  $("#" + kg + "").attr("disabled", true);
+                  $("#" + save + "").hide();
+                  $("#" + edit + "").show();
+
+              });
+    }
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,149 @@
+{% extends "layout/admin.html" %}
+{% block css %}
+<link href="/style2/css/plugins/dataTables.bootstrap.css" rel="stylesheet">
+<style>
+    .hz{color:#129a00; font-weight: bold;}
+</style>
+{% endblock %}
+{% block content %}
+<div class="row">
+    <nav>
+        <div>
+            <a class="navbar-brand" href="#">用户提现管理</a>
+        </div>
+        <div class="pull-right">
+            <form class="navbar-form navbar-left" action="" method="get" role="search">
+                <!--<input type="button" class="btn btn-info" value="导出" id="btn_export" style="width:60px;">-->
+                <div class="btn-group btn-group-xs">
+                    <a type="button" class="btn btn-default" href="/admin/withdraw?keyword={{keyword or ''}}" style="padding:8px 4px;border:1px solid #ccc;border-bottom-left-radius:4px;border-top-left-radius:4px;">全部</a>
+                    <a type="button" class="btn btn-default" href="/admin/withdraw?status=0&keyword={{keyword or ''}}" style="padding:8px 4px;border:1px solid #ccc;border-left:none;">未处理</a>
+                    <a type="button" class="btn btn-default" href="/admin/withdraw?status=1&keyword={{keyword or ''}}" style="padding:8px 4px;border:1px solid #ccc;border-left:none;">处理中</a>
+                    <a type="button" class="btn btn-default" href="/admin/withdraw?status=2&keyword={{keyword or ''}}" style="padding:8px 4px;border:1px solid #ccc;border-left:none;border-bottom-right-radius:4px;border-top-right-radius:4px;">已处理</a>
+                </div>
+                <div class="input-group custom-search-form">
+                    <input type="text" name="begindate" id="begindate" value="{{begindate}}" class="Wdate form-control"  onClick="WdatePicker()" placeholder="开始日期" style="width:110px;height:34px;margin-right:5px;border:1px solid #ccc;border-radius:4px;"/>
+                    <input type="text" name="enddate" id="enddate" value="{{enddate}}" class="Wdate form-control" onClick="WdatePicker()" placeholder="截止日期" style="width:110px;height:34px;margin-right:5px;border:1px solid #ccc;border-radius:4px;"/>
+
+                    <input type="text" name="keyword" id="keyword" value="{{keyword or ''}}" class="form-control" placeholder="内容查找" style="width:210px;height:34px;border:1px solid #ccc;border-bottom-left-radius:4px;border-top-left-radius:4px;"/>
+                    <span class="input-group-btn">
+                 <button class="btn btn-default" type="submit" id="bt_submit">
+                     <i class="fa fa-search"></i>
+                 </button>
+            </span>
+                </div>
+            </form>
+        </div>
+    </nav>
+</div>
+<div class="row">
+    <div class="panel panel-primary">
+        <div class="table-responsive">
+            <table class="table table-hover" id="tb_users" cellpadding="0" cellspacing="0" border="0" style="text-align:center;">
+                <thead>
+                <tr style="background:#528acb;color:#fff;text-align:center;height:38px;line-height:38px;">
+                    <th style="width:15%;text-align:center;">用户</th>
+                    <th style="width:8%;text-align:center;">收款方式</th>
+                    <th style="width:40%;text-align:center;">收款帐号</th>
+                    <th style="width:8%;text-align:center;">收款人</th>
+                    <th style="width:8%;text-align:center;">提现金额</th>
+                    <th style="width:6%;text-align:center;">状态</th>
+                    <th style="width:15%;text-align:center;">申请时间</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for a in lists -%}
+                <tr>
+                    <td>
+                        <a href="/admin/user/{{a.user.id}}">{{a.user.username}}</a><br>
+                        {% if a.user.store%}
+                        {{a.user.store.name}}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if a.account_type == 0 %}
+                        银联
+                        {%elif a.account_type == 1 %}
+                        支付宝
+                        {%endif%}
+                    </td>
+                    <td>
+                        {% if a.account_type == 0 %}
+                        {{a.account_name}}&nbsp;{{a.account_branchname}}&nbsp;{{a.account_account}}
+                        {%elif a.account_type == 1 %}
+                        {{a.account_account}}
+                        {%endif%}
+                    </td>
+                    <td>{{a.account_truename}}</td>
+                    <td>{{a.sum_money}}</td>
+                    <td data-id="{{a.id}}" class="status" style="cursor: pointer;">
+                        {% if a.status == 0 %}
+                        <span style="color: red;">未处理</span>
+                        {% elif a.status == 1%}
+                        <span style="color: green;">已处理</span>
+                        {% endif %}
+                    </td>
+                    <td>{{a.apply_time | datetimeformat}}</td>
+                </tr>
+                {%- endfor %}
+                </tbody>
+            </table>
+            <div>
+                <div class="col-sm-4">
+                    <div class="dataTables_info" role="alert" aria-live="polite" aria-relevant="all">
+                        当前：第{{page}}页 / {{totalpage}}页，合计{{total}}条
+                    </div>
+                </div>
+                <div class="col-sm-8">
+                    <div class="dataTables_paginate paging_simple_numbers">
+                        <ul class="pagination  pagination-sm" id="pageUl" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<script src="/style2/js/jquery.twbsPagination.min.js"></script>
+<script src="/style2/js/layer-v1.9/layer.js" type="text/javascript"></script>
+<script language="javascript" type="text/javascript" src="/style2/js/My97DatePicker/WdatePicker.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#pageUl').twbsPagination({
+            first:'首页',
+            prev:'上一页',
+            next:'下一页',
+            last:'尾页',
+            totalPages: {{totalpage}},
+            startPage: {{page}},
+            visiblePages: 8,
+            onPageClick: function (event, page) {
+                    self.location="/admin/withdraw?page="+page + "&status={{status}}&begindate={{begindate}}&enddate={{enddate}}&keyword={{keyword or ''}}";
+                }
+        });
+    });
+    var xsrf='{{handler.xsrf_token}}';
+    var begin = '{{begindate}}';
+    var end = '{{enddate}}';
+    var order_sign = '{{order_sign}}';
+
+    $(function(){
+        $(".status").click(function(){
+            var fid = $(this).attr('data-id');
+            var aa = $(this);
+            $.post('/ajax/withdraw_change_status', {
+                fid: fid,
+                _xsrf: xsrf,
+                t: Math.random()
+            }, function (data) {
+                if (data * 1 == 0) {
+                    aa.html('<span style="color: red;">未处理</span>');
+                }
+                else if(data * 1 == 1) {
+                    aa.html('<span style="color: green;">已处理</span>');
+                }
+            });
+        });
+    });
+    </script>
+{% endblock %}
