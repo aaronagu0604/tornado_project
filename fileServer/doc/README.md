@@ -154,3 +154,7 @@ http://www.linuxidc.com/Linux/2013-08/88271.htm
 telnet localhost 11211
 flush_all
 quit
+
+禅道启动：
+ /opt/php-5.6.28/sapi/fpm/php-fpm # 监听9000端口
+ nginx启动 etc/nginx/conf.d # 动态加载该文件夹下所有的*.conf文件
