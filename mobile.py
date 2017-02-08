@@ -4,6 +4,7 @@
 import logging
 import tornado.web
 from tornado.httpserver import HTTPServer
+from tornado.options import  parse_command_line
 import sys
 from bootloader import settings, jinja_environment, memcachedb
 from lib.filter import register_filters
@@ -32,6 +33,7 @@ class Application(tornado.web.Application):
 
 
 def runserver():
+    parse_command_line()
     http_server = HTTPServer(Application(), xheaders=True)
     port = 8889
     if len(sys.argv) > 1:
