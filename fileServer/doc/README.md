@@ -23,7 +23,7 @@ pip install -r requirement.txt
 vi config/supervisord.conf
 
 
-supervisord -c /home/www/workspace/eofan/src/supervisord.conf #运行supervisord
+supervisord -c /var/lib/jenkins/jobs/czj/workspace/supervisord.conf #运行supervisord
 supervisorctl status #查看运行环境
 
 vi /config/nginx.conf
