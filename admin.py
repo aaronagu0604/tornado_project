@@ -33,6 +33,7 @@ class Application(tornado.web.Application):
 
 
 def runserver():
+    parse_command_line()
     http_server = HTTPServer(Application(), xheaders=True)
     port = 8890
     if len(sys.argv) > 2:
