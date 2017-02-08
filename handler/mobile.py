@@ -1,12 +1,14 @@
 #!/usr/bin/env python
 # coding=utf8
 import simplejson
+from tornado.web import RequestHandler
+
 from lib.route import route
 from handler import MobileHandler
 
 
 @route(r'/', name='index_app')
-class IndexAppHandler(MobileHandler):
+class IndexAppHandler(RequestHandler):
     def get(self):
         self.write("czj api")
 
