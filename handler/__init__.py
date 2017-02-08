@@ -5,7 +5,7 @@ import urllib
 from tornado.web import RequestHandler
 from lib.session import Session
 from lib.mixin import FlashMessagesMixin
-from model import User, AdminUser, Topic, Oauth, User_Login_Log
+from model import User
 import base64
 import logging
 import functools
@@ -115,27 +115,6 @@ class BaseWithCityHandler(BaseHandler):
         super(BaseWithCityHandler, self).prepare()
 
 
-class AdminBaseHandler(BaseHandler):
-    def prepare(self):
-        if self.get_admin_user():
-            pass
-        else:
-            self.redirect("/admin/login")
-
-        super(AdminBaseHandler, self).prepare()
-
-    def vrole(self, rolelist):
-        userrole = self.get_user_role()
-        for n in userrole:
-            if rolelist.count(n) > 0:
-                return True
-        return False
-
-    def get_active_topic_count(self):
-        t = Topic.select().where(Topic.status == 0)
-        return t.count()
-
-
 class UserBaseHandler(BaseWithCityHandler):
     def prepare(self):
         if not self.current_user:
@@ -241,74 +220,19 @@ class MobileHandler(RequestHandler):
                         city = args["city"]
                         region = args["region"]
                         address = args["address"]
-                        if x and y:
-                            User_Login_Log.create(user=user.id, x=x, y=y, province=province, city=city, region=region, address=address, created=int(time.time()))
+                        # if x and y:
+                        #     User_Login_Log.create(user=user.id, x=x, y=y, province=province, city=city, region=region, address=address, created=int(time.time()))
                     else:
                         result['msg'] ="此账户被禁止登录，请联系管理员。"
                 else:
                     result['msg'] ="密码错误"
             except Exception, ex:
-                oauths = Oauth.select().where(Oauth.openid == mobile)
-                if oauths.count() > 0:
-                    user = oauths[0].user
-                    if user.check_mobile_password(password):
-                        if user.isactive > 0:
-                            user.updatesignin()
-                            result['flag'] = 1
-                            result['msg'] = {'username': user.username,
-                                             'nickname': user.nickname,
-                                             'mobile': user.mobile,
-                                             'score': user.score,
-                                             'balance': user.balance,
-                                             'id': user.id,
-                                             'bindmobile': user.bindmobile(),
-                                             'hascheckedin': user.hascheckedin()}
-                            self.application.session_store.set_session(str(mobile)+':'+str(password), {}, None, expiry=24*60*60)
-                        else:
-                            result['flag'] = 0
-                            result['msg'] ="此账户被禁止登录，请联系管理员。"
-                else:
-                    result['flag'] = 0
-                    result['msg'] = "此用户不存在"
-        else:
-            result['msg'] = "请输入用户名或者密码"
-        return result
-
-    def get_cg_mobile_user(self):
-        result = {'flag': 0}
-        try:
-            args = eval(self.request.body)
-        except:
-            result['msg'] = '参数错误'
-            return result
-        username = args["username"]
-        password = args["password"]
-        result = {'flag': 0}
-        if username and password:
-            try:
-                user = AdminUser.get(AdminUser.username == username)
-                if user.check_password(password):
-                    if user.isactive > 0 and (list(user.roles).count('D') > 0 or list(user.roles).count('B') > 0
-                    or list(user.roles).count('A') > 0 or list(user.roles).count('C') > 0):
-                        user.updatesignin()
-                        result['flag'] = 1
-                        if list(user.roles).count('R') > 0 or list(user.roles).count('D') > 0:
-                            role_intake = 1
-                        else:
-                            role_intake = 0
-                        result['msg'] = {'username': user.username,
-                                     'mobile': user.mobile,
-                                     'id': user.id,
-                                     'role_intake':role_intake}
-                    else:
-                        result['msg'] ="此账户被禁止登录采购系统，请联系管理员。"
-                else:
-                    result['msg'] ="密码错误"
-            except Exception, ex:
+                result['flag'] = 0
                 result['msg'] = "此用户不存在"
         else:
             result['msg'] = "请输入用户名或者密码"
         return result
+
 
 class PFBaseHandler(BaseHandler):
     def prepare(self):
@@ -350,33 +274,6 @@ class StoreBaseHandler(BaseHandler):
     def get_store_user(self):
         return self.session['store'] if 'store' in self.session else None
 
-class OfflineHandler(RequestHandler):
-
-    def get_offline_user(self):
-        username = self.get_argument("mobile")
-        password = self.get_argument("password")
-        result = '0'
-        if username and password:
-            try:
-                user = AdminUser.select().where(AdminUser.username == username)
-                if user.count() > 0:
-                    user = user[0]
-                    if user.check_password(password):
-                        if user.isactive > 0 :
-                            user.updatesignin()
-                            result = user.id
-                        else:
-                            result ="此账户被禁止登录采购系统，请联系管理员。"
-
-                    else:
-                        result ="密码错误"
-                else:
-                    result = "用户名不存在"
-            except Exception, ex:
-                result = "登陆异常，异常信息：" + ex.message
-        else:
-            result = "请输入用户名或者密码"
-        return result
 
 def require_basic_authentication(method):
     @functools.wraps(method)
