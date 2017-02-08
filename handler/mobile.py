@@ -5,6 +5,12 @@ from lib.route import route
 from handler import MobileHandler
 
 
+@route(r'/', name='index_app')
+class IndexAppHandler(MobileHandler):
+    def get(self):
+        self.write("czj api")
+
+
 @route(r'/mobile/login', name='mobile_login')  # 手机端登录
 class MobileLoginHandler(MobileHandler):
     """
