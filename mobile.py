@@ -12,6 +12,7 @@ from lib.route import Route
 from lib.session import MemcacheSessionStore
 from handler import PageNotFoundHandler, mobile
 
+
 class Application(tornado.web.Application):
     def __init__(self):
         self.jinja_env = jinja_environment
