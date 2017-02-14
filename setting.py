@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # coding=utf8
 
+
 DEBUG = True
 GZIP = True
 

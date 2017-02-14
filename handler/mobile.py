@@ -2,10 +2,8 @@
 # coding=utf8
 import simplejson
 from tornado.web import RequestHandler
-
 from lib.route import route
-from handler import MobileHandler
-
+from model import *
 
 @route(r'/', name='index_app')
 class IndexAppHandler(RequestHandler):
@@ -14,7 +12,7 @@ class IndexAppHandler(RequestHandler):
 
 
 @route(r'/mobile/login', name='mobile_login')  # 手机端登录
-class MobileLoginHandler(MobileHandler):
+class MobileLoginHandler():
     """
     @apiGroup auth
     @apiVersion 1.0.0

@@ -10,6 +10,7 @@ import base64
 import logging
 import functools
 import time
+import simplejson
 
 
 class BaseHandler(RequestHandler, FlashMessagesMixin):
@@ -140,44 +141,35 @@ class AdminPageNotFoundHandler(RequestHandler):
 
 class MobileHandler(RequestHandler):
     def get_mobile_user(self):
-        result = {'flag': 0}
-        login_type = 0
+        result = {'status': 0, 'message': '', "result": {}}
+        args = simplejson.loads(self.request.body)
         try:
-            args = eval(self.request.body)
-        except:
-            result['msg'] = '参数错误'
-            return result
-
-        mobile = args["mobile"]
-        password = args["password"]
-        if args.has_key("login_type"):
-            login_type = args["login_type"] # 登录类型 1门店登录
-        result = {'flag': 0}
-        if mobile and password:
-            try:
+            mobile = args["mobile"]
+            password = args["password"]
+            if mobile and password:
                 user = User.get(User.username == mobile)
                 if user.check_mobile_password(password):
-                    if user.isactive > 0:
+                    if user.active > 0:
                         user.updatesignin()
                         result['flag'] = 1
                         result['msg'] = {
-                                         'birthday':'',
-                                         'username': user.username,
-                                         'nickname': user.nickname,
-                                         'mobile': user.mobile,
-                                         'score': user.score,
-                                         'level': user.level,
-                                         'cashed_money': user.cashed_money,
-                                         'balance': user.balance,
-                                         'id': user.id,
-                                         'portraiturl': user.portraiturl,
-                                         'bindmobile': user.bindmobile(),
-                                         'hascheckedin': user.hascheckedin(),
-                                         'grade': user.grade,
-                                         'store': None}
+                            'birthday': '',
+                            'username': user.username,
+                            'nickname': user.nickname,
+                            'mobile': user.mobile,
+                            'score': user.score,
+                            'level': user.level,
+                            'cashed_money': user.cashed_money,
+                            'balance': user.balance,
+                            'id': user.id,
+                            'portraiturl': user.portraiturl,
+                            'bindmobile': user.bindmobile(),
+                            'hascheckedin': user.hascheckedin(),
+                            'grade': user.grade,
+                            'store': None}
                         if user.birthday is not None:
                             try:
-                                 result['msg']['birthday'] = user.birthday.strftime('%Y-%m-%d')
+                                result['msg']['birthday'] = user.birthday.strftime('%Y-%m-%d')
                             except Exception, e:
                                 logging.info(e)
 
@@ -188,31 +180,32 @@ class MobileHandler(RequestHandler):
                                 result['msg'] = "您是商家用户，请登录商家版！"
                         elif login_type == 1:
                             if user.store:
-                                result['msg']['store'] ={
-                                    'birthday':'',
-                                    'id':user.store.id,
-                                    'name':user.store.name,
-                                    'province_code':user.store.area_code[0:4],
-                                    'city_code':user.store.area_code[0:8],
-                                    'area_code':user.store.area_code,
-                                    'address':user.store.address,
-                                    'link_man':user.store.link_man,
-                                    'tel':user.store.tel,
-                                    'image':user.store.image,
-                                    'image_legal':user.store.image_legal,
-                                    'image_license':user.store.image_license,
-                                    'check_state':user.store.check_state,
+                                result['msg']['store'] = {
+                                    'birthday': '',
+                                    'id': user.store.id,
+                                    'name': user.store.name,
+                                    'province_code': user.store.area_code[0:4],
+                                    'city_code': user.store.area_code[0:8],
+                                    'area_code': user.store.area_code,
+                                    'address': user.store.address,
+                                    'link_man': user.store.link_man,
+                                    'tel': user.store.tel,
+                                    'image': user.store.image,
+                                    'image_legal': user.store.image_legal,
+                                    'image_license': user.store.image_license,
+                                    'check_state': user.store.check_state,
                                 }
 
                                 if user.birthday is not None:
                                     try:
-                                         result['msg']['birthday'] = user.birthday.strftime('%Y-%m-%d')
+                                        result['msg']['birthday'] = user.birthday.strftime('%Y-%m-%d')
                                     except Exception, e:
                                         logging.info(e)
                         else:
                             result['flag'] = 0
                             result['msg'] = "错误的登录请求！"
-                        self.application.session_store.set_session(str(mobile)+':'+str(password), {}, None, expiry=24*60*60)
+                        self.application.session_store.set_session(str(mobile) + ':' + str(password), {}, None,
+                                                                   expiry=24 * 60 * 60)
 
                         x = args["x"]
                         y = args["y"]
@@ -223,9 +216,9 @@ class MobileHandler(RequestHandler):
                         # if x and y:
                         #     User_Login_Log.create(user=user.id, x=x, y=y, province=province, city=city, region=region, address=address, created=int(time.time()))
                     else:
-                        result['msg'] ="此账户被禁止登录，请联系管理员。"
+                        result['msg'] = "此账户被禁止登录，请联系管理员。"
                 else:
-                    result['msg'] ="密码错误"
+                    result['msg'] = "密码错误"
             except Exception, ex:
                 result['flag'] = 0
                 result['msg'] = "此用户不存在"
@@ -233,6 +226,13 @@ class MobileHandler(RequestHandler):
             result['msg'] = "请输入用户名或者密码"
         return result
 
+    def prepare(self):
+        if self.get_mobile_user():
+            pass
+        else:
+            self.redirect("/mobile/login")
+
+        super(RequestHandler, self).prepare()
 
 class PFBaseHandler(BaseHandler):
     def prepare(self):
