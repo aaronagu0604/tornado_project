@@ -86,14 +86,14 @@ class MobileCheckVCodeAppHandler(RequestHandler):
     """
     @apiGroup auth
     @apiVersion 1.0.0
-    @api {post} /mobile/checkregvcode 02. 检查申请入驻验证码
-    @apiDescription 检查申请入驻验证码
+    @api {post} /mobile/checkvcode 02. 检查验证码
+    @apiDescription 检查验证码
 
     @apiParam {String} mobile 电话号码
     @apiParam {String} vcode 验证码
     @apiParam {Int} flag 验证码类型： 0注册 1忘记密码 2绑定手机号 3提现
 
-    @apiSampleRequest /mobile/checkregvcode
+    @apiSampleRequest /mobile/checkvcode
     """
 
     def check_xsrf_cookie(self):
