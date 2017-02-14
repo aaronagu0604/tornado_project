@@ -149,6 +149,7 @@ class MobileLoginHandler(RequestHandler):
                     logging.info('get in 299')
                     result['msg'] = "用户名或密码错误"
             except Exception, e:
+                logging.info('get in 299009')
                 result['msg'] = "此用户不存在"
         else:
             logging.info('get in 3')
