@@ -32,6 +32,12 @@ class MobileGetVCodeAppHandler(RequestHandler):
     @apiSampleRequest /mobile/getvcode
     """
 
+    def check_xsrf_cookie(self):
+        pass
+
+    def options(self):
+        pass
+
     def post(self):
         result = {'flag': 0, 'msg': '', "data": {}}
         mobile = self.get_body_argument("mobile", None)
