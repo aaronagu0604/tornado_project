@@ -580,5 +580,6 @@ def init_db():
         model.create_table()
 
 if __name__ == '__main__':
+    init_db()
     pass
 
