@@ -133,9 +133,6 @@ class User(db.Model):
     def check_password(self, raw):
         return hashlib.new("md5", raw).hexdigest() == self.password
 
-    def check_mobile_password(self, raw):
-        return raw == self.password
-
     def validate(self):
         if vmobile(self.mobile):
             if User.select().where(User.mobile == self.mobile).count() > 0:
@@ -148,18 +145,18 @@ class User(db.Model):
 
 
 # 手机验证码
-class UserVcode(db.Model):
+class VCode(db.Model):
     id = PrimaryKeyField()
-    mobile = CharField(max_length=32, null=False)  #注册手机号
+    mobile = CharField(max_length=32, null=False)  # 注册手机号
     vcode = CharField(max_length=16, null=False)
     created = IntegerField(index=True, default=0)
-    flag = IntegerField(default=0)  #0注册 1忘记密码 2绑定手机号 3提现
+    flag = IntegerField(default=0)  # 0注册 1忘记密码 2绑定手机号 3提现
 
     def validate(self):
         if self.mobile and vmobile(self.mobile):
-            pass
+            return True
         else:
-            raise Exception('mobile is not validate')
+            return False
 
     class Meta:
         db_table = 'tb_user_vcodes'
@@ -188,7 +185,7 @@ class StoreAddress(db.Model):
 # 资金变动记录
 class MoneyRecord(db.Model):
     id = PrimaryKeyField()
-    user = ForeignKeyField(User, related_name='withdraws', db_column='user_id')  # 用户
+    user = ForeignKeyField(User, related_name='money_records', db_column='user_id')  # 用户
     store = ForeignKeyField(Store, related_name='money_records', db_column='store_id')  # 店铺
     process_type = IntegerField(default=0)  # 资金流动类型 正入账 负出账
     process_log = CharField(max_length=255, default='')  # 资金流动
@@ -211,7 +208,7 @@ class MoneyRecord(db.Model):
 # 积分变动记录
 class ScoreRecord(db.Model):
     id = PrimaryKeyField()
-    user = ForeignKeyField(User, related_name='withdraws', db_column='user_id')  # 用户
+    user = ForeignKeyField(User, related_name='score_records', db_column='user_id')  # 用户
     store = ForeignKeyField(Store, related_name='score_records', db_column='store_id')  # 店铺
     process_type = IntegerField(default=0)  # 积分流动类型 正入账 负出账
     process_log = CharField(max_length=255, default='')  # 积分流动
