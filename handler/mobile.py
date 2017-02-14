@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 # coding=utf8
+
+import logging
 import simplejson
 from tornado.web import RequestHandler
 from lib.route import route
@@ -119,11 +121,12 @@ class MobileLoginHandler(RequestHandler):
         pass
 
     def post(self):
-        print 'start 111'
+        logging.info('get in')
         result = {'flag': 0, 'msg': '', "data": {}}
         mobile = self.get_body_argument("mobile", None)
         password = self.get_body_argument("password", None)
         if mobile and password:
+            logging.info('get in 2')
             try:
                 user = User.get(User.username == mobile)
                 if user.check_password(password):
@@ -142,6 +145,7 @@ class MobileLoginHandler(RequestHandler):
             except Exception, e:
                 result['msg'] = "此用户不存在"
         else:
+            logging.info('get in 3')
             result['msg'] = "请输入用户名或者密码"
         self.write(simplejson.dumps(result))
         self.finish()
