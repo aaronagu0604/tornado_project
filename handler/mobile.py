@@ -119,6 +119,7 @@ class MobileLoginHandler(RequestHandler):
         pass
 
     def post(self):
+        print 'start 111'
         result = {'flag': 0, 'msg': '', "data": {}}
         mobile = self.get_body_argument("mobile", None)
         password = self.get_body_argument("password", None)
