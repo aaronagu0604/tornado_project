@@ -129,9 +129,13 @@ class MobileLoginHandler(RequestHandler):
             logging.info('get in 2')
             try:
                 user = User.get(User.username == mobile)
+                logging.info('get in 22')
                 if user.check_password(password):
+                    logging.info('get in 233')
                     if user.active > 0:
+                        logging.info('get in 244')
                         token = 'mt:' + str(uuid.uuid4())
+                        logging.info('token=' + token)
                         result['flag'] = 1
                         result['data']['type'] = user.store.store_type
                         result['data']['token'] = token
@@ -139,8 +143,10 @@ class MobileLoginHandler(RequestHandler):
                         self.application.memcachedb.set(token, str(user.id), 7200)
                         user.updatesignin()
                     else:
+                        logging.info('get in 200')
                         result['msg'] = "此账户被禁止登录，请联系管理员。"
                 else:
+                    logging.info('get in 299')
                     result['msg'] = "用户名或密码错误"
             except Exception, e:
                 result['msg'] = "此用户不存在"
