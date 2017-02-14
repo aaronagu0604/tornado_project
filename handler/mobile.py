@@ -126,9 +126,9 @@ class MobileLoginHandler(RequestHandler):
         mobile = self.get_body_argument("mobile", None)
         password = self.get_body_argument("password", None)
         if mobile and password:
-            logging.info('get in 2')
+            logging.info('get in :' + mobile + '; pw=' + password)
             try:
-                user = User.get(User.username == mobile)
+                user = User.get(User.mobile == mobile)
                 logging.info('get in 22')
                 if user.check_password(password):
                     logging.info('get in 233')
