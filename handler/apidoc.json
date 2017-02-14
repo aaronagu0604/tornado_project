@@ -3,6 +3,6 @@
   "version": "1.0.0",
   "description": "'车装甲' RESTFUL API文档",
   "title": "车装甲API",
-  "url" : "http://api.520czj.com",
-  "sampleUrl" : "http://api.520czj.com"
+  "url" : "http://api.dev.test.520czj.com",
+  "sampleUrl" : "http://api.dev.test.520czj.com"
 }
