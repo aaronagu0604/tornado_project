@@ -14,7 +14,7 @@ class MobilePageNotFoundHandler(RequestHandler):
 
 class MobileHandler(RequestHandler):
     def prepare(self):
-        token = self.request.headers.get('token')
+        token = self.request.headers.get('token', None)
         if token:
             data = self.application.memcachedb.get(token)
             if data is None:

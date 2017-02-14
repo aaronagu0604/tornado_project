@@ -13,6 +13,7 @@ from handlers import UploadImageHandler,  PageNotFoundHandler, DefaultHandler, V
 import memcache
 import setting
 
+
 class Application(tornado.web.Application):
     def __init__(self):
         self.session = memcache.Client([setting.memcache_host])
@@ -21,11 +22,13 @@ class Application(tornado.web.Application):
                         (r"/", DefaultHandler),
                         (r"/upload/image", UploadImageHandler),
                         (r"/upload/view", ViewHandler),
-                        (r".*", PageNotFoundHandler),
+                        tornado.web.url(r".*", tornado.web.StaticFileHandler,
+                                        dict(path=setting.imgDir), name='static_path')
                     ]
         tornado.web.Application.__init__(self, handlers)
 
-def main():
+
+if __name__ == "__main__":
     tornado.options.parse_command_line()
     application = Application()
     http_server = tornado.httpserver.HTTPServer(application, xheaders=True)
@@ -34,8 +37,5 @@ def main():
         port = int(sys.argv[1])
     http_server.listen(port)
     loop = tornado.ioloop.IOLoop.instance()
-    logging.info('Server running on http://127.0.0.1:%d' % port)
+    logging.info('File Server running on http://127.0.0.1:%d' % port)
     loop.start()
-
-if __name__ == "__main__":
-    main()

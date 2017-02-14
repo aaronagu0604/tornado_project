@@ -12,18 +12,6 @@ import random
 
 
 class BaseHandler(RequestHandler):
-    def valid_user(self):
-        token = self.request.headers.get('token', None)
-        try:
-            data = self.application.session.get(token)
-            flag = not (data == None)
-        except Exception, e:
-            flag = False
-            logging.info(e.message)
-        if not flag:
-            logging.info('匿名用户访问, 来自:%s', self.request.remote_ip)
-        return flag
-
     def random_str(self, length=24):
         a = list(string.ascii_letters)
         random.shuffle(a)
@@ -39,9 +27,7 @@ class BaseHandler(RequestHandler):
     def get_full_file_name(self, type='image', suffix=''):
         filename = setting.serverName + '_'+time.strftime('%Y%m%d%H%M%S') + self.random_str() + '.' + suffix
         arr = self.get_file_path(type)
-        subPath = setting.voiceDir
-        if type == 'image':
-            subPath = setting.imgDir
+        subPath = setting.imgDir
         os.chdir(subPath)
         filepath = os.path.join(subPath, *list(arr))
         if not os.path.exists(filepath):
@@ -69,33 +55,29 @@ class UploadImageHandler(BaseHandler):
         self.write('please upload a image file')
 
     def post(self):
-        if not self.valid_user():
-            self.set_status(500)
-            self.write("您无权使用该服务")
-            self.finish()
-        else:
-            result = {}
-            result['Flag'] = 0
-            result['Data'] = ''
-            result['Msg'] = ''
-            try:
-                meta = self.request.files['file'][0]
-                suffix = meta['filename'].split('.')[-1]
+        result = {}
+        result['Flag'] = 0
+        result['Data'] = ''
+        result['Msg'] = ''
+        try:
+            meta = self.request.files['file'][0]
+            suffix = meta['filename'].split('.')[-1]
+            fullname, arr, filename = self.get_full_file_name('image', suffix)
+            while os.path.exists(fullname):
+                logging.info('已经存在文件：' + fullname)
                 fullname, arr, filename = self.get_full_file_name('image', suffix)
-                while os.path.exists(fullname):
-                    logging.info('已经存在文件：' + fullname)
-                    fullname, arr, filename = self.get_full_file_name('image', suffix)
 
-                f = open(fullname, 'wb')
-                f.write(meta['body'])
-                f.close()
-                result['Data'] = setting.openHost+'/'+arr[0]+'/'+arr[1]+'/'+arr[2]+'/'+arr[3]+'/' + filename
-                result['Flag'] = 1
-            except Exception, e:
-                logging.info('upload image failing: ' + e.message)
-                result['Flag'] = 0
-                result['Msg'] = 'fail in upload image'
-            self.write(simplejson.dumps(result))
+            f = open(fullname, 'wb')
+            f.write(meta['body'])
+            f.close()
+            result['Data'] = setting.openHost+'/'+arr[0]+'/'+arr[1]+'/'+arr[2]+'/'+arr[3]+'/' + filename
+            result['Flag'] = 1
+        except Exception, e:
+            logging.info('upload image failing: ' + e.message)
+            result['Flag'] = 0
+            result['Msg'] = 'fail in upload image'
+        self.write(simplejson.dumps(result))
+
 
 class ViewHandler(BaseHandler):
     def options(self):
