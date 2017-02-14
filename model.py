@@ -579,7 +579,23 @@ def init_db():
             model.drop_table()
         model.create_table()
 
+
+def load_test_data():
+    # mobile = CharField(unique=True, max_length=64, null=False)  # 注册手机号
+    # password = CharField(max_length=32)  # 密码
+    # role = CharField(max_length=8, null=False, default='A')  # 用户角色，考虑角色数量、类型
+    # signuped = IntegerField(default=0)  # 注册时间
+    # lsignined = IntegerField(default=0)  # 最后登录时间
+    # store = ForeignKeyField(Store, related_name='users', db_column='store_id', null=False)  # 所属店铺
+    # active = IntegerField(default=1)  # 用户状态 0被禁止的用户 1正常用户
+
+    Store.create(store_type=1, admin_user_id=1, name='name', address='address', license_image='', store_image='', lng='',lat='',
+                 pay_password='', intro='', linkman='', mobile='18189279823', active=1, created=1487032696)
+    User.create(mobile='18189279823', password='e10adc3949ba59abbe56e057f20f883e', role='A', signuped=1487032696,
+                lsignined=1487032696, store_id=1, active=1)
+
 if __name__ == '__main__':
-    init_db()
+    # init_db()
+    load_test_data()
     pass
 
