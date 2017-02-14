@@ -9,7 +9,7 @@ import functools
 class MobilePageNotFoundHandler(RequestHandler):
     def get(self):
         self.set_status(404)
-        return self.write('Unauthorized')
+        return self.write('not found')
 
 
 class MobileHandler(RequestHandler):

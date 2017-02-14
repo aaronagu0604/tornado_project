@@ -52,3 +52,5 @@ ShanXiIphone = '18503516282'  # 山西服务商保险支付成功短信
 deadlineTime = 86400    # 一天86400秒
 remark_ZhouKou = u'大地车险承保仅限15万以内家庭使用非营运客车车辆'
 
+user_expire = 60 * 60 * 24 * 10  # 用户登录token保留时间， 默认保留10天
+user_token_prefix = "mt:"  # 用户登录token的前缀

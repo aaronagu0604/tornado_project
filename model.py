@@ -124,6 +124,7 @@ class User(db.Model):
     signuped = IntegerField(default=0)  # 注册时间
     lsignined = IntegerField(default=0)  # 最后登录时间
     store = ForeignKeyField(Store, related_name='users', db_column='store_id', null=False)  # 所属店铺
+    token = CharField(max_length=128, null=True)  # 用户当前登录的token
     active = IntegerField(default=1)  # 用户状态 0被禁止的用户 1正常用户
 
     @staticmethod
@@ -133,8 +134,9 @@ class User(db.Model):
     def check_password(self, raw):
         return hashlib.new("md5", raw).hexdigest() == self.password
 
-    def updatesignin(self):
+    def updatesignin(self, token):
         self.lsignined = int(time.time())
+        self.token = token
         self.save()
 
     def validate(self):

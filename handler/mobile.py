@@ -2,6 +2,7 @@
 # coding=utf8
 
 import logging
+import setting
 import simplejson
 from tornado.web import RequestHandler
 from lib.route import route
@@ -36,7 +37,7 @@ class MobileGetVCodeAppHandler(RequestHandler):
         if mobile and flag:
             pass
         else:
-            result['flag'] = 1
+            result['flag'] = 0
             result['msg'] = '请传入正确的手机号码'
         self.write(simplejson.dumps(result))
 
@@ -69,7 +70,7 @@ class MobileCheckRegVCodeAppHandler(RequestHandler):
             VCode.select()
             pass
         else:
-            result['flag'] = 1
+            result['flag'] = 0
             result['msg'] = '请传入正确的手机号码与验证码'
         self.write(simplejson.dumps(result))
 
@@ -121,38 +122,34 @@ class MobileLoginHandler(RequestHandler):
         pass
 
     def post(self):
-        logging.info('get in')
         result = {'flag': 0, 'msg': '', "data": {}}
         mobile = self.get_body_argument("mobile", None)
         password = self.get_body_argument("password", None)
         if mobile and password:
-            logging.info('get in :' + mobile + '; pw=' + password)
             try:
                 user = User.get(User.mobile == mobile)
-                logging.info('get in 22')
                 if user.check_password(password):
-                    logging.info('get in 233')
                     if user.active > 0:
-                        logging.info('get in 244')
-                        token = 'mt:' + str(uuid.uuid4())
-                        logging.info('token=' + token)
+                        token = user.token
+                        if token:
+                            data = self.application.memcachedb.get(token)
+                            if data is None:
+                                token = setting.user_token_prefix + str(uuid.uuid4())
+                        else:
+                            token = setting.user_token_prefix + str(uuid.uuid4())
                         result['flag'] = 1
                         result['data']['type'] = user.store.store_type
                         result['data']['token'] = token
                         result['data']['uid'] = user.id
-                        self.application.memcachedb.set(token, str(user.id), 7200)
-                        user.updatesignin()
+                        self.application.memcachedb.set(token, str(user.id), setting.user_expire)
+                        user.updatesignin(token)
                     else:
-                        logging.info('get in 200')
                         result['msg'] = "此账户被禁止登录，请联系管理员。"
                 else:
-                    logging.info('get in 299')
                     result['msg'] = "用户名或密码错误"
             except Exception, e:
-                logging.info('get in 299009')
                 result['msg'] = "此用户不存在"
         else:
-            logging.info('get in 3')
             result['msg'] = "请输入用户名或者密码"
         self.write(simplejson.dumps(result))
         self.finish()
