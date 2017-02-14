@@ -143,6 +143,7 @@ class MobileLoginHandler(RequestHandler):
         else:
             result['msg'] = "请输入用户名或者密码"
         self.write(simplejson.dumps(result))
+        self.finish()
 
 
 
