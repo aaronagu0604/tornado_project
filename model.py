@@ -133,6 +133,10 @@ class User(db.Model):
     def check_password(self, raw):
         return hashlib.new("md5", raw).hexdigest() == self.password
 
+    def updatesignin(self):
+        self.lsignined = int(time.time())
+        self.save()
+
     def validate(self):
         if vmobile(self.mobile):
             if User.select().where(User.mobile == self.mobile).count() > 0:
