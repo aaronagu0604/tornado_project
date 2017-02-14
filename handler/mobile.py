@@ -18,7 +18,7 @@ class MobileAppHandler(MobileHandler):
         self.write("czj api")
 
 
-@route(r'/getvcode', name='mobile_getvcode')
+@route(r'/mobile/getvcode', name='mobile_getvcode')
 class MobileGetVCodeAppHandler(RequestHandler):
     """
     @apiGroup auth
@@ -31,7 +31,6 @@ class MobileGetVCodeAppHandler(RequestHandler):
 
     @apiSampleRequest /mobile/getvcode
     """
-
     def check_xsrf_cookie(self):
         pass
 
@@ -43,7 +42,7 @@ class MobileGetVCodeAppHandler(RequestHandler):
         mobile = self.get_body_argument("mobile", None)
         flag = self.get_body_argument("flag", None)
 
-        user = User.select().where(User.username == mobile)
+        user = User.select().where(User.mobile == mobile)
         if flag == 0:
             if user.count() > 0:
                 result['msg'] = '您已经是车装甲会员'
@@ -79,9 +78,10 @@ class MobileGetVCodeAppHandler(RequestHandler):
             result['msg'] = '验证码发送失败，请联系400客服处理'
 
         self.write(simplejson.dumps(result))
+        self.finish()
 
 
-@route(r'/checkregvcode', name='mobile_checkregvcode')
+@route(r'/mobile/checkregvcode', name='mobile_checkregvcode')
 class MobileCheckRegVCodeAppHandler(RequestHandler):
     """
     @apiGroup auth
