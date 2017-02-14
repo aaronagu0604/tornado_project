@@ -10,7 +10,7 @@ from model import *
 import uuid
 from handler import MobileHandler
 import random
-from lib.daYuSDK.dayuSms import sendmsg
+# from lib.daYuSDK.dayuSms import sendmsg
 
 @route(r'/', name='mobile_app')
 class MobileAppHandler(MobileHandler):
@@ -64,7 +64,8 @@ class MobileGetVCodeAppHandler(RequestHandler):
                     uservcode.save()
                     result['flag'] = 1
                     result['msg'] = '验证码已发送'
-                    sendmsg(mobile, str(uservcode.vcode), 'vcode')  # 验证码
+                    # sendmsg(mobile, str(uservcode.vcode), 'vcode')  # 验证码
+                    logging.info('getvcode: ' + str(uservcode.vcode) + '; flag=' + str(flag))
                 except Exception, ex:
                     result['msg'] = '验证码发送失败，请联系400客服处理'
 
