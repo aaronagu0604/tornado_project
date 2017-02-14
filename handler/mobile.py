@@ -81,8 +81,8 @@ class MobileGetVCodeAppHandler(RequestHandler):
         self.finish()
 
 
-@route(r'/mobile/checkregvcode', name='mobile_checkregvcode')
-class MobileCheckRegVCodeAppHandler(RequestHandler):
+@route(r'/mobile/checkvcode', name='mobile_checkvcode')
+class MobileCheckVCodeAppHandler(RequestHandler):
     """
     @apiGroup auth
     @apiVersion 1.0.0
@@ -91,6 +91,7 @@ class MobileCheckRegVCodeAppHandler(RequestHandler):
 
     @apiParam {String} mobile 电话号码
     @apiParam {String} vcode 验证码
+    @apiParam {Int} flag 验证码类型： 0注册 1忘记密码 2绑定手机号 3提现
 
     @apiSampleRequest /mobile/checkregvcode
     """
@@ -105,8 +106,13 @@ class MobileCheckRegVCodeAppHandler(RequestHandler):
         result = {'flag': 0, 'msg': '', "data": {}}
         mobile = self.get_body_argument('mobile', None)
         vcode = self.get_body_argument('vcode', None)
-        if mobile and vcode:
-            VCode.select()
+        flag = self.get_body_argument("flag", None)
+        if mobile and vcode and flag:
+            VCode.delete().where(VCode.created < (int(time.time()) - 30 * 60)).execute()
+            if VCode.select().where((VCode.mobile == mobile) & (VCode.vcode == vcode) & (VCode.flag == flag)).count() > 0:
+                result['flag'] = 1
+            else:
+                result['msg'] = "请输入正确的验证码"
             pass
         else:
             result['flag'] = 0
