@@ -9,7 +9,8 @@ from lib.route import route
 from model import *
 import uuid
 from handler import MobileHandler
-
+import random
+from lib.daYuSDK.dayuSms import sendmsg
 
 @route(r'/', name='mobile_app')
 class MobileAppHandler(MobileHandler):
@@ -22,7 +23,7 @@ class MobileGetVCodeAppHandler(RequestHandler):
     """
     @apiGroup auth
     @apiVersion 1.0.0
-    @api {get} /mobile/getvcode 01. 获取验证码
+    @api {post} /mobile/getvcode 01. 获取验证码
     @apiDescription 获取验证码
 
     @apiParam {String} mobile 电话号码
@@ -30,15 +31,46 @@ class MobileGetVCodeAppHandler(RequestHandler):
 
     @apiSampleRequest /mobile/getvcode
     """
-    def get(self):
+
+    def post(self):
         result = {'flag': 0, 'msg': '', "data": {}}
-        mobile = self.get_argument('mobile', None)
-        flag = self.get_argument('flag', None)
-        if mobile and flag:
-            pass
+        mobile = self.get_body_argument("mobile", None)
+        flag = self.get_body_argument("flag", None)
+
+        user = User.select().where(User.username == mobile)
+        if flag == 0:
+            if user.count() > 0:
+                result['msg'] = '您已经是车装甲会员'
+                self.write(simplejson.dumps(result))
+                return
+        elif flag == 1:
+            if user.count() == 0:
+                result['msg'] = '您还不是车装甲会员'
+                self.write(simplejson.dumps(result))
+                return
+
+        VCode.delete().where(VCode.created < (int(time.time()) - 30 * 60)).execute()
+
+        uservcode = VCode()
+        uservcode.mobile = mobile
+        uservcode.vcode = random.randint(1000, 9999)
+        uservcode.created = int(time.time())
+        uservcode.flag = flag
+        if uservcode.validate():
+            if VCode.select().where((VCode.mobile == mobile) & (VCode.flag == flag)).count() > 3:
+                result['msg'] = '您的操作过于频繁，请稍后再试'
+            else:
+                try:
+                    uservcode.save()
+                    result['flag'] = 1
+                    result['msg'] = '验证码已发送'
+                    sendmsg(mobile, str(uservcode.vcode), 'vcode')  # 验证码
+                except Exception, ex:
+                    result['msg'] = '验证码发送失败，请联系400客服处理'
+
         else:
-            result['flag'] = 0
-            result['msg'] = '请传入正确的手机号码'
+            result['msg'] = '验证码发送失败，请联系400客服处理'
+
         self.write(simplejson.dumps(result))
 
 
