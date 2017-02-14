@@ -61,8 +61,8 @@ class MobileCheckRegVCodeAppHandler(RequestHandler):
 
     def post(self):
         result = {'flag': 0, 'msg': '', "data": {}}
-        mobile = self.get_argument('mobile', None)
-        vcode = self.get_argument('vcode', None)
+        mobile = self.get_body_argument('mobile', None)
+        vcode = self.get_body_argument('vcode', None)
         if mobile and vcode:
             VCode.select()
             pass
@@ -94,30 +94,8 @@ class MobileRegHandler(RequestHandler):
 
     def post(self):
         result = {'flag': 0, 'msg': '', "data": {}}
-        args = simplejson.loads(self.request.body)
+        mobile = self.get_body_argument("mobile", None)
 
-        mobile = args["mobile"]
-        password = args["password"]
-        if mobile and password:
-            try:
-                user = User.get(User.username == mobile)
-                if user.check_password(password):
-                    if user.active > 0:
-                        token = 'mt:' + str(uuid.uuid4())
-                        result['flag'] = 1
-                        result['data']['type'] = user.store.store_type
-                        result['data']['token'] = token
-                        result['data']['uid'] = user.id
-                        self.application.memcachedb.set(token, str(user.id), 7200)
-                        user.updatesignin()
-                    else:
-                        result['msg'] = "此账户被禁止登录，请联系管理员。"
-                else:
-                    result['msg'] = "用户名或密码错误"
-            except Exception, e:
-                result['msg'] = "此用户不存在"
-        else:
-            result['msg'] = "请输入用户名或者密码"
         self.write(simplejson.dumps(result))
 
 
@@ -142,10 +120,8 @@ class MobileLoginHandler(RequestHandler):
 
     def post(self):
         result = {'flag': 0, 'msg': '', "data": {}}
-        args = simplejson.loads(self.request.body)
-
-        mobile = args["mobile"]
-        password = args["password"]
+        mobile = self.get_body_argument("mobile", None)
+        password = self.get_body_argument("password", None)
         if mobile and password:
             try:
                 user = User.get(User.username == mobile)
