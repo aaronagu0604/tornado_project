@@ -9,7 +9,7 @@ from handler import MobileHandler
 
 
 @route(r'/', name='mobile_app')
-class MobileAppHandler(MobileHandler):
+class MobileAppHandler(RequestHandler):
     def get(self):
         self.write("czj api")
 
