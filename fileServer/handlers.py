@@ -60,8 +60,10 @@ class UploadImageHandler(BaseHandler):
         result['Data'] = ''
         result['Msg'] = ''
         try:
+            logging.info('start upload image')
             meta = self.request.files['file'][0]
             suffix = meta['filename'].split('.')[-1]
+            logging.info('file suffix: ' + suffix)
             fullname, arr, filename = self.get_full_file_name('image', suffix)
             while os.path.exists(fullname):
                 logging.info('已经存在文件：' + fullname)
