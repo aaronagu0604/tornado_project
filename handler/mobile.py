@@ -173,7 +173,7 @@ class MobileRegHandler(RequestHandler):
         licensePic = self.get_body_argument("licensePic", None)
         storePic = self.get_body_argument("storePic", None)
         user = User()
-        user.username = mobile
+        user.mobile = mobile
         user.password = password
         try:
             user.validate()
@@ -187,20 +187,20 @@ class MobileRegHandler(RequestHandler):
                     try:
                         admin_user = AdminUser.get(code = referee).id
                     except:
-                        admin_user = 0
+                        admin_user = None
                     now = int(time.time())
-                    area_code = district
-                    sid = Store.create(store_type=int(store_type), admin_code=referee, admin_user=admin_user, name=companyName, area_code=area_code,
-                                 store_image=storePic, address=address, legal_person=legalPerson, license_code=licenseCode, license_image=licensePic,
-                                 linkman=legalPerson, mobile=mobile, created=now)
+                    sid = Store.create(store_type=int(store_type), admin_code=referee, admin_user=admin_user, name=companyName,
+                                       area_code=district, address=address, legal_person=legalPerson, license_code=licenseCode,
+                                       license_image=licensePic, store_image=storePic, lng='0', lat='0', pay_password='',
+                                       intro='', linkman=legalPerson, mobile=mobile, created=now)
                     user.signuped = now
                     user.lsignined = now
-                    user.store = sid
+                    user.store = sid.id
                     user.token = setting.user_token_prefix + str(uuid.uuid4())
                     self.application.memcachedb.set(user.token, str(user.id), setting.user_expire)
                     user.save()
-                    StoreAddress.create(store=sid, province=province, city=city, region=district, address=address, name=legalPerson,
-                                        mobile=mobile, created=now, create_by=legalPerson)
+                    StoreAddress.create(store=sid.id, province=province, city=city, region=district, address=address,
+                                        street='', name=legalPerson, mobile=mobile, created=now, create_by=user.id)
                     result['data'] = {
                         'token': user.token,
                         'store_type': store_type,
