@@ -130,6 +130,18 @@ class MobileRegHandler(RequestHandler):
 
     @apiParam {String} mobile 电话号码
     @apiParam {String} password 密码
+    @apiParam {String}     rePassword 重复密码
+    @apiParam {String}     store_type 门店类型
+    @apiParam {String}    referee 推广人编号
+    @apiParam {String}    companyName 公司名称
+    @apiParam {String}     province 省
+    @apiParam {String}     city 市
+    @apiParam {String}     district 区
+    @apiParam {String}     address 详细地址
+    @apiParam {String}     legalPerson 法人代表
+    @apiParam {String}     licenseCode 营业执照编号
+    @apiParam {String}     licensePic 营业执照图片
+    @apiParam {String}     storePic 门店图片
 
     @apiSampleRequest /mobile/reg
     """
@@ -143,7 +155,61 @@ class MobileRegHandler(RequestHandler):
     def post(self):
         result = {'flag': 0, 'msg': '', "data": {}}
         mobile = self.get_body_argument("mobile", None)
+        password = self.get_body_argument("password", None)
+        rePassword = self.get_body_argument("rePassword", None)
+        store_type = self.get_body_argument("store_type", None)
+        referee = self.get_body_argument("referee", None)
+        companyName = self.get_body_argument("companyName", None)
+        province = self.get_body_argument("province", None)
+        city = self.get_body_argument("city", None)
+        district = self.get_body_argument("district", None)
+        address = self.get_body_argument("address", None)
+        legalPerson = self.get_body_argument("legalPerson", None)
+        licenseCode = self.get_body_argument("licenseCode", None)
+        licensePic = self.get_body_argument("licensePic", None)
+        storePic = self.get_body_argument("storePic", None)
+        user = User()
+        user.username = mobile
+        user.password = password
+        try:
+            user.validate()
+            if password and rePassword:
+                if password != rePassword:
+                    result['msg'] = "两次密码不一致，请重新输入"
+                else:
+                    try:
+                        admin_user = AdminUser.get(code = referee).id
+                    except:
+                        admin_user = 0
+                    if district:
+                        area_code = district
+                    else:
+                        raise Exception('门店所在地区不能为空')
+                    now = int(time.time())
+                    sid = Store.create(store_type=store_type, admin_code=referee, admin_user=admin_user, name=companyName, area_code=area_code,
+                                 store_image=storePic, address=address, legal_person=legalPerson, license_code=licenseCode, license_image=licensePic,
+                                 linkman=legalPerson, mobile=mobile, created=now)
+                    user.role = 'A'
+                    user.signuped = now
+                    user.lsignined = now
+                    user.store = sid
+                    user.token = setting.user_token_prefix + str(uuid.uuid4())
+                    self.application.memcachedb.set(user.token, str(user.id), setting.user_expire)
+                    user.save()
+                    StoreAddress.create(store=sid, province=province, city=city, region=district, address=address, name=legalPerson,
+                                        mobile=mobile, created=now, create_by=legalPerson)
 
+                    result['data'] = {
+                        'token': user.token,
+                        'store_type': store_type,
+                        'active': 0
+                    }
+                    result['flag'] = 1
+                    result['msg'] = '注册成功'
+            else:
+                result['msg'] = "请输入密码和确认密码"
+        except Exception, ex:
+            result['msg'] = ex.message
         self.write(simplejson.dumps(result))
 
 
