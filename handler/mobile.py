@@ -13,8 +13,10 @@ import random
 # from lib.daYuSDK.dayuSms import sendmsg
 
 @route(r'/', name='mobile_app')
-class MobileAppHandler(MobileHandler):
+class MobileAppHandler(RequestHandler):
     def get(self):
+        us = User.select()
+        logging.info('---%s---'%us.count())
         self.write("czj api")
 
 
