@@ -134,8 +134,7 @@ class MobileRegHandler(RequestHandler):
 
     @apiParam {String} mobile 电话号码
     @apiParam {String} password 密码
-    @apiParam {String}     rePassword 重复密码
-    @apiParam {Int}     store_type 门店类型
+    @apiParam {Int}     store_type 门店类型 0其它 1经销商 2社会修理厂（门店）
     @apiParam {String}    referee 推广人编号
     @apiParam {String}    companyName 公司名称
     @apiParam {String}     province 省
@@ -144,8 +143,8 @@ class MobileRegHandler(RequestHandler):
     @apiParam {String}     address 详细地址
     @apiParam {String}     legalPerson 法人代表
     @apiParam {String}     licenseCode 营业执照编号
-    @apiParam {String}     licensePic 营业执照图片
-    @apiParam {String}     storePic 门店图片
+    @apiParam {String}     licensePic 营业执照图片url
+    @apiParam {String}     storePic 门店图片url
 
     @apiSampleRequest /mobile/reg
     """
@@ -160,7 +159,6 @@ class MobileRegHandler(RequestHandler):
         result = {'flag': 0, 'msg': '', "data": {}}
         mobile = self.get_body_argument("mobile", None)
         password = self.get_body_argument("password", None)
-        rePassword = self.get_body_argument("rePassword", None)
         store_type = self.get_body_argument("store_type", None)
         referee = self.get_body_argument("referee", None)
         companyName = self.get_body_argument("companyName", None)
@@ -177,39 +175,33 @@ class MobileRegHandler(RequestHandler):
         user.password = password
         try:
             user.validate()
-            if password and rePassword:
-                if password != rePassword:
-                    result['msg'] = "两次密码不一致，请重新输入"
-                else:
-                    if not (store_type and companyName and province and city and district and address and legalPerson
-                            and licenseCode and licensePic and storePic):
-                        raise Exception('门店信息不完整')
-                    try:
-                        admin_user = AdminUser.get(code = referee).id
-                    except:
-                        admin_user = None
-                    now = int(time.time())
-                    sid = Store.create(store_type=int(store_type), admin_code=referee, admin_user=admin_user, name=companyName,
-                                       area_code=district, address=address, legal_person=legalPerson, license_code=licenseCode,
-                                       license_image=licensePic, store_image=storePic, lng='0', lat='0', pay_password='',
-                                       intro='', linkman=legalPerson, mobile=mobile, created=now)
-                    user.signuped = now
-                    user.lsignined = now
-                    user.store = sid.id
-                    user.token = setting.user_token_prefix + str(uuid.uuid4())
-                    self.application.memcachedb.set(user.token, str(user.id), setting.user_expire)
-                    user.save()
-                    StoreAddress.create(store=sid.id, province=province, city=city, region=district, address=address,
-                                        street='', name=legalPerson, mobile=mobile, created=now, create_by=user.id)
-                    result['data'] = {
-                        'token': user.token,
-                        'store_type': store_type,
-                        'active': 0
-                    }
-                    result['flag'] = 1
-                    result['msg'] = '注册成功'
-            else:
-                result['msg'] = "请输入密码和确认密码"
+            if not (store_type and companyName and province and city and district and address and legalPerson
+                    and licenseCode and licensePic and storePic and password):
+                raise Exception('申请信息不完整')
+            try:
+                admin_user = AdminUser.get(code=referee)
+            except:
+                admin_user = None
+            now = int(time.time())
+            sid = Store.create(store_type=int(store_type), admin_code=referee, admin_user=admin_user, name=companyName,
+                               area_code=district, address=address, legal_person=legalPerson, license_code=licenseCode,
+                               license_image=licensePic, store_image=storePic, lng='0', lat='0', pay_password='',
+                               intro='', linkman=legalPerson, mobile=mobile, created=now)
+            user.signuped = now
+            user.lsignined = now
+            user.store = sid.id
+            user.token = setting.user_token_prefix + str(uuid.uuid4())
+            user.save()
+            StoreAddress.create(store=sid.id, province=province, city=city, region=district, address=address,
+                                street='', name=legalPerson, mobile=mobile, created=now, create_by=user.id)
+            self.application.memcachedb.set(user.token, str(user.id), setting.user_expire)
+            result['data'] = {
+                'token': user.token,
+                'store_type': store_type,
+                'active': 0
+            }
+            result['flag'] = 1
+            result['msg'] = '注册成功'
         except Exception, ex:
             result['msg'] = ex.message
         self.write(simplejson.dumps(result))
