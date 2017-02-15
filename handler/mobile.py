@@ -260,6 +260,51 @@ class MobileLoginHandler(RequestHandler):
         self.finish()
 
 
+@route(r'/mobile/filter', name='mobile_filter')  # 发现列表的筛选界面
+class MobileFilterHandler(RequestHandler):
+    """
+    @apiGroup discover
+    @apiVersion 1.0.0
+    @api {get} /mobile/filter 05. 发现页面的筛选界面
+    @apiDescription 发现页面的筛选界面，未登陆使用西安code
+
+    @apiParam {Int} id 品牌或者分类ID
+    @apiParam {Int} flag 1品牌 2分类
+
+    @apiSampleRequest /mobile/filter
+    """
+
+    def get(self):
+        result = {'flag': 0, 'msg': '', "data": {}}
+
+        self.write(simplejson.dumps(result))
+        self.finish()
+
+
+@route(r'/mobile/discover', name='mobile_discover')  # 发现列表
+class MobileDiscoverHandler(RequestHandler):
+    """
+    @apiGroup discover
+    @apiVersion 1.0.0
+    @api {get} /mobile/discover 06. 发现页面列表
+    @apiDescription 发现页面列表，未登陆使用西安code
+
+    @apiParam {String} keyword 搜索关键字
+    @apiParam {String} pricesort 价格排序 1正序， 2逆序； 默认为1
+    @apiParam {String} salesort 销量排序 1正序， 2逆序； 默认2
+    @apiParam {String} category 分类ID， 单选
+    @apiParam {String} pinpai 品牌ID组合， 多选, 例：[1,2,3]
+    @apiParam {String} attribute 属性ID组合, 多选, 例： [1,2,3]
+
+    @apiSampleRequest /mobile/discover
+    """
+    def get(self):
+        result = {'flag': 0, 'msg': '', "data": {}}
+        mobile = self.get_body_argument("mobile", None)
+        password = self.get_body_argument("password", None)
+
+        self.write(simplejson.dumps(result))
+        self.finish()
 
 
 

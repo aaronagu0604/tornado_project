@@ -253,7 +253,7 @@ class StoreArea(db.Model):
 
 
 # 商品分类
-class ProductCategory(db.Model):
+class Category(db.Model):
     id = PrimaryKeyField()
     name = CharField(max_length=20)  # 分类名
     sort = CharField(max_length=20)  # 显示顺序
@@ -264,25 +264,25 @@ class ProductCategory(db.Model):
     img_pc = CharField(max_length=256, null=True)  # 分类图片PC端
 
     class Meta:
-        db_table = 'tb_product_category'
+        db_table = 'tb_category'
 
 
 # 商品分类属性
-class ProductCategoryAttribute(db.Model):
+class CategoryAttribute(db.Model):
     id = PrimaryKeyField()
-    product_category = ForeignKeyField(ProductCategory, related_name='attributes',
-                                       db_column='product_category_id')  # 商品分类
+    category = ForeignKeyField(Category, related_name='attributes',
+                                       db_column='category_id')  # 商品分类
     name = CharField(max_length=20)  # 属性名
     ename = CharField(max_length=20)  # 英文属性名
     sort = CharField(max_length=20)  # 显示顺序
     active = IntegerField(default=1)  # 状态 0删除 1有效
 
     class Meta:
-        db_table = 'tb_product_category_attribute'
+        db_table = 'tb_category_attribute'
 
 
 # 商品品牌
-class PinPai(db.Model):
+class Brand(db.Model):
     id = PrimaryKeyField()
     name = CharField(max_length=50)  # 品牌名称
     engname = CharField(max_length=50)  # 品牌英文名称
@@ -292,15 +292,25 @@ class PinPai(db.Model):
     active = IntegerField(default=1)  # 状态 0删除 1有效
 
     class Meta:
-        db_table = 'tb_pinpai'
+        db_table = 'tb_brand'
+
+
+# 品牌与分类关系 n:n
+class BrandCategory(db.Model):
+    id = PrimaryKeyField()
+    brand = ForeignKeyField(Brand, db_column='brand_id', null=True)  # 配件品牌分类
+    product_category = ForeignKeyField(Category, db_column='category_id')  # 商品分类
+
+    class Meta:
+        db_table = 'tb_brand_category'
 
 
 # 商品
 class Product(db.Model):
     id = PrimaryKeyField()
     name = CharField(max_length=64)  # 商品名称
-    pinpai = ForeignKeyField(PinPai, related_name='products', db_column='pinpai_id', null=True)  # 配件品牌分类
-    product_category = ForeignKeyField(ProductCategory, related_name='products', db_column='product_category_id')  # 商品分类
+    brand = ForeignKeyField(Brand, related_name='products', db_column='brand_id', null=True)  # 配件品牌分类
+    category = ForeignKeyField(Category, related_name='products', db_column='category_id')  # 商品分类
     resume = CharField()  # 简单介绍
     unit = CharField()  # 单位
     intro = TextField()  # 详细介绍
@@ -318,7 +328,7 @@ class Product(db.Model):
 class ProductAttributeValue(db.Model):
     id = PrimaryKeyField()
     product = ForeignKeyField(Product, related_name='attributes', db_column='product_id')  # 所属商品
-    attribute = ForeignKeyField(ProductCategoryAttribute,  db_column='product_category_attribute_id')  # 产品属性
+    attribute = ForeignKeyField(CategoryAttribute,  db_column='category_attribute_id')  # 产品属性
     value = CharField(max_length=255)  # 属性值
 
     class Meta:
@@ -344,7 +354,7 @@ class StoreProductPrice(db.Model):
     id = PrimaryKeyField()
     product_release = ForeignKeyField(ProductRelease, related_name='area_prices', db_column='product_release_id')  # 所属商品
     store = ForeignKeyField(Store, related_name='area_products', db_column='store_id')  # 所属店铺
-    area = ForeignKeyField(Area, db_column='area_id')  # 用户
+    area_code = CharField(max_length=20)  # 地区code
     price = FloatField()  # 当前始销售价，负数或0为不能购物
     score = IntegerField(default=0)  # 积分兑换额度，负数或0为不能兑换
     active = IntegerField(default=1)  # 状态 0下架 1有效
