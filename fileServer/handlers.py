@@ -56,9 +56,9 @@ class UploadImageHandler(BaseHandler):
 
     def post(self):
         result = {}
-        result['Flag'] = 0
-        result['Data'] = ''
-        result['Msg'] = ''
+        result['flag'] = 0
+        result['data'] = ''
+        result['msg'] = ''
         try:
             logging.info('start upload image')
             meta = self.request.files['file'][0]
@@ -72,12 +72,12 @@ class UploadImageHandler(BaseHandler):
             f = open(fullname, 'wb')
             f.write(meta['body'])
             f.close()
-            result['Data'] = setting.openHost+'/'+arr[0]+'/'+arr[1]+'/'+arr[2]+'/'+arr[3]+'/' + filename
-            result['Flag'] = 1
+            result['data'] = setting.openHost+'/'+arr[0]+'/'+arr[1]+'/'+arr[2]+'/'+arr[3]+'/' + filename
+            result['flag'] = 1
         except Exception, e:
             logging.info('upload image failing: ' + e.message)
-            result['Flag'] = 0
-            result['Msg'] = 'fail in upload image'
+            result['flag'] = 0
+            result['msg'] = 'fail in upload image'
         self.write(simplejson.dumps(result))
 
 
