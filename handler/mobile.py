@@ -131,7 +131,7 @@ class MobileRegHandler(RequestHandler):
     @apiParam {String} mobile 电话号码
     @apiParam {String} password 密码
     @apiParam {String}     rePassword 重复密码
-    @apiParam {String}     store_type 门店类型
+    @apiParam {Int}     store_type 门店类型
     @apiParam {String}    referee 推广人编号
     @apiParam {String}    companyName 公司名称
     @apiParam {String}     province 省
@@ -177,19 +177,18 @@ class MobileRegHandler(RequestHandler):
                 if password != rePassword:
                     result['msg'] = "两次密码不一致，请重新输入"
                 else:
+                    if not (store_type and companyName and province and city and district and address and legalPerson
+                            and licenseCode and licensePic and storePic):
+                        raise Exception('门店信息不完整')
                     try:
                         admin_user = AdminUser.get(code = referee).id
                     except:
                         admin_user = 0
-                    if district:
-                        area_code = district
-                    else:
-                        raise Exception('门店所在地区不能为空')
                     now = int(time.time())
-                    sid = Store.create(store_type=store_type, admin_code=referee, admin_user=admin_user, name=companyName, area_code=area_code,
+                    area_code = district
+                    sid = Store.create(store_type=int(store_type), admin_code=referee, admin_user=admin_user, name=companyName, area_code=area_code,
                                  store_image=storePic, address=address, legal_person=legalPerson, license_code=licenseCode, license_image=licensePic,
                                  linkman=legalPerson, mobile=mobile, created=now)
-                    user.role = 'A'
                     user.signuped = now
                     user.lsignined = now
                     user.store = sid
@@ -198,7 +197,6 @@ class MobileRegHandler(RequestHandler):
                     user.save()
                     StoreAddress.create(store=sid, province=province, city=city, region=district, address=address, name=legalPerson,
                                         mobile=mobile, created=now, create_by=legalPerson)
-
                     result['data'] = {
                         'token': user.token,
                         'store_type': store_type,

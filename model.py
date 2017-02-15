@@ -90,7 +90,7 @@ class AdminUser(db.Model):
 # 门店
 class Store(db.Model):
     id = PrimaryKeyField()
-    store_type = IntegerField(default=0)  # 门店类型 0其它 1品牌4S店 2社会修理厂
+    store_type = IntegerField(default=0)  # 门店类型 0其它 1经销商 2社会修理厂（门店）
     admin_code = CharField(max_length=20, null=True)  # 业务推广人员编号
     admin_user = ForeignKeyField(AdminUser, related_name='stores', db_column='admin_user_id')  # 业务推广人员
     name = CharField(max_length=100)     # 门店名称
