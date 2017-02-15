@@ -36,7 +36,7 @@ COM_TEL = '4006904200' #客服热线
 
 MQSERVER = '127.0.0.1'
 MQPORT = '5672'
-MQUSER = 'guest'
+MQUSER = 'czj'
 MQPASSWORD = '1q2w3e4R'
 MQEXCHANGENAME = 'czj_exchange'
 MQQUEUENAME = 'czj_queue'
