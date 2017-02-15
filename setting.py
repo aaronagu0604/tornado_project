@@ -6,7 +6,7 @@ DEBUG = True
 GZIP = True
 
 DB_PORT = 3306
-DB_HOST = 'localhost'
+DB_HOST = '123.56.94.179'
 DB_USER = 'root'
 DB_PASSWD = '6V^efYdy'
 DB_NAME = 'czj'
@@ -34,10 +34,10 @@ ALIPAY_RETURN_PAY_NOTIFY_URL = 'http://127.0.0.1:8889/alipay/pay_back/notify'
 
 COM_TEL = '4006904200' #客服热线
 
-MQSERVER = '123.56.94.179'
+MQSERVER = '127.0.0.1'
 MQPORT = '5672'
 MQUSER = 'guest'
-MQPASSWORD = '520czj90-='
+MQPASSWORD = '1q2w3e4R'
 MQEXCHANGENAME = 'czj_exchange'
 MQQUEUENAME = 'czj_queue'
 MQROUTINGKEY = 'czj_routing_key'
