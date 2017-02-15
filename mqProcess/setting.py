@@ -19,7 +19,7 @@ dayu_secret = "c3f339be7d1d0f3bf526c0a0280fa9d2"
 ############ MQ 消息队列 ################
 MQSERVER = '127.0.0.1'
 MQPORT = '5672'
-MQUSER = 'czj'
+MQUSER = 'guest'
 MQPASSWORD = '1q2w3e4R'
 MQEXCHANGENAME = 'czj_exchange'
 MQQUEUENAME = 'czj_queue'
