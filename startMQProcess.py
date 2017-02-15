@@ -7,19 +7,19 @@ import time
 import rabbitpy
 import simplejson
 
-import setting
+import mqProcess.setting
 from dayuSms import sendmsg
-from emailhelper import sendemail
-from jpushhelper import pushmsg
+from mqProcess.emailhelper import sendemail
+from mqProcess.jpushhelper import pushmsg
 
 logger = logging.getLogger('startMQProcess')
 logger.addHandler(logging.StreamHandler())
 
-url = 'amqp://' + setting.MQUSER + ':' + setting.MQPASSWORD + '@' + setting.MQSERVER + ':' + setting.MQPORT + '/%2f'
+url = 'amqp://' + mqProcess.setting.MQUSER + ':' + mqProcess.setting.MQPASSWORD + '@' + mqProcess.setting.MQSERVER + ':' + mqProcess.setting.MQPORT + '/%2f'
 
 with rabbitpy.Connection(url) as conn:
     with conn.channel() as channel:
-        queue = rabbitpy.Queue(channel, setting.MQQUEUENAME)
+        queue = rabbitpy.Queue(channel, mqProcess.setting.MQQUEUENAME)
         try:
             for message in queue.consume_messages():
                 try:

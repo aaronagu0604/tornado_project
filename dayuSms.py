@@ -4,13 +4,13 @@ Created on 2016-11-13
 @author: aaron
 '''
 import top.api
-import setting
+import mqProcess.setting
 import logging
 
 
 def sendmsg(mobile, content, isyzm):
-    req = top.api.AlibabaAliqinFcSmsNumSendRequest(setting.dayu_url, setting.dayu_port)
-    req.set_app_info(top.appinfo(setting.dayu_appkey, setting.dayu_secret))
+    req = top.api.AlibabaAliqinFcSmsNumSendRequest(mqProcess.setting.dayu_url, mqProcess.setting.dayu_port)
+    req.set_app_info(top.appinfo(mqProcess.setting.dayu_appkey, mqProcess.setting.dayu_secret))
     req.extend = "123456"
     req.sms_type = "normal"
     req.sms_free_sign_name = "车装甲"
@@ -73,7 +73,7 @@ def sendmsg(mobile, content, isyzm):
 
 
 if __name__ == '__main__':
-    sendmsg(u'18189279823'.encode("utf8"), u'1234'.encode("utf8"), u'vcode'.encode("utf8"))  #13239109398  18189279823 {"alias":["18189279823","13239109398"]}
+    sendmsg(u'18189279823'.encode("utf8"), u'2234'.encode("utf8"), u'vcode'.encode("utf8"))  #13239109398  18189279823 {"alias":["18189279823","13239109398"]}
 
 
 
