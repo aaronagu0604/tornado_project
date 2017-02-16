@@ -462,18 +462,49 @@ class MobileHomeHandler(MobileBaseHandler):
 
         tmp_code = area_code
         banners = self.get_banner(tmp_code)
-        while banners.count() == 0 and len(tmp_code) > 4:
-            tmp_code = tmp_code[0, -4]
+        while len(banners) == 0 and len(tmp_code) > 4:
+            tmp_code = tmp_code[0: -4]
             banners = self.get_banner(tmp_code)
+        if len(banners) == 0:
+            banners = self.get_banner(self.get_default_area_code())
         result['data']['banner'] = banners
 
         tmp_code = area_code
         insurances = self.get_insurance(tmp_code)
-        while insurances.count() == 0 and len(tmp_code) > 4:
-            tmp_code = tmp_code[0, -4]
+        while len(insurances) == 0 and len(tmp_code) > 4:
+            tmp_code = tmp_code[0: -4]
             insurances = self.get_insurance(tmp_code)
+        if len(insurances) == 0:
+            insurances = self.get_insurance(self.get_default_area_code())
         result['data']['insurance'] = insurances
 
+        tmp_code = area_code
+        categories = self.get_category(tmp_code)
+        while len(categories) == 0 and len(tmp_code) > 4:
+            tmp_code = tmp_code[0: -4]
+            categories = self.get_category(tmp_code)
+        if len(categories) == 0:
+            categories = self.get_category(self.get_default_area_code())
+        result['data']['hot_category'] = categories
+
+        tmp_code = area_code
+        brands = self.get_brand(tmp_code)
+        while len(brands) == 0 and len(tmp_code) > 4:
+            tmp_code = tmp_code[0: -4]
+            brands = self.get_brand(tmp_code)
+        if len(brands) == 0:
+            brands = self.get_brand(self.get_default_area_code())
+        result['data']['hot_brand'] = brands
+
+        tmp_code = area_code
+        recommends = self.get_recommend(tmp_code)
+        while len(recommends) == 0 and len(tmp_code) > 4:
+            tmp_code = tmp_code[0: -4]
+            recommends = self.get_recommend(tmp_code)
+        if len(recommends) == 0:
+            recommends = self.get_recommend(self.get_default_area_code())
+        result['data']['recommend'] = recommends
+        result['flag'] = 1
         self.write(simplejson.dumps(result))
         self.finish()
 
@@ -493,15 +524,60 @@ class MobileHomeHandler(MobileBaseHandler):
 
     def get_insurance(self, area_code):
         items = []
-        insurances = BlockItem.select(BlockItem, Insurance).join(Block).\
+        insurances = BlockItem.select(BlockItem.link, Insurance.logo, Insurance.name).join(Block).\
             join(Insurance, on=BlockItem.ext_id == Insurance.id).where((Block.tag == 'insurance') & (Block.active == 1)
             & (BlockItem.active == 1) & (BlockItem.area_code == area_code)).tuples()
-        for blockItem, insurance in insurances:
+        for link, logo, name in insurances:
             items.append({
-                'img': insurance.logo,
-                'name': insurance.name,
+                'img': logo,
+                'name': name,
                 'price': 0,
-                'link': blockItem.link
+                'link': link
+            })
+        return items
+
+    def get_category(self, area_code):
+        items = []
+        categories = BlockItem.select(BlockItem.link, Category.img_m, Category.name).join(Block).\
+            join(Category, on=BlockItem.ext_id == Category.id).where((Block.tag == 'hot_category') & (Block.active == 1)
+            & (BlockItem.active == 1) & (BlockItem.area_code == area_code)).tuples()
+        for link, logo, name in categories:
+            items.append({
+                'img': logo,
+                'name': name,
+                'price': 0,
+                'link': link
+            })
+        return items
+
+    def get_brand(self, area_code):
+        items = []
+        brands = BlockItem.select(BlockItem.link, Brand.logo, Brand.name).join(Block).\
+            join(Brand, on=BlockItem.ext_id == Brand.id).where((Block.tag == 'hot_brand') & (Block.active == 1)
+            & (BlockItem.active == 1) & (BlockItem.area_code == area_code)).tuples()
+        for link, logo, name in brands:
+            items.append({
+                'img': logo,
+                'name': name,
+                'price': 0,
+                'link': link
+            })
+        return items
+
+    def get_recommend(self, area_code):
+        items = []
+        recommends = BlockItem.select(BlockItem.link, Product.cover, Product.name, StoreProductPrice.price).join(Block).\
+            join(StoreProductPrice, on=BlockItem.ext_id == StoreProductPrice.id).\
+            join(ProductRelease, on=ProductRelease.id == StoreProductPrice.product_release). \
+            join(Product, on=Product.id == ProductRelease.product). \
+            where((Block.tag == 'recommend') & (Block.active == 1) & (BlockItem.active == 1)
+                  & (BlockItem.area_code == area_code)).tuples()
+        for link, logo, name, price in recommends:
+            items.append({
+                'img': logo,
+                'name': name,
+                'price': price,
+                'link': link
             })
         return items
 

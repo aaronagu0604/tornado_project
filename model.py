@@ -648,8 +648,12 @@ def load_test_data():
     User.create(mobile='18189279823', password='e10adc3949ba59abbe56e057f20f883e', role='A', signuped=1487032696,
                 lsignined=1487032696, store=1, active=1)
 
-    Category.create(name='润滑油', sort=1, active=1, img_m='', img_pc='')
-    Category.create(name='导航仪', sort=2, active=1, img_m='', img_pc='')
+    Category.create(name='润滑油', sort=1, active=1,
+                    img_m='http://img.520czj.com/image/2017/02/15/server1_20170215111526VDJrFZYbKUeiLjuGkcsxTIhW.png',
+                    img_pc='http://img.520czj.com/image/2017/02/15/server1_20170215111526VDJrFZYbKUeiLjuGkcsxTIhW.png')
+    Category.create(name='导航仪', sort=2, active=1,
+                    img_m='http://img.520czj.com/image/2017/02/15/server1_20170215111526VDJrFZYbKUeiLjuGkcsxTIhW.png',
+                    img_pc='http://img.520czj.com/image/2017/02/15/server1_20170215111526VDJrFZYbKUeiLjuGkcsxTIhW.png')
 
     CategoryAttribute.create(category=1, name='容量', ename='rl', sort=1)
     CategoryAttribute.create(category=1, name='粘度', ename='nd', sort=2)
@@ -668,10 +672,14 @@ def load_test_data():
     CategoryAttributeItems.create(category_attribute=5, name='8寸', intro='8寸')
     CategoryAttributeItems.create(category_attribute=5, name='10寸', intro='10寸')
 
-    Brand.create(name='SK', engname='SK', pinyin='SK', logo='', intro='SK')
-    Brand.create(name='壳牌', engname='qp', pinyin='qp', logo='', intro='壳牌润滑油')
-    Brand.create(name='飞影', engname='fy', pinyin='fy', logo='', intro='飞影导航仪')
-    Brand.create(name='安畅星', engname='acx', pinyin='acx', logo='', intro='安畅星导航仪')
+    Brand.create(name='SK', engname='SK', pinyin='SK',
+                 logo='http://img.520czj.com/image/2017/02/15/server1_20170215111526VDJrFZYbKUeiLjuGkcsxTIhW.png', intro='SK')
+    Brand.create(name='壳牌', engname='qp', pinyin='qp',
+                 logo='http://img.520czj.com/image/2017/02/15/server1_20170215111526VDJrFZYbKUeiLjuGkcsxTIhW.png', intro='壳牌润滑油')
+    Brand.create(name='飞影', engname='fy', pinyin='fy',
+                 logo='http://img.520czj.com/image/2017/02/15/server1_20170215111526VDJrFZYbKUeiLjuGkcsxTIhW.png', intro='飞影导航仪')
+    Brand.create(name='安畅星', engname='acx', pinyin='acx',
+                 logo='http://img.520czj.com/image/2017/02/15/server1_20170215111526VDJrFZYbKUeiLjuGkcsxTIhW.png', intro='安畅星导航仪')
 
     BrandCategory.create(brand=1, category=1)
     BrandCategory.create(brand=2, category=1)
@@ -679,8 +687,10 @@ def load_test_data():
     BrandCategory.create(brand=4, category=2)
     BrandCategory.create(brand=1, category=2)  # SK拥有润滑油、导航仪两类产品
 
-    Product.create(name='SK合成机油', brand=1, category=1, resume='SK合成机油', unit='桶', intro='intro', cover='')
-    Product.create(name='SK导航仪', brand=1, category=2, resume='SK导航仪', unit='个', intro='intro', cover='')
+    Product.create(name='SK合成机油', brand=1, category=1, resume='SK合成机油', unit='桶', intro='intro',
+                   cover='http://img.520czj.com/image/2017/02/15/server1_20170215111526VDJrFZYbKUeiLjuGkcsxTIhW.png')
+    Product.create(name='SK导航仪', brand=1, category=2, resume='SK导航仪', unit='个', intro='intro',
+                   cover='http://img.520czj.com/image/2017/02/15/server1_20170215111526VDJrFZYbKUeiLjuGkcsxTIhW.png')
 
     ProductAttributeValue.create(product=1, attribute=1, value='5L')
     ProductAttributeValue.create(product=1, attribute=2, value='5W-30')
@@ -714,9 +724,10 @@ def load_test_data():
     BlockItem.create(area_code='00270001', block=1, name='ceshi', link='http://www.baidu.com',
                      img='http://img.520czj.com/image/2017/02/15/server1_20170215111526VDJrFZYbKUeiLjuGkcsxTIhW.png')
     BlockItem.create(area_code='00270001', block=2, name='人保车险', link='czj://insurance/1', img='', ext_id=1)
-    BlockItem.create(area_code='00270001', block=3, name='分类', link='czj://category/1', img='')
-    BlockItem.create(area_code='00270001', block=4, name='品牌', link='czj://brand/1', img='')
-    BlockItem.create(area_code='00270001', block=5, name='产品', link='czj://product/1', img='')
+    BlockItem.create(area_code='00270001', block=3, name='分类', link='czj://category/1', img='', ext_id=1)
+    BlockItem.create(area_code='00270001', block=4, name='品牌', link='czj://brand/1', img='', ext_id=1)
+    BlockItem.create(area_code='00270001', block=5, name='产品', link='czj://product/1', img='', ext_id=1)
+    BlockItem.create(area_code='00270001', block=5, name='产品', link='czj://product/2', img='', ext_id=2)
 
 
 if __name__ == '__main__':

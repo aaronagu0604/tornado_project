@@ -28,10 +28,13 @@ class MobileBaseHandler(RequestHandler):
     def get_store_area_code(self):
         user = self.get_user()
         if user is None:
-            area_code = '00270001'  # 默认使用西安市的code
+            area_code = self.get_default_area_code()  # 默认使用西安市的code
         else:
             area_code = user.store.area_code
         return area_code
+
+    def get_default_area_code(self):
+        return '00270001'  # 默认使用西安市的code
 
 
 class MobileAuthHandler(MobileBaseHandler):
