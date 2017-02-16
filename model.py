@@ -12,20 +12,20 @@ from lib.util import vmobile
 class Area(db.Model):
     id = PrimaryKeyField()
     pid = ForeignKeyField('self', db_column='pid', null=True)  # 父级ID
-    code = CharField(max_length=40)         # 编码
-    has_sub = IntegerField(default=0)       # 是否拥有下级
-    name = CharField(max_length=30)         # 名称
-    spell = CharField(max_length=50)        # 拼音
-    spell_abb = CharField(max_length=30)    # 拼音缩写
-    show_color = CharField(max_length=30)   # 显示颜色
-    show_itf = IntegerField(default=0)      # 是否斜体
-    show_btf = IntegerField(default=0)      # 是否粗体
-    image = IntegerField(default=0)         # 图片地址
-    sort = IntegerField(default=00)         # 排序，数字越小排在越前
-    is_delete = IntegerField(default=0)     # 是否删除
-    is_site = IntegerField(default=0)       # 是否站点
-    is_scorearea = IntegerField(default=0)       # 是否开通积分地区
-    is_lubearea = IntegerField(default=0)       # 是否开通返油地区
+    code = CharField(max_length=40)  # 编码
+    has_sub = IntegerField(default=0)  # 是否拥有下级
+    name = CharField(max_length=30)  # 名称
+    spell = CharField(max_length=50)  # 拼音
+    spell_abb = CharField(max_length=30)  # 拼音缩写
+    show_color = CharField(max_length=30)  # 显示颜色
+    show_itf = IntegerField(default=0)  # 是否斜体
+    show_btf = IntegerField(default=0)  # 是否粗体
+    image = IntegerField(default=0)  # 图片地址
+    sort = IntegerField(default=00)  # 排序，数字越小排在越前
+    is_delete = IntegerField(default=0)  # 是否删除
+    is_site = IntegerField(default=0)  # 是否站点
+    is_scorearea = IntegerField(default=0)  # 是否开通积分地区
+    is_lubearea = IntegerField(default=0)  # 是否开通返油地区
 
     def validate(self):
         if self.name:
@@ -43,9 +43,9 @@ class Area(db.Model):
             try:
                 a = Area.get(code=area_code)
                 if lenAreaCode == 12:
-                    addr = a.pid.pid.name+a.pid.name+a.name
+                    addr = a.pid.pid.name + a.pid.name + a.name
                 elif lenAreaCode == 8:
-                    addr = a.pid.name+a.name
+                    addr = a.pid.name + a.name
                 else:
                     addr = a.name
                 return addr
@@ -93,8 +93,8 @@ class Store(db.Model):
     store_type = IntegerField(default=0)  # 门店类型 0其它 1经销商 2社会修理厂（门店）
     admin_code = CharField(max_length=20, null=True)  # 业务推广人员编号
     admin_user = ForeignKeyField(AdminUser, related_name='stores', db_column='admin_user_id', null=True)  # 业务推广人员
-    name = CharField(max_length=100)     # 门店名称
-    area_code = CharField(max_length=40)    # 区域编码
+    name = CharField(max_length=100)  # 门店名称
+    area_code = CharField(max_length=40)  # 区域编码
     address = CharField(max_length=128, null=True)  # 详细地址
     legal_person = CharField(max_length=28, null=True)  # 法人
     license_code = CharField(max_length=128, null=True)  # 营业执照注册号
@@ -104,11 +104,11 @@ class Store(db.Model):
     lat = CharField(max_length=12, null=True)  # 纬度坐标
     pay_password = CharField(max_length=128, null=True)  # 支付密码
     intro = TextField()  # 店铺介绍 -------------，后台使用
-    linkman = CharField(max_length=32)    # 联系人 -------------，默认为法人
-    mobile = CharField(max_length=16)    # 联系人手机号 -------------，默认为注册人手机号
+    linkman = CharField(max_length=32)  # 联系人 -------------，默认为法人
+    mobile = CharField(max_length=16)  # 联系人手机号 -------------，默认为注册人手机号
     price = FloatField(default=0.0)  # 店铺收入余额
     score = IntegerField(default=0)  # 店铺积分
-    active = IntegerField(default=0)    # 审核状态 0未审核 1审核通过 2审核未通过
+    active = IntegerField(default=0)  # 审核状态 0未审核 1审核通过 2审核未通过
     created = IntegerField(default=0)  # 创建时间
 
     class Meta:
@@ -244,7 +244,7 @@ class StoreBankAccount(db.Model):
 # 门店服务区域
 class StoreArea(db.Model):
     id = PrimaryKeyField()
-    area = ForeignKeyField(Area,  db_column='area_id')  # 用户
+    area = ForeignKeyField(Area, db_column='area_id')  # 用户
     store = ForeignKeyField(Store, related_name='service_areas', db_column='store_id')  # 店铺
 
     class Meta:
@@ -268,7 +268,7 @@ class Category(db.Model):
 class CategoryAttribute(db.Model):
     id = PrimaryKeyField()
     category = ForeignKeyField(Category, related_name='attributes',
-                                       db_column='category_id')  # 商品分类
+                               db_column='category_id')  # 商品分类
     name = CharField(max_length=20)  # 属性名
     ename = CharField(max_length=20)  # 英文属性名
     sort = IntegerField(default=1)  # 显示顺序
@@ -339,7 +339,7 @@ class Product(db.Model):
 class ProductAttributeValue(db.Model):
     id = PrimaryKeyField()
     product = ForeignKeyField(Product, related_name='attributes', db_column='product_id')  # 所属商品
-    attribute = ForeignKeyField(CategoryAttribute,  db_column='category_attribute_id')  # 产品属性
+    attribute = ForeignKeyField(CategoryAttribute, db_column='category_attribute_id')  # 产品属性
     value = CharField(max_length=255)  # 属性值
 
     class Meta:
@@ -352,6 +352,7 @@ class ProductRelease(db.Model):
     product = ForeignKeyField(Product, db_column='product_id')  # 所属商品
     store = ForeignKeyField(Store, related_name='products', db_column='store_id')  # 所属店铺
     price = FloatField()  # 原始销售价
+    buy_count = IntegerField(default=0)  # 购买次数
     is_score = IntegerField(default=0)  # 是否可以用积分兑换 0不可积分兑换 1可以兑换
     active = IntegerField(default=1)  # 状态 0下架 1有效
 
@@ -362,7 +363,8 @@ class ProductRelease(db.Model):
 # 发布商品
 class StoreProductPrice(db.Model):
     id = PrimaryKeyField()
-    product_release = ForeignKeyField(ProductRelease, related_name='area_prices', db_column='product_release_id')  # 所属商品
+    product_release = ForeignKeyField(ProductRelease, related_name='area_prices',
+                                      db_column='product_release_id')  # 所属商品
     store = ForeignKeyField(Store, related_name='area_products', db_column='store_id')  # 所属店铺
     area_code = CharField(max_length=20)  # 地区code
     price = FloatField()  # 当前始销售价，负数或0为不能购物
@@ -405,31 +407,32 @@ class Order(db.Model):
     pay_balance = FloatField(default=0.0)  # 余额支付金额
     delivery_time = IntegerField(default=0)  # 发货时间
     buy_store = ForeignKeyField(Store, db_column='buy_store_id', null=True)  # 买家所属店铺
-    settlement = ForeignKeyField(Settlement, related_name='settlement_orders', db_column='settlement_id', null=True)  # 完成的订单才可以结算
+    settlement = ForeignKeyField(Settlement, related_name='settlement_orders', db_column='settlement_id',
+                                 null=True)  # 完成的订单才可以结算
     saler_del = IntegerField(default=0)  # 卖家删除已经完成的商品
     buyer_del = IntegerField(default=0)  # 买家删除已经完成的商品
 
-    def change_status(self, status):  #管理员操作时status可能的值：2正在处理 3已发货 4交易完成 5已取消,-1已删除；用户操作时可能的值：5已取消,-1已删除
+    def change_status(self, status):  # 管理员操作时status可能的值：2正在处理 3已发货 4交易完成 5已取消,-1已删除；用户操作时可能的值：5已取消,-1已删除
         if self.status == status:
             return
         if self.status == -1:
             raise Exception('此订单已被删除，不能做任何操作')
-        if status == 5:  #取消订单
+        if status == 5:  # 取消订单
             if 1 < self.status < 5:
                 raise Exception('订单已经处理，不能取消')
             self.status = 5
             self.canceltime = int(time.time())
-        elif status == -1:  #删除订单
-            if self.status == 5:  #已经取消的订单可以删除
+        elif status == -1:  # 删除订单
+            if self.status == 5:  # 已经取消的订单可以删除
                 self.status = -1
             else:
                 raise Exception('不能删除没有取消的订单，或者改订单还没有退款')
-        elif status == 2:  #标记订单为正在处理
+        elif status == 2:  # 标记订单为正在处理
             if self.status == 1 or (self.status == 0 and self.payment == 0):
                 self.status = 2
             else:
                 raise Exception('用户未付款，或订单已经进入下一环节')
-        elif status == 3:  #标记订单到物流公司
+        elif status == 3:  # 标记订单到物流公司
             if self.status == 2:
                 self.status = 3
             else:
@@ -470,7 +473,7 @@ class Insurance(db.Model):
     eName = CharField(max_length=32, default='')  # 拼音简写
     intro = CharField(max_length=128, default='')  # 简介
     logo = CharField(max_length=255, default='')  # logo
-    sort = IntegerField()  # 显示顺序
+    sort = IntegerField(default=1)  # 显示顺序
     active = IntegerField(default=1)  # 状态 0删除 1有效
 
     class Meta:
@@ -483,7 +486,7 @@ class InsuranceItem(db.Model):
     eName = CharField(max_length=32, default='')  # 英文名
     name = CharField(max_length=32, default='')  # 中文名
     style = CharField(max_length=32, default='')  # 分类
-    sort = IntegerField()  # 排序
+    sort = IntegerField(default=1)  # 排序
     active = IntegerField(default=1)  # 状态 0删除 1有效
 
     class Meta:
@@ -507,9 +510,9 @@ class InsuranceOrder(db.Model):
     user = ForeignKeyField(User, related_name='insurance_orders', db_column='user_id')  # 用户
     store = ForeignKeyField(Store, related_name='insurance_orders', db_column='store_id', null=True)  # 店铺
     insurance = ForeignKeyField(Insurance, db_column='insurance_id')  # 所购保险
-    idcard = CharField(max_length=255, null=True)   # 身份证
-    idcardback = CharField(max_length=255, null=True)   # 身份证背面
-    drivercard = CharField(max_length=255, null=True)   # 行驶证
+    idcard = CharField(max_length=255, null=True)  # 身份证
+    idcardback = CharField(max_length=255, null=True)  # 身份证背面
+    drivercard = CharField(max_length=255, null=True)  # 行驶证
     drivercard2 = CharField(max_length=255, null=True)  # 行驶证副本
     payment = IntegerField(default=1)  # 付款方式 0货到付款  1支付宝  2账户余额 3网银支付 6微信支付 7银联
     contact = CharField(null=True)  # 联系人
@@ -522,30 +525,30 @@ class InsuranceOrder(db.Model):
 
     status = IntegerField(default=0)  # 0待确认 1待付款 2付款完成 3已办理 5已取消 -1已删除
     cancelreason = CharField(default='', max_length=1024)  # 取消原因
-    canceltime = IntegerField(default=0)  #取消时间
-    ordered = IntegerField(default=0)  #下单时间
-    summary = CharField(max_length=1024, null=True)  #短信通知内容
-    localsummary = CharField(max_length=256, null=True)  #本地备注
+    canceltime = IntegerField(default=0)  # 取消时间
+    ordered = IntegerField(default=0)  # 下单时间
+    summary = CharField(max_length=1024, null=True)  # 短信通知内容
+    localsummary = CharField(max_length=256, null=True)  # 本地备注
     paytime = IntegerField(default=0)  # 支付时间
     deal_time = IntegerField(default=0)  # 完成时间
     pay_account = CharField(max_length=128, default='')  # 用户支付宝账户
     trade_no = CharField(max_length=64, default='')  # 支付宝交易号
-    #forceI  ;
+    # forceI  ;
     # damageI thirdDutyI  robbingI damageSpecialI thirdDutySpecialI robbingSpecialI  ;
     # driverDutyI thirdDutySpecialI, passengerDutyI passengerDutySpecialI,    glassI, specialI
     # scratchI scratchSpecialI, normalDamageI normalDamageSpecialI,  wadeI wadeSpecialI,  thirdSpecialI thirdSpecialSpecialI
-    forceI = CharField(max_length=32, default='')  #交强险
-    damageI = CharField(max_length=32, default='')  #车辆损失险
-    thirdDutyI = CharField(max_length=32, default='')#第三者责任险
-    robbingI = CharField(max_length=32, default='')#机动车全车盗抢险
-    driverDutyI = CharField(max_length=32, default='')#机动车车上人员责任险（司机）
-    passengerDutyI = CharField(max_length=32, default='')#机动车车上人员责任险（乘客）
-    glassI = CharField(max_length=32, default='')#玻璃单独破碎险
-    scratchI = CharField(max_length=32, default='')#车身划痕损失险
-    normalDamageI = CharField(max_length=32, default='')#自然损失险
-    wadeI = CharField(max_length=32, default='')#发动机涉水损失险
-    specialI = CharField(max_length=32, default='')    #不计免赔特约险
-    thirdSpecialI = CharField(max_length=32, default='')#机动车损失保险无法找到第三方特约险
+    forceI = CharField(max_length=32, default='')  # 交强险
+    damageI = CharField(max_length=32, default='')  # 车辆损失险
+    thirdDutyI = CharField(max_length=32, default='')  # 第三者责任险
+    robbingI = CharField(max_length=32, default='')  # 机动车全车盗抢险
+    driverDutyI = CharField(max_length=32, default='')  # 机动车车上人员责任险（司机）
+    passengerDutyI = CharField(max_length=32, default='')  # 机动车车上人员责任险（乘客）
+    glassI = CharField(max_length=32, default='')  # 玻璃单独破碎险
+    scratchI = CharField(max_length=32, default='')  # 车身划痕损失险
+    normalDamageI = CharField(max_length=32, default='')  # 自然损失险
+    wadeI = CharField(max_length=32, default='')  # 发动机涉水损失险
+    specialI = CharField(max_length=32, default='')  # 不计免赔特约险
+    thirdSpecialI = CharField(max_length=32, default='')  # 机动车损失保险无法找到第三方特约险
 
     damageSpecialI = CharField(max_length=32, default='')
     thirdDutySpecialI = CharField(max_length=32, default='')
@@ -558,31 +561,31 @@ class InsuranceOrder(db.Model):
     thirdSpecialSpecialI = CharField(max_length=32, default='')
 
     LubeOrScore = IntegerField(default=0)  # 0 1反油， 2反积分
-    userDel = IntegerField(default=0) #用户端不显示
-    scoreNum = IntegerField(default=0)    #卖的这单保险可以获取多少积分
-    deadline = IntegerField(default=0) #期限
+    userDel = IntegerField(default=0)  # 用户端不显示
+    scoreNum = IntegerField(default=0)  # 卖的这单保险可以获取多少积分
+    deadline = IntegerField(default=0)  # 期限
 
     def change_status(self, status):
         if self.status == status:
             return
         if self.status == -1:
             raise Exception('此订单已被删除，不能做任何操作')
-        if status == 5:  #取消订单
+        if status == 5:  # 取消订单
             if self.status == 3:
                 raise Exception('该保险订单已经办理，不能取消')
             self.status = 5
             self.canceltime = int(time.time())
-        elif status == -1:  #删除订单
-            if self.status == 5:  #已经取消的订单可以删除
+        elif status == -1:  # 删除订单
+            if self.status == 5:  # 已经取消的订单可以删除
                 self.status = -1
             else:
                 raise Exception('不能删除没有取消的订单，或者该订单还没有退款')
-        elif status == 1:  #标记订单为等待付款
+        elif status == 1:  # 标记订单为等待付款
             if self.status == 3:
                 raise Exception('该保险订单已经办理，不能标记为待付款')
             else:
                 self.status = 1
-        elif status == 2:  #付款完成
+        elif status == 2:  # 付款完成
             self.status = 2
 
         elif status == 3:  # 办理完成
@@ -599,9 +602,9 @@ class InsuranceOrder(db.Model):
 class Block(db.Model):
     id = PrimaryKeyField()
     tag = CharField(max_length=20)  # 程序中使用标记
-    name = CharField(max_length=50)     # 类区块名称
-    remark = CharField(max_length=50, null=True)   # 备注
-    img = CharField(max_length=100, null=True)   # 图片名
+    name = CharField(max_length=50)  # 类区块名称
+    remark = CharField(max_length=50, null=True)  # 备注
+    img = CharField(max_length=100, null=True)  # 图片名
     active = IntegerField(default=1)  # 状态 0删除 1有效
 
     class Meta:
@@ -613,10 +616,12 @@ class BlockItem(db.Model):
     id = PrimaryKeyField()
     area_code = CharField(max_length=50)  # 所属区域
     block = ForeignKeyField(Block, related_name='items', db_column='block_id', null=True)  # 所属区块
-    name = CharField(max_length=50)     # 名称
-    link = CharField(max_length=255)  # 链接地址；协议区分 1保险（选择保险） 2图片链接（输入http://***） 3产品（选择产品）
-    remark = CharField(max_length=255, null=True)   # 备注
-    img = CharField(max_length=100, null=True)   # 图片名
+    name = CharField(max_length=50)  # 名称
+    link = CharField(max_length=255)  # 链接地址；协议区分 1保险（选择保险） 2图片链接 3产品（选择产品）
+    ext_id = IntegerField(null=True)  # 外部引用的ID
+    remark = CharField(max_length=255, null=True)  # 备注
+    img = CharField(max_length=100, null=True)  # 图片名
+    sort = IntegerField(default=1)  # 排序
     active = IntegerField(default=1)  # 状态 0删除 1有效
 
     class Meta:
@@ -690,21 +695,31 @@ def load_test_data():
     StoreProductPrice.create(product_release=1, store=1, area_code='002700010001', price=3)
     StoreProductPrice.create(product_release=2, store=1, area_code='00270001', price=4)
 
-    Block.create(tag='banner', name='首页轮播广告', remark='', img='http://img.520czj.com/image/2017/02/15/server1_20170215111526VDJrFZYbKUeiLjuGkcsxTIhW.png')
-    Block.create(tag='insurance', name='首页保险区块', remark='', img='http://img.520czj.com/image/2017/02/15/server1_20170215111526VDJrFZYbKUeiLjuGkcsxTIhW.png')
-    Block.create(tag='hot_category', name='热门分类', remark='', img='http://img.520czj.com/image/2017/02/15/server1_20170215111526VDJrFZYbKUeiLjuGkcsxTIhW.png')
-    Block.create(tag='hot_brand', name='热销品牌', remark='', img='http://img.520czj.com/image/2017/02/15/server1_20170215111526VDJrFZYbKUeiLjuGkcsxTIhW.png')
-    Block.create(tag='recommend', name='为你推荐', remark='', img='http://img.520czj.com/image/2017/02/15/server1_20170215111526VDJrFZYbKUeiLjuGkcsxTIhW.png')
+    Block.create(tag='banner', name='首页轮播广告', remark='',
+                 img='http://img.520czj.com/image/2017/02/15/server1_20170215111526VDJrFZYbKUeiLjuGkcsxTIhW.png')
+    Block.create(tag='insurance', name='首页保险区块', remark='',
+                 img='http://img.520czj.com/image/2017/02/15/server1_20170215111526VDJrFZYbKUeiLjuGkcsxTIhW.png')
+    Block.create(tag='hot_category', name='热门分类', remark='',
+                 img='http://img.520czj.com/image/2017/02/15/server1_20170215111526VDJrFZYbKUeiLjuGkcsxTIhW.png')
+    Block.create(tag='hot_brand', name='热销品牌', remark='',
+                 img='http://img.520czj.com/image/2017/02/15/server1_20170215111526VDJrFZYbKUeiLjuGkcsxTIhW.png')
+    Block.create(tag='recommend', name='为你推荐', remark='',
+                 img='http://img.520czj.com/image/2017/02/15/server1_20170215111526VDJrFZYbKUeiLjuGkcsxTIhW.png')
+
+    Insurance.create(name='人保车险', eName='rbcx',
+                     logo='http://img.520czj.com/image/2017/02/15/server1_20170215111526VDJrFZYbKUeiLjuGkcsxTIhW.png')
+    Insurance.create(name='平安车险', eName='pacx',
+                     logo='http://img.520czj.com/image/2017/02/15/server1_20170215111526VDJrFZYbKUeiLjuGkcsxTIhW.png')
 
     BlockItem.create(area_code='00270001', block=1, name='ceshi', link='http://www.baidu.com',
                      img='http://img.520czj.com/image/2017/02/15/server1_20170215111526VDJrFZYbKUeiLjuGkcsxTIhW.png')
-    BlockItem.create(area_code='00270001', block=2, name='人保车险', link='czj://insurance/1', img='')
+    BlockItem.create(area_code='00270001', block=2, name='人保车险', link='czj://insurance/1', img='', ext_id=1)
     BlockItem.create(area_code='00270001', block=3, name='分类', link='czj://category/1', img='')
     BlockItem.create(area_code='00270001', block=4, name='品牌', link='czj://brand/1', img='')
     BlockItem.create(area_code='00270001', block=5, name='产品', link='czj://product/1', img='')
+
 
 if __name__ == '__main__':
     init_db()
     load_test_data()
     pass
-

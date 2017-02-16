@@ -459,16 +459,51 @@ class MobileHomeHandler(MobileBaseHandler):
     def get(self):
         result = {'flag': 0, 'msg': '', "data": {}}
         area_code = self.get_store_area_code()
-        result['data']['banner'] = self.get_banner(area_code)
+
+        tmp_code = area_code
+        banners = self.get_banner(tmp_code)
+        while banners.count() == 0 and len(tmp_code) > 4:
+            tmp_code = tmp_code[0, -4]
+            banners = self.get_banner(tmp_code)
+        result['data']['banner'] = banners
+
+        tmp_code = area_code
+        insurances = self.get_insurance(tmp_code)
+        while insurances.count() == 0 and len(tmp_code) > 4:
+            tmp_code = tmp_code[0, -4]
+            insurances = self.get_insurance(tmp_code)
+        result['data']['insurance'] = insurances
+
         self.write(simplejson.dumps(result))
         self.finish()
 
     def get_banner(self, area_code):
-        if len(area_code) == 12:  # 到区县
-            pass
-        return None
+        items = []
+        banners = BlockItem.select(BlockItem).join(Block)\
+            .where((Block.tag == 'banner') & (Block.active == 1) & (BlockItem.active == 1)
+                   & (BlockItem.area_code == area_code))
+        for p in banners:
+            items.append({
+                'img': p.img,
+                'name': p.name,
+                'price': 0,
+                'link': p.link
+            })
+        return items
 
-
+    def get_insurance(self, area_code):
+        items = []
+        insurances = BlockItem.select(BlockItem, Insurance).join(Block).\
+            join(Insurance, on=BlockItem.ext_id == Insurance.id).where((Block.tag == 'insurance') & (Block.active == 1)
+            & (BlockItem.active == 1) & (BlockItem.area_code == area_code)).tuples()
+        for blockItem, insurance in insurances:
+            items.append({
+                'img': insurance.logo,
+                'name': insurance.name,
+                'price': 0,
+                'link': blockItem.link
+            })
+        return items
 
 
 
