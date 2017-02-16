@@ -448,23 +448,25 @@ class MobileHomeHandler(MobileBaseHandler):
     @apiVersion 1.0.0
     @api {get} /mobile/home 07. app首页数据
     @apiDescription app首页数据，
-    tag=banner 首页轮播
-    tag=insurance  首页保险
-    tag=hot_category 热门分类
-    tag=hot_brand  热销产品
-    tag=recommend  为你推荐
+    banner 首页轮播;
+    insurance  首页保险;
+    hot_category 热门分类;
+    hot_brand  热销产品;
+    recommend  为你推荐;
 
     @apiSampleRequest /mobile/home
     """
     def get(self):
         result = {'flag': 0, 'msg': '', "data": {}}
-        mobile = self.get_body_argument("mobile", None)
-        password = self.get_body_argument("password", None)
-
+        area_code = self.get_store_area_code()
+        result['data']['banner'] = self.get_banner(area_code)
         self.write(simplejson.dumps(result))
         self.finish()
 
-
+    def get_banner(self, area_code):
+        if len(area_code) == 12:  # 到区县
+            pass
+        return None
 
 
 
