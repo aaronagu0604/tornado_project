@@ -275,7 +275,62 @@ class MobileFilterHandler(RequestHandler):
     """
 
     def get(self):
+        ''''
+        {
+            'categoryList' = [{
+                'id' = 10,
+                'name' = '润滑油',
+                'brand' = [{'id'= 9, 'name'='SK'}, {}]
+            },{
+                'id' = 9,
+                'name' = '导航仪',
+                'brand' = [{'id'= 6, 'name'='杰成'}, {}]
+            }
+            ],
+
+        [{
+            'id' = 66,
+            'name' = 'SK',
+            'categorys' = [{'id' = 10, 'name' = '润滑油'}]
+        }]
+        }
+        '''
         result = {'flag': 0, 'msg': '', "data": {}}
+        flag = self.get_argument("flag", None)
+        id = self.get_argument("id", None)
+
+        if not flag and id:
+            result['msg'] = '分类或品牌不能为空'
+            self.write(simplejson.dumps(result))
+            return
+
+        result['data']['categoryList'] = []
+        if flag == 2:    #分类一定
+            brandCategorys = BrandCategory.select().where(BrandCategory.product_category == id)
+            if brandCategorys.count() > 0:
+                result['data']['categoryList'].append({
+                    'id': brandCategorys[0].product_category.id,
+                    'name': brandCategorys[0].product_category.name
+                })
+                result['data']['categoryList'][0]['brand'] = []
+                for bc in brandCategorys:
+                    result['data']['categoryList'][0]['brand'].append({
+                        'id': bc.brand.id,
+                        'name': bc.brand.name
+                    })
+        elif flag == 1:  #品牌一定
+            brandCategorys = BrandCategory.select().where(BrandCategory.brand == id)
+            if brandCategorys.count() > 0:
+                result['data']['brandList'].append({
+                    'id': brandCategorys[0].brand.id,
+                    'name': brandCategorys[0].brand.name
+                })
+                result['data']['brandList'][0]['category'] = []
+                for bc in brandCategorys:
+                    result['data']['brandList'][0]['category'].append({
+                        'id': bc.product_category.id,
+                        'name': bc.product_category.name
+                    })
 
         self.write(simplejson.dumps(result))
         self.finish()
