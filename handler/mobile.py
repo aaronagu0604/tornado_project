@@ -273,6 +273,35 @@ class MobileFilterHandler(RequestHandler):
 
     @apiSampleRequest /mobile/filter
     """
+    def getCategoryAttribute(self, bc):
+        '''
+        attributeList = [{
+            'id': id,
+            'name': '容量',
+            'values': [{
+                'id': 1,
+                'name': 1L
+            },{
+                'id': 1,
+                'name': 3L
+            }]
+        },{}]
+        '''
+        attributeList = []
+        for attribute in bc.category.attributes:
+            tmpList = []
+            for item in attribute.items:
+                tmpList.append({
+                    'id': item.id,
+                    'name': item.name
+                })
+            attributeList.append({
+                'id': attribute.id,
+                'name': attribute.name,
+                'ename': attribute.ename,
+                'values': tmpList
+            })
+        return attributeList
 
     def get(self):
         ''''
@@ -303,14 +332,19 @@ class MobileFilterHandler(RequestHandler):
             result['msg'] = '分类或品牌不能为空'
             self.write(simplejson.dumps(result))
             return
+        else:
+            flag = int(flag)
+            id = int(id)
 
         result['data']['categoryList'] = []
+        result['data']['brandList'] = []
         if flag == 2:    #分类一定
-            brandCategorys = BrandCategory.select().where(BrandCategory.product_category == id)
+            brandCategorys = BrandCategory.select().where(BrandCategory.category == id)
             if brandCategorys.count() > 0:
                 result['data']['categoryList'].append({
-                    'id': brandCategorys[0].product_category.id,
-                    'name': brandCategorys[0].product_category.name
+                    'id': brandCategorys[0].category.id,
+                    'name': brandCategorys[0].category.name,
+                    'attribute': self.getCategoryAttribute(brandCategorys[0])
                 })
                 result['data']['categoryList'][0]['brand'] = []
                 for bc in brandCategorys:
@@ -318,6 +352,9 @@ class MobileFilterHandler(RequestHandler):
                         'id': bc.brand.id,
                         'name': bc.brand.name
                     })
+                result['flag'] = 1
+            else:
+                result['msg'] = '未查到该分类'
         elif flag == 1:  #品牌一定
             brandCategorys = BrandCategory.select().where(BrandCategory.brand == id)
             if brandCategorys.count() > 0:
@@ -328,10 +365,15 @@ class MobileFilterHandler(RequestHandler):
                 result['data']['brandList'][0]['category'] = []
                 for bc in brandCategorys:
                     result['data']['brandList'][0]['category'].append({
-                        'id': bc.product_category.id,
-                        'name': bc.product_category.name
+                        'id': bc.category.id,
+                        'name': bc.category.name,
+                        'attribute': self.getCategoryAttribute(bc)
                     })
-
+                result['flag'] = 1
+            else:
+                result['msg'] = '未查到该品牌'
+        else:
+            result['msg'] = '输入参数错误'
         self.write(simplejson.dumps(result))
         self.finish()
 
