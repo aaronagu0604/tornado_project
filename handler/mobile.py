@@ -4,17 +4,16 @@
 import logging
 import setting
 import simplejson
-from tornado.web import RequestHandler
 from lib.route import route
 from model import *
 import uuid
-from handler import MobileHandler
+from handler import MobileBaseHandler
 import random
 from lib.mqhelper import create_msg
 
 
 @route(r'/', name='mobile_app')
-class MobileAppHandler(RequestHandler):
+class MobileAppHandler(MobileBaseHandler):
     def get(self):
         us = User.select()
         logging.info('---%s---'%us.count())
@@ -22,7 +21,7 @@ class MobileAppHandler(RequestHandler):
 
 
 @route(r'/mobile/getvcode', name='mobile_getvcode')
-class MobileGetVCodeAppHandler(RequestHandler):
+class MobileGetVCodeAppHandler(MobileBaseHandler):
     """
     @apiGroup auth
     @apiVersion 1.0.0
@@ -86,7 +85,7 @@ class MobileGetVCodeAppHandler(RequestHandler):
 
 
 @route(r'/mobile/checkvcode', name='mobile_checkvcode')
-class MobileCheckVCodeAppHandler(RequestHandler):
+class MobileCheckVCodeAppHandler(MobileBaseHandler):
     """
     @apiGroup auth
     @apiVersion 1.0.0
@@ -125,7 +124,7 @@ class MobileCheckVCodeAppHandler(RequestHandler):
 
 
 @route(r'/mobile/reg', name='mobile_reg')  # 手机端注册
-class MobileRegHandler(RequestHandler):
+class MobileRegHandler(MobileBaseHandler):
     """
     @apiGroup auth
     @apiVersion 1.0.0
@@ -208,7 +207,7 @@ class MobileRegHandler(RequestHandler):
 
 
 @route(r'/mobile/login', name='mobile_login')  # 手机端登录
-class MobileLoginHandler(RequestHandler):
+class MobileLoginHandler(MobileBaseHandler):
     """
     @apiGroup auth
     @apiVersion 1.0.0
@@ -261,7 +260,7 @@ class MobileLoginHandler(RequestHandler):
 
 
 @route(r'/mobile/filter', name='mobile_filter')  # 发现列表的筛选界面
-class MobileFilterHandler(RequestHandler):
+class MobileFilterHandler(MobileBaseHandler):
     """
     @apiGroup discover
     @apiVersion 1.0.0
@@ -417,7 +416,7 @@ class MobileFilterHandler(RequestHandler):
 
 
 @route(r'/mobile/discover', name='mobile_discover')  # 发现列表
-class MobileDiscoverHandler(RequestHandler):
+class MobileDiscoverHandler(MobileBaseHandler):
     """
     @apiGroup discover
     @apiVersion 1.0.0
@@ -441,6 +440,29 @@ class MobileDiscoverHandler(RequestHandler):
         self.write(simplejson.dumps(result))
         self.finish()
 
+
+@route(r'/mobile/home', name='mobile_home')  # app首页数据
+class MobileHomeHandler(MobileBaseHandler):
+    """
+    @apiGroup home
+    @apiVersion 1.0.0
+    @api {get} /mobile/home 07. app首页数据
+    @apiDescription app首页数据，
+    tag=banner 首页轮播
+    tag=insurance  首页保险
+    tag=hot_category 热门分类
+    tag=hot_brand  热销产品
+    tag=recommend  为你推荐
+
+    @apiSampleRequest /mobile/home
+    """
+    def get(self):
+        result = {'flag': 0, 'msg': '', "data": {}}
+        mobile = self.get_body_argument("mobile", None)
+        password = self.get_body_argument("password", None)
+
+        self.write(simplejson.dumps(result))
+        self.finish()
 
 
 
