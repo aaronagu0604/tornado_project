@@ -92,7 +92,7 @@ class Store(db.Model):
     id = PrimaryKeyField()
     store_type = IntegerField(default=0)  # 门店类型 0其它 1经销商 2社会修理厂（门店）
     admin_code = CharField(max_length=20, null=True)  # 业务推广人员编号
-    admin_user = ForeignKeyField(AdminUser, related_name='stores', db_column='admin_user_id')  # 业务推广人员
+    admin_user = ForeignKeyField(AdminUser, related_name='stores', db_column='admin_user_id', null=True)  # 业务推广人员
     name = CharField(max_length=100)     # 门店名称
     area_code = CharField(max_length=40)    # 区域编码
     address = CharField(max_length=128, null=True)  # 详细地址
@@ -100,9 +100,9 @@ class Store(db.Model):
     license_code = CharField(max_length=128, null=True)  # 营业执照注册号
     license_image = CharField(max_length=128)  # 营业执照图片
     store_image = CharField(max_length=128)  # 门店图片
-    lng = CharField(max_length=12)  # 经度坐标
-    lat = CharField(max_length=12)  # 纬度坐标
-    pay_password = CharField(max_length=128)  # 支付密码
+    lng = CharField(max_length=12, null=True)  # 经度坐标
+    lat = CharField(max_length=12, null=True)  # 纬度坐标
+    pay_password = CharField(max_length=128, null=True)  # 支付密码
     intro = TextField()  # 店铺介绍 -------------，后台使用
     linkman = CharField(max_length=32)    # 联系人 -------------，默认为法人
     mobile = CharField(max_length=16)    # 联系人手机号 -------------，默认为注册人手机号
@@ -175,7 +175,6 @@ class StoreAddress(db.Model):
     province = CharField(max_length=16, default='陕西')  # 省份
     city = CharField(max_length=16, default='西安')  # 城市
     region = CharField(max_length=32, null='')  # 区域
-    street = CharField(max_length=64, null='')  # 街道
     address = CharField(max_length=128, null=True)  # 详细地址
     name = CharField(max_length=16, null=True)  # 收件人姓名
     mobile = CharField(max_length=11, null=True)  # 收件人电话
@@ -257,11 +256,9 @@ class Category(db.Model):
     id = PrimaryKeyField()
     name = CharField(max_length=20)  # 分类名
     sort = CharField(max_length=20)  # 显示顺序
-    active = IntegerField(default=1)  # 状态 0删除 1有效
-    has_sub = IntegerField(default=0)  # 是否拥有下级
-    pid = IntegerField(default=0)  # 父级ID
     img_m = CharField(max_length=256, null=True)  # 分类图片手机端
     img_pc = CharField(max_length=256, null=True)  # 分类图片PC端
+    active = IntegerField(default=1)  # 状态 0删除 1有效
 
     class Meta:
         db_table = 'tb_category'
@@ -274,11 +271,24 @@ class CategoryAttribute(db.Model):
                                        db_column='category_id')  # 商品分类
     name = CharField(max_length=20)  # 属性名
     ename = CharField(max_length=20)  # 英文属性名
-    sort = CharField(max_length=20)  # 显示顺序
+    sort = IntegerField(default=1)  # 显示顺序
     active = IntegerField(default=1)  # 状态 0删除 1有效
 
     class Meta:
         db_table = 'tb_category_attribute'
+
+
+# 商品分类属性可选值
+class CategoryAttributeItems(db.Model):
+    id = PrimaryKeyField()
+    category_attribute = ForeignKeyField(CategoryAttribute, related_name='items',
+                                         db_column='category_attribute_id')  # 商品分类属性值
+    name = CharField(max_length=20)  # 名称
+    intro = CharField(max_length=20)  # 简介
+    sort = IntegerField(default=1)  # 显示顺序
+
+    class Meta:
+        db_table = 'tb_category_attribute_items'
 
 
 # 商品品牌
@@ -289,6 +299,7 @@ class Brand(db.Model):
     pinyin = CharField(max_length=50, null=True)  # 中文拼音
     logo = CharField(max_length=100, null=True)  # 品牌logo
     intro = CharField(max_length=300, null=True)  # 品牌简介
+    sort = IntegerField(default=1)  # 排序
     active = IntegerField(default=1)  # 状态 0删除 1有效
 
     class Meta:
@@ -299,7 +310,7 @@ class Brand(db.Model):
 class BrandCategory(db.Model):
     id = PrimaryKeyField()
     brand = ForeignKeyField(Brand, db_column='brand_id', null=True)  # 配件品牌分类
-    product_category = ForeignKeyField(Category, db_column='category_id')  # 商品分类
+    category = ForeignKeyField(Category, db_column='category_id')  # 商品分类
 
     class Meta:
         db_table = 'tb_brand_category'
@@ -340,7 +351,6 @@ class ProductRelease(db.Model):
     id = PrimaryKeyField()
     product = ForeignKeyField(Product, db_column='product_id')  # 所属商品
     store = ForeignKeyField(Store, related_name='products', db_column='store_id')  # 所属店铺
-    name = CharField(max_length=50)  # 商品规格
     price = FloatField()  # 原始销售价
     is_score = IntegerField(default=0)  # 是否可以用积分兑换 0不可积分兑换 1可以兑换
     active = IntegerField(default=1)  # 状态 0下架 1有效
@@ -597,13 +607,64 @@ def init_db():
 
 
 def load_test_data():
-    Store.create(store_type=1, admin_user=1, name='name', address='address', license_image='', store_image='', lng='',lat='',
-                 pay_password='', intro='', linkman='', mobile='18189279823', active=1, created=1487032696, area_code='0001')
+    AdminUser.create(username='18189279823', password='e10adc3949ba59abbe56e057f20f883e', mobile='18189279823',
+                     email='xiaoming.liu@520czj.com', code='0001', realname='刘晓明', roles='D')
+    Store.create(store_type=1, name='name', address='address', license_image='', store_image='', lng='', lat='',
+                 pay_password='', intro='', linkman='', mobile='18189279823', active=1, created=1487032696,
+                 area_code='002700010001')
     User.create(mobile='18189279823', password='e10adc3949ba59abbe56e057f20f883e', role='A', signuped=1487032696,
                 lsignined=1487032696, store=1, active=1)
 
+    Category.create(name='润滑油', sort=1, active=1, img_m='', img_pc='')
+    Category.create(name='导航仪', sort=2, active=1, img_m='', img_pc='')
+
+    CategoryAttribute.create(category=1, name='容量', ename='rl', sort=1)
+    CategoryAttribute.create(category=1, name='粘度', ename='nd', sort=2)
+    CategoryAttribute.create(category=1, name='级别', ename='jb', sort=3)
+    CategoryAttribute.create(category=2, name='配置', ename='pz', sort=1)
+    CategoryAttribute.create(category=2, name='屏幕尺寸', ename='pmcc', sort=2)
+
+    CategoryAttributeItems.create(category_attribute=1, name='5L', intro='5L')
+    CategoryAttributeItems.create(category_attribute=1, name='8L', intro='8L')
+    CategoryAttributeItems.create(category_attribute=2, name='5W-30', intro='5W-30')
+    CategoryAttributeItems.create(category_attribute=2, name='0W-40', intro='0w-40')
+    CategoryAttributeItems.create(category_attribute=3, name='SF', intro='SF')
+    CategoryAttributeItems.create(category_attribute=3, name='SM', intro='SM')
+    CategoryAttributeItems.create(category_attribute=4, name='标配', intro='标配')
+    CategoryAttributeItems.create(category_attribute=4, name='选配', intro='选配')
+    CategoryAttributeItems.create(category_attribute=5, name='8寸', intro='8寸')
+    CategoryAttributeItems.create(category_attribute=5, name='10寸', intro='10寸')
+
+    Brand.create(name='SK', engname='SK', pinyin='SK', logo='', intro='SK')
+    Brand.create(name='壳牌', engname='qp', pinyin='qp', logo='', intro='壳牌润滑油')
+    Brand.create(name='飞影', engname='fy', pinyin='fy', logo='', intro='飞影导航仪')
+    Brand.create(name='安畅星', engname='acx', pinyin='acx', logo='', intro='安畅星导航仪')
+
+    BrandCategory.create(brand=1, category=1)
+    BrandCategory.create(brand=2, category=1)
+    BrandCategory.create(brand=3, category=2)
+    BrandCategory.create(brand=4, category=2)
+    BrandCategory.create(brand=1, category=2)  # SK拥有润滑油、导航仪两类产品
+
+    Product.create(name='SK合成机油', brand=1, category=1, resume='SK合成机油', unit='桶', intro='intro', cover='')
+    Product.create(name='SK导航仪', brand=1, category=2, resume='SK导航仪', unit='个', intro='intro', cover='')
+
+    ProductAttributeValue.create(product=1, attribute=1, value='5L')
+    ProductAttributeValue.create(product=1, attribute=2, value='5W-30')
+    ProductAttributeValue.create(product=1, attribute=3, value='SF')
+
+    ProductAttributeValue.create(product=2, attribute=4, value='标配')
+    ProductAttributeValue.create(product=2, attribute=5, value='8寸')
+
+    ProductRelease.create(product=1, store=1, price=1)
+    ProductRelease.create(product=2, store=1, price=2)
+
+    StoreProductPrice.create(product_release=1, store=1, area_code='002700010001', price=3)
+    StoreProductPrice.create(product_release=2, store=1, area_code='00270001', price=4)
+
+
 if __name__ == '__main__':
-    # init_db()
-    # load_test_data()
+    init_db()
+    load_test_data()
     pass
 

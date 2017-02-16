@@ -33,6 +33,12 @@ jinja_environment = Environment(
     auto_reload=settings['debug'],
     autoescape=False)
 
+db_old = Db({'db': 'carlife', 'host': '123.57.217.29', 'port': settings['db_port'], \
+         'user': 'root', 'passwd': '9%qVP*vz', 'charset': 'utf8', \
+         'max_connections':settings['max_connections'], 'stale_timeout':settings['stale_timeout']})
+
 db = Db({'db': settings['db_name'], 'host': settings['db_host'], 'port': settings['db_port'], \
          'user': settings['db_user'], 'passwd': settings['db_passwd'], 'charset': 'utf8', \
          'max_connections':settings['max_connections'], 'stale_timeout':settings['stale_timeout']})
+
+
