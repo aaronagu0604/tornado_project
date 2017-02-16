@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # coding=utf-8
+# 产品数据库的model，准备迁移时使用
 
 import re
 import time

@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # coding=utf8
+# 数据库迁移代码
 
 from db_model import CategoryFront, PinPai, Product as ProductOld, ProductStandard
 from model import Category, Brand, Product, ProductRelease, StoreProductPrice
