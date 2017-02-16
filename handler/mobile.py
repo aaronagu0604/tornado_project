@@ -269,6 +269,8 @@ class MobileFilterHandler(MobileBaseHandler):
 
     @apiParam {Int} id 品牌或者分类ID
     @apiParam {Int} flag 1品牌 2分类
+    @sort {Int} sort 排序0默认按权重 1价格从高到低 2价格从低到高 3销量从高到低 4销量从低到高
+    @index {Int} index 商品起始位，商品过多翻页时用 比如：第二页从第21个商品开始 index=21
 
     @apiSampleRequest /mobile/filter
     """
@@ -328,7 +330,6 @@ class MobileFilterHandler(MobileBaseHandler):
             join(Product, on=(Product.id == ProductRelease.product)). \
             join(StoreProductPrice, on=(StoreProductPrice.product_release == ProductRelease.id)). \
             join(Store, on=(Store.id == ProductRelease.store)).where(ft).dicts()
-        #排序0默认按权重 1价格从高到低 2价格从低到高 3销量从高到低 4销量从低到高
         if sort == '1':
             products.order_by(StoreProductPrice.price.desc())
         elif sort == '2':
