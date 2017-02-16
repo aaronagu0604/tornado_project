@@ -303,6 +303,17 @@ class MobileFilterHandler(RequestHandler):
             })
         return attributeList
 
+    def getProductList(self, flag, id):
+        productList = []
+        if flag == 1:  # 品牌
+            if __name__ == '__main__':
+                ft = (Product.brand == id)
+                products = ProductRelease.select().join(Product, on=(Product.id == ProductRelease.product)). \
+                    join()
+        elif flag == 2:  # 分类
+            pass
+        return productList
+
     def get(self):
         ''''
         {
@@ -314,14 +325,33 @@ class MobileFilterHandler(RequestHandler):
                 'id' = 9,
                 'name' = '导航仪',
                 'brand' = [{'id'= 6, 'name'='杰成'}, {}]
-            }
-            ],
+            }],
 
-        [{
-            'id' = 66,
-            'name' = 'SK',
-            'categorys' = [{'id' = 10, 'name' = '润滑油'}]
-        }]
+            'brandList' = [{
+                'id' = 66,
+                'name' = 'SK',
+                'categorys' = [{'id' = 10, 'name' = '润滑油'}]
+            }]
+
+            'products' = [{
+                'psid': n.id,
+                'pid': n.product.id,
+                'name': n.product.name+' '+n.copies,
+                'price': n.price,
+                'sales': n.orders,
+                'originalPrice': n.orginalprice,
+                'ourprice': n.pf_price, #销售价（门店）修改成批发价
+                'pf_price': n.pf_price,
+                'copies': n.copies,
+                'unit': n.unit if n.unit else u'件',
+                'categoryID': n.product.categoryfront.id,
+                'sku': n.product.sku,
+                'cover': PassMobileImg(n.product.cover),
+                'standard': n.name,
+                'resume': n.product.resume,
+                'status': n.product.status,
+                'storeName': n.store.name,
+            }]
         }
         '''
         result = {'flag': 0, 'msg': '', "data": {}}
@@ -338,6 +368,7 @@ class MobileFilterHandler(RequestHandler):
 
         result['data']['categoryList'] = []
         result['data']['brandList'] = []
+        result['data']['productList'] = []
         if flag == 2:    #分类一定
             brandCategorys = BrandCategory.select().where(BrandCategory.category == id)
             if brandCategorys.count() > 0:
@@ -352,9 +383,10 @@ class MobileFilterHandler(RequestHandler):
                         'id': bc.brand.id,
                         'name': bc.brand.name
                     })
-                result['flag'] = 1
             else:
                 result['msg'] = '未查到该分类'
+                self.write(simplejson.dumps(result))
+                return
         elif flag == 1:  #品牌一定
             brandCategorys = BrandCategory.select().where(BrandCategory.brand == id)
             if brandCategorys.count() > 0:
@@ -369,11 +401,17 @@ class MobileFilterHandler(RequestHandler):
                         'name': bc.category.name,
                         'attribute': self.getCategoryAttribute(bc)
                     })
-                result['flag'] = 1
             else:
                 result['msg'] = '未查到该品牌'
+                self.write(simplejson.dumps(result))
+                return
         else:
             result['msg'] = '输入参数错误'
+            self.write(simplejson.dumps(result))
+            return
+        result['data']['productList'] = self.getProductList(flag, id)
+
+        result['flag'] = 1
         self.write(simplejson.dumps(result))
         self.finish()
 
