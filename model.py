@@ -598,10 +598,9 @@ class InsuranceOrder(db.Model):
 # 手机端区块: 广告
 class Block(db.Model):
     id = PrimaryKeyField()
-    tag = CharField(max_length=10)  # 程序中使用标记
+    tag = CharField(max_length=20)  # 程序中使用标记
     name = CharField(max_length=50)     # 类区块名称
     remark = CharField(max_length=50, null=True)   # 备注
-    block_type = IntegerField(default=1)  # 区块类型 1保险（选择保险） 2图片链接（输入http://***） 3产品（选择产品）
     img = CharField(max_length=100, null=True)   # 图片名
     active = IntegerField(default=1)  # 状态 0删除 1有效
 
@@ -615,7 +614,7 @@ class BlockItem(db.Model):
     area_code = CharField(max_length=50)  # 所属区域
     block = ForeignKeyField(Block, related_name='items', db_column='block_id', null=True)  # 所属区块
     name = CharField(max_length=50)     # 名称
-    link = CharField(max_length=255)  # 链接地址
+    link = CharField(max_length=255)  # 链接地址；协议区分 1保险（选择保险） 2图片链接（输入http://***） 3产品（选择产品）
     remark = CharField(max_length=255, null=True)   # 备注
     img = CharField(max_length=100, null=True)   # 图片名
     active = IntegerField(default=1)  # 状态 0删除 1有效
@@ -691,6 +690,18 @@ def load_test_data():
     StoreProductPrice.create(product_release=1, store=1, area_code='002700010001', price=3)
     StoreProductPrice.create(product_release=2, store=1, area_code='00270001', price=4)
 
+    Block.create(tag='banner', name='首页轮播广告', remark='', img='http://img.520czj.com/image/2017/02/15/server1_20170215111526VDJrFZYbKUeiLjuGkcsxTIhW.png')
+    Block.create(tag='insurance', name='首页保险区块', remark='', img='http://img.520czj.com/image/2017/02/15/server1_20170215111526VDJrFZYbKUeiLjuGkcsxTIhW.png')
+    Block.create(tag='hot_category', name='热门分类', remark='', img='http://img.520czj.com/image/2017/02/15/server1_20170215111526VDJrFZYbKUeiLjuGkcsxTIhW.png')
+    Block.create(tag='hot_brand', name='热销品牌', remark='', img='http://img.520czj.com/image/2017/02/15/server1_20170215111526VDJrFZYbKUeiLjuGkcsxTIhW.png')
+    Block.create(tag='recommend', name='为你推荐', remark='', img='http://img.520czj.com/image/2017/02/15/server1_20170215111526VDJrFZYbKUeiLjuGkcsxTIhW.png')
+
+    BlockItem.create(area_code='00270001', block=1, name='ceshi', link='http://www.baidu.com',
+                     img='http://img.520czj.com/image/2017/02/15/server1_20170215111526VDJrFZYbKUeiLjuGkcsxTIhW.png')
+    BlockItem.create(area_code='00270001', block=2, name='人保车险', link='czj://insurance/1', img='')
+    BlockItem.create(area_code='00270001', block=3, name='分类', link='czj://category/1', img='')
+    BlockItem.create(area_code='00270001', block=4, name='品牌', link='czj://brand/1', img='')
+    BlockItem.create(area_code='00270001', block=5, name='产品', link='czj://product/1', img='')
 
 if __name__ == '__main__':
     init_db()
