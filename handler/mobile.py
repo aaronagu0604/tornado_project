@@ -302,15 +302,57 @@ class MobileFilterHandler(MobileBaseHandler):
             })
         return attributeList
 
-    def getProductList(self, flag, id):
+    def getProductList(self, flag, id, sort, index, area_code):
         productList = []
+        ft = (StoreProductPrice.price>0) & (Product.active==1) & (StoreProductPrice.active==1) & (StoreProductPrice.active==1)
         if flag == 1:  # 品牌
-            if __name__ == '__main__':
-                ft = (Product.brand == id)
-                products = ProductRelease.select().join(Product, on=(Product.id == ProductRelease.product)). \
-                    join()
+            ft &= (Product.brand == id)
         elif flag == 2:  # 分类
-            pass
+            ft &= (Product.category == id)
+        if len(area_code) == 12:  # 经销商服务范围仅仅到区县
+            ft &= (((db.fn.Length(StoreProductPrice.area_code) == 4) & (StoreProductPrice.area_code == area_code[:4])) |
+                   ((db.fn.Length(StoreProductPrice.area_code) == 8) & (StoreProductPrice.area_code == area_code[:8])) |
+                   (StoreProductPrice.area_code == area_code))
+        elif len(area_code) == 8:  # 经销商服务范围到市级
+            area_code_ = area_code + '%'
+            ft &= (((db.fn.Length(StoreProductPrice.area_code) == 4) & (StoreProductPrice.area_code == area_code[:4])) |
+                   (StoreProductPrice.area_code % area_code_))
+        elif len(area_code) == 4:  # 经销商服务范围到省级
+            area_code_ = area_code + '%'
+            ft &= (StoreProductPrice.area_code % area_code_)
+        products = ProductRelease.select(
+            ProductRelease.id.alias('prid'), Product.id.alias('pid'), StoreProductPrice.id.alias('sppid'),
+            Product.name.alias('name'), StoreProductPrice.price.alias('price'), Product.unit.alias('unit'),
+            ProductRelease.buy_count.alias('buy_count'), Product.cover.alias('cover'),
+            Product.resume.alias('resume'), Store.name.alias('sName')). \
+            join(Product, on=(Product.id == ProductRelease.product)). \
+            join(StoreProductPrice, on=(StoreProductPrice.product_release == ProductRelease.id)). \
+            join(Store, on=(Store.id == ProductRelease.store)).where(ft).dicts()
+        #排序0默认按权重 1价格从高到低 2价格从低到高 3销量从高到低 4销量从低到高
+        if sort == '1':
+            products.order_by(StoreProductPrice.price.desc())
+        elif sort == '2':
+            products.order_by(StoreProductPrice.price.asc())
+        elif sort == '3':
+            products.order_by(ProductRelease.buy_count.desc())
+        elif sort == '4':
+            products.order_by(ProductRelease.buy_count.asc())
+        else:
+            products.order_by(ProductRelease.sort.desc())
+        ps = products.paginate(index, setting.MOBILE_PAGESIZE)
+        for p in ps:
+            productList.append({
+                'prid': p['prid'],
+                'pid': p['pid'],
+                'sppid': p['sppid'],
+                'name': p['name'],
+                'price': p['price'],
+                'unit': p['unit'] if p['unit'] else '件',
+                'buy_count': p['buy_count'],
+                'cover': p['cover'],
+                'resume': p['resume'],
+                'storeName': p['sName']
+            })
         return productList
 
     def get(self):
@@ -354,16 +396,20 @@ class MobileFilterHandler(MobileBaseHandler):
         }
         '''
         result = {'flag': 0, 'msg': '', "data": {}}
-        flag = self.get_argument("flag", None)
         id = self.get_argument("id", None)
+        flag = self.get_argument("flag", None)
+        sort = self.get_argument("sort", None)
+        index = self.get_argument("index", None)
 
-        if not flag and id:
+        if not (flag and id):
             result['msg'] = '分类或品牌不能为空'
             self.write(simplejson.dumps(result))
             return
         else:
             flag = int(flag)
             id = int(id)
+        index = int(index) if index else 1
+        area_code = self.get_store_area_code()
 
         result['data']['categoryList'] = []
         result['data']['brandList'] = []
@@ -408,7 +454,7 @@ class MobileFilterHandler(MobileBaseHandler):
             result['msg'] = '输入参数错误'
             self.write(simplejson.dumps(result))
             return
-        result['data']['productList'] = self.getProductList(flag, id)
+        result['data']['productList'] = self.getProductList(flag, id, sort, index, area_code)
 
         result['flag'] = 1
         self.write(simplejson.dumps(result))

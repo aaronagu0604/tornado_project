@@ -354,6 +354,7 @@ class ProductRelease(db.Model):
     price = FloatField()  # 原始销售价
     buy_count = IntegerField(default=0)  # 购买次数
     is_score = IntegerField(default=0)  # 是否可以用积分兑换 0不可积分兑换 1可以兑换
+    sort = IntegerField(default=0)  # 排序
     active = IntegerField(default=1)  # 状态 0下架 1有效
 
     class Meta:

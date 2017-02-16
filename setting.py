@@ -15,8 +15,9 @@ STALE_TIMEOUT = 86400  # mysql 连接池回收时间
 
 MEMCACHE_HOST = '127.0.0.1:11211'
 
-ADMIN_PAGESIZE = 20  # 管理后台页面条数
-USER_PAGESIZE = 10  # 商家后台页面条数
+ADMIN_PAGESIZE = 20  # 管理后台页面数据条数
+USER_PAGESIZE = 10  # 商家后台页面数据条数
+MOBILE_PAGESIZE = 20 # 移动端数据条数
 
 ALIPAY_KEY = 'd2fmn3xc7f45bxl21qfjdojhw7q0049t'
 ALIPAY_INPUT_CHARSET = 'utf-8'
@@ -54,3 +55,4 @@ remark_ZhouKou = u'大地车险承保仅限15万以内家庭使用非营运客�
 
 user_expire = 60 * 60 * 24 * 10  # 用户登录token保留时间， 默认保留10天
 user_token_prefix = "mt:"  # 用户登录token的前缀
+
