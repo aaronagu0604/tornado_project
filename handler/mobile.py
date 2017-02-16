@@ -423,6 +423,8 @@ class MobileDiscoverHandler(MobileBaseHandler):
     @api {get} /mobile/discover 06. 发现页面列表
     @apiDescription 发现页面列表，未登陆使用西安code
 
+    @apiHeader {String} token 用户登录凭证
+
     @apiParam {String} keyword 搜索关键字
     @apiParam {String} pricesort 价格排序 1正序， 2逆序； 默认为1
     @apiParam {String} salesort 销量排序 1正序， 2逆序； 默认2
@@ -453,6 +455,8 @@ class MobileHomeHandler(MobileBaseHandler):
     hot_category 热门分类;
     hot_brand  热销产品;
     recommend  为你推荐;
+
+    @apiHeader {String} token 用户登录凭证
 
     @apiSampleRequest /mobile/home
     """
