@@ -3,7 +3,7 @@
 
 
 from tornado.web import RequestHandler
-import functools
+from model import User, Store
 
 
 class MobilePageNotFoundHandler(RequestHandler):
@@ -12,7 +12,29 @@ class MobilePageNotFoundHandler(RequestHandler):
         return self.write('not found')
 
 
-class MobileHandler(RequestHandler):
+class MobileBaseHandler(RequestHandler):
+    def get_user(self):
+        user = None
+        token = self.request.headers.get('token', None)
+        if token:
+            data = self.application.memcachedb.get(token)
+            if data is not None:
+                try:
+                    user = User.get(id=data)
+                except:
+                    user = None
+        return user
+
+    def get_store_area_code(self):
+        user = self.get_user()
+        if user is None:
+            area_code = '00270001'  # 默认使用西安市的code
+        else:
+            area_code = user.store.area_code
+        return area_code
+
+
+class MobileAuthHandler(MobileBaseHandler):
     def prepare(self):
         token = self.request.headers.get('token', None)
         if token:

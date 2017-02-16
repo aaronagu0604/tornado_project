@@ -595,6 +595,35 @@ class InsuranceOrder(db.Model):
         db_table = 'tb_insurance_orders'
 
 
+# 手机端区块: 广告
+class Block(db.Model):
+    id = PrimaryKeyField()
+    tag = CharField(max_length=10)  # 程序中使用标记
+    name = CharField(max_length=50)     # 类区块名称
+    remark = CharField(max_length=50, null=True)   # 备注
+    block_type = IntegerField(default=1)  # 区块类型 1保险（选择保险） 2图片链接（输入http://***） 3产品（选择产品）
+    img = CharField(max_length=100, null=True)   # 图片名
+    active = IntegerField(default=1)  # 状态 0删除 1有效
+
+    class Meta:
+        db_table = 'tb_block'
+
+
+# 手机端区块内容
+class BlockItem(db.Model):
+    id = PrimaryKeyField()
+    area_code = CharField(max_length=50)  # 所属区域
+    block = ForeignKeyField(Block, related_name='items', db_column='block_id', null=True)  # 所属区块
+    name = CharField(max_length=50)     # 名称
+    link = CharField(max_length=255)  # 链接地址
+    remark = CharField(max_length=255, null=True)   # 备注
+    img = CharField(max_length=100, null=True)   # 图片名
+    active = IntegerField(default=1)  # 状态 0删除 1有效
+
+    class Meta:
+        db_table = 'tb_block_item'
+
+
 def init_db():
     from lib.util import find_subclasses
 
