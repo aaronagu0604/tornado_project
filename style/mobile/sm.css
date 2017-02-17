@@ -1151,7 +1151,7 @@ a:active {
 }
 /* === Lists === */
 .list-block {
-  margin: 1.75rem 0;
+  margin: 0rem 0;
   font-size: 0.85rem;
   /*
     .swipeout {
@@ -1457,7 +1457,7 @@ a:active {
   margin-left: 0.25rem;
 }
 .list-block .item-media + .item-inner {
-  margin-left: 0.75rem;
+  margin-left: 0.3rem;
 }
 .list-block .item-inner {
   padding-right: 0.75rem;
@@ -1489,7 +1489,7 @@ a:active {
   top: auto;
   height: 1px;
   width: 100%;
-  background-color: #e7e7e7;
+  background-color: #e747e7;
   display: block;
   z-index: 15;
   -webkit-transform-origin: 50% 100%;
@@ -1617,7 +1617,7 @@ html:not(.watch-active-state) .list-block .item-link:active .item-inner:after,
 }
 .list-block .item-content {
   box-sizing: border-box;
-  padding-left: 0.75rem;
+  padding-left: 0.3rem;
   min-height: 2.2rem;
   display: -webkit-box;
   display: -webkit-flex;
