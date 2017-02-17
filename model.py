@@ -283,6 +283,7 @@ class CategoryAttributeItems(db.Model):
     id = PrimaryKeyField()
     category_attribute = ForeignKeyField(CategoryAttribute, related_name='items',
                                          db_column='category_attribute_id')  # 商品分类属性值
+
     name = CharField(max_length=20)  # 名称
     intro = CharField(max_length=20)  # 简介
     sort = IntegerField(default=1)  # 显示顺序

@@ -269,8 +269,6 @@ class MobileFilterHandler(MobileBaseHandler):
 
     @apiParam {Int} id 品牌或者分类ID
     @apiParam {Int} flag 1品牌 2分类
-    @sort {Int} sort 排序0默认按权重 1价格从高到低 2价格从低到高 3销量从高到低 4销量从低到高
-    @index {Int} index 商品起始位，商品过多翻页时用 比如：第二页从第21个商品开始 index=21
 
     @apiSampleRequest /mobile/filter
     """
@@ -303,58 +301,6 @@ class MobileFilterHandler(MobileBaseHandler):
                 'values': tmpList
             })
         return attributeList
-
-    def getProductList(self, flag, id, sort, index, area_code):
-        productList = []
-        ft = (StoreProductPrice.price>0) & (Product.active==1) & (StoreProductPrice.active==1) & (StoreProductPrice.active==1)
-        if flag == 1:  # 品牌
-            ft &= (Product.brand == id)
-        elif flag == 2:  # 分类
-            ft &= (Product.category == id)
-        if len(area_code) == 12:  # 经销商服务范围仅仅到区县
-            ft &= (((db.fn.Length(StoreProductPrice.area_code) == 4) & (StoreProductPrice.area_code == area_code[:4])) |
-                   ((db.fn.Length(StoreProductPrice.area_code) == 8) & (StoreProductPrice.area_code == area_code[:8])) |
-                   (StoreProductPrice.area_code == area_code))
-        elif len(area_code) == 8:  # 经销商服务范围到市级
-            area_code_ = area_code + '%'
-            ft &= (((db.fn.Length(StoreProductPrice.area_code) == 4) & (StoreProductPrice.area_code == area_code[:4])) |
-                   (StoreProductPrice.area_code % area_code_))
-        elif len(area_code) == 4:  # 经销商服务范围到省级
-            area_code_ = area_code + '%'
-            ft &= (StoreProductPrice.area_code % area_code_)
-        products = ProductRelease.select(
-            ProductRelease.id.alias('prid'), Product.id.alias('pid'), StoreProductPrice.id.alias('sppid'),
-            Product.name.alias('name'), StoreProductPrice.price.alias('price'), Product.unit.alias('unit'),
-            ProductRelease.buy_count.alias('buy_count'), Product.cover.alias('cover'),
-            Product.resume.alias('resume'), Store.name.alias('sName')). \
-            join(Product, on=(Product.id == ProductRelease.product)). \
-            join(StoreProductPrice, on=(StoreProductPrice.product_release == ProductRelease.id)). \
-            join(Store, on=(Store.id == ProductRelease.store)).where(ft).dicts()
-        if sort == '1':
-            products.order_by(StoreProductPrice.price.desc())
-        elif sort == '2':
-            products.order_by(StoreProductPrice.price.asc())
-        elif sort == '3':
-            products.order_by(ProductRelease.buy_count.desc())
-        elif sort == '4':
-            products.order_by(ProductRelease.buy_count.asc())
-        else:
-            products.order_by(ProductRelease.sort.desc())
-        ps = products.paginate(index, setting.MOBILE_PAGESIZE)
-        for p in ps:
-            productList.append({
-                'prid': p['prid'],
-                'pid': p['pid'],
-                'sppid': p['sppid'],
-                'name': p['name'],
-                'price': p['price'],
-                'unit': p['unit'] if p['unit'] else '件',
-                'buy_count': p['buy_count'],
-                'cover': p['cover'],
-                'resume': p['resume'],
-                'storeName': p['sName']
-            })
-        return productList
 
     def get(self):
         ''''
@@ -414,7 +360,7 @@ class MobileFilterHandler(MobileBaseHandler):
 
         result['data']['categoryList'] = []
         result['data']['brandList'] = []
-        result['data']['productList'] = []
+        # result['data']['productList'] = []
         if flag == 2:    #分类一定
             brandCategorys = BrandCategory.select().where(BrandCategory.category == id)
             if brandCategorys.count() > 0:
@@ -455,14 +401,14 @@ class MobileFilterHandler(MobileBaseHandler):
             result['msg'] = '输入参数错误'
             self.write(simplejson.dumps(result))
             return
-        result['data']['productList'] = self.getProductList(flag, id, sort, index, area_code)
+        # result['data']['productList'] = self.getProductList(flag, id, sort, index, area_code)
 
         result['flag'] = 1
         self.write(simplejson.dumps(result))
         self.finish()
 
 
-@route(r'/mobile/discover', name='mobile_discover')  # 发现列表
+@route(r'/mobile/discover', name='mobile_discover')  # 发现 商品列表
 class MobileDiscoverHandler(MobileBaseHandler):
     """
     @apiGroup discover
@@ -473,19 +419,105 @@ class MobileDiscoverHandler(MobileBaseHandler):
     @apiHeader {String} token 用户登录凭证
 
     @apiParam {String} keyword 搜索关键字
-    @apiParam {String} pricesort 价格排序 1正序， 2逆序； 默认为1
-    @apiParam {String} salesort 销量排序 1正序， 2逆序； 默认2
+    @apiParam {String} sort 价格排序 1正序， 2逆序； 默认为1  销量排序 1正序， 2逆序； 默认2
     @apiParam {String} category 分类ID， 单选
-    @apiParam {String} pinpai 品牌ID组合， 多选, 例：[1,2,3]
+    @apiParam {String} brand 品牌ID组合， 多选, 例：[1,2,3]
     @apiParam {String} attribute 属性ID组合, 多选, 例： [1,2,3]
 
     @apiSampleRequest /mobile/discover
     """
+    def getProductList(self, keyword, sort, category, brand, attribute, index, area_code):
+        productList = []
+        pids = []
+        ft = (Product.active==1)
+        if category and attribute:
+            fts = []
+            c = Category.get(id=category)
+            logging.info('-----Category------%s, %s---'%( c.id, c.name))
+            for i, a in enumerate(c.attributes):
+                logging.info('-----CategoryAttribute------%s, %s---'%( a.id, a.name))
+                cais = CategoryAttributeItems.select().where((CategoryAttributeItems.category_attribute==a) & (CategoryAttributeItems.id<<attribute))
+                for j, cai in enumerate(cais):
+                    logging.info('-----CategoryAttributeItems------%s, %s, %s---'%(j, cai.id, cai.name))
+                    if j == 0:
+                        fts.append((ProductAttributeValue.value == cai.name))
+                    else:
+                        fts[i] |= (ProductAttributeValue.value == cai.name)
+            for i, f in enumerate(fts):
+                if i == 0:
+                    products = Product.select().join(ProductAttributeValue).where(f)
+                else:
+                    products = Product.select().join(ProductAttributeValue).where(f & (Product.id << pids))
+                pids = [product.id for product in products]
+            ft = (Product.id << pids)
+        elif category:
+            ft &= (Product.category == category)
+        ft &= ((StoreProductPrice.price>0) & (StoreProductPrice.active==1) & (StoreProductPrice.active==1))
+        if keyword:
+            keyword = '%' + '%'
+            ft &= (Product.name % keyword)
+        if brand:
+            ft &= (Product.brand << brand)
+        if len(area_code) == 12:  # 门店可以购买的范围仅仅到区县
+            ft &= (((db.fn.Length(StoreProductPrice.area_code) == 4) & (StoreProductPrice.area_code == area_code[:4])) |
+                   ((db.fn.Length(StoreProductPrice.area_code) == 8) & (StoreProductPrice.area_code == area_code[:8])) |
+                   (StoreProductPrice.area_code == area_code))
+        elif len(area_code) == 8:  # 门店可以购买的范围到市级
+            ft &= (((db.fn.Length(StoreProductPrice.area_code) == 4) & (StoreProductPrice.area_code == area_code[:4])) |
+                   (StoreProductPrice.area_code == area_code))
+        elif len(area_code) == 4:  # 门店可以购买的范围到省级
+            ft &= (StoreProductPrice.area_code == area_code)
+
+        products = ProductRelease.select(
+            ProductRelease.id.alias('prid'), Product.id.alias('pid'), StoreProductPrice.id.alias('sppid'),
+            Product.name.alias('name'), StoreProductPrice.price.alias('price'), Product.unit.alias('unit'),
+            ProductRelease.buy_count.alias('buy_count'), Product.cover.alias('cover'),
+            Product.resume.alias('resume'), Store.name.alias('sName')). \
+            join(Product, on=(Product.id == ProductRelease.product)). \
+            join(StoreProductPrice, on=(StoreProductPrice.product_release == ProductRelease.id)). \
+            join(Store, on=(Store.id == ProductRelease.store)).where(ft).dicts()
+
+        if sort == '1':
+            products.order_by(StoreProductPrice.price.desc())
+        elif sort == '2':
+            products.order_by(StoreProductPrice.price.asc())
+        elif sort == '3':
+            products.order_by(ProductRelease.buy_count.desc())
+        elif sort == '4':
+            products.order_by(ProductRelease.buy_count.asc())
+        else:
+            products.order_by(ProductRelease.sort.desc())
+        ps = products.paginate(index, setting.MOBILE_PAGESIZE)
+        for p in ps:
+            productList.append({
+                'prid': p['prid'],
+                'pid': p['pid'],
+                'sppid': p['sppid'],
+                'name': p['name'],
+                'price': p['price'],
+                'unit': p['unit'] if p['unit'] else '件',
+                'buy_count': p['buy_count'],
+                'cover': p['cover'],
+                'resume': p['resume'],
+                'storeName': p['sName']
+            })
+        return productList
+
     def get(self):
         result = {'flag': 0, 'msg': '', "data": {}}
-        mobile = self.get_body_argument("mobile", None)
-        password = self.get_body_argument("password", None)
+        keyword = self.get_argument("keyword", None)
+        sort = self.get_argument("sort", None)
+        category = self.get_argument("category", None)
+        brand = self.get_argument("brand", None)
+        attribute = self.get_argument("attribute", None)
+        index = self.get_argument("index", None)
 
+        index = int(index) if index else 1
+        brand = brand.split(',') if brand else None
+        attribute = attribute.split(',') if attribute else None
+        area_code = self.get_store_area_code()
+
+        result['data'] = self.getProductList(keyword, sort, category, brand, attribute, index, area_code)
         self.write(simplejson.dumps(result))
         self.finish()
 
