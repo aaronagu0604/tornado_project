@@ -335,11 +335,22 @@ class Product(db.Model):
         order_by = ('-created',)
 
 
+# 商品附图
+class ProductPic(db.Model):
+    id = PrimaryKeyField()
+    product = ForeignKeyField(Product, related_name='pics', db_column='product_id')  # 所属商品
+    pic = CharField(max_length=255)
+
+    class Meta:
+        db_table = 'tb_product_pics'
+
+
 # 产品属性值
 class ProductAttributeValue(db.Model):
     id = PrimaryKeyField()
     product = ForeignKeyField(Product, related_name='attributes', db_column='product_id')  # 所属商品
     attribute = ForeignKeyField(CategoryAttribute, db_column='category_attribute_id')  # 产品属性
+    attribute_item = ForeignKeyField(CategoryAttributeItems, db_column='category_attribute_item_id')  # 产品属性值
     value = CharField(max_length=255)  # 属性值
 
     class Meta:
@@ -693,12 +704,21 @@ def load_test_data():
     Product.create(name='SK导航仪', brand=1, category=2, resume='SK导航仪', unit='个', intro='intro',
                    cover='http://img.520czj.com/image/2017/02/15/server1_20170215111526VDJrFZYbKUeiLjuGkcsxTIhW.png')
 
-    ProductAttributeValue.create(product=1, attribute=1, value='5L')
-    ProductAttributeValue.create(product=1, attribute=2, value='5W-30')
-    ProductAttributeValue.create(product=1, attribute=3, value='SF')
+    ProductPic.create(product=1, pic='http://img.520czj.com/image/2017/02/15/server1_20170215111526VDJrFZYbKUeiLjuGkcsxTIhW.png')
+    ProductPic.create(product=1,
+                      pic='http://img.520czj.com/image/2017/02/15/server1_20170215111526VDJrFZYbKUeiLjuGkcsxTIhW.png')
+    ProductPic.create(product=1,
+                      pic='http://img.520czj.com/image/2017/02/15/server1_20170215111526VDJrFZYbKUeiLjuGkcsxTIhW.png')
+    ProductPic.create(product=2,
+                      pic='http://img.520czj.com/image/2017/02/15/server1_20170215111526VDJrFZYbKUeiLjuGkcsxTIhW.png')
+    ProductPic.create(product=2,
+                      pic='http://img.520czj.com/image/2017/02/15/server1_20170215111526VDJrFZYbKUeiLjuGkcsxTIhW.png')
+    ProductAttributeValue.create(product=1, attribute=1, attribute_item=1, value='5L')
+    ProductAttributeValue.create(product=1, attribute=2, attribute_item=3, value='5W-30')
+    ProductAttributeValue.create(product=1, attribute=3, attribute_item=5, value='SF')
 
-    ProductAttributeValue.create(product=2, attribute=4, value='标配')
-    ProductAttributeValue.create(product=2, attribute=5, value='8寸')
+    ProductAttributeValue.create(product=2, attribute=4, attribute_item=7, value='标配')
+    ProductAttributeValue.create(product=2, attribute=5, attribute_item=9, value='8寸')
 
     ProductRelease.create(product=1, store=1, price=1)
     ProductRelease.create(product=2, store=1, price=2)

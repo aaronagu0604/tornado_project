@@ -633,9 +633,27 @@ class MobileHomeHandler(MobileBaseHandler):
         return items
 
 
+@route(r'/mobile/product', name='mobile_product')  # app产品详情页
+class MobileProductHandler(MobileBaseHandler):
+    """
+    @apiGroup discover
+    @apiVersion 1.0.0
+    @api {get} /mobile/product 08. 产品详情页
+    @apiDescription app产品详情页,返回html代码
 
+    @apiHeader {String} token 用户登录凭证
 
+    @apiParam {Int} id 产品或门店产品价格ID
+    @apiParam {Int} type 当前打开的产品的来源；1从app 2从分享
 
+    @apiSampleRequest /mobile/product
+    """
+    def get(self):
+        result = {'flag': 0, 'msg': '', "data": {}}
+        id = self.get_argument("id", None)
+        type = self.get_argument("type", None)
+        product={'name': '测试产品'}
+        self.render('mobile/product.html', product=product)
 
 
 
