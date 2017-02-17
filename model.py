@@ -90,7 +90,7 @@ class AdminUser(db.Model):
 # 门店
 class Store(db.Model):
     id = PrimaryKeyField()
-    store_type = IntegerField(default=0)  # 门店类型 0其它 1经销商 2社会修理厂（门店）
+    store_type = IntegerField(default=1)  # 门店类型 1服务商 2社会修理厂（门店）
     admin_code = CharField(max_length=20, null=True)  # 业务推广人员编号
     admin_user = ForeignKeyField(AdminUser, related_name='stores', db_column='admin_user_id', null=True)  # 业务推广人员
     name = CharField(max_length=100)  # 门店名称
@@ -404,28 +404,21 @@ class Order(db.Model):
     id = PrimaryKeyField()
     ordernum = CharField(max_length=64, null=True)  # 订单号
     user = ForeignKeyField(User, related_name='orders', db_column='user_id')  # 买家
+    buyer_store = ForeignKeyField(Store, db_column='buyer_store_id')  # 买家所属店铺
     address = ForeignKeyField(StoreAddress, db_column='store_address_id')  # 收信地址
-    payment = IntegerField(default=1)  # 付款方式 0货到付款  1支付宝  2账户余额 3网银支付,5积分换购, 6微信 7银联 9补单（4手机合并余额与支付宝，5手机合并余额与货到付款）
+    ordered = IntegerField(default=0)  # 下单时间
+    payment = CharField(default='')  # 付款方式  10支付宝  20微信 30银联 40线下 第二位代表是否使用余额：11,21,31,41
     message = CharField(null=True)  # 付款留言
     order_type = IntegerField(default=1)  # 付款方式 2积分订单  1金钱订单
-    price = FloatField(default=0.0)  # 价格，实际订单商品价格之和
-    currentprice = FloatField(default=0.0)  # 实际支付价格，去掉红包、积分、余额等
-    status = IntegerField(default=0)  # -1已删除, 0待付款 1待发货 2已发货 3交易完成（待评价） 4已评价 9已取消
-    cancelreason = CharField(default='', max_length=1024)  # 取消原因
-    canceltime = IntegerField(default=0)  # 取消时间
-    ip = CharField(max_length=80, null=True)  # 来源IP
-    ordered = IntegerField(default=0)  # 下单时间
-    paytime = IntegerField(default=0)  # 支付时间
-    trade_no = CharField(max_length=64, default='')  # 支付宝交易号or微信支付订单号or银联支付查询流水号
+    total_price = FloatField(default=0.0)  # 价格，实际所有子订单商品价格之和
     pay_balance = FloatField(default=0.0)  # 余额支付金额
-    delivery_time = IntegerField(default=0)  # 发货时间
-    buy_store = ForeignKeyField(Store, db_column='buy_store_id', null=True)  # 买家所属店铺
-    settlement = ForeignKeyField(Settlement, related_name='settlement_orders', db_column='settlement_id',
-                                 null=True)  # 完成的订单才可以结算
-    saler_del = IntegerField(default=0)  # 卖家删除已经完成的商品
-    buyer_del = IntegerField(default=0)  # 买家删除已经完成的商品
+    pay_price = FloatField(default=0.0)  # 实际第三方支付价格
+    pay_time = IntegerField(default=0)  # 支付时间
+    status = IntegerField(default=0)  # 0待付款 1已付款
+    ip = CharField(max_length=80, null=True)  # 来源IP
+    trade_no = CharField(max_length=64, default='')  # 支付宝交易号or微信支付订单号or银联支付查询流水号
 
-    def change_status(self, status):  # 管理员操作时status可能的值：2正在处理 3已发货 4交易完成 5已取消,-1已删除；用户操作时可能的值：5已取消,-1已删除
+    def change_status(self, status):  # -1已删除, 0待付款 1待发货 2待收货 3交易完成（待评价） 4已评价 5申请退款 6已退款 9已取消
         if self.status == status:
             return
         if self.status == -1:
@@ -466,10 +459,30 @@ class Order(db.Model):
         db_table = 'tb_orders'
 
 
+# 子订单
+class SubOrder(db.Model):
+    id = PrimaryKeyField()
+    order = ForeignKeyField(Order, related_name='sub_orders', db_column='order_id')  # 所属订单
+    saler_store = ForeignKeyField(Store, related_name='orders', db_column='saler_store_id')  # 卖家
+    buyer_store = ForeignKeyField(Store, related_name='orders', db_column='buyer_store_id')  # 买家
+    price = FloatField(default=0)  # 购买时产品价格或积分
+    status = IntegerField(default=0)  # 0待付款 1待发货 2待收货 3交易完成（待评价） 4已评价 5申请退款 6已退款 9已取消
+    fail_reason = CharField(default='', max_length=1024)  # 取消或退款原因
+    fail_time = IntegerField(default=0)  # 取消或退款时间
+    delivery_time = IntegerField(default=0)  # 发货时间
+    settlement = ForeignKeyField(Settlement, related_name='settlement_orders', db_column='settlement_id',
+                                 null=True)  # 完成的订单才可以结算
+    saler_del = IntegerField(default=0)  # 卖家删除已经完成的订单
+    buyer_del = IntegerField(default=0)  # 买家删除已经完成的订单
+
+    class Meta:
+        db_table = 'tb_order_sub'
+
+
 # 订单内容
 class OrderItem(db.Model):
     id = PrimaryKeyField()
-    order = ForeignKeyField(Order, related_name='items', db_column='order_id')  # 所属订单
+    sub_order = ForeignKeyField(SubOrder, related_name='items', db_column='sub_order_id')  # 所属订单
     product = ForeignKeyField(Product, related_name='order_items', db_column='product_id')  # 所属商品
     product_release = ForeignKeyField(ProductRelease, db_column='product_release_id')  # 经销商商品
     quantity = IntegerField(default=0)  # 数量
