@@ -125,6 +125,7 @@ class User(db.Model):
     lsignined = IntegerField(default=0)  # 最后登录时间
     store = ForeignKeyField(Store, related_name='users', db_column='store_id', null=False)  # 所属店铺
     token = CharField(max_length=128, null=True)  # 用户当前登录的token
+    last_pay_type = IntegerField(default=1)  # 用户上一次的支付方式 1支付宝  2微信 3银联 4余额
     active = IntegerField(default=1)  # 用户状态 0被禁止的用户 1正常用户
 
     @staticmethod
@@ -192,7 +193,7 @@ class MoneyRecord(db.Model):
     id = PrimaryKeyField()
     user = ForeignKeyField(User, related_name='money_records', db_column='user_id')  # 用户
     store = ForeignKeyField(Store, related_name='money_records', db_column='store_id')  # 店铺
-    process_type = IntegerField(default=0)  # 资金流动类型 正入账 负出账
+    process_type = IntegerField(default=0)  # 资金流动类型 1入账 2出账
     process_log = CharField(max_length=255, default='')  # 资金流动
     in_num = CharField(max_length=32, default='')  # 在线充值订单号
     out_account_type = IntegerField(default=0)  # 提现账户类型 0银行卡 1支付宝
@@ -200,7 +201,7 @@ class MoneyRecord(db.Model):
     out_account_name = CharField(max_length=64, default='')  # 银行名称
     out_account_branchname = CharField(max_length=64, default='')  # 支行名称
     out_account_account = CharField(max_length=32, default='')  # 银行卡号
-    money = FloatField(default=0.0)  # 提现金额
+    money = FloatField(default=0.0)  # 提现或支付的金额
     status = IntegerField(default=0)  # 处理状态
     apply_time = IntegerField(default=0)  # 申请时间
     processing_time = IntegerField(default=0)  # 处理时间
@@ -215,10 +216,10 @@ class ScoreRecord(db.Model):
     id = PrimaryKeyField()
     user = ForeignKeyField(User, related_name='score_records', db_column='user_id')  # 用户
     store = ForeignKeyField(Store, related_name='score_records', db_column='store_id')  # 店铺
-    process_type = IntegerField(default=0)  # 积分流动类型 正入账 负出账
+    process_type = IntegerField(default=0)  # 积分流动类型 1入账 2出账
     process_log = CharField(max_length=255, default='')  # 积分流动
-    score = FloatField(default=0.0)  # 流动积分数值
-    status = IntegerField(default=0)  # 状态
+    score = IntegerField(default=0)  # 流动积分数值
+    status = IntegerField(default=0)  # 状态 0待定 1确定
 
     class Meta:
         db_table = 'tb_score_record'
@@ -407,7 +408,7 @@ class Order(db.Model):
     buyer_store = ForeignKeyField(Store, related_name='orders', db_column='buyer_store_id')  # 买家所属店铺
     address = ForeignKeyField(StoreAddress, db_column='store_address_id')  # 收信地址
     ordered = IntegerField(default=0)  # 下单时间
-    payment = CharField(default='')  # 付款方式  10支付宝  20微信 30银联 40线下 第二位代表是否使用余额：11,21,31,41
+    payment = CharField(default='')  # 付款方式  1支付宝  2微信 3银联 4余额
     message = CharField(null=True)  # 付款留言
     order_type = IntegerField(default=1)  # 付款方式 2积分订单  1金钱订单
     total_price = FloatField(default=0.0)  # 价格，实际所有子订单商品价格之和
@@ -415,7 +416,6 @@ class Order(db.Model):
     pay_price = FloatField(default=0.0)  # 实际第三方支付价格
     pay_time = IntegerField(default=0)  # 支付时间
     status = IntegerField(default=0)  # 0待付款 1待发货 2待收货 3交易完成（待评价） 4已评价 5申请退款 6已退款 -1已取消
-    ip = CharField(max_length=80, null=True)  # 来源IP
     trade_no = CharField(max_length=64, default='')  # 支付宝交易号or微信支付订单号or银联支付查询流水号
     buyer_del = IntegerField(default=0)  # 买家删除已经完成的订单 1删除
 
@@ -486,7 +486,7 @@ class OrderItem(db.Model):
     order = ForeignKeyField(Order, related_name='items', db_column='order_id')  # 所属订单
     sub_order = ForeignKeyField(SubOrder, related_name='items', db_column='sub_order_id')  # 所属子订单
     product = ForeignKeyField(Product, db_column='product_id')  # 所属商品
-    product_release = ForeignKeyField(ProductRelease, db_column='product_release_id')  # 经销商商品
+    store_product_price = ForeignKeyField(StoreProductPrice, db_column='store_product_price_id')  # 经销商商品
     quantity = IntegerField(default=0)  # 数量
     price = FloatField(default=0)  # 购买时产品价格或积分
 

@@ -5,9 +5,10 @@ import logging
 import setting
 import simplejson
 from lib.route import route
+import math
 from model import *
 import uuid
-from handler import MobileBaseHandler
+from handler import MobileBaseHandler, MobileAuthHandler
 import random
 from lib.mqhelper import create_msg
 
@@ -688,4 +689,161 @@ class MobileProductHandler(MobileBaseHandler):
         self.render('mobile/product.html', product=product)
 
 
+@route(r'/mobile/orderbase', name='mobile_orderbase')  # 创建订单前的获取数据
+class MobileOrderBaseHandler(MobileBaseHandler):
+    """
+    @apiGroup order
+    @apiVersion 1.0.0
+    @api {post} /mobile/orderbase 01. 创建订单前的获取数据
+    @apiDescription 创建订单前的获取数据，传入产品信息，获取用户的默认地址、支付信息等
 
+    @apiHeader {String} token 用户登录凭证
+
+    @apiParam {String} sppids 地区产品价格ID， 格式：[1,2,3]
+
+    @apiSampleRequest /mobile/orderbase
+    """
+    def get(self):
+        user = self.get_user()
+        result = {'flag': 0, 'msg': '', "data": {}}
+        sppids = self.get_argument("sppids", [])
+        if user is not None:
+            if len(sppids) == 0:
+                result['msg'] = '请选择购买的产品'
+            else:
+                for address in user.store.addresses:
+                    if address.is_default == 1:
+                        result['data']['address'] = address
+                        break
+                else:
+                    result['data']['address'] = None
+            result['data']['last_pay_type'] = user.last_pay_type
+
+            stores = Store.select(Store).join(StoreProductPrice).\
+                where(StoreProductPrice.active == 1, StoreProductPrice.id << sppids).group_by(StoreProductPrice.store)
+            for store in stores:
+                result['data']['store'] = {'name': store.name, 'store_tel': store.mobile, 'id': store.id,
+                                           'service_tel': setting.COM_TEL, 'products': []}
+                product_list = StoreProductPrice.select().\
+                    where(StoreProductPrice.active == 1, StoreProductPrice.store == store).\
+                    order_by(StoreProductPrice.store)
+                for product_price in product_list:
+                    result['data']['store']['products'].append({
+                        'name': product_price.product_release.product.name,
+                        'price': product_price.price,
+                        'score': product_price.score,
+                        'img': product_price.product_release.product.cover,
+                        'attributes': product_price.product_release.product.attributes
+                    })
+            result['flag'] = 1
+        else:
+            result['msg'] = '请登录后再购买'
+        self.write(simplejson.dumps(result))
+        self.finish()
+
+
+@route(r'/mobile/neworder', name='mobile_neworder')  # 创建订单
+class MobileNewOrderHandler(MobileAuthHandler):
+    """
+    @apiGroup order
+    @apiVersion 1.0.0
+    @api {post} /mobile/neworder 02. 创建订单
+    @apiDescription 通过手机号密码登录系统
+
+    @apiHeader {String} token 用户登录凭证
+
+    @apiParam {Int} address 地址ID
+    @apiParam {Int} order_type 订单类型  1金钱订单  2积分订单
+    @apiParam {Int} payment 付款方式  1支付宝  2微信 3银联 4余额
+    @apiParam {Float} total_price 订单总价
+    @apiParam {String} products 产品数据集合，如：[{sid:1, price:119, products:[{sppid:1, count:1}]}, ……]；
+    sid为店铺ID；price为该店铺的金额；sppid为StoreProductPrice的ID，count为产品数量；服务端将订单按Store拆分为多个SubOrder
+
+    @apiSampleRequest /mobile/neworder
+    """
+
+    def check_xsrf_cookie(self):
+        pass
+
+    def options(self):
+        pass
+
+    def post(self):
+        result = {'flag': 0, 'msg': '', "data": {}}
+        address = self.get_body_argument("address", None)
+        order_type = self.get_body_argument("order_type", None)
+        payment = self.get_body_argument("payment", None)
+        total_price = self.get_body_argument("total_price", None)
+        products = self.get_body_argument("products", None)
+        user = self.get_user()
+        if address and payment and total_price and products and user and order_type:
+            items = simplejson.loads(products)
+            order = Order()
+            order.user = user
+            order.buyer_store = user.store
+            order.address = address
+            order.ordered = int(time.time())
+            order.payment = payment
+            order.message = ''
+            order.order_type = order_type
+            order.total_price = total_price
+            if payment == 4:  # 余额支付
+                if user.store.price < total_price:
+                    result['msg'] = "您的余额不足"
+                else:
+                    order.status = 1
+                    order.pay_time = int(time.time())
+                    order.pay_price = 0
+                    order.pay_balance = total_price
+                    order.save()
+                    order.ordernum = 'U' + str(user.id) + 'S' + str(order.id)
+                    order.save()
+                    if order_type == 1:  # 1金钱订单
+                        moneyRecord = MoneyRecord()
+                        moneyRecord.user = user
+                        moneyRecord.store = user.store
+                        moneyRecord.process_type = 2
+                        moneyRecord.process_log = '购买产品使用余额支付, 订单号：' + order.ordernum
+                        moneyRecord.status = 1
+                        moneyRecord.money = total_price
+                        moneyRecord.apply_time = int(time.time())
+                        moneyRecord.save()
+                    elif order_type == 2:  # 2积分订单
+                        scoreRecord = ScoreRecord()
+                        scoreRecord.user = user
+                        scoreRecord.store = user.store
+                        scoreRecord.process_type = 2
+                        scoreRecord.process_log = '积分兑换产品, 订单号：' + order.ordernum
+                        scoreRecord.score = math.ceil(total_price)  # 积分有小数进位
+                        scoreRecord.status = 1
+                        scoreRecord.save()
+            else:
+                order.status = 0
+                order.pay_price = total_price
+                order.pay_balance = 0
+                order.save()
+                order.ordernum = 'U' + str(user.id) + 'S' + str(order.id)
+                order.save()
+            for item in items:
+                subOrder = SubOrder()
+                subOrder.order = order
+                subOrder.saler_store = item['sid']
+                subOrder.buyer_store = user.store
+                subOrder.price = item['price']
+                subOrder.status = order.status
+                subOrder.save()
+                for product in item['products']:
+                    spp = StoreProductPrice.get(id=product['sppid'])
+                    orderItem = OrderItem()
+                    orderItem.order = order
+                    orderItem.sub_order = subOrder
+                    orderItem.store_product_price = spp
+                    orderItem.quantity = product['count']
+                    orderItem.price = spp.price
+                    orderItem.product = spp.product_realse.product
+                    orderItem.save()
+            result['flag'] = 1
+        else:
+            result['msg'] = "传入参数异常"
+        self.write(simplejson.dumps(result))
+        self.finish()
