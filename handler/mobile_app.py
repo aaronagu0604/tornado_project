@@ -262,7 +262,7 @@ class MobileLoginHandler(MobileBaseHandler):
 @route(r'/mobile/filter', name='mobile_filter')  # 发现列表的筛选界面
 class MobileFilterHandler(MobileBaseHandler):
     """
-    @apiGroup discover
+    @apiGroup app
     @apiVersion 1.0.0
     @api {get} /mobile/filter 05. 发现页面的筛选界面
     @apiDescription 发现页面的筛选界面，未登陆使用西安code
@@ -411,7 +411,7 @@ class MobileFilterHandler(MobileBaseHandler):
 @route(r'/mobile/discover', name='mobile_discover')  # 发现 商品列表
 class MobileDiscoverHandler(MobileBaseHandler):
     """
-    @apiGroup discover
+    @apiGroup app
     @apiVersion 1.0.0
     @api {get} /mobile/discover 06. 发现页面列表
     @apiDescription 发现页面列表，未登陆使用西安code
@@ -525,7 +525,7 @@ class MobileDiscoverHandler(MobileBaseHandler):
 @route(r'/mobile/home', name='mobile_home')  # app首页数据
 class MobileHomeHandler(MobileBaseHandler):
     """
-    @apiGroup home
+    @apiGroup app
     @apiVersion 1.0.0
     @api {get} /mobile/home 07. app首页数据
     @apiDescription app首页数据，
@@ -668,7 +668,7 @@ class MobileHomeHandler(MobileBaseHandler):
 @route(r'/mobile/product', name='mobile_product')  # app产品详情页
 class MobileProductHandler(MobileBaseHandler):
     """
-    @apiGroup discover
+    @apiGroup app
     @apiVersion 1.0.0
     @api {get} /mobile/product 08. 产品详情页
     @apiDescription app产品详情页,返回html代码
@@ -688,83 +688,4 @@ class MobileProductHandler(MobileBaseHandler):
         self.render('mobile/product.html', product=product)
 
 
-@route(r'/mobile/mime', name='mobile_mime')  # app我的主界面
-class MobileMimeHandler(MobileBaseHandler):
-    """
-    @apiGroup mime
-    @apiVersion 1.0.0
-    @api {get} /mobile/mime 10. app我的主界面
-    @apiDescription app我的主界面
-
-    @apiHeader {String} token 用户登录凭证
-
-    @apiSampleRequest /mobile/mime
-    """
-    def get(self):
-        result = {'flag': 0, 'msg': '', "data": {}}
-        user = self.get_user()
-        if user is None:  # 未登录
-            result['data']['store_name'] = ''
-            result['data']['user_name'] = ''
-            result['data']['store_type'] = ''
-            result['data']['store_price'] = 0
-            result['data']['store_score'] = 0
-            result['data']['show_sale_orders'] = 1
-            result['data']['show_buy_orders'] = 1
-            result['data']['show_product_manager'] = 1
-            result['data']['sale_orders'] = {}
-            result['data']['sale_orders']['wait_pay'] = 0
-            result['data']['sale_orders']['wait_send'] = 0
-            result['data']['sale_orders']['wait_get'] = 0
-            result['data']['sale_orders']['wait_comment'] = 0
-            result['data']['sale_orders']['wait_pay_back'] = 0
-            result['data']['buy_orders'] = {}
-            result['data']['buy_orders']['wait_pay'] = 0
-            result['data']['buy_orders']['wait_send'] = 0
-            result['data']['buy_orders']['wait_get'] = 0
-            result['data']['buy_orders']['wait_comment'] = 0
-            result['data']['buy_orders']['wait_pay_back'] = 0
-        else:  # 已登录
-            result['data']['store_name'] = user.store.name
-            result['data']['user_name'] = user.mobile
-
-            result['data']['store_price'] = user.store.price
-            result['data']['store_score'] = user.store.score
-            if user.store.store_type == 1:
-                result['data']['store_type'] = '服务商'
-                result['data']['show_sale_orders'] = 1
-                result['data']['show_buy_orders'] = 0
-                result['data']['show_product_manager'] = 1
-                result['data']['buy_orders'] = {}
-                result['data']['buy_orders']['wait_pay'] = 0
-                result['data']['buy_orders']['wait_send'] = 0
-                result['data']['buy_orders']['wait_get'] = 0
-                result['data']['buy_orders']['wait_pay_back'] = 0
-                # 查询
-
-                result['data']['sale_orders'] = {}
-                result['data']['sale_orders']['wait_pay'] = 0
-                result['data']['sale_orders']['wait_send'] = 0
-                result['data']['sale_orders']['wait_get'] = 0
-                result['data']['sale_orders']['wait_pay_back'] = 0
-            elif user.store.store_type == 2:
-                result['data']['store_type'] = '门店'
-                result['data']['show_sale_orders'] = 0
-                result['data']['show_buy_orders'] = 1
-                result['data']['show_product_manager'] = 0
-                result['data']['sale_orders'] = {}
-                result['data']['sale_orders']['wait_pay'] = 0
-                result['data']['sale_orders']['wait_send'] = 0
-                result['data']['sale_orders']['wait_get'] = 0
-                result['data']['sale_orders']['wait_comment'] = 0
-                result['data']['sale_orders']['wait_pay_back'] = 0
-                # 查询
-                result['data']['buy_orders'] = {}
-                result['data']['buy_orders']['wait_pay'] = 0
-                result['data']['buy_orders']['wait_send'] = 0
-                result['data']['buy_orders']['wait_get'] = 0
-                result['data']['buy_orders']['wait_comment'] = 0
-                result['data']['buy_orders']['wait_pay_back'] = 0
-        self.write(simplejson.dumps(result))
-        self.finish()
 

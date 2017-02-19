@@ -404,7 +404,7 @@ class Order(db.Model):
     id = PrimaryKeyField()
     ordernum = CharField(max_length=64, null=True)  # 订单号
     user = ForeignKeyField(User, related_name='orders', db_column='user_id')  # 买家
-    buyer_store = ForeignKeyField(Store, db_column='buyer_store_id')  # 买家所属店铺
+    buyer_store = ForeignKeyField(Store, related_name='orders', db_column='buyer_store_id')  # 买家所属店铺
     address = ForeignKeyField(StoreAddress, db_column='store_address_id')  # 收信地址
     ordered = IntegerField(default=0)  # 下单时间
     payment = CharField(default='')  # 付款方式  10支付宝  20微信 30银联 40线下 第二位代表是否使用余额：11,21,31,41
@@ -414,7 +414,7 @@ class Order(db.Model):
     pay_balance = FloatField(default=0.0)  # 余额支付金额
     pay_price = FloatField(default=0.0)  # 实际第三方支付价格
     pay_time = IntegerField(default=0)  # 支付时间
-    status = IntegerField(default=0)  # 0待付款 1已付款
+    status = IntegerField(default=0)  # 0待付款 1待发货 2待收货 3交易完成（待评价） 4已评价 5申请退款 6已退款 9已取消
     ip = CharField(max_length=80, null=True)  # 来源IP
     trade_no = CharField(max_length=64, default='')  # 支付宝交易号or微信支付订单号or银联支付查询流水号
 
@@ -463,8 +463,8 @@ class Order(db.Model):
 class SubOrder(db.Model):
     id = PrimaryKeyField()
     order = ForeignKeyField(Order, related_name='sub_orders', db_column='order_id')  # 所属订单
-    saler_store = ForeignKeyField(Store, related_name='orders', db_column='saler_store_id')  # 卖家
-    buyer_store = ForeignKeyField(Store, related_name='orders', db_column='buyer_store_id')  # 买家
+    saler_store = ForeignKeyField(Store, related_name='saler_sub_orders', db_column='saler_store_id')  # 卖家
+    buyer_store = ForeignKeyField(Store, related_name='buyer_sub_orders', db_column='buyer_store_id')  # 买家
     price = FloatField(default=0)  # 购买时产品价格或积分
     status = IntegerField(default=0)  # 0待付款 1待发货 2待收货 3交易完成（待评价） 4已评价 5申请退款 6已退款 9已取消
     fail_reason = CharField(default='', max_length=1024)  # 取消或退款原因
@@ -482,8 +482,9 @@ class SubOrder(db.Model):
 # 订单内容
 class OrderItem(db.Model):
     id = PrimaryKeyField()
-    sub_order = ForeignKeyField(SubOrder, related_name='items', db_column='sub_order_id')  # 所属订单
-    product = ForeignKeyField(Product, related_name='order_items', db_column='product_id')  # 所属商品
+    order = ForeignKeyField(Order, related_name='items', db_column='order_id')  # 所属订单
+    sub_order = ForeignKeyField(SubOrder, related_name='items', db_column='sub_order_id')  # 所属子订单
+    product = ForeignKeyField(Product, db_column='product_id')  # 所属商品
     product_release = ForeignKeyField(ProductRelease, db_column='product_release_id')  # 经销商商品
     quantity = IntegerField(default=0)  # 数量
     price = FloatField(default=0)  # 购买时产品价格或积分
