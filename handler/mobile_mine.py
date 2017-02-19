@@ -14,7 +14,7 @@ class MobileMineHandler(MobileBaseHandler):
     """
     @apiGroup mine
     @apiVersion 1.0.0
-    @api {get} /mobile/mine 10. app我的主界面
+    @api {get} /mobile/mine 01. app我的主界面
     @apiDescription app我的主界面
 
     @apiHeader {String} token 用户登录凭证

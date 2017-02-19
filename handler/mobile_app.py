@@ -264,7 +264,7 @@ class MobileFilterHandler(MobileBaseHandler):
     """
     @apiGroup app
     @apiVersion 1.0.0
-    @api {get} /mobile/filter 05. 发现页面的筛选界面
+    @api {get} /mobile/filter 01. 发现页面的筛选界面
     @apiDescription 发现页面的筛选界面，未登陆使用西安code
 
     @apiParam {Int} id 品牌或者分类ID
@@ -413,7 +413,7 @@ class MobileDiscoverHandler(MobileBaseHandler):
     """
     @apiGroup app
     @apiVersion 1.0.0
-    @api {get} /mobile/discover 06. 发现页面列表
+    @api {get} /mobile/discover 02. 发现页面列表
     @apiDescription 发现页面列表，未登陆使用西安code
 
     @apiHeader {String} token 用户登录凭证
@@ -527,7 +527,7 @@ class MobileHomeHandler(MobileBaseHandler):
     """
     @apiGroup app
     @apiVersion 1.0.0
-    @api {get} /mobile/home 07. app首页数据
+    @api {get} /mobile/home 03. app首页数据
     @apiDescription app首页数据，
     banner 首页轮播;
     insurance  首页保险;
@@ -670,7 +670,7 @@ class MobileProductHandler(MobileBaseHandler):
     """
     @apiGroup app
     @apiVersion 1.0.0
-    @api {get} /mobile/product 08. 产品详情页
+    @api {get} /mobile/product 04. 产品详情页
     @apiDescription app产品详情页,返回html代码
 
     @apiHeader {String} token 用户登录凭证
