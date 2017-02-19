@@ -414,9 +414,10 @@ class Order(db.Model):
     pay_balance = FloatField(default=0.0)  # 余额支付金额
     pay_price = FloatField(default=0.0)  # 实际第三方支付价格
     pay_time = IntegerField(default=0)  # 支付时间
-    status = IntegerField(default=0)  # 0待付款 1待发货 2待收货 3交易完成（待评价） 4已评价 5申请退款 6已退款 9已取消
+    status = IntegerField(default=0)  # 0待付款 1待发货 2待收货 3交易完成（待评价） 4已评价 5申请退款 6已退款 -1已取消
     ip = CharField(max_length=80, null=True)  # 来源IP
     trade_no = CharField(max_length=64, default='')  # 支付宝交易号or微信支付订单号or银联支付查询流水号
+    buyer_del = IntegerField(default=0)  # 买家删除已经完成的订单 1删除
 
     def change_status(self, status):  # -1已删除, 0待付款 1待发货 2待收货 3交易完成（待评价） 4已评价 5申请退款 6已退款 9已取消
         if self.status == status:
@@ -466,14 +467,14 @@ class SubOrder(db.Model):
     saler_store = ForeignKeyField(Store, related_name='saler_sub_orders', db_column='saler_store_id')  # 卖家
     buyer_store = ForeignKeyField(Store, related_name='buyer_sub_orders', db_column='buyer_store_id')  # 买家
     price = FloatField(default=0)  # 购买时产品价格或积分
-    status = IntegerField(default=0)  # 0待付款 1待发货 2待收货 3交易完成（待评价） 4已评价 5申请退款 6已退款 9已取消
+    status = IntegerField(default=0)  # 0待付款 1待发货 2待收货 3交易完成（待评价） 4已评价 5申请退款 6已退款 -1已取消
     fail_reason = CharField(default='', max_length=1024)  # 取消或退款原因
     fail_time = IntegerField(default=0)  # 取消或退款时间
     delivery_time = IntegerField(default=0)  # 发货时间
     settlement = ForeignKeyField(Settlement, related_name='settlement_orders', db_column='settlement_id',
                                  null=True)  # 完成的订单才可以结算
-    saler_del = IntegerField(default=0)  # 卖家删除已经完成的订单
-    buyer_del = IntegerField(default=0)  # 买家删除已经完成的订单
+    saler_del = IntegerField(default=0)  # 卖家删除已经完成的订单 1删除
+    buyer_del = IntegerField(default=0)  # 买家删除已经完成的订单 1删除
 
     class Meta:
         db_table = 'tb_order_sub'
