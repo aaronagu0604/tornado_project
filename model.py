@@ -673,6 +673,30 @@ class InsuranceOrder(db.Model):
         db_table = 'tb_insurance_orders'
 
 
+# 卖保险兑积分，积分兑现表
+class InsuranceScoreExchange(db.Model):
+    id = PrimaryKeyField()
+    area_code = CharField(max_length=12)  # 地区code
+    address = CharField(max_length=32)  # 地址中文
+    insurance = ForeignKeyField(Insurance, db_column='insurance_id')  # 保险公司ID
+    created = IntegerField()  # 创建时间
+
+    business_exchange_rate = FloatField(default=0.0)  # 兑换率（商业险），仅商业险
+    business_exchange_rate2 = FloatField(default=0.0)  # 兑换率（商业险），商业险+交强险
+    business_tax_rate = FloatField(default=0.0)  # 商业险税率
+
+    force_exchange_rate = FloatField(default=0.0)  # 交强险兑换率, 仅交强险
+    force_exchange_rate2 = FloatField(default=0.0)  # 交强险兑换率, 商业险+交强险
+    force_tax_rate = FloatField(default=0.0)  # 交强险税率
+
+    ali_rate = FloatField(default=0.0)  # 银联支付宝微信转账 手续费率
+    profit_rate = FloatField(default=0.0)  # 利润率（车装甲）
+    base_money = FloatField(default=0.0)  # 多少元起兑
+
+    class Meta:
+        db_table = "tb_insurance_score_exchange"
+
+
 # 手机端区块: 广告
 class Block(db.Model):
     id = PrimaryKeyField()
