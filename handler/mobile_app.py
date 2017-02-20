@@ -684,7 +684,7 @@ class MobileProductHandler(MobileBaseHandler):
 
 
 @route(r'/mobile/orderbase', name='mobile_orderbase')  # 创建订单前的获取数据
-class MobileOrderBaseHandler(MobileBaseHandler):
+class MobileOrderBaseHandler(MobileAuthHandler):
     """
     @apiGroup order
     @apiVersion 1.0.0
@@ -842,6 +842,7 @@ class MobileNewOrderHandler(MobileAuthHandler):
         self.write(simplejson.dumps(result))
         self.finish()
 
+
 @route(r'/mobile/shopcar', name='mobile_shopcar')  # 手机端购物车内容获取
 class MobileShopCarHandler(MobileBaseHandler):
     """
@@ -915,6 +916,93 @@ class MobilOrderHandler(MobileBaseHandler):
             so.save()
 
     def get(self):
+        result = {'flag': 0, 'msg': '', "data": []}
+        type = self.get_argument("type", 'all')
+        index = int(self.get_argument('index', 1))
+        user = self.get_user()
+        if not user:
+            result['msg'] = '您还没有登录，不能查看采购订单'
+            self.write(simplejson.dumps(result))
+            return
+        # 先删除超时订单
+        # self.delete_timeOut_order(user)
+        ft = (Order.user == user)
+        if type == 'all':  # 全部
+            ft &= (SubOrder.status > -1) & (SubOrder.buyer_del == 0)
+        elif type == 'unpay':  # 待付款订单
+            ft &= (SubOrder.status == 0) & (SubOrder.buyer_del == 0)
+        elif type == 'undispatch': # 待发货
+            ft &= (SubOrder.status == 1) & (SubOrder.buyer_del == 0)
+        elif type == 'unreceipt':  # 待收货
+            ft &= (Order.status == 2) & (SubOrder.buyer_del == 0)
+        elif type == 'success':  # 交易完成/待评价
+            ft &= (Order.status == 3) & (SubOrder.buyer_del == 0)
+        elif type == 'delete':  # 删除
+            ft &= ((Order.status == -1) | (SubOrder.buyer_del == 1))
+
+        sos = SubOrder.select().join(Order).where(ft).order_by(Order.ordered.desc())
+        paging_q = sos.paginate(index, setting.MOBILE_PAGESIZE)
+        for so in paging_q:
+            if so.status == 0:
+                s = '待付款'
+            elif so.status == 1:
+                s = '待发货'
+            elif so.status == 2:
+                s = '待收货'
+            elif so.status == 3:
+                s = '交易完成'
+            elif so.status == 4:
+                s = '已评价'
+            elif so.status == 5:
+                s = '申请退款'
+            elif so.status == 6:
+                s = '已退款'
+            elif so.status == -1:
+                s = '已取消'
+
+            items = []
+            for soi in so.items:
+                items.append({
+                    'product': soi.product.name,
+                    'price': soi.store_product_price.price,
+                    'quantity': soi.quantity
+                })
+            result['data'].append({
+                'id': so.id,
+                'status': s,
+                'items': items,
+                'ordered': time.strftime('%Y-%m-%d', time.localtime(so.order.ordered)),
+                'deadline': time.strftime('%Y-%m-%d', time.localtime(so.order.ordered+setting.PRODUCT_ORDER_TIME_OUT))
+            })
+        self.write(simplejson.dumps(result))
+
+
+@route(r'/mobile/newinsuranceorder', name='mobile_new_insurance_order')  # 创建保险订单
+class MobilNewInsuranceOrderHandler(MobileAuthHandler):
+    """
+    @apiGroup order
+    @apiVersion 1.0.0
+    @api {post} /mobile/newinsuranceorder  创建保险订单
+    @apiDescription app  创建保险订单
+
+    @apiHeader {String} token 用户登录凭证
+
+    @apiParam {String} id_card_front 身份证正面
+    @apiParam {String} id_card_back 身份证反面
+    @apiParam {String} drive_card_front 行驶证正面
+    @apiParam {String} drive_card_back 行驶证反面
+    @apiParam {Int} insurance 保险公司ID
+
+
+    @apiSampleRequest /mobile/newinsuranceorder
+    """
+    def check_xsrf_cookie(self):
+        pass
+
+    def options(self):
+        pass
+
+    def post(self):
         result = {'flag': 0, 'msg': '', "data": []}
         type = self.get_argument("type", 'all')
         index = int(self.get_argument('index', 1))

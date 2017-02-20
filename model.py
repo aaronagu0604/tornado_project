@@ -541,67 +541,104 @@ class InsurancePrice(db.Model):
         db_table = 'tb_insurance_price'
 
 
+# 保险订单报价信息，创建保险订单时默认创建该表数据
+class InsuranceOrderPrice(db.Model):
+    id = PrimaryKeyField()
+    insurance_order_id = IntegerField()  # 所属保险订单ID
+    insurance = ForeignKeyField(Insurance, db_column='insurance_id')  # 所购保险公司ID
+    created = IntegerField(default=0)  # 报价时间
+    admin_user = ForeignKeyField(AdminUser, db_column='admin_user_id', null=True)  # 报价人员
+
+    total_price = FloatField(default=0.0)  # 保险订单总价格
+    force_price = FloatField(default=0.0)  # 交强险 价格
+    business_price = FloatField(default=0.0)  # 商业险价格
+    vehicle_tax_price = FloatField(default=0.0)  # 车船税价格
+
+    forceI = CharField(max_length=32, default='')  # 交强险
+    forceIPrice = FloatField(null=True)
+    damageI = CharField(max_length=32, default='')  # 车辆损失险
+    damageIPrice = FloatField(null=True)
+    thirdDutyI = CharField(max_length=32, default='')  # 第三者责任险
+    thirdDutyIPrice = FloatField(null=True)
+    robbingI = CharField(max_length=32, default='')  # 机动车全车盗抢险
+    robbingIPrice = FloatField(null=True)
+    driverDutyI = CharField(max_length=32, default='')  # 机动车车上人员责任险（司机）
+    driverDutyIPrice = FloatField(null=True)
+    passengerDutyI = CharField(max_length=32, default='')  # 机动车车上人员责任险（乘客）
+    passengerDutyIPrice = FloatField(null=True)
+    glassI = CharField(max_length=32, default='')  # 玻璃单独破碎险
+    glassIPrice = FloatField(null=True)
+    scratchI = CharField(max_length=32, default='')  # 车身划痕损失险
+    scratchIPrice = FloatField(null=True)
+    normalDamageI = CharField(max_length=32, default='')  # 自然损失险
+    normalDamageIPrice = FloatField(null=True)
+    wadeI = CharField(max_length=32, default='')  # 发动机涉水损失险
+    wadeIPrice = FloatField(null=True)
+    specialI = CharField(max_length=32, default='')  # 不计免赔特约险
+    specialIPrice = FloatField(null=True)
+    thirdSpecialI = CharField(max_length=32, default='')  # 机动车损失保险无法找到第三方特约险
+    thirdSpecialIPrice = FloatField(null=True)
+
+    damageSpecialI = CharField(max_length=32, default='')  # 车辆损失特约险
+    damageSpecialIPrice = FloatField(null=True)
+    thirdDutySpecialI = CharField(max_length=32, default='')  # 第三者责任险
+    thirdDutySpecialIPrice = FloatField(null=True)
+    robbingSpecialI = CharField(max_length=32, default='')  # 机动车全车盗抢特约险
+    robbingSpecialIPrice = FloatField(null=True)
+    driverDutySpecialI = CharField(max_length=32, default='')  # 机动车车上人员特约险（司机）
+    driverDutySpecialIPrice = FloatField(null=True)
+    passengerDutySpecialI = CharField(max_length=32, default='')  # 机动车车上人员责任险（乘客）特约险
+    passengerDutySpecialIPrice = FloatField(null=True)
+    scratchSpecialI = CharField(max_length=32, default='')  # 车身划痕损失险特约险
+    scratchSpecialIPrice = FloatField(null=True)
+    normalDamageSpecialI = CharField(max_length=32, default='')  # 自然损失险特约险
+    normalDamageSpecialIPrice = FloatField(null=True)
+    wadeSpecialI = CharField(max_length=32, default='')  # 发动机涉水损失险特约险
+    wadeSpecialIPrice = FloatField(null=True)
+    thirdSpecialSpecialI = CharField(max_length=32, default='')  # 机动车损失保险无法找到第三方特约险
+    thirdSpecialSpecialIPrice = FloatField(null=True)
+
+    class Meta:
+        db_table = 'tb_insurance_order_price'
+
+
 # 保险订单
 class InsuranceOrder(db.Model):
     id = PrimaryKeyField()
     ordernum = CharField(max_length=64, null=True)  # 订单号
     user = ForeignKeyField(User, related_name='insurance_orders', db_column='user_id')  # 用户
-    store = ForeignKeyField(Store, related_name='insurance_orders', db_column='store_id', null=True)  # 店铺
-    insurance = ForeignKeyField(Insurance, db_column='insurance_id')  # 所购保险
+    store = ForeignKeyField(Store, related_name='insurance_orders', db_column='store_id')  # 店铺
+    current_order_price = ForeignKeyField(InsuranceOrderPrice, db_column='current_order_price_id', null=True)  # 最终报价ID
+
     idcard = CharField(max_length=255, null=True)  # 身份证
     idcardback = CharField(max_length=255, null=True)  # 身份证背面
     drivercard = CharField(max_length=255, null=True)  # 行驶证
     drivercard2 = CharField(max_length=255, null=True)  # 行驶证副本
-    payment = IntegerField(default=1)  # 付款方式 0货到付款  1支付宝  2账户余额 3网银支付 6微信支付 7银联
-    contact = CharField(null=True)  # 联系人
-    mobile = CharField(null=True)  # 用户电话
-    message = CharField(null=True)  # 客户留言
-    price = FloatField(default=0.0)  # 价格
-    forceIprc = FloatField(default=0.0)  # 交强险 价格forceIprc businessIprc vehicleTax
-    businessIprc = FloatField(default=0.0)  # 商业险价格
-    vehicleTax = FloatField(default=0.0)  # 车船税价格
-
-    status = IntegerField(default=0)  # 0待确认 1待付款 2付款完成 3已办理 5已取消 -1已删除
-    cancelreason = CharField(default='', max_length=1024)  # 取消原因
-    canceltime = IntegerField(default=0)  # 取消时间
+    payment = IntegerField(default=1)  # 付款方式  1支付宝  2微信 3银联 4余额
     ordered = IntegerField(default=0)  # 下单时间
-    summary = CharField(max_length=1024, null=True)  # 短信通知内容
-    localsummary = CharField(max_length=256, null=True)  # 本地备注
-    paytime = IntegerField(default=0)  # 支付时间
+
+    delivery_to = CharField(max_length=255)  # 保单邮寄接收人名称
+    delivery_tel = CharField(max_length=255)  # 保单邮寄接收人电话
+    delivery_province = CharField(max_length=16, default='陕西')  # 保单邮寄接收省份
+    delivery_city = CharField(max_length=16, default='西安')  # 保单邮寄接收城市
+    delivery_region = CharField(max_length=32, null='')  # 保单邮寄接收区域
+    delivery_address = CharField(max_length=128, null=True)  # 保单邮寄接收详细地址
+    deliver_company = CharField(max_length=255, null=True)  # 快递公司
+    deliver_num = CharField(max_length=255, null=True)  # 保单邮寄快递号
+
+    status = IntegerField(default=0)  # 0待确认 1待付款 2付款完成 3已办理 4已邮寄 -1已删除(取消)
+    cancel_reason = CharField(default='', max_length=1024)  # 取消原因
+    cancel_time = IntegerField(default=0)  # 取消时间
+    sms_content = CharField(max_length=1024, null=True)  # 短信通知内容
+    sms_sent_time = IntegerField(default=1)  # 发送时间
+    local_summary = CharField(max_length=256, null=True)  # 本地备注
+    pay_time = IntegerField(default=0)  # 支付时间
     deal_time = IntegerField(default=0)  # 完成时间
-    pay_account = CharField(max_length=128, default='')  # 用户支付宝账户
-    trade_no = CharField(max_length=64, default='')  # 支付宝交易号
-    # forceI  ;
-    # damageI thirdDutyI  robbingI damageSpecialI thirdDutySpecialI robbingSpecialI  ;
-    # driverDutyI thirdDutySpecialI, passengerDutyI passengerDutySpecialI,    glassI, specialI
-    # scratchI scratchSpecialI, normalDamageI normalDamageSpecialI,  wadeI wadeSpecialI,  thirdSpecialI thirdSpecialSpecialI
-    forceI = CharField(max_length=32, default='')  # 交强险
-    damageI = CharField(max_length=32, default='')  # 车辆损失险
-    thirdDutyI = CharField(max_length=32, default='')  # 第三者责任险
-    robbingI = CharField(max_length=32, default='')  # 机动车全车盗抢险
-    driverDutyI = CharField(max_length=32, default='')  # 机动车车上人员责任险（司机）
-    passengerDutyI = CharField(max_length=32, default='')  # 机动车车上人员责任险（乘客）
-    glassI = CharField(max_length=32, default='')  # 玻璃单独破碎险
-    scratchI = CharField(max_length=32, default='')  # 车身划痕损失险
-    normalDamageI = CharField(max_length=32, default='')  # 自然损失险
-    wadeI = CharField(max_length=32, default='')  # 发动机涉水损失险
-    specialI = CharField(max_length=32, default='')  # 不计免赔特约险
-    thirdSpecialI = CharField(max_length=32, default='')  # 机动车损失保险无法找到第三方特约险
-
-    damageSpecialI = CharField(max_length=32, default='')
-    thirdDutySpecialI = CharField(max_length=32, default='')
-    robbingSpecialI = CharField(max_length=32, default='')
-    driverDutySpecialI = CharField(max_length=32, default='')
-    passengerDutySpecialI = CharField(max_length=32, default='')
-    scratchSpecialI = CharField(max_length=32, default='')
-    normalDamageSpecialI = CharField(max_length=32, default='')
-    wadeSpecialI = CharField(max_length=32, default='')
-    thirdSpecialSpecialI = CharField(max_length=32, default='')
-
-    LubeOrScore = IntegerField(default=0)  # 0 1反油， 2反积分
-    userDel = IntegerField(default=0)  # 用户端不显示
-    scoreNum = IntegerField(default=0)  # 卖的这单保险可以获取多少积分
-    deadline = IntegerField(default=0)  # 期限
+    pay_account = CharField(max_length=128, default='')  # 用户支付宝、微信账户
+    trade_no = CharField(max_length=64, default='')  # 支付宝/微信交易号
+    gift_policy = IntegerField(default=0)  # 礼品策略 1反油， 2反积分
+    score = IntegerField(default=0)  # 卖的这单保险可以获取多少积分
+    user_del = IntegerField(default=0)  # 用户端不显示
 
     def change_status(self, status):
         if self.status == status:
