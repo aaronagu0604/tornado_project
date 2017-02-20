@@ -742,13 +742,13 @@ class MobileOrderBaseHandler(MobileBaseHandler):
         self.finish()
 
 
-@route(r'/mobile/neworder', name='mobile_neworder')  # 创建订单
+@route(r'/mobile/neworder', name='mobile_neworder')  # 创建产品订单
 class MobileNewOrderHandler(MobileAuthHandler):
     """
     @apiGroup order
     @apiVersion 1.0.0
-    @api {post} /mobile/neworder 02. 创建订单
-    @apiDescription 通过手机号密码登录系统
+    @api {post} /mobile/neworder 02. 创建产品订单
+    @apiDescription 创建产品订单
 
     @apiHeader {String} token 用户登录凭证
 
