@@ -377,8 +377,7 @@ class ProductRelease(db.Model):
 # 发布商品
 class StoreProductPrice(db.Model):
     id = PrimaryKeyField()
-    product_release = ForeignKeyField(ProductRelease, related_name='area_prices',
-                                      db_column='product_release_id')  # 所属商品
+    product_release = ForeignKeyField(ProductRelease, related_name='area_prices', db_column='product_release_id')  # 所属商品
     store = ForeignKeyField(Store, related_name='area_products', db_column='store_id')  # 所属店铺
     area_code = CharField(max_length=20)  # 地区code
     price = FloatField()  # 当前始销售价，负数或0为不能购物
@@ -387,6 +386,18 @@ class StoreProductPrice(db.Model):
 
     class Meta:
         db_table = 'tb_store_product_price'
+
+
+# 购物车
+class ShopCart(db.Model):
+    id = PrimaryKeyField()
+    store = ForeignKeyField(Store, related_name='cart_items', db_column='store_id') # 门店店铺
+    store_product_price = ForeignKeyField(StoreProductPrice, db_column='store_product_price_id')  # 商品价格
+    quantity = IntegerField(default=0)  # 数量
+    created = IntegerField(default=0)  # 创建时间 即加入购物车时间
+
+    class Meta:
+        db_table = 'tb_shop_cart'
 
 
 # 结算表
@@ -471,8 +482,7 @@ class SubOrder(db.Model):
     fail_reason = CharField(default='', max_length=1024)  # 取消或退款原因
     fail_time = IntegerField(default=0)  # 取消或退款时间
     delivery_time = IntegerField(default=0)  # 发货时间
-    settlement = ForeignKeyField(Settlement, related_name='settlement_orders', db_column='settlement_id',
-                                 null=True)  # 完成的订单才可以结算
+    settlement = ForeignKeyField(Settlement, related_name='settlement_orders', db_column='settlement_id', null=True)  # 完成的订单才可以结算
     saler_del = IntegerField(default=0)  # 卖家删除已经完成的订单 1删除
     buyer_del = IntegerField(default=0)  # 买家删除已经完成的订单 1删除
 

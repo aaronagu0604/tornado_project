@@ -117,3 +117,4 @@ class MobileMineHandler(MobileBaseHandler):
                         result['data']['buy_orders']['wait_pay_back'] += count
         self.write(simplejson.dumps(result))
         self.finish()
+

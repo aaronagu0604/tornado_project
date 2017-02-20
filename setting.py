@@ -50,7 +50,8 @@ financeMobiles = '17791812996,18729368422'  # 王琳，吴静
 serviceMobiles = '13323560933,13891949153'  # 余飞（银川），马玉霞，
 ShanXiIphone = '18503516282'  # 山西服务商保险支付成功短信
 
-deadlineTime = 86400    # 一天86400秒
+INSURANCE_ORDER_TIME_OUT = 60 * 60 * 24 * 1  # 保险订单超时时间
+PRODUCT_ORDER_TIME_OUT = 60 * 60 * 24 * 3  # 普通订单超时时间
 remark_ZhouKou = u'大地车险承保仅限15万以内家庭使用非营运客车车辆'
 
 user_expire = 60 * 60 * 24 * 10  # 用户登录token保留时间， 默认保留10天

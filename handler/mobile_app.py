@@ -17,11 +17,10 @@ from lib.mqhelper import create_msg
 class MobileAppHandler(MobileBaseHandler):
     def get(self):
         us = User.select()
-        logging.info('---%s---'%us.count())
         self.write("czj api")
 
 
-@route(r'/mobile/getvcode', name='mobile_getvcode')
+@route(r'/mobile/getvcode', name='mobile_getvcode')  # 获取验证码
 class MobileGetVCodeAppHandler(MobileBaseHandler):
     """
     @apiGroup auth
@@ -85,7 +84,7 @@ class MobileGetVCodeAppHandler(MobileBaseHandler):
         self.finish()
 
 
-@route(r'/mobile/checkvcode', name='mobile_checkvcode')
+@route(r'/mobile/checkvcode', name='mobile_checkvcode')  # 检查验证码
 class MobileCheckVCodeAppHandler(MobileBaseHandler):
     """
     @apiGroup auth
@@ -242,12 +241,14 @@ class MobileLoginHandler(MobileBaseHandler):
                                 token = setting.user_token_prefix + str(uuid.uuid4())
                         else:
                             token = setting.user_token_prefix + str(uuid.uuid4())
-                        result['flag'] = 1
-                        result['data']['type'] = user.store.store_type
-                        result['data']['token'] = token
-                        result['data']['uid'] = user.id
-                        self.application.memcachedb.set(token, str(user.id), setting.user_expire)
-                        user.updatesignin(token)
+                        if self.application.memcachedb.set(token, str(user.id), setting.user_expire):
+                            result['flag'] = 1
+                            result['data']['type'] = user.store.store_type
+                            result['data']['token'] = token
+                            result['data']['uid'] = user.id
+                            user.updatesignin(token)
+                        else:
+                            result['msg'] = '登录失败'
                     else:
                         result['msg'] = "此账户被禁止登录，请联系管理员。"
                 else:
@@ -347,7 +348,6 @@ class MobileFilterHandler(MobileBaseHandler):
         id = self.get_argument("id", None)
         flag = self.get_argument("flag", None)
         sort = self.get_argument("sort", None)
-        index = self.get_argument("index", None)
 
         if not (flag and id):
             result['msg'] = '分类或品牌不能为空'
@@ -356,13 +356,10 @@ class MobileFilterHandler(MobileBaseHandler):
         else:
             flag = int(flag)
             id = int(id)
-        index = int(index) if index else 1
-        area_code = self.get_store_area_code()
 
         result['data']['categoryList'] = []
         result['data']['brandList'] = []
-        # result['data']['productList'] = []
-        if flag == 2:    #分类一定
+        if flag == 2:    # 分类一定
             brandCategorys = BrandCategory.select().where(BrandCategory.category == id)
             if brandCategorys.count() > 0:
                 result['data']['categoryList'].append({
@@ -380,7 +377,7 @@ class MobileFilterHandler(MobileBaseHandler):
                 result['msg'] = '未查到该分类'
                 self.write(simplejson.dumps(result))
                 return
-        elif flag == 1:  #品牌一定
+        elif flag == 1:  # 品牌一定
             brandCategorys = BrandCategory.select().where(BrandCategory.brand == id)
             if brandCategorys.count() > 0:
                 result['data']['brandList'].append({
@@ -402,7 +399,6 @@ class MobileFilterHandler(MobileBaseHandler):
             result['msg'] = '输入参数错误'
             self.write(simplejson.dumps(result))
             return
-        # result['data']['productList'] = self.getProductList(flag, id, sort, index, area_code)
 
         result['flag'] = 1
         self.write(simplejson.dumps(result))
@@ -424,6 +420,7 @@ class MobileDiscoverHandler(MobileBaseHandler):
     @apiParam {String} category 分类ID， 单选
     @apiParam {String} brand 品牌ID组合， 多选, 例：[1,2,3]
     @apiParam {String} attribute 属性ID组合, 多选, 例： [1,2,3]
+    @apiParam {Int} index
 
     @apiSampleRequest /mobile/discover
     """
@@ -431,15 +428,13 @@ class MobileDiscoverHandler(MobileBaseHandler):
         productList = []
         pids = []
         ft = (Product.active==1)
+        # 根据规格参数搜索
         if category and attribute:
             fts = []
             c = Category.get(id=category)
-            logging.info('-----Category------%s, %s---'%( c.id, c.name))
             for i, a in enumerate(c.attributes):
-                logging.info('-----CategoryAttribute------%s, %s---'%( a.id, a.name))
                 cais = CategoryAttributeItems.select().where((CategoryAttributeItems.category_attribute==a) & (CategoryAttributeItems.id<<attribute))
                 for j, cai in enumerate(cais):
-                    logging.info('-----CategoryAttributeItems------%s, %s, %s---'%(j, cai.id, cai.name))
                     if j == 0:
                         fts.append((ProductAttributeValue.value == cai.name))
                     else:
@@ -468,7 +463,6 @@ class MobileDiscoverHandler(MobileBaseHandler):
                    (StoreProductPrice.area_code == area_code))
         elif len(area_code) == 4:  # 门店可以购买的范围到省级
             ft &= (StoreProductPrice.area_code == area_code)
-
         products = ProductRelease.select(
             ProductRelease.id.alias('prid'), Product.id.alias('pid'), StoreProductPrice.id.alias('sppid'),
             Product.name.alias('name'), StoreProductPrice.price.alias('price'), Product.unit.alias('unit'),
@@ -477,7 +471,7 @@ class MobileDiscoverHandler(MobileBaseHandler):
             join(Product, on=(Product.id == ProductRelease.product)). \
             join(StoreProductPrice, on=(StoreProductPrice.product_release == ProductRelease.id)). \
             join(Store, on=(Store.id == ProductRelease.store)).where(ft).dicts()
-
+        # 排序
         if sort == '1':
             products.order_by(StoreProductPrice.price.desc())
         elif sort == '2':
@@ -847,3 +841,137 @@ class MobileNewOrderHandler(MobileAuthHandler):
             result['msg'] = "传入参数异常"
         self.write(simplejson.dumps(result))
         self.finish()
+
+@route(r'/mobile/shopcar', name='mobile_shopcar')  # 手机端购物车内容获取
+class MobileShopCarHandler(MobileBaseHandler):
+    """
+    @apiGroup shopcar
+    @apiVersion 1.0.0
+    @api {get} /mobile/shopcar  手机端购物车内容获取
+    @apiDescription app  手机端购物车内容获取
+
+    @apiHeader {String} token 用户登录凭证
+
+    @apiSampleRequest /mobile/shopcar
+    """
+    def check_xsrf_cookie(self):
+        pass
+
+    def options(self):
+        pass
+
+    def get(self):
+        result = {'flag': 0, 'msg': '', "data": {}}
+        user = self.get_user()
+        if user:
+            for item in user.store.cart_items:
+                result['data'].append({
+                    'sppid': item.store_product_price.id,
+                    'prid': item.store_product_price.product_release.id,
+                    'pid': item.store_product_price.product_release.product.id,
+                    'name': item.store_product_price.product_release.product.name,
+                    'price': item.store_product_price.price,
+                    'unit': item.store_product_price.product_release.product.unit,
+                    'cover': item.store_product_price.product_release.product.cover,
+                    'status': (item.store_product_price.active & item.store_product_price.product_release.active & item.storeProductPrice.product_release.product.active),
+                    'quantity': item.quantity,
+                    'storeid': user.store.id
+                })
+            result['flag'] = 1
+        else:
+            result['msg'] = '请先登录'
+        self.write(simplejson.dumps(result))
+        self.finish()
+
+
+@route(r'/mobile/productorder', name='mobile_product_order')  # 普通商品订单
+class MobilOrderHandler(MobileBaseHandler):
+    """
+    @apiGroup product order
+    @apiVersion 1.0.0
+    @api {get} /mobile/productorder  手机端普通商品订单
+    @apiDescription app  手机端普通商品订单
+
+    @apiHeader {String} token 用户登录凭证
+
+    @apiParam {String} type 订单状态类型 all全部，unpay待支付，undispatch待发货，unreceipt待收货，success交易完成/待评价， delete删除
+    @apiParam {Int} index 每页起始个数
+
+    @apiSampleRequest /mobile/productorder
+    """
+    def check_xsrf_cookie(self):
+        pass
+
+    def options(self):
+        pass
+
+    def delete_timeOut_order(self, user):
+        timeOut = int(time.localtime()) - setting.PRODUCT_ORDER_TIME_OUT
+        ft = (Order.user == user) & (SubOrder.status > -1) & (Order.ordered < timeOut)
+        sos = SubOrder.select().join(Order).where(ft)
+        for so in sos:
+            so.status = -1
+            so.fail_reason = '超时未支付'
+            so.save()
+
+    def get(self):
+        result = {'flag': 0, 'msg': '', "data": []}
+        type = self.get_argument("type", 'all')
+        index = int(self.get_argument('index', 1))
+        user = self.get_user()
+        if not user:
+            result['msg'] = '您还没有登录，不能查看采购订单'
+            self.write(simplejson.dumps(result))
+            return
+        # 先删除超时订单
+        # self.delete_timeOut_order(user)
+        ft = (Order.user == user)
+        if type == 'all':  # 全部
+            ft &= (SubOrder.status > -1) & (SubOrder.buyer_del == 0)
+        elif type == 'unpay':  # 待付款订单
+            ft &= (SubOrder.status == 0) & (SubOrder.buyer_del == 0)
+        elif type == 'undispatch': # 待发货
+            ft &= (SubOrder.status == 1) & (SubOrder.buyer_del == 0)
+        elif type == 'unreceipt':  # 待收货
+            ft &= (Order.status == 2) & (SubOrder.buyer_del == 0)
+        elif type == 'success':  # 交易完成/待评价
+            ft &= (Order.status == 3) & (SubOrder.buyer_del == 0)
+        elif type == 'delete':  # 删除
+            ft &= ((Order.status == -1) | (SubOrder.buyer_del == 1))
+
+        sos = SubOrder.select().join(Order).where(ft).order_by(Order.ordered.desc())
+        paging_q = sos.paginate(index, setting.MOBILE_PAGESIZE)
+        for so in paging_q:
+            if so.status == 0:
+                s = '待付款'
+            elif so.status == 1:
+                s = '待发货'
+            elif so.status == 2:
+                s = '待收货'
+            elif so.status == 3:
+                s = '交易完成'
+            elif so.status == 4:
+                s = '已评价'
+            elif so.status == 5:
+                s = '申请退款'
+            elif so.status == 6:
+                s = '已退款'
+            elif so.status == -1:
+                s = '已取消'
+
+            items = []
+            for soi in so.items:
+                items.append({
+                    'product': soi.product.name,
+                    'price': soi.store_product_price.price,
+                    'quantity': soi.quantity
+                })
+            result['data'].append({
+                'id': so.id,
+                'status': s,
+                'items': items,
+                'ordered': time.strftime('%Y-%m-%d', time.localtime(so.order.ordered)),
+                'deadline': time.strftime('%Y-%m-%d', time.localtime(so.order.ordered+setting.PRODUCT_ORDER_TIME_OUT))
+            })
+        self.write(simplejson.dumps(result))
+
