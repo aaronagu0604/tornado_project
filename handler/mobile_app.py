@@ -943,3 +943,12 @@ class MobilNewInsuranceOrderHandler(MobileAuthHandler):
 
         self.write(simplejson.dumps(result))
         self.finish()
+
+
+
+
+
+
+
+
+

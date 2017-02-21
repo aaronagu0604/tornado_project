@@ -158,15 +158,15 @@ class MobilPurchaseOrderHandler(MobileAuthHandler):
     """
     @apiGroup mine
     @apiVersion 1.0.0
-    @api {get} /mobile/productorder 02 手机端普通商品订单
-    @apiDescription app  手机端普通商品订单
+    @api {get} /mobile/purchaseorder 02 手机端普通商品采购订单
+    @apiDescription app  手机端普通商品采购订单
 
     @apiHeader {String} token 用户登录凭证
 
     @apiParam {String} type 订单状态类型 all全部，unpay待支付，undispatch待发货，unreceipt待收货，success交易完成/待评价， delete删除
     @apiParam {Int} index 每页起始个数
 
-    @apiSampleRequest /mobile/productorder
+    @apiSampleRequest /mobile/purchaseorder
     """
     def check_xsrf_cookie(self):
         pass
@@ -275,6 +275,9 @@ class MobileInsuranceOrderHandler(MobileAuthHandler):
                 'deadline': time.strftime('%Y-%m-%d %H-%M-%S', time.localtime(io.ordered + setting.INSURANCE_ORDER_TIME_OUT))
             })
         self.write(simplejson.dumps(result))
+
+
+
 
 
 
