@@ -683,12 +683,88 @@ class MobileProductHandler(MobileBaseHandler):
         self.render('mobile/product.html', product=product)
 
 
+@route(r'/mobile/addshopcar', name='mobile_add_shop_car')  # 添加购物车
+class MobileAddShopCarHandler(MobileAuthHandler):
+    """
+    @apiGroup app
+    @apiVersion 1.0.0
+    @api {post} /mobile/addshopcar 05. 添加购物车
+    @apiDescription 添加购物车
+
+    @apiHeader {String} token 用户登录凭证
+
+    @apiParam {Int} sppid 地区产品价格ID
+    @apiParam {Int} quantity 产品数量
+
+    @apiSampleRequest /mobile/addshopcar
+    """
+    def post(self):
+        user = self.get_user()
+        result = {'flag': 0, 'msg': '', "data": {}}
+        sppid = self.get_body_argument("sppid", None)
+        quantity = self.get_body_argument("quantity", 1)
+        if user and sppid:
+            car = ShopCart()
+            car.store = user.store
+            car.store_product_price = sppid
+            car.quantity = quantity
+            car.created = int(time.time())
+            car.save()
+            result['flag'] = 1
+        else:
+            result['msg'] = '转入参数异常'
+        self.write(simplejson.dumps(result))
+        self.finish()
+
+
+@route(r'/mobile/shopcar', name='mobile_shopcar')  # 手机端购物车内容获取
+class MobileShopCarHandler(MobileBaseHandler):
+    """
+    @apiGroup shopcar
+    @apiVersion 1.0.0
+    @api {get} /mobile/shopcar 06. 手机端购物车内容获取
+    @apiDescription app  手机端购物车内容获取
+
+    @apiHeader {String} token 用户登录凭证
+
+    @apiSampleRequest /mobile/shopcar
+    """
+    def check_xsrf_cookie(self):
+        pass
+
+    def options(self):
+        pass
+
+    def get(self):
+        result = {'flag': 0, 'msg': '', "data": {}}
+        user = self.get_user()
+        if user:
+            for item in user.store.cart_items:
+                result['data'].append({
+                    'sppid': item.store_product_price.id,
+                    'prid': item.store_product_price.product_release.id,
+                    'pid': item.store_product_price.product_release.product.id,
+                    'name': item.store_product_price.product_release.product.name,
+                    'price': item.store_product_price.price,
+                    'unit': item.store_product_price.product_release.product.unit,
+                    'cover': item.store_product_price.product_release.product.cover,
+                    'status': (item.store_product_price.active & item.store_product_price.product_release.active & item.storeProductPrice.product_release.product.active),
+                    'quantity': item.quantity,
+                    'storeid': user.store.id
+                })
+            result['flag'] = 1
+        else:
+            result['msg'] = '请先登录'
+        self.write(simplejson.dumps(result))
+        self.finish()
+
+
 @route(r'/mobile/orderbase', name='mobile_orderbase')  # 创建订单前的获取数据
 class MobileOrderBaseHandler(MobileAuthHandler):
     """
     @apiGroup order
     @apiVersion 1.0.0
-    @api {post} /mobile/orderbase 01. 创建订单前的获取数据
+    @api {get} /mobile/orderbase 01. 创建订单前的获取数据
     @apiDescription 创建订单前的获取数据，传入产品信息，获取用户的默认地址、支付信息等
 
     @apiHeader {String} token 用户登录凭证
@@ -837,60 +913,61 @@ class MobileNewOrderHandler(MobileAuthHandler):
                     orderItem.product = spp.product_realse.product
                     orderItem.save()
             result['flag'] = 1
+            result['data']['order_id'] = order.id
         else:
             result['msg'] = "传入参数异常"
         self.write(simplejson.dumps(result))
         self.finish()
 
 
-@route(r'/mobile/shopcar', name='mobile_shopcar')  # 手机端购物车内容获取
-class MobileShopCarHandler(MobileBaseHandler):
+@route(r'/mobile/insuranceorderbase', name='mobile_insurance_order_base')  # 创建保险订单前的获取数据
+class MobilInsuranceOrderBaseHandler(MobileAuthHandler):
     """
-    @apiGroup shopcar
-    @apiVersion 1.0.0
-    @api {get} /mobile/shopcar  手机端购物车内容获取
-    @apiDescription app  手机端购物车内容获取
+        @apiGroup order
+        @apiVersion 1.0.0
+        @api {get} /mobile/insuranceorderbase 03. 创建保险订单前的获取数据
+        @apiDescription 创建保险订单前的获取数据，获取用户门店的默认地址、返油积分设置等
 
-    @apiHeader {String} token 用户登录凭证
+        @apiHeader {String} token 用户登录凭证
 
-    @apiSampleRequest /mobile/shopcar
-    """
-    def check_xsrf_cookie(self):
-        pass
+        @apiParam {Int} insurance 保险公司ID
 
-    def options(self):
-        pass
+        @apiSampleRequest /mobile/insuranceorderbase
+        """
 
     def get(self):
         result = {'flag': 0, 'msg': '', "data": {}}
+        area_code = self.get_store_area_code()
+        insurance = self.get_argument('insurance', None)
+        result['data']['is_lube'] = 1 if Area.is_lube_area(area_code) else 0
+        result['data']['is_score'] = 1 if InsuranceScoreExchange.get_score_policy(area_code, insurance) is not None else 0
         user = self.get_user()
-        if user:
-            for item in user.store.cart_items:
-                result['data'].append({
-                    'sppid': item.store_product_price.id,
-                    'prid': item.store_product_price.product_release.id,
-                    'pid': item.store_product_price.product_release.product.id,
-                    'name': item.store_product_price.product_release.product.name,
-                    'price': item.store_product_price.price,
-                    'unit': item.store_product_price.product_release.product.unit,
-                    'cover': item.store_product_price.product_release.product.cover,
-                    'status': (item.store_product_price.active & item.store_product_price.product_release.active & item.storeProductPrice.product_release.product.active),
-                    'quantity': item.quantity,
-                    'storeid': user.store.id
-                })
-            result['flag'] = 1
-        else:
-            result['msg'] = '请先登录'
+        try:
+            address = StoreAddress.get((StoreAddress.store == user.store) & (StoreAddress.is_default == 1))
+            result['data']['delivery_to'] = address.name
+            result['data']['delivery_tel'] = address.mobile
+            result['data']['delivery_province'] = address.province
+            result['data']['delivery_city'] = address.city
+            result['data']['delivery_region'] = address.region
+            result['data']['delivery_address'] = address.address
+        except:
+            result['data']['delivery_to'] = ''
+            result['data']['delivery_tel'] = ''
+            result['data']['delivery_province'] = ''
+            result['data']['delivery_city'] = ''
+            result['data']['delivery_region'] = ''
+            result['data']['delivery_address'] = ''
+        result['flag'] = 1
+
         self.write(simplejson.dumps(result))
         self.finish()
-
 
 @route(r'/mobile/newinsuranceorder', name='mobile_new_insurance_order')  # 创建保险订单
 class MobilNewInsuranceOrderHandler(MobileAuthHandler):
     """
     @apiGroup order
     @apiVersion 1.0.0
-    @api {post} /mobile/newinsuranceorder  创建保险订单
+    @api {post} /mobile/newinsuranceorder 04. 创建保险订单
     @apiDescription app  创建保险订单
 
     @apiHeader {String} token 用户登录凭证
@@ -937,10 +1014,92 @@ class MobilNewInsuranceOrderHandler(MobileAuthHandler):
 
     def post(self):
         result = {'flag': 0, 'msg': '', "data": []}
-
+        id_card_front = self.get_body_argument('id_card_front', None)
+        id_card_back = self.get_body_argument('id_card_back', None)
+        drive_card_front = self.get_body_argument('drive_card_front', None)
+        drive_card_back = self.get_body_argument('drive_card_back', None)
+        insurance = self.get_body_argument('insurance', None)
+        forceI = self.get_body_argument('forceI', None)
+        damageI = self.get_body_argument('damageI', None)
+        damageIPlus = self.get_body_argument('damageIPlus', None)
+        thirdDutyI = self.get_body_argument('thirdDutyI', None)
+        thirdDutyIPlus = self.get_body_argument('thirdDutyIPlus', None)
+        robbingI = self.get_body_argument('robbingI', None)
+        robbingIPlus = self.get_body_argument('robbingIPlus', None)
+        driverDutyI = self.get_body_argument('driverDutyI', None)
+        driverDutyIPlus = self.get_body_argument('driverDutyIPlus', None)
+        passengerDutyI = self.get_body_argument('passengerDutyI', None)
+        passengerDutyIPlus = self.get_body_argument('passengerDutyIPlus', None)
+        glassI = self.get_body_argument('glassI', None)
+        scratchI = self.get_body_argument('scratchI', None)
+        scratchIPlus = self.get_body_argument('scratchIPlus', None)
+        fireDamageI = self.get_body_argument('fireDamageI', None)
+        fireDamageIPlus = self.get_body_argument('fireDamageIPlus', None)
+        wadeI = self.get_body_argument('wadeI', None)
+        wadeIPlus = self.get_body_argument('wadeIPlus', None)
+        thirdSpecialI = self.get_body_argument('thirdSpecialI', None)
+        delivery_to = self.get_body_argument('delivery_to', None)
+        delivery_tel = self.get_body_argument('delivery_tel', None)
+        delivery_province = self.get_body_argument('delivery_province', None)
+        delivery_city = self.get_body_argument('delivery_city', None)
+        delivery_region = self.get_body_argument('delivery_region', None)
+        delivery_address = self.get_body_argument('delivery_address', None)
+        gift_policy = self.get_body_argument('gift_policy', None)
         user = self.get_user()
-
-
+        if user and gift_policy and delivery_address and delivery_city and delivery_province and delivery_region and \
+            delivery_tel and delivery_to and thirdSpecialI and wadeI and wadeIPlus and fireDamageI and fireDamageIPlus \
+            and scratchI and scratchIPlus and glassI and passengerDutyI and passengerDutyIPlus and driverDutyI and \
+            driverDutyIPlus and robbingI and robbingIPlus and thirdDutyI and thirdDutyIPlus and damageI and \
+            damageIPlus and forceI and insurance and drive_card_back and drive_card_front and id_card_back and \
+                id_card_front:
+            order = InsuranceOrder()
+            order.user = user
+            order.store = user.store
+            order.id_card_front = id_card_front
+            order.id_card_back = id_card_back
+            order.drive_card_front = drive_card_front
+            order.drive_card_back = drive_card_back
+            order.ordered = int(time.time())
+            order.delivery_to = delivery_to
+            order.delivery_tel = delivery_tel
+            order.delivery_province = delivery_province
+            order.delivery_city = delivery_city
+            order.delivery_region = delivery_region
+            order.delivery_address = delivery_address
+            order.status = 0
+            order.save()
+            order.ordernum = 'U' + str(user.id) + 'I' + str(order.id)
+            order.save()
+            order_price = InsuranceOrderPrice()
+            order_price.insurance_order_id = order.id
+            order_price.insurance = insurance
+            order_price.created = int(time.time())
+            order_price.gift_policy = gift_policy
+            order_price.forceI = forceI
+            order_price.damageI = damageI
+            order_price.damageIPlus = damageIPlus
+            order_price.thirdDutyI = thirdDutyI
+            order_price.thirdDutyIPlus = thirdDutyIPlus
+            order_price.robbingI = robbingI
+            order_price.robbingIPlus = robbingIPlus
+            order_price.driverDutyI = driverDutyI
+            order_price.driverDutyIPlus = driverDutyIPlus
+            order_price.passengerDutyI = passengerDutyI
+            order_price.passengerDutyIPlus = passengerDutyIPlus
+            order_price.glassI = glassI
+            order_price.scratchI = scratchI
+            order_price.scratchIPlus = scratchIPlus
+            order_price.fireDamageI = fireDamageI
+            order_price.fireDamageIPlus = fireDamageIPlus
+            order_price.wadeI = wadeI
+            order_price.wadeIPlus = wadeIPlus
+            order_price.thirdSpecialI = thirdSpecialI
+            order_price.save()
+            result['msg'] = 1
+            result['data']['order_id'] = order.id
+            result['data']['order_price_id'] = order_price.id
+        else:
+            result['msg'] = '输入参数异常'
         self.write(simplejson.dumps(result))
         self.finish()
 

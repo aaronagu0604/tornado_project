@@ -27,32 +27,13 @@ class Area(db.Model):
     is_scorearea = IntegerField(default=0)  # 是否开通积分地区
     is_lubearea = IntegerField(default=0)  # 是否开通返油地区
 
-    def validate(self):
-        if self.name:
-            ft = (Area.name == self.name)
-            if self.id:
-                ft = ft & (Area.id != self.id)
-            if Area.select().where(ft).count() > 0:
-                raise Exception('地区名已存在')
-        else:
-            raise Exception('请输入地区名')
-
-    def get_detailed_address(self, area_code):
-        lenAreaCode = len(area_code)
-        if lenAreaCode == 12 or lenAreaCode == 8 or lenAreaCode == 4:
-            try:
-                a = Area.get(code=area_code)
-                if lenAreaCode == 12:
-                    addr = a.pid.pid.name + a.pid.name + a.name
-                elif lenAreaCode == 8:
-                    addr = a.pid.name + a.name
-                else:
-                    addr = a.name
-                return addr
-            except:
-                return ''
-        else:
-            return ''
+    @classmethod
+    def is_lube_area(cls, area_code):
+        try:
+            area = Area.get(Area.code == area_code)
+            return area.is_lubeare == 1
+        except:
+            return False
 
     class Meta:
         db_table = 'tb_area'
@@ -391,7 +372,7 @@ class StoreProductPrice(db.Model):
 # 购物车
 class ShopCart(db.Model):
     id = PrimaryKeyField()
-    store = ForeignKeyField(Store, related_name='cart_items', db_column='store_id') # 门店店铺
+    store = ForeignKeyField(Store, related_name='cart_items', db_column='store_id')  # 门店店铺
     store_product_price = ForeignKeyField(StoreProductPrice, db_column='store_product_price_id')  # 商品价格
     quantity = IntegerField(default=0)  # 数量
     created = IntegerField(default=0)  # 创建时间 即加入购物车时间
@@ -549,7 +530,7 @@ class InsuranceOrderPrice(db.Model):
     created = IntegerField(default=0)  # 报价时间
     admin_user = ForeignKeyField(AdminUser, db_column='admin_user_id', null=True)  # 报价人员
     score = IntegerField(default=0)  # 卖的这单保险可以获取多少积分
-
+    gift_policy = IntegerField(default=0)  # 礼品策略 1反油， 2反积分
     total_price = FloatField(default=0.0)  # 保险订单总价格
     force_price = FloatField(default=0.0)  # 交强险 价格
     business_price = FloatField(default=0.0)  # 商业险价格
@@ -619,10 +600,10 @@ class InsuranceOrder(db.Model):
     store = ForeignKeyField(Store, related_name='insurance_orders', db_column='store_id')  # 店铺
     current_order_price = ForeignKeyField(InsuranceOrderPrice, db_column='current_order_price_id', null=True)  # 最终报价ID
 
-    idcard = CharField(max_length=255, null=True)  # 身份证
-    idcardback = CharField(max_length=255, null=True)  # 身份证背面
-    drivercard = CharField(max_length=255, null=True)  # 行驶证
-    drivercard2 = CharField(max_length=255, null=True)  # 行驶证副本
+    id_card_front = CharField(max_length=255, null=True)  # 身份证
+    id_card_back = CharField(max_length=255, null=True)  # 身份证背面
+    drive_card_front = CharField(max_length=255, null=True)  # 行驶证
+    drive_card_back = CharField(max_length=255, null=True)  # 行驶证副本
     payment = IntegerField(default=1)  # 付款方式  1支付宝  2微信 3银联 4余额
     ordered = IntegerField(default=0)  # 下单时间
 
@@ -645,7 +626,6 @@ class InsuranceOrder(db.Model):
     deal_time = IntegerField(default=0)  # 完成时间
     pay_account = CharField(max_length=128, default='')  # 用户支付宝、微信账户
     trade_no = CharField(max_length=64, default='')  # 支付宝/微信交易号
-    gift_policy = IntegerField(default=0)  # 礼品策略 1反油， 2反积分
     user_del = IntegerField(default=0)  # 用户端不显示
 
     def change_status(self, status):
@@ -703,6 +683,31 @@ class InsuranceScoreExchange(db.Model):
 
     class Meta:
         db_table = "tb_insurance_score_exchange"
+
+    @classmethod
+    def get_score_policy(cls, area_code, insurance_id):
+        codes = []
+        if len(area_code) == 12:
+            codes.append(area_code)
+            codes.append(area_code[0:8])
+            codes.append(area_code[0:4])
+        elif len(area_code) == 8:
+            codes.append(area_code)
+            codes.append(area_code[0:4])
+        elif len(area_code) == 8:
+            codes.append(area_code)
+        else:
+            return None
+
+        configs = InsuranceScoreExchange.select(InsuranceScoreExchange).join(
+                Area, on=(Area.code == InsuranceScoreExchange.area_code)).\
+            where((InsuranceScoreExchange.area_code << codes) &
+                  (InsuranceScoreExchange.insurance == insurance_id) &
+                  (Area.is_scorearea == 1)).order_by(len(area_code).desc())
+        if configs.count() > 0:
+            return configs[0]
+        else:
+            return None
 
 
 # 手机端区块: 广告
