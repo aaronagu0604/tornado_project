@@ -191,7 +191,11 @@ class MobilPurchaseOrderHandler(MobileAuthHandler):
         # 先删除超时订单
         # self.delete_timeOut_order(user)
         ft = (Order.user == user)
-        result['data'] = productOrderSearch(ft, type, index)
+        try:
+            result['data'] = productOrderSearch(ft, type, index)
+            result['flag'] = 1
+        except Exception:
+            result['msg'] = '系统错误'
         self.write(simplejson.dumps(result))
 
 
@@ -216,7 +220,11 @@ class MobileSellOrderHandler(MobileAuthHandler):
         index = int(self.get_argument('index', 1))
         store = self.get_user().store
         ft = (SubOrder.saler_store == store)
-        result['data'] = productOrderSearch(ft, type, index)
+        try:
+            result['data'] = productOrderSearch(ft, type, index)
+            result['flag'] = 1
+        except Exception:
+            result['msg'] = '系统错误'
         self.write(simplejson.dumps(result))
 
 
