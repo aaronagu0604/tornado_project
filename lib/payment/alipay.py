@@ -7,7 +7,7 @@ try:
     from urllib.parse import parse_qs as _parse_qs  # py3
 except ImportError:
     from urlparse import parse_qs as _parse_qs  # Python 2.6+
-from config import Settings
+from aliconfig import Settings
 import core
 
 
@@ -24,7 +24,7 @@ def get_pay_url(tn, subject, total_fee, isCZ=False):
                      "</direct_trade_create_req>" % \
                (Settings.CZ_NOTIFY_URL if isCZ else Settings.NOTIFY_URL,
                 Settings.CZ_RETURN_URL if isCZ else Settings.RETURN_URL,
-                Settings.SELLER_EMAIL, tn, subject, total_fee,'')
+                Settings.SELLER_EMAIL, tn, subject, total_fee, '')
 
     temp_param = {"partner": Settings.PARTNER,
                   "_input_charset": Settings.INPUT_CHARSET,

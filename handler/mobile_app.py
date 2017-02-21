@@ -962,6 +962,7 @@ class MobilInsuranceOrderBaseHandler(MobileAuthHandler):
         self.write(simplejson.dumps(result))
         self.finish()
 
+
 @route(r'/mobile/newinsuranceorder', name='mobile_new_insurance_order')  # 创建保险订单
 class MobilNewInsuranceOrderHandler(MobileAuthHandler):
     """

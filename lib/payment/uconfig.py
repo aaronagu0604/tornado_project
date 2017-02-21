@@ -2,11 +2,11 @@
 setting = {
     # 银联相关
     # 签名证书路径
-    'SDK_SIGN_CERT_PATH': '/home/www/workspace/eofan/src/lib/wap_alipay/upaycfg/czj.pfx',
+    'SDK_SIGN_CERT_PATH': '/home/www/workspace/eofan/src/lib/payment/upayfile/czj.pfx',
     # 签名证书密码
     'SDK_SIGN_CERT_PWD': '890604',
     # 验签证书路径
-    'SDK_VERIFY_CERT_DIR': '/home/www/workspace/eofan/src/lib/wap_alipay/upaycfg/',
+    'SDK_VERIFY_CERT_DIR': '/home/www/workspace/eofan/src/lib/payment/upayfile/',
     # 前台请求地址
     'SDK_FRONT_TRANS_URL': 'https://gateway.95516.com/gateway/api/frontTransReq.do',
     # 后台请求地址

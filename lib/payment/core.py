@@ -4,7 +4,7 @@ import types
 from urllib import urlencode, urlopen
 from hashcompat import md5_constructor as md5
 import xml.etree.ElementTree as etree
-from config import Settings
+from aliconfig import Settings
 from model import User, Order, Score,Balance,OrderItem,AdminUser,PayBack,Product_Reserve, OrderItemService
 import random
 import time

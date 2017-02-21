@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 class Settings:
     # 安全检验码，以数字和字母组成的32位字符
     KEY = 'd2fmn3xc7f45bxl21qfjdojhw7q0049t'
@@ -18,9 +19,7 @@ class Settings:
     RETURN_URL = 'http://www.520czj.com/mobile/alipay_callback'
 
     # 交易过程中服务器异步通知的页面 要用 http://格式的完整路径，不允许加?id=123这类自定义参数
-    NOTIFY_URL = 'http://www.520czj.com:8889/mobile/alipay_notify'
-
-    MERCHANT_URL = 'http://www.520czj.com/mobile/alipay_callback'
+    NOTIFY_URL = 'http://www.520czj.com/mobile/alipay_notify'
 
     SHOW_URL = ''
 
@@ -50,7 +49,6 @@ class Settings:
     # 交易过程中服务器异步通知的页面 要用 http://格式的完整路径，不允许加?id=123这类自定义参数
     CZ_NOTIFY_URL = 'http://www.520czj.com/mobile/alipay_cz_notify'
 
-    CZ_MERCHANT_URL = 'http://www.520czj.com/mobile/alipay_cz_callback'
 
 
 

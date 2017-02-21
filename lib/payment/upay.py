@@ -4,8 +4,9 @@ import types, hashlib, time, base64, os
 import urllib2
 import urllib
 from urllib import urlencode, urlopen
-from upaycfg.config import setting  # 见config.py
+from uconfig import setting  # 见config.py
 from OpenSSL.crypto import load_pkcs12, FILETYPE_PEM, sign, verify, load_certificate
+
 
 class Trade(object):
     # 读取文件
