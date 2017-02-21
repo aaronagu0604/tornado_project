@@ -35,6 +35,14 @@ class Area(db.Model):
         except:
             return False
 
+    @classmethod
+    def is_score_area(cls, area_code):
+        try:
+            area = Area.get(Area.code == area_code)
+            return area.is_scorearea == 1
+        except:
+            return False
+
     class Meta:
         db_table = 'tb_area'
 
@@ -197,14 +205,33 @@ class ScoreRecord(db.Model):
     id = PrimaryKeyField()
     user = ForeignKeyField(User, related_name='score_records', db_column='user_id')  # 用户
     store = ForeignKeyField(Store, related_name='score_records', db_column='store_id')  # 店铺
+    ordernum = CharField(max_length=16, default='')  # 商品/保险/提现订单号
+    type = IntegerField()  # 积分类别 1兑换商品 2兑现 3卖保险获取
     process_type = IntegerField(default=0)  # 积分流动类型 1入账 2出账
-    process_log = CharField(max_length=255, default='')  # 积分流动
+    process_log = CharField(max_length=255, default='')  # 积分流动日志
     score = IntegerField(default=0)  # 流动积分数值
+    created = IntegerField(default=0)  # 创建时间
     status = IntegerField(default=0)  # 状态 0待定 1确定
 
     class Meta:
         db_table = 'tb_score_record'
 
+    @classmethod
+    def create_score_record(cls, user, type, score, log):
+        try:
+            now = int(time.time())
+            if type == 1:
+                process_type = 2
+            elif type == 2:
+                process_type = 2
+            elif type == 3:
+                process_type = 1
+            else:
+                return False
+            return ScoreRecord.create(user=user, store=user.store, type=type, process_type=process_type, process_log=log,
+                                      score=score, created=now, status=1)
+        except:
+            return False
 
 # 门店银行、支付宝账户
 class StoreBankAccount(db.Model):
@@ -223,7 +250,7 @@ class StoreBankAccount(db.Model):
         db_table = 'tb_score_record'
 
 
-# 门店服务区域
+# 经销商服务区域
 class StoreArea(db.Model):
     id = PrimaryKeyField()
     area = ForeignKeyField(Area, db_column='area_id')  # 用户
@@ -355,7 +382,7 @@ class ProductRelease(db.Model):
         db_table = 'tb_product_release'
 
 
-# 发布商品
+# 发布的商品对应地区及价格
 class StoreProductPrice(db.Model):
     id = PrimaryKeyField()
     product_release = ForeignKeyField(ProductRelease, related_name='area_prices', db_column='product_release_id')  # 所属商品
@@ -363,6 +390,7 @@ class StoreProductPrice(db.Model):
     area_code = CharField(max_length=20)  # 地区code
     price = FloatField()  # 当前始销售价，负数或0为不能购物
     score = IntegerField(default=0)  # 积分兑换额度，负数或0为不能兑换
+    created = IntegerField(default=0)  # 发布时间
     active = IntegerField(default=1)  # 状态 0下架 1有效
 
     class Meta:

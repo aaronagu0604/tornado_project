@@ -448,7 +448,7 @@ class MobileDiscoverHandler(MobileBaseHandler):
             ft = (Product.id << pids)
         elif category:
             ft &= (Product.category == category)
-        ft &= ((StoreProductPrice.price>0) & (StoreProductPrice.active==1) & (StoreProductPrice.active==1))
+        ft &= ((StoreProductPrice.price>0) & (StoreProductPrice.active==1) & (ProductRelease.active==1))
         if keyword:
             keyword = '%' + '%'
             ft &= (Product.name % keyword)
