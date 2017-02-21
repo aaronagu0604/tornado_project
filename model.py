@@ -548,55 +548,64 @@ class InsuranceOrderPrice(db.Model):
     insurance = ForeignKeyField(Insurance, db_column='insurance_id')  # 所购保险公司ID
     created = IntegerField(default=0)  # 报价时间
     admin_user = ForeignKeyField(AdminUser, db_column='admin_user_id', null=True)  # 报价人员
+    score = IntegerField(default=0)  # 卖的这单保险可以获取多少积分
 
     total_price = FloatField(default=0.0)  # 保险订单总价格
     force_price = FloatField(default=0.0)  # 交强险 价格
     business_price = FloatField(default=0.0)  # 商业险价格
     vehicle_tax_price = FloatField(default=0.0)  # 车船税价格
 
-    forceI = CharField(max_length=32, default='')  # 交强险
+    # 交强险
+    forceI = CharField(max_length=32, default='')  # 是否包含交强险
     forceIPrice = FloatField(null=True)
-    damageI = CharField(max_length=32, default='')  # 车辆损失险
-    damageIPrice = FloatField(null=True)
-    thirdDutyI = CharField(max_length=32, default='')  # 第三者责任险
-    thirdDutyIPrice = FloatField(null=True)
-    robbingI = CharField(max_length=32, default='')  # 机动车全车盗抢险
-    robbingIPrice = FloatField(null=True)
-    driverDutyI = CharField(max_length=32, default='')  # 机动车车上人员责任险（司机）
-    driverDutyIPrice = FloatField(null=True)
-    passengerDutyI = CharField(max_length=32, default='')  # 机动车车上人员责任险（乘客）
-    passengerDutyIPrice = FloatField(null=True)
-    glassI = CharField(max_length=32, default='')  # 玻璃单独破碎险
-    glassIPrice = FloatField(null=True)
-    scratchI = CharField(max_length=32, default='')  # 车身划痕损失险
-    scratchIPrice = FloatField(null=True)
-    normalDamageI = CharField(max_length=32, default='')  # 自然损失险
-    normalDamageIPrice = FloatField(null=True)
-    wadeI = CharField(max_length=32, default='')  # 发动机涉水损失险
-    wadeIPrice = FloatField(null=True)
-    specialI = CharField(max_length=32, default='')  # 不计免赔特约险
-    specialIPrice = FloatField(null=True)
-    thirdSpecialI = CharField(max_length=32, default='')  # 机动车损失保险无法找到第三方特约险
-    thirdSpecialIPrice = FloatField(null=True)
 
-    damageSpecialI = CharField(max_length=32, default='')  # 车辆损失特约险
-    damageSpecialIPrice = FloatField(null=True)
-    thirdDutySpecialI = CharField(max_length=32, default='')  # 第三者责任险
-    thirdDutySpecialIPrice = FloatField(null=True)
-    robbingSpecialI = CharField(max_length=32, default='')  # 机动车全车盗抢特约险
-    robbingSpecialIPrice = FloatField(null=True)
-    driverDutySpecialI = CharField(max_length=32, default='')  # 机动车车上人员特约险（司机）
-    driverDutySpecialIPrice = FloatField(null=True)
-    passengerDutySpecialI = CharField(max_length=32, default='')  # 机动车车上人员责任险（乘客）特约险
-    passengerDutySpecialIPrice = FloatField(null=True)
-    scratchSpecialI = CharField(max_length=32, default='')  # 车身划痕损失险特约险
-    scratchSpecialIPrice = FloatField(null=True)
-    normalDamageSpecialI = CharField(max_length=32, default='')  # 自然损失险特约险
-    normalDamageSpecialIPrice = FloatField(null=True)
-    wadeSpecialI = CharField(max_length=32, default='')  # 发动机涉水损失险特约险
-    wadeSpecialIPrice = FloatField(null=True)
-    thirdSpecialSpecialI = CharField(max_length=32, default='')  # 机动车损失保险无法找到第三方特约险
-    thirdSpecialSpecialIPrice = FloatField(null=True)
+    # 商业险-主险-车辆损失险
+    damageI = CharField(max_length=32, default='')
+    damageIPlus = CharField(max_length=32, default='')
+    damageIPrice = FloatField(null=True)
+
+    # 商业险-主险-第三者责任险，含保额
+    thirdDutyI = CharField(max_length=32, default='')
+    thirdDutyIPlus = CharField(max_length=32, default='')
+    thirdDutyIPrice = FloatField(null=True)
+
+    # 商业险-主险-机动车全车盗抢险
+    robbingI = CharField(max_length=32, default='')
+    robbingIPlus = CharField(max_length=32, default='')
+    robbingIPrice = FloatField(null=True)
+
+    # 商业险-主险-机动车车上人员责任险（司机），含保额
+    driverDutyI = CharField(max_length=32, default='')
+    driverDutyIPlus = CharField(max_length=32, default='')
+    driverDutyIPrice = FloatField(null=True)
+
+    # 商业险-主险-机动车车上人员责任险（乘客），含保额
+    passengerDutyI = CharField(max_length=32, default='')
+    passengerDutyIPlus = CharField(max_length=32, default='')
+    passengerDutyIPrice = FloatField(null=True)
+
+    # 商业险-附加险-玻璃单独破碎险
+    glassI = CharField(max_length=32, default='')
+    glassIPrice = FloatField(null=True)
+
+    # 商业险-附加险-车身划痕损失险，含保额
+    scratchI = CharField(max_length=32, default='')
+    scratchIPlus = CharField(max_length=32, default='')
+    scratchIPrice = FloatField(null=True)
+
+    # 商业险-附加险-自燃损失险
+    fireDamageI = CharField(max_length=32, default='')
+    fireDamageIPlus = CharField(max_length=32, default='')
+    fireDamageIPrice = FloatField(null=True)
+
+    # 商业险-附加险-发动机涉水损失险
+    wadeI = CharField(max_length=32, default='')
+    wadeIPlus = CharField(max_length=32, default='')
+    wadeIPrice = FloatField(null=True)
+
+    # 商业险-附加险-机动车损失保险无法找到第三方特约金
+    thirdSpecialI = CharField(max_length=32, default='')
+    thirdSpecialIPrice = FloatField(null=True)
 
     class Meta:
         db_table = 'tb_insurance_order_price'
@@ -637,7 +646,6 @@ class InsuranceOrder(db.Model):
     pay_account = CharField(max_length=128, default='')  # 用户支付宝、微信账户
     trade_no = CharField(max_length=64, default='')  # 支付宝/微信交易号
     gift_policy = IntegerField(default=0)  # 礼品策略 1反油， 2反积分
-    score = IntegerField(default=0)  # 卖的这单保险可以获取多少积分
     user_del = IntegerField(default=0)  # 用户端不显示
 
     def change_status(self, status):

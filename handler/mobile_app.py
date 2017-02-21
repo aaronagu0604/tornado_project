@@ -992,7 +992,32 @@ class MobilNewInsuranceOrderHandler(MobileAuthHandler):
     @apiParam {String} drive_card_front 行驶证正面
     @apiParam {String} drive_card_back 行驶证反面
     @apiParam {Int} insurance 保险公司ID
-
+    @apiParam {String} forceI 交强险，字符串格式：1购买 ''未购买
+    @apiParam {String} damageI 商业险-主险-车辆损失险，字符串格式：1购买 ‘’未购买
+    @apiParam {String} damageIPlus 商业险-主险-车辆损失险-不计免赔特约险，字符串格式：1购买 ‘’未购买
+    @apiParam {String} thirdDutyI 商业险-主险-第三者责任险，含保额，字符串格式：5万 ‘’未购买
+    @apiParam {String} thirdDutyIPlus 商业险-主险-第三者责任险，含保额-不计免赔特约险，字符串格式：1购买 ‘’未购买
+    @apiParam {String} robbingI 商业险-主险-机动车全车盗抢险，字符串格式：1购买 ‘’未购买
+    @apiParam {String} robbingIPlus 商业险-主险-机动车全车盗抢险-不计免赔特约险，字符串格式：1购买 ‘’未购买
+    @apiParam {String} driverDutyI 商业险-主险-机动车车上人员责任险（司机），含保额，字符串格式：5万 ‘’未购买
+    @apiParam {String} driverDutyIPlus 商业险-主险-机动车车上人员责任险（司机），含保额-不计免赔特约险，字符串格式：1购买 ‘’未购买
+    @apiParam {String} passengerDutyI 商业险-主险-机动车车上人员责任险（乘客），含保额，字符串格式：5万 ‘’未购买
+    @apiParam {String} passengerDutyIPlus 商业险-主险-机动车车上人员责任险（乘客），含保额-不计免赔特约险，字符串格式：1购买 ‘’未购买
+    @apiParam {String} glassI 商业险-附加险-玻璃单独破碎险，字符串格式：1购买 ''未购买
+    @apiParam {String} scratchI 商业险-附加险-车身划痕损失险，含保额，字符串格式：5万 ‘’未购买
+    @apiParam {String} scratchIPlus 商业险-附加险-车身划痕损失险，含保额-不计免赔特约险，字符串格式：1购买 ‘’未购买
+    @apiParam {String} fireDamageI 商业险-主险-自燃损失险，字符串格式：1购买 ‘’未购买
+    @apiParam {String} fireDamageIPlus 商业险-主险-自燃损失险-不计免赔特约险，字符串格式：1购买 ‘’未购买
+    @apiParam {String} wadeI 商业险-主险-发动机涉水损失险，字符串格式：1购买 ‘’未购买
+    @apiParam {String} wadeIPlus 商业险-主险-发动机涉水损失险-不计免赔特约险，字符串格式：1购买 ‘’未购买
+    @apiParam {String} thirdSpecialI 商业险-附加险-机动车损失保险无法找到第三方特约金，字符串格式：1购买 ''未购买
+    @apiParam {String} delivery_to 保单邮寄接收人名称
+    @apiParam {String} delivery_tel 保单邮寄接收人电话
+    @apiParam {String} delivery_province 保单邮寄接收省份
+    @apiParam {String} delivery_city 保单邮寄接收城市
+    @apiParam {String} delivery_region 保单邮寄接收区域
+    @apiParam {String} delivery_address 保单邮寄地址
+    @apiParam {Int} gift_policy 礼品策略 1反油， 2反积分, 0无礼品
 
     @apiSampleRequest /mobile/newinsuranceorder
     """
@@ -1004,62 +1029,9 @@ class MobilNewInsuranceOrderHandler(MobileAuthHandler):
 
     def post(self):
         result = {'flag': 0, 'msg': '', "data": []}
-        type = self.get_argument("type", 'all')
-        index = int(self.get_argument('index', 1))
+
         user = self.get_user()
-        if not user:
-            result['msg'] = '您还没有登录，不能查看采购订单'
-            self.write(simplejson.dumps(result))
-            return
-        # 先删除超时订单
-        # self.delete_timeOut_order(user)
-        ft = (Order.user == user)
-        if type == 'all':  # 全部
-            ft &= (SubOrder.status > -1) & (SubOrder.buyer_del == 0)
-        elif type == 'unpay':  # 待付款订单
-            ft &= (SubOrder.status == 0) & (SubOrder.buyer_del == 0)
-        elif type == 'undispatch': # 待发货
-            ft &= (SubOrder.status == 1) & (SubOrder.buyer_del == 0)
-        elif type == 'unreceipt':  # 待收货
-            ft &= (Order.status == 2) & (SubOrder.buyer_del == 0)
-        elif type == 'success':  # 交易完成/待评价
-            ft &= (Order.status == 3) & (SubOrder.buyer_del == 0)
-        elif type == 'delete':  # 删除
-            ft &= ((Order.status == -1) | (SubOrder.buyer_del == 1))
 
-        sos = SubOrder.select().join(Order).where(ft).order_by(Order.ordered.desc())
-        paging_q = sos.paginate(index, setting.MOBILE_PAGESIZE)
-        for so in paging_q:
-            if so.status == 0:
-                s = '待付款'
-            elif so.status == 1:
-                s = '待发货'
-            elif so.status == 2:
-                s = '待收货'
-            elif so.status == 3:
-                s = '交易完成'
-            elif so.status == 4:
-                s = '已评价'
-            elif so.status == 5:
-                s = '申请退款'
-            elif so.status == 6:
-                s = '已退款'
-            elif so.status == -1:
-                s = '已取消'
 
-            items = []
-            for soi in so.items:
-                items.append({
-                    'product': soi.product.name,
-                    'price': soi.store_product_price.price,
-                    'quantity': soi.quantity
-                })
-            result['data'].append({
-                'id': so.id,
-                'status': s,
-                'items': items,
-                'ordered': time.strftime('%Y-%m-%d', time.localtime(so.order.ordered)),
-                'deadline': time.strftime('%Y-%m-%d', time.localtime(so.order.ordered+setting.PRODUCT_ORDER_TIME_OUT))
-            })
         self.write(simplejson.dumps(result))
-
+        self.finish()
