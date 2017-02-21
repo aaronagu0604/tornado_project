@@ -720,7 +720,7 @@ class MobileAddShopCarHandler(MobileAuthHandler):
 @route(r'/mobile/shopcar', name='mobile_shopcar')  # 手机端购物车内容获取
 class MobileShopCarHandler(MobileBaseHandler):
     """
-    @apiGroup shopcar
+    @apiGroup app
     @apiVersion 1.0.0
     @api {get} /mobile/shopcar 06. 手机端购物车内容获取
     @apiDescription app  手机端购物车内容获取
