@@ -19,7 +19,6 @@ from lib.payment.upay import Trade
 @route(r'/', name='mobile_app')
 class MobileAppHandler(MobileBaseHandler):
     def get(self):
-        us = User.select()
         self.write("czj api")
 
 
@@ -119,7 +118,6 @@ class MobileCheckVCodeAppHandler(MobileBaseHandler):
                 result['flag'] = 1
             else:
                 result['msg'] = "请输入正确的验证码"
-            pass
         else:
             result['flag'] = 0
             result['msg'] = '请传入正确的手机号码与验证码'
@@ -174,7 +172,7 @@ class MobileRegHandler(MobileBaseHandler):
         storePic = self.get_body_argument("storePic", None)
         user = User()
         user.mobile = mobile
-        user.password = password
+        user.password = user.create_password(password)
         try:
             user.validate()
             if not (store_type and companyName and province and city and district and address and legalPerson

@@ -38,7 +38,6 @@ ShanXiIphone = '18503516282'  # 山西服务商保险支付成功短信
 
 INSURANCE_ORDER_TIME_OUT = 60 * 60 * 24 * 1  # 保险订单超时时间
 PRODUCT_ORDER_TIME_OUT = 60 * 60 * 24 * 3  # 普通订单超时时间
-remark_ZhouKou = u'大地车险承保仅限15万以内家庭使用非营运客车车辆'
 
 user_expire = 60 * 60 * 24 * 10  # 用户登录token保留时间， 默认保留10天
 user_token_prefix = "mt:"  # 用户登录token的前缀
@@ -46,3 +45,8 @@ user_token_prefix = "mt:"  # 用户登录token的前缀
 CASH_MIN_MONEY = 0  # 积分兑现最小金额
 CASH_RATE = 1.0  # 积分兑现比率 money = score * cashRate
 
+def get_help_center_remark(area_code):
+    if area_code[:8] == '00160016':
+        return '大地车险承保仅限15万以内家庭使用非营运客车车辆'
+    else:
+        return ''

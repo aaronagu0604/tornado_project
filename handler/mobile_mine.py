@@ -54,7 +54,7 @@ class MobileMineHandler(MobileBaseHandler):
         else:  # 已登录
             result['data']['store_name'] = user.store.name
             result['data']['user_name'] = user.mobile
-
+            result['data']['active'] = user.store.active
             result['data']['store_price'] = user.store.price
             result['data']['store_score'] = user.store.score
             if user.store.store_type == 1:
@@ -121,6 +121,7 @@ class MobileMineHandler(MobileBaseHandler):
                         result['data']['buy_orders']['wait_comment'] += count
                     elif status == 5 or status == 6:
                         result['data']['buy_orders']['wait_pay_back'] += count
+        result['flag'] = 1
         self.write(simplejson.dumps(result))
         self.finish()
 
@@ -562,6 +563,449 @@ class MobileFundRechargeHandler(MobileAuthHandler):
         store = self.get_user().store
         result['data']['price'] = store.price
         result['flag'] = 1
+        self.write(simplejson.dumps(result))
+
+
+# ---------------------------------------------------商品管理-----------------------------------------------------------
+@route(r'/mobile/myproducts', name='mobile_my_products')  # 商品管理/我的商品
+class MobileMyProductsHandler(MobileAuthHandler):
+    """
+    @apiGroup mine
+    @apiVersion 1.0.0
+    @api {get} /mobile/myproducts 12. 普通商品售出订单
+    @apiDescription 普通商品售出订单
+
+    @apiHeader {String} token 用户登录凭证
+
+    @apiParam {String} keyword 关键字搜索
+    @apiParam {String} area_code 地区code
+    @apiParam {Int} category 分类ID
+    @apiParam {Int} brand 品牌ID
+
+    @apiSampleRequest /mobile/myproducts
+    """
+
+    def check_xsrf_cookie(self):
+        pass
+
+    def options(self):
+        pass
+
+    def get(self):
+        result = {'flag': 0, 'msg': '', "data": []}
+        keyword = self.get_argument('keyword', None)
+        area_code = self.get_argument('area_code', None)
+        category = self.get_argument('category', None)
+        brand = self.get_argument('brand', None)
+        store = self.get_user().store
+
+        ft = (ProductRelease.store==store)
+        if keyword:
+            keyword = '%'+keyword+'%'
+            ft &= (Product.name % keyword)
+        if area_code:
+            ft &= (StoreProductPrice.area_code==area_code)
+        if category:
+            ft &= (Product.category==category)
+        if brand:
+            ft &= (Product.brand==brand)
+        product_releases = ProductRelease.select().join(StoreProductPrice).where(ft)
+        for product_release in product_releases:
+            area_price = []
+            for spp in product_release.area_prices:
+                area_price.append({
+                    'sppid': spp.id,
+                    'area': spp.area.name,
+                    'price': spp.price,
+                    'active': spp.active
+                })
+            result['data'].append({
+                'pid': spp.product_release.product.id,
+                'prid': spp.product_release.id,
+                'name': spp.product_release.product.name,
+                'cover': spp.product_release.product.cover,
+                'attributes': [attributes.value for attributes in spp.product_release.product.attributes],
+                'area_price': area_price
+            })
+        result['flag'] = 1
+        self.write(simplejson.dumps(result))
+
+
+@route(r'/mobile/filtermyproducts', name='mobile_filter_my_products')  # 我的商品删选
+class MobileFilterMyProductsHandler(MobileAuthHandler):
+    """
+    @apiGroup mine
+    @apiVersion 1.0.0
+    @api {get} /mobile/filtermyproducts 13. 我的商品删选
+    @apiDescription 我的商品删选
+
+    @apiHeader {String} token 用户登录凭证
+
+    @apiSampleRequest /mobile/filtermyproducts
+    """
+
+    def check_xsrf_cookie(self):
+        pass
+
+    def options(self):
+        pass
+
+    def get(self):
+        result = {'flag': 0, 'msg': '', "data": {}}
+        store = self.get_user().store
+        brand_list = []
+        category_list = []
+        serve_area_list = []
+        for p in store.products:
+            if p.brand.name not in brand_list:
+                brand_list.append({
+                    'name': p.brand.name,
+                    'id': p.brand.id
+                })
+            if p.category.name not in category_list:
+                category_list.append({
+                    'name': p.category.name,
+                    'id': p.category.id
+                })
+        for service_area in store.service_areas:
+            serve_area_list.append({
+                'name': service_area.area.name,
+                'area_code': service_area.area_code
+            })
+
+        result['data'] = {
+            'brand': brand_list,
+            'category': category_list,
+            'serve_area': serve_area_list
+        }
+        result['flag'] = 1
+        self.write(simplejson.dumps(result))
+
+
+@route(r'/mobile/productrelease', name='mobile_product_release')  # 修改商品发布价格
+class MobileProductReleaseHandler(MobileAuthHandler):
+    """
+    @apiGroup mine
+    @apiVersion 1.0.0
+    @api {post} /mobile/productrelease 14. 修改商品发布价格
+    @apiDescription 修改商品发布价格
+
+    @apiHeader {String} token 用户登录凭证
+
+    @apiParam {String} area_price 商品发布地区价格的json 例：[{'sppid':1, 'price':100, 'active': 1}]，active：0下架，1上架
+
+    @apiSampleRequest /mobile/productrelease
+    """
+
+    def check_xsrf_cookie(self):
+        pass
+
+    def options(self):
+        pass
+
+    def post(self):
+        result = {'flag': 0, 'msg': '', "data": []}
+        args = simplejson.loads(self.get_body_argument('area_price'))
+        try:
+            for area_price in args['area_price']:
+                spp = StoreProductPrice.get(id=area_price['sppid'])
+                spp.price = area_price['price']
+                spp.active = area_price['active']
+                spp.save()
+            result['flag'] = 1
+            result['msg'] = '修改成功'
+        except:
+            result['msg'] = '系统错误'
+        self.write(simplejson.dumps(result))
+
+
+# ---------------------------------------------------帮助中心-----------------------------------------------------------
+@route(r'/mobile/lubepolicy', name='mobile_lube_policy')  # 返油政策
+class MobileLubePolicyHandler(MobileAuthHandler):
+    """
+    @apiGroup mine
+    @apiVersion 1.0.0
+    @api {get} /mobile/lubepolicy 16. 返油政策
+    @apiDescription 返油政策
+
+    @apiHeader {String} token 用户登录凭证
+
+    @apiSampleRequest /mobile/lubepolicy
+    """
+
+    def check_xsrf_cookie(self):
+        pass
+
+    def options(self):
+        pass
+
+    # 一个地区多个保险公司返油政策香同 或 一个保险公司
+    def get_insurances(self, rows, result):
+        tmpList = []
+        for row in rows:
+            result['data']['iCompany'] = row.iCompany
+            if '+' in row.insurance:
+                forceI, comI = row.insurance.split('+')
+                insurance = '%s+(%s)%s' % (forceI, row.price, comI)
+            elif u'单商业险' == row.insurance:
+                insurance = '%s(%s)' % (row.insurance, row.price)
+            else:
+                insurance = row.insurance
+            if row.driverGift not in tmpList:
+                tmpList.append(row.driverGift)
+                tmpDict = {'gift': '', 'insurances': []}
+                if row.driverGift == row.party2Gift:
+                    tmpDict['gift'] = row.driverGift
+                else:
+                    tmpDict['gift'] = row.driverGift+u'（修理厂:'+row.party2Gift+'）'
+                tmpDict['insurances'].append([insurance, row.driverGiftNum, row.party2GiftNum])
+                result['data']['type'].append(tmpDict)
+            else:
+                for i, tmpDict in enumerate(result['data']['type']):
+                    if row.driverGift == row.party2Gift:
+                        tmpGift = row.driverGift
+                    else:
+                        tmpGift = row.driverGift + u'（修理厂:' + row.party2Gift + '）'
+                    if tmpGift == tmpDict['gift']:
+                        result['data']['type'][i]['insurances'].append(
+                            [insurance, row.driverGiftNum, row.party2GiftNum])
+        return result
+
+    # 一个地区多个保险公司返油政策不同
+    def get_insurances_for_difI(self, rows, result, iCompanyName):
+        tmpList = []
+        result['data']['iCompany'] = iCompanyName
+        for row in rows:
+            if '+' in row.insurance:
+                forceI, comI = row.insurance.split('+')
+                insurance = '%s+(%s)%s' % (forceI, row.price, comI)
+            elif u'单商业险' == row.insurance:
+                insurance = '%s(%s)' % (row.insurance, row.price)
+            else:
+                insurance = row.insurance
+
+            driverGiftName = u'%s（%s）'%(row.driverGift, row.iCompany)
+            facilitatorGiftName = u'%s（%s）'%(row.party2Gift, row.iCompany)
+            if driverGiftName not in tmpList:
+                tmpList.append(driverGiftName)
+                tmpDict = {'gift': '', 'insurances': []}
+                if driverGiftName == facilitatorGiftName:
+                    tmpDict['gift'] = driverGiftName
+                else:
+                    tmpDict['gift'] = u'%s（修理厂:%s）（%s）'%(row.driverGift, row.party2Gift, row.iCompany)
+                tmpDict['insurances'].append([insurance, row.driverGiftNum, row.party2GiftNum])
+                result['data']['type'].append(tmpDict)
+            else:
+                for i, tmpDict in enumerate(result['data']['type']):
+                    if driverGiftName == facilitatorGiftName:
+                        tmpGift = driverGiftName
+                    else:
+                        tmpGift = u'%s（修理厂:%s）（%s）'%(row.driverGift, row.party2Gift, row.iCompany)
+                    if tmpGift == tmpDict['gift']:
+                        result['data']['type'][i]['insurances'].append(
+                            [insurance, row.driverGiftNum, row.party2GiftNum])
+        return result
+
+    def get(self):
+        result = {
+            'flag': 0,
+            'msg': '',
+            'data': {
+                'iCompany': '',
+                'presentToA': setting.presentToA,
+                'remark': '',
+                'presentToB': setting.presentToB,
+                'type': []
+            }
+        }
+        area_code = self.get_user().store.area_code
+        result['data']['remark'] = setting.get_help_center_remark(area_code)
+        area_code_lenth = len(area_code)
+        if area_code_lenth == 12:
+            rows = LubePolicy.select().where(LubePolicy.area_code==area_code).order_by(LubePolicy.sort, LubePolicy.sort2)
+        if area_code_lenth == 8 or (area_code_lenth == 12 and rows.count() <= 0):
+            rows = LubePolicy.select().where(LubePolicy.area_code == area_code[:8]).order_by(LubePolicy.sort, LubePolicy.sort2)
+        if area_code_lenth == 4 or (area_code_lenth > 4 and rows.count() <= 0):
+            rows = LubePolicy.select().where(LubePolicy.area_code == area_code[:12]).order_by(LubePolicy.sort, LubePolicy.sort2)
+        if rows.count() > 0:
+            iCompanyName = ''
+            totalICname = []
+            for row in rows:
+                if row.iCompany not in totalICname:
+                    totalICname.append(row.iCompany)
+                    iCompanyName += row.iCompany
+            if len(totalICname) > 1:
+                result = self.get_insurances_for_difI(rows, result, iCompanyName)
+            else:
+                result = self.get_insurances(rows, result)
+            result['flag']=1
+        else:
+            result['msg'] = u'该地区的具体优惠政策请联系车装甲客服'
+
+        self.write(simplejson.dumps(result))
+
+
+# -----------------------------------------------------设置-------------------------------------------------------------
+@route(r'/mobile/mysetting', name='mobile_my_setting')  # 我的设置
+class MobileMySettingHandler(MobileAuthHandler):
+    """
+    @apiGroup mine
+    @apiVersion 1.0.0
+    @api {get} /mobile/mysetting 17. 我的设置
+    @apiDescription 我的设置
+
+    @apiHeader {String} token 用户登录凭证
+
+    @apiSampleRequest /mobile/mysetting
+    """
+
+    def check_xsrf_cookie(self):
+        pass
+
+    def options(self):
+        pass
+
+    def get(self):
+        result = {'flag': 0, 'msg': '', "data": {}}
+        store = self.get_user().store
+
+        result['data']['store_name'] = store.name
+        result['data']['address'] = Area.get_detailed_address(store.area_code)
+        result['data']['detailed_address'] = store.address
+        result['data']['active'] = store.active
+        result['data']['legal_person'] = store.legal_person
+        result['data']['license_code'] = store.license_code
+        result['data']['license_image'] = store.license_image
+        result['data']['store_image'] = store.store_image
+        result['flag'] = 1
+
+        self.write(simplejson.dumps(result))
+
+
+@route(r'/mobile/changeloginpassword', name='mobile_change_login_password')  # 修改登录密码
+class MobileChangeLoginPasswordHandler(MobileAuthHandler):
+    """
+    @apiGroup mine
+    @apiVersion 1.0.0
+    @api {get} /mobile/changeloginpassword 18. 我的设置
+    @apiDescription 我的设置
+
+    @apiHeader {String} token 用户登录凭证
+
+    @apiParam {String} old_password  旧密码
+    @apiParam {String} new_password  新密码
+
+    @apiSampleRequest /mobile/changeloginpassword
+    """
+
+    def check_xsrf_cookie(self):
+        pass
+
+    def options(self):
+        pass
+
+    def get(self):
+        result = {'flag': 0, 'msg': '', "data": {}}
+        user = self.get_user()
+
+        old_password = self.get_argument('old_password', None)
+        new_password = self.get_argument('new_password', None)
+
+        if user.check_password(old_password):
+            user.password = user.create_password(new_password)
+            user.save()
+            result['flag'] = 1
+            result['msg'] = '修改成功'
+        else:
+            result['msg'] = '原始密码不正确'
+        self.write(simplejson.dumps(result))
+
+
+@route(r'/mobile/changepaypassword', name='mobile_change_pay_password')  # 修改支付密码
+class MobileChangePayPasswordHandler(MobileAuthHandler):
+    """
+    @apiGroup mine
+    @apiVersion 1.0.0
+    @api {get} /mobile/changepaypassword 19. 我的设置
+    @apiDescription 我的设置
+
+    @apiHeader {String} token 用户登录凭证
+
+    @apiParam {String} v_code  验证码
+    @apiParam {String} new_password  新密码
+
+    @apiSampleRequest /mobile/changepaypassword
+    """
+
+    def check_xsrf_cookie(self):
+        pass
+
+    def options(self):
+        pass
+
+    def get(self):
+        result = {'flag': 0, 'msg': '', "data": {}}
+        store = self.get_user().store
+        new_password = self.get_argument('new_password', None)
+        vcode = self.get_body_argument('vcode', None)
+        flag = 1
+        if vcode and new_password:
+            VCode.delete().where(VCode.created < (int(time.time()) - 30 * 60)).execute()
+            if VCode.select().where((VCode.mobile == store.mobile) & (VCode.vcode == vcode) & (VCode.flag == flag)).count() > 0:
+                store.pay_password = User.create_password(new_password)
+                store.save()
+                result['flag'] = 1
+                result['msg'] = "修改成功"
+            else:
+                result['msg'] = "请输入正确的验证码"
+        else:
+            result['flag'] = 0
+            result['msg'] = '请传入正确的验证码或密码'
+
+        self.write(simplejson.dumps(result))
+
+
+@route(r'/mobile/changepaypassword', name='mobile_change_pay_password')  # 收货地址
+class MobileChangePayPasswordHandler(MobileAuthHandler):
+    """
+    @apiGroup mine
+    @apiVersion 1.0.0
+    @api {get} /mobile/changepaypassword 19. 我的设置
+    @apiDescription 我的设置
+
+    @apiHeader {String} token 用户登录凭证
+
+    @apiParam {String} v_code  验证码
+    @apiParam {String} new_password  新密码
+
+    @apiSampleRequest /mobile/changepaypassword
+    """
+
+    def check_xsrf_cookie(self):
+        pass
+
+    def options(self):
+        pass
+
+    def get(self):
+        result = {'flag': 0, 'msg': '', "data": {}}
+        store = self.get_user().store
+        new_password = self.get_argument('new_password', None)
+        vcode = self.get_body_argument('vcode', None)
+        flag = 1
+        if vcode and new_password:
+            VCode.delete().where(VCode.created < (int(time.time()) - 30 * 60)).execute()
+            if VCode.select().where((VCode.mobile == store.mobile) & (VCode.vcode == vcode) & (VCode.flag == flag)).count() > 0:
+                store.pay_password = User.create_password(new_password)
+                store.save()
+                result['flag'] = 1
+                result['msg'] = "修改成功"
+            else:
+                result['msg'] = "请输入正确的验证码"
+        else:
+            result['flag'] = 0
+            result['msg'] = '请传入正确的验证码或密码'
+
         self.write(simplejson.dumps(result))
 
 

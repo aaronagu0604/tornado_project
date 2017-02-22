@@ -43,6 +43,21 @@ class Area(db.Model):
         except:
             return False
 
+    @classmethod
+    def get_detailed_address(cls, area_code):
+        area_code_len = len(area_code)
+        try:
+            area = Area.get(code = area_code)
+            if area_code_len == 12:
+                address = area.pid.pid.name + area.pid.name + area.name
+            elif area_code_len == 8:
+                address = area.pid.name + area.name
+            else:
+                address = area.name
+            return address
+        except:
+            return ''
+
     class Meta:
         db_table = 'tb_area'
 
@@ -428,16 +443,18 @@ class Order(db.Model):
     buyer_store = ForeignKeyField(Store, related_name='orders', db_column='buyer_store_id')  # 买家所属店铺
     address = ForeignKeyField(StoreAddress, db_column='store_address_id')  # 收信地址
     ordered = IntegerField(default=0)  # 下单时间
-    payment = IntegerField(default=1)  # 付款方式  1支付宝  2微信 3银联 4余额
+    payment = CharField(default='')  # 付款方式  1支付宝  2微信 3银联 4余额
     message = CharField(null=True)  # 付款留言
     order_type = IntegerField(default=1)  # 付款方式 2积分订单  1金钱订单
     total_price = FloatField(default=0.0)  # 价格，实际所有子订单商品价格之和
+    pay_balance = FloatField(default=0.0)  # 余额支付金额
+    pay_price = FloatField(default=0.0)  # 实际第三方支付价格
     pay_time = IntegerField(default=0)  # 支付时间
     status = IntegerField(default=0)  # 0待付款 1待发货 2待收货 3交易完成（待评价） 4已评价 5申请退款 6已退款 -1已取消
     trade_no = CharField(max_length=64, default='')  # 支付宝交易号or微信支付订单号or银联支付查询流水号
     buyer_del = IntegerField(default=0)  # 买家删除已经完成的订单 1删除
 
-    def change_status(self, status):  # 0待付款 1待发货 2待收货 3交易完成（待评价） 4已评价 5申请退款 6已退款 -1已取消
+    def change_status(self, status):  # -1已删除, 0待付款 1待发货 2待收货 3交易完成（待评价） 4已评价 5申请退款 6已退款 9已取消
         if self.status == status:
             return
         if self.status == -1:
@@ -650,10 +667,11 @@ class InsuranceOrder(db.Model):
     local_summary = CharField(max_length=256, null=True)  # 本地备注
     pay_time = IntegerField(default=0)  # 支付时间
     deal_time = IntegerField(default=0)  # 完成时间
+    pay_account = CharField(max_length=128, default='')  # 用户支付宝、微信账户
     trade_no = CharField(max_length=64, default='')  # 支付宝/微信交易号
     user_del = IntegerField(default=0)  # 用户端不显示
 
-    def change_status(self, status):  # 0待确认 1待付款 2付款完成 3已办理 4已邮寄 -1已删除(取消)
+    def change_status(self, status):
         if self.status == status:
             return
         if self.status == -1:
@@ -776,6 +794,25 @@ class PaymentNotify(db.Model):
 
     class Meta:
         db_table = 'tb_payment_notify'
+
+
+
+# 帮助中心 返油政策
+class LubePolicy(db.Model):
+    id = PrimaryKeyField()
+    area_code =  CharField(max_length=12)  # 地区ID
+    insurance = CharField(max_length=32)  # 保险
+    iCompany = CharField(max_length=32)  # 保险公司
+    price = CharField(max_length=32)   # 价格区间
+    driverGift = CharField(max_length=32)  # 车主赠品
+    driverGiftNum = IntegerField(default=0)   # 车主赠品数量
+    party2Gift = CharField(max_length=32)  # 乙方赠品
+    party2GiftNum = IntegerField(default=0)   # 乙方赠品数量
+    sort = IntegerField(default=3)   # 单交强险1 单商业险2  商业险+交强险3
+    sort2 = IntegerField(default=1)  # 商业险+交强险 or 单商业险 等级排序
+
+    class Meta:
+        db_table = "tb_help_center"
 
 
 def init_db():
