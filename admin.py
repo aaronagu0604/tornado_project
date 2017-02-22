@@ -41,7 +41,7 @@ def runserver():
     http_server.listen(port)
     loop = tornado.ioloop.IOLoop.instance()
 
-    logging.info('Server running on http://127.0.0.1:%d/admin' % port)
+    logging.info('Admin Server running on http://127.0.0.1:%d/admin' % port)
     loop.start()
 
 

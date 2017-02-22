@@ -5,10 +5,6 @@ from urllib import urlencode, urlopen
 from hashcompat import md5_constructor as md5
 import xml.etree.ElementTree as etree
 from aliconfig import Settings
-from model import User, Order, Score,Balance,OrderItem,AdminUser,PayBack,Product_Reserve, OrderItemService
-import random
-import time
-import logging
 
 def build_request_params(params):
     """生成要请求给支付宝的参数数组
@@ -105,74 +101,11 @@ def notify_verify(post):
 
     """
     #初级验证---签名
-    order_params = {}
-    params = {}
     _, prestr = fix_params_filter(post)
     mysign = build_mysign(prestr, Settings.KEY, Settings.SIGN_TYPE)
     if mysign != post.get('sign'):
         return False
-    tree = etree.fromstring(post.get("notify_data").encode('utf-8'))
-    notify_id = tree.find("notify_id").text
-    order_params["trade_no"] = tree.find("trade_no").text
-    order_params["out_trade_no"] = tree.find("out_trade_no").text
-    order_params["trade_status"] = tree.find("trade_status").text
-    order_params["total_fee"] = tree.find("total_fee").text
-    order_params['buyer_email'] = tree.find("buyer_email").text
-    #二级验证---数据是否支付宝发送
-    if notify_id:
-        params['partner'] = Settings.PARTNER
-        params['notify_id'] = notify_id
-        if Settings.TRANSPORT == 'https':
-            params['service'] = 'notify_verify'
-            gateway = 'https://mapi.alipay.com/gateway.do'
-        else:
-            gateway = 'http://notify.alipay.com/trade/notify_query.do'
-        verify_url = "%s?%s" % (gateway, urlencode(params))
-        verify_result = urlopen(verify_url).read()
-
-        if verify_result.lower().strip() == 'true':
-
-            tn = tree.find("out_trade_no").text
-            try:
-                order = None
-                tn = tn.split(',')
-                for n in tn:
-                    orders = Order.select().where(Order.ordernum == n)
-                    if orders.count() > 0:
-                        order = orders[0]
-                    if order and order.status == 0:
-                        order.status = 1
-                        order.pay_account = tree.find("buyer_email").text
-                        order.trade_no = tree.find("trade_no").text
-                        order.save()
-
-                        order_Item = ''
-                        cartProducts = OrderItem.select().where(OrderItem.order == order)
-                        for n in cartProducts:
-                            if n.product.categoryfront.type == '2':
-                                sn = 1
-                                for s in range(n.quantity):
-                                    sn = sn + s
-                                    seed = "1234567890"
-                                    sa = []
-                                    for i in range(12):
-                                        sa.append(random.choice(seed))
-                                        salt = ''.join(sa)
-                                    OrderItemService.create(order_item=n.id, sn=sn, service_code=salt, service_used=0, store=order.store, user=order.user)
-                        # try:
-                        #     admins = AdminUser.select().where(AdminUser.roles % '%Y%')
-                        #     receivers = [n.email for n in admins if len(n.email)>0]
-                        #     email = {u'receiver': receivers, u'subject':u'用户下单成功',u'body': u"支付方式：在线支付；<br/>订单编号为：" + n + u"；<br>订单金额："+ str(order.currentprice) + u"；<br>订单详情："+order_Item}
-                        #     create_msg(simplejson.dumps(email), 'email')
-                        # except Exception, e:
-                        #     print e
-
-            except Exception, ex:
-                logging.error(ex)
-
-
-            return order_params
-    return False
+    return True
 
 
 def return_verify(query_params):

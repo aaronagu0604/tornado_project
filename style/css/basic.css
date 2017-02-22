@@ -1,0 +1,52 @@
+@charset "utf-8";
+*{
+  margin:0;
+  padding:0;
+}
+img {
+  border:0;
+}
+ul,li{
+  list-style:none;
+}
+h1, h2, h3, h4, h5, h6 {
+  font-weight: normal;
+  font-size: 100%;
+  font-family:\5FAE\8F6F\96C5\9ED1; 
+}
+p{
+  text-align:Justify;/* 段落两端对齐显示，对于火狐 */
+  text-justify:inter-ideograph;/* 对于IE */
+  line-height:25px;
+}
+*html{
+/*低版本浏览器防止抖动的，必须有*/
+  _background-image:url(about:blank);
+  _background-attachment:fixed;
+}
+body{
+  font:14px/1.7 Helvetica,Arial,Tahoma,sans-serif,"\5B8B\4F53";
+  color:#333;
+  margin:0 auto;
+  /*低版本浏览器防止抖动的，必须有*/
+  /* background: url(about:blank); 
+  background-attachment: fixed; */
+}
+input, label, select, option, textarea, button, fieldset, legend {
+  font:14px/1.7 Helvetica,Arial,Tahoma,sans-serif,"\5B8B\4F53";
+  outline:none; /*移除虚线框  IE8,FF有用*/ 
+  hide-focus: expression(this.hideFocus=true); /*IE6、IE7*/
+}
+a{
+  text-decoration:none;
+  color: #00A73B;
+  outline:none; /*移除虚线框  IE8,FF有用*/ 
+  hide-focus: expression(this.hideFocus=true); /*IE6、IE7*/
+}
+
+
+
+
+
+
+
