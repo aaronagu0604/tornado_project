@@ -19,7 +19,7 @@ class LoginHandler(BaseHandler):
             try:
                 user = AdminUser.get(AdminUser.username == username)
                 if user.check_password(password):
-                    if user.isactive == 1:
+                    if user.active == 1:
                         user.updatesignin()
                         self.session['admin'] = user
                         self.session.save()
