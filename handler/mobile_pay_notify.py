@@ -1,0 +1,185 @@
+#!/usr/bin/env python
+# coding=utf8
+
+import logging
+import setting
+import simplejson
+from lib.route import route
+from model import *
+from lib.mqhelper import create_msg
+from tornado.web import RequestHandler
+from lib.payment.core import notify_verify
+from lib.payment.wxPay import Notify_pub
+from lib.payment.upay import Trade
+
+
+# 修改订单状态
+def change_order_status(ordernum, trade_no):
+    is_insurance_order = False
+    try:
+        if 'I' in ordernum:
+            order = InsuranceOrder.get(ordernum=ordernum)
+            order.change_status(2)
+        else:
+            order = Order.get(ordernum=ordernum)
+
+        is_insurance_order = True
+        order.trade_no = trade_no
+        order.pay_time = int(time.time())  # 支付时间
+        order.save()
+        logging.info('order_id=%s order_num=%s trade_no=%s\n' % (order.id, order.ordernum, trade_no))
+        return order, is_insurance_order
+    except Exception, e:
+        logging.info(
+            'Error: change order status error; ordernum %s,trade_no %s,log: %s' % (ordernum, trade_no, e.message))
+        return None, is_insurance_order
+
+
+# 保单支付成功短信
+def send_new_insurance_order_msg(mobile, storeName, area_code, ordernum, iName, payment, LubeOrScore, summary, price):
+        mobiles = setting.financeMobiles
+        if payment == 1:
+            paymentV = '支付宝'
+        elif payment == 2:
+            paymentV = '微信支付'
+        elif payment == 3:
+            paymentV = '银联支付'
+        elif payment==4:
+            paymentV = '余额支付'
+        else:
+            paymentV = '其它方式支付'
+
+        if LubeOrScore == 2:
+            gift = u'返佣返积分'
+        else:
+            gift = u'返佣返油'
+        addrs = Area().get_detailed_address(area_code)
+        # to 客户
+        sms = {'mobile': mobile, 'body': [storeName, addrs, ordernum, iName, paymentV, gift, summary],
+               'signtype': '1', 'isyzm': 'paySuccess'}
+        create_msg(simplejson.dumps(sms), 'sms')
+        # to 财务
+        summary = u'订单总额 %s, 客户 %s'%(price, mobile)
+        sms = {'mobile': mobiles, 'body': [storeName, addrs, ordernum, iName, paymentV, gift, summary],
+               'signtype': '1', 'isyzm': 'paySuccess'}
+        create_msg(simplejson.dumps(sms), 'sms')
+        if area_code.startswith('0004'):
+            sms = {'mobile': setting.ShanXiIphone, 'body': [storeName, addrs, ordernum, iName, paymentV, gift, summary],
+                   'signtype': '1', 'isyzm': 'paySuccess'}
+            create_msg(simplejson.dumps(sms), 'sms')
+
+
+# 阿里支付手机端支付完成同步回调
+@route(r'/mobile/alipay_callback', name='mobile_alipay_callback')
+class MobileAlipayCallbackHandler(RequestHandler):
+    def check_xsrf_cookie(self):
+        pass
+
+    def options(self):
+        pass
+
+    def get(self):
+        self.write('')
+
+
+# 支付宝支付完成后异步通知 支付宝回调
+@route('/mobile/alipay_notify', name='mobile_alipay_notify')
+class MobileAlipayNotifyHandler(RequestHandler):
+    def check_xsrf_cookie(self):
+        pass
+
+    def options(self):
+        pass
+
+    def post(self):
+        msg = "fail"
+        params = {}
+        notify = PaymentNotify()
+        notify.content = self.request.body
+        notify.notify_time = int(time.time())
+        notify.notify_type = 2
+        notify.payment = 1
+        notify.function_type = 1
+        notify.save()
+        ks = self.request.arguments.keys()
+        for k in ks:
+            params[k] = self.get_argument(k)
+        ps = notify_verify(params)
+        if ps:
+            if ps['trade_status'].upper().strip() == 'TRADE_FINISHED' or ps['trade_status'].upper().strip() == 'TRADE_SUCCESS':
+                order, is_insurance_order = change_order_status(ps['out_trade_no'], ps['trade_no'])
+                if is_insurance_order and order:
+                    send_new_insurance_order_msg(order.delivery_tel, order.store.name, order.store.area_code,
+                                                 order.ordernum, order.insurance.name, order.payment,
+                                                 order.current_order_price.gift_policy, order.sms_content,
+                                                 order.current_order_price.total_price)
+                    msg = "success"
+        self.write(msg)
+
+
+# 微信支付完成后异步通知 微信回调
+@route(r'/mobile/weixin_notify', name='mobile_weixinpay_notify')
+class MobileWeiXinPayCallbackHandler(RequestHandler):
+    def check_xsrf_cookie(self):
+        pass
+
+    def options(self):
+        pass
+
+    def post(self):
+        notify = PaymentNotify()
+        notify.content = self.request.body
+        notify.notify_time = int(time.time())
+        notify.notify_type = 2
+        notify.payment = 2
+        notify.function_type = 1
+        notify.save()
+        notify_data = Notify_pub()
+        notify_data.saveData(self.request.body)
+        ps = notify_data.getData()
+        if notify_data.checkSign():
+            if ps['return_code'] == 'SUCCESS' and ps['result_code'] == 'SUCCESS':
+                order, is_insurance_order = change_order_status(ps['out_trade_no'], ps['transaction_id'])
+                if is_insurance_order and order:
+                    send_new_insurance_order_msg(order.delivery_tel, order.store.name, order.store.area_code,
+                                                 order.ordernum, order.insurance.name, order.payment,
+                                                 order.current_order_price.gift_policy, order.sms_content,
+                                                 order.current_order_price.total_price)
+                    notify_data.setReturnParameter('return_code', 'SUCCESS')
+            else:
+                logging.info(u'微信通知支付失败')
+        else:
+            logging.info(u'微信通知验证失败')
+        self.write(notify_data.returnXml())
+
+
+# 银联支付完成后异步通知 银联回调
+@route(r'/mobile/upay_notify', name='mobile_upay_notify')
+class MobileUPayCallbackHandler(RequestHandler):
+    def check_xsrf_cookie(self):
+        pass
+
+    def options(self):
+        pass
+
+    def post(self):
+        result = {'return_code': 'FAIL'}
+        try:
+            ps = Trade().smart_str_decode(self.request.body)
+            if Trade().union_validate(ps):
+                if ps['respMsg'] == 'Success!':
+                    order, is_insurance_order = change_order_status(ps['out_trade_no'], ps['transaction_id'])
+                    if is_insurance_order and order:
+                        send_new_insurance_order_msg(order.delivery_tel, order.store.name, order.store.area_code,
+                                                     order.ordernum, order.insurance.name, order.payment,
+                                                     order.current_order_price.gift_policy, order.sms_content,
+                                                     order.current_order_price.total_price)
+                        result['return_code'] = 'SUCCESS'
+                else:
+                    result['return_msg'] = 'upay get FAIL notify'
+            else:
+                logging.info('upay invalid')
+        except Exception, e:
+            logging.info('Error: upay error %s' % e.message)
+
+        self.write(simplejson.dumps(result))

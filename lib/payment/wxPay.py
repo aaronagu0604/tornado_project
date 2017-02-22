@@ -74,6 +74,7 @@ class UrllibClient(object):
         """使用证书"""
         raise TypeError("please use CurlClient")
 
+
 """使用Curl发送请求"""
 class CurlClient(object):
     """使用Curl发送请求"""
@@ -119,6 +120,7 @@ class HttpClient(Singleton):
             return CurlClient
         else:
             return UrllibClient
+
 
 """所有接口的基类"""
 class Common_util_pub(object):
@@ -179,6 +181,7 @@ class Common_util_pub(object):
         """使用证书，以post方式提交xml到对应的接口url"""
         return HttpClient().postXmlSSL(xml, url, second=second)
 
+
 """JSAPI支付——H5网页端调起支付接口"""
 class JsApi_pub(Common_util_pub):
     """JSAPI支付——H5网页端调起支付接口"""
@@ -234,6 +237,7 @@ class JsApi_pub(Common_util_pub):
         self.parameters = json.dumps(jsApiObj)
         return self.parameters
 
+
 """请求型接口的基类"""
 class Wxpay_client_pub(Common_util_pub):
     """请求型接口的基类"""
@@ -253,54 +257,60 @@ class Wxpay_client_pub(Common_util_pub):
         self.parameters["mch_id"] = WxPayConf_pub.MCHID   #商户号
         self.parameters["nonce_str"] = self.createNoncestr()   #随机字符串
         self.parameters["sign"] = self.getSign(self.parameters)   #签名
-        return  self.arrayToXml(self.parameters)
+        return self.arrayToXml(self.parameters)
+
     def postXml(self):
         """post请求xml"""
         xml = self.createXml()
         self.response = self.postXmlCurl(xml, self.url, self.curl_timeout)
         return self.response
+
     def postXmlSSL(self):
         """使用证书post请求xml"""
         xml = self.createXml()
         self.response = self.postXmlSSLCurl(xml, self.url, self.curl_timeout)
         return self.response
+
     def getResult(self):
         """获取结果，默认不使用证书"""
         self.postXml()
         self.result = self.xmlToArray(self.response)
         return self.result
 
+
 """统一支付接口类"""
 class UnifiedOrder_pub(Wxpay_client_pub):
     """统一支付接口类"""
     def __init__(self, timeout=WxPayConf_pub.CURL_TIMEOUT):
-        #设置接口链接
+        # 设置接口链接
         self.url = "https://api.mch.weixin.qq.com/pay/unifiedorder"
-        #设置curl超时时间
+        # 设置curl超时时间
         self.curl_timeout = timeout
         super(UnifiedOrder_pub, self).__init__()
+
     def createXml(self):
         """生成接口参数xml"""
-        #检测必填参数
-        self.parameters["notify_url"] = 'http://www.520czj.com:8889/mobile/weixin_notify'
+        # 检测必填参数
+        self.parameters["notify_url"] = WxPayConf_pub.NOTIFY_URL
         self.parameters["trade_type"] = 'APP'
         if any(self.parameters[key] is None for key in ("out_trade_no", "body", "total_fee", "notify_url", "trade_type")):
             raise ValueError("missing parameter")
         if self.parameters["trade_type"] == "JSAPI" and self.parameters["openid"] is None:
             raise ValueError("JSAPI need openid parameters")
-        self.parameters["appid"] = WxPayConf_pub.APPID  #公众账号ID
-        self.parameters["mch_id"] = WxPayConf_pub.MCHID  #商户号
-        self.parameters["spbill_create_ip"] = "127.0.0.1"  #终端ip
-        self.parameters["nonce_str"] = self.createNoncestr()  #随机字符串
-        self.parameters["sign"] = self.getSign(self.parameters)  #签名
-        return  self.arrayToXml(self.parameters)
+        self.parameters["appid"] = WxPayConf_pub.APPID  # 公众账号ID
+        self.parameters["mch_id"] = WxPayConf_pub.MCHID  # 商户号
+        self.parameters["spbill_create_ip"] = "127.0.0.1"  # 终端ip
+        self.parameters["nonce_str"] = self.createNoncestr()  # 随机字符串
+        self.parameters["sign"] = self.getSign(self.parameters)  # 签名
+        return self.arrayToXml(self.parameters)
+
     def getPrepayId(self, out_trade_no, body, total_fee):
         """获取prepay_id"""
         self.parameters["out_trade_no"] = out_trade_no
-        logging.info('-----------------out_trade_no==%s----'%out_trade_no)
+        logging.info('-----------------out_trade_no==%s----' % out_trade_no)
         self.parameters["body"] = body
         self.parameters["total_fee"] = total_fee
-        self.postXml() #以post方式提交xml到对应的接口url
+        self.postXml()  # 以post方式提交xml到对应的接口url
         self.result = self.xmlToArray(self.response)
         sign_again_params = {}
         try:
@@ -348,6 +358,7 @@ class OrderQuery_pub(Wxpay_client_pub):
         data = UrllibClient().postXml(self.createXml(), self.url, 30)
         print self.xmlToArray(data)
 
+
 '''关闭订单'''
 class close_pub(Wxpay_client_pub):
     def __init__(self, timeout=WxPayConf_pub.CURL_TIMEOUT):
@@ -365,6 +376,8 @@ class close_pub(Wxpay_client_pub):
     def postXml(self, out_trade_no):
         data = UrllibClient().postXml(self.createXml(out_trade_no), self.url, self.timeout)
         print self.xmlToArray(data)
+
+
 """退款申请接口"""
 class Refund_pub(Wxpay_client_pub):
     """退款申请接口"""
@@ -388,6 +401,7 @@ class Refund_pub(Wxpay_client_pub):
         self.postXmlSSL()
         self.result = self.xmlToArray(self.response)
         return self.result
+
 
 """退款查询接口"""
 class RefundQuery_pub(Wxpay_client_pub):
@@ -413,6 +427,7 @@ class RefundQuery_pub(Wxpay_client_pub):
         self.postXmlSSL()
         self.result = self.xmlToArray(self.response)
         return self.result
+
 
 """对账单接口"""
 class DownloadBill_pub(Wxpay_client_pub):
@@ -440,6 +455,7 @@ class DownloadBill_pub(Wxpay_client_pub):
         self.result = self.xmlToArray(self.response)
         return self.result
 
+
 """短链接转换接口"""
 class ShortUrl_pub(Wxpay_client_pub):
     """短链接转换接口"""
@@ -465,7 +481,6 @@ class ShortUrl_pub(Wxpay_client_pub):
         self.postXml()
         prepay_id = self.result["short_url"]
         return prepay_id
-
 
 
 class Wxpay_server_pub(Common_util_pub):

@@ -93,7 +93,7 @@ class Trade(object):
     def smart_str_decode(self, s):
         params = {}
         for tmps in s.split('&'):
-            key, value = tmps.split('=',1)
+            key, value = tmps.split('=', 1)
             params[key] = value
         return params
 

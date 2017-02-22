@@ -428,18 +428,16 @@ class Order(db.Model):
     buyer_store = ForeignKeyField(Store, related_name='orders', db_column='buyer_store_id')  # 买家所属店铺
     address = ForeignKeyField(StoreAddress, db_column='store_address_id')  # 收信地址
     ordered = IntegerField(default=0)  # 下单时间
-    payment = CharField(default='')  # 付款方式  1支付宝  2微信 3银联 4余额
+    payment = IntegerField(default=1)  # 付款方式  1支付宝  2微信 3银联 4余额
     message = CharField(null=True)  # 付款留言
     order_type = IntegerField(default=1)  # 付款方式 2积分订单  1金钱订单
     total_price = FloatField(default=0.0)  # 价格，实际所有子订单商品价格之和
-    pay_balance = FloatField(default=0.0)  # 余额支付金额
-    pay_price = FloatField(default=0.0)  # 实际第三方支付价格
     pay_time = IntegerField(default=0)  # 支付时间
     status = IntegerField(default=0)  # 0待付款 1待发货 2待收货 3交易完成（待评价） 4已评价 5申请退款 6已退款 -1已取消
     trade_no = CharField(max_length=64, default='')  # 支付宝交易号or微信支付订单号or银联支付查询流水号
     buyer_del = IntegerField(default=0)  # 买家删除已经完成的订单 1删除
 
-    def change_status(self, status):  # -1已删除, 0待付款 1待发货 2待收货 3交易完成（待评价） 4已评价 5申请退款 6已退款 9已取消
+    def change_status(self, status):  # 0待付款 1待发货 2待收货 3交易完成（待评价） 4已评价 5申请退款 6已退款 -1已取消
         if self.status == status:
             return
         if self.status == -1:
@@ -652,11 +650,10 @@ class InsuranceOrder(db.Model):
     local_summary = CharField(max_length=256, null=True)  # 本地备注
     pay_time = IntegerField(default=0)  # 支付时间
     deal_time = IntegerField(default=0)  # 完成时间
-    pay_account = CharField(max_length=128, default='')  # 用户支付宝、微信账户
     trade_no = CharField(max_length=64, default='')  # 支付宝/微信交易号
     user_del = IntegerField(default=0)  # 用户端不显示
 
-    def change_status(self, status):
+    def change_status(self, status):  # 0待确认 1待付款 2付款完成 3已办理 4已邮寄 -1已删除(取消)
         if self.status == status:
             return
         if self.status == -1:
@@ -766,6 +763,19 @@ class BlockItem(db.Model):
 
     class Meta:
         db_table = 'tb_block_item'
+
+
+# 支付通知内容
+class PaymentNotify(db.Model):
+    id = PrimaryKeyField()
+    content = CharField(max_length=50)   # 支付通知内容
+    payment = IntegerField(default=1)  # 通知来源  1支付宝  2微信 3银联
+    notify_time = IntegerField(default=0)  # 通知时间
+    notify_type = IntegerField(default=0)  # 通知类型 1同步 2异步
+    function_type = IntegerField(default=0)  # 功能类型 1购买 2充值
+
+    class Meta:
+        db_table = 'tb_payment_notify'
 
 
 def init_db():

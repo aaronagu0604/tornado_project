@@ -17,23 +17,9 @@ MEMCACHE_HOST = '127.0.0.1:11211'
 
 ADMIN_PAGESIZE = 20  # 管理后台页面数据条数
 USER_PAGESIZE = 10  # 商家后台页面数据条数
-MOBILE_PAGESIZE = 20 # 移动端数据条数
+MOBILE_PAGESIZE = 20  # 移动端数据条数
 
-ALIPAY_KEY = 'd2fmn3xc7f45bxl21qfjdojhw7q0049t'
-ALIPAY_INPUT_CHARSET = 'utf-8'
-ALIPAY_PARTNER = '2088221897731280'
-ALIPAY_SELLER_EMAIL = 'pay.chezhuangjia@520czj.com'
-ALIPAY_SIGN_TYPE = 'MD5'
-ALIPAY_AUTH_URL = 'http://127.0.0.1:8889/oauth/alipay_return'
-ALIPAY_RETURN_URL = 'http://127.0.0.1:8889/alipay/return'
-ALIPAY_NOTIFY_URL = 'http://127.0.0.1:8889/alipay/notify'
-ALIPAY_RETURN_CZ_URL = 'http://127.0.0.1:8889/alipay/return_cz'
-ALIPAY_NOTIFY_CZ_URL = 'http://127.0.0.1:8889/alipay/notify_cz'
-ALIPAY_SHOW_URL = ''
-ALIPAY_TRANSPORT = 'https'
-ALIPAY_RETURN_PAY_NOTIFY_URL = 'http://127.0.0.1:8889/alipay/pay_back/notify'
-
-COM_TEL = '4006904200' #客服热线
+COM_TEL = '4006904200'  # 客服热线
 
 MQSERVER = '127.0.0.1'
 MQPORT = '5672'

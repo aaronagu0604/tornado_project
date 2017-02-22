@@ -11,6 +11,9 @@ import uuid
 from handler import MobileBaseHandler, MobileAuthHandler
 import random
 from lib.mqhelper import create_msg
+from lib.payment.alipay import get_pay_url
+from lib.payment.wxPay import UnifiedOrder_pub
+from lib.payment.upay import Trade
 
 
 @route(r'/', name='mobile_app')
@@ -864,57 +867,70 @@ class MobileNewOrderHandler(MobileAuthHandler):
                 else:
                     order.status = 1
                     order.pay_time = int(time.time())
-                    order.pay_price = 0
-                    order.pay_balance = total_price
                     order.save()
                     order.ordernum = 'U' + str(user.id) + 'S' + str(order.id)
                     order.save()
                     if order_type == 1:  # 1金钱订单
-                        moneyRecord = MoneyRecord()
-                        moneyRecord.user = user
-                        moneyRecord.store = user.store
-                        moneyRecord.process_type = 2
-                        moneyRecord.process_log = '购买产品使用余额支付, 订单号：' + order.ordernum
-                        moneyRecord.status = 1
-                        moneyRecord.money = total_price
-                        moneyRecord.apply_time = int(time.time())
-                        moneyRecord.save()
+                        money_record = MoneyRecord()
+                        money_record.user = user
+                        money_record.store = user.store
+                        money_record.process_type = 2
+                        money_record.process_log = '购买产品使用余额支付, 订单号：' + order.ordernum
+                        money_record.status = 1
+                        money_record.money = total_price
+                        money_record.apply_time = int(time.time())
+                        money_record.save()
                     elif order_type == 2:  # 2积分订单
-                        scoreRecord = ScoreRecord()
-                        scoreRecord.user = user
-                        scoreRecord.store = user.store
-                        scoreRecord.process_type = 2
-                        scoreRecord.process_log = '积分兑换产品, 订单号：' + order.ordernum
-                        scoreRecord.score = math.ceil(total_price)  # 积分有小数进位
-                        scoreRecord.status = 1
-                        scoreRecord.save()
+                        score_record = ScoreRecord()
+                        score_record.user = user
+                        score_record.store = user.store
+                        score_record.process_type = 2
+                        score_record.process_log = '积分兑换产品, 订单号：' + order.ordernum
+                        score_record.score = math.ceil(total_price)  # 积分有小数进位
+                        score_record.status = 1
+                        score_record.save()
             else:
                 order.status = 0
-                order.pay_price = total_price
-                order.pay_balance = 0
                 order.save()
                 order.ordernum = 'U' + str(user.id) + 'S' + str(order.id)
                 order.save()
             for item in items:
-                subOrder = SubOrder()
-                subOrder.order = order
-                subOrder.saler_store = item['sid']
-                subOrder.buyer_store = user.store
-                subOrder.price = item['price']
-                subOrder.status = order.status
-                subOrder.save()
+                sub_order = SubOrder()
+                sub_order.order = order
+                sub_order.saler_store = item['sid']
+                sub_order.buyer_store = user.store
+                sub_order.price = item['price']
+                sub_order.status = order.status
+                sub_order.save()
                 for product in item['products']:
                     spp = StoreProductPrice.get(id=product['sppid'])
-                    orderItem = OrderItem()
-                    orderItem.order = order
-                    orderItem.sub_order = subOrder
-                    orderItem.store_product_price = spp
-                    orderItem.quantity = product['count']
-                    orderItem.price = spp.price
-                    orderItem.product = spp.product_realse.product
-                    orderItem.save()
+                    order_item = OrderItem()
+                    order_item.order = order
+                    order_item.sub_order = sub_order
+                    order_item.store_product_price = spp
+                    order_item.quantity = product['count']
+                    order_item.price = spp.price
+                    order_item.product = spp.product_realse.product
+                    order_item.save()
             result['flag'] = 1
             result['data']['order_id'] = order.id
+            result['data']['payment'] = payment
+            if payment == 1:  # 1支付宝  2微信 3银联 4余额
+                response_url = get_pay_url(order.ordernum.encode('utf-8'), u'车装甲商品', str(total_price))
+                if len(response_url) > 0:
+                    result['data']['pay_info'] = response_url
+                else:
+                    result['data']['pay_info'] = ''
+            elif payment == 2:
+                pay_info = UnifiedOrder_pub().getPrepayId(order.ordernum.encode('utf-8'), u'车装甲商品',
+                                                          int(total_price * 100))
+                result['data']['pay_info'] = pay_info
+            elif payment == 3:
+                pay_info = Trade().trade(order.ordernum, order.currentprice)
+                result['data']['pay_info'] = pay_info
+            else:
+                result['data']['pay_info'] = ''
+
         else:
             result['msg'] = "传入参数异常"
         self.write(simplejson.dumps(result))
@@ -1104,12 +1120,5 @@ class MobilNewInsuranceOrderHandler(MobileAuthHandler):
             result['msg'] = '输入参数异常'
         self.write(simplejson.dumps(result))
         self.finish()
-
-
-
-
-
-
-
 
 
