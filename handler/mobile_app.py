@@ -244,6 +244,7 @@ class MobileLoginHandler(MobileBaseHandler):
                         if self.application.memcachedb.set(token, str(user.id), setting.user_expire):
                             result['flag'] = 1
                             result['data']['type'] = user.store.store_type
+                            result['data']['active'] = user.store.active
                             result['data']['token'] = token
                             result['data']['uid'] = user.id
                             user.updatesignin(token)
