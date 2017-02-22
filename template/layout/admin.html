@@ -11,24 +11,24 @@
     <title>车装甲管理系统</title>
 
     <!-- Bootstrap Core CSS -->
-    <link href="/style2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/style/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- MetisMenu CSS -->
-    <link href="/style2/css/plugins/metisMenu/metisMenu.min.css" rel="stylesheet">
+    <link href="/style/css/plugins/metisMenu/metisMenu.min.css" rel="stylesheet">
 
     <!-- Timeline CSS -->
-    <link href="/style2/css/plugins/timeline.css" rel="stylesheet">
+    <link href="/style/css/plugins/timeline.css" rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link href="/style2/css/sb-admin-2.css" rel="stylesheet">
+    <link href="/style/css/sb-admin-2.css" rel="stylesheet">
 
     <!-- Morris Charts CSS -->
-    <link href="/style2/css/plugins/morris.css" rel="stylesheet">
+    <link href="/style/css/plugins/morris.css" rel="stylesheet">
 
-    <link href="/style2/css/chosen.css" rel="stylesheet">
+    <link href="/style/css/chosen.css" rel="stylesheet">
 
     <!-- Custom Fonts -->
-    <link href="/style2/font-awesome-4.1.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="/style/font-awesome-4.1.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     {% block css %}{% endblock %}
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -56,12 +56,7 @@
         <!-- /.navbar-header -->
 
         <ul class="nav navbar-top-links navbar-right">
-            <li>
-                <a href="/admin/topic?status=0&page=1">
-                    <i class="fa fa-bell fa-fw"></i>待处理问题 [<span style="color:red;">{{ handler.get_active_topic_count() }}</span>] <i class="fa fa-caret-down"></i>
-                </a>
 
-            </li>
             <li>
                 <a href="#">
                     <i class="fa fa-user fa-fw"></i> {{admin.realname}} <i class="fa fa-caret-down"></i>
@@ -77,35 +72,28 @@
         <div class="navbar-default sidebar" id="leftTree" role="navigation">
             <div class="sidebar-nav navbar-collapse">
                 <ul class="nav" id="side-menu">
-                    <li {% if active=='withdraw' or active=='users' or active=='feedback' or active=='factory'
-                        or active=='sms_send' or active=='interview' or active=='store'%}
-                        class="active"{% endif %}">
+                    <li {% if active=='withdraw' or active=='factory' or active=='store' %}
+                        class="active"{% endif %} ">
                     <a href="#"><i class="fa fa-user fa-fw"></i>&nbsp;&nbsp;&nbsp;用户管理
                         <span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level">
-                        <li>
-                            <a {% if active=='users' %} class="active"{% endif %} href="/admin/users"></i>&nbsp;&nbsp;&nbsp;车主管理</a>
-                        </li>
                         <li >
-                            <a {% if active=='factory' %} class="active"{% endif %} href="/admin/factory"></i>&nbsp;&nbsp;&nbsp;厂家管理</a>
+                            <a {% if active=='factory' %} class="active"{% endif %} href="/admin/factory"></i>&nbsp;&nbsp;&nbsp;经销商</a>
                         </li>
                         <li>
-                            <a {% if active=='store' %} class="active"{% endif %} href="/admin/stores"></i>&nbsp;&nbsp;&nbsp;门店管理</a>
+                            <a {% if active=='store' %} class="active"{% endif %} href="/admin/stores"></i>&nbsp;&nbsp;&nbsp;门店</a>
                         </li>
                         <li>
-                            <a {% if active=='sms_send' %} class="active"{% endif %} href="/admin/sms_send"></i>&nbsp;&nbsp;&nbsp;消息群发</a>
+                            <a {% if active=='store' %} class="active"{% endif %} href="/admin/stores"></i>&nbsp;&nbsp;&nbsp;推广人员</a>
                         </li>
-                        <li style="display: none;">
-                            <a {% if active=='interview' %} class="active"{% endif %} href="/admin/interview"></i>&nbsp;&nbsp;&nbsp;访谈记录</a>
+                        <li>
+                            <a {% if active=='admin_user' %}class="active" {% endif %}href="/admin/admin_user/0">&nbsp;&nbsp;&nbsp;后台用户管理</a>
                         </li>
-                    	{% if handler.vrole('AD') %}
                         <li>
                             <a {% if active=='withdraw' %} class="active"{% endif %} href="/admin/withdraw"></i>&nbsp;&nbsp;&nbsp;提现管理</a>
                         </li>
-                    	{% endif %}
                     </ul>
                     </li>
-                    {% if handler.vrole('ADY') %}
                     <li {% if active=='update' or active=='admin_user' or active=='circle' or active=='question' or
                         active=='ad_helpCenter' or active=='ad_type' or active=='ads' or active=='brand' or
                         active=='area' or active=='site' or active=='blocks' or active=='hot_search' or
@@ -114,20 +102,6 @@
                     <a  href="#"><i class="fa fa-briefcase fa-fw"></i>&nbsp;&nbsp;&nbsp;网站管理
                         <span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level">
-                        {% if handler.vrole('AD') %}
-                        <li>
-                            <a {% if active=='admin_user' %}class="active" {% endif %}href="/admin/admin_user/0">&nbsp;&nbsp;&nbsp;后台用户管理</a>
-                        </li>
-                        {% endif %}
-                        {% if handler.vrole('ADY') %}
-                        <li style="display: none;">
-                            <a {% if active=='blocks' %}class="active"{% endif %} href="/admin/blocks">&nbsp;&nbsp;&nbsp;首页展示设计</a>
-                        </li>
-                        {% endif %}
-                        {% if handler.vrole('ADY') %}
-                        <li>
-                            <a {% if active=='ad_helpCenter' %}class="active"{% endif %} href="/admin/helpcenter">&nbsp;&nbsp;&nbsp;帮助中心管理</a>
-                        </li>
                         <li>
                             <a {% if active=='ad_type' %}class="active"{% endif %} href="/admin/ad_type">&nbsp;&nbsp;&nbsp;广告位管理</a>
                         </li>
@@ -135,92 +109,34 @@
                             <a {% if active=='ads' %}class="active"{% endif %} href="/admin/ads">&nbsp;&nbsp;&nbsp;广告管理</a>
                         </li>
                         <li>
-                            <a {% if active=='brand' %}class="active"{% endif %} href="/admin/brand">&nbsp;&nbsp;&nbsp;品牌车型管理</a>
-                        </li>
-                        <li>
-                            <a {% if active=='area' %}class="active"{% endif %} href="/admin/area">&nbsp;&nbsp;&nbsp;区域管理</a>
-                        </li>
-                        <li>
-                            <a {% if active=='site' %}class="active"{% endif %} href="/admin/site">&nbsp;&nbsp;&nbsp;站点管理</a>
-                        </li>
-                        <li>
-                            <a {% if active=='medias' %} class="active"{% endif %} href="/admin/medias"></i>&nbsp;&nbsp;&nbsp;媒体报道</a>
-                        </li>
-                        {% endif %}
-                        {% if handler.vrole('ADY') %}
-                        <li style="display: none;">
-                            <a {% if active=='comment' %}class="active"{% endif %} href="/admin/comment?status=1">&nbsp;&nbsp;&nbsp;商品评价管理</a>
-                        </li>
-                        {% endif %}
-                        {% if handler.vrole('ADY') %}
-                        <li style="display: none;">
-                            <a {% if active=='consult' %}class="active"{% endif %} href="/admin/consult">&nbsp;&nbsp;&nbsp;售后咨询</a>
-                        </li>
-                        {% endif %}
-                        {% if handler.vrole('ADY') %}
-                        <li style="display: none;">
-                            <a {% if active=='raffle' %} class="active"{% endif %} href="/admin/product/raffle_list"></i>&nbsp;&nbsp;&nbsp;获奖信息</a>
-                        </li>
-                        {% endif %}
-                        {% if handler.vrole('ADY') %}
-                        <li style="display: none;">
-                            <a {% if active=='coupon' %}class="active"{% endif %} href="/admin/coupon"></i>&nbsp;&nbsp;&nbsp;优惠劵管理</a>
-                        </li>
-                        {% endif %}
-                        {% if handler.vrole('ADY') %}
-                        <li>
                             <a {% if active=='hot_search' %}class="active"{% endif %} href="/admin/hot_search">&nbsp;&nbsp;&nbsp;热门搜索</a>
                         </li>
-                        {% endif %}
-                        {% if handler.vrole('AD') %}
-                        <li>
-                            <a {% if active=='categorys' %}class="active"{% endif %} href="/admin/categorys">&nbsp;&nbsp;&nbsp;分类管理</a>
-                        </li>
-                        {% endif %}
-                        {% if handler.vrole('AD') %}
                         <li>
                             <a {% if active=='pages' %}class="active"{% endif %} href="/admin/pages">&nbsp;&nbsp;&nbsp;静态页面</a>
                         </li>
-                        {% endif %}
-                        {% if handler.vrole('AD') %}
-                        <li>
-                            <a {% if active=='question' %}class="active"{% endif %} href="/admin/question">&nbsp;&nbsp;&nbsp;问答管理</a>
-                        </li>
-                        {% endif %}
-                        {% if handler.vrole('AD') %}
-                        <li>
-                            <a {% if active=='circle' %}class="active"{% endif %} href="/admin/circle">&nbsp;&nbsp;&nbsp;圈子管理</a>
-                        </li>
-                        {% endif %}
-                        {% if handler.vrole('ADY') %}
                         <li>
                             <a {% if active=='update' %}class="active"{% endif %} href="/admin/update">&nbsp;&nbsp;&nbsp;更新管理</a>
                         </li>
-                        {% endif %}
                     </ul>
                     </li>
-                    {% endif %}
-                    {% if handler.vrole('ADYK') %}
                     <li {% if active=='pinpaitype' or active=='pinpai' or active=='ps'  or  active=='reserve' %}class="active"{% endif %}>
                         <a  href="#"><i class="fa fa-picture-o fa-fw"></i>&nbsp;&nbsp;&nbsp;商品管理
                             <span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
-                            {% if handler.vrole('ADYKC') %}
                             <li>
-                                <a {% if active=='pinpaitype' %} class="active"{% endif %} href="/admin/pinpaitype"></i>&nbsp;&nbsp;&nbsp;配件品牌分类</a>
+                                <a {% if active=='pinpaitype' %} class="active"{% endif %} href="/admin/pinpaitype"></i>&nbsp;&nbsp;&nbsp;商品分类</a>
                             </li>
                             <li>
-                                <a {% if active=='pinpai' %} class="active"{% endif %} href="/admin/pinpai"></i>&nbsp;&nbsp;&nbsp;配件品牌</a>
+                                <a {% if active=='pinpai' %} class="active"{% endif %} href="/admin/pinpai"></i>&nbsp;&nbsp;&nbsp;商品品牌</a>
                             </li>
                             <li>
-                                <a {% if active=='ps' %} class="active"{% endif %} href="/admin/products"></i>&nbsp;&nbsp;&nbsp;商品管理</a>
+                                <a {% if active=='ps' %} class="active"{% endif %} href="/admin/products"></i>&nbsp;&nbsp;&nbsp;销售商品</a>
                             </li>
-
-                            {% endif %}
+                            <li>
+                                <a {% if active=='ps' %} class="active"{% endif %} href="/admin/products"></i>&nbsp;&nbsp;&nbsp;销售商品</a>
+                            </li>
                         </ul>
                     </li>
-                    {% endif %}
-                    {% if handler.vrole('ADY') %}
                     <li {% if active=='m_ads' or active == 'm_blocks' %}class="active"{% endif %} style="display:none;">
                     <a  href="#"><i class="fa fa-qrcode fa-fw"></i>&nbsp;&nbsp;&nbsp;手机App
                         <span class="fa arrow"></span></a>
@@ -234,8 +150,6 @@
                         </li>
                     </ul>
                     </li>
-                    {% endif %}
-                    {% if handler.vrole('ADYKFBC') %}
                     <li {% if active=='orders' or active=='skus' or active=='order_payback' or active=='insurance' or active=='insurancefile' or active=='banpen' or active=='gifts' or active=='inventory_orders' or active=='bulk_product_sel' %}class="active"{% endif %}>
                         <a href="#"><i class="fa fa-align-justify fa-fw"></i>&nbsp;&nbsp;&nbsp;订单管理
                             <span class="fa arrow"></span>
@@ -265,9 +179,6 @@
                             {% endif %}
                         </ul>
                     </li>
-                    {% endif %}
-
-                    {% if handler.vrole('ADY') %}
                     <li {% if active=='facilitatorlist' or active=='isrcfacilitatorlist' %}class="active"{% endif %}>
                         <a href="#"><i class="fa fa-book fa-fw"></i>&nbsp;&nbsp;&nbsp;服务商管理
                             <span class="fa arrow"></span></a>
@@ -279,9 +190,6 @@
                             {% endif %}
                         </ul>
                     </li>
-                    {% endif %}
-
-                    {% if handler.vrole('ADYKC') %}
                     <li {% if active=='insuranceadmin' %}class="active"{% endif %}>
                         <a href="#"><i class="fa fa-unlock fa-fw"></i>&nbsp;&nbsp;&nbsp;保险账户管理
                             <span class="fa arrow"></span></a>
@@ -293,11 +201,6 @@
                             {% endif %}
                         </ul>
                     </li>
-                    {% endif %}
-
-
-
-                    {% if handler.vrole('ADYKC') %}
                     <li {% if active=='insuranceadmin' %}class="active"{% endif %}>
                         <a href="#"><i class="fa fa-cab fa-fw"></i>&nbsp;&nbsp;&nbsp;车保养协议
                             <span class="fa arrow"></span></a>
@@ -309,10 +212,6 @@
                             {% endif %}
                         </ul>
                     </li>
-                    {% endif %}
-
-
-                    {% if handler.vrole('AD') %}
                     <li {% if active=='scoreproducts' or active=='scorelists' or active=="scorefacilitatorlist"  or active=="scoreorders" or active=="integralshow" or active=="cashingshow" or active=="scorearea" or active=="scorehistory" %}class="active"{% endif %}>
                         <a href="#"><i class="fa fa-yen fa-fw"></i>&nbsp;&nbsp;&nbsp;积分管理
                             <span class="fa arrow"></span>
@@ -346,10 +245,6 @@
                             {% endif %}
                         </ul>
                     </li>
-                    {% endif %}
-
-
-                    {% if handler.vrole('ADY') %}
                     <!-- style="display: none;"  -->
                     <li {% if active=='r_user' or active=='r_summary' or active=='r_sale' or active=='r_product'
                             or active=='r_log' or active=='r_order' or active=='r_user_order' or active=='r_invoice'
@@ -396,7 +291,7 @@
                             </li>
                         </ul>
                     </li>
-                    {% endif %}
+
                     <li>
                         <a {% if active=='password' %}class="active"{% endif %} href="/admin/password"><i class="fa fa-eye fa-fw"></i>&nbsp;&nbsp;&nbsp;修改密码</a>
                     </li>
@@ -412,10 +307,10 @@
 </div>
 
 
-<script src="/style2/js/jquery-1.11.1.min.js"></script>
+<script src="/style/js/jquery-1.11.1.min.js"></script>
 
-<script src="/style2/js/chosen.jquery.js"></script>
-<script language="javascript" type="text/javascript" src="/style2/js/My97DatePicker/WdatePicker.js"></script>
+<script src="/style/js/chosen.jquery.js"></script>
+<script language="javascript" type="text/javascript" src="/style/js/My97DatePicker/WdatePicker.js"></script>
 
 <script type="text/javascript">
         $(function(){
@@ -447,17 +342,17 @@
 	</script>
 
 <!-- Bootstrap Core JavaScript -->
-<script src="/style2/js/bootstrap.min.js"></script>
+<script src="/style/js/bootstrap.min.js"></script>
 
 <!-- Metis Menu Plugin JavaScript -->
-<script src="/style2/js/plugins/metisMenu/metisMenu.min.js"></script>
+<script src="/style/js/plugins/metisMenu/metisMenu.min.js"></script>
 
 <!-- Custom Theme JavaScript -->
-<script src="/style2/js/sb-admin-2.js"></script>
+<script src="/style/js/sb-admin-2.js"></script>
 {% block js %}{% endblock %}
 
-<link rel="stylesheet" href="/style2/css/jquery.confirm.css" type="text/css" media="screen" />
-<script type="text/javascript" src="/style2/js/jquery.confirm.js"></script>
+<link rel="stylesheet" href="/style/css/jquery.confirm.css" type="text/css" media="screen" />
+<script type="text/javascript" src="/style/js/jquery.confirm.js"></script>
 </body>
 
 </html>

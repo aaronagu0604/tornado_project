@@ -18,6 +18,9 @@ from lib.payment.upay import Trade
 
 @route(r'/', name='mobile_app')
 class MobileAppHandler(MobileBaseHandler):
+    def options(self):
+        pass
+
     def get(self):
         self.write("czj api")
 
@@ -276,6 +279,9 @@ class MobileFilterHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/filter
     """
+    def options(self):
+        pass
+
     def getCategoryAttribute(self, bc):
         '''
         attributeList = [{
@@ -426,6 +432,9 @@ class MobileDiscoverHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/discover
     """
+    def options(self):
+        pass
+
     def getProductList(self, keyword, sort, category, brand, attribute, index, area_code):
         productList = []
         pids = []
@@ -536,6 +545,9 @@ class MobileHomeHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/home
     """
+    def options(self):
+        pass
+
     def get(self):
         result = {'flag': 0, 'msg': '', "data": {}}
         area_code = self.get_store_area_code()

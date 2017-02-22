@@ -7,6 +7,14 @@ from model import *
 import time
 
 
+@route(r'/admin', name='admin_index')  # 后台首页
+class IndexHandler(AdminBaseHandler):
+    def get(self):
+        report = {}
+        report['day_new_users'] = 6666
+        self.render('admin/index.html', report=report)
+
+
 @route(r'/admin/login', name='admin_login')  # 后台登录
 class LoginHandler(BaseHandler):
     def get(self):
@@ -46,11 +54,3 @@ class LogoutHandler(AdminBaseHandler):
             self.session.save()
         self.render('admin/login.html')
 
-
-@route(r'/admin', name='admin_index')  # 后台首页
-class IndexHandler(AdminBaseHandler):
-    def get(self):
-        report = {}
-        minday = int(time.mktime(time.strptime(time.strftime("%Y-%m-%d 0:0:0", time.localtime()), "%Y-%m-%d 0:0:0")))
-        report['day_new_users'] = User.select().where((User.isactive == 1) & (User.signuped >= minday)).count()
-        self.render('admin/index.html', report=report)
