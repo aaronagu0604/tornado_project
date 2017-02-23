@@ -887,8 +887,8 @@ class MobileChangeLoginPasswordHandler(MobileAuthHandler):
     """
     @apiGroup mine
     @apiVersion 1.0.0
-    @api {get} /mobile/changeloginpassword 18. 我的设置
-    @apiDescription 我的设置
+    @api {get} /mobile/changeloginpassword 18. 修改登录密码
+    @apiDescription 修改登录密码
 
     @apiHeader {String} token 用户登录凭证
 
@@ -926,8 +926,8 @@ class MobileChangePayPasswordHandler(MobileAuthHandler):
     """
     @apiGroup mine
     @apiVersion 1.0.0
-    @api {get} /mobile/changepaypassword 19. 我的设置
-    @apiDescription 我的设置
+    @api {get} /mobile/changepaypassword 19. 修改支付密码
+    @apiDescription 修改支付密码
 
     @apiHeader {String} token 用户登录凭证
 
@@ -965,18 +965,15 @@ class MobileChangePayPasswordHandler(MobileAuthHandler):
         self.write(simplejson.dumps(result))
 
 
-@route(r'/mobile/changepaypassword', name='mobile_change_pay_password')  # 收货地址
-class MobileChangePayPasswordHandler(MobileAuthHandler):
+@route(r'/mobile/receiveraddress', name='mobile_receiver_address')  # 收货地址
+class MobileReceiverAddressHandler(MobileAuthHandler):
     """
     @apiGroup mine
     @apiVersion 1.0.0
-    @api {get} /mobile/changepaypassword 19. 我的设置
-    @apiDescription 我的设置
+    @api {get} /mobile/changepaypassword 19. 收货地址
+    @apiDescription 收货地址
 
     @apiHeader {String} token 用户登录凭证
-
-    @apiParam {String} v_code  验证码
-    @apiParam {String} new_password  新密码
 
     @apiSampleRequest /mobile/changepaypassword
     """
@@ -988,27 +985,21 @@ class MobileChangePayPasswordHandler(MobileAuthHandler):
         pass
 
     def get(self):
-        result = {'flag': 0, 'msg': '', "data": {}}
-        store = self.get_user().store
-        new_password = self.get_argument('new_password', None)
-        vcode = self.get_body_argument('vcode', None)
-        flag = 1
-        if vcode and new_password:
-            VCode.delete().where(VCode.created < (int(time.time()) - 30 * 60)).execute()
-            if VCode.select().where((VCode.mobile == store.mobile) & (VCode.vcode == vcode) & (VCode.flag == flag)).count() > 0:
-                store.pay_password = User.create_password(new_password)
-                store.save()
-                result['flag'] = 1
-                result['msg'] = "修改成功"
-            else:
-                result['msg'] = "请输入正确的验证码"
-        else:
-            result['flag'] = 0
-            result['msg'] = '请传入正确的验证码或密码'
-
+        result = {'flag': 0, 'msg': '', "data": []}
+        store = self.get_user().user.store
+        for addr in store.addresses:
+            result['data'].append({
+                'store_name': store.name,
+                'address': addr.province+addr.city+addr.region+addr.address,
+                'receiver_name': addr.name,
+                'mobile': addr.mobile,
+                'is_default': addr.is_default
+            })
+        result['flag'] = 1
         self.write(simplejson.dumps(result))
 
-
+    def post(self):
+        store_address_id = self.get_body_argument('store_address_id', None)
 
 
 

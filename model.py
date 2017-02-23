@@ -184,7 +184,6 @@ class StoreAddress(db.Model):
     name = CharField(max_length=16, null=True)  # 收件人姓名
     mobile = CharField(max_length=11, null=True)  # 收件人电话
     is_default = IntegerField(default=1)  # 是否默认 0否 1是
-    active = IntegerField(default=1)  # 状态 0删除 1有效
     created = IntegerField(default=0)  # 创建时间
     create_by = ForeignKeyField(User, db_column='user_id')  # 创建人
 
