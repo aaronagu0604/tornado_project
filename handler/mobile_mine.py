@@ -970,12 +970,12 @@ class MobileReceiverAddressHandler(MobileAuthHandler):
     """
     @apiGroup mine
     @apiVersion 1.0.0
-    @api {get} /mobile/changepaypassword 19. 收货地址
+    @api {get} /mobile/receiveraddress 20. 收货地址
     @apiDescription 收货地址
 
     @apiHeader {String} token 用户登录凭证
 
-    @apiSampleRequest /mobile/changepaypassword
+    @apiSampleRequest /mobile/receiveraddress
     """
 
     def check_xsrf_cookie(self):
@@ -987,20 +987,84 @@ class MobileReceiverAddressHandler(MobileAuthHandler):
     def get(self):
         result = {'flag': 0, 'msg': '', "data": []}
         store = self.get_user().user.store
-        for addr in store.addresses:
+        for address in StoreAddress.select(StoreAddress.store==store).where().order_by(StoreAddress.is_default.desc()):
             result['data'].append({
+                'address_id': address.id,
                 'store_name': store.name,
-                'address': addr.province+addr.city+addr.region+addr.address,
-                'receiver_name': addr.name,
-                'mobile': addr.mobile,
-                'is_default': addr.is_default
+                'province': address.province,
+                'city': address.city,
+                'district': address.region,
+                'address': address.address,
+                'receiver': address.name,
+                'mobile': address.mobile,
+                'is_default': address.is_default
             })
         result['flag'] = 1
         self.write(simplejson.dumps(result))
 
-    def post(self):
-        store_address_id = self.get_body_argument('store_address_id', None)
+    """
+    @apiGroup mine
+    @apiVersion 1.0.0
+    @api {post} /mobile/receiveraddress 20. 修改收货地址
+    @apiDescription 修改收货地址
 
+    @apiHeader {String} token 用户登录凭证
+    @apiParam {Int} store_address_id 门店收货地址ID
+    @apiParam {Int} cancel_def_id 取消收货地址的ID
+    @apiParam {String} receiver 取消收货地址的ID
+    @apiParam {String} mobile 收货人手机号
+    @apiParam {String} province 省
+    @apiParam {String} city 市
+    @apiParam {String} district 区
+    @apiParam {String} address 详细地址
+    @apiParam {Int} is_default 是否为默认收货地址 1是，2否
+
+    @apiSampleRequest /mobile/receiveraddress
+    """
+    def post(self):
+        result = {'flag': 0, 'msg': '', "data": {}}
+        user = self.get_user()
+        store_address_id = self.get_body_argument('store_address_id', None)
+        cancel_def_id = self.get_body_argument('cancel_def_id', None)
+        receiver = self.get_body_argument('receiver', None)
+        mobile = self.get_body_argument('mobile', None)
+        province = self.get_body_argument('province', None)
+        city = self.get_body_argument('city', None)
+        region = self.get_body_argument('district', None)
+        address = self.get_body_argument('address', None)
+        is_default = int(self.get_body_argument('is_default', 0))
+        created = int(time.time())
+        
+        if cancel_def_id and store_address_id:
+            store_address_cancel = StoreAddress.get(id=cancel_def_id)
+            store_address_cancel.is_default = 0
+            store_address_cancel.save()
+            store_address_set = StoreAddress.get(id=store_address_id)
+            store_address_set.is_default = 1
+            store_address_set.save()
+        else:
+            if is_default:
+                for store_address in user.store.addresses:
+                    if store_address.is_default:
+                        store_address.is_default = 0
+                        store_address.save()
+            if store_address_id:
+                sa = StoreAddress.get(id=store_address_id)
+                sa.name = receiver
+                sa.mobile = mobile
+                sa.province = province
+                sa.city = city
+                sa.region = region
+                sa.address = address
+                sa.is_default = is_default
+                sa.create_by = user
+                sa.save()
+            else:
+                StoreAddress.create(store=user.store, province=province, city=city, region=region, address=address,
+                                    name=receiver, mobile=mobile, is_default=is_default, create_by=user, created=created)
+
+        result['flag'] = 1
+        self.write(simplejson.dumps(result))
 
 
 
