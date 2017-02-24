@@ -6,6 +6,7 @@ from tornado.web import RequestHandler
 from model import User, Store
 from lib.session import Session
 from lib.mixin import FlashMessagesMixin
+import logging
 
 
 class MobilePageNotFoundHandler(RequestHandler):
@@ -46,8 +47,11 @@ class MobileAuthHandler(MobileBaseHandler):
             data = self.application.memcachedb.get(token)
             if data is None:
                 self.set_status(401)
+                logging.info('----------Unauthorized----------------')
                 self.write('Unauthorized')
                 self.finish()
+            else:
+                logging.info('----token-----')
         else:
             self.set_status(401)
             self.write('Unauthorized')
