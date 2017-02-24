@@ -12,6 +12,7 @@ from PIL import Image, ImageDraw, ImageFont
 from lib.payment.alipay import get_pay_url
 from lib.payment.wxPay import UnifiedOrder_pub
 from lib.payment.upay import Trade
+from handler import require_auth
 
 
 @route(r'/mobile/mine', name='mobile_mine')  # app我的主界面
@@ -889,7 +890,7 @@ class MobileProductReleaseHandler(MobileAuthHandler):
 
 # ---------------------------------------------------帮助中心-----------------------------------------------------------
 @route(r'/mobile/lubepolicy', name='mobile_lube_policy')  # 返油政策
-class MobileLubePolicyHandler(MobileAuthHandler):
+class MobileLubePolicyHandler(MobileBaseHandler):
     """
     @apiGroup mine
     @apiVersion 1.0.0
@@ -974,6 +975,7 @@ class MobileLubePolicyHandler(MobileAuthHandler):
                             [insurance, row.driverGiftNum, row.party2GiftNum])
         return result
 
+    @require_auth
     def get(self):
         result = {
             'flag': 0,

@@ -7,6 +7,7 @@ from model import User, Store
 from lib.session import Session
 from lib.mixin import FlashMessagesMixin
 import logging
+import functools
 
 
 class MobilePageNotFoundHandler(RequestHandler):
@@ -167,3 +168,16 @@ class AdminBaseHandler(BaseHandler):
                 return True
         return False
 
+
+def require_auth(method):
+    @functools.wraps(method)
+    def wrapper(self, *args, **kwargs):
+        token = self.request.headers.get('token')
+        if token:
+            data = self.application.memcachedb.get(token)
+            if data is None:
+                self.set_status(401)
+                logging.info('----------Unauthorized---------------- invalid token')
+                self.finish()
+        return method(self, *args, **kwargs)
+    return wrapper
