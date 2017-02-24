@@ -907,7 +907,7 @@ class MobileLubePolicyHandler(MobileAuthHandler):
     def options(self):
         pass
 
-    # 一个地区多个保险公司返油政策香同 或 一个保险公司
+    # 一个地区多个保险公司返油政策相同 或 一个保险公司
     def get_insurances(self, rows, result):
         tmpList = []
         for row in rows:
@@ -986,6 +986,7 @@ class MobileLubePolicyHandler(MobileAuthHandler):
                 'type': []
             }
         }
+        logging.info('-----1---')
         area_code = self.get_user().store.area_code
         result['data']['remark'] = setting.get_help_center_remark(area_code)
         area_code_lenth = len(area_code)
@@ -995,18 +996,22 @@ class MobileLubePolicyHandler(MobileAuthHandler):
             rows = LubePolicy.select().where(LubePolicy.area_code == area_code[:8]).order_by(LubePolicy.sort, LubePolicy.sort2)
         if area_code_lenth == 4 or (area_code_lenth > 4 and rows.count() <= 0):
             rows = LubePolicy.select().where(LubePolicy.area_code == area_code[:12]).order_by(LubePolicy.sort, LubePolicy.sort2)
+        logging.info('-----2---')
         if rows.count() > 0:
+            logging.info('-----3---')
             iCompanyName = ''
             totalICname = []
             for row in rows:
-                if row.iCompany not in totalICname:
+                self.i_cname = row.iCompany not in totalICname
+                if self.i_cname:
                     totalICname.append(row.iCompany)
                     iCompanyName += row.iCompany
             if len(totalICname) > 1:
                 result = self.get_insurances_for_difI(rows, result, iCompanyName)
             else:
                 result = self.get_insurances(rows, result)
-            result['flag']=1
+                logging.info('-----4---')
+            result['flag'] = 1
         else:
             result['msg'] = u'该地区的具体优惠政策请联系车装甲客服'
         logging.info('-----%s---'%result)
