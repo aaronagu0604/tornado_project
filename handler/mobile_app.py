@@ -965,8 +965,75 @@ class MobilInsuranceOrderBaseHandler(MobileAuthHandler):
         @apiSampleRequest /mobile/insuranceorderbase
         """
 
+    def get_insruances(self):
+        result = {
+            'force_insurance': {
+                'title': '交强险',
+                'item': []
+            },
+            'commerce_insurance_master': {
+                'title': '商业险-主险',
+                'item': []
+            },
+            'commerce_insurance_slave':{
+                'title': '商业险-附加险',
+                'item': []
+            }
+        }
+        store = self.get_user().store
+        result['insurance_company'] = InsuranceScoreExchange.get_insurances(store.area_code)
+        i_items= InsuranceItem.select()
+        for i_item in i_items:
+            if i_item.style_id == 1:
+                result['force_insurance']['item'].append({
+                    'name': i_item.name,
+                    'eName': i_item.eName
+                })
+            elif i_item.style_id == 2:
+                result['commerce_insurance_master']['item'].append({
+                    'name': i_item.name,
+                    'eName': i_item.eName,
+
+                })
+
+
+
+
+        ips = InsurancePrice.select().where(InsurancePrice.pid == 3)
+        for ip in ips:
+            tmpdic = {}
+            tmpdic['id'] = ip.id
+            tmpdic['name'] = ip.name
+            result['thirdDutyIP'].append(tmpdic)
+        ips = InsurancePrice.select().where(InsurancePrice.pid == 5)
+        for ip in ips:
+            tmpdic = {}
+            tmpdic['id'] = ip.id
+            tmpdic['name'] = ip.name
+            result['driverDutyIP'].append(tmpdic)
+        ips = InsurancePrice.select().where(InsurancePrice.pid == 6)
+        for ip in ips:
+            tmpdic = {}
+            tmpdic['id'] = ip.id
+            tmpdic['name'] = ip.name
+            result['passengerDutyIP'].append(tmpdic)
+        ips = InsurancePrice.select().where(InsurancePrice.pid == 8)
+        for ip in ips:
+            tmpdic = {}
+            tmpdic['id'] = ip.id
+            tmpdic['name'] = ip.name
+            result['scratchIP'].append(tmpdic)
+
+
+
+
+
+
+
     def get(self):
         result = {'flag': 0, 'msg': '', "data": {}}
+
+
         area_code = self.get_store_area_code()
         insurance = self.get_argument('insurance', None)
         result['data']['is_lube'] = 1 if Area.is_lube_area(area_code) else 0

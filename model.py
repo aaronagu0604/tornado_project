@@ -558,7 +558,7 @@ class InsuranceItem(db.Model):
 # 保险子险种额度
 class InsurancePrice(db.Model):
     id = PrimaryKeyField()
-    insurance_item = ForeignKeyField(InsuranceItem, db_column='insurance_item_id', null=True)  # 子险种
+    insurance_item = ForeignKeyField(InsuranceItem, related_name='insurance_prices', db_column='insurance_item_id', null=True)  # 子险种
     coverage = CharField()  # 保险额度
 
     class Meta:
