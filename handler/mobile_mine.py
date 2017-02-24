@@ -1055,7 +1055,7 @@ class MobileChangeLoginPasswordHandler(MobileAuthHandler):
     """
     @apiGroup mine
     @apiVersion 1.0.0
-    @api {get} /mobile/changeloginpassword 18. 修改登录密码
+    @api {post} /mobile/changeloginpassword 18. 修改登录密码
     @apiDescription 修改登录密码
 
     @apiHeader {String} token 用户登录凭证
@@ -1072,12 +1072,12 @@ class MobileChangeLoginPasswordHandler(MobileAuthHandler):
     def options(self):
         pass
 
-    def get(self):
+    def post(self):
         result = {'flag': 0, 'msg': '', "data": {}}
         user = self.get_user()
 
-        old_password = self.get_argument('old_password', None)
-        new_password = self.get_argument('new_password', None)
+        old_password = self.get_body_argument('old_password', None)
+        new_password = self.get_body_argument('new_password', None)
 
         if user.check_password(old_password):
             user.password = user.create_password(new_password)
@@ -1115,11 +1115,11 @@ class MobileChangePayPasswordHandler(MobileAuthHandler):
         result = {'flag': 0, 'msg': '', "data": {}}
         store = self.get_user().store
         new_password = self.get_body_argument('new_password', None)
-        vcode = self.get_body_argument('vcode', None)
+        v_code = self.get_body_argument('v_code', None)
         flag = 1
-        if vcode and new_password:
+        if v_code and new_password:
             VCode.delete().where(VCode.created < (int(time.time()) - 30 * 60)).execute()
-            if VCode.select().where((VCode.mobile == store.mobile) & (VCode.vcode == vcode) & (VCode.flag == flag)).count() > 0:
+            if VCode.select().where((VCode.mobile == store.mobile) & (VCode.v_code == v_code) & (VCode.flag == flag)).count() > 0:
                 store.pay_password = User.create_password(new_password)
                 store.save()
                 result['flag'] = 1
