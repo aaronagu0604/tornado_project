@@ -47,14 +47,13 @@ class MobileAuthHandler(MobileBaseHandler):
             data = self.application.memcachedb.get(token)
             if data is None:
                 self.set_status(401)
-                logging.info('----------Unauthorized----------------')
-                self.write('Unauthorized')
+                logging.info('----------Unauthorized---------------- invalid token')
                 self.finish()
             else:
                 logging.info('----token-----')
         else:
             self.set_status(401)
-            self.write('Unauthorized')
+            logging.info('----------Unauthorized---------------- no token')
             self.finish()
 
 
