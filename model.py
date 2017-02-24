@@ -173,7 +173,7 @@ class VCode(db.Model):
         db_table = 'tb_user_vcodes'
 
 
-# 店铺联系地址
+# 店铺收货地址
 class StoreAddress(db.Model):
     id = PrimaryKeyField()
     store = ForeignKeyField(Store, related_name='addresses', db_column='store_id')  # 店铺

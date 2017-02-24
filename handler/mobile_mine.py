@@ -1182,9 +1182,9 @@ class MobileReceiverAddressHandler(MobileAuthHandler):
     @apiDescription 修改收货地址
 
     @apiHeader {String} token 用户登录凭证
-    @apiParam {Int} store_address_id 门店收货地址ID
-    @apiParam {Int} cancel_def_id 取消收货地址的ID
-    @apiParam {String} receiver 取消收货地址的ID
+    @apiParam {Int} store_address_id 门店收货地址ID（仅创建新收货地址时不用传）
+    @apiParam {Int} cancel_def_id 取消收货地址的ID（仅修改默认收货地址时传）
+    @apiParam {String} receiver 收货人姓名
     @apiParam {String} mobile 收货人手机号
     @apiParam {String} province 省
     @apiParam {String} city 市
