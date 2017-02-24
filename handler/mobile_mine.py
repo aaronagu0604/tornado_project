@@ -579,9 +579,9 @@ class MobileScoreRecordHandler(MobileAuthHandler):
 @route(r'/mobile/fund', name='mobile_fund')  # 资金入口
 class MobileFundHandler(MobileAuthHandler):
     """
-    @apiGroup mine
+    @apiGroup fund
     @apiVersion 1.0.0
-    @api {get} /mobile/fund 10. 资金入口
+    @api {get} /mobile/fund 01. 资金入口
     @apiDescription 资金入口
 
     @apiHeader {String} token 用户登录凭证
@@ -606,9 +606,9 @@ class MobileFundHandler(MobileAuthHandler):
 @route(r'/mobile/fundrecharge', name='mobile_recharge')  # 资金充值
 class MobileFundRechargeHandler(MobileAuthHandler):
     """
-    @apiGroup mine
+    @apiGroup fund
     @apiVersion 1.0.0
-    @api {get} /mobile/fundrecharge 11. 资金充值
+    @api {get} /mobile/fundrecharge 02. 资金充值
     @apiDescription 资金充值
 
     @apiHeader {String} token 用户登录凭证
@@ -658,13 +658,11 @@ class MobileFundRechargeHandler(MobileAuthHandler):
 @route(r'/mobile/withdrawcash', name='mobile_withdraw_cash')  # 提现
 class MobileWithdrawCashHandler(MobileAuthHandler):
     """
-    @apiGroup mine
+    @apiGroup fund
     @apiVersion 1.0.0
-    @api {get} /mobile/withdrawcash 11. 提现
+    @api {get} /mobile/withdrawcash 03. 提现
     @apiDescription 提现
-
     @apiHeader {String} token 用户登录凭证
-
     @apiSampleRequest /mobile/withdrawcash
     """
 
@@ -675,19 +673,66 @@ class MobileWithdrawCashHandler(MobileAuthHandler):
         pass
 
     def get(self):
-        result = {'flag': 0, 'msg': '', "data": {}}
+        result = {'flag': 0, 'msg': '', "data": []}
         store = self.get_user().store
         store_bank_accounts = StoreBankAccount.select().where(StoreBankAccount.store==store,
                                   StoreBankAccount.account_type==0).order_by(StoreBankAccount.is_default.desc())
         for bank_account in store_bank_accounts:
-            result['data']['bank_account'] = bank_account.bank_account
-            result['data']['bank_name'] = bank_account.bank_name
-
+            result['data'].append({
+                'bank_id': bank_account.id,
+                'account_type': bank_account.account_type,
+                'bank_account': bank_account.bank_account,
+                'bank_name': bank_account.bank_name
+            })
 
         self.write(simplejson.dumps(result))
 
+    """
+    @apiGroup mine
+    @apiVersion 1.0.0
+    @api {post} /mobile/withdrawcash 04. 提现
+    @apiDescription 提现
+    @apiHeader {String} token 用户登录凭证
+    @apiParam {Int} money 金额
+    @apiParam {Int} bank_id 银行卡ID
+    @apiSampleRequest /mobile/withdrawcash
+    """
     def post(self):
-        pass
+        result = {'flag': 0, 'msg': '', "data": []}
+        user = self.get_user()
+        store = user.store
+        money = self.get_body_argument('money', None)
+        bank_id = self.get_body_argument('bank_id', None)
+        if money and bank_id:
+            s = StoreBankAccount.get(id=bank_id)
+            if money <= store.price:
+                store.price -= money
+                '''
+    user = ForeignKeyField(User, related_name='money_records', db_column='user_id')  # 用户
+    store = ForeignKeyField(Store, related_name='money_records', db_column='store_id')  # 店铺
+    process_type = IntegerField(default=0)  # 资金流动类型 1入账 2出账
+    process_log = CharField(max_length=255, default='')  # 资金流动
+    in_num = CharField(max_length=32, default='')  # 在线充值订单号
+    out_account_type = IntegerField(default=0)  # 提现账户类型 0银行卡 1支付宝
+    out_account_truename = CharField(max_length=32, default='')  # 银行卡姓名
+    out_account_name = CharField(max_length=64, default='')  # 银行名称
+    out_account_branchname = CharField(max_length=64, default='')  # 支行名称
+    out_account_account = CharField(max_length=32, default='')  # 银行卡号
+    money = FloatField(default=0.0)  # 提现或支付的金额
+    status = IntegerField(default=0)  # 处理状态
+    apply_time = IntegerField(default=0)  # 申请时间
+    processing_time = IntegerField(default=0)  # 处理时间
+    processing_by = ForeignKeyField(AdminUser, db_column='updated_by', null=True)  # 处理人
+    '''
+                MoneyRecord.create(user=user, store=user.store, process_type=1, process_log='提现', out_account_type=0)
+        else:
+            result['msg'] = '传入参数有误'
+
+        self.write(simplejson.dumps(result))
+
+
+
+
 
 # ---------------------------------------------------商品管理-----------------------------------------------------------
 @route(r'/mobile/myproducts', name='mobile_my_products')  # 商品管理/我的商品
@@ -964,7 +1009,7 @@ class MobileLubePolicyHandler(MobileAuthHandler):
             result['flag']=1
         else:
             result['msg'] = u'该地区的具体优惠政策请联系车装甲客服'
-
+        logging.info('-----%s---'%result)
         self.write(simplejson.dumps(result))
 
 
