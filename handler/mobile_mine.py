@@ -655,6 +655,40 @@ class MobileFundRechargeHandler(MobileAuthHandler):
         self.write(simplejson.dumps(result))
 
 
+@route(r'/mobile/withdrawcash', name='mobile_withdraw_cash')  # 提现
+class MobileWithdrawCashHandler(MobileAuthHandler):
+    """
+    @apiGroup mine
+    @apiVersion 1.0.0
+    @api {get} /mobile/withdrawcash 11. 提现
+    @apiDescription 提现
+
+    @apiHeader {String} token 用户登录凭证
+
+    @apiSampleRequest /mobile/withdrawcash
+    """
+
+    def check_xsrf_cookie(self):
+        pass
+
+    def options(self):
+        pass
+
+    def get(self):
+        result = {'flag': 0, 'msg': '', "data": {}}
+        store = self.get_user().store
+        store_bank_accounts = StoreBankAccount.select().where(StoreBankAccount.store==store,
+                                  StoreBankAccount.account_type==0).order_by(StoreBankAccount.is_default.desc())
+        for bank_account in store_bank_accounts:
+            result['data']['bank_account'] = bank_account.bank_account
+            result['data']['bank_name'] = bank_account.bank_name
+
+
+        self.write(simplejson.dumps(result))
+
+    def post(self):
+        pass
+
 # ---------------------------------------------------商品管理-----------------------------------------------------------
 @route(r'/mobile/myproducts', name='mobile_my_products')  # 商品管理/我的商品
 class MobileMyProductsHandler(MobileAuthHandler):

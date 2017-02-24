@@ -251,7 +251,7 @@ class ScoreRecord(db.Model):
 class StoreBankAccount(db.Model):
     id = PrimaryKeyField()
     store = ForeignKeyField(Store, related_name='store_bank_accounts', db_column='store_id')  # 店铺
-    account_type = IntegerField(default=0)  # 账户类型
+    account_type = IntegerField(default=0)  # 账户类型 0银联 1支付宝
     alipay_truename = CharField(max_length=32, default='')  # 支付宝姓名
     alipay_account = CharField(max_length=128, default='')  # 支付宝账号
     bank_truename = CharField(max_length=32, default='')  # 银行卡姓名

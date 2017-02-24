@@ -16,7 +16,7 @@ from lib.payment.wxPay import UnifiedOrder_pub
 from lib.payment.upay import Trade
 
 
-@route(r'/', name='mobile_app')
+@route(r'/mobile', name='mobile_app')
 class MobileAppHandler(MobileBaseHandler):
     def options(self):
         pass
