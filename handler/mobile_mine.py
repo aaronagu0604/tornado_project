@@ -901,13 +901,6 @@ class MobileLubePolicyHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/lubepolicy
     """
-
-    def check_xsrf_cookie(self):
-        pass
-
-    def options(self):
-        pass
-
     # 一个地区多个保险公司返油政策相同 或 一个保险公司
     def get_insurances(self, rows, result):
         tmpList = []

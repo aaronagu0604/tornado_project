@@ -17,6 +17,12 @@ class MobilePageNotFoundHandler(RequestHandler):
 
 
 class MobileBaseHandler(RequestHandler):
+    def check_xsrf_cookie(self):
+        pass
+
+    def options(self):
+        pass
+
     def get_user(self):
         user = None
         token = self.request.headers.get('token', None)
