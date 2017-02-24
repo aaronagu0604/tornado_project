@@ -527,7 +527,7 @@ class OrderItem(db.Model):
         db_table = 'tb_order_items'
 
 
-# 保险
+# 保险公司
 class Insurance(db.Model):
     id = PrimaryKeyField()
     name = CharField(max_length=32, default='')  # 名称
@@ -547,6 +547,7 @@ class InsuranceItem(db.Model):
     eName = CharField(max_length=32, default='')  # 英文名
     name = CharField(max_length=32, default='')  # 中文名
     style = CharField(max_length=32, default='')  # 分类
+    style_id = IntegerField(default=0)  # 分类id 交强险1  商业险主险2  商业险附加险3
     sort = IntegerField(default=1)  # 排序
     active = IntegerField(default=1)  # 状态 0删除 1有效
 
@@ -727,25 +728,48 @@ class InsuranceScoreExchange(db.Model):
         db_table = "tb_insurance_score_exchange"
 
     @classmethod
-    def get_score_policy(cls, area_code, insurance_id):
+    def append_areas(cls, area_code):
         codes = []
         if len(area_code) == 12:
             codes.append(area_code)
-            codes.append(area_code[0:8])
-            codes.append(area_code[0:4])
+            codes.append(area_code[:8])
+            codes.append(area_code[:4])
         elif len(area_code) == 8:
             codes.append(area_code)
-            codes.append(area_code[0:4])
-        elif len(area_code) == 8:
+            codes.append(area_code[:4])
+        elif len(area_code) == 4:
             codes.append(area_code)
-        else:
-            return None
+        return codes
 
-        configs = InsuranceScoreExchange.select(InsuranceScoreExchange).join(
-                Area, on=(Area.code == InsuranceScoreExchange.area_code)).\
-            where((InsuranceScoreExchange.area_code << codes) &
-                  (InsuranceScoreExchange.insurance == insurance_id) &
-                  (Area.is_scorearea == 1)).order_by(len(area_code).desc())
+    @classmethod
+    def get_insurances(cls, area_code):
+        temp_insurance_id = []
+        insurance_list = []
+        codes = cls.append_areas(area_code)
+        insurances = InsuranceScoreExchange.select(Insurance.id.alias('i_id'), Insurance.name.alias('i_name'),
+                Area.is_scorearea.alias('is_score'), Area.is_lubearea.alias('is_lube')).\
+            join(Insurance, on=(Insurance.id == InsuranceScoreExchange.insurance)).\
+            join(Area, on=(Area.code == InsuranceScoreExchange.area_code)).\
+            where(InsuranceScoreExchange.area_code << codes).\
+            order_by(db.fn.LENGTH(InsuranceScoreExchange.area_code).desc()).dicts()
+        for i in insurances:
+            if i.insurance.id not in temp_insurance_id:
+                temp_insurance_id.append(i.insurance.id)
+                insurance_list.append({
+                    'id': i['i_id'],
+                    'name': i['i_name'],
+                    'is_score': i['is_score'],
+                    'is_lube': i['is_lube']
+                })
+        return insurance_list
+
+    @classmethod
+    def get_score_policy(cls, area_code, insurance_id):
+        codes = cls.append_areas(area_code)
+        configs = InsuranceScoreExchange.select(InsuranceScoreExchange).\
+            join(Area, on=(Area.code == InsuranceScoreExchange.area_code)).\
+            where((InsuranceScoreExchange.area_code << codes) & (InsuranceScoreExchange.insurance == insurance_id) &
+                  (Area.is_scorearea == 1)).order_by(db.fn.LENGTH(InsuranceScoreExchange.area_code).desc())
         if configs.count() > 0:
             return configs[0]
         else:

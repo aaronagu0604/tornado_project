@@ -1094,7 +1094,7 @@ class MobileChangePayPasswordHandler(MobileAuthHandler):
     """
     @apiGroup mine
     @apiVersion 1.0.0
-    @api {get} /mobile/changepaypassword 19. 修改支付密码
+    @api {post} /mobile/changepaypassword 19. 修改支付密码
     @apiDescription 修改支付密码
 
     @apiHeader {String} token 用户登录凭证
@@ -1111,10 +1111,10 @@ class MobileChangePayPasswordHandler(MobileAuthHandler):
     def options(self):
         pass
 
-    def get(self):
+    def post(self):
         result = {'flag': 0, 'msg': '', "data": {}}
         store = self.get_user().store
-        new_password = self.get_argument('new_password', None)
+        new_password = self.get_body_argument('new_password', None)
         vcode = self.get_body_argument('vcode', None)
         flag = 1
         if vcode and new_password:
@@ -1185,7 +1185,7 @@ class MobileReceiverAddressHandler(MobileAuthHandler):
     @apiParam {String} city 市
     @apiParam {String} district 区
     @apiParam {String} address 详细地址
-    @apiParam {Int} is_default 是否为默认收货地址 1是，2否
+    @apiParam {Int} is_default 是否为默认收货地址 0否，1是
 
     @apiSampleRequest /mobile/receiveraddress
     """
@@ -1210,6 +1210,7 @@ class MobileReceiverAddressHandler(MobileAuthHandler):
             store_address_set = StoreAddress.get(id=store_address_id)
             store_address_set.is_default = 1
             store_address_set.save()
+            result['msg'] = '修改成功'
         else:
             if is_default:
                 for store_address in user.store.addresses:
@@ -1227,9 +1228,11 @@ class MobileReceiverAddressHandler(MobileAuthHandler):
                 sa.is_default = is_default
                 sa.create_by = user
                 sa.save()
+                result['msg'] = '修改成功'
             else:
                 StoreAddress.create(store=user.store, province=province, city=city, region=region, address=address,
                                     name=receiver, mobile=mobile, is_default=is_default, create_by=user, created=created)
+                result['msg'] = '创建成功'
 
         result['flag'] = 1
         self.write(simplejson.dumps(result))
