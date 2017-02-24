@@ -50,3 +50,57 @@ def get_help_center_remark(area_code):
         return '大地车险承保仅限15万以内家庭使用非营运客车车辆'
     else:
         return ''
+
+
+typeface = '/home/www/workspace/eofan/src/simsun.ttc'
+popularizePIC = [{
+    'activity': 'repairCar',
+    'area_code': '00',
+    'basePicPath': '/home/www/workspace/eofan/src/upload/popularizePIC/repairCar.png',
+    'PicPath': '/home/www/workspace/eofan/src/upload/popularizePIC/repairCar',
+    'wordSize':30,
+    'wordColour': (255, 255, 255),
+    'storeWidth': 96,
+    'storeHeight': 924,
+    'addrWidth': 96,
+    'addrHeight': 1016,
+    'addr2tab':25,
+    'addr2Width': 182,
+    'addr2Height': 1057,
+    'phoneWidth': 96,
+    'phoneHeight': 1133
+},{
+    'activity': 'happyNewYear',
+    'area_code': '00',
+    'basePicPath': '/home/www/workspace/eofan/src/upload/popularizePIC/happyNewYear.png',
+    'PicPath': '/home/www/workspace/eofan/src/upload/popularizePIC/happyNewYear',
+    'wordSize':30,
+    'wordColour': (255, 255, 255),
+    'storeWidth': 96,
+    'storeHeight': 924,
+    'addrWidth': 96,
+    'addrHeight': 1016,
+    'addr2tab':25,
+    'addr2Width': 182,
+    'addr2Height': 1057,
+    'phoneWidth': 96,
+    'phoneHeight': 1133
+},{
+    'activity': 'insurance',
+    'area_code': '00',
+    'basePicPath': '/home/www/workspace/eofan/src/upload/popularizePIC/insurance.png',
+    'PicPath': '/home/www/workspace/eofan/src/upload/popularizePIC/insurance',
+    'wordSize':30,
+    'wordColour': (255, 255, 255),
+    'storeWidth': 96,
+    'storeHeight': 925,
+    'addrWidth': 96,
+    'addrHeight': 1016,
+    'addr2tab':25,
+    'addr2Width': 182,
+    'addr2Height': 1057,
+    'phoneWidth': 96,
+    'phoneHeight': 1133
+}]
+
+

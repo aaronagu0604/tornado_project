@@ -281,17 +281,18 @@ class Wxpay_client_pub(Common_util_pub):
 """统一支付接口类"""
 class UnifiedOrder_pub(Wxpay_client_pub):
     """统一支付接口类"""
-    def __init__(self, timeout=WxPayConf_pub.CURL_TIMEOUT):
+    def __init__(self, timeout=WxPayConf_pub.CURL_TIMEOUT, isCZ=False):
         # 设置接口链接
         self.url = "https://api.mch.weixin.qq.com/pay/unifiedorder"
         # 设置curl超时时间
         self.curl_timeout = timeout
+        self.isCZ = isCZ
         super(UnifiedOrder_pub, self).__init__()
 
     def createXml(self):
         """生成接口参数xml"""
         # 检测必填参数
-        self.parameters["notify_url"] = WxPayConf_pub.NOTIFY_URL
+        self.parameters["notify_url"] = WxPayConf_pub.NOTIFY_URL_CZ if self.isCZ else WxPayConf_pub.NOTIFY_URL
         self.parameters["trade_type"] = 'APP'
         if any(self.parameters[key] is None for key in ("out_trade_no", "body", "total_fee", "notify_url", "trade_type")):
             raise ValueError("missing parameter")
@@ -307,7 +308,6 @@ class UnifiedOrder_pub(Wxpay_client_pub):
     def getPrepayId(self, out_trade_no, body, total_fee):
         """获取prepay_id"""
         self.parameters["out_trade_no"] = out_trade_no
-        logging.info('-----------------out_trade_no==%s----' % out_trade_no)
         self.parameters["body"] = body
         self.parameters["total_fee"] = total_fee
         self.postXml()  # 以post方式提交xml到对应的接口url

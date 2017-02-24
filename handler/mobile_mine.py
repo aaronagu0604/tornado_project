@@ -7,6 +7,11 @@ import simplejson
 from lib.route import route
 from model import *
 from handler import MobileBaseHandler, MobileAuthHandler
+import os
+from PIL import Image, ImageDraw, ImageFont
+from lib.payment.alipay import get_pay_url
+from lib.payment.wxPay import UnifiedOrder_pub
+from lib.payment.upay import Trade
 
 
 @route(r'/mobile/mine', name='mobile_mine')  # app我的主界面
@@ -124,6 +129,65 @@ class MobileMineHandler(MobileBaseHandler):
         result['flag'] = 1
         self.write(simplejson.dumps(result))
         self.finish()
+
+
+# ----------------------------------------------------推广大使----------------------------------------------------------
+@route(r'/mobile/storepopularize', name='store_popularize')  # 推广大使
+class MobilStorePopularizeHandler(MobileAuthHandler):
+    """
+    @apiGroup mine
+    @apiVersion 1.0.0
+    @api {get} /mobile/storepopularize 00 推广大使
+    @apiDescription app  推广大使
+
+    @apiHeader {String} token 用户登录凭证
+
+    @apiSampleRequest /mobile/storepopularize
+    """
+    def act_insurance(self, pop, uid, storeName, addr1, addr2, mobile, now):
+        pic = '%s_%s_'%(pop['PicPath'], str(uid))
+        oldPic = pic+'*'
+        newPic = '%s%s.png'%(pic, now)
+        if not os.system('ls %s > /dev/null 2>&1'%oldPic):
+            os.system('rm -f '+oldPic)
+        ttfont = ImageFont.truetype(setting.typeface, pop['wordSize'])
+        im = Image.open(pop['basePicPath'])
+        draw = ImageDraw.Draw(im)
+        draw.text((pop['storeWidth'], pop['storeHeight']), storeName, fill=pop['wordColour'], font=ttfont)
+        draw.text((pop['addrWidth'], pop['addrHeight']), addr1, fill=pop['wordColour'], font=ttfont)
+        if addr2:
+            draw.text((pop['addr2Width'], pop['addr2Height']), addr2, fill=pop['wordColour'], font=ttfont)
+        draw.text((pop['phoneWidth'], pop['phoneHeight']), mobile, fill=pop['wordColour'], font=ttfont)
+        im.save(newPic)
+        return newPic[29:]
+
+    def get(self):
+        user = self.get_user()
+        result = {'flag': 0, 'msg': '', "data": []}
+        try:
+            storeName = u'店铺：' + user.store.name
+            addr = u'地址：' + Area.get_detailed_address(user.store.area_code) + user.store.address
+            addr2 = ''
+            mobile = u'电话：'+user.mobile
+            now = str(time.time())[:10]
+            for pop in setting.popularizePIC:
+                area_limits = 0
+                for area_code in pop['area_code'].split(','):
+                    if user.store.area_code.startswith(area_code):
+                        area_limits = 1
+                if len(addr) > pop['addr2tab']:
+                    addr1 = addr[:pop['addr2tab']]
+                    addr2 = addr[pop['addr2tab']:]
+                else:
+                    addr1 = addr
+                if area_limits == 1:
+                    picPath = self.act_insurance(pop, user.id, storeName, addr1, addr2, mobile, now)
+                    result['data'].append(picPath)
+                    result['flag'] = 1
+
+        except Exception, e:
+            result['msg'] = u'生成图片错误'
+        self.write(simplejson.dumps(result))
 
 
 # ----------------------------------------------------订单--------------------------------------------------------------
@@ -560,9 +624,34 @@ class MobileFundRechargeHandler(MobileAuthHandler):
 
     def get(self):
         result = {'flag': 0, 'msg': '', "data": {}}
-        store = self.get_user().store
-        result['data']['price'] = store.price
-        result['flag'] = 1
+        user = self.get_user()
+        payment = int(self.get_argument('payment', 0))
+        price = int(self.get_argument('price', 0))
+        order_num = 'U%sR%s'%(user.id, str(time.time())[1:10]).encode('utf-8')
+
+        result['data']['payment'] = payment
+        if payment == 1:  # 1支付宝  2微信 3银联
+            response_url = get_pay_url(order_num, u'车装甲商品', price, True)
+            if len(response_url) > 0:
+                result['data']['pay_info'] = response_url
+                result['flag'] = 1
+                result['msg'] = '充值完成'
+            else:
+                result['data']['pay_info'] = ''
+        elif payment == 2:
+            pay_info = UnifiedOrder_pub(isCZ=True).getPrepayId(order_num, u'车装甲商品', int(price * 100))
+            result['data']['pay_info'] = pay_info
+            result['flag'] = 1
+            result['msg'] = '充值完成'
+        elif payment == 3:
+            pay_info = Trade(isCZ=True).trade(order_num, price)
+            result['data']['pay_info'] = pay_info
+            result['flag'] = 1
+            result['msg'] = '充值完成'
+        else:
+            result['data']['pay_info'] = ''
+            result['msg'] = '传入参数错误'
+
         self.write(simplejson.dumps(result))
 
 
@@ -1065,6 +1154,43 @@ class MobileReceiverAddressHandler(MobileAuthHandler):
 
         result['flag'] = 1
         self.write(simplejson.dumps(result))
+
+
+@route(r'/mobile/feedback', name='mobile_my_feedback')  # 意见反馈
+class MobileFeedbackHandler(MobileAuthHandler):
+    """
+    @apiGroup mine
+    @apiVersion 1.0.0
+    @api {get} /mobile/feedback 22. 意见反馈
+    @apiDescription 意见反馈
+
+    @apiHeader {String} token 用户登录凭证
+
+    @apiParam {String} suggest 用户建议
+    @apiParam {String} img 图片URL
+
+    @apiSampleRequest /mobile/feedback
+    """
+
+    def check_xsrf_cookie(self):
+        pass
+
+    def options(self):
+        pass
+
+    def get(self):
+        result = {'flag': 0, 'msg': '', "data": {}}
+        user = self.get_user()
+        suggest = self.get_argument('suggest', None)
+        img = self.get_argument('img', None)
+        if suggest or img:
+            Feedback.create(user=user, suggest=suggest, img=img)
+            result['flag'] = 1
+        else:
+            result['msg'] = '请输入您的意见或图片'
+
+        self.write(simplejson.dumps(result))
+
 
 
 

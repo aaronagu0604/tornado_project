@@ -13,6 +13,7 @@ from lib.payment.wxPay import Notify_pub
 from lib.payment.upay import Trade
 
 
+# ------------------------------------------------购物回调--------------------------------------------------------------
 # 修改订单状态
 def change_order_status(ordernum, trade_no):
     is_insurance_order = False
@@ -183,3 +184,106 @@ class MobileUPayCallbackHandler(RequestHandler):
             logging.info('Error: upay error %s' % e.message)
 
         self.write(simplejson.dumps(result))
+
+
+# ------------------------------------------------充值回调--------------------------------------------------------------
+def recharge(order_num, trade_no, money):
+    user_id = int(order_num.split('R')[0].strp('U'))
+    user = User.get(id=user_id)
+    now = int(time.time())
+    MoneyRecord.create(user=user, store=user.store, process_type=1, process_log=u'充值', in_num=trade_no, money=money,
+                       status=1, apply_time=now, processing_time=now)
+
+
+# 支付宝充值完成后异步通知 支付宝回调
+@route('/mobile/alipay_cz_notify', name='mobile_alipay_cz_notify')
+class MobileAlipayCZNotifyHandler(RequestHandler):
+    def check_xsrf_cookie(self):
+        pass
+
+    def options(self):
+        pass
+
+    def post(self):
+        msg = "fail"
+        params = {}
+        notify = PaymentNotify()
+        notify.content = self.request.body
+        notify.notify_time = int(time.time())
+        notify.notify_type = 2
+        notify.payment = 1
+        notify.function_type = 1
+        notify.save()
+        ks = self.request.arguments.keys()
+        for k in ks:
+            params[k] = self.get_argument(k)
+        ps = notify_verify(params)
+        if ps:
+            if ps['trade_status'].upper().strip() == 'TRADE_FINISHED' or ps['trade_status'].upper().strip() == 'TRADE_SUCCESS':
+                recharge(ps['out_trade_no'], ps['trade_no'], ps['total_fee'])
+                msg = "success"
+        self.write(msg)
+
+
+# 微信充值完成后异步通知 微信回调
+@route(r'/mobile/weixin_cz_notify', name='mobile_weixinpay_cz_notify')
+class MobileWeiXinPayCZNotifyHandler(RequestHandler):
+    def check_xsrf_cookie(self):
+        pass
+
+    def options(self):
+        pass
+
+    def post(self):
+        notify = PaymentNotify()
+        notify.content = self.request.body
+        notify.notify_time = int(time.time())
+        notify.notify_type = 2
+        notify.payment = 2
+        notify.function_type = 1
+        notify.save()
+        notify_data = Notify_pub()
+        notify_data.saveData(self.request.body)
+        ps = notify_data.getData()
+        if notify_data.checkSign():
+            if ps['return_code'] == 'SUCCESS' and ps['result_code'] == 'SUCCESS':
+                recharge(ps['out_trade_no'], ps['transaction_id'], int(ps['total_fee'])/100)
+                notify_data.setReturnParameter('return_code', 'SUCCESS')
+            else:
+                logging.info(u'微信通知支付失败')
+        else:
+            logging.info(u'微信通知验证失败')
+        self.write(notify_data.returnXml())
+
+
+# 银联充值完成后异步通知 银联回调
+@route(r'/mobile/upay_cz_notify', name='mobile_upay_cz_notify')
+class MobileUPayCZNotifyHandler(RequestHandler):
+    def check_xsrf_cookie(self):
+        pass
+
+    def options(self):
+        pass
+
+    def post(self):
+        result = {'return_code': 'FAIL'}
+        try:
+            ps = Trade().smart_str_decode(self.request.body)
+            if Trade().union_validate(ps):
+                if ps['respMsg'] == 'Success!':
+                    recharge(ps['out_trade_no'], ps['transaction_id'], ps['total_fee'])
+                    result['return_code'] = 'SUCCESS'
+                else:
+                    result['return_msg'] = 'upay get FAIL notify'
+            else:
+                logging.info('upay invalid')
+        except Exception, e:
+            logging.info('Error: upay error %s' % e.message)
+
+        self.write(simplejson.dumps(result))
+
+
+
+
+
+

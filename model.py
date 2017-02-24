@@ -795,7 +795,6 @@ class PaymentNotify(db.Model):
         db_table = 'tb_payment_notify'
 
 
-
 # 帮助中心 返油政策
 class LubePolicy(db.Model):
     id = PrimaryKeyField()
@@ -812,6 +811,17 @@ class LubePolicy(db.Model):
 
     class Meta:
         db_table = "tb_help_center"
+
+
+# 意见反馈
+class Feedback(db.Model):
+    id = PrimaryKeyField()
+    user = ForeignKeyField(User, db_column='user_id', null=True)  # 用户
+    suggest = CharField(max_length=32)  # 意见建议
+    img = CharField(max_length=32)  # 图片
+
+    class Meta:
+        db_table = "tb_feedback"
 
 
 def init_db():

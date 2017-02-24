@@ -9,6 +9,8 @@ from OpenSSL.crypto import load_pkcs12, FILETYPE_PEM, sign, verify, load_certifi
 
 
 class Trade(object):
+    def __init__(self, isCZ=False):
+        self.isCZ = isCZ
     # 读取文件
     def getDataByCerPath(self, cert_path):
         fp = open(cert_path, 'r')
@@ -141,7 +143,7 @@ class Trade(object):
         params['txnSubType'] = '01'  # 交易子类
         params['bizType'] = '000201'  # 业务类型
         params['frontUrl'] = setting['SDK_FRONT_NOTIFY_URL']  # 前台通知地址
-        params['backUrl'] = setting['SDK_BACK_NOTIFY_URL']  # 后台通知地址
+        params['backUrl'] = setting['SDK_BACK_NOTIFY_URL_CZ'] if self.isCZ else setting['SDK_BACK_NOTIFY_URL'] # 后台通知地址
         params['signMethod'] = '01'  # 签名方法
         params['channelType'] = '08'  # 渠道类型，07-PC，08-手机
         params['accessType'] = '0'  # 接入类型
