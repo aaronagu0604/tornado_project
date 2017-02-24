@@ -179,5 +179,10 @@ def require_auth(method):
                 self.set_status(401)
                 logging.info('----------Unauthorized---------------- invalid token')
                 self.finish()
-        return method(self, *args, **kwargs)
+            else:
+                return method(self, *args, **kwargs)
+        else:
+            self.set_status(401)
+            logging.info('----------Unauthorized---------------- invalid token 2')
+            self.finish()
     return wrapper
