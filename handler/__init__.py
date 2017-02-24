@@ -41,6 +41,9 @@ class MobileBaseHandler(RequestHandler):
 
 
 class MobileAuthHandler(MobileBaseHandler):
+    def options(self):
+        pass
+
     def prepare(self):
         token = self.request.headers.get('token', None)
         if token:
