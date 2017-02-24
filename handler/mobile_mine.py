@@ -1159,7 +1159,7 @@ class MobileReceiverAddressHandler(MobileAuthHandler):
 
     def get(self):
         result = {'flag': 0, 'msg': '', "data": []}
-        store = self.get_user().user.store
+        store = self.get_user().store
         for address in StoreAddress.select(StoreAddress.store==store).where().order_by(StoreAddress.is_default.desc()):
             result['data'].append({
                 'address_id': address.id,

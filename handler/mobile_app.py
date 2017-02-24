@@ -1031,7 +1031,7 @@ class MobilNewInsuranceOrderHandler(MobileAuthHandler):
     @apiParam {String} delivery_region 保单邮寄接收区域
     @apiParam {String} delivery_address 保单邮寄地址
     @apiParam {Int} gift_policy 礼品策略 1反油， 2反积分, 0无礼品
-
+/mobile/receiveraddress
     @apiSampleRequest /mobile/newinsuranceorder
     """
     def check_xsrf_cookie(self):
