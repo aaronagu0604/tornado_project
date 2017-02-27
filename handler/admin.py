@@ -76,7 +76,7 @@ class SalerHandler(AdminBaseHandler):
         default_province = ''
         default_city = ''
         default_district = ''
-        ft = (Store.active == 1)
+        ft = ((Store.active == 1) & (Store.store_type == 1))
         if town and town != '':
             ft &= (Store.area_code == town)
             default_province = town[:4]
@@ -95,8 +95,6 @@ class SalerHandler(AdminBaseHandler):
             keyword2 = '%' + keyword + '%'
             ft &= (Store.name % keyword2)
 
-        items = Area.select().where((Area.pid >> None) & (Area.is_delete == 0) & (Area.is_site == 1)).order_by(
-            Area.spell, Area.sort)
         s = Store.select().where(ft)
         total = s.count()
         if total % pagesize > 0:
@@ -104,6 +102,8 @@ class SalerHandler(AdminBaseHandler):
         else:
             totalpage = 1
         stores = s.paginate(page, pagesize)
+        items = Area.select().where((Area.pid >> None) & (Area.is_delete == 0) & (Area.is_site == 1)).order_by(
+            Area.spell, Area.sort)
         self.render("admin/user/saler.html", stores=stores, total=total, totalpage=totalpage, keyword=keyword,
                     province=default_province, city=default_city, district=default_district,
                     page=page, pagesize=pagesize, items=items, Area=Area, active='saler')
@@ -118,25 +118,25 @@ class StoresHandler(AdminBaseHandler):
         keyword = self.get_argument("keyword", '')
         page = int(self.get_argument("page", '1') if len(self.get_argument("page", '1')) > 0 else '1')
         pagesize = self.settings['admin_pagesize']
-        status = self.get_argument("district", '')
+        status = int(self.get_argument("status", '-1'))
         default_province = ''
         default_city = ''
         default_district = ''
 
-        ft = (Store.active == 1)
-        if active >= 0:
-            ft = ft & (Store.active == active)
-        if town and town != '0':
+        ft = (Store.store_type == 2)
+        if status >= 0:
+            ft &= (Store.active == status)
+        if town and town != '':
             ft &= (Store.area_code == town)
             default_province = town[:4]
             default_city = town[:8]
             default_district = town
-        elif city and city != '0':
+        elif city and city != '':
             default_province = city[:4]
             default_city = city
             city += '%'
             ft &= (Store.area_code % city)
-        elif province and province != '0':
+        elif province and province != '':
             default_province = province
             province += '%'
             ft &= (Store.area_code % province)
@@ -150,6 +150,8 @@ class StoresHandler(AdminBaseHandler):
         else:
             totalpage = 1
         cfs = cfs.paginate(page, pagesize)
+        items = Area.select().where((Area.pid >> None) & (Area.is_delete == 0) & (Area.is_site == 1)).order_by(
+            Area.spell, Area.sort)
         self.render('/admin/user/store.html', stores=cfs, total=total, page=page, pagesize=pagesize,
-                    totalpage=totalpage, active='store', status=active,keyword=keyword, Area=Area,
-                    default_province=default_province, default_city=default_city, default_district=default_district)
+                    totalpage=totalpage, active='store', status=status, keyword=keyword, Area=Area, items=items,
+                    province=default_province, city=default_city, district=default_district)
