@@ -72,157 +72,156 @@
         <div class="navbar-default sidebar" id="leftTree" role="navigation">
             <div class="sidebar-nav navbar-collapse">
                 <ul class="nav" id="side-menu">
-                    <li {% if active=='withdraw' or active=='factory' or active=='store' %}
+                    <li {% if active=='saler' or active=='refer' or active=='store' or active=='admin_user'%}
                         class="active"{% endif %} ">
                     <a href="#"><i class="fa fa-user fa-fw"></i>&nbsp;&nbsp;&nbsp;用户管理
                         <span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level">
                         <li >
-                            <a {% if active=='factory' %} class="active"{% endif %} href="/admin/factory"></i>&nbsp;&nbsp;&nbsp;经销商</a>
+                            <a {% if active=='saler' %} class="active"{% endif %} href="/admin/saler">经销商</a>
                         </li>
                         <li>
-                            <a {% if active=='store' %} class="active"{% endif %} href="/admin/stores"></i>&nbsp;&nbsp;&nbsp;门店</a>
+                            <a {% if active=='store' %} class="active"{% endif %} href="/admin/store">门店</a>
                         </li>
                         <li>
-                            <a {% if active=='store' %} class="active"{% endif %} href="/admin/stores"></i>&nbsp;&nbsp;&nbsp;推广人员</a>
+                            <a {% if active=='refer' %} class="active"{% endif %} href="/admin/refer">推广人员</a>
                         </li>
                         <li>
-                            <a {% if active=='admin_user' %}class="active" {% endif %}href="/admin/admin_user/0">&nbsp;&nbsp;&nbsp;后台用户</a>
+                            <a {% if active=='admin_user' %}class="active" {% endif %}href="/admin/admin_user/0">后台用户</a>
                         </li>
                     </ul>
                     </li>
-                    <li {% if active=='update' or active=='admin_user' or active=='circle' or active=='question' or
-                        active=='ad_helpCenter' or active=='ad_type' or active=='ads' or active=='brand' or
-                        active=='area' or active=='site' or active=='blocks' or active=='hot_search' or
-                        active == 'categorys' or active == 'pages' or active=='coupon' or active=='comment' or
-                        active=='consult' or active=='raffle' or active=='medias' %} class="active" {%endif %}>
+                    <li {% if active=='block' or active=='block_items' or active=='hot_search' %} class="active" {%endif %}>
                     <a  href="#"><i class="fa fa-briefcase fa-fw"></i>&nbsp;&nbsp;&nbsp;App管理
                         <span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level">
                         <li>
-                            <a {% if active=='ad_type' %}class="active"{% endif %} href="/admin/ad_type">&nbsp;&nbsp;&nbsp;广告位管理</a>
+                            <a {% if active=='block' %}class="active"{% endif %} href="/admin/block">广告位管理</a>
                         </li>
                         <li>
-                            <a {% if active=='ads' %}class="active"{% endif %} href="/admin/ads">&nbsp;&nbsp;&nbsp;广告管理</a>
+                            <a {% if active=='block_items' %}class="active"{% endif %} href="/admin/block_items">广告管理</a>
                         </li>
                         <li>
-                            <a {% if active=='hot_search' %}class="active"{% endif %} href="/admin/hot_search">&nbsp;&nbsp;&nbsp;热门搜索</a>
+                            <a {% if active=='hot_search' %}class="active"{% endif %} href="/admin/hot_search">热门搜索</a>
                         </li>
 
                     </ul>
                     </li>
-                    <li {% if active=='pinpaitype' or active=='pinpai' or active=='ps'  or  active=='reserve' %}class="active"{% endif %}>
+                    <li {% if active=='category' or active=='brand' or active=='product_n'  or  active=='product_n' %}class="active"{% endif %}>
                         <a  href="#"><i class="fa fa-picture-o fa-fw"></i>&nbsp;&nbsp;&nbsp;商品管理
                             <span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
                             <li>
-                                <a {% if active=='pinpaitype' %} class="active"{% endif %} href="/admin/pinpaitype"></i>&nbsp;&nbsp;&nbsp;商品分类</a>
+                                <a {% if active=='category' %} class="active"{% endif %} href="/admin/category">商品分类</a>
                             </li>
                             <li>
-                                <a {% if active=='pinpai' %} class="active"{% endif %} href="/admin/pinpai"></i>&nbsp;&nbsp;&nbsp;商品品牌</a>
+                                <a {% if active=='brand' %} class="active"{% endif %} href="/admin/brand">商品品牌</a>
                             </li>
                             <li>
-                                <a {% if active=='ps' %} class="active"{% endif %} href="/admin/products"></i>&nbsp;&nbsp;&nbsp;销售商品</a>
+                                <a {% if active=='product_n' %} class="active"{% endif %} href="/admin/product_n">普通商品</a>
                             </li>
                             <li>
-                                <a {% if active=='ps' %} class="active"{% endif %} href="/admin/products"></i>&nbsp;&nbsp;&nbsp;积分商品</a>
+                                <a {% if active=='product_s' %} class="active"{% endif %} href="/admin/product_s">积分商品</a>
                             </li>
                         </ul>
                     </li>
-                    <li {% if active=='m_ads' or active == 'm_blocks' %}class="active"{% endif %}>
+                    <li {% if active=='payback' or active == 'withdraw' or active == 'statement' %}class="active"{% endif %}>
                     <a  href="#"><i class="fa fa-qrcode fa-fw"></i>&nbsp;&nbsp;&nbsp;财务对账
                         <span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level">
 
                         <li>
-                            <a {% if active=='m_ads' %}class="active"{% endif %} href="/admin/mobile/ads">&nbsp;&nbsp;&nbsp;退款管理</a>
+                            <a {% if active=='payback' %}class="active"{% endif %} href="/admin/mobile/payback">退款处理</a>
                         </li>
                         <li>
-                            <a {% if active=='m_blocks' %}class="active"{% endif %} href="/admin/mobile/blocks">&nbsp;&nbsp;&nbsp;提现申请</a>
+                            <a {% if active=='withdraw' %}class="active"{% endif %} href="/admin/mobile/withdraw">提现处理</a>
                         </li>
                         <li>
-                            <a {% if active=='m_blocks' %}class="active"{% endif %} href="/admin/mobile/blocks">&nbsp;&nbsp;&nbsp;对账</a>
+                            <a {% if active=='statement' %}class="active"{% endif %} href="/admin/mobile/statement">对账单</a>
                         </li>
                     </ul>
                     </li>
-                    <li {% if active=='orders' or active=='skus' or active=='order_payback' or active=='insurance' or active=='insurancefile' or active=='banpen' or active=='gifts' or active=='inventory_orders' or active=='bulk_product_sel' %}class="active"{% endif %}>
+                    <li {% if active=='p_order' or active=='p_order_finish' or active=='i_order' or active=='i_order_finish'
+                         %}class="active"{% endif %}>
                         <a href="#"><i class="fa fa-align-justify fa-fw"></i>&nbsp;&nbsp;&nbsp;订单管理
                             <span class="fa arrow"></span>
                         </a>
                         <ul class="nav nav-second-level">
                             <li>
-                                <a {% if active=='orders' %}class="active"{% endif %} href="/admin/orders?status=2">商品订单</a>
+                                <a {% if active=='p_order' %}class="active"{% endif %} href="/admin/product/orders?status=2">商品订单</a>
                             </li>
                              <li>
-                                <a {% if active=='orders' %}class="active"{% endif %} href="/admin/orders?status=2">商品订单归档</a>
+                                <a {% if active=='p_order_finish' %}class="active"{% endif %} href="/admin/product/orders?status=2">商品订单归档</a>
                             </li>
                             <li>
-                                <a {% if active=='insurance' %}class="active"{% endif %} href="/admin/insurances/processing?status=0">保险订单</a>
+                                <a {% if active=='i_order' %}class="active"{% endif %} href="/admin/insurance/orders?status=0">保险订单</a>
                             </li>
                             <li>
-                                <a {% if active=='insurancefile' %}class="active"{% endif %} href="/admin/insurances/file?status=3">保险订单归档</a>
-                            </li>
-                            <li>
-                                <a {% if active=='order_payback' %}class="active"{% endif %} href="/admin/order_payback">待退款订单</a>
+                                <a {% if active=='i_order_finish' %}class="active"{% endif %} href="/admin/insurance/orders?status=3">保险订单归档</a>
                             </li>
                         </ul>
                     </li>
 
-                    <li {% if active=='scoreproducts' or active=='scorelists' or active=="scorefacilitatorlist"  or active=="scoreorders" or active=="integralshow" or active=="cashingshow" or active=="scorearea" or active=="scorehistory" %}class="active"{% endif %}>
+                    <li {% if active=='insurance' or active=='gift_area' or active=="score_policy"  or active=="lube_policy"
+                         %}class="active"{% endif %}>
                         <a href="#"><i class="fa fa-yen fa-fw"></i>&nbsp;&nbsp;&nbsp;保险业务
                             <span class="fa arrow"></span>
                         </a>
                         <ul class="nav nav-second-level">
                             <li>
-                                <a {% if active=='scorelists' %}class="active"{% endif %} href="/admin/scorelists">保险公司</a>
+                                <a {% if active=='insurance' %}class="active"{% endif %} href="/admin/insurance">保险公司</a>
                             </li>
                             <li>
-                                <a {% if active=='scorelists' %}class="active"{% endif %} href="/admin/scorelists">返佣地域</a>
+                                <a {% if active=='gift_area' %}class="active"{% endif %} href="/admin/gift_area">返佣地域</a>
                             </li>
                             <li>
-                                <a {% if active=='scoreproducts' %}class="active"{% endif %} href="/admin/scoreproducts">积分规则</a>
+                                <a {% if active=='score_policy' %}class="active"{% endif %} href="/admin/score_policy">积分规则</a>
                             </li>
                             <li>
-                                <a {% if active=='insuranceadmin' %} class="active"{% endif %} href="/admin/insuranceadmin"></i>&nbsp;&nbsp;&nbsp;返油协议</a>
+                                <a {% if active=='lube_policy' %} class="active"{% endif %} href="/admin/lube_policy">返油协议</a>
                             </li>
                         </ul>
                     </li>
-                    <!-- style="display: none;"  -->
+
                     <li {% if active=='r_user' or active=='r_summary' or active=='r_sale' or active=='r_product'
                             or active=='r_log' or active=='r_order' or active=='r_user_order' or active=='r_invoice'
                             or active=='refereeReport' or active=='insuranceReport' or active=='areaReport' %}class="active"{% endif %}>
                         <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i>&nbsp;&nbsp;&nbsp;统计报表<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
                             <li>
-                                <a {% if active=='refereeReport' %} class="active"{% endif %} href="/admin/report/referee"></i>&nbsp;&nbsp;&nbsp;   推广人员出单统计</a>
+                                <a {% if active=='refereeReport' %} class="active"{% endif %} href="/admin/report/referee">推广人员出单统计</a>
                             </li>
                             <li>
-                                <a {% if active=='insuranceReport' %} class="active"{% endif %} href="/admin/report/insuranceOrder"></i>&nbsp;&nbsp;&nbsp;   保险公司出单统计</a>
+                                <a {% if active=='insuranceReport' %} class="active"{% endif %} href="/admin/report/insuranceOrder">保险公司出单统计</a>
                             </li>
                             <li>
-                                <a {% if active=='areaReport' %} class="active"{% endif %} href="/admin/report/areaorder"></i>&nbsp;&nbsp;&nbsp;   各地区交易数据统计</a>
+                                <a {% if active=='areaReport' %} class="active"{% endif %} href="/admin/report/areaorder">各地区交易数据统计</a>
                             </li>
 
                             <li>
-                                <a {% if active=='areaReport' %} class="active"{% endif %} href="/admin/report/areaorder"></i>&nbsp;&nbsp;&nbsp;   提现统计</a>
+                                <a {% if active=='areaReport' %} class="active"{% endif %} href="/admin/report/areaorder">提现统计</a>
                             </li>
                         </ul>
                     </li>
-                    <li {% if active=='insuranceadmin' %}class="active"{% endif %}>
+                    <li {% if active=='static' or active=='msg' or active=='log' or active=='update' or active=='pw' %}class="active"{% endif %}>
                         <a href="#"><i class="fa fa-unlock fa-fw"></i>&nbsp;&nbsp;&nbsp;系统设置
                             <span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
                             <li>
-                                <a {% if active=='insuranceadmin' %} class="active"{% endif %} href="/admin/insuranceadmin"></i>&nbsp;&nbsp;&nbsp;静态页面</a>
+                                <a {% if active=='static' %} class="active"{% endif %} href="/admin/static">静态页面</a>
+                            </li>
+
+                            <li>
+                                <a {% if active=='msg' %} class="active"{% endif %} href="/admin/msg">消息群发</a>
                             </li>
                             <li>
-                                <a {% if active=='update' %}class="active"{% endif %} href="/admin/update">&nbsp;&nbsp;&nbsp;更新管理</a>
+                                <a {% if active=='log' %}class="active"{% endif %} href="/admin/log">系统日志</a>
                             </li>
                             <li>
-                                <a {% if active=='insuranceadmin' %} class="active"{% endif %} href="/admin/insuranceadmin"></i>&nbsp;&nbsp;&nbsp;消息群发</a>
+                                <a {% if active=='update' %}class="active"{% endif %} href="/admin/update">更新管理</a>
                             </li>
                             <li>
-                                <a {% if active=='insuranceadmin' %} class="active"{% endif %} href="/admin/insuranceadmin"></i>&nbsp;&nbsp;&nbsp;修改密码</a>
+                                <a {% if active=='pw' %} class="active"{% endif %} href="/admin/pw">修改密码</a>
                             </li>
                         </ul>
                     </li>

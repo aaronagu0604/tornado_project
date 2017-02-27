@@ -1,0 +1,216 @@
+{% extends "layout/admin.html" %}
+{% block css %}
+<link href="/style/css/plugins/dataTables.bootstrap.css" rel="stylesheet">
+<link href="/style/css/select2.css" rel="stylesheet"/>
+{{xsrf()}}
+<style>
+ #num{
+   width:130px;
+   height:30px;
+   border:1px solid #aaa;
+   -moz-border-radius: 4px;
+   -webkit-border-radius: 4px;
+   border-radius: 4px; 
+   transform:translateY(3px);
+   -webkit-transform:translateY(3px);
+   }
+ #btn{
+   height:30px;
+   line-height:15px;
+   background:#528ACB;
+   color:#fff;
+ }
+
+</style>
+{% endblock %}
+{% block content %}
+
+<div class="row">
+    <nav>
+        <div>
+            <a class="navbar-brand" href="#">服务商列表</a>
+        </div>
+        <div class="pull-right">
+            <form id="cx" action="" method="get" style="margin-top:10px;">
+                <p>
+                    <label class="num">地区：&nbsp;</label>
+                    <select name="province" id="province" onchange="GetSubAreas(this.value, 'city', '')"
+                            style="height:28px;margin-left: -10px;margin-top: 10px;border-radius:4px;">
+                        <option value="">--所有省份--</option>
+                        {% for area in items %}
+                        <option value="{{area.code}}" {{ 'selected' if area.code==province else ''}}>
+                        {{area.name}}</option>
+                        {% endfor %}
+                    </select>
+                    <select name="city" id="city" onchange="GetSubAreas(this.value, 'district', '')"
+                            style="height:28px;margin-left: 10px;margin-top: 10px;border-radius:4px;">
+                        <option value="">--所有城市--</option>
+                    </select>
+                    <select name="district" id="district"
+                            style="height:28px;margin-left: 10px;margin-top: 10px;border-radius:4px;">
+                        <option value="">--所有区县--</option>
+                    </select>
+                    <label class="num">名称：</label>
+                    <input class="num" id="num" type="text" name="keyword" placeholder="名称" value="{{keyword or ''}}"/>
+                    <button class="btn" type="submit" id="btn">查询</button>
+                </p>
+            </form>
+        </div>
+    </nav>
+</div>
+<div class="row">
+    <div class="panel panel-primary">
+
+        <div class="table-responsive">
+            <table class="table table-hover" id="tb_need_pay_back_orders" style="text-align:center;">
+                <thead>
+                <tr style="background:#528ACB;color:#fff;">
+                    <th style="text-align:center;">编号</th>
+                    <th style="text-align:center;">账号</th>
+                    <th style="text-align:center;">名称</th>
+                    <th style="text-align:center;">所在地区</th>
+                    <th style="text-align:center;">详细地址</th>
+                    <th style="text-align:center;">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for s in stores %}
+                <tr>
+                    <td>{{ s.id }}</td>
+                    <td>{{ s.mobile }}</td>
+                    <td>{{ s.name }}</td>
+                    <td>{{ Area().get_detailed_address(s.area_code)}}</td>
+                    <td>{{ s.address }}</td>
+                    <td>
+                        <span>&nbsp;&nbsp;&nbsp;<a href="/admin/facilitatorarea/{{s.id}}">区域配置</a></span>
+                        <span style="margin-right:15px;">&nbsp;&nbsp;&nbsp;<a href="/admin/facilitatorquery/{{s.id}}">查看商品</a></span>
+
+                            <input type="hidden" id="hd_id_{{s.id}}" value="{{s.process_insurance}}"/>
+
+                            <button type="button" onclick="change_status({{s.id}})" id='bt_{{s.id}}'
+                                    class="btn btn-xs {{'btn-primary' if s.process_insurance == 0 else 'btn-success'}}" >
+                                {% if s.process_insurance == 0 %}
+                                开通保险业务
+                                {% else %}
+                                取消保险业务
+                                {% endif %}
+                            </button>
+
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="col-sm-6">
+            <div class="dataTables_info" role="alert" aria-live="polite" aria-relevant="all">
+                当前：第{{page}}页 / {{totalpage}}页，合计{{total}}条
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="dataTables_paginate paging_simple_numbers">
+                <ul class="pagination  pagination-sm" id="pageUl"/>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script src="/style/js/jquery.twbsPagination.min.js"></script>
+<script type="text/javascript">
+
+    var xsrf='{{handler.xsrf_token}}';
+
+	$(document).ready(function() {
+        $('#pageUl').twbsPagination({
+            first:'首页',
+            prev:'上一页',
+            next:'下一页',
+            last:'尾页',
+            totalPages: {{totalpage}},
+            startPage: {{page}},
+            visiblePages: 8,
+            onPageClick: function (event, page) {
+                self.location="/admin/saler?keyword={{keyword or ''}}&province={{province or ''}}&city={{city or ''}}&district={{district or ''}}&page="+page;
+            }
+        });
+
+        // 页面初始化时绑定地址信息：省、市、区
+        if("{{province}}".length > 0) {
+            GetSubAreas("{{province}}", "city", "{{city}}");
+            if("{{city}}".length > 0) {
+                GetSubAreas("{{city}}", "district", "{{district}}");
+            }
+        }
+    });
+
+
+
+    function change_status(id){
+        var status = parseInt($('#hd_id_'+id).val());
+        var state_type = 1;
+        if(status == 0) {
+            state_type = 1
+        }
+        else {
+            state_type = 0
+        }
+
+        $.post("/ajax/store_insurance_change", { _xsrf:xsrf, id: id, state_type:state_type }, function (data) {
+            data = jQuery.parseJSON(data);
+            if(data.flag==1){
+                $('#hd_id_'+id).val(data.data.toString());
+                if(data.data == 1) {
+                    $("#bt_"+id).addClass("btn-success");
+                    $("#bt_"+id).removeClass("btn-primary");
+                    $("#bt_"+id).html("取消保险业务");
+                }
+                else {
+                    $("#bt_"+id).removeClass("btn-success");
+                    $("#bt_"+id).addClass("btn-primary");
+                    $("#bt_"+id).html("开通保险业务");
+                } 
+            } 
+            alert(data.msg);
+        });
+    };
+
+
+    function GetSubAreas(parent_code,ddl_id, seleted_code) {
+        if(parent_code.length == 0) {
+            $("#city").html('');
+            $("#city").append("<option value=''>--所有城市--</option>");
+            $("#district").html('');
+            $("#district").append("<option value=''>--所有区县--</option>");
+                
+            return;
+        }
+        $.get("/ajax/GetSubAreas", { parent_code: parent_code,  t: Math.random() }, function (data) {
+            data = jQuery.parseJSON(data);
+            if(data.flag==1){
+                $("#" + ddl_id).html('');
+                if(parent_code.length == 4) {
+                    $("#" + ddl_id).append("<option value=''>--所有城市--</option>");
+                }
+                else if (parent_code.length == 8) {
+                    $("#" + ddl_id).append("<option value=''>--所有区县--</option>");
+                }
+                for(var i=0; i< data.data.length; i++){
+                    if(data.data[i]["code"]==seleted_code){
+                        $("#" + ddl_id).append("<option value=\"" + data.data[i]["code"] + "\" selected>" + data.data[i]["name"] + "</option>");
+                    } else{
+                        $("#" + ddl_id).append("<option value=\"" + data.data[i]["code"] + "\">" + data.data[i]["name"] + "</option>");
+                    }
+                }
+            }
+        });
+    }
+
+
+
+
+</script>
+
+
+{% endblock %}

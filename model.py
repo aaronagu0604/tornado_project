@@ -91,6 +91,17 @@ class AdminUser(db.Model):
         db_table = 'tb_admin_users'
 
 
+# 管理员用户表
+class AdminUserLog(db.Model):
+    id = PrimaryKeyField()  # 主键
+    admin_user = ForeignKeyField(AdminUser, related_name='logs', db_column='admin_user_id')  # 后台人员
+    created = IntegerField(default=0)  # 创建时间
+    content = CharField(max_length=2048)  # 日志内容
+
+    class Meta:
+        db_table = 'tb_admin_users_log'
+
+
 # 门店
 class Store(db.Model):
     id = PrimaryKeyField()
@@ -111,6 +122,7 @@ class Store(db.Model):
     linkman = CharField(max_length=32)  # 联系人 -------------，默认为法人
     mobile = CharField(max_length=16)  # 联系人手机号 -------------，默认为注册人手机号
     price = FloatField(default=0.0)  # 店铺收入余额
+    process_insurance = IntegerField(default=0)  # 经销商是否允许处理保险业务
     score = IntegerField(default=0)  # 店铺积分
     active = IntegerField(default=0)  # 审核状态 0未审核 1审核通过 2审核未通过
     created = IntegerField(default=0)  # 创建时间
@@ -281,6 +293,7 @@ class Category(db.Model):
     sort = CharField(max_length=20)  # 显示顺序
     img_m = CharField(max_length=256, null=True)  # 分类图片手机端
     img_pc = CharField(max_length=256, null=True)  # 分类图片PC端
+    hot = IntegerField(default=1)  # 热门分类
     active = IntegerField(default=1)  # 状态 0删除 1有效
 
     class Meta:
@@ -323,6 +336,7 @@ class Brand(db.Model):
     pinyin = CharField(max_length=50, null=True)  # 中文拼音
     logo = CharField(max_length=100, null=True)  # 品牌logo
     intro = CharField(max_length=300, null=True)  # 品牌简介
+    hot = IntegerField(default=1)  # 热门品牌
     sort = IntegerField(default=1)  # 排序
     active = IntegerField(default=1)  # 状态 0删除 1有效
 
@@ -862,6 +876,7 @@ def init_db():
 def load_test_data():
     AdminUser.create(username='18189279823', password='e10adc3949ba59abbe56e057f20f883e', mobile='18189279823',
                      email='xiaoming.liu@520czj.com', code='0001', realname='刘晓明', roles='D')
+    AdminUserLog.create(admin_user=1, created=int(time.time()), content='测试日志记录')
     Store.create(store_type=1, name='name', address='address', license_image='', store_image='', lng='', lat='',
                  pay_password='', intro='', linkman='', mobile='18189279823', active=1, created=1487032696,
                  area_code='002700010001')
@@ -953,6 +968,7 @@ def load_test_data():
 
     BlockItem.create(area_code='00270001', block=1, name='ceshi', link='http://www.baidu.com',
                      img='http://img.520czj.com/image/2017/02/15/server1_20170215111526VDJrFZYbKUeiLjuGkcsxTIhW.png')
+
     BlockItem.create(area_code='00270001', block=2, name='人保车险', link='czj://insurance/1', img='', ext_id=1)
     BlockItem.create(area_code='00270001', block=3, name='分类', link='czj://category/1', img='', ext_id=1)
     BlockItem.create(area_code='00270001', block=4, name='品牌', link='czj://brand/1', img='', ext_id=1)
