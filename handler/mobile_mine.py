@@ -27,12 +27,6 @@ class MobileMineHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/mine
     """
-    def check_xsrf_cookie(self):
-        pass
-
-    def options(self):
-        pass
-
     def get(self):
         result = {'flag': 0, 'msg': '', "data": {}}
         user = self.get_user()
@@ -240,12 +234,6 @@ class MobilPurchaseOrderHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/purchaseorder
     """
-    def check_xsrf_cookie(self):
-        pass
-
-    def options(self):
-        pass
-
     def delete_timeOut_order(self, user):
         timeOut = int(time.localtime()) - setting.PRODUCT_ORDER_TIME_OUT
         ft = (Order.user == user) & (SubOrder.status > -1) & (Order.ordered < timeOut)
@@ -286,12 +274,6 @@ class MobileSellOrderHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/sellorder
     """
-    def check_xsrf_cookie(self):
-        pass
-
-    def options(self):
-        pass
-
     def get(self):
         result = {'flag': 0, 'msg': '', "data": []}
         type = self.get_argument("type", 'all')
@@ -321,13 +303,6 @@ class MobileInsuranceOrderHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/insuranceorder
     """
-
-    def check_xsrf_cookie(self):
-        pass
-
-    def options(self):
-        pass
-
     def get(self):
         result = {'flag': 0, 'msg': '', "data": []}
         type = self.get_argument("type", 'all')
@@ -385,13 +360,6 @@ class MobileScoreHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/score
     """
-
-    def check_xsrf_cookie(self):
-        pass
-
-    def options(self):
-        pass
-
     def get(self):
         result = {'flag': 0, 'msg': '', "data": {}}
         store = self.get_user().store
@@ -414,12 +382,6 @@ class MobileScoreStore(MobileBaseHandler):
 
     @apiSampleRequest /mobile/scoreStore
     """
-    def check_xsrf_cookie(self):
-        pass
-
-    def options(self):
-        pass
-
     def get(self):
         result = {'flag': 0, 'msg': '', "data": []}
         index = int(self.get_argument("index", 1))
@@ -468,13 +430,6 @@ class MobileScoreCashHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/scorecash
     """
-
-    def check_xsrf_cookie(self):
-        pass
-
-    def options(self):
-        pass
-
     def get(self):
         result = {'flag': 0, 'msg': '', "data": {}}
         store = self.get_user().store
@@ -551,13 +506,6 @@ class MobileScoreRecordHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/scorerecord
     """
-
-    def check_xsrf_cookie(self):
-        pass
-
-    def options(self):
-        pass
-
     def get(self):
         result = {'flag': 0, 'msg': '', "data": []}
         store = self.get_user().store
@@ -589,13 +537,6 @@ class MobileFundHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/fund
     """
-
-    def check_xsrf_cookie(self):
-        pass
-
-    def options(self):
-        pass
-
     def get(self):
         result = {'flag': 0, 'msg': '', "data": {}}
         store = self.get_user().store
@@ -616,12 +557,6 @@ class MobileFundRechargeHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/fundrecharge
     """
-
-    def check_xsrf_cookie(self):
-        pass
-
-    def options(self):
-        pass
 
     def get(self):
         result = {'flag': 0, 'msg': '', "data": {}}
@@ -666,13 +601,6 @@ class MobileWithdrawCashHandler(MobileBaseHandler):
     @apiHeader {String} token 用户登录凭证
     @apiSampleRequest /mobile/withdrawcash
     """
-
-    def check_xsrf_cookie(self):
-        pass
-
-    def options(self):
-        pass
-
     def get(self):
         result = {'flag': 0, 'msg': '', "data": []}
         store = self.get_user().store
@@ -735,7 +663,7 @@ class MobileWithdrawCashHandler(MobileBaseHandler):
 
 
 @route(r'/mobile/get_bank_message')  # 绑定支付宝/银行卡
-class MobileBindBankCardHandler(MobileAuthHandler):
+class MobileBindBankCardHandler(MobileBaseHandler):
     """
     @apiGroup fund
     @apiVersion 1.0.0
@@ -744,18 +672,12 @@ class MobileBindBankCardHandler(MobileAuthHandler):
     @apiHeader {String} token 用户登录凭证
     @apiSampleRequest /mobile/bind_bank_card
     """
-    def check_xsrf_cookie(self):
-        pass
-
-    def options(self):
-        pass
-
     def post(self, *args, **kwargs):
         self.write()
 
 
 @route(r'/mobile/bind_bank_card')  # 绑定支付宝/银行卡
-class MobileBindBankCardHandler(MobileAuthHandler):
+class MobileBindBankCardHandler(MobileBaseHandler):
     """
     @apiGroup fund
     @apiVersion 1.0.0
@@ -764,12 +686,6 @@ class MobileBindBankCardHandler(MobileAuthHandler):
     @apiHeader {String} token 用户登录凭证
     @apiSampleRequest /mobile/bind_bank_card
     """
-    def check_xsrf_cookie(self):
-        pass
-
-    def options(self):
-        pass
-
     def post(self, *args, **kwargs):
 
         self.write()
@@ -793,13 +709,6 @@ class MobileMyProductsHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/myproducts
     """
-
-    def check_xsrf_cookie(self):
-        pass
-
-    def options(self):
-        pass
-
     def get(self):
         result = {'flag': 0, 'msg': '', "data": []}
         keyword = self.get_argument('keyword', None)
@@ -853,13 +762,6 @@ class MobileFilterMyProductsHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/filtermyproducts
     """
-
-    def check_xsrf_cookie(self):
-        pass
-
-    def options(self):
-        pass
-
     def get(self):
         result = {'flag': 0, 'msg': '', "data": {}}
         store = self.get_user().store
@@ -906,13 +808,6 @@ class MobileProductReleaseHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/productrelease
     """
-
-    def check_xsrf_cookie(self):
-        pass
-
-    def options(self):
-        pass
-
     def post(self):
         result = {'flag': 0, 'msg': '', "data": []}
         args = simplejson.loads(self.get_body_argument('area_price'))
@@ -1022,7 +917,6 @@ class MobileLubePolicyHandler(MobileBaseHandler):
                 'type': []
             }
         }
-        logging.info('-----1---')
         area_code = self.get_user().store.area_code
         result['data']['remark'] = setting.get_help_center_remark(area_code)
         area_code_lenth = len(area_code)
@@ -1032,9 +926,7 @@ class MobileLubePolicyHandler(MobileBaseHandler):
             rows = LubePolicy.select().where(LubePolicy.area_code == area_code[:8]).order_by(LubePolicy.sort, LubePolicy.sort2)
         if area_code_lenth == 4 or (area_code_lenth > 4 and rows.count() <= 0):
             rows = LubePolicy.select().where(LubePolicy.area_code == area_code[:12]).order_by(LubePolicy.sort, LubePolicy.sort2)
-        logging.info('-----2---')
         if rows.count() > 0:
-            logging.info('-----3---')
             iCompanyName = ''
             totalICname = []
             for row in rows:
@@ -1046,11 +938,9 @@ class MobileLubePolicyHandler(MobileBaseHandler):
                 result = self.get_insurances_for_difI(rows, result, iCompanyName)
             else:
                 result = self.get_insurances(rows, result)
-                logging.info('-----4---')
             result['flag'] = 1
         else:
             result['msg'] = u'该地区的具体优惠政策请联系车装甲客服'
-        logging.info('-----%s---'%result)
         self.write(simplejson.dumps(result))
 
 
@@ -1067,13 +957,6 @@ class MobileMySettingHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/mysetting
     """
-
-    def check_xsrf_cookie(self):
-        pass
-
-    def options(self):
-        pass
-
     def get(self):
         result = {'flag': 0, 'msg': '', "data": {}}
         store = self.get_user().store
@@ -1106,13 +989,6 @@ class MobileChangeLoginPasswordHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/changeloginpassword
     """
-
-    def check_xsrf_cookie(self):
-        pass
-
-    def options(self):
-        pass
-
     def post(self):
         result = {'flag': 0, 'msg': '', "data": {}}
         user = self.get_user()
@@ -1145,13 +1021,6 @@ class MobileChangePayPasswordHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/changepaypassword
     """
-
-    def check_xsrf_cookie(self):
-        pass
-
-    def options(self):
-        pass
-
     def post(self):
         result = {'flag': 0, 'msg': '', "data": {}}
         store = self.get_user().store
@@ -1186,13 +1055,6 @@ class MobileReceiverAddressHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/receiveraddress
     """
-
-    def check_xsrf_cookie(self):
-        pass
-
-    def options(self):
-        pass
-
     def get(self):
         result = {'flag': 0, 'msg': '', "data": []}
         store = self.get_user().store
@@ -1294,13 +1156,6 @@ class MobileFeedbackHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/feedback
     """
-
-    def check_xsrf_cookie(self):
-        pass
-
-    def options(self):
-        pass
-
     def get(self):
         result = {'flag': 0, 'msg': '', "data": {}}
         user = self.get_user()
