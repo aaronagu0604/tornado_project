@@ -102,15 +102,10 @@ class MobileCheckVCodeAppHandler(MobileBaseHandler):
         mobile = self.get_body_argument('mobile', None)
         vcode = self.get_body_argument('vcode', None)
         flag = self.get_body_argument("flag", None)
-        if mobile and vcode and flag:
-            VCode.delete().where(VCode.created < (int(time.time()) - 30 * 60)).execute()
-            if VCode.select().where((VCode.mobile == mobile) & (VCode.vcode == vcode) & (VCode.flag == flag)).count() > 0:
-                result['flag'] = 1
-            else:
-                result['msg'] = "请输入正确的验证码"
+        if VCode.check_vcode(mobile, vcode, flag):
+            result['flag'] = 1
         else:
-            result['flag'] = 0
-            result['msg'] = '请传入正确的手机号码与验证码'
+            result['msg'] = "请输入正确的手机号或验证码"
         self.write(simplejson.dumps(result))
 
 

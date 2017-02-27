@@ -6,6 +6,7 @@ from peewee import *
 import hashlib
 from bootloader import db
 from lib.util import vmobile
+import re
 
 
 # 地区表
@@ -174,10 +175,20 @@ class VCode(db.Model):
     mobile = CharField(max_length=32, null=False)  # 注册手机号
     vcode = CharField(max_length=16, null=False)
     created = IntegerField(index=True, default=0)
-    flag = IntegerField(default=0)  # 0注册 1忘记密码 2绑定手机号 3提现
+    flag = IntegerField(default=0)  # 0注册 1忘记密码 2绑定银行卡/支付宝 3提现
 
     def validate(self):
         if self.mobile and vmobile(self.mobile):
+            return True
+        else:
+            return False
+
+    @staticmethod
+    def check_vcode(self, mobile, vcode, flag):
+        if not (mobile and vcode and flag):
+            return False
+        VCode.delete().where(VCode.created < (int(time.time()) - 10 * 60)).execute()
+        if VCode.select().where((VCode.mobile==mobile) & (VCode.vcode==vcode) & (VCode.flag==flag)).count() > 0:
             return True
         else:
             return False
@@ -210,6 +221,7 @@ class MoneyRecord(db.Model):
     user = ForeignKeyField(User, related_name='money_records', db_column='user_id')  # 用户
     store = ForeignKeyField(Store, related_name='money_records', db_column='store_id')  # 店铺
     process_type = IntegerField(default=0)  # 资金流动类型 1入账 2出账
+    process_message = CharField(max_length=4, default='')  # 提现、充值、售出、采购、保险、退款
     process_log = CharField(max_length=255, default='')  # 资金流动
     in_num = CharField(max_length=32, default='')  # 在线充值订单号
     out_account_type = IntegerField(default=0)  # 提现账户类型 0银行卡 1支付宝
@@ -259,18 +271,40 @@ class ScoreRecord(db.Model):
         except:
             return False
 
+
 # 门店银行、支付宝账户
 class StoreBankAccount(db.Model):
     id = PrimaryKeyField()
     store = ForeignKeyField(Store, related_name='store_bank_accounts', db_column='store_id')  # 店铺
     account_type = IntegerField(default=0)  # 账户类型 0银联 1支付宝
-    alipay_truename = CharField(max_length=32, default='')  # 支付宝姓名
+    alipay_truename = CharField(max_length=32, default='')  # 支付主人宝姓名
     alipay_account = CharField(max_length=128, default='')  # 支付宝账号
-    bank_truename = CharField(max_length=32, default='')  # 银行卡姓名
+    bank_truename = CharField(max_length=32, default='')  # 银行卡主人姓名
     bank_account = CharField(max_length=32, default='')  # 银行卡号
     bank_name = CharField(max_length=64, default='')  # 银行名称
     is_default = IntegerField(default=0)  # 是否默认
 
+    @staticmethod
+    def check_bank(name, account):
+        if name.strip() == '':
+            return False
+        if not (re.match('^[A-Za-z]+$', name) or re.match(u'^[\u4e00-\u9fa5]+$', name)):
+            return False
+        accountC = len(account)
+        if re.match(r'^[0-9]{17,22}$',account) or re.match(r'^[0-9]{16}$',account):
+            return True
+        else:
+            return False
+    @staticmethod
+    def check_alipay(name, account):
+        if name.strip() == '':
+            return False
+        if not (re.match('^[A-Za-z]+$', name) or re.match(u'^[\u4e00-\u9fa5]+$', name)):
+            return False
+        if re.match(r'^[0-9a-zA-Z_]{0,19}@[0-9a-zA-Z]{1,13}\.[com,cn,net,cc]{1,3}$',account):
+            return True
+        else:
+            return False
     class Meta:
         db_table = 'tb_score_record'
 
@@ -859,6 +893,22 @@ class Feedback(db.Model):
 
     class Meta:
         db_table = "tb_feedback"
+
+
+# 银行卡数据库
+class BankCard(db.Model):
+    id = PrimaryKeyField()
+    card_bin = CharField(max_length=50, null=True)  # 卡号范围
+    bank_name = CharField(max_length=100, null=True)  # 银行名称
+    bank_id = IntegerField(null=True)  # 银行标示
+    card_name = CharField(max_length=100,null=True)  # 卡名称
+    card_type = CharField(max_length=50,null=True)  # 卡类型
+    bin_digits = IntegerField(null=True)
+    card_digits = IntegerField(null=True)
+    demo = CharField(max_length=50,null=True)
+
+    class Meta:
+        db_table = 'bank_card_bin'
 
 
 def init_db():

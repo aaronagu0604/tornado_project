@@ -662,33 +662,227 @@ class MobileWithdrawCashHandler(MobileBaseHandler):
         self.write(simplejson.dumps(result))
 
 
-@route(r'/mobile/get_bank_message')  # 绑定支付宝/银行卡
+@route(r'/mobile/get_bank_message')  # 银行卡信息获取
 class MobileBindBankCardHandler(MobileBaseHandler):
     """
     @apiGroup fund
     @apiVersion 1.0.0
-    @api {get} /mobile/bind_bank_card 04. 绑定支付宝/银行卡
-    @apiDescription 绑定支付宝/银行卡
+    @api {get} /mobile/get_bank_message 04. 银行卡信息获取
+    @apiDescription 银行卡信息获取
     @apiHeader {String} token 用户登录凭证
-    @apiSampleRequest /mobile/bind_bank_card
+    @apiParam {String} bank_number 卡号
+    @apiSampleRequest /mobile/get_bank_message
     """
-    def post(self, *args, **kwargs):
-        self.write()
+    def post(self):
+        result = {'flag': 0, 'msg': '', 'data': {}}
+        bank_number = self.get_body_argument('bank_number', None)
+        truename = self.get_body_argument('truename', None)
+        if StoreBankAccount.check_bank(truename, bank_number):
+            rows = BankCard.select().where(BankCard.card_bin == db.fn.LEFT(bank_number, BankCard.bin_digits))
+            if rows.count() > 0:
+                result['data'] = {
+                    'id': rows[0].id,
+                    'bank_name': rows[0].bank_name
+                }
+                result['flag'] = 1
+            else:
+                result['msg'] = '未查找到该卡银行'
+        else:
+            result['msg'] = "卡号或持卡人姓名不合法"
+        self.write(simplejson.dumps(result))
 
 
-@route(r'/mobile/bind_bank_card')  # 绑定支付宝/银行卡
+@route(r'/mobile/bind_bank_card')  # 绑定银行卡
 class MobileBindBankCardHandler(MobileBaseHandler):
     """
     @apiGroup fund
     @apiVersion 1.0.0
-    @api {get} /mobile/bind_bank_card 04. 绑定支付宝/银行卡
-    @apiDescription 绑定支付宝/银行卡
+    @api {get} /mobile/bind_bank_card 05. 绑定银行卡
+    @apiDescription 绑定银行卡
     @apiHeader {String} token 用户登录凭证
     @apiSampleRequest /mobile/bind_bank_card
     """
-    def post(self, *args, **kwargs):
+    def get(self):
+        result = {'flag': 0, 'msg': '', 'data': []}
+        store = self.get_user().store
+        sbas = StoreBankAccount.select().where(StoreBankAccount.store == store & StoreBankAccount.account_type == 0)
+        for sba in sbas:
+            result['data'].append({
+                'bank_id': sba.id,
+                'bank_name': sba.bank_name,
+                'bank_account': sba.bank_account[-5:]
+            })
+        self.write(simplejson.dumps(result))
 
-        self.write()
+    """
+    @apiGroup fund
+    @apiVersion 1.0.0
+    @api {get} /mobile/bind_bank_card 06. 绑定银行卡
+    @apiDescription 绑定银行卡
+    @apiHeader {String} token 用户登录凭证
+    @apiParam {String} is_delete 是否删除 0否 1是
+    @apiParam {String} bank_id 删除的银行卡ID
+    @apiParam {String} bank_name 银行名
+    @apiParam {String} bank_truename 持卡人姓名
+    @apiParam {String} bank_account 卡号
+    @apiParam {String} vcode 验证码
+    @apiSampleRequest /mobile/bind_bank_card
+    """
+
+    def post(self):
+        result = {'flag': 0, 'msg': '', 'data': {}}
+        is_delete = self.get_body_argument('is_delete', None)
+        bank_id = self.get_body_argument('bank_id', None)
+        bank_name = self.get_body_argument('bank_name', None)
+        truename = self.get_body_argument('bank_truename', None)
+        account = self.get_body_argument('bank_account', None)
+        vcode = self.get_body_argument('vcode', None)
+
+        store = self.get_user().store
+        if not VCode.check_vcode(store.mobile, vcode, 2):
+            result['msg'] = '请输入正确的验证码'
+        elif is_delete and bank_id:
+            StoreBankAccount().delete().where(StoreBankAccount.id==bank_id).execute()
+        elif bank_name and truename and account:
+            sba = StoreBankAccount()
+            if StoreBankAccount.select().where(StoreBankAccount.is_default==1 & StoreBankAccount.store==store).count() > 0:
+                sba.is_default = 0
+            else:
+                sba.is_default = 1
+            sba.store = store
+            sba.bank_truename = truename
+            sba.bank_account = account
+            sba.bank_name = bank_name
+            result['flag'] = 1
+            result['msg'] = '绑定银行卡成功'
+
+        else:
+            result['msg'] = '参数有误'
+        self.write(simplejson.dumps(result))
+
+
+@route(r'/mobile/bind_alipay')  # 绑定/修改支付宝
+class MobileBindAlipayHandler(MobileBaseHandler):
+    """
+    @apiGroup fund
+    @apiVersion 1.0.0
+    @api {get} /mobile/bind_alipay 07. 绑定/修改支付宝
+    @apiDescription 绑定/修改支付宝
+    @apiHeader {String} token 用户登录凭证
+    @apiSampleRequest /mobile/bind_alipay
+    """
+    def get(self):
+        result = {'flag': 1, 'msg': '', 'data': {'bank_id': '', 'alipay_truename':'', 'alipay_account': ''}}
+        store = self.get_user().store
+        sbas = StoreBankAccount.select().where(StoreBankAccount.store == store & StoreBankAccount.account_type == 1)
+        if sbas.count() > 0:
+            sba = sbas[0]
+            result['data']['alipay_truename'] = sba.alipay_truename
+            result['data']['alipay_account'] = sba.alipay_account
+
+        self.write(simplejson.dumps(result))
+
+    """
+    @apiGroup fund
+    @apiVersion 1.0.0
+    @api {get} /mobile/bind_alipay 08. 绑定银行卡
+    @apiDescription 绑定银行卡
+    @apiHeader {String} token 用户登录凭证
+    @apiParam {String} alipay_truename 支付宝主人姓名
+    @apiParam {String} alipay_account 支付宝账号
+    @apiParam {String} vcode 验证码
+    @apiSampleRequest /mobile/bind_alipay
+    """
+    def post(self):
+        result = {'flag': 0, 'msg': '', 'data': {}}
+        alipay_truename = self.get_body_argument('alipay_truename', None)
+        alipay_account = self.get_body_argument('alipay_account', None)
+        vcode = self.get_body_argument('vcode', None)
+        store = self.get_user().store
+        if not VCode.check_vcode(store.mobile, vcode, 2):
+            result['msg'] = '请输入正确的验证码'
+        elif alipay_truename and alipay_account:
+            result['flag'] = 1
+            result['msg'] = '绑定支付宝成功'
+            sbas = StoreBankAccount.select().where(StoreBankAccount.account_type==1 & StoreBankAccount.store==store)
+            if sbas.count() > 0:
+                sbas[0].alipay_truename = alipay_truename
+                sbas[0].alipay_account = alipay_account
+                sbas[0].account_type = 1
+                sbas[0].save()
+            elif StoreBankAccount.check_alipay(alipay_truename, alipay_account):
+                sba = StoreBankAccount()
+                sba.alipay_truename = alipay_truename
+                sba.alipay_account = alipay_account
+                sba.account_type = 1
+                sba.save()
+            else:
+                result['flag'] = 0
+                result['msg'] = '支付宝账号或支付宝主人姓名不合法'
+        else:
+            result['msg'] = '参数有误'
+
+        self.write(simplejson.dumps(result))
+
+
+@route(r'/mobile/moneyrecord')  # 收支明细
+class MobileMoneyRecordHandler(MobileBaseHandler):
+    """
+    @apiGroup fund
+    @apiVersion 1.0.0
+    @api {get} /mobile/moneyrecord 09. 收支明细
+    @apiDescription 绑定/修改支付宝
+    @apiHeader {String} token 用户登录凭证
+    @apiParam {String} process_type 1入账 2出账 不传则全部
+    @apiSampleRequest /mobile/moneyrecord
+    """
+
+    def get(self):
+        result = {'flag': 1, 'msg': '', 'data': []}
+        store = self.get_user().store
+        process_type = self.get_argument('process_type', None)
+
+        ft = ((MoneyRecord.store==store) & (MoneyRecord.status==1))
+        if process_type:
+            ft &= (MoneyRecord.process_type == process_type)
+        money_records = MoneyRecord.select().where(ft)
+        for record in money_records:
+            result['data'].append({
+                'record_id': record.id,
+                'process_type': record.process_type,
+                'process_message': record.process_message,
+                'in_num': record.in_num,
+                'money': record.money,
+                'apply_time': time.strftime('%Y-%m-%d %H:%M:S', time.localtime(record.apply_time)),
+                'processing_time': time.strftime('%Y-%m-%d %H:%M:S', time.localtime(record.processing_time))
+            })
+        self.write(simplejson.dumps(result))
+
+    """
+    @apiGroup fund
+    @apiVersion 1.0.0
+    @api {get} /mobile/moneyrecord 09. 收支明细
+    @apiDescription 绑定/修改支付宝
+    @apiHeader {String} token 用户登录凭证
+    @apiParam {String} record_id 流水ID
+    @apiSampleRequest /mobile/moneyrecord
+    """
+    def post(self):
+        result = {'flag': 1, 'msg': '', 'data': {}}
+        record_id = self.get_body_argument('record_id', None)
+        try:
+            record = MoneyRecord.get(id=record_id)
+            result['data']['process_type'] = record.process_type
+            result['data']['process_message'] = record.process_message
+            result['data']['in_num'] = record.in_num
+            result['data']['money'] = record.money
+            result['data']['apply_time'] = time.strftime('%Y-%m-%d %H:%M:S', time.localtime(record.apply_time))
+            result['data']['processing_time'] = time.strftime('%Y-%m-%d %H:%M:S', time.localtime(record.processing_time))
+            result['flag'] = 1
+        except Exception, ex:
+            result['msg'] = '系统错误'
+
+        self.write(simplejson.dumps(result))
 
 
 # ---------------------------------------------------商品管理-----------------------------------------------------------
