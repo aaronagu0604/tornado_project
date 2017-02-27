@@ -13,8 +13,9 @@ class IndexHandler(AdminBaseHandler):
     def get(self):
         report = {}
         report['insurance'] = Insurance.select().where(Insurance.active == 1).count()
-        report['store'] = Store.select().where(Store.active == 1, Store.store_type == 2).count()
-        report['saler'] = Store.select().where(Store.active == 1, Store.store_type == 1).count()
+        report['store'] = Store.select().where(Store.active >= 0, Store.store_type == 2).count()
+        report['saler'] = Store.select().where(Store.active >= 0, Store.store_type == 1).count()
+        report['user'] = User.select().count()
         report['order_i'] = InsuranceOrder.select().where(InsuranceOrder.status > 0).count()
         report['order_n'] = SubOrder.select().where(SubOrder.status > 0).count()
         report['product_n'] = Product.select().where(Product.active == 1, Product.is_score == 0).count()
@@ -76,7 +77,7 @@ class SalerHandler(AdminBaseHandler):
         default_province = ''
         default_city = ''
         default_district = ''
-        ft = ((Store.active == 1) & (Store.store_type == 1))
+        ft = (Store.store_type == 1)
         if town and town != '':
             ft &= (Store.area_code == town)
             default_province = town[:4]

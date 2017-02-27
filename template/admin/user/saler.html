@@ -65,29 +65,47 @@
             <table class="table table-hover" id="tb_need_pay_back_orders" style="text-align:center;">
                 <thead>
                 <tr style="background:#528ACB;color:#fff;">
-                    <th style="text-align:center;">编号</th>
-                    <th style="text-align:center;">账号</th>
+
                     <th style="text-align:center;">名称</th>
+                    <th style="text-align:center;">联系人</th>
+                    <th style="text-align:center;">联系电话</th>
                     <th style="text-align:center;">所在地区</th>
                     <th style="text-align:center;">详细地址</th>
+                    <th style="text-align:center;">状态</th>
                     <th style="text-align:center;">操作</th>
                 </tr>
                 </thead>
                 <tbody>
                 {% for s in stores %}
                 <tr>
-                    <td>{{ s.id }}</td>
-                    <td>{{ s.mobile }}</td>
                     <td><a href="/admin/store_detail/{{s.id}}">{{ s.name }}</a></td>
+                    <td>{{ s.linkman }}</td>
+                    <td>{{ s.mobile }}</td>
                     <td>{{ Area().get_detailed_address(s.area_code)}}</td>
                     <td>{{ s.address }}</td>
                     <td>
-                        <span>&nbsp;&nbsp;&nbsp;<a href="/admin/facilitatorarea/{{s.id}}">区域配置</a></span>
-                        <span style="margin-right:15px;">&nbsp;&nbsp;&nbsp;<a href="/admin/facilitatorquery/{{s.id}}">查看商品</a></span>
+                         {% if s.active==0 %}
+                                <span style="color: red;">待审核</span><br>
+                                {% elif s.active==1 %}
+                                <span style="color: #5cb85c;">已通过</span><br>
+                                {% elif s.active==2 %}
+                                <span style="color: #f0ad4e;">未通过</span><br>
+                                {% endif %}
+                    </td>
+                    <td>
 
                             <input type="hidden" id="hd_id_{{s.id}}" value="{{s.process_insurance}}"/>
-
-                            <button type="button" onclick="change_status({{s.id}})" id='bt_{{s.id}}'
+                {% if s.active==0 %}
+                    <button type="button" onclick="change_status({{s.id}}, 1)" id='bt_pass_{{s.id}}'
+                                    class="btn btn-xs btn-success" >
+                                通过
+                            </button>
+                            <button type="button" onclick="change_status({{s.id}}, 2)" id='bt_fail_{{s.id}}'
+                                    class="btn btn-xs btn-warning" >
+                                拒绝
+                            </button>
+                 {% else %}
+                            <button type="button" onclick="change_insurance_status({{s.id}})" id='bt_{{s.id}}'
                                     class="btn btn-xs {{'btn-primary' if s.process_insurance == 0 else 'btn-success'}}" >
                                 {% if s.process_insurance == 0 %}
                                 开通保险业务
@@ -95,7 +113,7 @@
                                 取消保险业务
                                 {% endif %}
                             </button>
-
+                {% endif %}
                     </td>
                 </tr>
                 {% endfor %}
@@ -145,9 +163,17 @@
         }
     });
 
+function change_status(id, state_type){
+        $.post("/ajax/store_update_state", { _xsrf:xsrf,id: id, state_type:state_type }, function (data) {
+            data = jQuery.parseJSON(data);
+            alert(data.msg);
+            if(data.flag==1){
+                location.reload();
+            }
+        });
+    }
 
-
-    function change_status(id){
+    function change_insurance_status(id){
         var status = parseInt($('#hd_id_'+id).val());
         var state_type = 1;
         if(status == 0) {
