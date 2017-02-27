@@ -535,7 +535,7 @@ class MobileScoreCashHandler(MobileBaseHandler):
             else:
                 result['msg'] = '兑换错误'
         else:
-            result['msg'] = '提现积分小于最低提现积分或积分不足'
+            result['msg'] = '兑现积分小于最低兑现积分或积分不足'
         self.write(simplejson.dumps(result))
 
 
@@ -704,35 +704,75 @@ class MobileWithdrawCashHandler(MobileBaseHandler):
         store = user.store
         money = self.get_body_argument('money', None)
         bank_id = self.get_body_argument('bank_id', None)
+        account_type = int(self.get_body_argument('account_type', 0))
         if money and bank_id:
-            s = StoreBankAccount.get(id=bank_id)
             if money <= store.price:
+                now = int(time.time())
                 store.price -= money
-                '''
-    user = ForeignKeyField(User, related_name='money_records', db_column='user_id')  # 用户
-    store = ForeignKeyField(Store, related_name='money_records', db_column='store_id')  # 店铺
-    process_type = IntegerField(default=0)  # 资金流动类型 1入账 2出账
-    process_log = CharField(max_length=255, default='')  # 资金流动
-    in_num = CharField(max_length=32, default='')  # 在线充值订单号
-    out_account_type = IntegerField(default=0)  # 提现账户类型 0银行卡 1支付宝
-    out_account_truename = CharField(max_length=32, default='')  # 银行卡姓名
-    out_account_name = CharField(max_length=64, default='')  # 银行名称
-    out_account_branchname = CharField(max_length=64, default='')  # 支行名称
-    out_account_account = CharField(max_length=32, default='')  # 银行卡号
-    money = FloatField(default=0.0)  # 提现或支付的金额
-    status = IntegerField(default=0)  # 处理状态
-    apply_time = IntegerField(default=0)  # 申请时间
-    processing_time = IntegerField(default=0)  # 处理时间
-    processing_by = ForeignKeyField(AdminUser, db_column='updated_by', null=True)  # 处理人
-    '''
-                MoneyRecord.create(user=user, store=user.store, process_type=1, process_log='提现', out_account_type=0)
+                s = StoreBankAccount.get(id=bank_id)
+                if account_type == 0:
+                    account_truename = s.bank_truename
+                    account_account = s.bank_account
+                    account_name = s.bank_name
+                    MoneyRecord.create(user=user, store=user.store, process_type=1, process_log='提现',
+                                       out_account_type=account_type, out_account_truename=account_truename,
+                                       out_account_account=account_account, out_account_name=account_name,
+                                       money=money, status=0, apply_time=now)
+                elif account_type == 1:
+                    account_truename = s.alipay_truename
+                    account_account = s.alipay_account
+                    MoneyRecord.create(user=user, store=user.store, process_type=1, process_log='提现',
+                                       out_account_type=account_type, out_account_truename=account_truename,
+                                       ut_account_account=account_account, money=money, status=0, apply_time=now)
+                else:
+                    result['msg'] = '目前仅支持银联与支付宝'
+            else:
+                result['msg'] = '提现金额不足'
         else:
-            result['msg'] = '传入参数有误'
+            result['msg'] = '参数有误'
 
         self.write(simplejson.dumps(result))
 
 
+@route(r'/mobile/get_bank_message')  # 绑定支付宝/银行卡
+class MobileBindBankCardHandler(MobileAuthHandler):
+    """
+    @apiGroup fund
+    @apiVersion 1.0.0
+    @api {get} /mobile/bind_bank_card 04. 绑定支付宝/银行卡
+    @apiDescription 绑定支付宝/银行卡
+    @apiHeader {String} token 用户登录凭证
+    @apiSampleRequest /mobile/bind_bank_card
+    """
+    def check_xsrf_cookie(self):
+        pass
 
+    def options(self):
+        pass
+
+    def post(self, *args, **kwargs):
+        self.write()
+
+
+@route(r'/mobile/bind_bank_card')  # 绑定支付宝/银行卡
+class MobileBindBankCardHandler(MobileAuthHandler):
+    """
+    @apiGroup fund
+    @apiVersion 1.0.0
+    @api {get} /mobile/bind_bank_card 04. 绑定支付宝/银行卡
+    @apiDescription 绑定支付宝/银行卡
+    @apiHeader {String} token 用户登录凭证
+    @apiSampleRequest /mobile/bind_bank_card
+    """
+    def check_xsrf_cookie(self):
+        pass
+
+    def options(self):
+        pass
+
+    def post(self, *args, **kwargs):
+
+        self.write()
 
 
 # ---------------------------------------------------商品管理-----------------------------------------------------------
@@ -741,8 +781,8 @@ class MobileMyProductsHandler(MobileBaseHandler):
     """
     @apiGroup mine
     @apiVersion 1.0.0
-    @api {get} /mobile/myproducts 12. 普通商品售出订单
-    @apiDescription 普通商品售出订单
+    @api {get} /mobile/myproducts 12. 商品管理/我的商品
+    @apiDescription 商品管理/我的商品
 
     @apiHeader {String} token 用户登录凭证
 
@@ -784,16 +824,17 @@ class MobileMyProductsHandler(MobileBaseHandler):
             for spp in product_release.area_prices:
                 area_price.append({
                     'sppid': spp.id,
-                    'area': spp.area.name,
+                    'area': spp.area_code,
                     'price': spp.price,
                     'active': spp.active
                 })
             result['data'].append({
-                'pid': spp.product_release.product.id,
-                'prid': spp.product_release.id,
-                'name': spp.product_release.product.name,
-                'cover': spp.product_release.product.cover,
-                'attributes': [attributes.value for attributes in spp.product_release.product.attributes],
+                'pid': product_release.product.id,
+                'prid': product_release.id,
+                'name': product_release.product.name,
+                'cover': product_release.product.cover,
+                'attributes': [attributes.value for attributes in product_release.product.attributes],
+                'old_price': product_release.price,
                 'area_price': area_price
             })
         result['flag'] = 1

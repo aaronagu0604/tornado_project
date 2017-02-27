@@ -357,7 +357,6 @@ class User(db_old.Model):
     bank_truename = CharField(max_length=32, default='')  # 银行卡姓名
     bank_account = CharField(max_length=32, default='')  # 银行卡号
     bank_name = CharField(max_length=64, default='')  # 银行名称
-    bank_branchname = CharField(max_length=64, default='')  # 支行名称
 
     @staticmethod
     def create_password(raw):

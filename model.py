@@ -212,15 +212,14 @@ class MoneyRecord(db.Model):
     process_log = CharField(max_length=255, default='')  # 资金流动
     in_num = CharField(max_length=32, default='')  # 在线充值订单号
     out_account_type = IntegerField(default=0)  # 提现账户类型 0银行卡 1支付宝
-    out_account_truename = CharField(max_length=32, default='')  # 银行卡姓名
+    out_account_truename = CharField(max_length=32, default='')  # 银行卡/支付宝主人姓名
+    out_account_account = CharField(max_length=32, default='')  # 银行卡/支付宝账号
     out_account_name = CharField(max_length=64, default='')  # 银行名称
-    out_account_branchname = CharField(max_length=64, default='')  # 支行名称
-    out_account_account = CharField(max_length=32, default='')  # 银行卡号
     money = FloatField(default=0.0)  # 提现或支付的金额
-    status = IntegerField(default=0)  # 处理状态
+    status = IntegerField(default=0)  # 处理状态 0未处理，1已处理
     apply_time = IntegerField(default=0)  # 申请时间
     processing_time = IntegerField(default=0)  # 处理时间
-    processing_by = ForeignKeyField(AdminUser, db_column='updated_by', null=True)  # 处理人
+    processing_by = ForeignKeyField(AdminUser, db_column='updated_by')  # 处理人
 
     class Meta:
         db_table = 'tb_money_record'
@@ -269,7 +268,6 @@ class StoreBankAccount(db.Model):
     bank_truename = CharField(max_length=32, default='')  # 银行卡姓名
     bank_account = CharField(max_length=32, default='')  # 银行卡号
     bank_name = CharField(max_length=64, default='')  # 银行名称
-    bank_branchname = CharField(max_length=64, default='')  # 支行名称
     is_default = IntegerField(default=0)  # 是否默认
 
     class Meta:
