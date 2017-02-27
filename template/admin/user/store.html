@@ -76,9 +76,9 @@
                         <th style="width:6%;text-align:center;">联系人</th>
                         <th style="width:15%;text-align:center;">地址信息</th>
                         <th style="width:10%;text-align:center;">积分/余额</th>
-                        <th style="width:7%;text-align:center;">账户状态</th>
-                        <th style="width:9%;text-align:center;">创建时间</th>
-                        <th style="width:6%;text-align:center;">操作</th>
+                        <th style="width:8%;text-align:center;">账户状态</th>
+                        <th style="width:10%;text-align:center;">创建时间</th>
+                        <th style="width:10%;text-align:center;">操作</th>
                     </tr>
                     {% for store in stores %}
                     <tr>
@@ -101,11 +101,11 @@
                         <td>
                             <span id="check{{store.id}}">
                                 {% if store.active==0 %}
-                                <span style="color: #528acb;">待审核</span><br>
+                                <span style="color: red;">待审核</span><br>
                                 {% elif store.active==1 %}
-                                <span style="color: #528acb;">已通过</span><br>
+                                <span style="color: #5cb85c;">已通过</span><br>
                                 {% elif store.active==2 %}
-                                <span style="color: #262626;">未通过</span><br>
+                                <span style="color: #f0ad4e;">未通过</span><br>
                                 {% endif %}
                             </span>
                         </td>

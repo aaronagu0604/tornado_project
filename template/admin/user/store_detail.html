@@ -9,12 +9,9 @@
     <nav>
         <div class="navbar-header">
             <a class="navbar-brand" href="#">
-                查看
-                {% if s.store_type == 1 %}
-                经销商
-                {% elif s.store_type == 2 %}
-                门店
-                {% endif %}
+                
+                门店详情
+
             </a>
         </div>
     </nav>
@@ -25,7 +22,7 @@
     <div class="col-sm-12 col-md-6">
         <div class="panel panel-primary">
             <div class="panel-body">
-
+                <h4>基本信息</h4>
                 {%set messages=handler.get_flashed_messages() %}
                 {%if messages%}
                 <div class="msg" style="color:red;">
