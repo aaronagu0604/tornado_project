@@ -933,6 +933,7 @@ def load_test_data():
 
     StoreProductPrice.create(product_release=1, store=1, area_code='002700010001', price=3)
     StoreProductPrice.create(product_release=2, store=1, area_code='00270001', price=4)
+    StoreProductPrice.create(product_release=2, store=1, area_code='00270001', price=4, score=3)
 
     Block.create(tag='banner', name='首页轮播广告', remark='',
                  img='http://img.520czj.com/image/2017/02/15/server1_20170215111526VDJrFZYbKUeiLjuGkcsxTIhW.png')

@@ -800,13 +800,13 @@ class MobileMyProductsHandler(MobileAuthHandler):
         self.write(simplejson.dumps(result))
 
 
-@route(r'/mobile/filtermyproducts', name='mobile_filter_my_products')  # 我的商品删选
+@route(r'/mobile/filtermyproducts', name='mobile_filter_my_products')  # 我的商品筛选
 class MobileFilterMyProductsHandler(MobileAuthHandler):
     """
     @apiGroup mine
     @apiVersion 1.0.0
-    @api {get} /mobile/filtermyproducts 13. 我的商品删选
-    @apiDescription 我的商品删选
+    @api {get} /mobile/filtermyproducts 13. 我的商品筛选
+    @apiDescription 我的商品筛选
 
     @apiHeader {String} token 用户登录凭证
 

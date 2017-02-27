@@ -964,9 +964,9 @@ class MobilInsuranceOrderBaseHandler(MobileAuthHandler):
 
         @apiSampleRequest /mobile/insuranceorderbase
         """
-
-    def get_insruances(self):
+    def get_insurance_message(area_code):
         result = {
+            'insurance_company': InsuranceScoreExchange.get_insurances(area_code),
             'force_insurance': {
                 'title': '交强险',
                 'item': []
@@ -980,8 +980,6 @@ class MobilInsuranceOrderBaseHandler(MobileAuthHandler):
                 'item': []
             }
         }
-        store = self.get_user().store
-        result['insurance_company'] = InsuranceScoreExchange.get_insurances(store.area_code)
         i_items= InsuranceItem.select()
         for i_item in i_items:
             if i_item.style_id == 1:
@@ -993,47 +991,19 @@ class MobilInsuranceOrderBaseHandler(MobileAuthHandler):
                 result['commerce_insurance_master']['item'].append({
                     'name': i_item.name,
                     'eName': i_item.eName,
+                    'iPrice': [i_price.coverage for i_price in i_item.insurance_prices]
 
                 })
-
-
-
-
-        ips = InsurancePrice.select().where(InsurancePrice.pid == 3)
-        for ip in ips:
-            tmpdic = {}
-            tmpdic['id'] = ip.id
-            tmpdic['name'] = ip.name
-            result['thirdDutyIP'].append(tmpdic)
-        ips = InsurancePrice.select().where(InsurancePrice.pid == 5)
-        for ip in ips:
-            tmpdic = {}
-            tmpdic['id'] = ip.id
-            tmpdic['name'] = ip.name
-            result['driverDutyIP'].append(tmpdic)
-        ips = InsurancePrice.select().where(InsurancePrice.pid == 6)
-        for ip in ips:
-            tmpdic = {}
-            tmpdic['id'] = ip.id
-            tmpdic['name'] = ip.name
-            result['passengerDutyIP'].append(tmpdic)
-        ips = InsurancePrice.select().where(InsurancePrice.pid == 8)
-        for ip in ips:
-            tmpdic = {}
-            tmpdic['id'] = ip.id
-            tmpdic['name'] = ip.name
-            result['scratchIP'].append(tmpdic)
-
-
-
-
-
-
+            elif i_item.style_id == 3:
+                result['commerce_insurance_slave']['item'].append({
+                    'name': i_item.name,
+                    'eName': i_item.eName,
+                    'iPrice': [i_price.coverage for i_price in i_item.insurance_prices]
+                })
+        return result
 
     def get(self):
         result = {'flag': 0, 'msg': '', "data": {}}
-
-
         area_code = self.get_store_area_code()
         insurance = self.get_argument('insurance', None)
         result['data']['is_lube'] = 1 if Area.is_lube_area(area_code) else 0
@@ -1047,6 +1017,7 @@ class MobilInsuranceOrderBaseHandler(MobileAuthHandler):
             result['data']['delivery_city'] = address.city
             result['data']['delivery_region'] = address.region
             result['data']['delivery_address'] = address.address
+            result['data']['insurance_message'] = self.get_insurance_message(area_code)
         except:
             result['data']['delivery_to'] = ''
             result['data']['delivery_tel'] = ''
@@ -1054,6 +1025,7 @@ class MobilInsuranceOrderBaseHandler(MobileAuthHandler):
             result['data']['delivery_city'] = ''
             result['data']['delivery_region'] = ''
             result['data']['delivery_address'] = ''
+            result['data']['insurance_message'] = {}
         result['flag'] = 1
 
         self.write(simplejson.dumps(result))
