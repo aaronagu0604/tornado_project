@@ -180,3 +180,51 @@ class UsersHandler(AdminBaseHandler):
         cfs = cfs.order_by(User.store, User.truename).paginate(page, pagesize)
         self.render('/admin/user/user.html', users=cfs, total=total, page=page, pagesize=pagesize,
                     totalpage=totalpage, active='user', status=status, keyword=keyword)
+
+
+@route(r'/admin/store_detail/(\d+)', name='admin_store_detail')  # 修改经销商或门店
+class StoreDetailHandler(AdminBaseHandler):
+    def get(self, store_id):
+        areas = Area.select().where((Area.is_delete == 0) & (Area.pid >> None)).order_by(Area.spell_abb, Area.sort)
+        store = Store.get(id=store_id)
+        active = 'saler'
+        if store.store_type == 1:
+            active = 'saler'
+        elif store.store_type == 2:
+            active = 'store'
+        self.render('admin/user/store_detail.html', s=store, active=active, areas=areas)
+
+    def post(self, storeid):
+        name = self.get_argument('name', '')
+        district_code = self.get_argument('district_code', '')
+        city_code = self.get_argument('city_code', '')
+        address = self.get_argument('address', '')
+        x = self.get_argument('x', 0)
+        y = self.get_argument('y', 0)
+        business_type = int(self.get_argument('business_type', 0))
+        status = int(self.get_argument('status', 0))
+        intro = self.get_argument('intro', 0)
+        grade = int(self.get_argument('usergrade', 1))
+
+        if district_code and not district_code == '0':
+            area_code = district_code
+        elif city_code and not city_code == '0':
+            area_code = city_code
+        if storeid == '0':
+            store = Store()
+            store.created = int(time.time())
+        else:
+            store = Store.get(id=storeid)
+        store.name = name
+        store.area_code = area_code
+        store.address = address
+        store.x = x
+        store.y = y
+        store.status = status
+        store.business_type = business_type
+        store.intro = intro
+
+        store.save()
+
+        self.flash(u"保存成功")
+        self.redirect("/admin/stores")

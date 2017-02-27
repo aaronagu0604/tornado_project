@@ -67,7 +67,9 @@
                         </td>
                         <td>{{user.lsignined|dateformat}}</td>
                         <td>
+                            <a href="/admin/store_detail/{{user.store.id}}">
                             {{user.store.name}}
+                                </a>
                         </td>
                         <td>
                         	{% if user.active==0 %}

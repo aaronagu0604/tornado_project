@@ -57,6 +57,16 @@
 </div>
 <div class="row">
     <div class="panel panel-primary">
+    <div class="aa"></div>
+        <div class="mskelayBox">
+            <div class="mske_html">
+            </div>
+            <div id="tool">
+                <a href="###" id="arr_left" onclick="funrotateEvent('example','left')">向左</a>
+                <a href="###" id="arr_right" onclick="funrotateEvent('example','right')">向右</a>
+            </div>
+            <img class="mskeClaose" src="/style/images/mke_close.png" width="27" height="27" />
+        </div>
         <div class="table-responsive">
             <table class="table table-hover" id="tb_vendor" cellpadding="0" cellspacing="0" border="0" style="text-align:center;">
                 <thead>
@@ -72,10 +82,10 @@
                     </tr>
                     {% for store in stores %}
                     <tr>
-                        <td><a href="/admin/store_add/{{store.id}}">{{store.name}}</a></td>
+                        <td><a href="/admin/store_detail/{{store.id}}">{{store.name}}</a></td>
                         <td>
-                            <img class="preview" src="{{store.image}}" title="门店图片" width="80" height="60" />
-                            <img class="preview" src="{{store.image_license}}" title="营业执照" width="80" height="60" />
+                            <img class="preview" src="{{store.store_image}}" title="门店图片" width="80" height="60" />
+                            <img class="preview" src="{{store.license_image}}" title="营业执照" width="80" height="60" />
                             <span class="hidden" style="diplay:none">
                                 <img id="example" class="img-modal"/>
                             </span>

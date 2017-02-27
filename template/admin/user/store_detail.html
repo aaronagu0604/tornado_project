@@ -1,0 +1,190 @@
+{% extends "layout/admin.html" %}
+{% block content %}
+<link href="/style/css/store_bigimg.css" rel="stylesheet">
+<script type="text/javascript" src="/style/js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="/style/js/bigimg.js"></script>
+
+<div class="mskeLayBg"></div>
+<div class="row">
+    <nav>
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">
+                查看
+                {% if s.store_type == 1 %}
+                经销商
+                {% elif s.store_type == 2 %}
+                门店
+                {% endif %}
+            </a>
+        </div>
+    </nav>
+</div>
+
+<input id="sid" type="hidden" value="{{s.id}}">
+<div class="row">
+    <div class="col-sm-12 col-md-6">
+        <div class="panel panel-primary">
+            <div class="panel-body">
+
+                {%set messages=handler.get_flashed_messages() %}
+                {%if messages%}
+                <div class="msg" style="color:red;">
+                    {% for type, msg in messages%}
+                    <span>{{msg}}</span>
+                    {% endfor %}
+                </div>
+                {%endif%}
+                <form action="" method="post" enctype="multipart/form-data">
+                {{xsrf()}}
+                
+                <div class="form-group has-success">
+                    <label class="control-label">门店名称</label>
+                    <input type="text" name="name" class="form-control" value="{{s.name}}"  required placeholder="门店名称" />
+                </div>
+                <div class="form-group has-success">
+                    <label class="control-label">经销商地址</label>
+                    <div class="input-group">
+                    <select name="province" id="province" onchange="GetSubAreas(this.value, 'city', '')"
+                        style="width:160px;height:32px;border-radius: 4px;margin-right:15px;">
+                        <option value="">--所有省份--</option>
+                        {% for area in areas %}
+                        <option value="{{area.code}}" {{ 'selected' if area.code==s.area_code[:4] else ''}}>
+                            {{area.name}}</option>
+                        {% endfor %}
+                    </select>
+                    <select name="city" id="city" onchange="GetSubAreas(this.value, 'district', '')"
+                    style="width:160px;height:32px;border-radius: 4px;margin-right:15px;">
+                        <option value="">--所有城市--</option>
+                    </select>
+                    <select name="district" id="district"
+                        style="width:160px;height:32px;border-radius: 4px;margin-right:15px;">
+                        <option value="">--所有区县--</option>
+                    </select>
+                    </div>
+                    <input style="margin-top:10px;" type="text" name="address" class="form-control" value="{{s.address}}" required  placeholder="经销商地址" />
+                </div>
+                <div class="aa"></div>
+                <div class="mskelayBox">
+                    <div class="mske_html">
+                    </div>
+
+                    <div id="tool">
+                        <a href="###" id="arr_left" onclick="funrotateEvent('example','left')">向左</a>
+                        <a href="###" id="arr_right" onclick="funrotateEvent('example','right')">向右</a>
+                    </div>
+                    <img class="mskeClaose" src="/style/images/mke_close.png" width="27" height="27" />
+                </div>
+<div class="col-sm-6">
+                <div class="form-group has-success">
+                
+                    <label class="control-label">门店图片</label>
+                    <img class="preview" id="img_image" src="{{s.store_image}}" width="80" height="80" style="display:block;">
+                    </div>
+                    </div>
+                    <div class="col-sm-6">
+                    <div class="form-group has-success">
+                    <label class="control-label">营业执照</label>
+                    <img class="preview" id="img_license" src="{{s.license_image}}" width="80" height="80" style="display:block;">
+                    </div>
+                </div>
+
+                <span class="hidden" style="diplay:none">
+                <img id="example"/>
+                </span>
+
+                <div class="form-group has-success">
+                    <input style="width:90px;height:32px;border:1px solid #438bca;border-radius:4px;background:#438bca;color:#fff;margin-right:30px;font-size:16px;" type="submit" name="sub" value="保 存">
+                    <input type="reset" name="sub" value="重 置" style="width:90px;height:32px;border:1px solid #438bca;border-radius:4px;background:#fff;color:#438bca;font-size:16px;">
+                </div>
+            </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-12 col-md-6">
+        <h1>fdsfds fdsaf fdas dfsa dfas fdas dfs adsfa</h1>
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<script>
+
+    $(document).ready(function() {
+        // 页面初始化时绑定地址信息：省、市、区
+        if("{{s.area_code}}".length >= 8) {
+            GetSubAreas("{{s.area_code[:4]}}", "city", "{{s.area_code[:8]}}");
+            if("{{s.area_code}}".length >= 12) {
+                GetSubAreas("{{s.area_code[:8]}}", "district", "{{s.area_code[:12]}}");
+            }
+        }
+    });
+
+    function submit_check(){
+        var name = $("#name").val();
+        var district_code = $("#district_code").val();
+        var address = $("#address").val();
+        var link_man = $("#link_man").val();
+        var image = $("#hdn_image").val();
+        var legal = $("#hdn_legal").val();
+        var license = $("#hdn_license").val();
+        if(name == ''){
+            alert("请输入门店名称！");
+            return false;
+        }
+        if(district_code == 0){
+            alert("请选择所在地区！");
+            return false;
+        }
+        if(address == '' ){
+            alert("请输入详细地址！");
+            return false;
+        }
+        if(link_man == ''){
+            alert("请输入联系人！");
+            return false;
+        }
+        if(image == ''){
+            alert("请上传门店图片！");
+            return false;
+        }
+        if(legal == ''){
+            alert("请上传营业执照！");
+            return false;
+        }
+        if(license == ''){
+            alert("请上传法人身份证照片！");
+            return false;
+        }
+        return true;
+    }
+
+    function GetSubAreas(parent_code,ddl_id, seleted_code) {
+        if(parent_code.length == 0) {
+            $("#city").html('');
+            $("#city").append("<option value=''>--所有城市--</option>");
+            $("#district").html('');
+            $("#district").append("<option value=''>--所有区县--</option>");
+                
+            return;
+        }
+        $.get("/ajax/GetSubAreas", { parent_code: parent_code,  t: Math.random() }, function (data) {
+            data = jQuery.parseJSON(data);
+            if(data.flag==1){
+                $("#" + ddl_id).html('');
+                if(parent_code.length == 4) {
+                    $("#" + ddl_id).append("<option value=''>--所有城市--</option>");
+                }
+                else if (parent_code.length == 8) {
+                    $("#" + ddl_id).append("<option value=''>--所有区县--</option>");
+                }
+                for(var i=0; i< data.data.length; i++){
+                    if(data.data[i]["code"]==seleted_code){
+                        $("#" + ddl_id).append("<option value=\"" + data.data[i]["code"] + "\" selected>" + data.data[i]["name"] + "</option>");
+                    } else{
+                        $("#" + ddl_id).append("<option value=\"" + data.data[i]["code"] + "\">" + data.data[i]["name"] + "</option>");
+                    }
+                }
+            }
+        });
+    }
+</script>
+{% endblock %}

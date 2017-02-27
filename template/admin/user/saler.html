@@ -78,7 +78,7 @@
                 <tr>
                     <td>{{ s.id }}</td>
                     <td>{{ s.mobile }}</td>
-                    <td>{{ s.name }}</td>
+                    <td><a href="/admin/store_detail/{{s.id}}">{{ s.name }}</a></td>
                     <td>{{ Area().get_detailed_address(s.area_code)}}</td>
                     <td>{{ s.address }}</td>
                     <td>
