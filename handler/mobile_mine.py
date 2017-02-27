@@ -6,7 +6,7 @@ import setting
 import simplejson
 from lib.route import route
 from model import *
-from handler import MobileBaseHandler, MobileAuthHandler
+from handler import MobileBaseHandler
 import os
 from PIL import Image, ImageDraw, ImageFont
 from lib.payment.alipay import get_pay_url
@@ -134,7 +134,7 @@ class MobileMineHandler(MobileBaseHandler):
 
 # ----------------------------------------------------推广大使----------------------------------------------------------
 @route(r'/mobile/storepopularize', name='store_popularize')  # 推广大使
-class MobilStorePopularizeHandler(MobileAuthHandler):
+class MobilStorePopularizeHandler(MobileBaseHandler):
     """
     @apiGroup mine
     @apiVersion 1.0.0
@@ -226,7 +226,7 @@ def productOrderSearch(ft, type, index):
     return result
 
 @route(r'/mobile/purchaseorder ', name='mobile_purchase_order')  # 普通商品采购订单
-class MobilPurchaseOrderHandler(MobileAuthHandler):
+class MobilPurchaseOrderHandler(MobileBaseHandler):
     """
     @apiGroup mine
     @apiVersion 1.0.0
@@ -272,7 +272,7 @@ class MobilPurchaseOrderHandler(MobileAuthHandler):
 
 
 @route(r'/mobile/sellorder', name='mobile_sell_order')  # 普通商品售出订单
-class MobileSellOrderHandler(MobileAuthHandler):
+class MobileSellOrderHandler(MobileBaseHandler):
     """
     @apiGroup mine
     @apiVersion 1.0.0
@@ -307,7 +307,7 @@ class MobileSellOrderHandler(MobileAuthHandler):
 
 
 @route(r'/mobile/insuranceorder', name='mobile_insurance_order')  # 保险订单
-class MobileInsuranceOrderHandler(MobileAuthHandler):
+class MobileInsuranceOrderHandler(MobileBaseHandler):
     """
     @apiGroup mine
     @apiVersion 1.0.0
@@ -374,7 +374,7 @@ class MobileInsuranceOrderHandler(MobileAuthHandler):
 
 # ----------------------------------------------------积分--------------------------------------------------------------
 @route(r'/mobile/score', name='mobile_score')  # 积分入口
-class MobileScoreHandler(MobileAuthHandler):
+class MobileScoreHandler(MobileBaseHandler):
     """
     @apiGroup mine
     @apiVersion 1.0.0
@@ -401,7 +401,7 @@ class MobileScoreHandler(MobileAuthHandler):
 
 
 @route(r'/mobile/scoreStore', name='mobile_score_store')  # 积分商城
-class MobileScoreStore(MobileAuthHandler):
+class MobileScoreStore(MobileBaseHandler):
     """
     @apiGroup mine
     @apiVersion 1.0.0
@@ -457,7 +457,7 @@ class MobileScoreStore(MobileAuthHandler):
 
 
 @route(r'/mobile/scorecash', name='mobile_score_cash')  # 积分兑现
-class MobileScoreCashHandler(MobileAuthHandler):
+class MobileScoreCashHandler(MobileBaseHandler):
     """
     @apiGroup mine
     @apiVersion 1.0.0
@@ -540,7 +540,7 @@ class MobileScoreCashHandler(MobileAuthHandler):
 
 
 @route(r'/mobile/scorerecord', name='mobile_score_record')  # 积分明细
-class MobileScoreRecordHandler(MobileAuthHandler):
+class MobileScoreRecordHandler(MobileBaseHandler):
     """
     @apiGroup mine
     @apiVersion 1.0.0
@@ -578,7 +578,7 @@ class MobileScoreRecordHandler(MobileAuthHandler):
 
 # ----------------------------------------------------资金--------------------------------------------------------------
 @route(r'/mobile/fund', name='mobile_fund')  # 资金入口
-class MobileFundHandler(MobileAuthHandler):
+class MobileFundHandler(MobileBaseHandler):
     """
     @apiGroup fund
     @apiVersion 1.0.0
@@ -605,7 +605,7 @@ class MobileFundHandler(MobileAuthHandler):
 
 
 @route(r'/mobile/fundrecharge', name='mobile_recharge')  # 资金充值
-class MobileFundRechargeHandler(MobileAuthHandler):
+class MobileFundRechargeHandler(MobileBaseHandler):
     """
     @apiGroup fund
     @apiVersion 1.0.0
@@ -657,7 +657,7 @@ class MobileFundRechargeHandler(MobileAuthHandler):
 
 
 @route(r'/mobile/withdrawcash', name='mobile_withdraw_cash')  # 提现
-class MobileWithdrawCashHandler(MobileAuthHandler):
+class MobileWithdrawCashHandler(MobileBaseHandler):
     """
     @apiGroup fund
     @apiVersion 1.0.0
@@ -737,7 +737,7 @@ class MobileWithdrawCashHandler(MobileAuthHandler):
 
 # ---------------------------------------------------商品管理-----------------------------------------------------------
 @route(r'/mobile/myproducts', name='mobile_my_products')  # 商品管理/我的商品
-class MobileMyProductsHandler(MobileAuthHandler):
+class MobileMyProductsHandler(MobileBaseHandler):
     """
     @apiGroup mine
     @apiVersion 1.0.0
@@ -801,7 +801,7 @@ class MobileMyProductsHandler(MobileAuthHandler):
 
 
 @route(r'/mobile/filtermyproducts', name='mobile_filter_my_products')  # 我的商品筛选
-class MobileFilterMyProductsHandler(MobileAuthHandler):
+class MobileFilterMyProductsHandler(MobileBaseHandler):
     """
     @apiGroup mine
     @apiVersion 1.0.0
@@ -852,7 +852,7 @@ class MobileFilterMyProductsHandler(MobileAuthHandler):
 
 
 @route(r'/mobile/productrelease', name='mobile_product_release')  # 修改商品发布价格
-class MobileProductReleaseHandler(MobileAuthHandler):
+class MobileProductReleaseHandler(MobileBaseHandler):
     """
     @apiGroup mine
     @apiVersion 1.0.0
@@ -1015,7 +1015,7 @@ class MobileLubePolicyHandler(MobileBaseHandler):
 
 # -----------------------------------------------------设置-------------------------------------------------------------
 @route(r'/mobile/mysetting', name='mobile_my_setting')  # 我的设置
-class MobileMySettingHandler(MobileAuthHandler):
+class MobileMySettingHandler(MobileBaseHandler):
     """
     @apiGroup mine
     @apiVersion 1.0.0
@@ -1051,7 +1051,7 @@ class MobileMySettingHandler(MobileAuthHandler):
 
 
 @route(r'/mobile/changeloginpassword', name='mobile_change_login_password')  # 修改登录密码
-class MobileChangeLoginPasswordHandler(MobileAuthHandler):
+class MobileChangeLoginPasswordHandler(MobileBaseHandler):
     """
     @apiGroup mine
     @apiVersion 1.0.0
@@ -1090,7 +1090,7 @@ class MobileChangeLoginPasswordHandler(MobileAuthHandler):
 
 
 @route(r'/mobile/changepaypassword', name='mobile_change_pay_password')  # 修改支付密码
-class MobileChangePayPasswordHandler(MobileAuthHandler):
+class MobileChangePayPasswordHandler(MobileBaseHandler):
     """
     @apiGroup mine
     @apiVersion 1.0.0
@@ -1134,7 +1134,7 @@ class MobileChangePayPasswordHandler(MobileAuthHandler):
 
 
 @route(r'/mobile/receiveraddress', name='mobile_receiver_address')  # 收货地址
-class MobileReceiverAddressHandler(MobileAuthHandler):
+class MobileReceiverAddressHandler(MobileBaseHandler):
     """
     @apiGroup mine
     @apiVersion 1.0.0
@@ -1239,7 +1239,7 @@ class MobileReceiverAddressHandler(MobileAuthHandler):
 
 
 @route(r'/mobile/feedback', name='mobile_my_feedback')  # 意见反馈
-class MobileFeedbackHandler(MobileAuthHandler):
+class MobileFeedbackHandler(MobileBaseHandler):
     """
     @apiGroup mine
     @apiVersion 1.0.0

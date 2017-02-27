@@ -112,17 +112,16 @@ class SalerHandler(AdminBaseHandler):
 @route(r'/admin/store', name='admin_store')  # 门店管理
 class StoresHandler(AdminBaseHandler):
     def get(self):
+        province = self.get_argument("province", '')
+        city = self.get_argument("city", '')
+        town = self.get_argument("district", '')
+        keyword = self.get_argument("keyword", '')
         page = int(self.get_argument("page", '1') if len(self.get_argument("page", '1')) > 0 else '1')
         pagesize = self.settings['admin_pagesize']
-        active = int(self.get_argument("active", '-1') if self.get_argument("active", '-1') else '-1')
-        keyword = self.get_argument("keyword", "")
-        province = self.get_argument("province_code", '')
-        city = self.get_argument("city_code", '')
-        town = self.get_argument("district_code", '')
-
-        default_province = '0'
-        default_city = '0'
-        default_district = '0'
+        status = self.get_argument("district", '')
+        default_province = ''
+        default_city = ''
+        default_district = ''
 
         ft = (Store.active == 1)
         if active >= 0:

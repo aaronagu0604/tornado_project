@@ -8,7 +8,7 @@ from lib.route import route
 import math
 from model import *
 import uuid
-from handler import MobileBaseHandler, MobileAuthHandler
+from handler import MobileBaseHandler, require_auth
 import random
 from lib.mqhelper import create_msg
 from lib.payment.alipay import get_pay_url
@@ -18,11 +18,11 @@ from lib.payment.upay import Trade
 
 @route(r'/mobile', name='mobile_app')
 class MobileAppHandler(MobileBaseHandler):
-    def options(self):
-        pass
-
     def get(self):
         self.write("czj api")
+
+    def post(self):
+        self.write("czj api post")
 
 
 @route(r'/mobile/getvcode', name='mobile_getvcode')  # 获取验证码
@@ -38,12 +38,6 @@ class MobileGetVCodeAppHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/getvcode
     """
-    def check_xsrf_cookie(self):
-        pass
-
-    def options(self):
-        pass
-
     def post(self):
         result = {'flag': 0, 'msg': '', "data": {}}
         mobile = self.get_body_argument("mobile", None)
@@ -103,13 +97,6 @@ class MobileCheckVCodeAppHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/checkvcode
     """
-
-    def check_xsrf_cookie(self):
-        pass
-
-    def options(self):
-        pass
-
     def post(self):
         result = {'flag': 0, 'msg': '', "data": {}}
         mobile = self.get_body_argument('mobile', None)
@@ -151,13 +138,6 @@ class MobileRegHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/reg
     """
-
-    def check_xsrf_cookie(self):
-        pass
-
-    def options(self):
-        pass
-
     def post(self):
         result = {'flag': 0, 'msg': '', "data": {}}
         mobile = self.get_body_argument("mobile", None)
@@ -226,12 +206,6 @@ class MobileLoginHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/login
     """
-    def check_xsrf_cookie(self):
-        pass
-
-    def options(self):
-        pass
-
     def post(self):
         result = {'flag': 0, 'msg': '', "data": {}}
         mobile = self.get_body_argument("mobile", None)
@@ -701,7 +675,8 @@ class MobileProductHandler(MobileBaseHandler):
 
 
 @route(r'/mobile/addshopcar', name='mobile_add_shop_car')  # 添加购物车
-class MobileAddShopCarHandler(MobileAuthHandler):
+@require_auth
+class MobileAddShopCarHandler(MobileBaseHandler):
     """
     @apiGroup app
     @apiVersion 1.0.0
@@ -746,12 +721,6 @@ class MobileShopCarHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/shopcar
     """
-    def check_xsrf_cookie(self):
-        pass
-
-    def options(self):
-        pass
-
     def get(self):
         result = {'flag': 0, 'msg': '', "data": {}}
         user = self.get_user()
@@ -777,7 +746,8 @@ class MobileShopCarHandler(MobileBaseHandler):
 
 
 @route(r'/mobile/orderbase', name='mobile_orderbase')  # 创建订单前的获取数据
-class MobileOrderBaseHandler(MobileAuthHandler):
+@require_auth
+class MobileOrderBaseHandler(MobileBaseHandler):
     """
     @apiGroup order
     @apiVersion 1.0.0
@@ -830,7 +800,8 @@ class MobileOrderBaseHandler(MobileAuthHandler):
 
 
 @route(r'/mobile/neworder', name='mobile_neworder')  # 创建产品订单
-class MobileNewOrderHandler(MobileAuthHandler):
+@require_auth
+class MobileNewOrderHandler(MobileBaseHandler):
     """
     @apiGroup order
     @apiVersion 1.0.0
@@ -848,13 +819,6 @@ class MobileNewOrderHandler(MobileAuthHandler):
 
     @apiSampleRequest /mobile/neworder
     """
-
-    def check_xsrf_cookie(self):
-        pass
-
-    def options(self):
-        pass
-
     def post(self):
         result = {'flag': 0, 'msg': '', "data": {}}
         address = self.get_body_argument("address", None)
@@ -951,7 +915,8 @@ class MobileNewOrderHandler(MobileAuthHandler):
 
 
 @route(r'/mobile/insuranceorderbase', name='mobile_insurance_order_base')  # 创建保险订单前的获取数据
-class MobilInsuranceOrderBaseHandler(MobileAuthHandler):
+@require_auth
+class MobilInsuranceOrderBaseHandler(MobileBaseHandler):
     """
         @apiGroup order
         @apiVersion 1.0.0
@@ -1033,7 +998,8 @@ class MobilInsuranceOrderBaseHandler(MobileAuthHandler):
 
 
 @route(r'/mobile/newinsuranceorder', name='mobile_new_insurance_order')  # 创建保险订单
-class MobilNewInsuranceOrderHandler(MobileAuthHandler):
+@require_auth
+class MobilNewInsuranceOrderHandler(MobileBaseHandler):
     """
     @apiGroup order
     @apiVersion 1.0.0
@@ -1076,12 +1042,6 @@ class MobilNewInsuranceOrderHandler(MobileAuthHandler):
 /mobile/receiveraddress
     @apiSampleRequest /mobile/newinsuranceorder
     """
-    def check_xsrf_cookie(self):
-        pass
-
-    def options(self):
-        pass
-
     def post(self):
         result = {'flag': 0, 'msg': '', "data": []}
         id_card_front = self.get_body_argument('id_card_front', None)

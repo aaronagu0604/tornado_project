@@ -47,26 +47,6 @@ class MobileBaseHandler(RequestHandler):
         return '00270001'  # 默认使用西安市的code
 
 
-class MobileAuthHandler(MobileBaseHandler):
-    def options(self):
-        pass
-
-    def prepare(self):
-        token = self.request.headers.get('token', None)
-        if token:
-            data = self.application.memcachedb.get(token)
-            if data is None:
-                self.set_status(401)
-                logging.info('----------Unauthorized---------------- invalid token')
-                self.finish()
-            else:
-                logging.info('----token-----')
-        else:
-            self.set_status(401)
-            logging.info('----------Unauthorized---------------- no token')
-            self.finish()
-
-
 class AdminPageNotFoundHandler(RequestHandler):
     def get(self):
         self.set_status(404)

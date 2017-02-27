@@ -14,6 +14,9 @@ from handler import MobilePageNotFoundHandler, mobile_app, mobile_mine, mobile_p
 
 class Application(tornado.web.Application):
     def __init__(self):
+        settings.update({
+            "xsrf_cookies": False
+        })
         self.jinja_env = jinja_environment
         self.jinja_env.filters.update(register_filters())
         self.jinja_env.tests.update({})
@@ -23,7 +26,7 @@ class Application(tornado.web.Application):
         handlers = [
                        tornado.web.url(r"/style/(.+)", tornado.web.StaticFileHandler,
                                        dict(path=settings['static_path']), name='static_path')
-                   ] + Route.routes() +[(r".*", MobilePageNotFoundHandler)]
+                   ] + Route.routes() + [(r".*", MobilePageNotFoundHandler)]
         tornado.web.Application.__init__(self, handlers, **settings)
 
 
