@@ -136,6 +136,7 @@ class User(db.Model):
     id = PrimaryKeyField()  # 主键
     mobile = CharField(unique=True, max_length=64, null=False)  # 注册手机号
     password = CharField(max_length=32)  # 密码
+    truename = CharField(max_length=32)  # 真实姓名
     role = CharField(max_length=8, null=False, default='A')  # 用户角色，考虑角色数量、类型
     signuped = IntegerField(default=0)  # 注册时间
     lsignined = IntegerField(default=0)  # 最后登录时间
@@ -879,7 +880,7 @@ def load_test_data():
                  pay_password='', intro='', linkman='', mobile='18189279823', active=1, created=1487032696,
                  area_code='002700010001')
     User.create(mobile='18189279823', password='e10adc3949ba59abbe56e057f20f883e', role='A', signuped=1487032696,
-                lsignined=1487032696, store=1, active=1)
+                lsignined=1487032696, store=1, active=1, truename='刘晓明')
 
     Category.create(name='润滑油', sort=1, active=1,
                     img_m='http://img.520czj.com/image/2017/02/15/server1_20170215111526VDJrFZYbKUeiLjuGkcsxTIhW.png',

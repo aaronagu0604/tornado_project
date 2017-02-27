@@ -155,3 +155,28 @@ class StoresHandler(AdminBaseHandler):
         self.render('/admin/user/store.html', stores=cfs, total=total, page=page, pagesize=pagesize,
                     totalpage=totalpage, active='store', status=status, keyword=keyword, Area=Area, items=items,
                     province=default_province, city=default_city, district=default_district)
+
+
+@route(r'/admin/user', name='admin_user')  # 客户管理
+class UsersHandler(AdminBaseHandler):
+    def get(self):
+        keyword = self.get_argument("keyword", '')
+        page = int(self.get_argument("page", '1') if len(self.get_argument("page", '1')) > 0 else '1')
+        pagesize = self.settings['admin_pagesize']
+        status = int(self.get_argument("status", '-1'))
+
+        ft = (User.active > -1)
+        if status >= 0:
+            ft &= (User.active == status)
+        if keyword:
+            keyword2 = '%' + keyword + '%'
+            ft &= ((Store.name % keyword2) | (User.truename % keyword2) | (User.mobile % keyword2))
+        cfs = User.select(User).join(Store).where(ft)
+        total = cfs.count()
+        if total % pagesize > 0:
+            totalpage = total / pagesize + 1
+        else:
+            totalpage = 1
+        cfs = cfs.order_by(User.store, User.truename).paginate(page, pagesize)
+        self.render('/admin/user/user.html', users=cfs, total=total, page=page, pagesize=pagesize,
+                    totalpage=totalpage, active='user', status=status, keyword=keyword)

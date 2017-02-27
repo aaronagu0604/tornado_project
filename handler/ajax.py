@@ -138,3 +138,24 @@ class StoreExportHandler(BaseHandler):
         except Exception, e:
             result['msg'] = e.message
         self.write(simplejson.dumps(result))
+
+
+@route(r'/ajax/user_update_state', name='ajax_user_update_state')  # 修改门店的状态
+class UserUpdateStateHandler(BaseHandler):
+    def post(self):
+        result = {'flag': 0, 'msg': '', 'data': 0}
+        oid = int(self.get_argument("id", 0))
+        state = int(self.get_argument("state_type", -1))
+        result['data'] = state
+        try:
+            if oid > 0 and state > -1:
+                store = User.get(id=oid)
+                store.active = state
+                store.save()
+                result['flag'] = 1
+                result['msg'] = u'操作成功'
+            else:
+                result['msg'] = u'参数传入错误'
+        except Exception, e:
+            result['msg'] = e.message
+        self.write(simplejson.dumps(result))

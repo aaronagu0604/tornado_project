@@ -154,6 +154,7 @@ class MobileRegHandler(MobileBaseHandler):
         licensePic = self.get_body_argument("licensePic", None)
         storePic = self.get_body_argument("storePic", None)
         user = User()
+        user.truename = legalPerson
         user.mobile = mobile
         user.password = user.create_password(password)
         try:
