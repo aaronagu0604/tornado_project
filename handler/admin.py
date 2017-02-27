@@ -165,6 +165,7 @@ class UsersHandler(AdminBaseHandler):
         page = int(self.get_argument("page", '1') if len(self.get_argument("page", '1')) > 0 else '1')
         pagesize = self.settings['admin_pagesize']
         status = int(self.get_argument("status", '-1'))
+        uid = int(self.get_argument("id", '-1'))
 
         ft = (User.active > -1)
         if status >= 0:
@@ -172,6 +173,8 @@ class UsersHandler(AdminBaseHandler):
         if keyword:
             keyword2 = '%' + keyword + '%'
             ft &= ((Store.name % keyword2) | (User.truename % keyword2) | (User.mobile % keyword2))
+        if uid > 0:
+            ft &= (User.id == uid)
         cfs = User.select(User).join(Store).where(ft)
         total = cfs.count()
         if total % pagesize > 0:
@@ -188,14 +191,9 @@ class StoreDetailHandler(AdminBaseHandler):
     def get(self, store_id):
         areas = Area.select().where((Area.is_delete == 0) & (Area.pid >> None)).order_by(Area.spell_abb, Area.sort)
         store = Store.get(id=store_id)
-        active = 'saler'
-        if store.store_type == 1:
-            active = 'saler'
-        elif store.store_type == 2:
-            active = 'store'
-        self.render('admin/user/store_detail.html', s=store, active=active, areas=areas)
+        self.render('admin/user/store_detail.html', s=store, active='store', areas=areas)
 
-    def post(self, storeid):
+    def post(self, store_id):
         name = self.get_argument('name', '')
         district_code = self.get_argument('district_code', '')
         city_code = self.get_argument('city_code', '')
@@ -211,11 +209,11 @@ class StoreDetailHandler(AdminBaseHandler):
             area_code = district_code
         elif city_code and not city_code == '0':
             area_code = city_code
-        if storeid == '0':
+        if store_id == '0':
             store = Store()
             store.created = int(time.time())
         else:
-            store = Store.get(id=storeid)
+            store = Store.get(id=store_id)
         store.name = name
         store.area_code = area_code
         store.address = address
@@ -228,4 +226,4 @@ class StoreDetailHandler(AdminBaseHandler):
         store.save()
 
         self.flash(u"保存成功")
-        self.redirect("/admin/stores")
+        self.redirect("/admin/store_detail/" + str(store_id))
