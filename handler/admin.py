@@ -305,8 +305,5 @@ class SalerProductAreaPriceHandler(AdminBaseHandler):
         else:
             totalpage = 1
         cfs = cfs.paginate(page, pagesize)
-        products = []
-        for item in cfs:
-            products.append(ProductRelease.get(id=item.product_release.id))
         self.render('admin/user/saler_area_product.html', products=cfs, total=total, page=page, pagesize=pagesize,
-                    totalpage=totalpage, store_id=store_id, code=code)
+                    totalpage=totalpage, store_id=store_id, code=code, Area=Area)

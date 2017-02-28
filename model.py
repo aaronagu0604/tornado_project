@@ -448,7 +448,7 @@ class StoreProductPrice(db.Model):
     id = PrimaryKeyField()
     product_release = ForeignKeyField(ProductRelease, related_name='area_prices', db_column='product_release_id')  # 所属商品
     store = ForeignKeyField(Store, related_name='area_products', db_column='store_id')  # 所属店铺
-    area = ForeignKeyField(Area, db_column='area_id')  # 地区
+    # area = ForeignKeyField(Area, db_column='area_id')  # 地区
     area_code = CharField(max_length=20)  # 地区code
     price = FloatField()  # 当前始销售价，负数或0为不能购物
     score = IntegerField(default=0)  # 积分兑换额度，负数或0为不能兑换

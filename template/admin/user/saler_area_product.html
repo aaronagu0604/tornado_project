@@ -14,16 +14,14 @@
 <div class="row" style="margin:5px 5px 0 5px;">
     <div class="panel panel-primary">
         <div class="table-responsive">
-            <table class="table table-hover" id="tb_vendor" cellpadding="0" cellspacing="0" border="0" style="text-align:center;">
+            <table class="table table-hover" id="tb_vendor" cellpadding="0" cellspacing="0" border="0" style="text-align:left;">
                 <thead>
                     <tr>
-                        <th style="width:29%;text-align:center;">名称</th>
-                        <th style="width:10%;text-align:center;">品牌</th>
-                        <th style="width:10%;text-align:center;">分类</th>
-                        <th style="width:10%;text-align:center;">售价</th>
-                        <th style="width:8%;text-align:center;">排序</th>
-                        <th style="width:10%;text-align:center;">状态</th>
-                        <th style="width:15%;text-align:center;">操作</th>
+                        <th style="width:20%;text-align:left;">名称</th>
+                        <th style="width:10%;text-align:left;">品牌</th>
+                        <th style="width:10%;text-align:left;">分类</th>
+                        <th style="width:50%;text-align:left;">地域售价信息</th>
+                        <th style="width:10%;text-align:left;">状态</th>
                     </tr>
                     {% for p in products %}
                     <tr>
@@ -35,21 +33,32 @@
                         </td>
                         <td>{{p.product_release.product.category.name}}</td>
                         <td>
+                            <table class="table table-hover" cellpadding="0" cellspacing="0" border="0" style="text-align:center;">
+                <thead>
                             {% for item in p.product_release.area_prices %}
+                               <tr>
+                                   <td style="width:29%;text-align:left;">{{Area().get_detailed_address(item.area_code)}}</td>
+                        <td style="width:10%;text-align:left;">{{item.price}}元</td>
+                        <td style="width:8%;text-align:left;">{{item.sort}}</td>
+                        <td style="width:10%;text-align:left;">
+                            {% if item.active==0 %}
+                                <span style="">下架</span>
+                                {% elif item.active==1 %}
+                                <span style="">正常</span>
+                                {% endif %}</td>
 
+                                   </tr>
                             {% endfor %}
+                    </thead>
+
+            </table>
                         </td>
-                        <td></td>
                         <td>
                             {% if p.product_release.active==0 %}
                                 <span style="">下架</span>
                                 {% elif p.product_release.active==1 %}
                                 <span style="">正常</span>
                                 {% endif %}
-                        </td>
-                        <td>
-                        <a class="btn btn-xs btn-outline btn-primary" href="/admin/store_detail/{{p.product_release.id}}">删除</a>
-                        <a class="btn btn-xs btn-outline btn-primary" href="/admin/saler_product/{{p.product_release.id}}">修改</a>
                         </td>
                     </tr>
                     {% endfor %}
