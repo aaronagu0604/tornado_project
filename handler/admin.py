@@ -328,12 +328,20 @@ class RefereeList(AdminBaseHandler):
             totalpage = total / pagesize
         referees = s.paginate(page, pagesize)
         referees_list = []
-        for referee in referees:
-            ss = Store.select().where(Store.admin_user==referee.id & Store.active==1)
+        for i, referee in enumerate(referees):
+            ss = Store.select().where((Store.admin_user==referee.id) & (Store.active==1))
+            insurance_order_count = 0
             for s in ss:
-
-        self.render("admin/user/referee_list.html",page=page, referees=referees, active='referee', Area=Area,
-                    totalpage=totalpage, AdminUser=AdminUser, InsuranceOrder=InsuranceOrder)
+                insurance_order_count += InsuranceOrder.select().where(InsuranceOrder.store==s & InsuranceOrder.status>2).count()
+            referees_list.append({
+                'number': i+1,
+                'referee_name': referee.realname,
+                'referee_number': referee.code,
+                'store_count': ss.count(),
+                'insurance_order_count': insurance_order_count
+            })
+        self.render("admin/user/referee_list.html",page=page, referees=referees_list, active='referee', Area=Area,
+                    totalpage=totalpage)
 
 
 
