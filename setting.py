@@ -11,7 +11,7 @@ DB_USER = 'root'
 DB_PASSWD = '6V^efYdy'
 DB_NAME = 'czj'
 MAX_CONNECTIONS = 300  # mysql 连接池最大数量
-STALE_TIMEOUT = 86400  # mysql 连接池回收时间
+STALE_TIMEOUT = 432000  # mysql 连接池回收时间 (5天)
 
 MEMCACHE_HOST = '127.0.0.1:11211'
 
