@@ -714,6 +714,7 @@ class InsuranceOrder(db.Model):
     local_summary = CharField(max_length=256, null=True)  # 本地备注
     pay_time = IntegerField(default=0)  # 支付时间
     deal_time = IntegerField(default=0)  # 完成时间
+    order_count = IntegerField(default=0)  # 首单、二单、三单
     pay_account = CharField(max_length=128, default='')  # 用户支付宝、微信账户
     trade_no = CharField(max_length=64, default='')  # 支付宝/微信交易号
     user_del = IntegerField(default=0)  # 用户端不显示

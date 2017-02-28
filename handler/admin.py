@@ -307,3 +307,39 @@ class SalerProductAreaPriceHandler(AdminBaseHandler):
         cfs = cfs.paginate(page, pagesize)
         self.render('admin/user/saler_area_product.html', products=cfs, total=total, page=page, pagesize=pagesize,
                     totalpage=totalpage, store_id=store_id, code=code, Area=Area)
+
+
+@route(r'/admin/referee', name='admin_referee_list')  # 服务商管理列表
+class RefereeList(AdminBaseHandler):
+    def get(self):
+        keyword = self.get_argument("keyword", '')
+        page = int(self.get_argument("page", '1') if len(self.get_argument("page", '1')) > 0 else '1')
+        pagesize = self.settings['admin_pagesize']
+        ft = (AdminUser.roles == 'S')
+        if keyword:
+            keyword = '%'+keyword+'%'
+            ft = (AdminUser.realname % keyword) | (AdminUser.code % keyword)
+
+        s = AdminUser.select().where(ft)
+        total = s.count()
+        if total % pagesize > 0:
+            totalpage = total / pagesize + 1
+        else:
+            totalpage = total / pagesize
+        referees = s.paginate(page, pagesize)
+        referees_list = []
+        for referee in referees:
+            ss = Store.select().where(Store.admin_user==referee.id & Store.active==1)
+            for s in ss:
+
+        self.render("admin/user/referee_list.html",page=page, referees=referees, active='referee', Area=Area,
+                    totalpage=totalpage, AdminUser=AdminUser, InsuranceOrder=InsuranceOrder)
+
+
+
+
+
+
+
+
+
