@@ -756,11 +756,11 @@ class MobileOrderBaseHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/orderbase
     """
-
     @require_auth
     def get(self):
         user = self.get_user()
         result = {'flag': 0, 'msg': '', "data": {'address':{}}}
+        sppids = self.get_argument("sppids", None)
         sppids = self.get_argument("sppids", '').split(',')
         if user is not None:
             if not sppids[0]:
@@ -777,34 +777,27 @@ class MobileOrderBaseHandler(MobileBaseHandler):
                         break
                 else:
                     result['data']['address'] = None
-            result['data']['last_pay_type'] = user.last_pay_type
+                result['data']['last_pay_type'] = user.last_pay_type
 
-            stores = Store.select(Store).join(StoreProductPrice).\
-                where(StoreProductPrice.active == 1, StoreProductPrice.id << sppids).group_by(StoreProductPrice.store)
-            for store in stores:
-                result['data']['store'] = {'name': store.name, 'store_tel': store.mobile, 'id': store.id,
-                                           'service_tel': setting.COM_TEL, 'products': []}
-                product_list = StoreProductPrice.select().\
-                    where(StoreProductPrice.active == 1, StoreProductPrice.store == store).\
-                    order_by(StoreProductPrice.store)
-                for product_price in product_list:
-                    # name = product_price.product_release.product.name
-                    # price = product_price.price
-                    # store = product_price.score
-                    # img = product_price.product_release.product.cover
-                    # attributes = product_price.product_release.product.attributes
-                    result['data']['store']['products'].append({
-                        'name': product_price.product_release.product.name,
-                        'price': product_price.price,
-                        'score': product_price.score,
-                        'img': product_price.product_release.product.cover,
-                        'attributes': [attribute.value for attribute in product_price.product_release.product.attributes]
-                    })
-                a = result['data']['store']
-            result['flag'] = 1
+                stores = Store.select(Store).join(StoreProductPrice).\
+                    where(StoreProductPrice.active == 1, StoreProductPrice.id << sppids).group_by(StoreProductPrice.store)
+                for store in stores:
+                    result['data']['store'] = {'name': store.name, 'store_tel': store.mobile, 'id': store.id,
+                                               'service_tel': setting.COM_TEL, 'products': []}
+                    product_list = StoreProductPrice.select().\
+                        where(StoreProductPrice.active == 1, StoreProductPrice.store == store).\
+                        order_by(StoreProductPrice.store)
+                    for product_price in product_list:
+                        result['data']['store']['products'].append({
+                            'name': product_price.product_release.product.name,
+                            'price': product_price.price,
+                            'score': product_price.score,
+                            'img': product_price.product_release.product.cover,
+                            'attributes': [attribute.value for attribute in product_price.product_release.product.attributes]
+                        })
+                result['flag'] = 1
         else:
             result['msg'] = '请登录后再购买'
-        a = result
         self.write(simplejson.dumps(result))
         self.finish()
 
@@ -938,7 +931,7 @@ class MobilInsuranceOrderBaseHandler(MobileBaseHandler):
 
         @apiSampleRequest /mobile/insuranceorderbase
         """
-    def get_insurance_message(area_code):
+    def get_insurance_message(self, area_code):
         result = {
             'insurance_company': InsuranceScoreExchange.get_insurances(area_code),
             'force_insurance': {
@@ -980,9 +973,9 @@ class MobilInsuranceOrderBaseHandler(MobileBaseHandler):
     def get(self):
         result = {'flag': 0, 'msg': '', "data": {}}
         area_code = self.get_store_area_code()
-        insurance = self.get_argument('insurance', None)
-        result['data']['is_lube'] = 1 if Area.is_lube_area(area_code) else 0
-        result['data']['is_score'] = 1 if InsuranceScoreExchange.get_score_policy(area_code, insurance) is not None else 0
+        # insurance = self.get_argument('insurance', None)
+        # result['data']['is_lube'] = 1 if Area.is_lube_area(area_code) else 0
+        # result['data']['is_score'] = 1 if InsuranceScoreExchange.get_score_policy(area_code, insurance) is not None else 0
         user = self.get_user()
         try:
             address = StoreAddress.get((StoreAddress.store == user.store) & (StoreAddress.is_default == 1))
@@ -993,7 +986,7 @@ class MobilInsuranceOrderBaseHandler(MobileBaseHandler):
             result['data']['delivery_region'] = address.region
             result['data']['delivery_address'] = address.address
             result['data']['insurance_message'] = self.get_insurance_message(area_code)
-        except:
+        except Exception, ex:
             result['data']['delivery_to'] = ''
             result['data']['delivery_tel'] = ''
             result['data']['delivery_province'] = ''
