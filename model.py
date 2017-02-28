@@ -596,7 +596,6 @@ class InsuranceItem(db.Model):
     style = CharField(max_length=32, default='')  # 分类
     style_id = IntegerField(default=0)  # 分类id 交强险1  商业险主险2  商业险附加险3
     sort = IntegerField(default=1)  # 排序
-    active = IntegerField(default=1)  # 状态 0删除 1有效
 
     class Meta:
         db_table = 'tb_insurance_item'
@@ -793,15 +792,14 @@ class InsuranceScoreExchange(db.Model):
         temp_insurance_id = []
         insurance_list = []
         codes = cls.append_areas(area_code)
-        insurances = InsuranceScoreExchange.select(Insurance.id.alias('i_id'), Insurance.name.alias('i_name'),
-                Area.is_scorearea.alias('is_score'), Area.is_lubearea.alias('is_lube')).\
+        insurances = InsuranceScoreExchange.select(Insurance.id.alias('i_id'), Insurance.name.alias('i_name'), Area.is_scorearea.alias('is_score'), Area.is_lubearea.alias('is_lube')).\
             join(Insurance, on=(Insurance.id == InsuranceScoreExchange.insurance)).\
             join(Area, on=(Area.code == InsuranceScoreExchange.area_code)).\
             where(InsuranceScoreExchange.area_code << codes).\
             order_by(db.fn.LENGTH(InsuranceScoreExchange.area_code).desc()).dicts()
         for i in insurances:
-            if i.insurance.id not in temp_insurance_id:
-                temp_insurance_id.append(i.insurance.id)
+            if i['i_id'] not in temp_insurance_id:
+                temp_insurance_id.append(i['i_id'])
                 insurance_list.append({
                     'id': i['i_id'],
                     'name': i['i_name'],

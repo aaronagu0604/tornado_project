@@ -932,7 +932,6 @@ class MobilInsuranceOrderBaseHandler(MobileBaseHandler):
         """
     def get_insurance_message(self, area_code):
         result = {
-            'insurance_company': InsuranceScoreExchange.get_insurances(area_code),
             'force_insurance': {
                 'title': '交强险',
                 'item': []
@@ -946,7 +945,7 @@ class MobilInsuranceOrderBaseHandler(MobileBaseHandler):
                 'item': []
             }
         }
-        i_items= InsuranceItem.select()
+        i_items = InsuranceItem.select()
         for i_item in i_items:
             if i_item.style_id == 1:
                 result['force_insurance']['item'].append({
@@ -972,9 +971,6 @@ class MobilInsuranceOrderBaseHandler(MobileBaseHandler):
     def get(self):
         result = {'flag': 0, 'msg': '', "data": {}}
         area_code = self.get_store_area_code()
-        # insurance = self.get_argument('insurance', None)
-        # result['data']['is_lube'] = 1 if Area.is_lube_area(area_code) else 0
-        # result['data']['is_score'] = 1 if InsuranceScoreExchange.get_score_policy(area_code, insurance) is not None else 0
         user = self.get_user()
         try:
             address = StoreAddress.get((StoreAddress.store == user.store) & (StoreAddress.is_default == 1))
@@ -984,7 +980,7 @@ class MobilInsuranceOrderBaseHandler(MobileBaseHandler):
             result['data']['delivery_city'] = address.city
             result['data']['delivery_region'] = address.region
             result['data']['delivery_address'] = address.address
-            result['data']['insurance_message'] = self.get_insurance_message(area_code)
+            result['data']['insurance_message'] = InsuranceScoreExchange.get_insurances(area_code)
         except Exception, ex:
             result['data']['delivery_to'] = ''
             result['data']['delivery_tel'] = ''
