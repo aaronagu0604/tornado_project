@@ -760,8 +760,7 @@ class MobileOrderBaseHandler(MobileBaseHandler):
     def get(self):
         user = self.get_user()
         result = {'flag': 0, 'msg': '', "data": {'address':{}}}
-        sppids = self.get_argument("sppids", None)
-        sppids = self.get_argument("sppids", '').split(',')
+        sppids = self.get_argument("sppids", '').strip(',').split(',')
         if user is not None:
             if not sppids[0]:
                 result['msg'] = '请选择购买的产品'
@@ -780,12 +779,12 @@ class MobileOrderBaseHandler(MobileBaseHandler):
                 result['data']['last_pay_type'] = user.last_pay_type
 
                 stores = Store.select(Store).join(StoreProductPrice).\
-                    where(StoreProductPrice.active == 1, StoreProductPrice.id << sppids).group_by(StoreProductPrice.store)
+                    where(StoreProductPrice.active == 1 & StoreProductPrice.id << sppids).group_by(StoreProductPrice.store)
                 for store in stores:
                     result['data']['store'] = {'name': store.name, 'store_tel': store.mobile, 'id': store.id,
                                                'service_tel': setting.COM_TEL, 'products': []}
                     product_list = StoreProductPrice.select().\
-                        where(StoreProductPrice.active == 1, StoreProductPrice.store == store).\
+                        where(StoreProductPrice.active == 1 & StoreProductPrice.id << sppids).\
                         order_by(StoreProductPrice.store)
                     for product_price in product_list:
                         result['data']['store']['products'].append({
