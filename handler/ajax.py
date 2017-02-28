@@ -189,19 +189,20 @@ class AjaxGetSubAreas(BaseHandler):
                     codes.append(sub.code)
 
         un_codes = list(set(codes))
-        items = Area.select().where(Area.code << un_codes)
-        for item in items:
-            title = item.name + '-产品信息'
-            url = '/admin/store_area_product?sid=' + str(store_id) + '&code=' + item.code
-            nodes.append({
-                'id': item.id,
-                'pId': item.pid.id if item.pid else 0,
-                'name': item.name,
-                'url': '',
-                'target': '_top',
-                'click': "pop('" + title + "', '"+url+"');",
-                'open': 'true' if len(item.code) < 8 else 'false'
-            })
+        if len(un_codes) > 0:
+            items = Area.select().where(Area.code << un_codes)
+            for item in items:
+                title = item.name + '-产品信息'
+                url = '/admin/store_area_product?sid=' + str(store_id) + '&code=' + item.code
+                nodes.append({
+                    'id': item.id,
+                    'pId': item.pid.id if item.pid else 0,
+                    'name': item.name,
+                    'url': '',
+                    'target': '_top',
+                    'click': "pop('" + title + "', '"+url+"');",
+                    'open': 'true' if len(item.code) < 8 else 'false'
+                })
 
         url = '/admin/store_area_product?sid=' + str(store_id)
         nodes.append({
@@ -214,3 +215,32 @@ class AjaxGetSubAreas(BaseHandler):
             'open': 'true'
         })
         self.write(simplejson.dumps(nodes))
+
+
+@route(r'/ajax/saler_product_process/(\d+)', name='ajax_saler_product_process')  # 处理发布商品数据
+class AjaxSalerProductProcessAreas(BaseHandler):
+    def post(self, store_id):
+        result = {'flag': 0, 'msg': '', 'data': 0}
+        json = self.get_body_argument("json", '[]')
+        flag = int(self.get_body_argument("flag", -2))
+        data = simplejson.loads(json)
+        if data and len(data) > 0:
+            for item in data:
+                p = ProductRelease.get(id=item['id'])
+                if flag == 0:
+                    p.active = 0
+                    p.save()
+                elif flag == 2:
+                    p.active = 1
+                    p.save()
+                elif flag == -1:
+                    query = StoreProductPrice.delete().where(StoreProductPrice.product_release == p)
+                    query.execute()
+                    p.delete()
+                elif flag == 1:
+                    p.price = item['price']
+                    p.sort = item['sort']
+                    p.save()
+        result['flag'] = 1
+        result['msg'] = '操作成功'
+        self.write(simplejson.dumps(result))

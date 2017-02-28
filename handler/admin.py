@@ -265,7 +265,7 @@ class MoneyHistoryHandler(AdminBaseHandler):
         if total % pagesize > 0:
             totalpage = total / pagesize + 1
         else:
-            totalpage = 1
+            totalpage = total / pagesize
         cfs = cfs.order_by(MoneyRecord.apply_time.desc()).paginate(page, pagesize)
 
         self.render('admin/user/money_history.html', list=cfs, total=total, page=page, pagesize=pagesize,
@@ -276,17 +276,27 @@ class MoneyHistoryHandler(AdminBaseHandler):
 class SalerProductHandler(AdminBaseHandler):
     def get(self, store_id):
         page = int(self.get_argument("page", '1') if len(self.get_argument("page", '1')) > 0 else '1')
-        pagesize = self.settings['admin_pagesize']
+        pagesize = int(self.get_argument("pagesize", '20') if len(self.get_argument("pagesize", '20')) > 0 else '20')
         store = Store.get(id=store_id)
-        cfs = ProductRelease.select().where(ProductRelease.store == store_id)
+        keyword = self.get_argument("keyword", '')
+        ft = (ProductRelease.store == store_id)
+        if len(keyword) > 0:
+            try:
+                pid = int(keyword)
+                ft &= (ProductRelease.id == pid)
+            except:
+                keyword2 = '%' + keyword + '%'
+                ft &= (Product.name % keyword2)
+
+        cfs = ProductRelease.select(ProductRelease).join(Product).where(ft)
         total = cfs.count()
         if total % pagesize > 0:
             totalpage = total / pagesize + 1
         else:
-            totalpage = 1
+            totalpage = total / pagesize
         cfs = cfs.order_by(ProductRelease.id.asc()).paginate(page, pagesize)
         self.render('admin/user/saler_product.html', s=store, products=cfs, total=total, page=page, pagesize=pagesize,
-                    totalpage=totalpage, active='saler')
+                    totalpage=totalpage, active='saler', keyword=keyword)
 
 
 @route(r'/admin/store_area_product', name='admin_store_area_product')  # 经销商产品地域价格信息
