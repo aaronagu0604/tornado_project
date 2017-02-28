@@ -742,7 +742,7 @@ class MobileShopCarHandler(MobileBaseHandler):
 
 
 @route(r'/mobile/orderbase', name='mobile_orderbase')  # 创建订单前的获取数据
-@require_auth
+#@require_auth
 class MobileOrderBaseHandler(MobileBaseHandler):
     """
     @apiGroup order
@@ -752,21 +752,26 @@ class MobileOrderBaseHandler(MobileBaseHandler):
 
     @apiHeader {String} token 用户登录凭证
 
-    @apiParam {String} sppids 地区产品价格ID， 格式：[1,2,3]
+    @apiParam {String} sppids 地区产品价格ID， 格式：1,2,3
 
     @apiSampleRequest /mobile/orderbase
     """
     def get(self):
         user = self.get_user()
-        result = {'flag': 0, 'msg': '', "data": {}}
-        sppids = self.get_argument("sppids", [])
+        result = {'flag': 0, 'msg': '', "data": {'address':{}}}
+        sppids = self.get_argument("sppids", '').split(',')
         if user is not None:
-            if len(sppids) == 0:
+            if not sppids[0]:
                 result['msg'] = '请选择购买的产品'
             else:
                 for address in user.store.addresses:
                     if address.is_default == 1:
-                        result['data']['address'] = address
+                        result['data']['address']['mobile'] = address.mobile
+                        result['data']['address']['province'] = address.province
+                        result['data']['address']['city'] = address.city
+                        result['data']['address']['district'] = address.region
+                        result['data']['address']['address'] = address.address
+                        result['data']['address']['name'] = address.name
                         break
                 else:
                     result['data']['address'] = None
@@ -781,16 +786,23 @@ class MobileOrderBaseHandler(MobileBaseHandler):
                     where(StoreProductPrice.active == 1, StoreProductPrice.store == store).\
                     order_by(StoreProductPrice.store)
                 for product_price in product_list:
+                    # name = product_price.product_release.product.name
+                    # price = product_price.price
+                    # store = product_price.score
+                    # img = product_price.product_release.product.cover
+                    # attributes = product_price.product_release.product.attributes
                     result['data']['store']['products'].append({
                         'name': product_price.product_release.product.name,
                         'price': product_price.price,
                         'score': product_price.score,
                         'img': product_price.product_release.product.cover,
-                        'attributes': product_price.product_release.product.attributes
+                        'attributes': [attribute.value for attribute in product_price.product_release.product.attributes]
                     })
+                a = result['data']['store']
             result['flag'] = 1
         else:
             result['msg'] = '请登录后再购买'
+        a = result
         self.write(simplejson.dumps(result))
         self.finish()
 
