@@ -319,9 +319,6 @@ class StoreArea(db.Model):
         db_table = 'tb_store_area'
 
 
-
-
-
 # 商品分类
 class Category(db.Model):
     id = PrimaryKeyField()

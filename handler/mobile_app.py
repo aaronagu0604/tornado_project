@@ -386,13 +386,13 @@ class MobileFilterHandler(MobileBaseHandler):
         self.finish()
 
 
-@route(r'/mobile/discoverproducts', name='mobile_discover_products')  # 发现 商品列表
+@route(r'/mobile/discoverproducts', name='mobile_discover_products')  # 商品列表
 class MobileDiscoverProductsHandler(MobileBaseHandler):
     """
     @apiGroup app
     @apiVersion 1.0.0
-    @api {get} /mobile/discover 02. 发现页面列表
-    @apiDescription 发现页面列表，未登陆使用西安code
+    @api {get} /mobile/discover 02. 商品列表
+    @apiDescription 商品列表，未登陆使用西安code
 
     @apiHeader {String} token 用户登录凭证
 
@@ -501,13 +501,13 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
         self.finish()
 
 
-@route(r'/mobile/discover', name='mobile_discover')  # 发现 商品列表
+@route(r'/mobile/discover', name='mobile_discover')  # 发现 ---------------------------------
 class MobileDiscoverHandler(MobileBaseHandler):
     """
     @apiGroup app
     @apiVersion 1.0.0
-    @api {get} /mobile/discover 02. 发现页面列表
-    @apiDescription 发现页面列表，未登陆使用西安code
+    @api {get} /mobile/discover 02. 发现
+    @apiDescription 发现
 
     @apiHeader {String} token 用户登录凭证
 
@@ -523,79 +523,34 @@ class MobileDiscoverHandler(MobileBaseHandler):
     def options(self):
         pass
 
-    def getProductList(self, keyword, sort, category, brand, attribute, index, area_code):
-        productList = []
-        pids = []
-        ft = (Product.active==1)
-        # 根据规格参数搜索
-        if category and attribute:
-            fts = []
-            c = Category.get(id=category)
-            for i, a in enumerate(c.attributes):
-                cais = CategoryAttributeItems.select().where((CategoryAttributeItems.category_attribute==a) & (CategoryAttributeItems.id<<attribute))
-                for j, cai in enumerate(cais):
-                    if j == 0:
-                        fts.append((ProductAttributeValue.value == cai.name))
-                    else:
-                        fts[i] |= (ProductAttributeValue.value == cai.name)
-            for i, f in enumerate(fts):
-                if i == 0:
-                    products = Product.select().join(ProductAttributeValue).where(f)
-                else:
-                    products = Product.select().join(ProductAttributeValue).where(f & (Product.id << pids))
-                pids = [product.id for product in products]
-            ft = (Product.id << pids)
-        elif category:
-            ft &= (Product.category == category)
-        ft &= ((StoreProductPrice.price>0) & (StoreProductPrice.active==1) & (ProductRelease.active==1))
-        if keyword:
-            keyword = '%' + '%'
-            ft &= (Product.name % keyword)
-        if brand:
-            ft &= (Product.brand << brand)
-        if len(area_code) == 12:  # 门店可以购买的范围仅仅到区县
-            ft &= (((db.fn.Length(StoreProductPrice.area_code) == 4) & (StoreProductPrice.area_code == area_code[:4])) |
-                   ((db.fn.Length(StoreProductPrice.area_code) == 8) & (StoreProductPrice.area_code == area_code[:8])) |
-                   (StoreProductPrice.area_code == area_code))
-        elif len(area_code) == 8:  # 门店可以购买的范围到市级
-            ft &= (((db.fn.Length(StoreProductPrice.area_code) == 4) & (StoreProductPrice.area_code == area_code[:4])) |
-                   (StoreProductPrice.area_code == area_code))
-        elif len(area_code) == 4:  # 门店可以购买的范围到省级
-            ft &= (StoreProductPrice.area_code == area_code)
-        products = ProductRelease.select(
-            ProductRelease.id.alias('prid'), Product.id.alias('pid'), StoreProductPrice.id.alias('sppid'),
-            Product.name.alias('name'), StoreProductPrice.price.alias('price'), Product.unit.alias('unit'),
-            ProductRelease.buy_count.alias('buy_count'), Product.cover.alias('cover'),
-            Product.resume.alias('resume'), Store.name.alias('sName')). \
-            join(Product, on=(Product.id == ProductRelease.product)). \
-            join(StoreProductPrice, on=(StoreProductPrice.product_release == ProductRelease.id)). \
-            join(Store, on=(Store.id == ProductRelease.store)).where(ft).dicts()
-        # 排序
-        if sort == '1':
-            products.order_by(StoreProductPrice.price.desc())
-        elif sort == '2':
-            products.order_by(StoreProductPrice.price.asc())
-        elif sort == '3':
-            products.order_by(ProductRelease.buy_count.desc())
-        elif sort == '4':
-            products.order_by(ProductRelease.buy_count.asc())
-        else:
-            products.order_by(ProductRelease.sort.desc())
-        ps = products.paginate(index, setting.MOBILE_PAGESIZE)
-        for p in ps:
-            productList.append({
-                'prid': p['prid'],
-                'pid': p['pid'],
-                'sppid': p['sppid'],
-                'name': p['name'],
-                'price': p['price'],
-                'unit': p['unit'] if p['unit'] else '件',
-                'buy_count': p['buy_count'],
-                'cover': p['cover'],
-                'resume': p['resume'],
-                'storeName': p['sName']
+
+    def get_category(area_code):
+        items = []
+        categories = BlockItem.select(BlockItem.link, Category.img_m, Category.name).join(Block).\
+            join(Category, on=BlockItem.ext_id == Category.id).where((Block.tag == 'hot_category') & (Block.active == 1)
+            & (BlockItem.active == 1) & (BlockItem.area_code == area_code)).order_by(BlockItem.sort).asc().tuples()
+        for link, logo, name in categories:
+            items.append({
+                'img': logo,
+                'name': name,
+                'price': 0,
+                'link': link
             })
-        return productList
+        return items
+
+    def get_brand(area_code):
+        items = []
+        brands = BlockItem.select(BlockItem.link, Brand.logo, Brand.name).join(Block).\
+            join(Brand, on=BlockItem.ext_id == Brand.id).where((Block.tag == 'hot_brand') & (Block.active == 1)
+            & (BlockItem.active == 1) & (BlockItem.area_code == area_code)).order_by(BlockItem.sort).asc().tuples()
+        for link, logo, name in brands:
+            items.append({
+                'img': logo,
+                'name': name,
+                'price': 0,
+                'link': link
+            })
+        return items
 
     def get(self):
         result = {'flag': 0, 'msg': '', "data": {}}
@@ -904,6 +859,7 @@ class MobileOrderBaseHandler(MobileBaseHandler):
                         order_by(StoreProductPrice.store)
                     for product_price in product_list:
                         result['data']['store']['products'].append({
+                            'sppid': product_price.id,
                             'name': product_price.product_release.product.name,
                             'price': product_price.price,
                             'score': product_price.score,
