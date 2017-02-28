@@ -163,12 +163,10 @@ def require_auth(method):
             data = self.application.memcachedb.get(token)
             if data is None:
                 self.set_status(401)
-                logging.info('----------Unauthorized---------------- invalid token')
                 self.finish()
             else:
                 return method(self, *args, **kwargs)
         else:
             self.set_status(401)
-            logging.info('----------Unauthorized---------------- invalid token 2')
             self.finish()
     return wrapper

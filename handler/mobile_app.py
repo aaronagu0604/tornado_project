@@ -671,7 +671,6 @@ class MobileProductHandler(MobileBaseHandler):
 
 
 @route(r'/mobile/addshopcar', name='mobile_add_shop_car')  # 添加购物车
-@require_auth
 class MobileAddShopCarHandler(MobileBaseHandler):
     """
     @apiGroup app
@@ -686,6 +685,8 @@ class MobileAddShopCarHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/addshopcar
     """
+
+    @require_auth
     def post(self):
         user = self.get_user()
         result = {'flag': 0, 'msg': '', "data": {}}
@@ -742,7 +743,6 @@ class MobileShopCarHandler(MobileBaseHandler):
 
 
 @route(r'/mobile/orderbase', name='mobile_orderbase')  # 创建订单前的获取数据
-#@require_auth
 class MobileOrderBaseHandler(MobileBaseHandler):
     """
     @apiGroup order
@@ -756,6 +756,8 @@ class MobileOrderBaseHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/orderbase
     """
+
+    @require_auth
     def get(self):
         user = self.get_user()
         result = {'flag': 0, 'msg': '', "data": {'address':{}}}
@@ -808,7 +810,6 @@ class MobileOrderBaseHandler(MobileBaseHandler):
 
 
 @route(r'/mobile/neworder', name='mobile_neworder')  # 创建产品订单
-@require_auth
 class MobileNewOrderHandler(MobileBaseHandler):
     """
     @apiGroup order
@@ -827,6 +828,7 @@ class MobileNewOrderHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/neworder
     """
+    @require_auth
     def post(self):
         result = {'flag': 0, 'msg': '', "data": {}}
         address = self.get_body_argument("address", None)
@@ -923,7 +925,6 @@ class MobileNewOrderHandler(MobileBaseHandler):
 
 
 @route(r'/mobile/insuranceorderbase', name='mobile_insurance_order_base')  # 创建保险订单前的获取数据
-@require_auth
 class MobilInsuranceOrderBaseHandler(MobileBaseHandler):
     """
         @apiGroup order
@@ -975,6 +976,7 @@ class MobilInsuranceOrderBaseHandler(MobileBaseHandler):
                 })
         return result
 
+    @require_auth
     def get(self):
         result = {'flag': 0, 'msg': '', "data": {}}
         area_code = self.get_store_area_code()
@@ -1006,7 +1008,6 @@ class MobilInsuranceOrderBaseHandler(MobileBaseHandler):
 
 
 @route(r'/mobile/newinsuranceorder', name='mobile_new_insurance_order')  # 创建保险订单
-@require_auth
 class MobilNewInsuranceOrderHandler(MobileBaseHandler):
     """
     @apiGroup order
@@ -1050,6 +1051,8 @@ class MobilNewInsuranceOrderHandler(MobileBaseHandler):
 /mobile/receiveraddress
     @apiSampleRequest /mobile/newinsuranceorder
     """
+
+    @require_auth
     def post(self):
         result = {'flag': 0, 'msg': '', "data": []}
         id_card_front = self.get_body_argument('id_card_front', None)

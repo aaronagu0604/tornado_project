@@ -156,6 +156,7 @@ class MobilStorePopularizeHandler(MobileBaseHandler):
         im.save(newPic)
         return newPic[29:]
 
+    @require_auth
     def get(self):
         user = self.get_user()
         result = {'flag': 0, 'msg': '', "data": []}
@@ -243,6 +244,7 @@ class MobilPurchaseOrderHandler(MobileBaseHandler):
             so.fail_reason = '超时未支付'
             so.save()
 
+    @require_auth
     def get(self):
         result = {'flag': 0, 'msg': '', "data": []}
         type = self.get_argument("type", 'all')
@@ -274,6 +276,7 @@ class MobileSellOrderHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/sellorder
     """
+    @require_auth
     def get(self):
         result = {'flag': 0, 'msg': '', "data": []}
         type = self.get_argument("type", 'all')
@@ -303,6 +306,7 @@ class MobileInsuranceOrderHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/insuranceorder
     """
+    @require_auth
     def get(self):
         result = {'flag': 0, 'msg': '', "data": []}
         type = self.get_argument("type", 'all')
@@ -360,6 +364,7 @@ class MobileScoreHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/score
     """
+    @require_auth
     def get(self):
         result = {'flag': 0, 'msg': '', "data": {}}
         store = self.get_user().store
@@ -382,6 +387,7 @@ class MobileScoreStore(MobileBaseHandler):
 
     @apiSampleRequest /mobile/scoreStore
     """
+    @require_auth
     def get(self):
         result = {'flag': 0, 'msg': '', "data": []}
         index = int(self.get_argument("index", 1))
@@ -430,6 +436,7 @@ class MobileScoreCashHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/scorecash
     """
+    @require_auth
     def get(self):
         result = {'flag': 0, 'msg': '', "data": {}}
         store = self.get_user().store
@@ -506,6 +513,7 @@ class MobileScoreRecordHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/scorerecord
     """
+    @require_auth
     def get(self):
         result = {'flag': 0, 'msg': '', "data": []}
         store = self.get_user().store
@@ -537,6 +545,7 @@ class MobileFundHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/fund
     """
+    @require_auth
     def get(self):
         result = {'flag': 0, 'msg': '', "data": {}}
         store = self.get_user().store
@@ -557,7 +566,7 @@ class MobileFundRechargeHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/fundrecharge
     """
-
+    @require_auth
     def get(self):
         result = {'flag': 0, 'msg': '', "data": {}}
         user = self.get_user()
@@ -601,6 +610,7 @@ class MobileWithdrawCashHandler(MobileBaseHandler):
     @apiHeader {String} token 用户登录凭证
     @apiSampleRequest /mobile/withdrawcash
     """
+    @require_auth
     def get(self):
         result = {'flag': 0, 'msg': '', "data": []}
         store = self.get_user().store
@@ -673,6 +683,7 @@ class MobileBindBankCardHandler(MobileBaseHandler):
     @apiParam {String} bank_number 卡号
     @apiSampleRequest /mobile/get_bank_message
     """
+    @require_auth
     def post(self):
         result = {'flag': 0, 'msg': '', 'data': {}}
         bank_number = self.get_body_argument('bank_number', None)
@@ -702,6 +713,7 @@ class MobileBindBankCardHandler(MobileBaseHandler):
     @apiHeader {String} token 用户登录凭证
     @apiSampleRequest /mobile/bind_bank_card
     """
+    @require_auth
     def get(self):
         result = {'flag': 0, 'msg': '', 'data': []}
         store = self.get_user().store
@@ -728,7 +740,7 @@ class MobileBindBankCardHandler(MobileBaseHandler):
     @apiParam {String} vcode 验证码
     @apiSampleRequest /mobile/bind_bank_card
     """
-
+    @require_auth
     def post(self):
         result = {'flag': 0, 'msg': '', 'data': {}}
         is_delete = self.get_body_argument('is_delete', None)
@@ -771,6 +783,7 @@ class MobileBindAlipayHandler(MobileBaseHandler):
     @apiHeader {String} token 用户登录凭证
     @apiSampleRequest /mobile/bind_alipay
     """
+    @require_auth
     def get(self):
         result = {'flag': 1, 'msg': '', 'data': {'bank_id': '', 'alipay_truename':'', 'alipay_account': ''}}
         store = self.get_user().store
@@ -793,6 +806,7 @@ class MobileBindAlipayHandler(MobileBaseHandler):
     @apiParam {String} vcode 验证码
     @apiSampleRequest /mobile/bind_alipay
     """
+    @require_auth
     def post(self):
         result = {'flag': 0, 'msg': '', 'data': {}}
         alipay_truename = self.get_body_argument('alipay_truename', None)
@@ -836,7 +850,7 @@ class MobileMoneyRecordHandler(MobileBaseHandler):
     @apiParam {String} process_type 1入账 2出账 不传则全部
     @apiSampleRequest /mobile/moneyrecord
     """
-
+    @require_auth
     def get(self):
         result = {'flag': 1, 'msg': '', 'data': []}
         store = self.get_user().store
@@ -867,6 +881,7 @@ class MobileMoneyRecordHandler(MobileBaseHandler):
     @apiParam {String} record_id 流水ID
     @apiSampleRequest /mobile/moneyrecord
     """
+    @require_auth
     def post(self):
         result = {'flag': 1, 'msg': '', 'data': {}}
         record_id = self.get_body_argument('record_id', None)
@@ -903,6 +918,7 @@ class MobileMyProductsHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/myproducts
     """
+    @require_auth
     def get(self):
         result = {'flag': 0, 'msg': '', "data": []}
         keyword = self.get_argument('keyword', None)
@@ -956,6 +972,7 @@ class MobileFilterMyProductsHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/filtermyproducts
     """
+    @require_auth
     def get(self):
         result = {'flag': 0, 'msg': '', "data": {}}
         store = self.get_user().store
@@ -1002,6 +1019,7 @@ class MobileProductReleaseHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/productrelease
     """
+    @require_auth
     def post(self):
         result = {'flag': 0, 'msg': '', "data": []}
         args = simplejson.loads(self.get_body_argument('area_price'))
@@ -1139,18 +1157,19 @@ class MobileLubePolicyHandler(MobileBaseHandler):
 
 
 # -----------------------------------------------------设置-------------------------------------------------------------
-@route(r'/mobile/mysetting', name='mobile_my_setting')  # 我的设置
+@route(r'/mobile/mysetting', name='mobile_my_setting')  # 账户信息
 class MobileMySettingHandler(MobileBaseHandler):
     """
     @apiGroup mine
     @apiVersion 1.0.0
-    @api {get} /mobile/mysetting 17. 我的设置
-    @apiDescription 我的设置
+    @api {get} /mobile/mysetting 17. 账户信息
+    @apiDescription 账户信息
 
     @apiHeader {String} token 用户登录凭证
 
     @apiSampleRequest /mobile/mysetting
     """
+    @require_auth
     def get(self):
         result = {'flag': 0, 'msg': '', "data": {}}
         store = self.get_user().store
@@ -1183,6 +1202,7 @@ class MobileChangeLoginPasswordHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/changeloginpassword
     """
+    @require_auth
     def post(self):
         result = {'flag': 0, 'msg': '', "data": {}}
         user = self.get_user()
@@ -1215,6 +1235,7 @@ class MobileChangePayPasswordHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/changepaypassword
     """
+    @require_auth
     def post(self):
         result = {'flag': 0, 'msg': '', "data": {}}
         store = self.get_user().store
@@ -1249,6 +1270,7 @@ class MobileReceiverAddressHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/receiveraddress
     """
+    @require_auth
     def get(self):
         result = {'flag': 0, 'msg': '', "data": []}
         store = self.get_user().store
@@ -1286,6 +1308,7 @@ class MobileReceiverAddressHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/receiveraddress
     """
+    @require_auth
     def post(self):
         result = {'flag': 0, 'msg': '', "data": {}}
         user = self.get_user()
@@ -1350,6 +1373,7 @@ class MobileFeedbackHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/feedback
     """
+    @require_auth
     def get(self):
         result = {'flag': 0, 'msg': '', "data": {}}
         user = self.get_user()
