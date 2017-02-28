@@ -306,7 +306,7 @@ class StoreBankAccount(db.Model):
         else:
             return False
     class Meta:
-        db_table = 'tb_score_record'
+        db_table = 'tb_store_bank_accounts'
 
 
 # 经销商服务区域

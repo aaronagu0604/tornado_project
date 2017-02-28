@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- Bootstrap Core CSS -->
+    <link href="/style/css/bootstrap.min.css" rel="stylesheet">
+    <script src="/style/js/jquery-1.11.1.min.js"></script>
+    <script src="/style/js/bootstrap.min.js"></script>
+    <script src="/style/js/jquery.twbsPagination.min.js"></script>
+</head>
+<body>
+<div class="row">
+    <div class="panel panel-primary">
+        <div class="table-responsive">
+            <table class="table table-hover" id="tb_vendor" cellpadding="0" cellspacing="0" border="0" style="text-align:center;">
+                <thead>
+                    <tr style="background:#528acb;color:#fff;text-align:center;height:38px;line-height:38px;">
+                        <th style="width:10%;text-align:center;">时间</th>
+                        <th style="width:10%;text-align:center;">积分</th>
+                        <th style="width:10%;text-align:center;">描述</th>
+                    </tr>
+                    {% for item in list %}
+                    <tr>
+                        <td>{{item.created|datetimeformat}}</td>
+                        <td>
+                            {% if item.process_type == 1%}
+                            <span style="color: #f0ad4e;">+{{item.score}}</span>
+                            {% elif item.process_type==2 %}
+                            <span style="color: #f0ad4e;">-{{item.score}}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {{item.process_log}}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </thead>
+
+            </table>
+            <div>
+                <div class="col-sm-4">
+                    <div class="dataTables_info" role="alert" aria-live="polite" aria-relevant="all">
+                        当前：第{{page}}页 / {{totalpage}}页，合计{{total}}条
+                    </div>
+                </div>
+                <div class="col-sm-8">
+                    <div class="dataTables_paginate paging_simple_numbers">
+                        <ul class="pagination  pagination-sm" id="pageUl" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+<script>
+
+    $(document).ready(function() {
+        $('#pageUl').twbsPagination({
+            first:'首页',
+            prev:'上一页',
+            next:'下一页',
+            last:'尾页',
+            totalPages: {{totalpage}},
+            startPage: {{page}},
+            visiblePages: 8,
+            onPageClick: function (event, page) {
+                self.location="/admin/score_history?store_id={{store_id}}&page="+page;
+            }
+        });
+    });
+
+</script>
+{% endblock %}

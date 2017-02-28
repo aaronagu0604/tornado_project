@@ -191,39 +191,63 @@ class StoreDetailHandler(AdminBaseHandler):
     def get(self, store_id):
         areas = Area.select().where((Area.is_delete == 0) & (Area.pid >> None)).order_by(Area.spell_abb, Area.sort)
         store = Store.get(id=store_id)
-        self.render('admin/user/store_detail.html', s=store, active='store', areas=areas)
+        active = 'saler'
+        if store.store_type == 1:
+            active = 'saler'
+        elif store.store_type == 2:
+            active = 'store'
+        self.render('admin/user/store_detail.html', s=store, active=active, areas=areas)
 
     def post(self, store_id):
         name = self.get_argument('name', '')
-        district_code = self.get_argument('district_code', '')
-        city_code = self.get_argument('city_code', '')
+        province = self.get_argument('province', '')
+        city = self.get_argument('city', '')
+        district = self.get_argument('district', '')
         address = self.get_argument('address', '')
-        x = self.get_argument('x', 0)
-        y = self.get_argument('y', 0)
-        business_type = int(self.get_argument('business_type', 0))
-        status = int(self.get_argument('status', 0))
-        intro = self.get_argument('intro', 0)
-        grade = int(self.get_argument('usergrade', 1))
+        active = int(self.get_argument('active', 0))
+        process_insurance = int(self.get_argument('process_insurance', 0))
 
-        if district_code and not district_code == '0':
-            area_code = district_code
-        elif city_code and not city_code == '0':
-            area_code = city_code
-        if store_id == '0':
-            store = Store()
-            store.created = int(time.time())
-        else:
-            store = Store.get(id=store_id)
+        legal_person = self.get_argument('legal_person', '')
+        license_code = self.get_argument('license_code', '')
+        linkman = self.get_argument('linkman', '')
+        mobile = self.get_argument('mobile', '')
+
+        area_code = province
+        if district and not district == '':
+            area_code = district
+        elif city and not city == '':
+            area_code = city
+
+        store = Store.get(id=store_id)
         store.name = name
         store.area_code = area_code
         store.address = address
-        store.x = x
-        store.y = y
-        store.status = status
-        store.business_type = business_type
-        store.intro = intro
-
+        store.active = active
+        store.process_insurance = process_insurance
+        store.legal_person = legal_person
+        store.license_code = license_code
+        store.linkman = linkman
+        store.mobile = mobile
         store.save()
 
         self.flash(u"保存成功")
         self.redirect("/admin/store_detail/" + str(store_id))
+
+
+@route(r'/admin/score_history', name='admin_score_history')  # 修改经销商或门店
+class ScoreHistoryHandler(AdminBaseHandler):
+    def get(self):
+        page = int(self.get_argument("page", '1') if len(self.get_argument("page", '1')) > 0 else '1')
+        pagesize = self.settings['admin_pagesize']
+        store_id = int(self.get_argument("store_id", '-1'))
+
+        cfs = ScoreRecord.select().where((ScoreRecord.store == store_id) & (ScoreRecord.status == 1))
+        total = cfs.count()
+        if total % pagesize > 0:
+            totalpage = total / pagesize + 1
+        else:
+            totalpage = 1
+        cfs = cfs.order_by(ScoreRecord.created.desc()).paginate(page, pagesize)
+
+        self.render('admin/user/score_history.html', list=cfs, total=total, page=page, pagesize=pagesize,
+                    totalpage=totalpage, store_id=store_id)

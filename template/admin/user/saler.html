@@ -69,8 +69,8 @@
                     <th style="text-align:center;">名称</th>
                     <th style="text-align:center;">联系人</th>
                     <th style="text-align:center;">联系电话</th>
-                    <th style="text-align:center;">所在地区</th>
-                    <th style="text-align:center;">详细地址</th>
+                    <th style="text-align:center;">地区信息</th>
+                    <th style="text-align:center;">积分/余额</th>
                     <th style="text-align:center;">状态</th>
                     <th style="text-align:center;">操作</th>
                 </tr>
@@ -78,11 +78,13 @@
                 <tbody>
                 {% for s in stores %}
                 <tr>
-                    <td><a href="/admin/saler_detail/{{s.id}}">{{ s.name }}</a></td>
+                    <td>{{ s.name }}</td>
                     <td>{{ s.linkman }}</td>
                     <td>{{ s.mobile }}</td>
-                    <td>{{ Area().get_detailed_address(s.area_code)}}</td>
-                    <td>{{ s.address }}</td>
+                    <td>{{ Area().get_detailed_address(s.area_code)}}<br>
+                    {{ s.address }}</td>
+                    <td>积分：{{s.score}}<br />
+                        余额：{{s.price}}</td>
                     <td>
                          {% if s.active==0 %}
                                 <span style="color: red;">待审核</span><br>
@@ -93,6 +95,8 @@
                                 {% endif %}
                     </td>
                     <td>
+                        <a class="btn btn-xs btn-outline btn-primary" href="/admin/store_detail/{{s.id}}">详情</a>
+                        <a class="btn btn-xs btn-outline btn-primary" href="/admin/saler_product/{{s.id}}">区域商品</a>
 
                             <input type="hidden" id="hd_id_{{s.id}}" value="{{s.process_insurance}}"/>
                 {% if s.active==0 %}
