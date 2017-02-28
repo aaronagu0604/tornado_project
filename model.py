@@ -312,7 +312,7 @@ class StoreBankAccount(db.Model):
 # 经销商服务区域
 class StoreArea(db.Model):
     id = PrimaryKeyField()
-    area = ForeignKeyField(Area, db_column='area_id')  # 用户
+    area = ForeignKeyField(Area, db_column='area_id')  # 地区
     store = ForeignKeyField(Store, related_name='service_areas', db_column='store_id')  # 店铺
 
     class Meta:
@@ -410,6 +410,7 @@ class ProductPic(db.Model):
     id = PrimaryKeyField()
     product = ForeignKeyField(Product, related_name='pics', db_column='product_id')  # 所属商品
     pic = CharField(max_length=255)
+    sort = IntegerField(default=0)  # 排序
 
     class Meta:
         db_table = 'tb_product_pics'
@@ -447,6 +448,7 @@ class StoreProductPrice(db.Model):
     id = PrimaryKeyField()
     product_release = ForeignKeyField(ProductRelease, related_name='area_prices', db_column='product_release_id')  # 所属商品
     store = ForeignKeyField(Store, related_name='area_products', db_column='store_id')  # 所属店铺
+    area = ForeignKeyField(Area, db_column='area_id')  # 地区
     area_code = CharField(max_length=20)  # 地区code
     price = FloatField()  # 当前始销售价，负数或0为不能购物
     score = IntegerField(default=0)  # 积分兑换额度，负数或0为不能兑换
