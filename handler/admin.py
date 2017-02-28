@@ -234,7 +234,7 @@ class StoreDetailHandler(AdminBaseHandler):
         self.redirect("/admin/store_detail/" + str(store_id))
 
 
-@route(r'/admin/score_history', name='admin_score_history')  # 修改经销商或门店
+@route(r'/admin/score_history', name='admin_score_history')  # 积分消费历史
 class ScoreHistoryHandler(AdminBaseHandler):
     def get(self):
         page = int(self.get_argument("page", '1') if len(self.get_argument("page", '1')) > 0 else '1')
@@ -250,4 +250,23 @@ class ScoreHistoryHandler(AdminBaseHandler):
         cfs = cfs.order_by(ScoreRecord.created.desc()).paginate(page, pagesize)
 
         self.render('admin/user/score_history.html', list=cfs, total=total, page=page, pagesize=pagesize,
+                    totalpage=totalpage, store_id=store_id)
+
+
+@route(r'/admin/money_history', name='admin_money_history')  # 余额消费历史
+class MoneyHistoryHandler(AdminBaseHandler):
+    def get(self):
+        page = int(self.get_argument("page", '1') if len(self.get_argument("page", '1')) > 0 else '1')
+        pagesize = self.settings['admin_pagesize']
+        store_id = int(self.get_argument("store_id", '-1'))
+
+        cfs = MoneyRecord.select().where((MoneyRecord.store == store_id) & (MoneyRecord.status == 1))
+        total = cfs.count()
+        if total % pagesize > 0:
+            totalpage = total / pagesize + 1
+        else:
+            totalpage = 1
+        cfs = cfs.order_by(MoneyRecord.apply_time.desc()).paginate(page, pagesize)
+
+        self.render('admin/user/money_history.html', list=cfs, total=total, page=page, pagesize=pagesize,
                     totalpage=totalpage, store_id=store_id)

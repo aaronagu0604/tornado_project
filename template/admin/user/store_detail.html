@@ -153,7 +153,7 @@
         </div>
         <div class="row">
             <div class="col-sm-6"><label>积分：{{s.score}} (<a href='#' onclick="pop('积分变动记录','/admin/score_history?store_id={{s.id}}')">查看变动记录</a>)</label></div>
-            <div class="col-sm-6"><label>余额：￥{{s.price}}(<a href='#'>查看变动记录</a>)</label></div>
+            <div class="col-sm-6"><label>余额：￥{{s.price}}(<a href='#' onclick="pop('余额变动记录','/admin/money_history?store_id={{s.id}}')">查看变动记录</a>)</label></div>
         </div>
         <div class="row">
             <div class="col-sm-6"><label>保险订单数：{{s.buyer_sub_orders.count()}} (<a href='#'>查看详情</a>)</label></div>

@@ -18,17 +18,17 @@
                 <thead>
                     <tr style="background:#528acb;color:#fff;text-align:center;height:38px;line-height:38px;">
                         <th style="width:10%;text-align:center;">时间</th>
-                        <th style="width:10%;text-align:center;">积分</th>
+                        <th style="width:10%;text-align:center;">金额</th>
                         <th style="width:10%;text-align:center;">描述</th>
                     </tr>
                     {% for item in list %}
                     <tr>
-                        <td>{{item.created|datetimeformat}}</td>
+                        <td>{{item.apply_time|datetimeformat}}</td>
                         <td>
                             {% if item.process_type == 1%}
-                            <span style="color: #5cb85c;">+{{item.score}}</span>
+                            <span style="color: #5cb85c;">+{{item.money}}</span>
                             {% elif item.process_type==2 %}
-                            <span style="color: #f0ad4e;">-{{item.score}}</span>
+                            <span style="color: #f0ad4e;">-{{item.money}}</span>
                             {% endif %}
                         </td>
                         <td>

@@ -232,7 +232,7 @@ class MoneyRecord(db.Model):
     status = IntegerField(default=0)  # 处理状态 0未处理，1已处理
     apply_time = IntegerField(default=0)  # 申请时间
     processing_time = IntegerField(default=0)  # 处理时间
-    processing_by = ForeignKeyField(AdminUser, db_column='updated_by')  # 处理人
+    processing_by = ForeignKeyField(AdminUser, db_column='updated_by', null=True)  # 处理人
 
     class Meta:
         db_table = 'tb_money_record'
@@ -929,8 +929,14 @@ def load_test_data():
     Store.create(store_type=1, name='name', address='address', license_image='', store_image='', lng='', lat='',
                  pay_password='', intro='', linkman='', mobile='18189279823', active=1, created=1487032696,
                  area_code='002700010001')
+    Store.create(store_type=1, name='测试店铺', address='测试地址', license_image='', store_image='', lng='', lat='',
+                 pay_password='', intro='', linkman='', mobile='17629260130', active=1, created=1487032696,
+                 area_code='002700010001')
     User.create(mobile='18189279823', password='e10adc3949ba59abbe56e057f20f883e', role='A', signuped=1487032696,
                 lsignined=1487032696, store=1, active=1, truename='刘晓明')
+
+    User.create(mobile='17629260130', password='e10adc3949ba59abbe56e057f20f883e', role='A', signuped=1487032696,
+                lsignined=1487032696, store=2, active=1, truename='郭晓宏')
 
     Category.create(name='润滑油', sort=1, active=1,
                     img_m='http://img.520czj.com/image/2017/02/15/server1_20170215111526VDJrFZYbKUeiLjuGkcsxTIhW.png',
@@ -995,9 +1001,16 @@ def load_test_data():
     ProductRelease.create(product=1, store=1, price=1)
     ProductRelease.create(product=2, store=1, price=2)
 
+    ProductRelease.create(product=1, store=2, price=0.1)
+    ProductRelease.create(product=2, store=2, price=0.01)
+
     StoreProductPrice.create(product_release=1, store=1, area_code='002700010001', price=3)
     StoreProductPrice.create(product_release=2, store=1, area_code='00270001', price=4)
     StoreProductPrice.create(product_release=2, store=1, area_code='00270001', price=4, score=3)
+
+    StoreProductPrice.create(product_release=3, store=2, area_code='002700010001', price=0.3)
+    StoreProductPrice.create(product_release=4, store=2, area_code='00270001', price=0.01)
+    StoreProductPrice.create(product_release=4, store=2, area_code='00270001', price=0.01, score=3)
 
     Block.create(tag='banner', name='首页轮播广告', remark='',
                  img='http://img.520czj.com/image/2017/02/15/server1_20170215111526VDJrFZYbKUeiLjuGkcsxTIhW.png')
@@ -1024,6 +1037,17 @@ def load_test_data():
     BlockItem.create(area_code='00270001', block=5, name='产品', link='czj://product/1', img='', ext_id=1)
     BlockItem.create(area_code='00270001', block=5, name='产品', link='czj://product/2', img='', ext_id=2)
 
+    # 积分变动记录
+    ScoreRecord.create(user=1, store=1, ordernum='789899', type=1, process_type=1, process_log='测试收入积分', score=5,
+                       created=1487032696, status=1)
+    ScoreRecord.create(user=1, store=1, ordernum='667433', type=2, process_type=2, process_log='测试使用积分', score=8,
+                       created=1487032696, status=1)
+
+    # 余额变动记录
+    MoneyRecord.create(user=1, store=1, process_type=1, process_message='售出', process_log='销售获得余额', in_num='CZ334',
+                       money=567.5, status=1, apply_time=1487032696)
+    MoneyRecord.create(user=1, store=1, process_type=2, process_message='提现', process_log='提现', in_num='CZ334',
+                       money=100.5, status=1, apply_time=1487032696)
 
 if __name__ == '__main__':
     init_db()
