@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- Bootstrap Core CSS -->
+    <link href="/style/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/style/css/plugins/dataTables.bootstrap.css" rel="stylesheet">
+    <script src="/style/js/jquery-1.11.1.min.js"></script>
+    <script src="/style/js/bootstrap.min.js"></script>
+    <script src="/style/js/jquery.twbsPagination.min.js"></script>
+</head>
+<body>
+<div class="row" style="margin:5px 5px 0 5px;">
+    <div class="panel panel-primary">
+        <div class="table-responsive">
+            <table class="table table-hover" id="tb_vendor" cellpadding="0" cellspacing="0" border="0" style="text-align:center;">
+                <thead>
+                    <tr>
+                        <th style="width:29%;text-align:center;">名称</th>
+                        <th style="width:10%;text-align:center;">品牌</th>
+                        <th style="width:10%;text-align:center;">分类</th>
+                        <th style="width:10%;text-align:center;">售价</th>
+                        <th style="width:8%;text-align:center;">排序</th>
+                        <th style="width:10%;text-align:center;">状态</th>
+                        <th style="width:15%;text-align:center;">操作</th>
+                    </tr>
+                    {% for p in products %}
+                    <tr>
+                        <td>
+                            {{p.product_release.product.name}}
+                        </td>
+                        <td>
+                            {{p.product_release.product.brand.name}}
+                        </td>
+                        <td>{{p.product_release.product.category.name}}</td>
+                        <td>
+                            {% for item in p.product_release.area_prices %}
+
+                            {% endfor %}
+                        </td>
+                        <td></td>
+                        <td>
+                            {% if p.product_release.active==0 %}
+                                <span style="">下架</span>
+                                {% elif p.product_release.active==1 %}
+                                <span style="">正常</span>
+                                {% endif %}
+                        </td>
+                        <td>
+                        <a class="btn btn-xs btn-outline btn-primary" href="/admin/store_detail/{{p.product_release.id}}">删除</a>
+                        <a class="btn btn-xs btn-outline btn-primary" href="/admin/saler_product/{{p.product_release.id}}">修改</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </thead>
+
+            </table>
+            <div>
+                <div class="col-sm-4">
+                    <div class="dataTables_info" role="alert" aria-live="polite" aria-relevant="all">
+                        当前：第{{page}}页 / {{totalpage}}页，合计{{total}}条
+                    </div>
+                </div>
+                <div class="col-sm-8">
+                    <div class="dataTables_paginate paging_simple_numbers">
+                        <ul class="pagination  pagination-sm" id="pageUl" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+<script>
+
+    $(document).ready(function() {
+        $('#pageUl').twbsPagination({
+            first:'首页',
+            prev:'上一页',
+            next:'下一页',
+            last:'尾页',
+            totalPages: {{totalpage}},
+            startPage: {{page}},
+            visiblePages: 8,
+            onPageClick: function (event, page) {
+                self.location="/admin/store_area_product?sid={{store_id}}&code={{code}}&page="+page;
+            }
+        });
+    });
+
+</script>

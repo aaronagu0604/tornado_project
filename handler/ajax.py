@@ -159,3 +159,58 @@ class UserUpdateStateHandler(BaseHandler):
         except Exception, e:
             result['msg'] = e.message
         self.write(simplejson.dumps(result))
+
+
+@route(r'/ajax/store_tree/(\d+)', name='ajax_GetStoreTree')  # 获取下级区域
+class AjaxGetSubAreas(BaseHandler):
+    def get(self, store_id):
+        store = Store.get(id=store_id)
+        nodes = []
+        codes = []
+        for item in store.service_areas:
+            if len(item.area.code) == 12:
+                codes.append(item.area.code)
+                codes.append(item.area.code[:8])
+                codes.append(item.area.code[:4])
+            elif len(item.area.code) == 8:
+                codes.append(item.area.code)
+                codes.append(item.area.code[:4])
+                keyword = '' + item.area.code + '%'
+                ft = (Area.code % keyword) & (Area.is_delete == 0)
+                items = Area.select().where(ft)
+                for sub in items:
+                    codes.append(sub.code)
+            elif len(item.area.code) == 4:
+                codes.append(item.area.code)
+                keyword = '' + item.area.code + '%'
+                ft = (Area.code % keyword) & (Area.is_delete == 0)
+                items = Area.select().where(ft)
+                for sub in items:
+                    codes.append(sub.code)
+
+        un_codes = list(set(codes))
+        items = Area.select().where(Area.code << un_codes)
+        for item in items:
+            title = item.name + '-产品信息'
+            url = '/admin/store_area_product?sid=' + str(store_id) + '&code=' + item.code
+            nodes.append({
+                'id': item.id,
+                'pId': item.pid.id if item.pid else 0,
+                'name': item.name,
+                'url': '',
+                'target': '_top',
+                'click': "pop('" + title + "', '"+url+"');",
+                'open': 'true' if len(item.code) < 8 else 'false'
+            })
+
+        url = '/admin/store_area_product?sid=' + str(store_id)
+        nodes.append({
+            'id': 0,
+            'pId': -1,
+            'name': '全部',
+            'url': '',
+            'target': '_top',
+            'click': "pop('全部地域-产品信息', '" + url + "');",
+            'open': 'true'
+        })
+        self.write(simplejson.dumps(nodes))

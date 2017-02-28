@@ -270,3 +270,43 @@ class MoneyHistoryHandler(AdminBaseHandler):
 
         self.render('admin/user/money_history.html', list=cfs, total=total, page=page, pagesize=pagesize,
                     totalpage=totalpage, store_id=store_id)
+
+
+@route(r'/admin/saler_product/(\d+)', name='admin_saler_product')  # 经销商产品地域信息
+class SalerProductHandler(AdminBaseHandler):
+    def get(self, store_id):
+        page = int(self.get_argument("page", '1') if len(self.get_argument("page", '1')) > 0 else '1')
+        pagesize = self.settings['admin_pagesize']
+        store = Store.get(id=store_id)
+        cfs = ProductRelease.select().where(ProductRelease.store == store_id)
+        total = cfs.count()
+        if total % pagesize > 0:
+            totalpage = total / pagesize + 1
+        else:
+            totalpage = 1
+        cfs = cfs.order_by(ProductRelease.id.asc()).paginate(page, pagesize)
+        self.render('admin/user/saler_product.html', s=store, products=cfs, total=total, page=page, pagesize=pagesize,
+                    totalpage=totalpage, active='saler')
+
+
+@route(r'/admin/store_area_product', name='admin_store_area_product')  # 经销商产品地域价格信息
+class SalerProductAreaPriceHandler(AdminBaseHandler):
+    def get(self):
+        page = int(self.get_argument("page", '1') if len(self.get_argument("page", '1')) > 0 else '1')
+        pagesize = self.settings['admin_pagesize']
+        store_id = int(self.get_argument("sid", '-1'))
+        code = self.get_argument("code", '0')
+        keyword = '' + code + '%'
+        cfs = StoreProductPrice.select(StoreProductPrice.product_release).where((StoreProductPrice.store == store_id) &
+                    (StoreProductPrice.area_code % keyword)).group_by(StoreProductPrice.product_release)
+        total = cfs.count()
+        if total % pagesize > 0:
+            totalpage = total / pagesize + 1
+        else:
+            totalpage = 1
+        cfs = cfs.paginate(page, pagesize)
+        products = []
+        for item in cfs:
+            products.append(ProductRelease.get(id=item.product_release.id))
+        self.render('admin/user/saler_area_product.html', products=cfs, total=total, page=page, pagesize=pagesize,
+                    totalpage=totalpage, store_id=store_id, code=code)
