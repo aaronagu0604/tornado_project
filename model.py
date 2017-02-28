@@ -319,6 +319,9 @@ class StoreArea(db.Model):
         db_table = 'tb_store_area'
 
 
+
+
+
 # 商品分类
 class Category(db.Model):
     id = PrimaryKeyField()
@@ -336,8 +339,7 @@ class Category(db.Model):
 # 商品分类属性
 class CategoryAttribute(db.Model):
     id = PrimaryKeyField()
-    category = ForeignKeyField(Category, related_name='attributes',
-                               db_column='category_id')  # 商品分类
+    category = ForeignKeyField(Category, related_name='attributes', db_column='category_id')  # 商品分类
     name = CharField(max_length=20)  # 属性名
     ename = CharField(max_length=20)  # 英文属性名
     sort = IntegerField(default=1)  # 显示顺序
