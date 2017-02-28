@@ -239,22 +239,220 @@ class MobileLoginHandler(MobileBaseHandler):
         self.finish()
 
 
-@route(r'/mobile/filter', name='mobile_filter')  # 发现列表的筛选界面
+@route(r'/mobile/home', name='mobile_home')  # 首页数据
+class MobileHomeHandler(MobileBaseHandler):
+    """
+    @apiGroup app
+    @apiVersion 1.0.0
+    @api {get} /mobile/home 01. 首页
+    @apiDescription app首页数据，
+    banner 首页轮播;
+    insurance  首页保险;
+    hot_category 热门分类;
+    hot_brand  热销产品;
+    recommend  为你推荐;
+
+    @apiHeader {String} token 用户登录凭证
+
+    @apiSampleRequest /mobile/home
+    """
+    def get(self):
+        result = {'flag': 0, 'msg': '', "data": {}}
+        area_code = self.get_store_area_code()
+
+        tmp_code = area_code
+        banners = self.get_banner(tmp_code)
+        while len(banners) == 0 and len(tmp_code) > 4:
+            tmp_code = tmp_code[0: -4]
+            banners = self.get_banner(tmp_code)
+        if len(banners) == 0:
+            banners = self.get_banner(self.get_default_area_code())
+        result['data']['banner'] = banners
+
+        tmp_code = area_code
+        insurances = self.get_insurance(tmp_code)
+        while len(insurances) == 0 and len(tmp_code) > 4:
+            tmp_code = tmp_code[0: -4]
+            insurances = self.get_insurance(tmp_code)
+        if len(insurances) == 0:
+            insurances = self.get_insurance(self.get_default_area_code())
+        result['data']['insurance'] = insurances
+
+        tmp_code = area_code
+        categories = self.get_category(tmp_code)
+        while len(categories) == 0 and len(tmp_code) > 4:
+            tmp_code = tmp_code[0: -4]
+            categories = self.get_category(tmp_code)
+        if len(categories) == 0:
+            categories = self.get_category(self.get_default_area_code())
+        result['data']['hot_category'] = categories
+
+        tmp_code = area_code
+        brands = self.get_brand(tmp_code)
+        while len(brands) == 0 and len(tmp_code) > 4:
+            tmp_code = tmp_code[0: -4]
+            brands = self.get_brand(tmp_code)
+        if len(brands) == 0:
+            brands = self.get_brand(self.get_default_area_code())
+        result['data']['hot_brand'] = brands
+
+        tmp_code = area_code
+        recommends = self.get_recommend(tmp_code)
+        while len(recommends) == 0 and len(tmp_code) > 4:
+            tmp_code = tmp_code[0: -4]
+            recommends = self.get_recommend(tmp_code)
+        if len(recommends) == 0:
+            recommends = self.get_recommend(self.get_default_area_code())
+        result['data']['recommend'] = recommends
+        result['flag'] = 1
+        self.write(simplejson.dumps(result))
+        self.finish()
+
+    def get_banner(self, area_code):
+        items = []
+        banners = BlockItem.select(BlockItem).join(Block) \
+            .where((Block.tag == 'banner') & (Block.active == 1) & (BlockItem.active == 1)
+                   & (BlockItem.area_code == area_code)).order_by(BlockItem.sort).asc()
+        for p in banners:
+            items.append({
+                'img': p.img,
+                'name': p.name,
+                'price': 0,
+                'link': p.link
+            })
+        return items
+
+    def get_insurance(self, area_code):
+        items = []
+        insurances = BlockItem.select(BlockItem.link, Insurance.logo, Insurance.name).join(Block). \
+            join(Insurance, on=BlockItem.ext_id == Insurance.id).where(
+            (Block.tag == 'insurance') & (Block.active == 1)
+            & (BlockItem.active == 1) & (BlockItem.area_code == area_code)).order_by(BlockItem.sort).asc().tuples()
+        for link, logo, name in insurances:
+            items.append({
+                'img': logo,
+                'name': name,
+                'price': 0,
+                'link': link
+            })
+        return items
+
+    def get_category(self, area_code):
+        items = []
+        categories = BlockItem.select(BlockItem.link, Category.img_m, Category.name).join(Block). \
+            join(Category, on=BlockItem.ext_id == Category.id).where(
+            (Block.tag == 'hot_category') & (Block.active == 1)
+            & (BlockItem.active == 1) & (BlockItem.area_code == area_code)).order_by(BlockItem.sort).asc().tuples()
+        for link, logo, name in categories:
+            items.append({
+                'img': logo,
+                'name': name,
+                'price': 0,
+                'link': link
+            })
+        return items
+
+    def get_brand(self, area_code):
+        items = []
+        brands = BlockItem.select(BlockItem.link, Brand.logo, Brand.name).join(Block). \
+            join(Brand, on=BlockItem.ext_id == Brand.id).where((Block.tag == 'hot_brand') & (Block.active == 1)
+                                                               & (BlockItem.active == 1) & (
+                                                               BlockItem.area_code == area_code)).order_by(
+            BlockItem.sort).asc().tuples()
+        for link, logo, name in brands:
+            items.append({
+                'img': logo,
+                'name': name,
+                'price': 0,
+                'link': link
+            })
+        return items
+
+    def get_recommend(self, area_code):
+        items = []
+        recommends = BlockItem.select(BlockItem.link, Product.cover, Product.name, StoreProductPrice.price).join(
+            Block). \
+            join(StoreProductPrice, on=BlockItem.ext_id == StoreProductPrice.id). \
+            join(ProductRelease, on=ProductRelease.id == StoreProductPrice.product_release). \
+            join(Product, on=Product.id == ProductRelease.product). \
+            where((Block.tag == 'recommend') & (Block.active == 1) & (BlockItem.active == 1)
+                  & (BlockItem.area_code == area_code)).order_by(BlockItem.sort).asc().tuples()
+        for link, logo, name, price in recommends:
+            items.append({
+                'img': logo,
+                'name': name,
+                'price': price,
+                'link': link
+            })
+        return items
+
+
+# -----------------------------------------------------普通商品---------------------------------------------------------
+@route(r'/mobile/discover', name='mobile_discover')  # 发现
+class MobileDiscoverHandler(MobileBaseHandler):
+    """
+    @apiGroup app
+    @apiVersion 1.0.0
+    @api {get} /mobile/discover 02. 发现
+    @apiDescription 发现
+
+    @apiHeader {String} token 用户登录凭证
+
+    @apiParam {String} type 入参为值category或brand category:分类更多； brand:品牌更多；不传就是发现页（两者都有）
+
+    @apiSampleRequest /mobile/discover
+    """
+    def get_category(self):
+        items = []
+        categories = Category.select().where(Category.active == 1).order_by(Category.hot.desc(), Category.sort.desc())
+        for categorie in categories:
+            items.append({
+                'id': categorie.id,
+                'img': categorie.img_m,
+                'name': categorie.name
+            })
+        return items
+
+    def get_brand(self):
+        items = []
+        brands = Brand.select().where(Block.active == 1).order_by(Brand.hot.desc(), Brand.sort.desc())
+        for brand in brands:
+            items.append({
+                'id': brand.id,
+                'img': brand.logo,
+                'name': brand.name
+            })
+        return items
+
+    def get(self):
+        result = {'flag': 0, 'msg': '', 'data': {}}
+        type = self.get_argument('type', None)
+
+        if type == 'category':
+            result['data']['category'] = self.get_category()
+        elif type == 'brand':
+            result['data']['brand'] = self.get_brand()
+        else:
+            result['data']['category'] = self.get_category()[:6]
+            result['data']['brand'] = self.get_brand()[:6]
+
+        self.write(simplejson.dumps(result))
+        self.finish()
+
+
+@route(r'/mobile/filter', name='mobile_filter')  # 普通商品筛选界面
 class MobileFilterHandler(MobileBaseHandler):
     """
     @apiGroup app
     @apiVersion 1.0.0
-    @api {get} /mobile/filter 01. 发现页面的筛选界面
-    @apiDescription 发现页面的筛选界面，未登陆使用西安code
+    @api {get} /mobile/filter 03. 普通商品筛选界面
+    @apiDescription 普通商品筛选界面，未登陆使用西安code
 
     @apiParam {Int} id 品牌或者分类ID
     @apiParam {Int} flag 1品牌 2分类
 
     @apiSampleRequest /mobile/filter
     """
-    def options(self):
-        pass
-
     def getCategoryAttribute(self, bc):
         '''
         attributeList = [{
@@ -391,7 +589,7 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
     """
     @apiGroup app
     @apiVersion 1.0.0
-    @api {get} /mobile/discover 02. 商品列表
+    @api {get} /mobile/discoverproducts 04. 商品列表
     @apiDescription 商品列表，未登陆使用西安code
 
     @apiHeader {String} token 用户登录凭证
@@ -399,15 +597,12 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
     @apiParam {String} keyword 搜索关键字
     @apiParam {String} sort 价格排序 1正序， 2逆序； 默认为1  销量排序 1正序， 2逆序； 默认2
     @apiParam {String} category 分类ID， 单选
-    @apiParam {String} brand 品牌ID组合， 多选, 例：[1,2,3]
-    @apiParam {String} attribute 属性ID组合, 多选, 例： [1,2,3]
+    @apiParam {String} brand 品牌ID组合， 多选, 例：1,2,3
+    @apiParam {String} attribute 属性ID组合, 多选, 例： 1,2,3
     @apiParam {Int} index
 
-    @apiSampleRequest /mobile/discover
+    @apiSampleRequest /mobile/discoverproducts
     """
-    def options(self):
-        pass
-
     def getProductList(self, keyword, sort, category, brand, attribute, index, area_code):
         productList = []
         pids = []
@@ -492,8 +687,8 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
         index = self.get_argument("index", None)
 
         index = int(index) if index else 1
-        brand = brand.split(',') if brand else None
-        attribute = attribute.split(',') if attribute else None
+        brand = brand.strip(',').split(',') if brand else None
+        attribute = attribute.strip(',').split(',') if attribute else None
         area_code = self.get_store_area_code()
 
         result['data'] = self.getProductList(keyword, sort, category, brand, attribute, index, area_code)
@@ -501,229 +696,13 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
         self.finish()
 
 
-@route(r'/mobile/discover', name='mobile_discover')  # 发现 ---------------------------------
-class MobileDiscoverHandler(MobileBaseHandler):
-    """
-    @apiGroup app
-    @apiVersion 1.0.0
-    @api {get} /mobile/discover 02. 发现
-    @apiDescription 发现
-
-    @apiHeader {String} token 用户登录凭证
-
-    @apiParam {String} keyword 搜索关键字
-    @apiParam {String} sort 价格排序 1正序， 2逆序； 默认为1  销量排序 1正序， 2逆序； 默认2
-    @apiParam {String} category 分类ID， 单选
-    @apiParam {String} brand 品牌ID组合， 多选, 例：[1,2,3]
-    @apiParam {String} attribute 属性ID组合, 多选, 例： [1,2,3]
-    @apiParam {Int} index
-
-    @apiSampleRequest /mobile/discover
-    """
-    def options(self):
-        pass
-
-
-    def get_category(area_code):
-        items = []
-        categories = BlockItem.select(BlockItem.link, Category.img_m, Category.name).join(Block).\
-            join(Category, on=BlockItem.ext_id == Category.id).where((Block.tag == 'hot_category') & (Block.active == 1)
-            & (BlockItem.active == 1) & (BlockItem.area_code == area_code)).order_by(BlockItem.sort).asc().tuples()
-        for link, logo, name in categories:
-            items.append({
-                'img': logo,
-                'name': name,
-                'price': 0,
-                'link': link
-            })
-        return items
-
-    def get_brand(area_code):
-        items = []
-        brands = BlockItem.select(BlockItem.link, Brand.logo, Brand.name).join(Block).\
-            join(Brand, on=BlockItem.ext_id == Brand.id).where((Block.tag == 'hot_brand') & (Block.active == 1)
-            & (BlockItem.active == 1) & (BlockItem.area_code == area_code)).order_by(BlockItem.sort).asc().tuples()
-        for link, logo, name in brands:
-            items.append({
-                'img': logo,
-                'name': name,
-                'price': 0,
-                'link': link
-            })
-        return items
-
-    def get(self):
-        result = {'flag': 0, 'msg': '', "data": {}}
-        keyword = self.get_argument("keyword", None)
-        sort = self.get_argument("sort", None)
-        category = self.get_argument("category", None)
-        brand = self.get_argument("brand", None)
-        attribute = self.get_argument("attribute", None)
-        index = self.get_argument("index", None)
-
-        index = int(index) if index else 1
-        brand = brand.split(',') if brand else None
-        attribute = attribute.split(',') if attribute else None
-        area_code = self.get_store_area_code()
-
-        result['data'] = self.getProductList(keyword, sort, category, brand, attribute, index, area_code)
-        self.write(simplejson.dumps(result))
-        self.finish()
-
-
-@route(r'/mobile/home', name='mobile_home')  # app首页数据
-class MobileHomeHandler(MobileBaseHandler):
-    """
-    @apiGroup app
-    @apiVersion 1.0.0
-    @api {get} /mobile/home 03. app首页数据
-    @apiDescription app首页数据，
-    banner 首页轮播;
-    insurance  首页保险;
-    hot_category 热门分类;
-    hot_brand  热销产品;
-    recommend  为你推荐;
-
-    @apiHeader {String} token 用户登录凭证
-
-    @apiSampleRequest /mobile/home
-    """
-    def options(self):
-        pass
-
-    def get(self):
-        result = {'flag': 0, 'msg': '', "data": {}}
-        area_code = self.get_store_area_code()
-
-        tmp_code = area_code
-        banners = self.get_banner(tmp_code)
-        while len(banners) == 0 and len(tmp_code) > 4:
-            tmp_code = tmp_code[0: -4]
-            banners = self.get_banner(tmp_code)
-        if len(banners) == 0:
-            banners = self.get_banner(self.get_default_area_code())
-        result['data']['banner'] = banners
-
-        tmp_code = area_code
-        insurances = self.get_insurance(tmp_code)
-        while len(insurances) == 0 and len(tmp_code) > 4:
-            tmp_code = tmp_code[0: -4]
-            insurances = self.get_insurance(tmp_code)
-        if len(insurances) == 0:
-            insurances = self.get_insurance(self.get_default_area_code())
-        result['data']['insurance'] = insurances
-
-        tmp_code = area_code
-        categories = self.get_category(tmp_code)
-        while len(categories) == 0 and len(tmp_code) > 4:
-            tmp_code = tmp_code[0: -4]
-            categories = self.get_category(tmp_code)
-        if len(categories) == 0:
-            categories = self.get_category(self.get_default_area_code())
-        result['data']['hot_category'] = categories
-
-        tmp_code = area_code
-        brands = self.get_brand(tmp_code)
-        while len(brands) == 0 and len(tmp_code) > 4:
-            tmp_code = tmp_code[0: -4]
-            brands = self.get_brand(tmp_code)
-        if len(brands) == 0:
-            brands = self.get_brand(self.get_default_area_code())
-        result['data']['hot_brand'] = brands
-
-        tmp_code = area_code
-        recommends = self.get_recommend(tmp_code)
-        while len(recommends) == 0 and len(tmp_code) > 4:
-            tmp_code = tmp_code[0: -4]
-            recommends = self.get_recommend(tmp_code)
-        if len(recommends) == 0:
-            recommends = self.get_recommend(self.get_default_area_code())
-        result['data']['recommend'] = recommends
-        result['flag'] = 1
-        self.write(simplejson.dumps(result))
-        self.finish()
-
-    def get_banner(self, area_code):
-        items = []
-        banners = BlockItem.select(BlockItem).join(Block)\
-            .where((Block.tag == 'banner') & (Block.active == 1) & (BlockItem.active == 1)
-                   & (BlockItem.area_code == area_code)).order_by(BlockItem.sort).asc()
-        for p in banners:
-            items.append({
-                'img': p.img,
-                'name': p.name,
-                'price': 0,
-                'link': p.link
-            })
-        return items
-
-    def get_insurance(self, area_code):
-        items = []
-        insurances = BlockItem.select(BlockItem.link, Insurance.logo, Insurance.name).join(Block).\
-            join(Insurance, on=BlockItem.ext_id == Insurance.id).where((Block.tag == 'insurance') & (Block.active == 1)
-            & (BlockItem.active == 1) & (BlockItem.area_code == area_code)).order_by(BlockItem.sort).asc().tuples()
-        for link, logo, name in insurances:
-            items.append({
-                'img': logo,
-                'name': name,
-                'price': 0,
-                'link': link
-            })
-        return items
-
-    def get_category(self, area_code):
-        items = []
-        categories = BlockItem.select(BlockItem.link, Category.img_m, Category.name).join(Block).\
-            join(Category, on=BlockItem.ext_id == Category.id).where((Block.tag == 'hot_category') & (Block.active == 1)
-            & (BlockItem.active == 1) & (BlockItem.area_code == area_code)).order_by(BlockItem.sort).asc().tuples()
-        for link, logo, name in categories:
-            items.append({
-                'img': logo,
-                'name': name,
-                'price': 0,
-                'link': link
-            })
-        return items
-
-    def get_brand(self, area_code):
-        items = []
-        brands = BlockItem.select(BlockItem.link, Brand.logo, Brand.name).join(Block).\
-            join(Brand, on=BlockItem.ext_id == Brand.id).where((Block.tag == 'hot_brand') & (Block.active == 1)
-            & (BlockItem.active == 1) & (BlockItem.area_code == area_code)).order_by(BlockItem.sort).asc().tuples()
-        for link, logo, name in brands:
-            items.append({
-                'img': logo,
-                'name': name,
-                'price': 0,
-                'link': link
-            })
-        return items
-
-    def get_recommend(self, area_code):
-        items = []
-        recommends = BlockItem.select(BlockItem.link, Product.cover, Product.name, StoreProductPrice.price).join(Block).\
-            join(StoreProductPrice, on=BlockItem.ext_id == StoreProductPrice.id).\
-            join(ProductRelease, on=ProductRelease.id == StoreProductPrice.product_release). \
-            join(Product, on=Product.id == ProductRelease.product). \
-            where((Block.tag == 'recommend') & (Block.active == 1) & (BlockItem.active == 1)
-                  & (BlockItem.area_code == area_code)).order_by(BlockItem.sort).asc().tuples()
-        for link, logo, name, price in recommends:
-            items.append({
-                'img': logo,
-                'name': name,
-                'price': price,
-                'link': link
-            })
-        return items
-
-
-@route(r'/mobile/product', name='mobile_product')  # app产品详情页
+@route(r'/mobile/product', name='mobile_product')  # 产品详情页
 class MobileProductHandler(MobileBaseHandler):
     """
     @apiGroup app
     @apiVersion 1.0.0
-    @api {get} /mobile/product 04. 产品详情页
-    @apiDescription app产品详情页,返回html代码
+    @api {get} /mobile/product 05. 产品详情页
+    @apiDescription 产品详情页,返回html代码
 
     @apiHeader {String} token 用户登录凭证
 
@@ -745,7 +724,7 @@ class MobileAddShopCarHandler(MobileBaseHandler):
     """
     @apiGroup app
     @apiVersion 1.0.0
-    @api {post} /mobile/addshopcar 05. 添加购物车
+    @api {post} /mobile/addshopcar 06. 添加购物车
     @apiDescription 添加购物车
 
     @apiHeader {String} token 用户登录凭证
@@ -781,7 +760,7 @@ class MobileShopCarHandler(MobileBaseHandler):
     """
     @apiGroup app
     @apiVersion 1.0.0
-    @api {get} /mobile/shopcar 06. 手机端购物车内容获取
+    @api {get} /mobile/shopcar 07. 手机端购物车内容获取
     @apiDescription app  手机端购物车内容获取
 
     @apiHeader {String} token 用户登录凭证
@@ -812,6 +791,7 @@ class MobileShopCarHandler(MobileBaseHandler):
         self.finish()
 
 
+# -------------------------------------------------------商品/保险订单--------------------------------------------------
 @route(r'/mobile/orderbase', name='mobile_orderbase')  # 创建订单前的获取数据
 class MobileOrderBaseHandler(MobileBaseHandler):
     """
@@ -899,8 +879,10 @@ class MobileNewOrderHandler(MobileBaseHandler):
         order_type = self.get_body_argument("order_type", None)
         payment = self.get_body_argument("payment", None)
         total_price = self.get_body_argument("total_price", None)
+        a = self.request.body
         products = self.get_body_argument("products", None)
         user = self.get_user()
+
         if address and payment and total_price and products and user and order_type:
             items = simplejson.loads(products)
             order = Order()
@@ -961,7 +943,7 @@ class MobileNewOrderHandler(MobileBaseHandler):
                     order_item.store_product_price = spp
                     order_item.quantity = product['count']
                     order_item.price = spp.price
-                    order_item.product = spp.product_realse.product
+                    order_item.product = spp.product_release.product
                     order_item.save()
             result['flag'] = 1
             result['data']['order_id'] = order.id
@@ -981,7 +963,6 @@ class MobileNewOrderHandler(MobileBaseHandler):
                 result['data']['pay_info'] = pay_info
             else:
                 result['data']['pay_info'] = ''
-
         else:
             result['msg'] = "传入参数异常"
         self.write(simplejson.dumps(result))
