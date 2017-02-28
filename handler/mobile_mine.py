@@ -717,7 +717,7 @@ class MobileBindBankCardHandler(MobileBaseHandler):
     def get(self):
         result = {'flag': 0, 'msg': '', 'data': []}
         store = self.get_user().store
-        sbas = StoreBankAccount.select().where(StoreBankAccount.store == store & StoreBankAccount.account_type == 0)
+        sbas = StoreBankAccount.select().where((StoreBankAccount.store == store) & (StoreBankAccount.account_type == 0))
         for sba in sbas:
             result['data'].append({
                 'bank_id': sba.id,
@@ -757,7 +757,7 @@ class MobileBindBankCardHandler(MobileBaseHandler):
             StoreBankAccount().delete().where(StoreBankAccount.id==bank_id).execute()
         elif bank_name and truename and account:
             sba = StoreBankAccount()
-            if StoreBankAccount.select().where(StoreBankAccount.is_default==1 & StoreBankAccount.store==store).count() > 0:
+            if StoreBankAccount.select().where((StoreBankAccount.is_default==1) & (StoreBankAccount.store==store)).count() > 0:
                 sba.is_default = 0
             else:
                 sba.is_default = 1
@@ -787,7 +787,7 @@ class MobileBindAlipayHandler(MobileBaseHandler):
     def get(self):
         result = {'flag': 1, 'msg': '', 'data': {'bank_id': '', 'alipay_truename':'', 'alipay_account': ''}}
         store = self.get_user().store
-        sbas = StoreBankAccount.select().where(StoreBankAccount.store == store & StoreBankAccount.account_type == 1)
+        sbas = StoreBankAccount.select().where((StoreBankAccount.store == store) & (StoreBankAccount.account_type == 1))
         if sbas.count() > 0:
             sba = sbas[0]
             result['data']['alipay_truename'] = sba.alipay_truename
@@ -818,7 +818,7 @@ class MobileBindAlipayHandler(MobileBaseHandler):
         elif alipay_truename and alipay_account:
             result['flag'] = 1
             result['msg'] = '绑定支付宝成功'
-            sbas = StoreBankAccount.select().where(StoreBankAccount.account_type==1 & StoreBankAccount.store==store)
+            sbas = StoreBankAccount.select().where((StoreBankAccount.account_type==1) & (StoreBankAccount.store==store))
             if sbas.count() > 0:
                 sbas[0].alipay_truename = alipay_truename
                 sbas[0].alipay_account = alipay_account

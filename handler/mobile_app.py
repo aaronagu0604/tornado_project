@@ -830,11 +830,11 @@ class MobileOrderBaseHandler(MobileBaseHandler):
                 result['data']['last_pay_type'] = user.last_pay_type
 
                 stores = Store.select(Store).join(StoreProductPrice).\
-                    where(StoreProductPrice.active == 1 & StoreProductPrice.id << sppids).group_by(StoreProductPrice.store)
+                    where((StoreProductPrice.active == 1) & (StoreProductPrice.id << sppids)).group_by(StoreProductPrice.store)
                 for i, store in enumerate(stores):
                     products = []
                     product_list = StoreProductPrice.select().\
-                        where(StoreProductPrice.active == 1 & StoreProductPrice.id << sppids).\
+                        where((StoreProductPrice.active == 1) & (StoreProductPrice.id << sppids)).\
                         order_by(StoreProductPrice.store)
                     for product_price in product_list:
                         products.append({
