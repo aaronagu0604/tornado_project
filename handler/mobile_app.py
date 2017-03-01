@@ -1206,7 +1206,7 @@ class MobilePayOrderHandler(MobileBaseHandler):
     @apiHeader {String} token 用户登录凭证
 
     @apiParam {String} order_number 订单号
-    @apiParam {String} payment 支付方式
+    @apiParam {Int} payment 支付方式
 
     @apiSampleRequest /mobile/payorder
     """
