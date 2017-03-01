@@ -903,6 +903,7 @@ class MobileNewOrderHandler(MobileBaseHandler):
                 if user.store.price < total_price:
                     result['msg'] = "您的余额不足"
                 else:
+                    order.user.store.price -= total_price
                     order.status = 1
                     order.pay_time = int(time.time())
                     order.save()
@@ -1199,111 +1200,84 @@ class MobilePayOrderHandler(MobileBaseHandler):
     """
     @apiGroup order
     @apiVersion 1.0.0
-    @api {post} /mobile/neworder 02. 创建产品订单
-    @apiDescription 创建产品订单
+    @api {post} /mobile/neworder 05. 订单支付
+    @apiDescription 订单支付
 
     @apiHeader {String} token 用户登录凭证
 
-    @apiParam {Int} address 地址ID
-    @apiParam {Int} order_type 订单类型  1金钱订单  2积分订单
-    @apiParam {Int} payment 付款方式  1支付宝  2微信 3银联 4余额
-    @apiParam {Float} total_price 订单总价
-    @apiParam {String} products 产品数据集合，如：[{sid:1, price:119, products:[{sppid:1, count:1}]}, ……]；
-    sid为店铺ID；price为该店铺的金额；sppid为StoreProductPrice的ID，count为产品数量；服务端将订单按Store拆分为多个SubOrder
+    @apiParam {Int} order_number 订单号
 
     @apiSampleRequest /mobile/neworder
     """
+    def after_pay_operation(self, order, total_price, user, order_type):
+        order.user.store.price -= total_price
+        order.status += 1
+        order.pay_time = int(time.time())
+        order.save()
+        if order_type == 1:  # 1金钱订单
+            money_record = MoneyRecord()
+            money_record.user = user
+            money_record.store = user.store
+            money_record.process_type = 2
+            money_record.process_log = '购买产品使用余额支付, 订单号：' + order.ordernum
+            money_record.status = 1
+            money_record.money = total_price
+            money_record.apply_time = int(time.time())
+            money_record.save()
+        elif order_type == 2:  # 2积分订单
+            score_record = ScoreRecord()
+            score_record.user = user
+            score_record.store = user.store
+            score_record.process_type = 2
+            score_record.process_log = '积分兑换产品, 订单号：' + order.ordernum
+            score_record.score = math.ceil(total_price)  # 积分有小数进位
+            score_record.status = 1
+            score_record.save()
+
     @require_auth
     def post(self):
         result = {'flag': 0, 'msg': '', "data": {}}
-        order_number = self.get_body_argument("address", None)
-        order_type = self.get_body_argument("order_type", None)
+        order_number = self.get_body_argument("order_number", None)
         payment = self.get_body_argument("payment", None)
-        total_price = self.get_body_argument("total_price", None)
-        a = self.request.body
-        products = self.get_body_argument("products", None)
         user = self.get_user()
-
-        if address and payment and total_price and products and user and order_type:
-            items = simplejson.loads(products)
-            order = Order()
-            order.user = user
-            order.buyer_store = user.store
-            order.address = address
-            order.ordered = int(time.time())
-            order.payment = payment
-            order.message = ''
-            order.order_type = order_type
-            order.total_price = total_price
+        if order_number and payment:
+            if 'S' in order_number:  # 普通商品订单
+                order = Order.get(ordernum=order_number)
+                if order.status != 0:
+                    result['msg'] = '该订单不可支付'
+                    return self.write(simplejson.dumps(result))
+                else:
+                    total_price = order.total_price
+                    order_type = order.order_type
+            elif 'I' in order_number:  # 保险订单
+                order = InsuranceOrder.get(ordernum=order_number)
+                if order.status != 1:
+                    result['msg'] = '该订单不可支付'
+                    return self.write(simplejson.dumps(result))
+                else:
+                    total_price = order.current_order_price.total_price
+                    order_type = 1
+            else:
+                result['msg'] = '订单类型不可知'
+                return self.write(simplejson.dumps(result))
             if payment == 4:  # 余额支付
                 if user.store.price < total_price:
                     result['msg'] = "您的余额不足"
                 else:
-                    order.status = 1
-                    order.pay_time = int(time.time())
-                    order.save()
-                    order.ordernum = 'U' + str(user.id) + 'S' + str(order.id)
-                    order.save()
-                    if order_type == 1:  # 1金钱订单
-                        money_record = MoneyRecord()
-                        money_record.user = user
-                        money_record.store = user.store
-                        money_record.process_type = 2
-                        money_record.process_log = '购买产品使用余额支付, 订单号：' + order.ordernum
-                        money_record.status = 1
-                        money_record.money = total_price
-                        money_record.apply_time = int(time.time())
-                        money_record.save()
-                    elif order_type == 2:  # 2积分订单
-                        score_record = ScoreRecord()
-                        score_record.user = user
-                        score_record.store = user.store
-                        score_record.process_type = 2
-                        score_record.process_log = '积分兑换产品, 订单号：' + order.ordernum
-                        score_record.score = math.ceil(total_price)  # 积分有小数进位
-                        score_record.status = 1
-                        score_record.save()
-            else:
-                order.status = 0
-                order.save()
-                order.ordernum = 'U' + str(user.id) + 'S' + str(order.id)
-                order.save()
-            for item in items:
-                sub_order = SubOrder()
-                sub_order.order = order
-                sub_order.saler_store = item['sid']
-                sub_order.buyer_store = user.store
-                sub_order.price = item['price']
-                sub_order.status = order.status
-                sub_order.save()
-                for product in item['products']:
-                    spp = StoreProductPrice.get(id=product['sppid'])
-                    order_item = OrderItem()
-                    order_item.order = order
-                    order_item.sub_order = sub_order
-                    order_item.store_product_price = spp
-                    order_item.quantity = product['count']
-                    order_item.price = spp.price
-                    order_item.product = spp.product_release.product
-                    order_item.save()
-            result['flag'] = 1
-            result['data']['order_id'] = order.id
-            result['data']['payment'] = payment
-            if payment == 1:  # 1支付宝  2微信 3银联 4余额
+                    self.after_pay_operation(order, total_price, user, order_type)
+            elif payment == 1:  # 1支付宝  2微信 3银联 4余额
                 response_url = get_pay_url(order.ordernum.encode('utf-8'), u'车装甲商品', str(total_price))
-                if len(response_url) > 0:
-                    result['data']['pay_info'] = response_url
-                else:
-                    result['data']['pay_info'] = ''
+                result['data']['pay_info'] = response_url
             elif payment == 2:
                 pay_info = UnifiedOrder_pub().getPrepayId(order.ordernum.encode('utf-8'), u'车装甲商品',
                                                           int(total_price * 100))
                 result['data']['pay_info'] = pay_info
             elif payment == 3:
-                pay_info = Trade().trade(order.ordernum, order.currentprice)
+                pay_info = Trade().trade(order.ordernum, total_price)
                 result['data']['pay_info'] = pay_info
             else:
                 result['data']['pay_info'] = ''
+            result['flag'] = 1
         else:
             result['msg'] = "传入参数异常"
         self.write(simplejson.dumps(result))
