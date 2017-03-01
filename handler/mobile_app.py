@@ -792,7 +792,7 @@ class MobileShopCarHandler(MobileBaseHandler):
 
 
 # -------------------------------------------------------商品/保险订单--------------------------------------------------
-@route(r'/mobile/orderbase', name='mobile_orderbase')  # 创建订单前的获取数据
+@route(r'/mobile/orderbase', name='mobile_order_base')  # 创建订单前的获取数据
 class MobileOrderBaseHandler(MobileBaseHandler):
     """
     @apiGroup order
@@ -859,7 +859,7 @@ class MobileOrderBaseHandler(MobileBaseHandler):
         self.finish()
 
 
-@route(r'/mobile/neworder', name='mobile_neworder')  # 创建产品订单
+@route(r'/mobile/neworder', name='mobile_new_order')  # 创建产品订单
 class MobileNewOrderHandler(MobileBaseHandler):
     """
     @apiGroup order
@@ -885,7 +885,6 @@ class MobileNewOrderHandler(MobileBaseHandler):
         order_type = self.get_body_argument("order_type", None)
         payment = self.get_body_argument("payment", None)
         total_price = self.get_body_argument("total_price", None)
-        a = self.request.body
         products = self.get_body_argument("products", None)
         user = self.get_user()
 
@@ -1026,6 +1025,16 @@ class MobilInsuranceOrderBaseHandler(MobileBaseHandler):
                 })
         return result
 
+    def get_insurance_price(self):
+        result = []
+        i_items = InsuranceItem.select()
+        for i_item in i_items:
+            result.append({
+                'eName': i_item.eName,
+                'iPrice': [i_price.coverage for i_price in i_item.insurance_prices]
+            })
+        return result
+
     @require_auth
     def get(self):
         result = {'flag': 0, 'msg': '', "data": {}}
@@ -1040,6 +1049,7 @@ class MobilInsuranceOrderBaseHandler(MobileBaseHandler):
             result['data']['delivery_region'] = address.region
             result['data']['delivery_address'] = address.address
             result['data']['insurance_message'] = InsuranceScoreExchange.get_insurances(area_code)
+            result['data']['insurance_price'] = self.get_insurance_price()
         except Exception, ex:
             result['data']['delivery_to'] = ''
             result['data']['delivery_tel'] = ''
@@ -1191,6 +1201,121 @@ class MobilNewInsuranceOrderHandler(MobileBaseHandler):
         self.write(simplejson.dumps(result))
         self.finish()
 
+
+@route(r'/mobile/payorder', name='mobile_pay_order')  # 订单支付
+class MobilePayOrderHandler(MobileBaseHandler):
+    """
+    @apiGroup order
+    @apiVersion 1.0.0
+    @api {post} /mobile/neworder 02. 创建产品订单
+    @apiDescription 创建产品订单
+
+    @apiHeader {String} token 用户登录凭证
+
+    @apiParam {Int} address 地址ID
+    @apiParam {Int} order_type 订单类型  1金钱订单  2积分订单
+    @apiParam {Int} payment 付款方式  1支付宝  2微信 3银联 4余额
+    @apiParam {Float} total_price 订单总价
+    @apiParam {String} products 产品数据集合，如：[{sid:1, price:119, products:[{sppid:1, count:1}]}, ……]；
+    sid为店铺ID；price为该店铺的金额；sppid为StoreProductPrice的ID，count为产品数量；服务端将订单按Store拆分为多个SubOrder
+
+    @apiSampleRequest /mobile/neworder
+    """
+    @require_auth
+    def post(self):
+        result = {'flag': 0, 'msg': '', "data": {}}
+        order_number = self.get_body_argument("address", None)
+        order_type = self.get_body_argument("order_type", None)
+        payment = self.get_body_argument("payment", None)
+        total_price = self.get_body_argument("total_price", None)
+        a = self.request.body
+        products = self.get_body_argument("products", None)
+        user = self.get_user()
+
+        if address and payment and total_price and products and user and order_type:
+            items = simplejson.loads(products)
+            order = Order()
+            order.user = user
+            order.buyer_store = user.store
+            order.address = address
+            order.ordered = int(time.time())
+            order.payment = payment
+            order.message = ''
+            order.order_type = order_type
+            order.total_price = total_price
+            if payment == 4:  # 余额支付
+                if user.store.price < total_price:
+                    result['msg'] = "您的余额不足"
+                else:
+                    order.status = 1
+                    order.pay_time = int(time.time())
+                    order.save()
+                    order.ordernum = 'U' + str(user.id) + 'S' + str(order.id)
+                    order.save()
+                    if order_type == 1:  # 1金钱订单
+                        money_record = MoneyRecord()
+                        money_record.user = user
+                        money_record.store = user.store
+                        money_record.process_type = 2
+                        money_record.process_log = '购买产品使用余额支付, 订单号：' + order.ordernum
+                        money_record.status = 1
+                        money_record.money = total_price
+                        money_record.apply_time = int(time.time())
+                        money_record.save()
+                    elif order_type == 2:  # 2积分订单
+                        score_record = ScoreRecord()
+                        score_record.user = user
+                        score_record.store = user.store
+                        score_record.process_type = 2
+                        score_record.process_log = '积分兑换产品, 订单号：' + order.ordernum
+                        score_record.score = math.ceil(total_price)  # 积分有小数进位
+                        score_record.status = 1
+                        score_record.save()
+            else:
+                order.status = 0
+                order.save()
+                order.ordernum = 'U' + str(user.id) + 'S' + str(order.id)
+                order.save()
+            for item in items:
+                sub_order = SubOrder()
+                sub_order.order = order
+                sub_order.saler_store = item['sid']
+                sub_order.buyer_store = user.store
+                sub_order.price = item['price']
+                sub_order.status = order.status
+                sub_order.save()
+                for product in item['products']:
+                    spp = StoreProductPrice.get(id=product['sppid'])
+                    order_item = OrderItem()
+                    order_item.order = order
+                    order_item.sub_order = sub_order
+                    order_item.store_product_price = spp
+                    order_item.quantity = product['count']
+                    order_item.price = spp.price
+                    order_item.product = spp.product_release.product
+                    order_item.save()
+            result['flag'] = 1
+            result['data']['order_id'] = order.id
+            result['data']['payment'] = payment
+            if payment == 1:  # 1支付宝  2微信 3银联 4余额
+                response_url = get_pay_url(order.ordernum.encode('utf-8'), u'车装甲商品', str(total_price))
+                if len(response_url) > 0:
+                    result['data']['pay_info'] = response_url
+                else:
+                    result['data']['pay_info'] = ''
+            elif payment == 2:
+                pay_info = UnifiedOrder_pub().getPrepayId(order.ordernum.encode('utf-8'), u'车装甲商品',
+                                                          int(total_price * 100))
+                result['data']['pay_info'] = pay_info
+            elif payment == 3:
+                pay_info = Trade().trade(order.ordernum, order.currentprice)
+                result['data']['pay_info'] = pay_info
+            else:
+                result['data']['pay_info'] = ''
+        else:
+            result['msg'] = "传入参数异常"
+        self.write(simplejson.dumps(result))
+        self.finish()
 
 
 
