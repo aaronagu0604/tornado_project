@@ -1025,16 +1025,6 @@ class MobilInsuranceOrderBaseHandler(MobileBaseHandler):
                 })
         return result
 
-    def get_insurance_price(self):
-        result = []
-        i_items = InsuranceItem.select()
-        for i_item in i_items:
-            result.append({
-                'eName': i_item.eName,
-                'iPrice': [i_price.coverage for i_price in i_item.insurance_prices]
-            })
-        return result
-
     @require_auth
     def get(self):
         result = {'flag': 0, 'msg': '', "data": {}}
@@ -1049,7 +1039,9 @@ class MobilInsuranceOrderBaseHandler(MobileBaseHandler):
             result['data']['delivery_region'] = address.region
             result['data']['delivery_address'] = address.address
             result['data']['insurance_message'] = InsuranceScoreExchange.get_insurances(area_code)
-            result['data']['insurance_price'] = self.get_insurance_price()
+            for i_item in InsuranceItem.select():
+                if i_item.insurance_prices:
+                    result['data'][i_item.eName] = [i_price.coverage for i_price in i_item.insurance_prices]
         except Exception, ex:
             result['data']['delivery_to'] = ''
             result['data']['delivery_tel'] = ''
