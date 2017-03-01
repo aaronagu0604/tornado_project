@@ -220,7 +220,7 @@ def productOrderSearch(ft, type, index):
         })
     return result
 
-@route(r'/mobile/purchaseorder ', name='mobile_purchase_order')  # 普通商品采购订单
+@route(r'/mobile/purchaseorder', name='mobile_purchase_order')  # 普通商品采购订单
 class MobilPurchaseOrderHandler(MobileBaseHandler):
     """
     @apiGroup mine
