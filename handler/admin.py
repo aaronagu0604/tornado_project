@@ -4,6 +4,7 @@
 from handler import AdminBaseHandler, BaseHandler
 from lib.route import route
 from model import *
+import simplejson
 import time
 import logging
 
@@ -381,5 +382,27 @@ class ProductReleaseAddHandler(AdminBaseHandler):
                     pagesize=pagesize, totalpage=totalpage, keyword=keyword, store_id=store_id)
 
 
+@route(r'/admin/product_publish/(\d+)', name='admin_product_publish')  # 经销商发布商品到地区
+class ProductPublishHandler(AdminBaseHandler):
+    def get(self, store_id):
+        page = int(self.get_argument("page", '1') if len(self.get_argument("page", '1')) > 0 else '1')
+        pagesize = int(self.get_argument("pagesize", '20') if len(self.get_argument("pagesize", '20')) > 0 else '20')
+        keyword = self.get_argument("keyword", '')
+        codes = self.get_argument("codes", '')
+        codes = codes.split(',')
+        ft = ((ProductRelease.active == 1) & (Product.active == 1) & (ProductRelease.store == store_id))
+        if len(keyword) > 0:
+            keyword2 = '%' + keyword + '%'
+            ft &= (Product.name % keyword2)
+
+        cfs = ProductRelease.select(ProductRelease).join(Product).where(ft)
+        total = cfs.count()
+        if total % pagesize > 0:
+            totalpage = total / pagesize + 1
+        else:
+            totalpage = total / pagesize if (total / pagesize) > 0 else 1
+        cfs = cfs.order_by(ProductRelease.sort.asc()).paginate(page, pagesize)
+        self.render('admin/user/saler_product_publish.html', products=cfs, total=total, page=page, codes=codes,
+                    pagesize=pagesize, totalpage=totalpage, keyword=keyword, store_id=store_id, Area=Area)
 
 

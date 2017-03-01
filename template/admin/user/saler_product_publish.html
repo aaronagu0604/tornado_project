@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- Bootstrap Core CSS -->
+    <link href="/style/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/style/css/plugins/dataTables.bootstrap.css" rel="stylesheet">
+    <script src="/style/js/jquery-1.11.1.min.js"></script>
+    <script src="/style/js/bootstrap.min.js"></script>
+    <script src="/style/js/jquery.twbsPagination.min.js"></script>
+    <script type="text/javascript" src="/style/js/layer/layer.js"></script>
+</head>
+<body>
+    <div class="row" style="margin:5px 5px 0 5px;">
+        <div class="panel panel-primary">
+            <div class="row">
+
+                <div class="" style="float: left">
+                    <span style="font-size:15px; padding-left:10px;">经销商 - 商品库</span> &nbsp;&nbsp;
+                    <a class="btn btn-xs btn-outline btn-primary" href="#" onclick="checkChanged(1)">全选</a>
+                    <a class="btn btn-xs btn-outline btn-primary" href="#" onclick="checkChanged(0)">取消全选</a>
+
+                </div>
+                <div class="pull-right">
+                    <form class="navbar-form navbar-left" action="" method="get">
+                        <input value="1" type="hidden" name="page">
+                        <input value="{{store_id}}" type="hidden" name="sid">
+                        <label class="num">每页显示条数：&nbsp;</label>
+                        <select class="form-control" id="status" name="pagesize">
+                            <option value="1" {{pagesize==1 and
+                            'selected'}} >1</option>
+                            <option value="20" {{pagesize==20 and
+                            'selected'}} >20</option>
+                            <option value="50" {{pagesize==50 and
+                            'selected'}} >50</option>
+                            <option value="100" {{pagesize==100 and
+                            'selected'}}>100</option>
+                            <option value="500" {{pagesize==500 and
+                            'selected'}}>500</option>
+                        </select>
+                        <div class="input-group custom-search-form">
+                            <input type="text" id="price" class="form-control" style="width:180px;"
+                            value="" placeholder="整体改价">
+                            <span class="input-group-btn">
+                               <button class="btn btn-default" type="button" onclick="changePrice()">
+                                   整体改价
+                               </button>
+                               <button class="btn btn-default" type="button" onclick="autoSort()">
+                                   自动排序
+                               </button>
+                           </span>
+                       </div>
+
+                       <div class="input-group custom-search-form">
+                        <input type="text" id="keyword" name="keyword" class="form-control" style="width:180px;"
+                        value="{{keyword}}" placeholder="按商品名称查找">
+                        <span class="input-group-btn">
+                           <button class="btn btn-default" type="submit">
+                               查找
+                           </button>
+                       </span>
+                   </div>
+                   <a class="btn btn-sm btn-outline btn-primary" href="#" onclick="process()">发布到所选地域</a>
+               </form>
+           </div>
+
+       </div>
+       <div class="table-responsive">
+        <table class="table table-hover" id="tb_user" cellpadding="0" cellspacing="0" border="0"
+        style="text-align:left;">
+        <thead>
+            <tr>
+                <th style="width:20%;text-align:left;">名称</th>
+                <th style="width:10%;text-align:left;">品牌</th>
+                <th style="width:10%;text-align:left;">分类</th>
+                <th style="width:20%;text-align:left;">地域信息（价格 排序）</th>
+            </tr>
+            {% for p in products %}
+            <tr>
+                <td>
+                    <input type="checkbox" value="{{p.id}}"> {{p.product.name}}
+                </td>
+                <td>
+                    {{p.product.brand.name}}
+                </td>
+                <td>{{p.product.category.name}}</td>
+                <td>
+                    <table class="table table-hover" cellpadding="0" cellspacing="0" border="0"
+                    style="text-align:center;">
+                    <thead>
+                        {% for code in codes %}
+                        <tr name="tr_{{p.id}}" code="{{code}}">
+                            <td style="width:29%;text-align:left;">
+                                {{Area().get_detailed_address(code)}}
+                            </td>
+
+                            <td style="width:10%;text-align:left;">
+                                <input type="text" tag="price" name="price_{{p.id}}" class="form-control" style="width:100px;"
+                                value="{{p.price}}" placeholder="价格" code={{code}}>
+                            </td>
+                            <td style="width:8%;text-align:left;">
+                                <input type="text" tag="sort" name="sort_{{p.id}}" class="form-control" style="width:60px;"
+                                value="{{p.sort}}" placeholder="排序" code={{code}}></td>
+
+                            </tr>
+                            {% endfor %}
+                        </thead>
+
+                    </table>
+                </td>
+            </tr>
+            {% endfor %}
+        </thead>
+
+    </table>
+    <div>
+        <div class="col-sm-4">
+            <div class="dataTables_info" role="alert" aria-live="polite" aria-relevant="all">
+                当前：第{{page}}页 / {{totalpage}}页，合计{{total}}条
+            </div>
+        </div>
+        <div class="col-sm-8">
+            <div class="dataTables_paginate paging_simple_numbers">
+                <ul class="pagination  pagination-sm" id="pageUl"/>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+</body>
+</html>
+<script>
+    function changePrice() {
+        $("#tb_user input[tag='price']").val($("#price").val());
+    }
+
+    function autoSort() {
+        var start = parseInt($("#price").val());
+        $("#tb_user input[tag='sort']").each(function(){
+            $(this).val(start.toString());
+            start++;
+        }
+        );
+    }
+
+    function checkChanged(flag)
+    {
+        if(flag == 1) {
+            $("#tb_user input[type='checkbox']").prop("checked",true);
+        }
+        else {
+            $("#tb_user input[type='checkbox']").prop("checked",false);
+        }
+    }
+
+    function findAllSelectedData(){
+        var data = [];
+        $("#tb_user input[type='checkbox']:checked").each(function(){
+            var key = this.value;
+            $("#tb_user tr[name='tr_"+key+"']").each(function(){
+                var item = {};
+                item.id = key;
+                item.price = $(this).find('input').first().val();
+                item.sort = $(this).find('input').last().val();
+                item.code = $(this).attr('code');
+                data.push(item);
+            });
+        });
+        return data;
+    }
+
+    var xsrf='{{handler.xsrf_token}}';
+    function process() {
+        var data2 = findAllSelectedData();
+        if(data2.length == 0) {
+            layer.alert('请先选择需要处理的商品');
+            return;
+        }
+        $.post("/ajax/product_release_publish/{{store_id}}", { _xsrf:xsrf, json:JSON.stringify(data2) }, function (data) {
+            data = jQuery.parseJSON(data);
+            if(data.flag==1){
+                layer.alert('发布成功');
+            }
+            else
+            {
+                layer.alert('发布失败，请联系管理员');
+            }
+        });
+    }
+
+    $(document).ready(function() {
+        $('#pageUl').twbsPagination({
+            first:'首页',
+            prev:'上一页',
+            next:'下一页',
+            last:'尾页',
+            totalPages: {{totalpage}},
+            startPage: {{page}},
+            visiblePages: 8,
+            onPageClick: function (event, page) {
+                self.location="/admin/product_publish/{{store_id}}?keyword={{keyword}}&codes={{codes}}&pagesize={{pagesize}}&page="+page;
+            }
+        });
+    });
+
+</script>

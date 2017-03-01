@@ -18,7 +18,8 @@
 		<div class="panel panel-primary">
 			<div class="panel-body">
 			
-				<span>销售范围</span> <a href="#" class="btn btn-xs btn-success">修改范围</a> <a href="#" class="btn btn-xs btn-success">发布产品</a>
+				<span>销售范围</span> <a href="#" class="btn btn-xs btn-success">修改范围</a> 
+				<a href="#" class="btn btn-xs btn-success" onclick="publish()">发布产品</a>
 			
 				<div>
 					<ul id="treeDemo" class="ztree"></ul>
@@ -131,6 +132,44 @@
 <script type="text/javascript" src="/style/js/layer/layer.js"></script>
 <script src="/style/js/jquery.twbsPagination.min.js"></script>
 <script>
+	function publish() {
+		var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+		var nodes = zTree.getCheckedNodes(true);
+		var check_list = [];
+		var codes = [];
+		for (var i=0; i<nodes.length; i++) {
+			if(nodes[i].check_Child_State==-1 | nodes[i].check_Child_State==2)
+			{
+				if(nodes[i].data.length == 12) {
+					if(check_list.indexOf(nodes[i].data.substring(0, 4)) == -1 && 
+						check_list.indexOf(nodes[i].data.substring(0, 8)) == -1)
+					{
+						codes.push(nodes[i].data);
+					}
+				}
+				else if(nodes[i].data.length == 8){
+					if(check_list.indexOf(nodes[i].data.substring(0, 4)) == -1 && 
+						check_list.indexOf(nodes[i].data) == -1)
+					{
+						check_list.push(nodes[i].data)
+						codes.push(nodes[i].data);
+					}
+				}
+				else if(nodes[i].data.length == 4){
+					check_list.push(nodes[i].data);
+					codes.push(nodes[i].data);
+				}
+			}
+		}
+		console.log(codes);
+		if(codes.length > 0) {
+			var url = '/admin/product_publish/{{s.id}}?codes=' + codes.toString();
+			pop('发布商品', url);
+		}
+		else {
+			layer.alert('请选择要发布的地区');
+		}
+	}
 
 	function addRelease() {
 		var title = '{{s.name}}' + ' - 批量添加产品';

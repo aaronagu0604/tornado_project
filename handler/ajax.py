@@ -198,7 +198,7 @@ class AjaxGetSubAreas(BaseHandler):
                     'id': item.id,
                     'pId': item.pid.id if item.pid else 0,
                     'name': item.name,
-                    'url': '',
+                    'data': item.code,
                     'target': '_top',
                     'click': "pop('" + title + "', '"+url+"');",
                     'open': 'true' if len(item.code) < 8 else 'false'
@@ -209,7 +209,7 @@ class AjaxGetSubAreas(BaseHandler):
             'id': 0,
             'pId': -1,
             'name': '全部',
-            'url': '',
+            'data': '',
             'target': '_top',
             'click': "pop('全部地域-产品信息', '" + url + "');",
             'open': 'true'
@@ -292,6 +292,34 @@ class AjaxSalerProductPriceProcessAreas(BaseHandler):
                     p.store = sid
                     p.price = item['price']
                     p.save()
+        result['flag'] = 1
+        result['msg'] = '添加成功'
+        self.write(simplejson.dumps(result))
+
+
+@route(r'/ajax/product_release_publish/(\d+)', name='ajax_product_release_publish')  # 添加商品库
+class AjaxProductReleasePublishAreas(BaseHandler):
+    def post(self, sid):
+        result = {'flag': 0, 'msg': '', 'data': 0}
+        json = self.get_body_argument("json", '[]')
+        data = simplejson.loads(json)
+        if data and len(data) > 0:
+            for item in data:
+                query = StoreProductPrice.select().where((StoreProductPrice.product_release == item['id']) &
+                                                         (StoreProductPrice.store == sid) &
+                                                         StoreProductPrice.area_code == item['code'])
+                if query.count() > 0:
+                    for q in query:
+                        q.delete_instance()
+
+                p = StoreProductPrice()
+                p.product_release = item['id']
+                p.store = sid
+                p.price = item['price']
+                p.sort = item['sort']
+                p.created = int(time.time())
+                p.area_code = item['code']
+                p.save()
         result['flag'] = 1
         result['msg'] = '添加成功'
         self.write(simplejson.dumps(result))
