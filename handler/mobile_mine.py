@@ -208,8 +208,10 @@ def productOrderSearch(ft, type, index):
         for soi in so.items:
             items.append({
                 'product': soi.product.name,
+                'cover': soi.product.cover,
                 'price': soi.store_product_price.price,
-                'quantity': soi.quantity
+                'quantity': soi.quantity,
+                'attributes': [attribute.value for attribute in soi.product.attributes]
             })
         result.append({
             'id': so.id,
