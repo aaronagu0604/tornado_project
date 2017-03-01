@@ -213,8 +213,8 @@ def productOrderSearch(ft, type, index):
             })
         result.append({
             'id': so.id,
-            'saler_store': so.saler_store,
-            'buyer_store': so.buyer_store,
+            'saler_store': so.saler_store.name,
+            'buyer_store': so.buyer_store.name,
             'status': so.status,
             'items': items,
             'ordered': time.strftime('%Y-%m-%d %H-%M-%S', time.localtime(so.order.ordered)),
