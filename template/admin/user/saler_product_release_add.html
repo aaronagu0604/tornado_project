@@ -34,7 +34,17 @@
                     <option value="100" {{pagesize==100 and 'selected'}}>100</option>
                     <option value="500" {{pagesize==500 and 'selected'}}>500</option>
                 </select>
+                <div class="input-group custom-search-form">
+                    <input type="text" id="price" class="form-control" style="width:180px;"
+                           value="" placeholder="整体改价">
+                    <span class="input-group-btn">
+                     <button class="btn btn-default" type="button" onclick="changePrice()">
+                         整体改价
+                     </button>
+                 </span>
+             </div>
 
+                
                 <div class="input-group custom-search-form">
                     <input type="text" id="keyword" name="keyword" class="form-control" style="width:180px;"
                            value="{{keyword}}" placeholder="按商品名称查找">
@@ -44,10 +54,7 @@
                      </button>
                  </span>
              </div>
-                <a class="btn btn-sm btn-outline btn-primary" href="#" onclick="process(1)">批量修改</a>
-                <a class="btn btn-sm btn-outline btn-primary" href="#" onclick="process(0)">批量下架</a>
-                <a class="btn btn-sm btn-outline btn-primary" href="#" onclick="process(2)">批量上架</a>
-                <a class="btn btn-sm btn-outline btn-primary" href="#" onclick="process(-1)">批量删除</a>
+                <a class="btn btn-sm btn-outline btn-primary" href="#" onclick="process()">添加到经销商库</a>
          </form>
     </div>
 
@@ -59,55 +66,23 @@
                         <th style="width:20%;text-align:left;">名称</th>
                         <th style="width:10%;text-align:left;">品牌</th>
                         <th style="width:10%;text-align:left;">分类</th>
-                        <th style="width:50%;text-align:left;">地域售价信息</th>
-                        <th style="width:10%;text-align:left;">状态</th>
+                        <th style="width:10%;text-align:left;">图片</th>
+                        <th style="width:20%;text-align:left;">指定价格</th>
                     </tr>
                     {% for p in products %}
                     <tr>
                         <td>
-                            {{p.product_release.product.name}}
+                            <input type="checkbox" value="{{p.id}}"> {{p.name}}
                         </td>
                         <td>
-                            {{p.product_release.product.brand.name}}
+                            {{p.brand.name}}
                         </td>
-                        <td>{{p.product_release.product.category.name}}</td>
+                        <td>{{p.category.name}}</td>
                         <td>
-                            <table class="table table-hover" cellpadding="0" cellspacing="0" border="0" style="text-align:center;">
-                <thead>
-                            {% for item in p.product_release.area_prices %}
-                               <tr>
-                                   <td style="width:29%;text-align:left;">
-                                   <input type="checkbox" value="{{item.id}}">
-                                   {{Area().get_detailed_address(item.area_code)}}</td>
-                      
-                        <td style="width:10%;text-align:left;">
-                            <input type="text" id="price{{item.id}}" class="form-control" style="width:100px;"
-                           value="{{item.price}}" placeholder="价格">
-                            </td>
-                        <td style="width:8%;text-align:left;">
-                            <input type="text" id="sort{{item.id}}" class="form-control" style="width:60px;"
-                           value="{{item.sort}}" placeholder="排序"></td>
-
-                        <td style="width:10%;text-align:left;">
-                            {% if item.active==0 %}
-                                <span style="">下架</span>
-                                {% elif item.active==1 %}
-                                <span style="">正常</span>
-                                {% endif %}</td>
-
-                                   </tr>
-                            {% endfor %}
-                    </thead>
-
-            </table>
+                            <img class="preview" src="{{p.cover}}" title="图片" width="80" height="60" />
                         </td>
-                        <td>
-                            {% if p.product_release.active==0 %}
-                                <span style="">下架</span>
-                                {% elif p.product_release.active==1 %}
-                                <span style="">正常</span>
-                                {% endif %}
-                        </td>
+                        <td><input type="text" id="price{{p.id}}" class="form-control" style="width:100px;"
+                           value="0" ></td>
                     </tr>
                     {% endfor %}
                 </thead>
@@ -131,6 +106,10 @@
 </body>
 </html>
 <script>
+function changePrice() {
+$("#tb_user input[type='text']").val($("#price").val());
+}
+
 function checkChanged(flag)
     {
         if(flag == 1) {
@@ -143,11 +122,10 @@ function checkChanged(flag)
 
     function findAllSelectedData(){
         var data = [];
-        $("#tb_user input[type='checkbox']:checked").each(function(){ 
+        $("#tb_user input[type='checkbox']:checked").each(function(){
             var item = {};
             item.id = this.value;
             item.price = $("#price"+this.value).val();
-            item.sort = $("#sort"+this.value).val();
             data.push(item);
             }
         );
@@ -155,20 +133,20 @@ function checkChanged(flag)
     }
 
     var xsrf='{{handler.xsrf_token}}';
-    function process(flag) {
+    function process() {
         var data2 = findAllSelectedData();
         if(data2.length == 0) {
             layer.alert('请先选择需要处理的商品');
             return;
         }
-        $.post("/ajax/saler_product_price_process", { _xsrf:xsrf, flag: flag, json:JSON.stringify(data2) }, function (data) {
+        $.post("/ajax/add_product_release/{{store_id}}", { _xsrf:xsrf, json:JSON.stringify(data2) }, function (data) {
             data = jQuery.parseJSON(data);
             if(data.flag==1){
-                layer.alert('处理成功');
-            } 
+                layer.alert('添加成功，进入商户产品库刷新可查看');
+            }
             else
             {
-                layer.alert('处理失败，请联系管理员');
+                layer.alert('添加失败，请联系管理员');
             }
         });
     }
@@ -183,7 +161,7 @@ function checkChanged(flag)
             startPage: {{page}},
             visiblePages: 8,
             onPageClick: function (event, page) {
-                self.location="/admin/store_area_product?sid={{store_id}}&code={{code}}&keyword={{keyword}}&pagesize={{pagesize}}&page="+page;
+                self.location="/admin/product_release_add/{{store_id}}?keyword={{keyword}}&pagesize={{pagesize}}&page="+page;
             }
         });
     });

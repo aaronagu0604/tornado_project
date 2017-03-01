@@ -101,7 +101,7 @@ class SalerHandler(AdminBaseHandler):
         if total % pagesize > 0:
             totalpage = total / pagesize + 1
         else:
-            totalpage = 1
+            totalpage = total / pagesize if (total / pagesize) > 0 else 1
         stores = s.paginate(page, pagesize)
         items = Area.select().where((Area.pid >> None) & (Area.is_delete == 0) & (Area.is_site == 1)).order_by(
             Area.spell, Area.sort)
@@ -149,7 +149,7 @@ class StoresHandler(AdminBaseHandler):
         if total % pagesize > 0:
             totalpage = total / pagesize + 1
         else:
-            totalpage = 1
+            totalpage = total / pagesize if (total / pagesize) > 0 else 1
         cfs = cfs.paginate(page, pagesize)
         items = Area.select().where((Area.pid >> None) & (Area.is_delete == 0) & (Area.is_site == 1)).order_by(
             Area.spell, Area.sort)
@@ -180,7 +180,7 @@ class UsersHandler(AdminBaseHandler):
         if total % pagesize > 0:
             totalpage = total / pagesize + 1
         else:
-            totalpage = 1
+            totalpage = total / pagesize if (total / pagesize) > 0 else 1
         cfs = cfs.order_by(User.store, User.truename).paginate(page, pagesize)
         self.render('/admin/user/user.html', users=cfs, total=total, page=page, pagesize=pagesize,
                     totalpage=totalpage, active='user', status=status, keyword=keyword)
@@ -246,7 +246,7 @@ class ScoreHistoryHandler(AdminBaseHandler):
         if total % pagesize > 0:
             totalpage = total / pagesize + 1
         else:
-            totalpage = 1
+            totalpage = total / pagesize if (total / pagesize) > 0 else 1
         cfs = cfs.order_by(ScoreRecord.created.desc()).paginate(page, pagesize)
 
         self.render('admin/user/score_history.html', list=cfs, total=total, page=page, pagesize=pagesize,
@@ -265,7 +265,7 @@ class MoneyHistoryHandler(AdminBaseHandler):
         if total % pagesize > 0:
             totalpage = total / pagesize + 1
         else:
-            totalpage = total / pagesize
+            totalpage = total / pagesize if (total / pagesize) > 0 else 1
         cfs = cfs.order_by(MoneyRecord.apply_time.desc()).paginate(page, pagesize)
 
         self.render('admin/user/money_history.html', list=cfs, total=total, page=page, pagesize=pagesize,
@@ -293,7 +293,7 @@ class SalerProductHandler(AdminBaseHandler):
         if total % pagesize > 0:
             totalpage = total / pagesize + 1
         else:
-            totalpage = total / pagesize
+            totalpage = total / pagesize if (total / pagesize) > 0 else 1
         cfs = cfs.order_by(ProductRelease.id.asc()).paginate(page, pagesize)
         self.render('admin/user/saler_product.html', s=store, products=cfs, total=total, page=page, pagesize=pagesize,
                     totalpage=totalpage, active='saler', keyword=keyword)
@@ -302,21 +302,26 @@ class SalerProductHandler(AdminBaseHandler):
 @route(r'/admin/store_area_product', name='admin_store_area_product')  # 经销商产品地域价格信息
 class SalerProductAreaPriceHandler(AdminBaseHandler):
     def get(self):
+        keyword = self.get_argument("keyword", '')
         page = int(self.get_argument("page", '1') if len(self.get_argument("page", '1')) > 0 else '1')
-        pagesize = self.settings['admin_pagesize']
+        pagesize = int(self.get_argument("pagesize", '20') if len(self.get_argument("pagesize", '20')) > 0 else '20')
         store_id = int(self.get_argument("sid", '-1'))
         code = self.get_argument("code", '0')
-        keyword = '' + code + '%'
-        cfs = StoreProductPrice.select(StoreProductPrice.product_release).where((StoreProductPrice.store == store_id) &
-                    (StoreProductPrice.area_code % keyword)).group_by(StoreProductPrice.product_release)
+        code2 = '' + code + '%'
+        ft = ((StoreProductPrice.store == store_id) & (StoreProductPrice.area_code % code2))
+        if len(keyword) > 0:
+            keyword2 = '%' + keyword + '%'
+            ft &= (Product.name % keyword2)
+        cfs = StoreProductPrice.select(StoreProductPrice.product_release).join(ProductRelease).join(Product).where(ft).\
+            group_by(StoreProductPrice.product_release)
         total = cfs.count()
         if total % pagesize > 0:
             totalpage = total / pagesize + 1
         else:
-            totalpage = 1
+            totalpage = total / pagesize if (total / pagesize) > 0 else 1
         cfs = cfs.paginate(page, pagesize)
         self.render('admin/user/saler_area_product.html', products=cfs, total=total, page=page, pagesize=pagesize,
-                    totalpage=totalpage, store_id=store_id, code=code, Area=Area)
+                    totalpage=totalpage, store_id=store_id, code=code, Area=Area, keyword=keyword)
 
 
 @route(r'/admin/referee', name='admin_referee_list')  # 服务商管理列表
@@ -335,7 +340,7 @@ class RefereeList(AdminBaseHandler):
         if total % pagesize > 0:
             totalpage = total / pagesize + 1
         else:
-            totalpage = total / pagesize
+            totalpage = total / pagesize if (total / pagesize) > 0 else 1
         referees = s.paginate(page, pagesize)
         referees_list = []
         for i, referee in enumerate(referees):
@@ -354,9 +359,26 @@ class RefereeList(AdminBaseHandler):
                     totalpage=totalpage)
 
 
+@route(r'/admin/product_release_add/(\d+)', name='admin_product_release_add')  # 批量添加产品到经销商库
+class ProductReleaseAddHandler(AdminBaseHandler):
+    def get(self, store_id):
+        page = int(self.get_argument("page", '1') if len(self.get_argument("page", '1')) > 0 else '1')
+        pagesize = int(self.get_argument("pagesize", '20') if len(self.get_argument("pagesize", '20')) > 0 else '20')
+        keyword = self.get_argument("keyword", '')
+        ft = (Product.active == 1)
+        if len(keyword) > 0:
+            keyword2 = '%' + keyword + '%'
+            ft &= (Product.name % keyword2)
 
-
-
+        cfs = Product.select().where(ft)
+        total = cfs.count()
+        if total % pagesize > 0:
+            totalpage = total / pagesize + 1
+        else:
+            totalpage = total / pagesize if (total / pagesize) > 0 else 1
+        cfs = cfs.order_by(Product.created.desc()).paginate(page, pagesize)
+        self.render('admin/user/saler_product_release_add.html', products=cfs, total=total, page=page,
+                    pagesize=pagesize, totalpage=totalpage, keyword=keyword, store_id=store_id)
 
 
 

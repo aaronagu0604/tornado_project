@@ -217,9 +217,9 @@ class AjaxGetSubAreas(BaseHandler):
         self.write(simplejson.dumps(nodes))
 
 
-@route(r'/ajax/saler_product_process/(\d+)', name='ajax_saler_product_process')  # 处理发布商品数据
+@route(r'/ajax/saler_product_process', name='ajax_saler_product_process')  # 处理发布商品数据
 class AjaxSalerProductProcessAreas(BaseHandler):
-    def post(self, store_id):
+    def post(self):
         result = {'flag': 0, 'msg': '', 'data': 0}
         json = self.get_body_argument("json", '[]')
         flag = int(self.get_body_argument("flag", -2))
@@ -236,11 +236,62 @@ class AjaxSalerProductProcessAreas(BaseHandler):
                 elif flag == -1:
                     query = StoreProductPrice.delete().where(StoreProductPrice.product_release == p)
                     query.execute()
-                    p.delete()
+                    p.delete_instance()
+                elif flag == 1:
+                    p.price = item['price']
+                    p.save()
+        result['flag'] = 1
+        result['msg'] = '操作成功'
+        self.write(simplejson.dumps(result))
+
+
+@route(r'/ajax/saler_product_price_process', name='ajax_saler_product_price_process')  # 处理已发布商品数据
+class AjaxSalerProductPriceProcessAreas(BaseHandler):
+    def post(self):
+        result = {'flag': 0, 'msg': '', 'data': 0}
+        json = self.get_body_argument("json", '[]')
+        flag = int(self.get_body_argument("flag", -2))
+        data = simplejson.loads(json)
+        if data and len(data) > 0:
+            for item in data:
+                p = StoreProductPrice.get(id=item['id'])
+                if flag == 0:
+                    p.active = 0
+                    p.save()
+                elif flag == 2:
+                    p.active = 1
+                    p.save()
+                elif flag == -1:
+                    p.delete_instance()
                 elif flag == 1:
                     p.price = item['price']
                     p.sort = item['sort']
                     p.save()
         result['flag'] = 1
         result['msg'] = '操作成功'
+        self.write(simplejson.dumps(result))
+
+
+@route(r'/ajax/add_product_release/(\d+)', name='ajax_add_product_release')  # 添加商品库
+class AjaxSalerProductPriceProcessAreas(BaseHandler):
+    def post(self, sid):
+        result = {'flag': 0, 'msg': '', 'data': 0}
+        json = self.get_body_argument("json", '[]')
+        data = simplejson.loads(json)
+        if data and len(data) > 0:
+            for item in data:
+                query = ProductRelease.select().where((ProductRelease.product == item['id']) & (ProductRelease.store == sid))
+                if query.count() > 0:
+                    for q in query:
+                        q.price = item['price']
+                        q.active = 1
+                        q.save()
+                else:
+                    p = ProductRelease()
+                    p.product = item['id']
+                    p.store = sid
+                    p.price = item['price']
+                    p.save()
+        result['flag'] = 1
+        result['msg'] = '添加成功'
         self.write(simplejson.dumps(result))

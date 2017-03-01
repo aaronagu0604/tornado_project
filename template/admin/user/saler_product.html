@@ -40,7 +40,7 @@
         <div class="pull-right">
             <form class="navbar-form navbar-left" action="" method="get">
                 <input value="1" type="hidden" name="page">
-                <a class="btn btn-sm btn-outline btn-primary" href="/admin/store_detail/">批量添加商品</a>
+                <a class="btn btn-sm btn-outline btn-primary" href="#" onclick="addRelease()">批量添加商品</a>
                 <label class="num">显示条数：&nbsp;</label>
                 <select class="form-control" id="status" name="pagesize">
                     <option value="1" {{pagesize==1 and 'selected'}} >1</option>
@@ -72,17 +72,19 @@
             <table class="table table-hover" id="tb_user" cellpadding="0" cellspacing="0" border="0" style="text-align:center;">
                 <thead>
                     <tr>
-                        <th style="width:8%;text-align:center;">编号</th>
+                        <th style="width:12%;text-align:center;">编号</th>
                         <th style="width:29%;text-align:center;">名称</th>
                         <th style="width:10%;text-align:center;">品牌</th>
                         <th style="width:10%;text-align:center;">分类</th>
                         <th style="width:13%;text-align:center;">售价</th>
-                        <th style="width:10%;text-align:center;">排序</th>
                         <th style="width:10%;text-align:center;">状态</th>
                     </tr>
                     {% for p in products %}
                     <tr>
-                        <td><input type="checkbox" value="{{p.id}}">{{p.id}}</td>
+                        <td><input type="checkbox" value="{{p.id}}">{{p.id}}
+							<a class="btn btn-xs btn-outline btn-primary" href="#" 
+                            onclick="pop('{{p.product.name}} - 发布该商品所发布地域信息', '/admin/store_area_product?sid={{s.id}}&code=0&keyword={{p.product.name}}')">地域</a>
+                        </td>
                         <td>
                             {{p.product.name}}
                         </td>
@@ -94,9 +96,6 @@
                             <input type="text" id="price{{p.id}}" class="form-control" style="width:100px;"
                            value="{{p.price}}" >
                             </td>
-                        <td>
-                            <input type="text" id="sort{{p.id}}" class="form-control" style="width:60px;"
-                           value="{{p.sort}}" ></td>
                         <td>
                             {% if p.active==0 %}
                                 <span style="">下架</span>
@@ -133,6 +132,12 @@
 <script src="/style/js/jquery.twbsPagination.min.js"></script>
 <script>
 
+	function addRelease() {
+		var title = '{{s.name}}' + ' - 批量添加产品';
+		var url = '/admin/product_release_add/{{s.id}}';
+		pop(title, url);
+	}
+
 	function checkChanged(flag)
 	{
 		if(flag == 1) {
@@ -149,7 +154,6 @@
 			var item = {};
 			item.id = this.value;
 			item.price = $("#price"+this.value).val();
-			item.sort = $("#sort"+this.value).val();
 			data.push(item);
 			}
 		);
@@ -163,9 +167,9 @@
 			layer.alert('请先选择需要处理的商品');
 			return;
 		}
-		$.post("/ajax/saler_product_process/{{s.id}}", { _xsrf:xsrf, flag: flag, json:JSON.stringify(data2) }, function (data) {
+		$.post("/ajax/saler_product_process", { _xsrf:xsrf, flag: flag, json:JSON.stringify(data2) }, function (data) {
             data = jQuery.parseJSON(data);
-            alert(data.msg);
+            layer.alert(data.msg);
             if(data.flag==1){
             	location.reload();  
             } 
