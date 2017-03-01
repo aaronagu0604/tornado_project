@@ -1200,14 +1200,15 @@ class MobilePayOrderHandler(MobileBaseHandler):
     """
     @apiGroup order
     @apiVersion 1.0.0
-    @api {post} /mobile/neworder 05. 订单支付
+    @api {post} /mobile/payorder 05. 订单支付
     @apiDescription 订单支付
 
     @apiHeader {String} token 用户登录凭证
 
-    @apiParam {Int} order_number 订单号
+    @apiParam {String} order_number 订单号
+    @apiParam {String} payment 支付方式
 
-    @apiSampleRequest /mobile/neworder
+    @apiSampleRequest /mobile/payorder
     """
     def after_pay_operation(self, order, total_price, user, order_type):
         order.user.store.price -= total_price
