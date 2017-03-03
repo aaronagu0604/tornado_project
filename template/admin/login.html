@@ -4,9 +4,9 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE10" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>车装甲管理系统登录界面</title>
-<link rel="stylesheet" type="text/css" href="/style/css/basic.css" />
-<link rel="stylesheet" type="text/css" href="/style/css/admin_login.css" />
+    <title>车装甲管理系统登录界面</title>
+    <link rel="stylesheet" type="text/css" href="/style/css/basic.css" />
+    <link rel="stylesheet" type="text/css" href="/style/css/admin_login.css" />
 
     <!-- Bootstrap Core CSS -->
     <link href="/style/css/bootstrap.min.css" rel="stylesheet">
@@ -19,30 +19,38 @@
 
     <!-- Custom Fonts -->
     <link href="/style/font-awesome-4.1.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-	
+
 </head>
 <body style="background: #EBFBFF;">
- <div class="head">
-   <a href="#"><img src="/style/images/logo.png" /></a>
-   <h1 class="jrsc"><a href="#">车装甲管理系统</a></h1> 
- </div>
- <div class="main clearfix">
+<div class="head">
+    <a href="#"><img src="/style/images/logo.png" /></a>
+    <h1 class="jrsc"><a href="#">车装甲管理系统</a></h1>
+</div>
+<div class="main clearfix">
     <div class="log">
-         <form role="form" action="/admin/login" method="post" style="width:480px;margin-top:100px;margin-left:90px;">
-             {{xsrf()}}
-             <p style="font-size:28px;font-weight:500;marign:30px auto 50px 20px;">欢迎登录</p>
-             <fieldset>
-                 <div class="form-group" style="margin-top:50px;">
-                     <input class="form-control" placeholder="用户名" id="username" name="username" type="input" autofocus required>
-                 </div>
-                 <div class="form-group" style="margin-top:30px;">
-                     <input class="form-control" placeholder="密码" id="password" name="password" type="password" value="" required>
-                 </div>
-                 <div style="margin-top:30px;margin-bottom: 50px;" />
-                 <input type="submit" id="bt_submit" class="btn btn-lg btn-success btn-block" value="登录">
-             </fieldset>
-         </form>
-   </div>
- </div>
-  </body>
+        <form role="form" action="/admin/login" method="post" style="width:480px;margin-top:100px;margin-left:90px;">
+            {{xsrf()}}
+            <p style="font-size:28px;font-weight:500;marign:30px auto 50px 20px;">欢迎登录</p>
+            <fieldset>
+                {% set messages=handler.get_flashed_messages() %}
+                {% if messages %}
+                <div id="err_div" style="color:#FF0000;">
+                    {% for type, msg in messages%}
+                    {{ msg }}
+                    {% endfor %}
+                </div>
+                {%-endif-%}
+                <div class="form-group" style="margin-top:50px;">
+                    <input class="form-control" placeholder="用户名" id="username" name="username" type="input" autofocus required>
+                </div>
+                <div class="form-group" style="margin-top:30px;">
+                    <input class="form-control" placeholder="密码" id="password" name="password" type="password" value="" required>
+                </div>
+                <div style="margin-top:30px;margin-bottom: 50px;" />
+                <input type="submit" id="bt_submit" class="btn btn-lg btn-success btn-block" value="登录">
+            </fieldset>
+        </form>
+    </div>
+</div>
+</body>
 </html>

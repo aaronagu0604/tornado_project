@@ -1,0 +1,128 @@
+{% extends "layout/admin.html" %}
+{% block css %}
+<link href="/style2/css/plugins/dataTables.bootstrap.css" rel="stylesheet">
+<link href="/style2/css/select2.css" rel="stylesheet"/>
+{{xsrf()}}
+<style>
+#num{
+    width:130px;
+    height:30px;
+    border:1px solid #aaa;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+    transform:translateY(3px);
+    -webkit-transform:translateY(3px);
+}
+#btn{
+    height:30px;
+    line-height:15px;
+    background:#528ACB;
+    color:#fff;
+}
+</style>
+{% endblock %}
+{% block content %}
+
+<div class="row">
+	<nav>
+		<div>
+			<a class="navbar-brand" href="#">推广人员列表</a>
+		</div>
+		<div class="pull-right">
+			<form id="cx" action="" method="get" style="margin-top:10px;">
+				<p>
+                    <a class="btn btn-info" style="margin-top:8px;" href="/admin/refereeadd/0">新加推广人</a>
+					<!--<input id="bt_export" class="btn btn-info" type="button" value="导出EXCEL" style="margin-top:8px;" />-->
+				</p>
+			</form>
+		</div>
+	</nav>
+</div>
+<div class="row">
+	<div class="panel panel-primary">
+
+		<div class="table-responsive">
+			<table class="table table-hover" id="tb_need_pay_back_orders" style="text-align:center;">
+				<thead>
+				<tr style="background:#528ACB;color:#fff;">
+					<th style="text-align:center;">编号</th>
+					<th style="text-align:center;">姓名</th>
+					<th style="text-align:center;">工号</th>
+					<th style="text-align:center;">开店数</th>
+					<th style="text-align:center;">下单数</th>
+					<th style="text-align:center;">操作</th>
+				</tr>
+				</thead>
+				<tbody>
+				{% set sNo=1 %}
+				{% for r in referees %}
+				<tr>
+					<td>{{ r['number'] }}</td>
+					<td>{{ r['referee_name'] }}</td>
+					<td>{{ r['referee_number'] }}</td>
+					<td>{{ r['store_count'] }}</td>
+					<td>{{ r['insurance_order_count'] }}</td>
+					<td>
+						<span style="margin-right:15px;">&nbsp;&nbsp;&nbsp;<a href="http://www.520czj.com/tuiguang/{{ r['number'] }}">分享网址</a></span>
+						<span style="margin-right:15px;">&nbsp;&nbsp;&nbsp;<a href="/admin/refereeadd/{{ r['id'] }}">修改</a></span>
+						<span style="margin-right:15px;">&nbsp;&nbsp;&nbsp;<a onclick="return confirm('删除的数据将不可恢复，确定删除？');" href="/admin/refereeadd/{{r['id']}}?operation=del">删除</a></span>
+					</td>
+				</tr>
+				{% set sNo = sNo+1 %}
+				{% endfor %}
+				</tbody>
+			</table>
+		</div>
+
+		<div class="col-sm-6">
+			<div class="dataTables_info" role="alert" aria-live="polite" aria-relevant="all">
+				当前：第{{page}}页 / {{totalpage}}页，合计{{total}}条
+			</div>
+		</div>
+		<div class="col-sm-6">
+			<div class="dataTables_paginate paging_simple_numbers">
+				<ul class="pagination  pagination-sm" id="pageUl" />
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script src="/style2/js/jquery.twbsPagination.min.js"></script>
+<script type="text/javascript">
+	$(document).ready(function() {
+	    var xsrf='{{handler.xsrf_token}}';
+		$('#bt_export').bind('click', function () {
+            $.get("/ajax/orders/refereeOrder",{sql: JSON.stringify(sql), _xsrf: xsrf, keyword: '{{keyword}}'},
+            function (data) {
+                var obj = jQuery.parseJSON(data);
+                if (obj.err == 0) {
+                    alert('生成成功，点击下载连接，下载数据文件！');
+                    window.open("/upload/" + obj.msg);
+                }
+                else {
+                    alert('生成失败：' + obj.msg);
+                }
+            });
+        });
+
+        $('#pageUl').twbsPagination({
+            first:'首页',
+            prev:'上一页',
+            next:'下一页',
+            last:'尾页',
+            totalPages: {{totalpage}},
+            startPage: {{page}},
+            visiblePages: 8,
+            onPageClick: function (event, page) {
+                self.location="/admin/facilitatorlist?keyword={{keyword or ''}}&province_code={{default_province or ''}}&city_code={{default_city or ''}}&district_code={{default_district or ''}}&page="+page;
+            }
+        });
+    });
+
+</script>
+
+
+{% endblock %}
