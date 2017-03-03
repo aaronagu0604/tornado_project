@@ -90,7 +90,7 @@
                             <a {% if active=='refer' %} class="active"{% endif %} href="/admin/referee">推广人员</a>
                         </li>
                         <li>
-                            <a {% if active=='admin_user' %}class="active" {% endif %}href="/admin/admin_user/0">后台用户</a>
+                            <a {% if active=='admin_user' %}class="active" {% endif %}href="/admin/admin_user/{{handler.get_admin_user().id}}">后台用户</a>
                         </li>
                     </ul>
                     </li>

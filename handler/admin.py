@@ -417,7 +417,7 @@ class AdminUserHandler(AdminBaseHandler):
             if int(admin_id) > 0:
                 adminUser = AdminUser.get(id=admin_id)
             else:
-                adminUser = self.get_admin_user()
+                adminUser = None
             pagesize = setting.ADMIN_PAGESIZE
 
             total = qadminuser.count()
@@ -443,23 +443,8 @@ class AdminUserHandler(AdminBaseHandler):
         code = self.get_argument('code', '')
         user = self.get_admin_user()
         is_root = ('A' in user.roles or 'D' in user.roles)
-        if (admin_id > 0 and user.id == admin_id) or (is_root):
-            adminUser = AdminUser.get(id = admin_id)
-            if password:
-                adminUser.password = AdminUser.create_password(password)
-            adminUser.username = username
-            adminUser.mobile = mobile
-            adminUser.email = email
-            adminUser.realname = realname
-            adminUser.code = code
-            if is_root:
-                adminUser.roles = roles
-                if active:
-                    adminUser.active = 1
-                else:
-                    adminUser.active = 0
-            adminUser.save()
-        elif is_root and admin_id == 0:
+
+        if is_root and admin_id == 0:
             adminUser = AdminUser()
             adminUser.signuped = int(time.time())
             adminUser.lsignined = 0
@@ -475,7 +460,23 @@ class AdminUserHandler(AdminBaseHandler):
             else:
                 adminUser.active = 0
             adminUser.save()
+        elif (admin_id > 0 and user.id == admin_id) or (is_root):
+            adminUser = AdminUser.get(id=admin_id)
+            if password:
+                adminUser.password = AdminUser.create_password(password)
+            adminUser.username = username
+            adminUser.mobile = mobile
+            adminUser.email = email
+            adminUser.realname = realname
+            adminUser.code = code
+            if is_root:
+                adminUser.roles = roles
+                if active:
+                    adminUser.active = 1
+                else:
+                    adminUser.active = 0
+            adminUser.save()
         self.session['admin'] = adminUser
         self.session.save()
         self.flash("提交成功")
-        self.redirect("/admin/admin_user/0")
+        self.redirect("/admin/admin_user/%s"%(adminUser.id))
