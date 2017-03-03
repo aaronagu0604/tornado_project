@@ -7,6 +7,7 @@ from model import *
 import simplejson
 import time
 import logging
+import setting
 
 
 @route(r'/admin', name='admin_index')  # 后台首页
@@ -325,7 +326,7 @@ class SalerProductAreaPriceHandler(AdminBaseHandler):
                     totalpage=totalpage, store_id=store_id, code=code, Area=Area, keyword=keyword)
 
 
-@route(r'/admin/referee', name='admin_referee_list')  # 服务商管理列表
+@route(r'/admin/referee', name='admin_referee_list')  # 推广人员列表
 class RefereeList(AdminBaseHandler):
     def get(self):
         keyword = self.get_argument("keyword", '')
@@ -341,7 +342,7 @@ class RefereeList(AdminBaseHandler):
         if total % pagesize > 0:
             totalpage = total / pagesize + 1
         else:
-            totalpage = total / pagesize if (total / pagesize) > 0 else 1
+            totalpage = total / pagesize
         referees = s.paginate(page, pagesize)
         referees_list = []
         for i, referee in enumerate(referees):
@@ -350,6 +351,7 @@ class RefereeList(AdminBaseHandler):
             for s in ss:
                 insurance_order_count += InsuranceOrder.select().where(InsuranceOrder.store==s & InsuranceOrder.status>2).count()
             referees_list.append({
+                'id': referee.id,
                 'number': i+1,
                 'referee_name': referee.realname,
                 'referee_number': referee.code,
@@ -406,3 +408,74 @@ class ProductPublishHandler(AdminBaseHandler):
                     pagesize=pagesize, totalpage=totalpage, keyword=keyword, store_id=store_id, Area=Area)
 
 
+@route(r'/admin/admin_user/(\d+)', name='admin_admin_user')  # 后台用户管理
+class AdminUserHandler(AdminBaseHandler):
+    def get(self, admin_id):
+        page = int(self.get_body_argument("page", '1'))
+        try:
+            qadminuser = AdminUser.select()
+            if int(admin_id) > 0:
+                adminUser = AdminUser.get(id=admin_id)
+            else:
+                adminUser = self.get_admin_user()
+            pagesize = setting.ADMIN_PAGESIZE
+
+            total = qadminuser.count()
+            if total % pagesize > 0:
+                totalpage = total / pagesize + 1
+            else:
+                totalpage = total / pagesize
+            ivs = qadminuser.order_by(AdminUser.id.desc()).paginate(page, pagesize)
+            self.render("admin/user/admin_user.html",ivs=ivs, adminUser=adminUser, total=total, page=page,
+                        pagesize=pagesize, totalpage=totalpage, active='admin_user')
+        except Exception, e:
+            self.write("程序出错了，可能是参数传递错误！")
+
+    def post(self, admin_id):
+        admin_id = int(admin_id)
+        username = self.get_argument('username', '')
+        password = self.get_argument('password', '')
+        realname = self.get_argument('realname', '')
+        mobile = self.get_argument('mobile', '')
+        email = self.get_argument('email', '')
+        roles = self.get_argument('roles', '')
+        active = self.get_argument('active', '')
+        code = self.get_argument('code', '')
+        user = self.get_admin_user()
+        is_root = ('A' in user.roles or 'D' in user.roles)
+        if (admin_id > 0 and user.id == admin_id) or (is_root):
+            adminUser = AdminUser.get(id = admin_id)
+            if password:
+                adminUser.password = AdminUser.create_password(password)
+            adminUser.username = username
+            adminUser.mobile = mobile
+            adminUser.email = email
+            adminUser.realname = realname
+            adminUser.code = code
+            if is_root:
+                adminUser.roles = roles
+                if active:
+                    adminUser.active = 1
+                else:
+                    adminUser.active = 0
+            adminUser.save()
+        elif is_root and admin_id == 0:
+            adminUser = AdminUser()
+            adminUser.signuped = int(time.time())
+            adminUser.lsignined = 0
+            adminUser.password = AdminUser.create_password(password)
+            adminUser.username = username
+            adminUser.mobile = mobile
+            adminUser.email = email
+            adminUser.roles = roles
+            adminUser.code = code
+            adminUser.realname = realname
+            if active == 'on':
+                adminUser.active = 1
+            else:
+                adminUser.active = 0
+            adminUser.save()
+        self.session['admin'] = adminUser
+        self.session.save()
+        self.flash("提交成功")
+        self.redirect("/admin/admin_user/0")
