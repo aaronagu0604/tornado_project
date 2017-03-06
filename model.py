@@ -588,6 +588,20 @@ class Insurance(db.Model):
         db_table = 'tb_insurance'
 
 
+# 保险公司开通地域
+class InsuranceArea(db.Model):
+    id = PrimaryKeyField()
+    area_code = CharField(max_length=32, default='')
+    insurance = ForeignKeyField(Insurance, related_name='areas', db_column='insurance_id')
+    lube_ok = IntegerField(default=1)  # 开通反油
+    score_ok = IntegerField(default=1)  # 开通反积分
+    sort = IntegerField(default=1)  # 显示顺序
+    active = IntegerField(default=1)  # 状态 0删除 1有效
+
+    class Meta:
+        db_table = 'tb_insurance_area'
+
+
 # 保险子险种
 class InsuranceItem(db.Model):
     id = PrimaryKeyField()
@@ -759,7 +773,7 @@ class InsuranceScoreExchange(db.Model):
     insurance = ForeignKeyField(Insurance, db_column='insurance_id')  # 保险公司ID
     created = IntegerField()  # 创建时间
 
-    business_exchange_rate = FloatField(default=0.0)  # 兑换率（商业险），仅商业险
+    business_exchange_rate = FloatField(default=0.0)  # 兑换率（商业险），仅商业险·
     business_exchange_rate2 = FloatField(default=0.0)  # 兑换率（商业险），商业险+交强险
     business_tax_rate = FloatField(default=0.0)  # 商业险税率
 
@@ -1049,6 +1063,7 @@ def load_test_data():
                        money=100.5, status=1, apply_time=1487032696)
 
 if __name__ == '__main__':
-    init_db()
-    load_test_data()
+    # init_db()
+    # load_test_data()
+    InsuranceArea.create_table()
     pass

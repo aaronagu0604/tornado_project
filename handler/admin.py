@@ -527,8 +527,22 @@ class AdminScoreAreaDelHandler(AdminBaseHandler):
         self.redirect('/admin/gift_area?defultCode=%s&defultSub=%s'%(area.code, 1))
 
 
+@route(r'/admin/insurance', name='admin_insurance_list')  # 保险列表
+class InsuranceList(AdminBaseHandler):
+    def get(self):
+        iid = int(self.get_argument('iid', 0))
+        insurances = Insurance.select().where(Insurance.active == 1)
+        areas = InsuranceArea.select().where((InsuranceArea.active == 1) &(InsuranceArea.insurance == iid))
+        self.render("admin/insurance/index.html", insurances=insurances, active='insurance',
+                    areas=areas, Area=Area)
 
 
+@route(r'/admin/insurance_area', name='admin_insurance_area')  # 保险发布地域
+class InsuranceArea(AdminBaseHandler):
+    def get(self):
+        code = self.get_argument('code', '')
+        insurances = InsuranceArea.select().where((InsuranceArea.active == 1) &(InsuranceArea.area_code == code))
+        self.render("admin/insurance/area.html", insurances=insurances, active='insurance_area')
 
 
 
