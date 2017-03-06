@@ -480,3 +480,65 @@ class AdminUserHandler(AdminBaseHandler):
         self.session.save()
         self.flash("提交成功")
         self.redirect("/admin/admin_user/%s"%(adminUser.id))
+
+
+@route(r'/admin/gift_area', name='admin_area')  # 积分区域管理
+class AreaHandler(AdminBaseHandler):
+    def get(self):
+        defultCode = self.get_argument('defultCode', '0')
+        defultSub = int(self.get_argument('defultSub', 0))
+        items = Area.select().where((Area.pid >> None ) & (Area.is_delete == 0)).order_by(Area.sort,Area.id,Area.spell)
+
+        self.render('admin/insurance/score_list.html', items=items, active='gift_area',
+                    defultCode=defultCode, defultSub=defultSub)
+
+
+
+@route(r'/admin/changeareascorestatu/(\d+)', name='admin_score_area_del')  # 修改积分区域状态
+class AdminScoreAreaDelHandler(AdminBaseHandler):
+    def get(self,id):
+        status = int(self.get_argument('status', 0))
+        try:
+            area = Area.get(id = id)
+            if len(area.code) == 8:   # 市
+                area.is_scorearea = status
+                area.save()
+                codelike = area.code[:4] + '%'
+                areas = Area.select().where(Area.code % codelike)
+                pStatus = 0
+                for a in areas:
+                    if len(a.code)==8 and a.is_scorearea == 1:
+                        pStatus = 1
+                        break
+                p = Area.get(code=area.code[:4])
+                p.is_scorearea = pStatus
+                p.save()
+            else:   # 省
+                area.is_scorearea = status
+                area.save()
+                areas = Area.select().where(Area.pid==id)
+                for a in areas:
+                    a.is_scorearea = status
+                    a.save()
+            self.flash(u"修改成功！")
+        except Exception, e:
+            logging.info('Error: %s'%e.message)
+            self.flash(u"修改失败！")
+        self.redirect('/admin/gift_area?defultCode=%s&defultSub=%s'%(area.code, 1))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
