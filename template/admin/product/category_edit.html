@@ -1,0 +1,72 @@
+{% extends "layout/admin.html" %}
+{% block js %}
+<script type="text/javascript">
+
+</script>
+{% endblock %}
+{% block content %}
+<div class="row">
+    <nav>
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">{% if id==0 %} 添加商品分类 {%else%} 修改商品分类 {% endif %}</a>
+        </div>
+    </nav>
+</div>
+<div class="row">
+    <div class="panel panel-primary">
+        <div class="panel-body">
+            {%set messages=handler.get_flashed_messages() %}
+            {%if messages%}
+            <div class="msg red">
+                {% for type, msg in messages%}
+                <span>{{msg}}</span>
+                {% endfor %}
+            </div>
+            {%endif%}
+
+            <form action="" method="post" enctype="multipart/form-data">
+                {{xsrf()}}
+                <div class="form-group has-success">
+                    <label class="control-label">分类名称</label>
+                    <input type="text" class="form-control" value="{{ category.name if category else '' }}" name="name" required placeholder="名称不能为空" style="width:480px;"/>
+                </div>
+                <div class="form-group has-success">
+                    <label class="control-label">手机端图片</label>
+                    <div>
+                        <div><input type="file" class="form-control" name="file_mobile" style="width:480px;"></div>
+                        {% if category and category.img_m %}
+                        <div style="position:absolute; top:200px; padding-left:200px;">
+                            <img src="{{category.img_m}}" width="80" height="80" />
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="form-group has-success">
+                    <label class="control-label">PC端图片</label>
+                    <div>
+                        <div><input type="file" class="form-control" name="file_pc" style="width:480px;"></div>
+                        {%if category and category.img_pc%}
+                        <div style="position:absolute; top:300px; padding-left:400px;">
+                            <img src="{{category.img_pc}}" width="80" height="80" />
+                        </div>
+                        {%endif%}
+                    </div>
+                </div>
+                <div class="form-group has-success">
+                    <label class="control-label">排列顺序</label>
+                    <input type="text" class="form-control" value="{{ category.sort if category else '' }}" name="sort" required placeholder="数字越大越靠前" style="width:480px;" />
+                </div>
+                <div>
+                    <th><input type="checkbox" name="hot" {% if category and category.hot==1 %} checked='true' {%endif%}>是否热点</th>
+                </div>
+                <div>
+                    <th><input type="checkbox" name="active" {% if category and category.active==1 %} checked='true' {%endif%}>是否启用</th>
+                </div>
+                <div class="form-group has-success">
+                    <input type="submit" name="sub" value="提交" class="btn btn-outline btn-primary btn-sm" style="width:90px;height:32px;background:#438bca;color:#fff;border:none;border-radius:4px;font-size:16px;">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

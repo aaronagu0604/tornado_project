@@ -1,0 +1,167 @@
+{% extends "layout/admin.html" %}
+{% block content %}
+<link href="/style/css/store_bigimg.css" rel="stylesheet">
+<script type="text/javascript" src="/style/js/jquery-1.9.1.min.js"></script>
+<script type="text/javascript" src="/style/js/bigimg.js"></script>
+
+<div class="mskeLayBg"></div>
+<div class="row">
+    <ol class="breadcrumb">
+        <li><a href="/admin/products">产品管理</a></li>
+    </ol>
+</div>
+<div class="row">
+    <form class="form-horizontal" role="form" action="/admin/edit_product/{{p.id|default('0')}}" method="post">
+        {{xsrf()}}
+        <div class="panel panel-default">
+            <h3 class="panel-title" style="width:100%;height:38px;line-height:38px;background:#528acb;color:#fff;padding-left:15px;border-top-left-radius:4px;border-top-right-radius:4px;">基本信息</h3>
+
+            <div class="panel-body">
+                <div class="form-group">
+                    <label class="col-sm-1 control-label">名称</label>
+                    <div class="col-sm-6">
+                        <input class="form-control txtName" name="pname" type="text" placeholder="名称不能为空"
+                               value="{{ p.name }}" required style="width:480px;">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-1 control-label">简介</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" name="presume" type="text" placeholder="简介不能为空"
+                               value="{{ p.resume }}" required style="width:480px;">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-1 control-label">配件品牌</label>
+                    <div class="col-sm-11">
+                        <select class="form-control" name="pinpai" id="pinpai"  placeholder="请选择配件品牌" required style="width:230px;">
+                            <option value="">请选择配件品牌</option>
+                            {% for brand in brands %}
+                            <option value="{{ brand.id }}" {{ 'selected' if p and p.brand.id == brand.id else ''}}>{{ brand.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <label class="col-sm-1 control-label">分类</label>
+                    <div class="col-sm-11">
+                        <select class="form-control" name="category" id="category" style="width:150px;float:left;margin-right:15px;">
+                            {% for c in category_attributes %}
+                            <option value="{{ c['id'] }}"  {{ p.category == c['id'] and 'selected' or ''}}>{{ c['name'] }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <!--润滑油的规格参数-->
+                <div class="form-group clearfix specificationLube" style="height:250px;">
+                    <label class="col-sm-1 control-label">规格参数</label>
+                    <div class="col-sm-11 parameter">
+                        <ul id="ul0">
+                            {% for lubeA in category_attributes[0]['attributes'] %}
+                            <li {% if i==0 %} class=selectTag style="margin-top:20px;" {% endif %}>
+                                <a onclick="selectTag('tagContent{{i}}', this)" href="javascript:void(0)">{{ lubeA['name'] }}</a>
+                            </li>
+                            {% endfor %}
+                            </ul>
+                        <img src="/style/images/jt.png" />
+                        <div id="tagContent">
+                            {% for lubeA in category_attributes[0]['attributes'] %}
+                            <div {% if j==0 %} class="tagContent selectTag"{% else %} class="tagContent"{%endif%} id="tagContent{{j}}">
+                                <ul>
+                                    {% for PPTAQ in category_attributes[0]['attributes'] %}
+                                    <li><a onclick="tagContent{{j}}({{i}})" href="#">{{ PPTAQ['name'] }}</a></li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-1 control-label">详细介绍</label>
+                    <div class="col-sm-10">
+                        <textarea class="form-control" rows="10" name="pintro" id="pintro">{{p.intro}}</textarea>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        {% if p %}
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">图片信息 <a href="" id="fileupload" style="font-size:14px;cursor:pointer;">选择图片</a></h3>
+            </div>
+            <div class="aa"></div>
+            <div class="mskelayBox">
+                <div class="mske_html">
+                </div>
+                <img class="mskeClaose" src="/style/images/mke_close.png" width="27" height="27" />
+            </div>
+            <div class="panel-body" id="pic-box">
+                {% for c in p.pics -%}
+                <div class="col-lg-2 .col-xs-10">
+                    {%-if p.cover==c.path -%}
+                    <div class="panel panel-primary">
+                        {% else %}
+                        <div class="panel panel-default">
+                            {% endif %}
+                            <div class="panel-heading center-block">
+                                <img class="preview" src="{{c.path}}" width="80" height="80">
+                            </div>
+                            <div class="panel-footer">
+                                <div class="btn-group btn-group-xs">
+                                    <a type="button" class="btn btn-default" href="/admin/delpic/{{c.id}}">删除</a>
+                                    {%-if not p.cover==c.path -%}
+                                    <a type="button" class="btn btn-default" href="/admin/primarypic/{{c.id}}">设为主图</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <span class="hidden" style="diplay:none">
+									<img id="example2"/>
+								</span>
+                        </div>
+
+                    </div>
+                    {%  endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        <button type="submit" style="width:90px;height:32px;background:#528acb;color:#fff;border:none;font-size:14px;border-radius:4px;margin-bottom:30px;">保存</button>
+
+    </form>
+</div>
+{% endblock %}
+{% block js %}
+<script src="/style/xheditor/xheditor-1.2.2.min.js"></script>
+<script src="/style/xheditor/xheditor_lang/zh-cn.js"></script>
+<script src="/style/js/jquery_ocupload.js?v=1"></script>
+<script language="javascript" type="text/javascript" src="/style/js/My97DatePicker/WdatePicker.js"></script>
+<script>
+    $(function(){
+        var xsrf='{{handler.xsrf_token}}';
+
+        $("#category").change(function(){
+            var pid = $(this).val();
+            console.debug(pid)
+        });
+        {% if p %}
+            $("#pcategory option[value='{{p.category}}']").attr("selected", true);
+        {% endif %}
+    });
+
+    //两端去空格函数
+    String.prototype.trim = function() {
+        return this.replace(/(^\s*)|(\s*$)/g,"");
+    }
+</script>
+{% endblock %}
+
+
+
+

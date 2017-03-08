@@ -390,7 +390,7 @@ class BrandCategory(db.Model):
 class Product(db.Model):
     id = PrimaryKeyField()
     name = CharField(max_length=64)  # 商品名称
-    brand = ForeignKeyField(Brand, related_name='products', db_column='brand_id', null=True)  # 配件品牌分类
+    brand = ForeignKeyField(Brand, related_name='products', db_column='brand_id', null=True)  # 商品品牌
     category = ForeignKeyField(Category, related_name='products', db_column='category_id')  # 商品分类
     resume = CharField()  # 简单介绍
     unit = CharField()  # 单位

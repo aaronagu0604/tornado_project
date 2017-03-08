@@ -482,6 +482,194 @@ class AdminUserHandler(AdminBaseHandler):
         self.redirect("/admin/admin_user/%s"%(adminUser.id))
 
 
+# -----------------------------------------------------------商品管理---------------------------------------------------
+@route(r'/admin/category', name='admin_category')  # 商品分类
+class CategoryHandler(AdminBaseHandler):
+    def get(self):
+        categories = Category.select().order_by(Category.hot, Category.sort)
+        self.render('admin/product/category.html', categories=categories, active='category')
+
+
+@route(r'/admin/category/(\d+)', name='admin_category_edit')  # 编辑分类
+class CategoryEditHandler(AdminBaseHandler):
+    def get(self, id):
+        if int(id) == 0:
+            category = None
+        else:
+            category = Category.get(id=id)
+        self.render('admin/product/category_edit.html', active='category', category=category)
+
+    def post(self, id):
+        name = self.get_body_argument("name", '')
+        sort = int(self.get_body_argument("sort", 1))
+        hot = self.get_body_argument("hot", '')
+        active = self.get_body_argument("active", '')
+        mobile_img = self.request.files.get('file_mobile')[0]['body']
+        pc_img = self.request.files.get('file_pc')[0]['body']
+
+        if int(id) > 0:
+            show_msg = "修改"
+            category = Category.get(id=id)
+        else:
+            show_msg = "添加"
+            category = Category()
+        category.name = name
+        category.sort = sort
+        category.hot = 1 if hot else 0
+        category.active = 1 if active else 0
+        message_path = 'C:/Users/agu/Desktop/tmp/'
+        try:
+            datetime = time.strftime('%Y%m%d%H%M%S', time.localtime(time.time()))  # 获取当前时间作为图片名称
+            if mobile_img:
+                filename = message_path + str(datetime) + "_mobile.jpg"
+                with open(filename, "wb") as f:
+                    f.write(mobile_img)
+                category.img_m = filename
+            if pc_img:
+                filename = message_path + str(datetime) + "_pc.jpg"
+                with open(filename, "wb") as f:
+                    f.write(pc_img)
+                category.img_pc = filename
+            category.save()
+            self.flash(show_msg + u"成功")
+        except Exception, ex:
+            self.flash(str(ex))
+        self.redirect('/admin/category')
+
+
+@route(r'/admin/brand', name='admin_brand')  # 品牌管理
+class BrandHandler(AdminBaseHandler):
+    def get(self):
+        page = int(self.get_argument("page", '1'))
+        pagesize = setting.ADMIN_PAGESIZE
+
+        brands = BrandCategory.select()
+        total = brands.count()
+        if total % pagesize > 0:
+            totalpage = total / pagesize + 1
+        else:
+            totalpage = total / pagesize
+        bs = brands.paginate(page, pagesize)
+
+        self.render('admin/product/brand.html', bs=bs, total=total, page=page, pagesize=pagesize,totalpage=totalpage, active='brand')
+
+
+@route(r'/admin/edit_brand/(\d+)', name='admin_edit_brand')
+class EditBrandHandler(AdminBaseHandler):
+    def get(self, id):
+        id = int(id)
+        brand_category = None
+        categories = Category.select()
+        if id != 0:
+            try:
+                brand_category = BrandCategory.get(brand = id)
+            except:
+                self.redirect("/admin/brand")
+                return
+        self.render('admin/product/brand_edit.html', brand_category=brand_category, categories=categories, active='brand')
+
+    def post(self, brand_id):
+        id = int(brand_id)
+        name = self.get_argument("name", None)
+        engname = self.get_argument("engname", None)
+        pinyin = self.get_argument("pinyin", None)
+        intro = self.get_argument("intro", None)
+        sel_type = int(self.get_argument("sel_type", 1))
+        hot = self.get_argument("hot", None)
+        active = self.get_argument("active", None)
+
+        try:
+            if id == 0:
+                ad = Brand()
+            else:
+                ad = Brand.get(id=id)
+            if self.request.files:
+                datetime = time.strftime('%Y%m%d%H%M%S', time.localtime(time.time()))  # 获取当前时间作为图片名称
+                filename = str(datetime) + ".jpg"
+                with open('upload/ad/' + filename, "wb") as f:
+                    f.write(self.request.files["file"][0]["body"])
+                ad.logo = '/upload/ad/' + filename
+            ad.name = name
+            ad.engname = engname
+            ad.pinyin = pinyin
+            ad.intro = intro
+            ad.ptype = sel_type
+            ad.active = 1 if active else 0
+            ad.hot = 1 if hot else 0
+            ad.save()
+        except Exception, e:
+            pass
+        self.redirect("/admin/brand")
+
+
+@route(r'/admin/delete_brand/(\d+)', name='admin_delete_brand')
+class DeleteBrandHandler(AdminBaseHandler):
+    def get(self, id):
+        p = Brand.get(id=id)
+        p.active = 0
+        p.save()
+        self.redirect("/admin/brand")
+
+
+@route(r'/admin/product/(\d+)', name='admin_product')
+class ProductHandler(AdminBaseHandler):
+    def get(self, is_score):
+        page = int(self.get_argument("page", '1'))
+        category = self.get_argument('category', None)
+        keyword = self.get_argument("keyword", None)
+        active = int(self.get_argument("status", 1))
+        pagesize = setting.ADMIN_PAGESIZE
+        is_score = int(is_score)
+        ft = (Product.active == active) & (Product.is_score == is_score)
+        if keyword:
+            keyw = '%' + keyword + '%'
+            ft = ft & (Product.name % keyw)
+        if category:
+            ft = ft & (Product.category == category)
+        products = Product.select().where(ft)
+        total = products.count()
+        if total % pagesize > 0:
+            totalpage = total / pagesize + 1
+        else:
+            totalpage = total / pagesize
+        products = products.order_by(Product.created.desc()).paginate(page, pagesize).aggregate_rows()
+        categories = Category.select()
+        product_type = 'product_s' if is_score else 'product_n'
+
+        self.render('admin/product/product.html', products=products, total=total, page=page, c_id=category,
+                    pagesize=pagesize, totalpage=totalpage, active=product_type, keyword=keyword, status=active,
+                    categories=categories, is_score=is_score)
+
+
+@route(r'/admin/edit_product/(\d+)', name='admin_edit_product')  # 修改产品页
+class EditProductHandler(AdminBaseHandler):
+    def get(self, pid):
+        pid = int(pid)
+        if pid > 0:
+            p = Product.get(id=pid)
+        else:
+            p = None
+
+        category_attributes = []
+        for category in Category.select():
+            attributes = []
+            for attribute in category.attributes:
+                attributes.append({
+                    'id': attribute.id,
+                    'name': attribute.name,
+                    'values': [item.name for item in attribute.items]
+                })
+            category_attributes.append({
+                'id': category.id,
+                'name': category.name,
+                'attributes': attributes
+            })
+        logging.info('---%s---'%category_attributes)
+        brands = Brand.select()
+        self.render('admin/product/product_edit.html', p=p, brands=brands, category_attributes=category_attributes)
+
+
+
 @route(r'/admin/gift_area', name='admin_area')  # 积分区域管理
 class AreaHandler(AdminBaseHandler):
     def get(self):
@@ -491,7 +679,6 @@ class AreaHandler(AdminBaseHandler):
 
         self.render('admin/insurance/score_list.html', items=items, active='gift_area',
                     defultCode=defultCode, defultSub=defultSub)
-
 
 
 @route(r'/admin/changeareascorestatu/(\d+)', name='admin_score_area_del')  # 修改积分区域状态
@@ -543,14 +730,6 @@ class InsuranceArea(AdminBaseHandler):
         code = self.get_argument('code', '')
         insurances = InsuranceArea.select().where((InsuranceArea.active == 1) &(InsuranceArea.area_code == code))
         self.render("admin/insurance/area.html", insurances=insurances, active='insurance_area')
-
-
-
-
-
-
-
-
 
 
 

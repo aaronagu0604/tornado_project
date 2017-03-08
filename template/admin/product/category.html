@@ -1,0 +1,53 @@
+{% extends "layout/admin.html" %}
+{% block content %}
+<div class="row">
+    {%set messages=handler.get_flashed_messages() %}
+    {%if messages%}
+    <div class="msg" style="color: red; font-size: 1.0em; margin-top: 25px;">
+        {% for type, msg in messages%}
+        <span>{{msg}}</span>
+        {% endfor %}
+    </div>
+    {%endif%}
+    <nav>
+        <div class="navbar-header" style="float:left;">
+            <a class="navbar-brand" href="#">分类管理</a>
+        </div>
+        <div class="navbar-header" style="float:right;margin-top:15px;">
+            <a href="/admin/category/0?pid=0" style="padding:5px 8px;border:1px solid #438bca;border-radius:4px;color:#438bca;font-size:16px;">添加分类</a>
+        </div>
+    </nav>
+</div>
+<div class="row">
+    <div class="panel panel-primary">
+        <div class="table-responsive">
+            <table class="table table-hover" id="tb_users" cellpadding="0" cellspacing="0" border="0" style="text-align:center;width:100%;">
+                <thead>
+                <tr style="background:#528acb;color:#fff;text-align:center;height:38px;line-height:38px;">
+                    <th style="width:25%;text-align:center;">分类名</th>
+                    <th style="width:20%;text-align:center;">热门分类</th>
+                    <th style="width:20%;text-align:center;">顺序</th>
+                    <th style="width:35%;text-align:center;">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for item in categories %}
+                <tr id="tr{{item.code}}">
+                    <td onclick="GetSubCategory('{{item.code}}',{{item.has_sub}})" style="cursor:{{item.has_sub==1 and 'pointer' or 'normal'}}">
+                        <span id="span{{item.code}}" data-blank="" data-ex="0" data-code="{{item.code}}">{{item.has_sub==1 and '+' or '-'}}</span>{{item.name}}
+                    </td>
+                    <td>{{item.code}}</td>
+                    <td>{{item.slug}}</td>
+                    <td style="display: none;"><a href="/admin/category/list/{{item.id}}">{{item.p_count}}</a></td>
+                    <td>
+                        <a href="/admin/category/{{item.id}}" style="padding:4px 5px;border:1px solid #438bca;color:#438bca;border-radius:4px;font-size:12px;text-decoration:none;">修改</a>
+                        <a href="/admin/category_del/{{item.id}}"style="padding:4px 5px;border:1px solid #438bca;color:#438bca;border-radius:4px;font-size:12px;text-decoration:none;">删除</a>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

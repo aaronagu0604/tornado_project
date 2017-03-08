@@ -1,0 +1,70 @@
+{% extends "layout/admin.html" %}
+{% block content %}
+<div class="row">
+   <nav>
+   <div class="navbar-header">
+      <a class="navbar-brand" href="#">品牌信息</a>
+   </div>
+</nav>
+</div>
+<div class="row">
+    <div class="panel panel-primary">
+    <div class="panel-body">
+        <form action="" method="post" enctype="multipart/form-data">
+            {{xsrf()}}
+            <div class="form-group has-success">
+            <p><label class="control-label">品牌名称</label></p>
+            <input type="text" class="form-control"  name="name" value="{{ brand_category.brand.name if brand_category else '' }}" onblur="GetPinYin(this.value);" style="width:480px;">
+            </div>
+            <div class="form-group has-success">
+            <p><label class="control-label">英文名称</label></p>
+            <input type="text" class="form-control"  name="engname" value="{{ brand_category.brand.engname if brand_category else '' }}" style="width:480px;">
+            </div>
+            <div class="form-group has-success">
+            <p><label class="control-label">中文拼音</label></p>
+            <input type="text" class="form-control"  name="pinyin" value="{{ brand_category.brand.pinyin if brand_category else '' }}" style="width:480px;">
+            </div>
+            <div  class="form-group has-success">
+            <p><label class="control-label">品牌分类</label></p>
+                <select class="form-control" name="sel_type" id="sel_type" style="width:480px;">
+                    {% for c in categories %}
+                        <option value="{{c.id}}" {% if brand_category and c.id == brand_category.category %} selected="selected" {% endif %} >{{c.name}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group has-success">
+            <p><label class="control-label">品牌Logo</label></p>
+            <input type="file" class="form-control"  name="file" style="width:480px;">
+            <img src="{{ brand_category.brand.logo if brand_category else '' }}"  height="200">
+            </div>
+
+            <div class="form-group has-success">
+            <p><label class="control-label">品牌简介</label></p>
+            <input type="text" class="form-control"  name="intro" value="{{ brand_category.brand.intro if brand_category else '' }}" style="width:480px;height:120px;">
+            </div>
+
+            <div>
+                <th><input type="checkbox" name="hot" {% if brand_category and brand_category.brand.hot==1 %} checked='true' {%endif%}>是否热点</th>
+            </div>
+            <div>
+                <th><input type="checkbox" name="active" {% if brand_category and brand_category.brand.active==1 %} checked='true' {%endif%}>是否启用</th>
+            </div>
+            <br>
+            <div class="form-group has-success">
+                <a href="/admin/brand" style="padding:7px 28px;border:1px solid #528ACB;border-radius:4px;color:#528ACB;font-size:16px;">取消</a>&nbsp;
+                <input type="submit" name="sub" value="提交" style="width:90px;height:36px;border:1px solid #528ACB;border-radius:4px;background:#528ACB;color:#fff;font-size:15px;">
+            </div>
+        </form>
+    </div>
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+    <script type="text/javascript" src="/style/js/PinYin.js"></script>
+    <script type="text/javascript">
+        function GetPinYin(cc) {
+            var spell = CC2PY(cc);
+            $("input[name='pinyin']").val(spell) ;
+        }
+    </script>
+{% endblock %}
