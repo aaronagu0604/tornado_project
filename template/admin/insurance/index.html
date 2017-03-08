@@ -1,13 +1,13 @@
 {% extends "layout/admin.html" %}
 {% block css %}
-<link href="/style2/css/plugins/dataTables.bootstrap.css" rel="stylesheet">
-<link href="/style2/css/select2.css" rel="stylesheet"/>
+<link href="/style/css/plugins/dataTables.bootstrap.css" rel="stylesheet">
+<link href="/style/css/select2.css" rel="stylesheet"/>
 {% endblock %}
 {% block content %}
 
 
 <div class="row">
-	<div class="col-xs-6">
+	<div class="col-xs-4">
 		<div class="row">
 	<nav>
 		<div>
@@ -31,16 +31,14 @@
 				<tr style="background:#528ACB;color:#fff;">
 					<th style="text-align:center;">名称</th>
 					<th style="text-align:center;">logo</th>
-					<th style="text-align:center;">简介</th>
 				</tr>
 				</thead>
 				<tbody>
 				{% for r in insurances %}
 				<tr>
-					<td><a href="/admin/insurance?iid={{r.id}}">{{ r.name }}</a></td>
+					<td><a class="btn  {{'btn-warning' if iid==r.id else 'btn-primary'}}" href="/admin/insurance?iid={{r.id}}">{{ r.name }}</a></td>
 					<td><img class="preview" src="{{r.logo}}" title="保险Logo" width="40" height="40" />
                             </td>
-					<td>{{ r.intro }}</td>
 				</tr>
 				{% endfor %}
 				</tbody>
@@ -48,7 +46,7 @@
 		</div>
 	</div>
 		</div>
-	<div class="col-xs-6">
+	<div class="col-xs-8">
 		<div class="row">
 	<nav>
 		<div>
@@ -64,6 +62,7 @@
 			<table class="table table-hover" style="text-align:center;">
 				<thead>
 				<tr style="background:#528ACB;color:#fff;">
+					<th style="text-align:center;">保险公司</th>
 					<th style="text-align:center;">城市</th>
 					<th style="text-align:center;">返油</th>
 					<th style="text-align:center;">返积分</th>
@@ -72,19 +71,20 @@
 				<tbody>
 				{% for r in areas %}
 				<tr>
+					<td>{{r.insurance.name}}</td>
 					<td>{{ Area().get_detailed_address(r.area_code)}}</td>
 					<td>
 						{% if r.lube_ok==0 %}
 						<span style="color: red;">未开通</span><br>
                                 {% elif r.lube_ok==1 %}
-                                <span style="color: #5cb85c;">已开通</span> (<a href="#">查看</a>)<br>
+                                <span style="color: #5cb85c;">已开通</span> (<a href="#" onclick="pop('返油政策-{{r.insurance.name}}-{{ Area().get_detailed_address(r.area_code)}}','{{r.insurance.id}}','{{r.area_code}}', 'lube')">政策</a>)<br>
                                 {% endif %}
                             </td>
 					<td>
 						{% if r.score_ok==0 %}
 						<span style="color: red;">未开通</span><br>
                                 {% elif r.score_ok==1 %}
-                                <span style="color: #5cb85c;">已开通</span> (<a href="#">查看</a>)<br>
+                                <span style="color: #5cb85c;">已开通</span> (<a href="#" onclick="pop('返积分政策-{{r.insurance.name}}-{{ Area().get_detailed_address(r.area_code)}}','{{r.insurance.id}}','{{r.area_code}}', 'score')">政策</a>)<br>
                                 {% endif %}</td>
 				</tr>
 				{% endfor %}
@@ -97,10 +97,23 @@
 {% endblock %}
 
 {% block js %}
+<script type="text/javascript" src="/style/js/layer/layer.js"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
 
     });
+
+	function pop(title, iid, area_code, type) {
+		var url = '/admin/insurance/'+type+'?iid='+iid+'&area_code=' +area_code;
+		layer.open({
+			type: 2,
+			title: title,
+			shadeClose: true,
+			shade: 0.8,
+			area: ['90%', '90%'],
+			content: url
+		});
+	}
 
 </script>
 {% endblock %}

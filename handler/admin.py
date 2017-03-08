@@ -719,17 +719,105 @@ class InsuranceList(AdminBaseHandler):
     def get(self):
         iid = int(self.get_argument('iid', 0))
         insurances = Insurance.select().where(Insurance.active == 1)
-        areas = InsuranceArea.select().where((InsuranceArea.active == 1) &(InsuranceArea.insurance == iid))
+        ft = InsuranceArea.active == 1
+        if iid > 0:
+            ft &= InsuranceArea.insurance == iid
+        areas = InsuranceArea.select().where(ft)
         self.render("admin/insurance/index.html", insurances=insurances, active='insurance',
-                    areas=areas, Area=Area)
+                    areas=areas, Area=Area, iid=iid)
 
 
 @route(r'/admin/insurance_area', name='admin_insurance_area')  # 保险发布地域
-class InsuranceArea(AdminBaseHandler):
+class InsuranceAreaHandler(AdminBaseHandler):
     def get(self):
         code = self.get_argument('code', '')
         insurances = InsuranceArea.select().where((InsuranceArea.active == 1) &(InsuranceArea.area_code == code))
         self.render("admin/insurance/area.html", insurances=insurances, active='insurance_area')
+
+
+@route(r'/admin/insurance/score', name='admin_insurance_score')  # 保险返积分策略
+class InsuranceScore(AdminBaseHandler):
+    def get(self):
+        iid = int(self.get_argument('iid', 0))
+        area_code = self.get_argument('area_code', '0')
+        items = InsuranceScoreExchange.select().where((InsuranceScoreExchange.insurance==iid)
+                                                     & (InsuranceScoreExchange.area_code == area_code))
+        if items.count() > 0:
+            item = items[0]
+        else:
+            item = None
+        self.render("admin/insurance/score.html", item=item, active='insurance', iid=iid, area_code = area_code)
+
+    def post(self):
+        exid = int(self.get_body_argument('exid', '0'))
+        base_money = float(self.get_body_argument('base_money', '0'))
+        business_exchange_rate = float(self.get_body_argument('business_exchange_rate', '0'))
+        business_exchange_rate2 = float(self.get_body_argument('business_exchange_rate2', '0'))
+        business_tax_rate = float(self.get_body_argument('business_tax_rate', '0'))
+
+        force_exchange_rate = float(self.get_body_argument('force_exchange_rate', '0'))
+        force_exchange_rate2 = float(self.get_body_argument('force_exchange_rate2', '0'))
+        force_tax_rate = float(self.get_body_argument('force_tax_rate', '0'))
+
+        ali_rate = float(self.get_body_argument('ali_rate', '0'))
+        profit_rate = float(self.get_body_argument('profit_rate', '0'))
+        area_code = self.get_body_argument('area_code', '0')
+        iid = int(self.get_argument('iid', 0))
+
+        if exid > 0:
+            item = InsuranceScoreExchange.get(id=exid)
+        else:
+            item = InsuranceScoreExchange()
+            item.area_code = area_code
+            item.insurance = iid
+            item.created = int(time.time())
+        item.base_money = base_money
+        item.business_exchange_rate = business_exchange_rate
+        item.business_exchange_rate2 = business_exchange_rate2
+        item.business_tax_rate = business_tax_rate
+        item.force_exchange_rate = force_exchange_rate
+        item.force_exchange_rate2 = force_exchange_rate2
+        item.force_tax_rate = force_tax_rate
+        item.ali_rate = ali_rate
+        item.profit_rate = profit_rate
+        item.save()
+        self.flash('保存成功')
+        items = InsuranceScoreExchange.select().where((InsuranceScoreExchange.insurance == iid)
+                                                      & (InsuranceScoreExchange.area_code == area_code))
+        if items.count() > 0:
+            item = items[0]
+        else:
+            item = None
+        self.render("admin/insurance/score.html", item=item, active='insurance')
+
+
+@route(r'/admin/insurance/lube', name='admin_insurance_lube')  # 保险返油策略
+class InsuranceLube(AdminBaseHandler):
+    def get(self):
+        iid = int(self.get_argument('iid', 0))
+        area_code = self.get_argument('area_code', '0')
+        items = LubePolicy.select().where((LubePolicy.insurance==iid)
+                                                     & (LubePolicy.area_code == area_code))
+        if items.count() > 0:
+            item = items[0]
+        else:
+            item = None
+        self.render("admin/insurance/lube.html", item=item, iid=iid, area_code = area_code)
+
+    def post(self):
+        exid = int(self.get_body_argument('exid', '0'))
+        json = self.get_body_argument('json', '[]')
+        area_code = self.get_body_argument('area_code', '0')
+        iid = int(self.get_argument('iid', 0))
+
+        if exid > 0:
+            item = LubePolicy.get(id=exid)
+        else:
+            item = LubePolicy()
+            item.area_code = area_code
+            item.insurance = iid
+            item.policy = json
+        item.save()
 
 
 

@@ -769,7 +769,6 @@ class InsuranceOrder(db.Model):
 class InsuranceScoreExchange(db.Model):
     id = PrimaryKeyField()
     area_code = CharField(max_length=12)  # 地区code
-    address = CharField(max_length=32)  # 地址中文
     insurance = ForeignKeyField(Insurance, db_column='insurance_id')  # 保险公司ID
     created = IntegerField()  # 创建时间
 
@@ -882,19 +881,12 @@ class PaymentNotify(db.Model):
 # 帮助中心 返油政策
 class LubePolicy(db.Model):
     id = PrimaryKeyField()
-    area_code =  CharField(max_length=12)  # 地区ID
-    insurance = CharField(max_length=32)  # 保险
-    iCompany = CharField(max_length=32)  # 保险公司
-    price = CharField(max_length=32)   # 价格区间
-    driverGift = CharField(max_length=32)  # 车主赠品
-    driverGiftNum = IntegerField(default=0)   # 车主赠品数量
-    party2Gift = CharField(max_length=32)  # 乙方赠品
-    party2GiftNum = IntegerField(default=0)   # 乙方赠品数量
-    sort = IntegerField(default=3)   # 单交强险1 单商业险2  商业险+交强险3
-    sort2 = IntegerField(default=1)  # 商业险+交强险 or 单商业险 等级排序
+    area_code = CharField(max_length=12)  # 地区code
+    insurance = ForeignKeyField(Insurance, related_name='lube_policy', db_column='insurance_id')
+    policy = CharField(max_length=32)  # 返油政策的json串
 
     class Meta:
-        db_table = "tb_help_center"
+        db_table = "tb_lube_policy"
 
 
 # 意见反馈
@@ -1065,5 +1057,5 @@ def load_test_data():
 if __name__ == '__main__':
     # init_db()
     # load_test_data()
-    InsuranceArea.create_table()
+    LubePolicy.create_table()
     pass
