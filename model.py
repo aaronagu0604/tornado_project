@@ -883,7 +883,7 @@ class LubePolicy(db.Model):
     id = PrimaryKeyField()
     area_code = CharField(max_length=12)  # 地区code
     insurance = ForeignKeyField(Insurance, related_name='lube_policy', db_column='insurance_id')
-    policy = CharField(max_length=32)  # 返油政策的json串
+    policy = CharField(max_length=4000)  # 返油政策的json串
 
     class Meta:
         db_table = "tb_lube_policy"

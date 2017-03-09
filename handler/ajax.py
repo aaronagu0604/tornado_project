@@ -307,7 +307,7 @@ class AjaxProductReleasePublishAreas(BaseHandler):
             for item in data:
                 query = StoreProductPrice.select().where((StoreProductPrice.product_release == item['id']) &
                                                          (StoreProductPrice.store == sid) &
-                                                         StoreProductPrice.area_code == item['code'])
+                                                         (StoreProductPrice.area_code == item['code']))
                 if query.count() > 0:
                     for q in query:
                         q.delete_instance()

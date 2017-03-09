@@ -816,10 +816,16 @@ class InsuranceLube(AdminBaseHandler):
             item = LubePolicy()
             item.area_code = area_code
             item.insurance = iid
-            item.policy = json
+        item.policy = json
         item.save()
-
-
+        self.flash('保存成功')
+        items = LubePolicy.select().where((LubePolicy.insurance == iid)
+                                          & (LubePolicy.area_code == area_code))
+        if items.count() > 0:
+            item = items[0]
+        else:
+            item = None
+        self.render("admin/insurance/lube.html", item=item, iid=iid, area_code=area_code)
 
 
 
