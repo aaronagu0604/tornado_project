@@ -312,7 +312,7 @@ class MobileHomeHandler(MobileBaseHandler):
         items = []
         banners = BlockItem.select(BlockItem).join(Block) \
             .where((Block.tag == 'banner') & (Block.active == 1) & (BlockItem.active == 1)
-                   & (BlockItem.area_code == area_code)).order_by(BlockItem.sort).asc()
+                   & (BlockItem.area_code == area_code)).order_by(BlockItem.sort.asc())
         for p in banners:
             items.append({
                 'img': p.img,
@@ -327,7 +327,7 @@ class MobileHomeHandler(MobileBaseHandler):
         insurances = BlockItem.select(BlockItem.link, Insurance.logo, Insurance.name).join(Block). \
             join(Insurance, on=BlockItem.ext_id == Insurance.id).where(
             (Block.tag == 'insurance') & (Block.active == 1)
-            & (BlockItem.active == 1) & (BlockItem.area_code == area_code)).order_by(BlockItem.sort).asc().tuples()
+            & (BlockItem.active == 1) & (BlockItem.area_code == area_code)).order_by(BlockItem.sort.asc()).tuples()
         for link, logo, name in insurances:
             items.append({
                 'img': logo,
@@ -342,7 +342,7 @@ class MobileHomeHandler(MobileBaseHandler):
         categories = BlockItem.select(BlockItem.link, Category.img_m, Category.name).join(Block). \
             join(Category, on=BlockItem.ext_id == Category.id).where(
             (Block.tag == 'hot_category') & (Block.active == 1)
-            & (BlockItem.active == 1) & (BlockItem.area_code == area_code)).order_by(BlockItem.sort).asc().tuples()
+            & (BlockItem.active == 1) & (BlockItem.area_code == area_code)).order_by(BlockItem.sort.asc()).tuples()
         for link, logo, name in categories:
             items.append({
                 'img': logo,
@@ -358,7 +358,7 @@ class MobileHomeHandler(MobileBaseHandler):
             join(Brand, on=BlockItem.ext_id == Brand.id).where((Block.tag == 'hot_brand') & (Block.active == 1)
                                                                & (BlockItem.active == 1) & (
                                                                BlockItem.area_code == area_code)).order_by(
-            BlockItem.sort).asc().tuples()
+            BlockItem.sort.asc()).tuples()
         for link, logo, name in brands:
             items.append({
                 'img': logo,
@@ -376,7 +376,7 @@ class MobileHomeHandler(MobileBaseHandler):
             join(ProductRelease, on=ProductRelease.id == StoreProductPrice.product_release). \
             join(Product, on=Product.id == ProductRelease.product). \
             where((Block.tag == 'recommend') & (Block.active == 1) & (BlockItem.active == 1)
-                  & (BlockItem.area_code == area_code)).order_by(BlockItem.sort).asc().tuples()
+                  & (BlockItem.area_code == area_code)).order_by(BlockItem.sort.asc()).tuples()
         for link, logo, name, price in recommends:
             items.append({
                 'img': logo,

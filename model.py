@@ -925,7 +925,83 @@ class BankCard(db.Model):
     demo = CharField(max_length=50,null=True)
 
     class Meta:
-        db_table = 'bank_card_bin'
+        db_table = 'tb_bank_card_bin'
+
+
+# 汽车品牌
+class CarBrand(db.Model):
+    id = PrimaryKeyField()
+    brand_name = CharField(max_length=50)  # 汽车品牌
+    brand_pinyin_name = CharField(max_length=100, null=True)  # 汽车品牌拼音
+    logo = CharField(max_length=1000, null=True)  # 汽车品牌logo
+    brand_intro = CharField(max_length=800, null=True)  # 汽车品牌简介
+    brand_pinyin_first = CharField(max_length=1, null=True)  # 汽车品牌拼音首字母
+    catch_url = CharField(max_length=1000, null=True)  # 抓取详情页面路径
+    sort = FloatField(default=0.0)  # 同拼音下的排序
+    active = IntegerField(default=1)  # 状态 0删除 1有效
+
+    class Meta:
+        db_table = 'tb_car_brand'
+
+
+# 汽车品牌厂家，主要是中国的厂家，如大众下的一汽和上汽
+class CarBrandFactory(db.Model):
+    id = PrimaryKeyField()
+    factory_name = CharField(max_length=50)  # 汽车品牌厂家
+    logo = CharField(max_length=1000, null=True)  # 汽车品牌logo
+    factory_intro = CharField(max_length=800, null=True)  # 汽车品牌简介
+    sort = FloatField(default=0.0)  # 同品牌下的排序
+    active = IntegerField(default=1)  # 状态 0删除 1有效
+
+    class Meta:
+        db_table = 'tb_car_factory'
+
+
+# 汽车
+class Car(db.Model):
+    id = PrimaryKeyField()
+    car_name = CharField(max_length=50)  # 汽车
+    car_pinyin_name = CharField(max_length=100, null=True)  # 汽车拼音
+    brand = ForeignKeyField(CarBrand, related_name='cars', db_column='car_brand_id')  # 汽车品牌
+    factory = ForeignKeyField(CarBrandFactory, related_name='cars', db_column='car_brand_factory_id', null=True)  # 汽车厂家
+    logo = CharField(max_length=1000, null=True)  # 汽车logo，汽车的图片
+    catch_url = CharField(max_length=1000, null=True)  # 抓取详情页面路径
+    stop_sale = IntegerField(default=0)  # 停产？ 0正常销售 1已停产
+    sort = FloatField(default=0.0)  # 厂家或品牌下的排序
+    active = IntegerField(default=1)  # 状态 0删除 1有效
+
+    class Meta:
+        db_table = 'tb_car'
+
+
+# 车型分类，如：1.6L/115kW 涡轮增压，2.0L/135kW 涡轮增压
+class CarItemGroup(db.Model):
+    id = PrimaryKeyField()
+    car = ForeignKeyField(Car, related_name='groups', db_column='car_id')  # 汽车
+    group_name = CharField(max_length=50)  # 汽车型号
+
+    class Meta:
+        db_table = 'tb_car_item_group'
+
+
+# 汽车型号，如翼虎2.0T
+class CarItem(db.Model):
+    id = PrimaryKeyField()
+    car_item_name = CharField(max_length=50)  # 汽车型号
+    car = ForeignKeyField(Car, related_name='items', db_column='car_id')  # 汽车
+    group = ForeignKeyField(CarItemGroup, related_name='items', db_column='car_item_group_id')  # 所在分组
+    displacement = FloatField(default=0.0)  # 排量
+    gearbox = CharField(max_length=50, null=True)  # 变速箱，AT自动，MT手动，8挡手自一体
+    actuator = CharField(max_length=50, null=True)  # 驱动方式，四驱，前驱，后驱
+    power = CharField(max_length=50, null=True)  # 动力来源，汽油，柴油，电动，油电混合
+    sale_category = CharField(max_length=50, null=True)  # 销售分组，如：在售，停售
+    catch_url = CharField(max_length=1000, null=True)  # 抓取详情页面路径
+    stop_sale = IntegerField(default=0)  # 停产？ 0正常销售 1已停产
+    sort = FloatField(default=0.0)  # 厂家或品牌下的排序
+    active = IntegerField(default=1)  # 状态 0删除 1有效
+
+    class Meta:
+        db_table = 'tb_car_item'
 
 
 def init_db():
@@ -1069,5 +1145,16 @@ def load_test_data():
 if __name__ == '__main__':
     # init_db()
     # load_test_data()
-    LubePolicy.create_table()
+    # LubePolicy.create_table()
+
+    CarItem.drop_table()
+    CarItemGroup.drop_table()
+    # Car.drop_table()
+    # CarBrandFactory.drop_table()
+    # CarBrand.drop_table()
+    # CarBrand.create_table()
+    # CarBrandFactory.create_table()
+    # Car.create_table()
+    CarItemGroup.create_table()
+    CarItem.create_table()
     pass
