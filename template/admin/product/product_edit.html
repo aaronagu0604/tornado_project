@@ -1,7 +1,7 @@
 {% extends "layout/admin.html" %}
 {% block content %}
 <link href="/style/css/store_bigimg.css" rel="stylesheet">
-<script type="text/javascript" src="/style/js/jquery-1.9.1.min.js"></script>
+<script type="text/javascript" src="/style/js/jquery-1.11.1.min.js"></script>
 <script type="text/javascript" src="/style/js/bigimg.js"></script>
 
 <div class="mskeLayBg"></div>
@@ -20,14 +20,30 @@
                 <div class="form-group">
                     <label class="col-sm-1 control-label">名称</label>
                     <div class="col-sm-6">
-                        <input class="form-control txtName" name="pname" type="text" placeholder="名称不能为空"
+                        <input class="form-control txtName" name="name" id="pname" type="text" placeholder="名称不能为空"
                                value="{{ p.name }}" required style="width:480px;">
                     </div>
                 </div>
                 <div class="form-group">
+                    <label class="col-sm-1 control-label">单位</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" name="unit" id="unit" type="text" placeholder="单位（例：桶）"
+                               value="{{ p.unit }}" required style="width:480px;">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-1 control-label">添加到积分商品</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" name="is_score" id="is_score" type="text" placeholder="1"
+                               value="{{ p.is_score }}" required style="width:480px;">
+                    </div>
+                </div>
+
+                <div class="form-group">
                     <label class="col-sm-1 control-label">简介</label>
                     <div class="col-sm-10">
-                        <input class="form-control" name="presume" type="text" placeholder="简介不能为空"
+                        <input class="form-control" name="resume" id="presume" type="text" placeholder="简介不能为空"
                                value="{{ p.resume }}" required style="width:480px;">
                     </div>
                 </div>
@@ -35,7 +51,7 @@
                 <div class="form-group">
                     <label class="col-sm-1 control-label">配件品牌</label>
                     <div class="col-sm-11">
-                        <select class="form-control" name="pinpai" id="pinpai"  placeholder="请选择配件品牌" required style="width:230px;">
+                        <select class="form-control" name="brand" id="pinpai"  placeholder="请选择配件品牌" required style="width:230px;">
                             <option value="">请选择配件品牌</option>
                             {% for brand in brands %}
                             <option value="{{ brand.id }}" {{ 'selected' if p and p.brand.id == brand.id else ''}}>{{ brand.name }}</option>
@@ -44,40 +60,48 @@
                     </div>
                 </div>
 
-
                 <div class="form-group">
                     <label class="col-sm-1 control-label">分类</label>
                     <div class="col-sm-11">
                         <select class="form-control" name="category" id="category" style="width:150px;float:left;margin-right:15px;">
+                            {% if p %}
+                            <option value="{{ p.category.id }}">{{ p.category.name }}</option>
+                            {% else %}
+                            <option value="">--请选择--</option>
                             {% for c in category_attributes %}
-                            <option value="{{ c['id'] }}"  {{ p.category == c['id'] and 'selected' or ''}}>{{ c['name'] }}</option>
+                            <option value="{{ c['id'] }}" {{ p and p.category.id == c['id'] and 'selected' or ''}}>{{ c['name'] }}</option>
                             {% endfor %}
+                            {% endif %}
                         </select>
                     </div>
                 </div>
 
-                <!--润滑油的规格参数-->
+                <!--产品的规格参数-->
                 <div class="form-group clearfix specificationLube" style="height:250px;">
                     <label class="col-sm-1 control-label">规格参数</label>
                     <div class="col-sm-11 parameter">
-                        <ul id="ul0">
-                            {% for lubeA in category_attributes[0]['attributes'] %}
-                            <li {% if i==0 %} class=selectTag style="margin-top:20px;" {% endif %}>
-                                <a onclick="selectTag('tagContent{{i}}', this)" href="javascript:void(0)">{{ lubeA['name'] }}</a>
-                            </li>
-                            {% endfor %}
-                            </ul>
-                        <img src="/style/images/jt.png" />
-                        <div id="tagContent">
-                            {% for lubeA in category_attributes[0]['attributes'] %}
-                            <div {% if j==0 %} class="tagContent selectTag"{% else %} class="tagContent"{%endif%} id="tagContent{{j}}">
-                                <ul>
-                                    {% for PPTAQ in category_attributes[0]['attributes'] %}
-                                    <li><a onclick="tagContent{{j}}({{i}})" href="#">{{ PPTAQ['name'] }}</a></li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                            {% endfor %}
+                        <div class="table-responsive">
+                            <table class="table table-hover" id="tb_need_pay_back_orders" style="text-align:center;">
+                                <thead></thead>
+                                <tbody id="attributeContainer">
+                                {% if p %}
+                                {% for attribute in p.category.attributes %}
+                                {% if attribute.active == 1 %}
+                                <tr>
+                                    <td name="category_attribute" cid="{{ attribute.id }}">{{ attribute.name }}</td>
+                                    <td>
+                                        <select class="form-control" name="category_attribute_value" style="width:150px;float:left;margin-right:15px;">
+                                            {% for item in attribute.items %}
+                                            <option value="{{ item.id }}" {{ pa_values and pa_values[attribute.id] == item.id and 'selected' or ''}}>{{ item.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </td>
+                                </tr>
+                                {% endif %}
+                                {% endfor %}
+                                {% endif %}
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -85,10 +109,9 @@
                 <div class="form-group">
                     <label class="col-sm-1 control-label">详细介绍</label>
                     <div class="col-sm-10">
-                        <textarea class="form-control" rows="10" name="pintro" id="pintro">{{p.intro}}</textarea>
+                        <textarea class="form-control" rows="10" id="pintro" name="pintro" id="pintro">{{ p.intro }}</textarea>
                     </div>
                 </div>
-
             </div>
         </div>
         {% if p %}
@@ -98,41 +121,45 @@
             </div>
             <div class="aa"></div>
             <div class="mskelayBox">
-                <div class="mske_html">
-                </div>
+                <div class="mske_html"></div>
                 <img class="mskeClaose" src="/style/images/mke_close.png" width="27" height="27" />
             </div>
             <div class="panel-body" id="pic-box">
                 {% for c in p.pics -%}
                 <div class="col-lg-2 .col-xs-10">
-                    {%-if p.cover==c.path -%}
+                    {% if p.cover==c.path %}
                     <div class="panel panel-primary">
                         {% else %}
                         <div class="panel panel-default">
                             {% endif %}
                             <div class="panel-heading center-block">
-                                <img class="preview" src="{{c.path}}" width="80" height="80">
+                                <img name="product_img" class="preview" src="{{c.path}}" width="80" height="80">
                             </div>
                             <div class="panel-footer">
                                 <div class="btn-group btn-group-xs">
                                     <a type="button" class="btn btn-default" href="/admin/delpic/{{c.id}}">删除</a>
-                                    {%-if not p.cover==c.path -%}
+                                    {% if not p.cover==c.path %}
                                     <a type="button" class="btn btn-default" href="/admin/primarypic/{{c.id}}">设为主图</a>
                                     {% endif %}
                                 </div>
                             </div>
                             <span class="hidden" style="diplay:none">
-									<img id="example2"/>
-								</span>
+                                <img id="example2"/>
+                            </span>
                         </div>
-
                     </div>
-                    {%  endfor %}
+                    {% endfor %}
                 </div>
             </div>
         </div>
         {% endif %}
-        <button type="submit" style="width:90px;height:32px;background:#528acb;color:#fff;border:none;font-size:14px;border-radius:4px;margin-bottom:30px;">保存</button>
+
+
+        <input type="hidden" id="hd_category" name="category_attributes" value="" />
+        <input type="hidden" id="hd_pic" name="hd_pic" value="" />
+
+        <button type="submit" onclick="javascript:return submit_product();"
+                style="width:90px;height:32px;background:#528acb;color:#fff;border:none;font-size:14px;border-radius:4px;margin-bottom:30px;">保存</button>
 
     </form>
 </div>
@@ -144,21 +171,47 @@
 <script language="javascript" type="text/javascript" src="/style/js/My97DatePicker/WdatePicker.js"></script>
 <script>
     $(function(){
-        var xsrf='{{handler.xsrf_token}}';
-
+        var xsrf='{{ handler.xsrf_token }}';
         $("#category").change(function(){
             var pid = $(this).val();
-            console.debug(pid)
+            $.ajax({url:"/ajax/get_category/"+pid, success:function(result){
+                var obj = JSON.parse(result);
+                if(obj.flag == 1)
+                {
+                    var container = $("#attributeContainer");
+                    container.html('');
+                    for(var i=0;i<obj.data.length;i++){
+                        var item = '<tr> <td name="category_attribute" cid="'+obj.data[i].id+'">'+obj.data[i].name+'</td> <td>';
+                        item += '<select class="form-control" name="category_attribute_value" style="width:150px;float:left;margin-right:15px;">';
+                        for(var j=0;j<obj.data[i].values.length;j++){
+                            item+='<option value="'+obj.data[i].values[j].id+'"> ' + obj.data[i].values[j].name+'</option>'
+                        }
+                        item += '</select></td> </tr>';
+                        container.append(item);
+                    }
+                }
+            }});
         });
-        {% if p %}
-            $("#pcategory option[value='{{p.category}}']").attr("selected", true);
-        {% endif %}
     });
 
-    //两端去空格函数
-    String.prototype.trim = function() {
-        return this.replace(/(^\s*)|(\s*$)/g,"");
+    function submit_product() {
+        var block = $("#attributeContainer");
+        var category_attribute_value_list = [];
+        $("#attributeContainer tr").each(function(index,element){
+            var item = {};
+            item.attribute_id = $(this).find('td[name="category_attribute"]').attr('cid')
+            item.attribute_value_id = $(this).find('select[name="category_attribute_value"]').val();
+            category_attribute_value_list.push(item);
+        });
+        $('#hd_category').val(JSON.stringify(category_attribute_value_list));
+        var imgs = [];
+        $("#pic-box img[name='product_img']").each(function(index,element){
+            imgs.push($(this).attr('src'));
+        });
+        $('#hd_pic').val(JSON.stringify(imgs));
+        return true;
     }
+
 </script>
 {% endblock %}
 

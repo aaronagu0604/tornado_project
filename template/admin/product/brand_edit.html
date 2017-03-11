@@ -24,13 +24,10 @@
             <p><label class="control-label">中文拼音</label></p>
             <input type="text" class="form-control"  name="pinyin" value="{{ brand_category.brand.pinyin if brand_category else '' }}" style="width:480px;">
             </div>
-            <div  class="form-group has-success">
-            <p><label class="control-label">品牌分类</label></p>
-                <select class="form-control" name="sel_type" id="sel_type" style="width:480px;">
-                    {% for c in categories %}
-                        <option value="{{c.id}}" {% if brand_category and c.id == brand_category.category %} selected="selected" {% endif %} >{{c.name}}</option>
-                    {% endfor %}
-                </select>
+
+            <div class="form-group has-success">
+            <p><label class="control-label">排序</label></p>
+            <input type="text" class="form-control"  name="sort" value="{{ brand_category.brand.sort if brand_category else '' }}" style="width:480px;">
             </div>
             <div class="form-group has-success">
             <p><label class="control-label">品牌Logo</label></p>

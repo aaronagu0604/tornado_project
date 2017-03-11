@@ -323,3 +323,43 @@ class AjaxProductReleasePublishAreas(BaseHandler):
         result['flag'] = 1
         result['msg'] = '添加成功'
         self.write(simplejson.dumps(result))
+
+
+@route(r'/ajax/get_category/(\d+)', name='ajax_get_category')  # 添加商品库
+class AjaxGetCategory(BaseHandler):
+    def get(self, cid):
+        result = {'flag': 0, 'msg': '', 'data': []}
+        category = Category.get(id=cid)
+        for attribute in category.attributes:
+            result['data'].append({
+                'id': attribute.id,
+                'name': attribute.name,
+                'values': [{'id': item.id, 'name': item.name} for item in attribute.items]
+            })
+        result['flag'] = 1
+        self.write(simplejson.dumps(result))
+
+
+@route(r'/ajax/cancel_order', name='ajax_cancel_order')  # 根据订单ID取消订单
+class CancelOrderHandler(BaseHandler):
+    def post(self):
+        result = {'err': 0, 'msg': ''}
+        id = self.get_argument("id", '-1')
+        status = int(self.get_argument("status", '-1'))
+        cause = self.get_argument("cause", '')
+        content = {}
+        try:
+            o = Order.get(Order.id == id)
+            o.message = cause + u'；操作人：' +self.get_admin_user().username  # 订单取消原因
+            o.save()
+            content['cancel_cause'] = cause
+            content['order_id'] = id
+            AdminUserLog.create(user=self.get_admin_user(), created=int(time.time()), content=content)
+        except Exception, e:
+            result['err'] = 1
+            result['msg'] = e.message
+        self.write(simplejson.dumps(result))
+
+
+
+

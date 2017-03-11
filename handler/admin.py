@@ -537,13 +537,101 @@ class CategoryEditHandler(AdminBaseHandler):
         self.redirect('/admin/category')
 
 
+@route(r'/admin/category_attribute/(\d+)', name='admin_category_attribute')  # 添加/修改分类的规格参数
+class CategoryAttributeHandler(AdminBaseHandler):
+    def get(self, cid):
+        category_attributes = Category.get(id=cid).attributes
+        self.render('admin/product/category_attribute.html', active='category', category_attributes=category_attributes, cid=cid)
+
+
+@route(r'/admin/category_attribute_edit/(\d+)', name='admin_category_attribute_edit')  # 添加/修改分类的规格
+class CategoryAttributeAddHandler(AdminBaseHandler):
+    def get(self, ca_id):
+        cid = self.get_argument('cid', None)
+        status = self.get_argument('status', None)
+        if status == '0':
+            category_attribute = CategoryAttribute.get(id=ca_id)
+            category_attribute.active = 0
+            category_attribute.save()
+            self.redirect('/admin/category_attribute/%s' % cid)
+        else:
+            if ca_id != '0':
+                category_attribute = CategoryAttribute.get(id=ca_id)
+            else:
+                category_attribute = None
+            self.render('admin/product/category_attribute_edit.html', active='category',
+                        category_attribute=category_attribute, cid=cid)
+
+    def post(self, ca_id):
+        category = self.get_body_argument('cid', None)
+        name = self.get_body_argument('name', None)
+        ename = self.get_body_argument('ename', None)
+        sort = int(self.get_body_argument('sort', 1))
+        active = 1 if self.get_body_argument('active', None) else 0
+
+        if ca_id != '0':
+            category_attribute = CategoryAttribute.get(id=ca_id)
+        else:
+            category_attribute = CategoryAttribute()
+            category_attribute.category = category
+        if active:
+            category_attribute.name = name
+            category_attribute.ename = ename
+            category_attribute.sort = sort
+            category_attribute.active = active
+            category_attribute.save()
+        else:
+            category_attribute.active = active
+            category_attribute.save()
+
+        self.redirect('/admin/category_attribute/%s'%category)
+
+
+@route(r'/admin/attribute_item_edit/(\d+)', name='admin_attribute_item_edit')  # 添加/修改分类规格的参数
+class CategoryAttributeAddHandler(AdminBaseHandler):
+    def get(self, cai_id):
+        cid = self.get_argument('cid', None)
+        ca_id = self.get_argument('ca_id', None)
+        status = self.get_argument('status', None)
+        if status == '0' and cai_id != '0':
+            CategoryAttributeItems.delete().where(CategoryAttributeItems.id == cai_id).execute()
+            self.redirect('/admin/category_attribute/%s'%cid)
+            return
+        elif cai_id == '0':
+            attribute_item = None
+        else:
+            attribute_item = CategoryAttributeItems.get(id=cai_id)
+
+        self.render('admin/product/category_attribute_item_edit.html', active='category', cid=cid, ca_id=ca_id,
+                    attribute_item=attribute_item)
+
+    def post(self, cai_id):
+        category = self.get_body_argument('cid', None)
+        category_attribute = self.get_body_argument('ca_id', None)
+        name = self.get_body_argument('name', None)
+        intro = self.get_body_argument('intro', None)
+        sort = int(self.get_body_argument('sort', 1))
+
+        if cai_id != '0':
+            attribute_items = CategoryAttributeItems.get(id=cai_id)
+        else:
+            attribute_items = CategoryAttributeItems()
+            attribute_items.category_attribute = int(category_attribute)
+        attribute_items.name = name
+        attribute_items.intro = intro
+        attribute_items.sort = sort
+        attribute_items.save()
+
+        self.redirect('/admin/category_attribute/%s'%category)
+
+
 @route(r'/admin/brand', name='admin_brand')  # 品牌管理
 class BrandHandler(AdminBaseHandler):
     def get(self):
         page = int(self.get_argument("page", '1'))
         pagesize = setting.ADMIN_PAGESIZE
 
-        brands = BrandCategory.select()
+        brands = Brand.select()
         total = brands.count()
         if total % pagesize > 0:
             totalpage = total / pagesize + 1
@@ -554,19 +642,18 @@ class BrandHandler(AdminBaseHandler):
         self.render('admin/product/brand.html', bs=bs, total=total, page=page, pagesize=pagesize,totalpage=totalpage, active='brand')
 
 
-@route(r'/admin/edit_brand/(\d+)', name='admin_edit_brand')
+@route(r'/admin/edit_brand/(\d+)', name='admin_edit_brand')  # 编辑品牌
 class EditBrandHandler(AdminBaseHandler):
     def get(self, id):
         id = int(id)
         brand_category = None
-        categories = Category.select()
         if id != 0:
             try:
                 brand_category = BrandCategory.get(brand = id)
             except:
                 self.redirect("/admin/brand")
                 return
-        self.render('admin/product/brand_edit.html', brand_category=brand_category, categories=categories, active='brand')
+        self.render('admin/product/brand_edit.html', brand_category=brand_category, active='brand')
 
     def post(self, brand_id):
         id = int(brand_id)
@@ -574,7 +661,7 @@ class EditBrandHandler(AdminBaseHandler):
         engname = self.get_argument("engname", None)
         pinyin = self.get_argument("pinyin", None)
         intro = self.get_argument("intro", None)
-        sel_type = int(self.get_argument("sel_type", 1))
+        sort = int(self.get_argument("sort", 1))
         hot = self.get_argument("hot", None)
         active = self.get_argument("active", None)
 
@@ -586,23 +673,23 @@ class EditBrandHandler(AdminBaseHandler):
             if self.request.files:
                 datetime = time.strftime('%Y%m%d%H%M%S', time.localtime(time.time()))  # 获取当前时间作为图片名称
                 filename = str(datetime) + ".jpg"
-                with open('upload/ad/' + filename, "wb") as f:
-                    f.write(self.request.files["file"][0]["body"])
+                # with open('upload/ad/' + filename, "wb") as f:
+                #     f.write(self.request.files["file"][0]["body"])
                 ad.logo = '/upload/ad/' + filename
             ad.name = name
             ad.engname = engname
             ad.pinyin = pinyin
             ad.intro = intro
-            ad.ptype = sel_type
+            ad.sort = sort
             ad.active = 1 if active else 0
             ad.hot = 1 if hot else 0
             ad.save()
         except Exception, e:
-            pass
+            logging.info('Error: %s'%e.message)
         self.redirect("/admin/brand")
 
 
-@route(r'/admin/delete_brand/(\d+)', name='admin_delete_brand')
+@route(r'/admin/delete_brand/(\d+)', name='admin_delete_brand')  # 删除品牌
 class DeleteBrandHandler(AdminBaseHandler):
     def get(self, id):
         p = Brand.get(id=id)
@@ -611,7 +698,43 @@ class DeleteBrandHandler(AdminBaseHandler):
         self.redirect("/admin/brand")
 
 
-@route(r'/admin/product/(\d+)', name='admin_product')
+@route(r'/admin/category_brand', name='admin_category_brand')  # 分类&品牌关联
+class CategoryBrandHandler(AdminBaseHandler):
+    def get(self):
+        brand_categories = BrandCategory.select().order_by(BrandCategory.category.asc())
+        categories = Category.select()
+        brands = Brand.select()
+        self.render('admin/product/category_brand.html',active='c_b', brand_categories=brand_categories,
+                    categories=categories, brands=brands)
+
+    def post(self):
+        category = self.get_body_argument('category', None)
+        brand = self.get_body_argument('brand', None)
+        if category and brand:
+            category = int(category)
+            brand = int(brand)
+            bc = BrandCategory.select().where((BrandCategory.category == category) & (BrandCategory.brand == brand))
+            if bc.count() > 0:
+                self.flash('已经存在')
+            else:
+                BrandCategory.create(category=category, brand=brand)
+                self.flash('添加成功')
+        self.redirect('/admin/category_brand')
+
+
+@route(r'/admin/category_brand_del', name='admin_category_brand_delete')  # 删除分类&品牌关联
+class CategoryBrandDelHandler(AdminBaseHandler):
+    def get(self):
+        bc_id = self.get_argument('bc', None)
+        try:
+            BrandCategory.delete().where(BrandCategory.id == bc_id).execute()
+            self.flash('删除成功')
+        except Exception, e:
+            self.flash('删除失败：%s'% e.message)
+        self.redirect('/admin/category_brand')
+
+
+@route(r'/admin/product/(\d+)', name='admin_product')  # 商品
 class ProductHandler(AdminBaseHandler):
     def get(self, is_score):
         page = int(self.get_argument("page", '1'))
@@ -636,17 +759,20 @@ class ProductHandler(AdminBaseHandler):
         categories = Category.select()
         product_type = 'product_s' if is_score else 'product_n'
 
-        self.render('admin/product/product.html', products=products, total=total, page=page, c_id=category,
-                    pagesize=pagesize, totalpage=totalpage, active=product_type, keyword=keyword, status=active,
+        self.render('admin/product/product.html', active=product_type, products=products, total=total, page=page,
+                    c_id=category, pagesize=pagesize, totalpage=totalpage, keyword=keyword, status=active,
                     categories=categories, is_score=is_score)
 
 
-@route(r'/admin/edit_product/(\d+)', name='admin_edit_product')  # 修改产品页
+@route(r'/admin/edit_product/(\d+)', name='admin_edit_product')  # 修改商品
 class EditProductHandler(AdminBaseHandler):
     def get(self, pid):
         pid = int(pid)
+        product_attribute_values = {}
         if pid > 0:
             p = Product.get(id=pid)
+            for pa in p.attributes:
+                product_attribute_values[pa.attribute.id] = pa.attribute_item.id
         else:
             p = None
 
@@ -664,9 +790,343 @@ class EditProductHandler(AdminBaseHandler):
                 'name': category.name,
                 'attributes': attributes
             })
-        logging.info('---%s---'%category_attributes)
         brands = Brand.select()
-        self.render('admin/product/product_edit.html', p=p, brands=brands, category_attributes=category_attributes)
+        logging.info(product_attribute_values)
+        product_type = 'product_s' if p and p.is_score else 'product_n'
+        self.render('admin/product/product_edit.html', active=product_type, p=p, brands=brands, category_attributes=category_attributes,
+                    pa_values=product_attribute_values)
+
+    def post(self, pid):
+        name = self.get_body_argument('name', None)
+        resume = self.get_body_argument('resume', None)
+        brand = self.get_body_argument('brand', None)
+        category = self.get_body_argument('category', None)
+        unit = self.get_body_argument('unit', None)
+        is_score = self.get_body_argument('is_score', 0)
+        category_attributes = simplejson.loads(self.get_body_argument('category_attributes', None))
+        hd_pic = self.get_body_argument('hd_pic', None)
+
+        if pid == '0':
+            product = Product()
+            product.created = int(time.time())
+            product.active = 1
+        else:
+            product = Product.get(id=pid)
+        product.name = name
+        product.brand = brand
+        product.category = category
+        product.resume = resume
+        product.unit = unit
+        product.intro = 'intro'
+        product.is_score = is_score
+        product.save()
+        for category in category_attributes:
+            if pid == '0':
+                product_attr = ProductAttributeValue()
+                product_attr.product = product.id
+                product_attr.attribute = category['attribute_id']
+            else:
+                product_attrs = ProductAttributeValue.select().where((ProductAttributeValue.product == pid) &
+                                (ProductAttributeValue.attribute == category['attribute_id']))
+                if product_attrs.count() > 0:
+                    product_attr = product_attrs[0]
+                else:
+                    product_attr = ProductAttributeValue()
+                    product_attr.product = product.id
+                    product_attr.attribute = category['attribute_id']
+            product_attr.attribute_item = category['attribute_value_id']
+            product_attr.value = CategoryAttributeItems.get(id=category['attribute_value_id']).name
+            product_attr.save()
+        self.redirect('/admin/edit_product/%s'%pid)
+
+
+# --------------------------------------------------------App管理-------------------------------------------------------
+@route(r'/admin/block', name='admin_block')
+class BlockHandler(AdminBaseHandler):
+    def get(self):
+        blocks = Block.select()
+
+        self.render('admin/App/block.html', blocks=blocks, active='block')
+
+
+@route(r'/admin/edit_block/(\d+)', name='admin_edit_block')
+class EditBlockHandler(AdminBaseHandler):
+    def get(self, aid):
+        if aid == '0':
+            blocks = Block()
+        else:
+            try:
+                blocks = Block.get(id=int(aid))
+            except:
+                self.flash("此广告不存在")
+                self.redirect("/admin/block")
+                return
+
+        self.render('admin/ad/block_edit.html', blocks=blocks, active='block')
+
+    def post(self, aid):
+        aid = int(aid)
+        name = self.get_argument("name", None)
+        remark = self.get_argument("remark", None)
+        category = self.get_argument("ad_location_category", None)
+        try:
+            msg = u"广告位修改成功"
+            if aid == 0:
+                ad = AdType()
+                msg = u"广告位添加成功"
+            else:
+                ad = AdType.get(id=aid)
+            if self.request.files:
+                datetime = time.strftime('%Y%m%d%H%M%S', time.localtime(time.time()))  # 获取当前时间作为图片名称
+                filename = str(datetime) + ".jpg"
+                if not os.path.exists('upload/ad'):
+                        os.mkdir('upload/ad')
+                with open('upload/ad/' + filename, "wb") as f:
+                    f.write(self.request.files["file"][0]["body"])
+                ad.imagename = '/upload/ad/'+filename
+            ad.name = name
+            ad.remark = remark
+            ad.category = category
+            ad.save()
+            self.flash(msg)
+            self.redirect("/admin/ad_type")
+            return
+        except Exception, ex:
+            self.flash(str(ex))
+            self.redirect("/admin/ad_type")
+            # self.render('admin/ad/edit_ad_type.html', ad=ad, active='ads')
+
+
+# --------------------------------------------------------订单管理------------------------------------------------------
+@route(r'/admin/product_orders', name='admin_product_orders')  # 普通商品订单
+class ProductOrdersHandler(AdminBaseHandler):
+    def get(self):
+        page = int(self.get_argument("page", 1))
+        status = int(self.get_argument("status", 0))
+        keyword = self.get_argument("keyword", '')
+        begin_date = self.get_argument("begin_date", '')
+        end_date = self.get_argument("end_date", '')
+        order_type = int(self.get_argument("order_type", 1))
+        pagesize = setting.ADMIN_PAGESIZE
+
+        ft = (Order.status == status)
+        if order_type:
+            ft &= (Order.order_type == order_type)
+        if keyword:
+            keyword_ = '%' + keyword + '%'
+            ft &= ((Order.ordernum % keyword_) | (Store.name % keyword_) | (Store.mobile % keyword_))
+        if begin_date and end_date:
+            begin = time.strptime(begin_date, "%Y-%m-%d")
+            end = time.strptime((end_date + " 23:59:59"), "%Y-%m-%d %H:%M:%S")
+            ft &= (Order.ordered > time.mktime(begin)) & (Order.ordered < time.mktime(end))
+
+        q = Order.select().join(Store).where(ft).order_by(Order.ordered.desc())
+        total = q.count()
+        if total % pagesize > 0:
+            totalpage = total / pagesize + 1
+        else:
+            totalpage = total / pagesize
+        orders = q.paginate(page, pagesize)
+        self.render('admin/order/product_orders.html', orders=orders, total=total, page=page, pagesize=pagesize,
+                    totalpage=totalpage, status=status, active='p_order', begin_date=begin_date, end_date=end_date,
+                    keyword=keyword, order_type=order_type)
+
+
+@route(r'/admin/product_order/(\d+)', name='admin_product_order_detail')  # 订单详情
+class ProductOrderDetailHandler(AdminBaseHandler):
+    def get(self, oid):
+        o = Order.get(id=oid)
+        num = '%' + o.ordernum + '%'
+        stores=Store.select().where(Store.store_type==0)
+        self.render('admin/order/product_order_detail.html', o=o, active='p_order')
+
+
+@route(r'/admin/insurance_orders', name='admin_insurance_orders')  # 保险订单管理
+class InsuranceOrderHandler(AdminBaseHandler):
+    def get(self):
+        page = int(self.get_argument("page", 1))
+        status = int(self.get_argument("status", 0))
+        keyword = self.get_argument("keyword", '')
+        begin_date = self.get_argument("begin_date", '')
+        end_date = self.get_argument("end_date", '')
+        province = self.get_argument('province_code', '')
+        city = self.get_argument('city_code', '')
+        district = self.get_argument("district_code", '')
+        pagesize = self.settings['admin_pagesize']
+        default_city = city
+        default_province = province
+        # 0待确认 1待付款 2付款完成 3已办理 4已邮寄 -1已删除(取消)
+        ft = (InsuranceOrder.status == status)
+        if keyword:
+            keyw = '%' + keyword + '%'
+            ft &= ((InsuranceOrder.ordernum % keyw)|(InsuranceOrder.mobile % keyw))
+        if begin_date and end_date:
+            begin = time.strptime(begin_date, "%Y-%m-%d")
+            end = time.strptime((end_date + " 23:59:59"), "%Y-%m-%d %H:%M:%S")
+            ft = ft & (InsuranceOrder.paytime > time.mktime(begin)) & (InsuranceOrder.paytime < time.mktime(end))
+        if district and district != '0':
+            ft &= (Store.area_code==district)
+        elif city and city != '0':
+            city = city + '%'
+            ft &= (Store.area_code % city)
+        elif province and province != '0':
+            province = province+'%'
+            ft &= (Store.area_code % province)
+        q = InsuranceOrder.select().join(Store).where(ft).order_by(InsuranceOrder.ordered.desc())
+        total = q.count()
+        if total % pagesize > 0:
+            totalpage = total / pagesize + 1
+        else:
+            totalpage = total / pagesize
+        orders = q.paginate(page, pagesize)
+        items = Area.select().where(Area.pid >> None)
+
+        self.render('admin/order/insurance_orders.html', orders=orders, total=total, page=page, pagesize=pagesize,
+                    totalpage=totalpage, status=status, active='',begin_date=begin_date,end_date=end_date,
+                    keyword=keyword, items=items, default_province=default_province, default_city=default_city,
+                    default_status=status, Area=Area)
+
+
+@route(r'/admin/insurance_order/(\d+)', name='admin_insurance_order_detail')  # 保险订单详情
+class InsuranceOrderDetailHandler(AdminBaseHandler):
+    def getInsuranceOrderReceiving(self, oid):
+        iors = InsuranceOrderReceiving.select().where(InsuranceOrderReceiving.orderid==oid)
+        if iors.count()>0:
+            return iors[0]
+        else:
+            return None
+
+    def get(self, oid):
+        status = int(self.get_argument('status', 1))
+        page = int(self.get_argument('page', 1))
+        o = InsuranceOrder.get(id=oid)
+        poid = (int(oid) * 73 + 997)
+        poid2 = (int(oid) * 91 + 97)
+        # if o.ordertype == 2:
+        #     sql = ' select a.id, a.name from tb_store a where a.business_type=%s '
+        #     q = db.handle.execute_sql(sql % (o.ordertype))
+        # elif o.ordertype == 1:
+        #     sql = 'select a.id, a.name from tb_store a where a.business_type=%s '
+        #     q = db.handle.execute_sql(sql % o.ordertype)
+        # stores = []
+        # dictI = {}
+        # keys = []
+        # # # lists = Insurances.select().order_by(Insurances.sort)
+        # # for list in lists:
+        # #     keys.append(list.eName)
+        # #     dictI[list.eName] = [list.name, list.style]
+        # for row in q.fetchall():
+        #     stores.append({'id':row[0], 'name':row[1]})
+        # insurances = Product.select().where((Product.is_index==o.ordertype) & (Product.status == 1))
+        # ior = self.getInsuranceOrderReceiving(oid)
+        # paytime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(o.paytime))
+        #
+        # flag = 0
+        # msg0 = msg1 = msg2 = ''
+        # if o.forceI == 'on':
+        #     msg0 = '交强险【】折：【】元，车船税:【】元，'
+        # for key in keys:
+        #     if key == 'forceI':
+        #         continue
+        #     if o.__dict__['_data'][key] and o.__dict__['_data'][key] != 'false':
+        #         flag = 1
+        # if flag:
+        #     msg1 = '商业险【】折:【】元，'
+        #     msg2 = '其中：'
+        # msgs = msg0+msg1+'总计：【】元；\n'+msg2
+        # # if CheckScoreArea().checkAreaInsurance(o.store.area_code, o.insurance.id):
+        # #     is_score = 1
+        # # else:
+        # #     is_score = 0
+        # if o.summary:
+        #     msgs = o.summary
+        # elif msg1:
+        #     for key in keys:
+        #         prc = o.__dict__['_data'][key]
+        #         if prc and prc != 'false':
+        #             if prc != 'true' and prc != 'ture':
+        #                 msgs += dictI[key][0]+':【】元，保额'+ prc+'元\n'
+        #             elif key != 'forceI':
+        #                 msgs += dictI[key][0]+':【】元\n'
+        # self.render('admin/order/insuranceorder_detail.html', o=o, products=insurances,stores=stores,
+        #             active='insurance', dictI=dictI, ior=ior, paytime=paytime, msgs=msgs, keys=keys,
+        #             state=state, status=status, page=page, poid=poid, poid2=poid2, is_score=is_score)
+
+    def post(self, oid):
+        state = self.get_argument('state', 'processing')
+        status = int(self.get_argument('status', 1))
+        page = int(self.get_argument('page', 1))
+        o = InsuranceOrder.get(id=oid)
+        pid = int(self.get_argument("sel_pid", '0'))
+        sid = int(self.get_argument("sid", '0'))
+        summary = self.get_argument("psummary", '')
+        localsummary = self.get_argument("localsummary", '')
+        price = float(self.get_argument("price", '0'))
+        forceIprc = float(self.get_argument("forceIprc", '0'))
+        businessIprc = float(self.get_argument("businessIprc", '0'))
+        vehicleTax = float(self.get_argument("vehicleTax", '0'))
+        saveAndSendMSG = self.get_argument("saveAndSendMSG", '0')
+        LubeOrScore = self.get_argument("LubeOrScore", '')
+        scoreNum = self.get_argument("scoreNum", '')
+        if LubeOrScore == '2':
+            o.LubeOrScore = int(LubeOrScore)
+            scoreNum = int(scoreNum) if scoreNum else 0
+        elif LubeOrScore == '1':
+            o.LubeOrScore = 1
+            scoreNum = 0
+        else:
+            o.LubeOrScore = 0
+            scoreNum = 0
+
+        o.summary = summary
+        o.localsummary = localsummary
+        o.insurance = pid
+        o.price = price
+        o.forceIprc = forceIprc
+        o.businessIprc = businessIprc
+        o.vehicleTax = vehicleTax
+        o.lasteditedby = self.get_admin_user().username
+        now = int(time.time())
+        o.lasteditedtime = now
+        o.deadline = now + setting.deadlineTime
+        if sid:
+            o.store = sid
+        if o.LubeOrScore == 2 and scoreNum == 0:
+            area_code = Store.get(id=sid).area_code[:8]
+            # scoreNum, o.profit = ReScore().rescore(area_code, pid, forceIprc, businessIprc, price)
+
+        if o.status == 3:
+            self.flash("已完成的订单不能再修改")
+            self.redirect('/admin/insurance/%s'%oid)
+        elif o.status == 0:
+            o.status = 1
+            o.scoreNum = scoreNum
+        else:
+            o.scoreNum = scoreNum
+        o.save()
+        self.flash("保存成功")
+        insurances = Product.select().where((Product.is_index==o.ordertype) & (Product.status == 1))
+        if o.ordertype == 2:
+            sql = ''' select a.id, a.name from tb_store a join  tb_order_sent_history  b on a.id=b.store_id where a.business_type=%s and  b.order_id = %s '''
+            q = db.handle.execute_sql(sql % (o.ordertype,oid))
+        elif o.ordertype == 1:
+            sql = ''' select a.id, a.name from tb_store a where a.business_type=1 '''
+            q = db.handle.execute_sql(sql)
+        stores = []
+        for row in q.fetchall():
+            stores.append({'id':row[0], 'name':row[1]})
+        mobile = o.user.mobile
+        if not summary:
+            summary = u'无'
+        if saveAndSendMSG == '1':
+            sms = {'mobile': mobile, 'body': [o.ordernum, o.insurance.name, str(price), summary], 'signtype': '1',
+                   'isyzm': 'changePrice'}
+            # create_msg(simplejson.dumps(sms), 'sms')  #变更价格
+        ior = self.getInsuranceOrderReceiving(oid)
+        paytime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(o.paytime))
+        msgs = o.summary
+        self.render('admin/order/insuranceorder_detail.html', o=o,stores=stores, products=insurances,
+                    active='insurance', ior=ior, paytime=paytime, msgs=msgs,state=state, status=status, page=page)
 
 
 

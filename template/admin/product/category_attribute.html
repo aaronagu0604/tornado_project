@@ -1,0 +1,68 @@
+{% extends "layout/admin.html" %}
+{% block content %}
+<div class="row">
+    <nav>
+        <div class="navbar-header" style="float:left;">
+            <a class="navbar-brand" href="#">规格参数管理</a>
+        </div>
+        <div class="navbar-header" style="float:right;margin-top:15px;">
+            <a class="btn btn-sm btn-outline btn-primary" href="/admin/category_attribute_edit/0?cid={{cid}}&status=1">增加规格</a>
+        </div>
+    </nav>
+</div>
+
+<div>
+    <div class="panel panel-primary">
+        <div class="table-responsive">
+            <table class="table table-hover" id="tb_users" cellpadding="0" cellspacing="0" border="0" style="text-align:center;width:100%;">
+                <thead>
+                <tr style="background:#528acb;color:#fff;text-align:center;height:38px;line-height:38px;">
+                    <th style="width:20%;text-align:center;">规格/参数</th>
+                    <th style="width:20%;text-align:center;">英文名称</th>
+                    <th style="width:20%;text-align:center;">显示顺序</th>
+                    <th style="width:20%;text-align:center;">状态</th>
+                    <th style="width:20%;text-align:center;">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for ca in category_attributes %}
+                <tr>
+                    <td align=left style="color:#438bca;">
+                        &nbsp;&nbsp;<span data-blank="" data-ex="0" data-code="{{ca.id}}"></span>{{ca.name}}
+                    </td>
+                    <td>
+                        {{ca.ename}}
+                    </td>
+                    <td>
+                        {{ca.sort}}
+                    </td>
+                    <td>
+                        {{ ca.active and "启用" or "已删除" }}
+                    </td>
+                    <td align=left>
+                        <a href="/admin/category_attribute_edit/{{ca.id}}?cid={{cid}}&status=1"style="padding:4px 5px;border:1px solid #438bca;color:#438bca;border-radius:4px;font-size:12px;text-decoration:none;">修改</a>
+                        <a href="/admin/category_attribute_edit/{{ca.id}}?cid={{cid}}&status=0"style="padding:4px 5px;border:1px solid #438bca;color:#438bca;border-radius:4px;font-size:12px;text-decoration:none;">删除</a>
+                        <a href="/admin/attribute_item_edit/0?cid={{cid}}&ca_id={{ca.id}}&status=1"style="padding:4px 5px;border:1px solid #438bca;color:#438bca;border-radius:4px;font-size:12px;text-decoration:none;">添加参数</a>
+                    </td>
+                </tr>
+                {% for i in ca.items %}
+                <tr>
+                    <td align=left>&nbsp;&nbsp;——{{i.name}}
+                    </td>
+                    <td></td>
+                    <td>{{i.sort}}</td>
+                    <td></td>
+                    <td align=left>
+                        <a href="/admin/attribute_item_edit/{{i.id}}?cid={{cid}}&ca_id={{ca.id}}&status=1"style="padding:4px 5px;border:1px solid #438bca;color:#438bca;border-radius:4px;font-size:12px;text-decoration:none;">修改</a>
+                        <a href="/admin/attribute_item_edit/{{i.id}}?cid={{cid}}&ca_id={{ca.id}}&status=0"style="padding:4px 5px;border:1px solid #438bca;color:#438bca;border-radius:4px;font-size:12px;text-decoration:none;">删除</a>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

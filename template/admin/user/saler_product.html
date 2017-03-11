@@ -4,126 +4,126 @@
 <link href="/style/css/plugins/dataTables.bootstrap.css" rel="stylesheet">
 <div class="mskeLayBg"></div>
 <div class="row">
-	<nav>
-		<div class="navbar-header">
-			<a class="navbar-brand" href="#">
-				经销商产品信息 - {{s.name}} ({{s.linkman}}:{{s.mobile}})
-			</a>
-		</div>
-	</nav>
+    <nav>
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">
+                经销商产品信息 - {{s.name}} ({{s.linkman}}:{{s.mobile}})
+            </a>
+        </div>
+    </nav>
 </div>
 
 <div class="row">
-	<div class="col-xs-3">
-		<div class="panel panel-primary">
-			<div class="panel-body">
-			
-				<span>销售范围</span> <a href="#" class="btn btn-xs btn-success">修改范围</a> 
-				<a href="#" class="btn btn-xs btn-success" onclick="publish()">发布产品</a>
-			
-				<div>
-					<ul id="treeDemo" class="ztree"></ul>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="col-xs-9">
-		<div class="panel panel-primary">
-			<div class="panel-body">
+    <div class="col-xs-3">
+        <div class="panel panel-primary">
+            <div class="panel-body">
+
+                <span>销售范围</span> <a href="#" class="btn btn-xs btn-success">修改范围</a>
+                <a href="#" class="btn btn-xs btn-success" onclick="publish()">发布产品</a>
+
+                <div>
+                    <ul id="treeDemo" class="ztree"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-9">
+        <div class="panel panel-primary">
+            <div class="panel-body">
                 <div class="row">
 
-        <div class="" style="float: left">
-           <span style="font-size:15px; padding-left:10px;">商品库</span> &nbsp;&nbsp;
-           <a class="btn btn-xs btn-outline btn-primary" href="#" onclick="checkChanged(1)">全选</a>
-           <a class="btn btn-xs btn-outline btn-primary" href="#" onclick="checkChanged(0)">取消全选</a>
+                    <div class="" style="float: left">
+                        <span style="font-size:15px; padding-left:10px;">商品库</span> &nbsp;&nbsp;
+                        <a class="btn btn-xs btn-outline btn-primary" href="#" onclick="checkChanged(1)">全选</a>
+                        <a class="btn btn-xs btn-outline btn-primary" href="#" onclick="checkChanged(0)">取消全选</a>
 
+                    </div>
+                    <div class="pull-right">
+                        <form class="navbar-form navbar-left" action="" method="get">
+                            <input value="1" type="hidden" name="page">
+                            <a class="btn btn-sm btn-outline btn-primary" href="#" onclick="addRelease()">批量添加商品</a>
+                            <label class="num">显示条数：&nbsp;</label>
+                            <select class="form-control" id="status" name="pagesize">
+                                <option value="1" {{pagesize==1 and 'selected'}} >1</option>
+                                <option value="20" {{pagesize==20 and 'selected'}} >20</option>
+                                <option value="50" {{pagesize==50 and 'selected'}} >50</option>
+                                <option value="100" {{pagesize==100 and 'selected'}}>100</option>
+                                <option value="500" {{pagesize==500 and 'selected'}}>500</option>
+                            </select>
+
+                            <div class="input-group custom-search-form">
+                                <input type="text" id="keyword" name="keyword" class="form-control" style="width:180px;"
+                                       value="{{keyword}}" placeholder="商品名称、编号查找">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="submit">
+                                        <i class="fa fa-search"></i>
+                                    </button>
+                                </span>
+                            </div>
+                            <a class="btn btn-sm btn-outline btn-primary" href="#" onclick="process(1)">批量修改</a>
+                            <a class="btn btn-sm btn-outline btn-primary" href="#" onclick="process(0)">批量下架</a>
+                            <a class="btn btn-sm btn-outline btn-primary" href="#" onclick="process(2)">批量上架</a>
+                            <a class="btn btn-sm btn-outline btn-primary" href="#" onclick="process(-1)">批量删除</a>
+                        </form>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="tb_user" cellpadding="0" cellspacing="0" border="0" style="text-align:center;">
+                            <thead>
+                            <tr>
+                                <th style="width:12%;text-align:center;">编号</th>
+                                <th style="width:29%;text-align:center;">名称</th>
+                                <th style="width:10%;text-align:center;">品牌</th>
+                                <th style="width:10%;text-align:center;">分类</th>
+                                <th style="width:13%;text-align:center;">售价</th>
+                                <th style="width:10%;text-align:center;">状态</th>
+                            </tr>
+                            {% for p in products %}
+                            <tr>
+                                <td><input type="checkbox" value="{{p.id}}">{{p.id}}
+                                    <a class="btn btn-xs btn-outline btn-primary" href="#"
+                                       onclick="pop('{{p.product.name}} - 发布该商品所发布地域信息', '/admin/store_area_product?sid={{s.id}}&code=0&keyword={{p.product.name}}')">地域</a>
+                                </td>
+                                <td>
+                                    {{p.product.name}}
+                                </td>
+                                <td>
+                                    {{p.product.brand.name}}
+                                </td>
+                                <td>{{p.product.category.name}}</td>
+                                <td>
+                                    <input type="text" id="price{{p.id}}" class="form-control" style="width:100px;"
+                                           value="{{p.price}}" >
+                                </td>
+                                <td>
+                                    {% if p.active==0 %}
+                                    <span style="">下架</span>
+                                    {% elif p.active==1 %}
+                                    <span style="">正常</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            </thead>
+
+                        </table>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="dataTables_info" role="alert" aria-live="polite" aria-relevant="all">
+                            当前：第{{page}}页 / {{totalpage}}页，合计{{total}}条
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="dataTables_paginate paging_simple_numbers">
+                            <ul class="pagination  pagination-sm" id="pageUl"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="pull-right">
-            <form class="navbar-form navbar-left" action="" method="get">
-                <input value="1" type="hidden" name="page">
-                <a class="btn btn-sm btn-outline btn-primary" href="#" onclick="addRelease()">批量添加商品</a>
-                <label class="num">显示条数：&nbsp;</label>
-                <select class="form-control" id="status" name="pagesize">
-                    <option value="1" {{pagesize==1 and 'selected'}} >1</option>
-                    <option value="20" {{pagesize==20 and 'selected'}} >20</option>
-                    <option value="50" {{pagesize==50 and 'selected'}} >50</option>
-                    <option value="100" {{pagesize==100 and 'selected'}}>100</option>
-                    <option value="500" {{pagesize==500 and 'selected'}}>500</option>
-                </select>
-
-                <div class="input-group custom-search-form">
-                    <input type="text" id="keyword" name="keyword" class="form-control" style="width:180px;"
-                           value="{{keyword}}" placeholder="商品名称、编号查找">
-                    <span class="input-group-btn">
-                     <button class="btn btn-default" type="submit">
-                         <i class="fa fa-search"></i>
-                     </button>
-                 </span>
-             </div>
-                <a class="btn btn-sm btn-outline btn-primary" href="#" onclick="process(1)">批量修改</a>
-                <a class="btn btn-sm btn-outline btn-primary" href="#" onclick="process(0)">批量下架</a>
-                <a class="btn btn-sm btn-outline btn-primary" href="#" onclick="process(2)">批量上架</a>
-                <a class="btn btn-sm btn-outline btn-primary" href="#" onclick="process(-1)">批量删除</a>
-         </form>
     </div>
-
-</div>
-				<div class="row">
-					<div class="table-responsive">
-            <table class="table table-hover" id="tb_user" cellpadding="0" cellspacing="0" border="0" style="text-align:center;">
-                <thead>
-                    <tr>
-                        <th style="width:12%;text-align:center;">编号</th>
-                        <th style="width:29%;text-align:center;">名称</th>
-                        <th style="width:10%;text-align:center;">品牌</th>
-                        <th style="width:10%;text-align:center;">分类</th>
-                        <th style="width:13%;text-align:center;">售价</th>
-                        <th style="width:10%;text-align:center;">状态</th>
-                    </tr>
-                    {% for p in products %}
-                    <tr>
-                        <td><input type="checkbox" value="{{p.id}}">{{p.id}}
-							<a class="btn btn-xs btn-outline btn-primary" href="#" 
-                            onclick="pop('{{p.product.name}} - 发布该商品所发布地域信息', '/admin/store_area_product?sid={{s.id}}&code=0&keyword={{p.product.name}}')">地域</a>
-                        </td>
-                        <td>
-                            {{p.product.name}}
-                        </td>
-                        <td>
-                            {{p.product.brand.name}}
-                        </td>
-                        <td>{{p.product.category.name}}</td>
-                        <td>
-                            <input type="text" id="price{{p.id}}" class="form-control" style="width:100px;"
-                           value="{{p.price}}" >
-                            </td>
-                        <td>
-                            {% if p.active==0 %}
-                                <span style="">下架</span>
-                                {% elif p.active==1 %}
-                                <span style="">正常</span>
-                                {% endif %}
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </thead>
-
-            </table>
-        </div>
-        <div class="col-sm-6">
-            <div class="dataTables_info" role="alert" aria-live="polite" aria-relevant="all">
-                当前：第{{page}}页 / {{totalpage}}页，合计{{total}}条
-            </div>
-        </div>
-        <div class="col-sm-6">
-            <div class="dataTables_paginate paging_simple_numbers">
-                <ul class="pagination  pagination-sm" id="pageUl"/>
-            </div>
-        </div>
-				</div>
-			</div>
-		</div>
-	</div>
 </div>
 {% endblock %}
 {% block js %}
@@ -132,140 +132,140 @@
 <script type="text/javascript" src="/style/js/layer/layer.js"></script>
 <script src="/style/js/jquery.twbsPagination.min.js"></script>
 <script>
-	function publish() {
-		var zTree = $.fn.zTree.getZTreeObj("treeDemo");
-		var nodes = zTree.getCheckedNodes(true);
-		var check_list = [];
-		var codes = [];
-		for (var i=0; i<nodes.length; i++) {
-			if(nodes[i].check_Child_State==-1 | nodes[i].check_Child_State==2)
-			{
-				if(nodes[i].data.length == 12) {
-					if(check_list.indexOf(nodes[i].data.substring(0, 4)) == -1 && 
-						check_list.indexOf(nodes[i].data.substring(0, 8)) == -1)
-					{
-						codes.push(nodes[i].data);
-					}
-				}
-				else if(nodes[i].data.length == 8){
-					if(check_list.indexOf(nodes[i].data.substring(0, 4)) == -1 && 
-						check_list.indexOf(nodes[i].data) == -1)
-					{
-						check_list.push(nodes[i].data)
-						codes.push(nodes[i].data);
-					}
-				}
-				else if(nodes[i].data.length == 4){
-					check_list.push(nodes[i].data);
-					codes.push(nodes[i].data);
-				}
-			}
-		}
-		console.log(codes);
-		if(codes.length > 0) {
-			var url = '/admin/product_publish/{{s.id}}?codes=' + codes.toString();
-			pop('发布商品', url);
-		}
-		else {
-			layer.alert('请选择要发布的地区');
-		}
-	}
+    function publish() {
+        var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+        var nodes = zTree.getCheckedNodes(true);
+        var check_list = [];
+        var codes = [];
+        for (var i=0; i<nodes.length; i++) {
+            if(nodes[i].check_Child_State==-1 | nodes[i].check_Child_State==2)
+            {
+                if(nodes[i].data.length == 12) {
+                    if(check_list.indexOf(nodes[i].data.substring(0, 4)) == -1 &&
+                        check_list.indexOf(nodes[i].data.substring(0, 8)) == -1)
+                    {
+                        codes.push(nodes[i].data);
+                    }
+                }
+                else if(nodes[i].data.length == 8){
+                    if(check_list.indexOf(nodes[i].data.substring(0, 4)) == -1 &&
+                        check_list.indexOf(nodes[i].data) == -1)
+                    {
+                        check_list.push(nodes[i].data)
+                        codes.push(nodes[i].data);
+                    }
+                }
+                else if(nodes[i].data.length == 4){
+                    check_list.push(nodes[i].data);
+                    codes.push(nodes[i].data);
+                }
+            }
+        }
+        console.log(codes);
+        if(codes.length > 0) {
+            var url = '/admin/product_publish/{{s.id}}?codes=' + codes.toString();
+            pop('发布商品', url);
+        }
+        else {
+            layer.alert('请选择要发布的地区');
+        }
+    }
 
-	function addRelease() {
-		var title = '{{s.name}}' + ' - 批量添加产品';
-		var url = '/admin/product_release_add/{{s.id}}';
-		pop(title, url);
-	}
+    function addRelease() {
+        var title = '{{s.name}}' + ' - 批量添加产品';
+        var url = '/admin/product_release_add/{{s.id}}';
+        pop(title, url);
+    }
 
-	function checkChanged(flag)
-	{
-		if(flag == 1) {
-			$("#tb_user input[type='checkbox']").prop("checked",true);
-		}
-		else {
-			$("#tb_user input[type='checkbox']").prop("checked",false);
-		}
-	}
+    function checkChanged(flag)
+    {
+        if(flag == 1) {
+            $("#tb_user input[type='checkbox']").prop("checked",true);
+        }
+        else {
+            $("#tb_user input[type='checkbox']").prop("checked",false);
+        }
+    }
 
-	function findAllSelectedData(){
-		var data = [];
-		$("#tb_user input[type='checkbox']:checked").each(function(){ 
-			var item = {};
-			item.id = this.value;
-			item.price = $("#price"+this.value).val();
-			data.push(item);
-			}
-		);
-		return data;
-	}
+    function findAllSelectedData(){
+        var data = [];
+        $("#tb_user input[type='checkbox']:checked").each(function(){
+                var item = {};
+                item.id = this.value;
+                item.price = $("#price"+this.value).val();
+                data.push(item);
+            }
+        );
+        return data;
+    }
 
-	var xsrf='{{handler.xsrf_token}}';
-	function process(flag) {
-		var data2 = findAllSelectedData();
-		if(data2.length == 0) {
-			layer.alert('请先选择需要处理的商品');
-			return;
-		}
-		$.post("/ajax/saler_product_process", { _xsrf:xsrf, flag: flag, json:JSON.stringify(data2) }, function (data) {
+    var xsrf='{{handler.xsrf_token}}';
+    function process(flag) {
+        var data2 = findAllSelectedData();
+        if(data2.length == 0) {
+            layer.alert('请先选择需要处理的商品');
+            return;
+        }
+        $.post("/ajax/saler_product_process", { _xsrf:xsrf, flag: flag, json:JSON.stringify(data2) }, function (data) {
             data = jQuery.parseJSON(data);
             layer.alert(data.msg);
             if(data.flag==1){
-            	location.reload();  
-            } 
+                location.reload();
+            }
         });
-	}
+    }
 
-	$(document).ready(function() {
-		var setting = {
-			async: {
-				enable: true,
-				type:"get",
-				contentType: "application/json",
-				url:"/ajax/store_tree/{{s.id}}",
-				dataFilter: filter
-			},
-			data: {
-				simpleData: {
-					enable: true
-				}
-			},
-			check: {
-				enable: true
-			},
-		};
+    $(document).ready(function() {
+        var setting = {
+            async: {
+                enable: true,
+                type:"get",
+                contentType: "application/json",
+                url:"/ajax/store_tree/{{s.id}}",
+                dataFilter: filter
+            },
+            data: {
+                simpleData: {
+                    enable: true
+                }
+            },
+            check: {
+                enable: true
+            },
+        };
 
-		function filter(treeId, parentNode, childNodes) {
-			if (!childNodes) return null;
-			for (var i=0, l=childNodes.length; i<l; i++) {
-				childNodes[i].name = childNodes[i].name.replace(/\.n/g, '.');
-			}
-			return childNodes;
-		}
+        function filter(treeId, parentNode, childNodes) {
+            if (!childNodes) return null;
+            for (var i=0, l=childNodes.length; i<l; i++) {
+                childNodes[i].name = childNodes[i].name.replace(/\.n/g, '.');
+            }
+            return childNodes;
+        }
 
-		$.fn.zTree.init($("#treeDemo"), setting);
-		$('#pageUl').twbsPagination({
+        $.fn.zTree.init($("#treeDemo"), setting);
+        $('#pageUl').twbsPagination({
             first:'首页',
             prev:'上一页',
             next:'下一页',
             last:'尾页',
             totalPages: {{totalpage}},
-            startPage: {{page}},
-            visiblePages: 8,
+        startPage: {{page}},
+        visiblePages: 8,
             onPageClick: function (event, page) {
-                self.location="/admin/saler_product/{{s.id}}?&pagesize={{pagesize}}&page="+page;
-            }
-        });
-	});
+            self.location="/admin/saler_product/{{s.id}}?&pagesize={{pagesize}}&page="+page;
+        }
+    });
+    });
 
-	function pop(title, url) {
-		layer.open({
-			type: 2,
-			title: title,
-			shadeClose: true,
-			shade: 0.8,
-			area: ['90%', '90%'],
-			content: url
-		}); 
-	}
+    function pop(title, url) {
+        layer.open({
+            type: 2,
+            title: title,
+            shadeClose: true,
+            shade: 0.8,
+            area: ['90%', '90%'],
+            content: url
+        });
+    }
 </script>
 {% endblock %}

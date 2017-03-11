@@ -1,0 +1,323 @@
+{% extends "layout/admin.html" %}
+{% block content %}
+<div class="row">
+    <ol class="breadcrumb">
+        <li><a href="/admin/product_orders">返回订单管理</a></li>
+    </ol>
+</div>
+<div style="color: red; font-size: 0.6em; margin-bottom: 25px;">
+    {% set messages=handler.get_flashed_messages() %}
+    {% if messages %}
+    <div>
+        {% for type, msg in messages%}
+        {{msg}}
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+<div class="row">
+    <div class="col-lg-6" style="width:100%;">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title" style="color:#438bca;">订单基本信息</h3>
+            </div>
+            <div class="panel-body">
+                <table class="table table-condensed">
+                    <tbody>
+                    <tr>
+                        <td style="width:10%;">订单号：</td>
+                        <td style="width:20%;">{{o.ordernum}}</td>
+                        <td style="width:10%;">订单状态：</td>
+                        <td style="width:20%;">
+                            {% if o.status==0 %}
+                            待付款
+                            {% elif o.status==1 %}
+                            待发货
+                            {% elif o.status==2 %}
+                            待收货
+                            {% elif o.status==3 %}
+                            已完成
+                            {% elif o.status==4 %}
+                            已评价
+                            {% elif o.status==5 %}
+                            申请退款
+                            {% elif o.status==6 %}
+                            已退款
+                            {% elif o.status==-1 %}
+                            已取消
+                            {% endif %}
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>下单时间：</td>
+                        <td>{{o.ordered|datetimeformat}}</td>
+                        <td>下单门店：</td>
+                        <td>{{o.buyer_store.name}}</td>
+                    </tr>
+                    {% if o.status > 0 %}
+                    <tr>
+                        <td>支付时间：</td>
+                        <td>{{o.ordered|datetimeformat}}</td>
+                        <td>支付方式：</td>
+                        <td>
+                            {% if o.payment==1  %}
+                            支付宝支付
+                            {% elif o.payment==2 %}
+                            微信支付
+                            {% elif o.payment==3 %}
+                            银联支付
+                            {% elif o.payment==4 %}
+                            余额支付
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endif %}
+                    <tr>
+                        <td>取消订单：</td>
+                        <td><input class="form-control" id="cancel_cause" name="cancel_cause" type="text" value="{{o.message}}" placeholder="订单取消原因..." style="width:480px;">
+                            {% if o.status>-1 and o.status< 2 %}
+                            <input type="button" data-id="{{o.id}}" id="btnCancel" class="btn btn-outline btn-primary btn-xs" value="取消订单" style="padding:6px 13px;margin-top:20px;background:#438bca;color:#fff;border:none;border-radius:4px;font-size:16px;">
+                            {% endif %}
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-12" style="width:100%;">
+        <div class="panel panel-primary" style="border:1px solid #ccc;">
+            <div class="panel-heading" style="background:#f5f5f5;border-bottom:1px solid #ccc;">
+                <h3 class="panel-title" style="color:#438bca;">产品信息</h3>
+            </div>
+            <div class="panel-body">
+                <table class="table table-hover" id="tb_users">
+                    <thead>
+                    <tr>
+                        <th style="width:10%;">产品图片</th>
+                        <th style="width:30%;">基本信息</th>
+                        <th style="width:10%;">产品价格</th>
+                        <th style="width:10%;">购买数量</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for sub_order in o.sub_orders %}
+                    {% for item in sub_order.items %}
+                    <tr>
+                        <td>
+                            <img src="{{item.product.cover}}" width="80" height="80" />
+                        </td>
+                        <td>
+                            <h4>{{item.product.name}}<small> {% for attribute in item.product.attributes %}【{{attribute.value}}】{% endfor %}</small></h4>
+                            <p>
+                                <span style="color: red;">({{sub_order.saler_store.name}}/{{sub_order.saler_store.mobile}})</span>
+                            </p>
+                        </td>
+                        <td>
+                            <h3>{{item.price}}元</h3>
+                        </td>
+                        <td>
+                            <h3>{{item.quantity}}份</h3>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6" style="width:100%;">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title" style="color:#438bca;">配送信息</h3>
+            </div>
+            <div class="panel-body">
+                <table class="table table-condensed">
+                    <tbody>
+                    <tr>
+                        <td style="width:10%;">配送公司：</td>
+                        <td style="width:20%;">{{ o.delivery.name if o.delivery else '未设置物流公司' }}</td>
+                        <td style="width:10%;">收货人：</td>
+                        <td style="width:20%;">{{o.address.name}}</td>
+                    </tr>
+                    <tr>
+                        <td>收货地址：</td>
+                        <td>{{o.address.province}} {{ o.address.city }} {{o.address.region}} {{o.address.address}}</td>
+                        <td>联系电话：</td>
+                        <td>{{o.address.mobile}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6" style="width:100%;">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title" style="color:#438bca;">退款</h3>
+            </div>
+            <div class="panel-body">
+                <form class="form-horizontal" role="form" action="/admin/order/payback/{{o.id}}" method="post">
+                    {{xsrf()}}
+                    <div class="form-group">
+                        <label class="col-sm-1 control-label">退款原因：</label>
+                        <div class="col-sm-9">
+                            <input class="form-control" id="backreason" name="backreason" type="text"
+                                   placeholder="填写退款原因..." style="width:480px;">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-1 control-label">退款金额：</label>
+                        <div class="col-sm-9">
+                            <input class="form-control" id="backprice" name="backprice" type="text"
+                                   placeholder="填写退款金额..." value="{{o.currentprice}}" style="width:480px;">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-1 control-label">退款类型：</label>
+                        <div class="col-sm-9">
+                            <label class="radio-inline">
+                                <input type="radio" name="payback_type"  value="1" >
+                                <span>退回用户车装甲账户</span>
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="payback_type" value="2" checked >
+                                <span>原路退回</span>
+                            </label>
+                        </div>
+                    </div>
+                    <hr>
+                    <button type="submit" onclick="javascript:return checkinput();" style="width:90px;height:36px;margin-left:30px;border:none;background:#438bca;color:#fff;border-radius:4px;font-size:16px;">确认退款</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<iframe id="theone" src="" width="600" height="700" style="display: none;"></iframe>
+{% endblock %}
+{% block js %}
+<script src="/style/js/layer-v1.9/layer.js" type="text/javascript"></script>
+<script>
+    function checkinput(){
+        var msg = '';
+        if($('#backprice').val().length == 0){
+            msg = '请输入退款金额';
+        }
+        if ($('#backreason').val().length == 0){
+            msg = '请输入退款原因';
+        }
+
+        var payback_type=$('input:radio[name="payback_type"]:checked').val();
+        if (payback_type == null){
+            msg = '请选择退款方式'
+        }
+        if (msg.length > 0){
+            alert(msg);
+            return false;
+        }
+        else{
+            var account = '原路返回';
+            if(payback_type=='1')
+            {
+                account = '用户车装甲账户';
+            }
+            else if(payback_type=='2')
+            {
+                account = '原路返回';
+            }
+            return confirm("确要将"+$('#backprice').val()+'元退款至'+account+'吗?');
+        }
+    }
+    $(function() {
+        $('#showWL').hover(function () {
+            var h = '';
+            var wlNum = $("#wlNum").val();
+            setTimeout(function() {
+                $.get('/ajax/getwlinfo', {deliverynum: wlNum}, function (data) {
+                    data = eval(data);
+                    data = jQuery.parseJSON(data);
+                    if (data.status != '400') {
+                        var wlInfo = data.data;
+                        for (i = 0; i < wlInfo.length; i++) {
+                            if (i == 0) {
+                                h += '<li style="line-height: 30px; color:#1B730C; background: #E7E7E7; ">' + wlInfo[i].context + '<br />' + wlInfo[i].time + '</li>';
+                            } else {
+                                h += '<li style="line-height: 30px;">' + wlInfo[i].context + '<br />' + wlInfo[i].time + '</li>';
+                            }
+                        }
+                    } else {
+                        h += '<li style="line-height: 30px; color: #cc0000; background: #E7E7E7; ">参数错误：请检查物流单号是否正确。</li>';
+                    }
+                    h = '宅急送 运单号：' + wlNum + '<hr style="margin: 5px;">' + h + '';
+                    $(".showInfo").html(h);
+                    $(".showInfo").show();
+                });
+            },1000)
+        }, function () {
+            $(".showInfo").hide();
+        });
+
+        var xsrf='{{handler.xsrf_token}}';
+        ids = [{{o.id}}];
+        $('#payback').click(function () {
+            $.post("/ajax/return_pay",
+                {
+                    ids:JSON.stringify(ids),
+                    _xsrf : xsrf
+                },
+                function(data){
+                    var obj = jQuery.parseJSON(data);
+                    if(obj.err==0) {
+                        window.open(obj.msg);
+                    }
+                    else{
+                        alert('操作失败：'+obj.msg);
+                    }
+                });
+        });
+
+        $("#btnCancel").click(function() {
+            var oid = $(this).attr("data-id");
+            var cause = $("#cancel_cause").val();
+            if (cause != "") {
+                layer.confirm("您确认要取消此订单吗？", {
+                    btn: ['确认', '放弃'],
+                    shade: 0.2
+                },function () {
+                    $.post("/ajax/cancel_order", {_xsrf: xsrf, id: oid, status: 5, cause: cause}, function (data) {
+                        var result = jQuery.parseJSON(data);
+                        if (result.err == 0) {
+                            layer.msg("取消成功！");
+                            location.reload();
+                        }
+                        else {
+                            layer.alert(result.msg)
+                        }
+                    });
+                });
+            }else{
+                layer.alert("请输入取消原因！");
+            }
+        });
+    });
+
+
+    function orderUpdateStore(orderid){
+        var storeid = parseInt($("#storeid"+orderid).val());
+        $.get("/ajax/orderUpdateStore", { orderid: orderid, storeid: storeid, t: Math.random() }, function (data) {
+            var result = jQuery.parseJSON(data);
+            if(result.flag==1){
+                alert("修改成功！")
+            }
+            else{
+                alert(result.msg)
+            }
+        });
+    }
+</script>
+{% endblock %}

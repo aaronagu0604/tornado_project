@@ -1,0 +1,551 @@
+{% extends "layout/admin.html" %}
+{% block content %}
+<link href="/style2/css/store_bigimg.css" rel="stylesheet">
+<link rel="stylesheet" href="http://cdn.amazeui.org/amazeui/2.5.0/css/amazeui.min.css" />
+<script type="text/javascript" src="/style2/js/jquery-1.9.1.min.js"></script>
+<script type="text/javascript" src="/style2/js/bigimg.js"></script>
+<style>
+	.middle-img {
+		position: absolute;
+		left: 259px;
+		top: 0px;
+		width: 40px;
+	}
+
+	.up-img {
+		position: absolute;
+		top: -40px;
+		left: 261px;
+		width: 40px;
+	}
+
+	.down-img {
+		position: absolute;
+		top: 40px;
+		left: 257px;
+		width: 40px;
+	}
+
+	.left-img {
+		position: absolute;
+		left: 218px;
+		width: 40px;
+	}
+
+	.right-img {
+		position: absolute;
+		left: 300px;
+		width: 40px;
+	}
+	@media screen and (max-width:450px) {
+		.middle-img {
+			position: absolute;
+			left: 259px;
+			top: 0px;
+			width: 40px;
+			display: none;
+		}
+
+		.up-img {
+			position: absolute;
+			top: -40px;
+			left: 261px;
+			width: 40px;
+			display: none;
+		}
+
+		.down-img {
+			position: absolute;
+			top: 40px;
+			left: 257px;
+			width: 40px;
+			display: none;
+		}
+
+		.left-img {
+			position: absolute;
+			left: 218px;
+			width: 40px;
+			display: none;
+		}
+
+		.right-img {
+			position: absolute;
+			left: 300px;
+			width: 40px;
+			display: none;
+		}
+
+		.rotate_jia{
+			display: none;
+		}.rotate_div{
+			display: none;
+		}.rotate_jian{
+			display: none;
+		}
+	}
+</style>
+<div class="mskeLayBg"></div>
+
+<div id="fade" class="black_overlay">
+</div>
+<div class="row" style="background:none;">
+    <ol class="breadcrumb">
+        <li>
+            <!--<input type=button value=返回订单管理 style="background:#438bca;color:#fff;border:none;border-radius:4px;margin-top:10px;" onclick="window.history.back()">-->
+            <!--<input type=button value=后退 onclick="window.history.go(-1);window.location.reload()">-->
+            <a href="/admin/insurances/{{state}}?status={{status}}&page={{page}}" style="background:#438bca;color:#fff;border:none;border-radius:4px;margin-top:10px;">返回订单</a>
+        </li>
+    </ol>
+</div>
+<div style="color: red; font-size: 0.6em; margin-bottom: 25px;">
+    {%set messages=handler.get_flashed_messages() %}
+    {% if messages %}
+    <div>
+        {% for type, msg in messages%}
+        {{msg}}
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+<div class="row">
+    <div class="col-lg-6" style="width:100%;">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">订单基本信息</h3>
+            </div>
+            <div class="panel-body">
+                <table class="table table-condensed" cellpadding="0" cellspacing="0" border="0" style="text-align:left;">
+                    <tbody>
+                    <tr>
+                        <td style="width:10%;">订单号：</td>
+                        <td style="width:20%;">{{o.ordernum}}</td>
+                        <td style="width:10%;">订单状态：</td>
+                        <td style="width:20%;">
+                            {% if o.status==0 %}
+                            待付款
+                            {% elif o.status==1 %}
+                            待发货
+                            {% elif o.status==2 %}
+                            待收货
+                            {% elif o.status==3 %}
+                            已完成
+                            {% elif o.status==4 %}
+                            已评价
+                            {% elif o.status==5 %}
+                            申请退款
+                            {% elif o.status==6 %}
+                            已退款
+                            {% elif o.status==-1 %}
+                            已取消
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>保险信息：{{ o.current_order_price.insurance.name }}</td>
+                        <td>  返佣方式：
+                            {% if o.current_order_price.gift_policy == 0 %}
+                            其它
+                            {% elif o.current_order_price.gift_policy == 1 %}
+                            返油
+                            {% elif o.current_order_price.gift_policy == 2 %}
+                            返积分：{{ o.scoreNum }}
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>  下单时间：{{o.ordered|datetimeformat}}</td>
+                        <td>  下单门店：{{o.ordered|datetimeformat}}</td>
+                    </tr>
+
+                    {% if o.status != 0 %}
+                    <tr>
+                        <td>最后编辑人：{{o.current_order_price.admin_user|null}}</td>
+                        <td>最后编辑时间：</td>
+                    </tr>
+                    {% endif %}
+
+                    {% if o.status==2 %}
+                    <tr>
+                        <td>支付时间：{{paytime}}</td>
+                        <td>支付方式：{{paytime}}</td>
+                    </tr>
+                    {% endif %}
+                    {% if o.status==5 %}
+                    <tr>
+                        <td>取消订单原因：</td>
+                    </tr>
+                    <tr>
+                        <td>{{o.cancelreason}}</td>
+                    </tr>
+                    {% endif %}
+
+                    <tr>
+                        <td>取消订单：<input class="form-control" id="cancel_cause" name="cancel_cause" type="text" value="{{o.cancelreason}}" placeholder="订单取消原因..." style="width:480px;height:86px;">
+                            {% if o.status>-1 and o.status< 5 %}
+                            <input type="button" data-id="{{o.id}}" id="btnCancel" class="btn btn-outline btn-primary btn-xs" value="取消订单" style="width:90px;height:32px;background:#528ACB;color:#fff;border:none;border-radius:4px;margin-top:10px;">
+                            {% endif %}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6" style="width:100%;">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">保险险种</h3>
+            </div>
+            <div class="panel-body">
+                <table class="table table-condensed" cellpadding="0" cellspacing="0" border="0" style="text-align:left;">
+                    <tbody>
+                    {% for key in keys %}
+                    {% set prc=o.__dict__['_data'][key] %}
+                    {% if prc and prc != 'false' %}
+                    <tr>
+                        <td>{{ dictI[key][1] }}：</td>
+                        <td>{{ dictI[key][0] }}{% if prc!='true' and prc!='ture' %}: {{ prc }} {% endif %}</td>
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6" style="width:100%;">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">用户信息</h3>
+            </div>
+            <div class="panel-body">
+                <table class="table table-condensed">
+                    <tbody>
+                    <tr>
+                        <td>用户账户：<a target="_blank" href="/admin/user/{{o.user.id}}">{{o.user.username}}</a></td>
+                    </tr>
+
+                    <tr>
+                        <td>用户电话：{{o.user.mobile}}</td>
+                    </tr>
+
+                    <tr>
+                        <td>用户Email：{{o.user.email}}</td>
+                    </tr>
+
+                    <tr>
+                        <td>用户IP：{{o.ip}}</td>
+                    </tr>
+
+                    <tr>
+                        <td>联系电话：{{o.mobile}}</td>
+                    </tr>
+                    <tr>
+                        <td>分享保单：
+                            <textarea id="contents" style="width:340px;padding:2px;">www.520czj.com/user/showInsurance/{{poid}}</textarea>
+                            <input type="button" onClick="jsCopy();" value="复制" style="transform:translateY(-8px);	-webkit-transform:translateY(-8px);"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>分享保单（不含门店信息）：
+                            <textarea id="contents_without_add" style="width:340px;padding:2px;">www.520czj.com/user/showInsurance/{{poid2}}?addr=1</textarea>
+                            <input type="button" onClick="jsCopy2();" value="复制" style="transform:translateY(-8px);	-webkit-transform:translateY(-8px);"/>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6" style="width:100%;">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">寄送信息</h3>
+            </div>
+            <div class="panel-body">
+                <table class="table table-condensed">
+                    <tbody>
+                    <tr>
+                        <td>联系人：{{o.contact}}</a></td>
+                    </tr>
+
+                    <tr>
+                        <td>联系电话：{{o.mobile}}</td>
+                    </tr>
+
+                    <tr>
+                        {% if ior %}
+                        <td>所属省市：{{ior.address}}</td>
+                        {% else %}
+                        <td>所属省市： </td>
+                        {% endif %}
+                    </tr>
+
+                    <tr>
+                        {% if ior %}
+                        <td>详细地址：{{ior.paddress}}</td>
+                        {% else %}
+                        <td>详细地址：</td>
+                        {% endif %}
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6" style="width:100%;">
+        <div class="panel panel-yellow" style="border:1px solid #ccc;">
+            <div class="panel-heading" style="background:#f5f5f5;border-bottom:1px solid #ccc;">
+                <h3 class="panel-title" style="color:#333;">图片信息</h3>
+            </div>
+
+            <ul data-am-widget="gallery" class="am-gallery am-avg-sm-2
+am-avg-md-3 am-avg-lg-4 am-gallery-overlay" data-am-gallery="{ pureview: true }" >
+                <li>
+                    <div class="am-gallery-item">
+                        <a href="{{o.idcard}}" class="">
+                            <img style="width:197;height:197" src="{{o.idcard}}"/>
+                        </a>
+                    </div>
+                </li>
+                <li>
+                    <div class="am-gallery-item">
+                        <a href="{{o.idcardback}}" class="">
+                            <img style="width:197;height:197" src="{{o.idcardback}}"/>
+                        </a>
+                    </div>
+                </li>
+                <li>
+                    <div class="am-gallery-item">
+                        <a href="{{o.drivercard}}" class="">
+                            <img style="width:197;height:197" src="{{o.drivercard}}"/>
+                        </a>
+                    </div>
+                </li>
+                <li>
+                    <div class="am-gallery-item">
+                        <a href="{{o.drivercard2}}" class="">
+                            <img style="width:197;height:197" src="{{o.drivercard2}}"/>
+                        </a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+
+    <div class="col-lg-6" style="width:100%;margin-bottom:30px;">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">操作</h3>
+            </div>
+            <div class="panel-body">
+                <form class="form-horizontal" role="form" action="/admin/insurance/{{o.id}}" method="post">
+                    {{xsrf()}}
+                    <div class="form-group">
+                        <label class="col-sm-1 control-label" style="font-weight:500;">
+                            {% if o.ordertype == 1 %}
+                            保险信息：
+                            {% elif o.ordertype == 2 %}
+                            钣喷信息：
+                            {% endif %}
+                        </label>
+                        <div class="col-sm-9">
+                            <select name="sel_pid" id="sel_pid" class="form-control" style="width:480px;height:34px;">
+                                {% for p in products %}
+                                <option value="{{p.id}}" {% if p == o.insurance %} selected="selected" {%endif%}>{{p.name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-1 control-label" style="font-weight:500;">本地备注：</label>
+                        <div class="col-sm-9">
+                            <input class="form-control" id="localsummary" name="localsummary" type="text"
+                                   value="{{o.localsummary|null}}" placeholder="填写本地备注..." style="width:480px;height:34px;float:left;">
+                            <span onclick="change_status('{{o.ordernum}}')" style="float:left;padding:5px 10px;margin-left:20px;margin-top:3px;background:#438bca;color:#fff;border-radius:4px;font-size:14px;cursor:pointer;">保存备注</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-1 control-label" style="font-weight:500;">交强险(元)：</label>
+                        <div class="col-sm-9">
+                            <input class="form-control" name="forceIprc" type="text"
+                                   value="{{o.forceIprc}}" onkeyup="checkNum(this)" style="width:480px;height:34px;">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-1 control-label" style="font-weight:500;">商业险(元)：</label>
+                        <div class="col-sm-9">
+                            <input class="form-control" name="businessIprc" type="text"
+                                   value="{{o.businessIprc}}" onkeyup="checkNum(this)" style="width:480px;height:34px;">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-1 control-label" style="font-weight:500;">车船税(元)：</label>
+                        <div class="col-sm-9">
+                            <input class="form-control" name="vehicleTax" type="text"
+                                   value="{{o.vehicleTax}}" onkeyup="checkNum(this)" style="width:480px;height:34px;">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-1 control-label" style="font-weight:500;">订单价格(元)：</label>
+                        <div class="col-sm-9">
+                            <input class="form-control" name="price" type="text"
+                                   value="{{o.price}}" onkeyup="checkNum(this)" style="width:480px;height:34px;">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-1 control-label" style="font-weight:500;">
+                            返佣方式：
+                        </label>
+                        <div class="col-sm-9">
+                            <select name="LubeOrScore" class="form-control" style="width:480px;height:34px;">
+                                <option value="1" {% if 1 == o.LubeOrScore %} selected="selected" {%endif%}>返油</option>
+                                <option value="2" {% if 2 == o.LubeOrScore %} selected="selected" {%endif%}>返积分</option>
+
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-1 control-label" style="font-weight:500;">积分数(元)：</label>
+                        <div class="col-sm-9">
+                            <input class="form-control" name="scoreNum" type="text"
+                                   value="{{o.scoreNum}}" onkeyup="checkNum(this)" style="width:480px;height:34px;">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-1 control-label" style="font-weight:500;">短信通知：</label>
+                        <div class="col-sm-9">
+                            <textarea id="psummary"  name="psummary" cols="60" rows="15">{{msgs}}</textarea>
+                        </div>
+                    </div>
+
+                    <input id="sid" name="sid" type="hidden" value="{{o.store.id}}">
+                    <input id="state" name="state" type="hidden" value="{{state}}">
+                    <input id="status" name="status" type="hidden" value="{{status}}">
+                    <input id="page" name="page" type="hidden" value="{{page}}">
+                    <hr>
+                    <button type="submit" style="width:90px;height:36px;margin-left:30px;border:none;background:#438bca;color:#fff;border-radius:4px;font-size:16px;">保存</button>
+                    <button type="submit" name="saveAndSendMSG" value="1" style="width:150px;height:36px;margin-left:30px;border:none;background:#438bca;color:#fff;border-radius:4px;font-size:16px;">保存并发送短信</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+<iframe id="theone" src="" width="600" height="700" style="display: none;"></iframe>
+
+{% endblock %}
+{% block js %}
+<script src="/style2/js/jquery.min.js"></script>
+<script src="/style2/js/amazeui.js"></script>
+<script src="/style2/js/layer-v1.9/layer.js" type="text/javascript"></script>
+<script>
+        $(function() {
+            var xsrf='{{handler.xsrf_token}}';
+            ids = [{{o.id}}];
+            $("#btnCancel").click(function() {
+                var oid = $(this).attr("data-id");
+                var cause = $("#cancel_cause").val();
+                if (cause != "") {
+                    layer.confirm("您确认要取消此订单吗？", {
+                        btn: ['确认', '放弃'],
+                        shade: 0.2
+                    },function () {
+                        $.post("/ajax/cancel_insurance_order", {_xsrf: xsrf, id: oid, status: 5, cause: cause}, function (data) {
+                            var result = jQuery.parseJSON(data);
+                            if (result.err == 0) {
+                                layer.msg("取消成功！");
+                            //location.reload();
+                            window.location.href="/admin/insurance/"+oid;
+                            }
+                            else {
+                                layer.alert(result.msg)
+                            }
+                        });
+                    });
+                }else{
+                    layer.alert("请输入取消原因！");
+                }
+            });
+        });
+
+//弹出隐藏层
+function ShowDiv(show_div,bg_div){
+document.getElementById(show_div).style.display='block';
+document.getElementById(bg_div).style.display='block' ;
+var bgdiv = document.getElementById(bg_div);
+bgdiv.style.width = document.body.scrollWidth;
+// bgdiv.style.height = $(document).height();
+$("#"+bg_div).height($(document).height());
+};
+//关闭弹出层
+function CloseDiv(show_div,bg_div)
+{
+document.getElementById(show_div).style.display='none';
+document.getElementById(bg_div).style.display='none';
+};
+
+function left_btn(n)
+{
+ var a_num=document.getElementById("btn_box").getElementsByTagName("ul");
+ for(i=0;i<a_num.length;i++)
+ {
+ a_num[i].className=i==n?"select":"";
+ }
+}
+
+function checkNum(obj) {  
+     //检查是否是非数字值  
+     if (isNaN(obj.value)) {  
+         obj.value = "";  
+     }  
+     if (obj != null) {  
+         //检查小数点后是否对于两位http://blog.csdn.net/shanzhizi  
+         if (obj.value.toString().split(".").length > 1 && obj.value.toString().split(".")[1].length > 2) {  
+             alert("小数点后多于两位！");  
+             obj.value = "";  
+         }  
+     }  
+ }
+
+    function jsCopy(){
+       var e=document.getElementById("contents");//对象是contents
+       e.select(); //选择对象
+       var e="hello world"
+       tag=document.execCommand("Copy"); //执行浏览器复制命令
+       if(tag){
+         alert('复制内容成功');
+       }
+    }
+
+    function jsCopy2(){
+       var e=document.getElementById("contents_without_add");//对象是contents
+       e.select(); //选择对象
+       var e="hello world"
+       tag=document.execCommand("Copy"); //执行浏览器复制命令
+       if(tag){
+         alert('复制内容成功');
+       }
+    }
+    var xsrf='{{handler.xsrf_token}}';
+    function change_status(ordernum){
+        var localsummary=document.getElementById("localsummary").value;
+        $.post("/ajax/submit_local_summary", { _xsrf:xsrf, ordernum:ordernum, localsummary:localsummary}, function (data) {
+            var obj = jQuery.parseJSON(data);
+            if (obj.flag == 1) {
+                alert('成功');
+            }
+            else {
+                alert(obj.msg);
+            }
+        });
+    }
+
+   </script>
+{% endblock %}

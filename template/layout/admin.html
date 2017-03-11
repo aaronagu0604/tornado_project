@@ -110,7 +110,8 @@
 
                     </ul>
                     </li>
-                    <li {% if active=='category' or active=='brand' or active=='product_n'  or  active=='product_s' %}class="active"{% endif %}>
+                    <li {% if active=='category' or active=='brand' or active=='product_n'  or
+                        active=='product_s' or active=='c_b' %}class="active"{% endif %}>
                         <a  href="#"><i class="fa fa-picture-o fa-fw"></i>&nbsp;&nbsp;&nbsp;商品管理
                             <span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
@@ -119,6 +120,9 @@
                             </li>
                             <li>
                                 <a {% if active=='brand' %} class="active"{% endif %} href="/admin/brand">商品品牌</a>
+                            </li>
+                            <li>
+                                <a {% if active=='c_b' %} class="active"{% endif %} href="/admin/category_brand">分类&品牌</a>
                             </li>
                             <li>
                                 <a {% if active=='product_n' %} class="active"{% endif %} href="/admin/product/0">普通商品</a>
@@ -151,16 +155,16 @@
                         </a>
                         <ul class="nav nav-second-level">
                             <li>
-                                <a {% if active=='p_order' %}class="active"{% endif %} href="/admin/product/orders?status=2">商品订单</a>
+                                <a {% if active=='p_order' %}class="active"{% endif %} href="/admin/product_orders">商品订单</a>
                             </li>
                              <li>
-                                <a {% if active=='p_order_finish' %}class="active"{% endif %} href="/admin/product/orders?status=2">商品订单归档</a>
+                                <a {% if active=='p_order_finish' %}class="active"{% endif %} href="/admin/product_orders_finish">商品订单归档</a>
                             </li>
                             <li>
-                                <a {% if active=='i_order' %}class="active"{% endif %} href="/admin/insurance/orders?status=0">保险订单</a>
+                                <a {% if active=='i_order' %}class="active"{% endif %} href="/admin/insurance_orders">保险订单</a>
                             </li>
                             <li>
-                                <a {% if active=='i_order_finish' %}class="active"{% endif %} href="/admin/insurance/orders?status=3">保险订单归档</a>
+                                <a {% if active=='i_order_finish' %}class="active"{% endif %} href="/admin/insurance_orders_finish">保险订单归档</a>
                             </li>
                         </ul>
                     </li>

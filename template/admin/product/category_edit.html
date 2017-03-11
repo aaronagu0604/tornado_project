@@ -1,9 +1,5 @@
 {% extends "layout/admin.html" %}
-{% block js %}
-<script type="text/javascript">
 
-</script>
-{% endblock %}
 {% block content %}
 <div class="row">
     <nav>
@@ -56,6 +52,7 @@
                     <label class="control-label">排列顺序</label>
                     <input type="text" class="form-control" value="{{ category.sort if category else '' }}" name="sort" required placeholder="数字越大越靠前" style="width:480px;" />
                 </div>
+
                 <div>
                     <th><input type="checkbox" name="hot" {% if category and category.hot==1 %} checked='true' {%endif%}>是否热点</th>
                 </div>
