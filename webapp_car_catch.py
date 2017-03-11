@@ -6,7 +6,6 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import NoAlertPresentException
 from model import *
 
-
 def catch_brand(browser):
     browser.get("http://car.bitauto.com/")  # Load page
     m = browser.find_element_by_class_name("list-con")
@@ -76,8 +75,9 @@ def catch_car(browser):
 def catch_car_item(browser, start):
     cars = Car.select().where(Car.id >= start)
     for car in cars:
+        ok_list.append(car.id - 1)
         browser.get(car.catch_url)
-        time.sleep(1)
+        # time.sleep(1)
         d = browser.find_element_by_class_name("card-layout")
         car.car_name = d.find_element_by_class_name('box').text
         car.logo = d.find_element_by_tag_name('img').get_attribute('src')
@@ -143,7 +143,7 @@ def catch_car_item(browser, start):
 
         for url in urls:
             print url
-            time.sleep(2)
+            # time.sleep(2)
             browser.get(url)
             group = None
             d = browser.find_element_by_class_name('list-table')
@@ -185,12 +185,12 @@ def catch_car_item(browser, start):
     return 1
 
 
-
 browser = webdriver.Firefox()
 # catch_brand(browser)
 # catch_car(browser)
 flag = 0
-start = 129
+start = 0
+ok_list = range(0, start)
 while flag == 0:
     try:
         flag = catch_car_item(browser, start)
@@ -200,9 +200,13 @@ while flag == 0:
             carItem = CarItem.select().order_by(CarItem.id.desc()).limit(1)[0]
             if carItem is not None:
                 start = carItem.car.id
-                CarItem.delete().where(CarItem.car == carItem.car).execute()
-                CarItemGroup.delete().where(CarItemGroup.car == carItem.car).execute()
-                print '--continue-- ', start
+                if ok_list.index(start) == -1:
+                    CarItem.delete().where(CarItem.car == carItem.car).execute()
+                    CarItemGroup.delete().where(CarItemGroup.car == carItem.car).execute()
+                    print '--continue-- ', start
+                else:
+                    print 'need help 2!'
+                    flag = 1
         except:
             print 'need help!'
             flag = 1

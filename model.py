@@ -987,7 +987,7 @@ class CarItemGroup(db.Model):
 # 汽车型号，如翼虎2.0T
 class CarItem(db.Model):
     id = PrimaryKeyField()
-    car_item_name = CharField(max_length=50)  # 汽车型号
+    car_item_name = CharField(max_length=100)  # 汽车型号
     car = ForeignKeyField(Car, related_name='items', db_column='car_id')  # 汽车
     group = ForeignKeyField(CarItemGroup, related_name='items', db_column='car_item_group_id')  # 所在分组
     displacement = FloatField(default=0.0)  # 排量
