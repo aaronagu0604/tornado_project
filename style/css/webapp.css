@@ -66,7 +66,7 @@ header.fixed{
     height: 30px;
     overflow: hidden;
     position: absolute;
-    top: 5px;
+    top: 15px;
     left: 20px;
 }
 .sort_list .num_logo img{
