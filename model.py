@@ -947,6 +947,7 @@ class CarBrand(db.Model):
 # 汽车品牌厂家，主要是中国的厂家，如大众下的一汽和上汽
 class CarBrandFactory(db.Model):
     id = PrimaryKeyField()
+    brand = ForeignKeyField(CarBrand, related_name='factories', db_column='car_brand_id', null=True)  # 汽车品牌
     factory_name = CharField(max_length=50)  # 汽车品牌厂家
     logo = CharField(max_length=1000, null=True)  # 汽车品牌logo
     factory_intro = CharField(max_length=800, null=True)  # 汽车品牌简介

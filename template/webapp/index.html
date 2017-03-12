@@ -9,7 +9,6 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <link href="/style/css/webapp.css" rel="stylesheet">
-
 </head>
 <body>
 <header class="fixed">
@@ -17,91 +16,33 @@
         SK润滑油保养工具
     </div>
 </header>
-
 <div id="letter"></div>
-<div class="sort_box">
 
-    <div class="sort_letter" id="A">A</div>
-    <div class="sort_list" onclick="location.href='/webapp/car/2'">
-        <div class="num_logo">
-            <img src="/style/images/logo.png" alt="">
-        </div>
-        <div class="num_name">a九</div>
-    </div>
-    <div class="sort_letter" id="C">C</div>
-    <div class="sort_list">
-        <div class="num_logo">
-            <img src="/style/images/logo.png" alt="">
-        </div>
-        <div class="num_name">陈十</div>
-    </div>
-    <div class="sort_letter" id="H">H</div>
-    <div class="sort_list" onclick="location.href='/webapp/car/2'">
-        <div class="num_logo">
-            <img src="/style/images/logo.png" alt="">
-        </div>
-        <div class="num_name">黄八</div>
-    </div>
-    <div class="sort_letter" id="L">L</div>
-    <div class="sort_list" >
-        <div class="num_logo">
-            <img src="/style/images/logo.png" alt="">
-        </div>
-        <div class="num_name">刘六</div>
-    </div>
-    <div class="sort_list">
-        <div class="num_logo">
-            <img src="/style/images/logo.png" alt="">
-        </div>
-        <div class="num_name">李四</div>
-    </div>
-    <div class="sort_letter" id="M">M</div>
-    <div class="sort_list">
-        <div class="num_logo">
-            <img src="/style/images/logo.png" alt="">
-        </div>
-        <div class="num_name">莫九</div>
-    </div>
-    <div class="sort_list">
-        <div class="num_logo">
-            <img src="/style/images/logo.png" alt="">
-        </div>
-        <div class="num_name">马七</div>
-    </div>
-    <div class="sort_letter" id="W">W</div>
-    <div class="sort_list">
-        <div class="num_logo">
-            <img src="/style/images/logo.png" alt="">
-        </div>
-        <div class="num_name">王五</div>
-    </div>
-    <div class="sort_letter" id="Z">Z</div>
-    <div class="sort_list">
-        <div class="num_logo">
-            <img src="/style/images/logo.png" alt="">
-        </div>
-        <div class="num_name">张三</div>
-    </div>
-    <div class="sort_letter" id="default">#</div>
-    <div class="sort_list">
-        <div class="num_logo">
-            <img src="/style/images/logo.png" alt="">
-        </div>
-        <div class="num_name">1十</div>
-    </div>
+<div class="sort_box">
+    {% for brand in brands %}
+        <div class="sort_letter" id="{{brand['char']}}">{{brand['char']}}</div>
+        {% for item in brand['items'] %}
+            <div class="sort_list" onclick='location.href="/webapp/car/{{item.id}}"'>
+                <div class="num_logo">
+                    <img src="{{item.logo}}" alt="">
+                </div>
+                <div class="num_name">{{item.brand_name}}</div>
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+
 </div>
 <div class="initials">
     <ul>
+        {{chars}}
     </ul>
 </div>
-
 <script src="/style/js/jquery-1.11.1.min.js"></script>
 <script type="text/javascript">
     $(function () {
         var Initials = $('.initials');
         var LetterBox = $('#letter');
-        Initials.find('ul').append('<li>#</li><li>A</li><li>B</li><li>C</li><li>D</li><li>E</li><li>F</li><li>G</li><li>H</li><li>I</li><li>J</li><li>K</li><li>L</li><li>M</li><li>N</li><li>O</li><li>P</li><li>Q</li><li>R</li><li>S</li><li>T</li><li>U</li><li>V</li><li>W</li><li>X</li><li>Y</li><li>Z</li>');
-
 
         $(".initials ul li").click(function () {
             var _this = $(this);
