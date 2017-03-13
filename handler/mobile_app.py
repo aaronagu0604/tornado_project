@@ -1104,31 +1104,12 @@ class MobilNewInsuranceOrderHandler(MobileBaseHandler):
 
     @require_auth
     def post(self):
-        result = {'flag': 0, 'msg': '', "data": []}
+        result = {'flag': 0, 'msg': '', "data": {}}
         id_card_front = self.get_body_argument('id_card_front', None)
         id_card_back = self.get_body_argument('id_card_back', None)
         drive_card_front = self.get_body_argument('drive_card_front', None)
         drive_card_back = self.get_body_argument('drive_card_back', None)
         insurance = self.get_body_argument('insurance', None)
-        forceI = self.get_body_argument('forceI', None)
-        damageI = self.get_body_argument('damageI', None)
-        damageIPlus = self.get_body_argument('damageIPlus', None)
-        thirdDutyI = self.get_body_argument('thirdDutyI', None)
-        thirdDutyIPlus = self.get_body_argument('thirdDutyIPlus', None)
-        robbingI = self.get_body_argument('robbingI', None)
-        robbingIPlus = self.get_body_argument('robbingIPlus', None)
-        driverDutyI = self.get_body_argument('driverDutyI', None)
-        driverDutyIPlus = self.get_body_argument('driverDutyIPlus', None)
-        passengerDutyI = self.get_body_argument('passengerDutyI', None)
-        passengerDutyIPlus = self.get_body_argument('passengerDutyIPlus', None)
-        glassI = self.get_body_argument('glassI', None)
-        scratchI = self.get_body_argument('scratchI', None)
-        scratchIPlus = self.get_body_argument('scratchIPlus', None)
-        fireDamageI = self.get_body_argument('fireDamageI', None)
-        fireDamageIPlus = self.get_body_argument('fireDamageIPlus', None)
-        wadeI = self.get_body_argument('wadeI', None)
-        wadeIPlus = self.get_body_argument('wadeIPlus', None)
-        thirdSpecialI = self.get_body_argument('thirdSpecialI', None)
         delivery_to = self.get_body_argument('delivery_to', None)
         delivery_tel = self.get_body_argument('delivery_tel', None)
         delivery_province = self.get_body_argument('delivery_province', None)
@@ -1136,13 +1117,31 @@ class MobilNewInsuranceOrderHandler(MobileBaseHandler):
         delivery_region = self.get_body_argument('delivery_region', None)
         delivery_address = self.get_body_argument('delivery_address', None)
         gift_policy = self.get_body_argument('gift_policy', None)
+
+        forceI = self.get_body_argument('forceI', '')
+        damageI = self.get_body_argument('damageI', '')
+        damageIPlus = self.get_body_argument('damageIPlus', '')
+        thirdDutyI = self.get_body_argument('thirdDutyI', '')
+        thirdDutyIPlus = self.get_body_argument('thirdDutyIPlus', '')
+        robbingI = self.get_body_argument('robbingI', '')
+        robbingIPlus = self.get_body_argument('robbingIPlus', '')
+        driverDutyI = self.get_body_argument('driverDutyI', '')
+        driverDutyIPlus = self.get_body_argument('driverDutyIPlus', '')
+        passengerDutyI = self.get_body_argument('passengerDutyI', '')
+        passengerDutyIPlus = self.get_body_argument('passengerDutyIPlus', '')
+        glassI = self.get_body_argument('glassI', '')
+        scratchI = self.get_body_argument('scratchI', '')
+        scratchIPlus = self.get_body_argument('scratchIPlus', '')
+        fireDamageI = self.get_body_argument('fireDamageI', '')
+        fireDamageIPlus = self.get_body_argument('fireDamageIPlus', '')
+        wadeI = self.get_body_argument('wadeI', '')
+        wadeIPlus = self.get_body_argument('wadeIPlus', '')
+        thirdSpecialI = self.get_body_argument('thirdSpecialI', '')
+
         user = self.get_user()
         if user and gift_policy and delivery_address and delivery_city and delivery_province and delivery_region and \
-            delivery_tel and delivery_to and thirdSpecialI and wadeI and wadeIPlus and fireDamageI and fireDamageIPlus \
-            and scratchI and scratchIPlus and glassI and passengerDutyI and passengerDutyIPlus and driverDutyI and \
-            driverDutyIPlus and robbingI and robbingIPlus and thirdDutyI and thirdDutyIPlus and damageI and \
-            damageIPlus and forceI and insurance and drive_card_back and drive_card_front and id_card_back and \
-                id_card_front:
+            delivery_tel and delivery_to and insurance and drive_card_back and drive_card_front and id_card_back and \
+            id_card_front:
             order = InsuranceOrder()
             order.user = user
             order.store = user.store
@@ -1186,7 +1185,7 @@ class MobilNewInsuranceOrderHandler(MobileBaseHandler):
             order_price.wadeIPlus = wadeIPlus
             order_price.thirdSpecialI = thirdSpecialI
             order_price.save()
-            result['msg'] = 1
+            result['flag'] = 1
             result['data']['order_id'] = order.id
             result['data']['order_price_id'] = order_price.id
         else:
