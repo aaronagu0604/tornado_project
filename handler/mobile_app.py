@@ -768,7 +768,7 @@ class MobileShopCarHandler(MobileBaseHandler):
     @apiSampleRequest /mobile/shopcar
     """
     def get(self):
-        result = {'flag': 0, 'msg': '', "data": {}}
+        result = {'flag': 0, 'msg': '', "data": []}
         user = self.get_user()
         if user:
             for item in user.store.cart_items:
@@ -780,7 +780,7 @@ class MobileShopCarHandler(MobileBaseHandler):
                     'price': item.store_product_price.price,
                     'unit': item.store_product_price.product_release.product.unit,
                     'cover': item.store_product_price.product_release.product.cover,
-                    'status': (item.store_product_price.active & item.store_product_price.product_release.active & item.storeProductPrice.product_release.product.active),
+                    'status': (item.store_product_price.active & item.store_product_price.product_release.active & item.store_product_price.product_release.product.active),
                     'quantity': item.quantity,
                     'storeid': user.store.id
                 })
