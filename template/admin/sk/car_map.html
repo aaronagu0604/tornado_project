@@ -1,10 +1,92 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "layout/admin.html" %}
+{% block css %}
+<link href="/style/css/plugins/dataTables.bootstrap.css" rel="stylesheet">
 
-</body>
-</html>
+{% endblock %}
+{% block content %}
+<div class="mskeLayBg"></div>
+<div class="row">
+    <nav>
+        <div class="navbar-header" style="float: left">
+            <a class="navbar-brand" href="#" style="font-weight:500;">SK产品车型映射</a>
+        </div>
+        <div class="pull-right">
+            <form class="navbar-form navbar-left" action="">
+                <label class="num">未设置数据：&nbsp;</label>
+                <div class="btn-group btn-group-xs">
+                    <a href="/admin/sk_car?type=1" class="btn btn-default {{type==1 and 'active'}}">发动机油基本({{engine_1}})</a>
+                    <a href="/admin/sk_car?type=2" class="btn btn-default {{type==2 and 'active'}}">发动机油推荐({{engine_2}})</a>
+                    <a href="/admin/sk_car?type=3" class="btn btn-default {{type==3 and 'active'}}">变速箱油基本({{gearbox_1}})</a>
+                    <a href="/admin/sk_car?type=4" class="btn btn-default {{type==4 and 'active'}}">变速箱油推荐({{gearbox_2}})</a>
+                </div>
+            </form>
+        </div>
+    </nav>
+</div>
+<div class="row">
+    <div class="col-sm-4">
+        <div class="panel panel-primary" id="accordion">
+            <div class="panel-group">
+                {% for brand in brands %}
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordion"
+                               href="#brand{{brand.id}}">
+                                <img src="{{brand.logo}}" alt="">{{brand.brand_name}}
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="brand{{brand.id}}" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <ul class="list-group">
+                                {% for aa in brand['items'] %}
+                                <li class="list-group-item"><a href="#" onclick="carDetail({{aa.id}})">{{aa.car_name}}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                <div style="height:35px;">
+                <div class="col-sm-12" >
+                    <div class="dataTables_paginate paging_simple_numbers">
+                        <ul class="pagination  pagination-sm" id="pageUl" />
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-3">
+        <h1>test</h1>
+    </div>
+    <div class="col-sm-5">
+        <h1>ssd sdflji</h1>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script src="/style/js/jquery.twbsPagination.min.js"></script>
+<script>
+ $(document).ready(function() {
+        $('#pageUl').twbsPagination({
+            first:'首',
+            prev:'上',
+            next:'下',
+            last:'尾',
+            totalPages: {{totalpage}},
+            startPage: {{page}},
+            visiblePages: 8,
+            onPageClick: function (event, page) {
+                self.location="/admin/sk_car?type={{type}}&page="+page;
+            }
+        });
+    });
+function carDetail(carID) {
+
+}
+</script>
+{% endblock %}

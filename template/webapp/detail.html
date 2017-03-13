@@ -49,6 +49,7 @@
                 <div id="tab1" class="tab active">
                     <div class="content-block" style="padding: 0; margin: 0;">
                         <div class="tabs">
+                            {% if car.car_sk_engine_1 %}
                             <div style="height: 40px; background: #ffffff; line-height:40px; text-align: center;">基本
                             </div>
                             <div class="list-block media-list" style="margin: 0">
@@ -70,6 +71,8 @@
                                     </li>
                                 </ul>
                             </div>
+                            {% endif %}
+                            {% if car.car_sk_engine_2 %}
                             <div style="height: 40px; background: #ffffff; line-height:40px; text-align: center;">推荐
                             </div>
                             <div class="list-block media-list" style="margin: 0">
@@ -91,12 +94,14 @@
                                     </li>
                                 </ul>
                             </div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
                 <div id="tab2" class="tab">
                     <div class="content-block" style="padding: 0; margin: 0;">
                         <div class="tabs">
+                            {% if car.car_sk_gearbox_1 %}
                             <div style="height: 40px; background: #ffffff; line-height:40px; text-align: center;">基本
                             </div>
                             <div class="list-block media-list" style="margin: 0">
@@ -118,6 +123,8 @@
                                     </li>
                                 </ul>
                             </div>
+                            {% endif %}
+                            {% if car.car_sk_gearbox_2 %}
                             <div style="height: 40px; background: #ffffff; line-height:40px; text-align: center;">推荐
                             </div>
                             <div class="list-block media-list" style="margin: 0">
@@ -139,6 +146,7 @@
                                     </li>
                                 </ul>
                             </div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>

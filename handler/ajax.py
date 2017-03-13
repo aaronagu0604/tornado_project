@@ -361,5 +361,12 @@ class CancelOrderHandler(BaseHandler):
         self.write(simplejson.dumps(result))
 
 
-
+@route(r'/ajax/brand_list', name='ajax_brand_list')  # 品牌车型列表
+class WebAppCarItemListHandler(BaseHandler):
+    def get(self):
+        result = {'flag': 0, 'msg': '', "data": {}}
+        page = int(self.get_argument("page", '1') if len(self.get_argument("page", '1')) > 0 else '1')
+        pagesize = 10
+        #
+        self.write(simplejson.dumps(result))
 

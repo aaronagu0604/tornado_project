@@ -1309,14 +1309,50 @@ class SKHandler(AdminBaseHandler):
                     page=page, pagesize=pagesize, category=category, active='sk_product')
 
 
-@route(r'/admin/sk_car', name='admin_sk_car')  # 后台SK产品维护
+@route(r'/admin/sk_car', name='admin_sk_car')  # 后台SK产品与车型映射
 class SKCarHandler(AdminBaseHandler):
     def get(self):
-        pid = int(self.get_argument("pid", '0'))
-        product = CarSK.get(id=pid)
+        type = int(self.get_argument("type", '1') if len(self.get_argument("type", '1')) > 0 else '1')
+        page = int(self.get_argument("page", '1') if len(self.get_argument("page", '1')) > 0 else '1')
+        pagesize = 10
+        engine_1 = CarItem.select().where((CarItem.active == 1) & (CarItem.car_sk_engine_1 >> None)).count()
+        engine_2 = CarItem.select().where((CarItem.active == 1) & (CarItem.car_sk_engine_2 >> None)).count()
+        gearbox_1 = CarItem.select().where((CarItem.active == 1) & (CarItem.car_sk_gearbox_1 >> None)).count()
+        gearbox_2 = CarItem.select().where((CarItem.active == 1) & (CarItem.car_sk_gearbox_2 >> None)).count()
 
-        if product:
-            s = CarSK.select().where(ft)
+        ft = ((CarBrand.active == 1) & (CarItem.active == 1) & (Car.active == 1))
+        ft2 = ((CarItem.active == 1) & (Car.active == 1))
+        if type == 1:
+            ft &= (CarItem.car_sk_engine_1 >> None)
+            ft2 &= (CarItem.car_sk_engine_1 >> None)
+        elif type == 2:
+            ft &= (CarItem.car_sk_engine_2 >> None)
+            ft2 &= (CarItem.car_sk_engine_2 >> None)
+        elif type == 3:
+            ft &= (CarItem.car_sk_gearbox_1 >> None)
+            ft2 &= (CarItem.car_sk_gearbox_1 >> None)
+        elif type == 4:
+            ft &= (CarItem.car_sk_gearbox_2 >> None)
+            ft2 &= (CarItem.car_sk_gearbox_2 >> None)
 
-        self.render("admin/sk/car_map.html", product=product, category=category, active='sk_car')
+        s = CarBrand.select().join(Car).join(CarItem).where(ft).group_by(CarBrand)
+        total = s.count()
+        if total % pagesize > 0:
+            totalpage = total / pagesize + 1
+        else:
+            totalpage = total / pagesize if (total / pagesize) > 0 else 1
+        brands = s.paginate(page, pagesize)
+        bs = []
+        for brand in brands:
+            b = {}
+            b['brand_name'] = brand.brand_name
+            b['id'] = brand.id
+            b['logo'] = brand.logo
+            ft3 = ft2 & (Car.brand == brand)
+            b['items'] = Car.select().join(CarItem).where(ft3).group_by(Car)
+            bs.append(b)
+
+        self.render("admin/sk/car_map.html", brands=bs, type=type, active='sk_car', engine_1=engine_1,
+                    engine_2=engine_2, gearbox_1=gearbox_1, gearbox_2=gearbox_2, total=total,
+                    totalpage=totalpage, page=page, pagesize=pagesize)
 
