@@ -61,6 +61,28 @@ header.fixed{
     border-bottom:1px solid #ddd;
 }
 
+.hot_list{
+    padding:10px 25px 10px 5px;
+    background: #fff;
+    border-bottom:1px solid #ddd;
+}
+
+.hot_list td{
+    height: 73px;
+    vertical-align: middle;
+    text-align: center;
+    width: 20%;
+}
+
+.hot_list img {
+    width: 30px;
+    height: 30px;
+}
+
+.hot_list .brandName {
+    color: #000;
+}
+
 .sort_list .num_logo{
     width: 30px;
     height: 30px;

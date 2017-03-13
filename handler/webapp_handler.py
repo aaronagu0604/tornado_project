@@ -76,6 +76,7 @@ class WebAppCarItemListHandler(RequestHandler):
                 result['data']['detail_list'].append(group)
                 for carItem in item.items:
                     ci = {}
+                    ci['id'] = carItem.id
                     ci['name'] = carItem.car_item_name
                     ci['gearbox'] = carItem.gearbox
                     ci['saleoff'] = carItem.stop_sale
@@ -89,5 +90,5 @@ class WebAppCarItemListHandler(RequestHandler):
 @route(r'/webapp/detail/(\d+)', name='webapp_detail')
 class WebAppDetailHandler(BaseHandler):
     def get(self, id):
-        car = Car.get(id=id)
-        self.render("webapp/detail.html", car=car)
+        carItem = CarItem.get(id=id)
+        self.render("webapp/detail.html", car=carItem)

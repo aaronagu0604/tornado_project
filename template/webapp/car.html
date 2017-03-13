@@ -98,7 +98,9 @@
                             if(result.data.detail_list[i].items[j].saleoff == 1) {
                                 carItemText += '<span style="color:#787878;">(停产)</span>';
                             }
-                            var html = '<li> <div class="item-content"> <div class="item-inner" style="font-size:11px;"> ' +
+                            var html = '<li onclick="searchDetail('+result.data.detail_list[i].items[j].id+
+                                    ')"> <div class="item-content"> ' +
+                                    '<div class="item-inner" style="font-size:11px;"> ' +
                                     '<div class="item-title">' + carItemText + '</div> </div> </div> </li>';
                             ul.append(html);
                         }
@@ -107,6 +109,10 @@
                     $.hideIndicator();
                 }
             });
+        }
+
+        function searchDetail(id) {
+            $.router.load('/webapp/detail/'+id);
         }
     </script>
 </body>
