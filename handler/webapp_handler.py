@@ -5,9 +5,9 @@ import logging
 import setting
 import simplejson
 from lib.route import route
-import math
 from model import *
-from handler import BaseHandler, require_auth
+from handler import BaseHandler
+from tornado.web import RequestHandler
 
 
 @route(r'/webapp', name='webapp_index')
@@ -43,6 +43,7 @@ class WebAppCarHandler(BaseHandler):
                 c['car'] = 1
                 c['id'] = car.id
                 c['logo'] = car.logo
+                c['saleoff'] = car.stop_sale
                 cars.append(c)
         else:
             for car in brand.cars:
@@ -51,11 +52,42 @@ class WebAppCarHandler(BaseHandler):
                 c['car'] = 1
                 c['id'] = car.id
                 c['logo'] = car.logo
+                c['saleoff'] = car.stop_sale
                 cars.append(c)
         self.render("webapp/car.html", brand=brand, cars=cars)
+
+
+@route(r'/webapp/car_item_list/(\d+)', name='webapp_car_item_list')  # 车型详情列表
+class WebAppCarItemListHandler(RequestHandler):
+    def get(self, id):
+        result = {'flag': 0, 'msg': '', "data": {}}
+
+        car = Car.get(id=id)
+        if car:
+            result['flag'] = 1
+            result['data']['saleoff'] = car.stop_sale
+            result['data']['name'] = car.car_name
+            result['data']['logo'] = car.logo
+            result['data']['detail_list'] = []
+            for item in car.groups:
+                group = {}
+                group['name'] = item.group_name
+                group['items'] = []
+                result['data']['detail_list'].append(group)
+                for carItem in item.items:
+                    ci = {}
+                    ci['name'] = carItem.car_item_name
+                    ci['gearbox'] = carItem.gearbox
+                    ci['saleoff'] = carItem.stop_sale
+                    group['items'].append(ci)
+
+        else:
+            result['msg'] = "系统异常"
+        self.write(simplejson.dumps(result))
 
 
 @route(r'/webapp/detail/(\d+)', name='webapp_detail')
 class WebAppDetailHandler(BaseHandler):
     def get(self, id):
-        self.render("webapp/detail.html")
+        car = Car.get(id=id)
+        self.render("webapp/detail.html", car=car)
