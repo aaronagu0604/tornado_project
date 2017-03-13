@@ -169,7 +169,7 @@
                         </ul>
                     </li>
 
-                    <li {% if active=='insurance' or active=='gift_area' or active=="score_policy"  or active=="lube_policy"
+                    <li {% if active=='insurance' or active=='insurance_area'
                          %}class="active"{% endif %}>
                         <a href="#"><i class="fa fa-yen fa-fw"></i>&nbsp;&nbsp;&nbsp;保险业务
                             <span class="fa arrow"></span>
@@ -180,6 +180,21 @@
                             </li>
                             <li>
                                 <a {% if active=='insurance_area' %}class="active"{% endif %} href="/admin/insurance_area">开通地域</a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li {% if active=='sk_product' or active=='sk_car'
+                         %}class="active"{% endif %}>
+                        <a href="#"><i class="fa fa-tint fa-fw"></i>&nbsp;&nbsp;&nbsp;SK润滑油
+                            <span class="fa arrow"></span>
+                        </a>
+                        <ul class="nav nav-second-level">
+                            <li>
+                                <a {% if active=='sk_product' %}class="active"{% endif %} href="/admin/sk">SK产品</a>
+                            </li>
+                            <li>
+                                <a {% if active=='sk_car' %}class="active"{% endif %} href="/admin/sk_car">油品映射</a>
                             </li>
                         </ul>
                     </li>

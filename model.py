@@ -985,6 +985,19 @@ class CarItemGroup(db.Model):
         db_table = 'tb_car_item_group'
 
 
+# SK产品列表
+class CarSK(db.Model):
+    id = PrimaryKeyField()
+    name = CharField(max_length=50)  # SK产品名
+    intro = CharField(max_length=500)  # SK产品介绍
+    logo = CharField(max_length=1000, null=True)  # SK产品logo
+    category = IntegerField(default=1)  # 状态 1发动机油，2变速箱油
+    active = IntegerField(default=1)  # 状态 0删除 1有效
+
+    class Meta:
+        db_table = 'tb_car_sk'
+
+
 # 汽车型号，如翼虎2.0T
 class CarItem(db.Model):
     id = PrimaryKeyField()
@@ -999,23 +1012,14 @@ class CarItem(db.Model):
     catch_url = CharField(max_length=1000, null=True)  # 抓取详情页面路径
     stop_sale = IntegerField(default=0)  # 停产？ 0正常销售 1已停产
     sort = FloatField(default=0.0)  # 厂家或品牌下的排序
+    car_sk_engine_1 = ForeignKeyField(CarSK, related_name='engine_items_1', db_column='car_sk_engine_id_1', null=True)  # SK产品发动机推荐1
+    car_sk_engine_2 = ForeignKeyField(CarSK, related_name='engine_items_2', db_column='car_sk_engine_id_2', null=True)  # SK产品发动机推荐2
+    car_sk_gearbox_1 = ForeignKeyField(CarSK, related_name='gearbox_items_1', db_column='car_sk_gearbox_id_1', null=True)  # SK产品变速箱推荐1
+    car_sk_gearbox_2 = ForeignKeyField(CarSK, related_name='gearbox_items_2', db_column='car_sk_gearbox_id_2', null=True)  # SK产品变速箱推荐2
     active = IntegerField(default=1)  # 状态 0删除 1有效
 
     class Meta:
         db_table = 'tb_car_item'
-
-
-# SK产品列表
-class CarSK(db.Model):
-    id = PrimaryKeyField()
-    name = CharField(max_length=50)  # SK产品名
-    intro = CharField(max_length=500)  # SK产品介绍
-    logo = CharField(max_length=1000, null=True)  # SK产品logo
-    category = IntegerField(default=1)  # 状态 1发动机油，2变速箱油
-    active = IntegerField(default=1)  # 状态 0删除 1有效
-
-    class Meta:
-        db_table = 'tb_car_sk'
 
 
 def init_db():
@@ -1161,14 +1165,16 @@ if __name__ == '__main__':
     # load_test_data()
     # LubePolicy.create_table()
 
-    CarItem.drop_table()
-    CarItemGroup.drop_table()
+    # CarItem.drop_table()
+    # CarItemGroup.drop_table()
     # Car.drop_table()
     # CarBrandFactory.drop_table()
-    # CarBrand.drop_table()
+    # CarItemSK.drop_table()
     # CarBrand.create_table()
     # CarBrandFactory.create_table()
     # Car.create_table()
-    CarItemGroup.create_table()
-    CarItem.create_table()
+    # CarItemGroup.create_table()
+    # CarItem.create_table()
+    # CarSK.create_table()
+    # CarItemSK.create_table()
     pass

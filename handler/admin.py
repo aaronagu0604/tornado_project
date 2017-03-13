@@ -1288,4 +1288,35 @@ class InsuranceLube(AdminBaseHandler):
         self.render("admin/insurance/lube.html", item=item, iid=iid, area_code=area_code)
 
 
+@route(r'/admin/sk', name='admin_sk')  # 后台SK产品维护
+class SKHandler(AdminBaseHandler):
+    def get(self):
+        category = int(self.get_argument("category", '0') if len(self.get_argument("category", '0')) > 0 else '0')
+        page = int(self.get_argument("page", '1') if len(self.get_argument("page", '1')) > 0 else '1')
+        pagesize = self.settings['admin_pagesize']
+        ft = (CarSK.active == 1)
+        if category > 0:
+            ft &= (CarSK.category == category)
+
+        s = CarSK.select().where(ft)
+        total = s.count()
+        if total % pagesize > 0:
+            totalpage = total / pagesize + 1
+        else:
+            totalpage = total / pagesize if (total / pagesize) > 0 else 1
+        products = s.paginate(page, pagesize)
+        self.render("admin/sk/product.html", products=products, total=total, totalpage=totalpage,
+                    page=page, pagesize=pagesize, category=category, active='sk_product')
+
+
+@route(r'/admin/sk_car', name='admin_sk_car')  # 后台SK产品维护
+class SKCarHandler(AdminBaseHandler):
+    def get(self):
+        pid = int(self.get_argument("pid", '0'))
+        product = CarSK.get(id=pid)
+
+        if product:
+            s = CarSK.select().where(ft)
+
+        self.render("admin/sk/car_map.html", product=product, category=category, active='sk_car')
 
