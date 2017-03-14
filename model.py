@@ -784,7 +784,7 @@ class InsuranceScoreExchange(db.Model):
     insurance = ForeignKeyField(Insurance, db_column='insurance_id')  # 保险公司ID
     created = IntegerField()  # 创建时间
 
-    business_exchange_rate = FloatField(default=0.0)  # 兑换率（商业险），仅商业险·
+    business_exchange_rate = FloatField(default=0.0)  # 兑换率（商业险），仅商业险
     business_exchange_rate2 = FloatField(default=0.0)  # 兑换率（商业险），商业险+交强险
     business_tax_rate = FloatField(default=0.0)  # 商业险税率
 
@@ -814,7 +814,7 @@ class InsuranceScoreExchange(db.Model):
         return codes
 
     @classmethod
-    def get_insurances(cls, area_code):
+    def get_insurances(cls, area_code):  # 获取该地区所有保险公司及返佣方式
         temp_insurance_id = []
         insurance_list = []
         codes = cls.append_areas(area_code)
@@ -835,7 +835,7 @@ class InsuranceScoreExchange(db.Model):
         return insurance_list
 
     @classmethod
-    def get_score_policy(cls, area_code, insurance_id):
+    def get_score_policy(cls, area_code, insurance_id):  # 根据保险公司和地区获取返佣比率
         codes = cls.append_areas(area_code)
         configs = InsuranceScoreExchange.select(InsuranceScoreExchange).\
             join(Area, on=(Area.code == InsuranceScoreExchange.area_code)).\

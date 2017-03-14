@@ -1158,8 +1158,6 @@ class MobilNewInsuranceOrderHandler(MobileBaseHandler):
             order.delivery_address = delivery_address
             order.status = 0
             order.save()
-            order.ordernum = 'U' + str(user.id) + 'I' + str(order.id)
-            order.save()
             order_price = InsuranceOrderPrice()
             order_price.insurance_order_id = order.id
             order_price.insurance = insurance
@@ -1185,6 +1183,9 @@ class MobilNewInsuranceOrderHandler(MobileBaseHandler):
             order_price.wadeIPlus = wadeIPlus
             order_price.thirdSpecialI = thirdSpecialI
             order_price.save()
+            order.ordernum = 'U' + str(user.id) + 'I' + str(order.id)
+            order.current_order_price = order_price.id
+            order.save()
             result['flag'] = 1
             result['data']['order_id'] = order.id
             result['data']['order_price_id'] = order_price.id
