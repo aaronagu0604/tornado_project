@@ -1016,6 +1016,8 @@ class CarItem(db.Model):
     car_sk_engine_2 = ForeignKeyField(CarSK, related_name='engine_items_2', db_column='car_sk_engine_id_2', null=True)  # SK产品发动机推荐2
     car_sk_gearbox_1 = ForeignKeyField(CarSK, related_name='gearbox_items_1', db_column='car_sk_gearbox_id_1', null=True)  # SK产品变速箱推荐1
     car_sk_gearbox_2 = ForeignKeyField(CarSK, related_name='gearbox_items_2', db_column='car_sk_gearbox_id_2', null=True)  # SK产品变速箱推荐2
+    brake_oil = ForeignKeyField(CarSK, related_name='brake_items', db_column='car_sk_brake_id', null=True)  # SK产品刹车油
+    antifreeze_solution = ForeignKeyField(CarSK, related_name='antifreeze_items', db_column='car_sk_antifreeze_id', null=True)  # SK产品防冻液
     active = IntegerField(default=1)  # 状态 0删除 1有效
 
     class Meta:

@@ -45,6 +45,8 @@
             <div class="buttons-tab fixed-tab" data-offset="44" style="top: 0px;">
                 <a href="#tab1" class="tab-link button active">发动机油</a>
                 <a href="#tab2" class="tab-link button">变速箱油</a>
+                <a href="#tab3" class="tab-link button">刹车油</a>
+                <a href="#tab4" class="tab-link button">防冻液</a>
             </div>
             <div class="tabs">
                 <div id="tab1" class="tab active">
@@ -142,6 +144,66 @@
                                                     </div>
                                                 </div>
                                                 <div class="item-subtitle">包装：{{car.car_sk_gearbox_2.intro}}</div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div id="tab3" class="tab">
+                    <div class="content-block" style="padding: 0; margin: 0;">
+                        <div class="tabs">
+
+                            {% if car.brake_oil %}
+                            <div style="height: 40px; background: #ffffff; line-height:40px; text-align: center;">推荐
+                            </div>
+                            <div class="list-block media-list" style="margin: 0">
+                                <ul>
+                                    <li>
+                                        <div class="item-content">
+                                            <div class="item-media"><img
+                                                    src="{{car.car_sk_gearbox_2.logo}}"
+                                                    width="60"></div>
+                                            <div class="item-inner">
+                                                <div class="item-title-row" style="margin-top: 0.5rem;">
+                                                    <div class="item-title">
+                                                        <span style="color:#ef8922; font-size:18px;">{{car.brake_oil.name}}</span>
+                                                    </div>
+                                                </div>
+                                                <div class="item-subtitle">包装：{{car.brake_oil.intro}}</div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div id="tab4" class="tab">
+                    <div class="content-block" style="padding: 0; margin: 0;">
+                        <div class="tabs">
+
+                            {% if car.antifreeze_solution %}
+                            <div style="height: 40px; background: #ffffff; line-height:40px; text-align: center;">推荐
+                            </div>
+                            <div class="list-block media-list" style="margin: 0">
+                                <ul>
+                                    <li>
+                                        <div class="item-content">
+                                            <div class="item-media"><img
+                                                    src="{{car.car_sk_gearbox_2.logo}}"
+                                                    width="60"></div>
+                                            <div class="item-inner">
+                                                <div class="item-title-row" style="margin-top: 0.5rem;">
+                                                    <div class="item-title">
+                                                        <span style="color:#ef8922; font-size:18px;">{{car.antifreeze_solution.name}}</span>
+                                                    </div>
+                                                </div>
+                                                <div class="item-subtitle">包装：{{car.antifreeze_solution.intro}}</div>
                                             </div>
                                         </div>
                                     </li>
