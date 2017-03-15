@@ -415,7 +415,7 @@ class MobileDiscoverHandler(MobileBaseHandler):
 
     def get_brand(self):
         items = []
-        brands = Brand.select().where(Block.active == 1).order_by(Brand.hot.desc(), Brand.sort.desc())
+        brands = Brand.select().where(Brand.active == 1).order_by(Brand.hot.desc(), Brand.sort.desc())
         for brand in brands:
             items.append({
                 'id': brand.id,
@@ -430,8 +430,10 @@ class MobileDiscoverHandler(MobileBaseHandler):
 
         if type == 'category':
             result['data']['category'] = self.get_category()
+            result['data']['brand'] = []
         elif type == 'brand':
             result['data']['brand'] = self.get_brand()
+            result['data']['category'] = []
         else:
             result['data']['category'] = self.get_category()[:6]
             result['data']['brand'] = self.get_brand()[:6]
