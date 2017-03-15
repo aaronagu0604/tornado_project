@@ -408,7 +408,7 @@ class MobileDiscoverHandler(MobileBaseHandler):
         for categorie in categories:
             items.append({
                 'id': categorie.id,
-                'img': categorie.img_m,
+                'img': categorie.img_m if categorie.img_m else '',
                 'name': categorie.name
             })
         return items
@@ -419,7 +419,7 @@ class MobileDiscoverHandler(MobileBaseHandler):
         for brand in brands:
             items.append({
                 'id': brand.id,
-                'img': brand.logo,
+                'img': brand.logo if brand.logo else '',
                 'name': brand.name
             })
         return items
