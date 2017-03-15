@@ -216,6 +216,7 @@ def productOrderSearch(ft, type, index):
             })
         result.append({
             'id': so.id,
+            'ordernum': so.order.ordernum,
             'saler_store': so.saler_store.name,
             'buyer_store': so.buyer_store.name,
             'price': so.price,
