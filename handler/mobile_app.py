@@ -1240,6 +1240,7 @@ class MobilePayOrderHandler(MobileBaseHandler):
         result = {'flag': 0, 'msg': '', "data": {}}
         order_number = self.get_body_argument("order_number", None)
         payment = self.get_body_argument("payment", None)
+        payment = int(payment) if payment else None
         user = self.get_user()
         if order_number and payment:
             if 'S' in order_number:  # 普通商品订单

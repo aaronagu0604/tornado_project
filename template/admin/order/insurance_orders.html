@@ -40,19 +40,15 @@
                     <option value="">--请选择城市--</option>
                 </select>
                 <div class="btn-group btn-group-xs">
-                    {% if state == 'processing' %}
-                    <a type="button" class="btn btn-default {% if status==0 %} active {% endif %}"
-                       href="/admin/insurances/processing?status=0&keyword={{keyword}}" style="padding:8px 4px;border:1px solid #ccc;border-bottom-left-radius:4px;border-top-left-radius:4px;">待确认</a>
-                    <a type="button" class="btn btn-default {% if status==1 %} active {% endif %}"
-                       href="/admin/insurances/processing?status=1&keyword={{keyword}}" style="padding:8px 4px;border:1px solid #ccc;border-left:none;">待付款</a>
-                    <a type="button" class="btn btn-default {% if status==2 %} active {% endif %}"
-                       href="/admin/insurances/processing?status=2&keyword={{keyword}}" style="padding:8px 4px;border:1px solid #ccc;border-left:none;">已付款</a>
-                    {% else %}
-                    <a type="button" class="btn btn-default {% if status==3 %} active {% endif %}"
-                       href="/admin/insurances/file?status=3&keyword={{keyword}}" style="padding:8px 4px;border:1px solid #ccc;border-left:none;">已办理</a>
-                    <a type="button" class="btn btn-default {% if status==-1 %} active {% endif %}"
-                       href="/admin/insurances/file?keyword={{keyword}}" style="padding:8px 4px;border:1px solid #ccc;border-left:none;border-bottom-right-radius:4px;border-top-right-radius:4px;">全部</a>
-                    {% endif %}
+                    <select class="form-control" name="status" id="sel_type" style="width:100px;">
+                        <option value="-2" {{ status==-2 and 'selected' or '' }}>全部</option>
+                        <option value="0" {{ status==0 and 'selected' or '' }}>待确认</option>
+                        <option value="1" {{ status==1 and 'selected' or '' }}>待付款</option>
+                        <option value="2" {{ status==2 and 'selected' or '' }}>已付款</option>
+                        <option value="3" {{ status==3 and 'selected' or '' }}>已办理</option>
+                        <option value="4" {{ status==4 and 'selected' or '' }}>已邮寄</option>
+                        <option value="-1" {{ status==-1 and 'selected' or '' }}>已取消</option>
+                    </select>
                 </div>
 
                 <div class="input-group">
@@ -171,7 +167,7 @@
                         {%endif%}
                     </td>
                     <td>
-                        <a href="/admin/insurance/{{o.id}}?state={{state}}&status={{status}}&page={{page}}" class="btn btn-outline btn-primary btn-xs">详情</a>
+                        <a href="/admin/insurance_order/{{o.id}}?state={{state}}&status={{status}}&page={{page}}" class="btn btn-outline btn-primary btn-xs">详情</a>
                         {% if status==1 or status==0 %}
                         <a href="/admin/delinsurance/{{o.id}}?status={{status}}&page={{page}}" onclick="return confirm('确定关闭？');"
                            class="btn btn-outline btn-primary btn-xs">关闭</a>

@@ -901,6 +901,7 @@ class EditBlockHandler(AdminBaseHandler):
 @route(r'/admin/product_orders', name='admin_product_orders')  # 普通商品订单
 class ProductOrdersHandler(AdminBaseHandler):
     def get(self):
+        archive = self.get_argument("archive", '')
         page = int(self.get_argument("page", 1))
         status = int(self.get_argument("status", 0))
         keyword = self.get_argument("keyword", '')
@@ -908,8 +909,10 @@ class ProductOrdersHandler(AdminBaseHandler):
         end_date = self.get_argument("end_date", '')
         order_type = int(self.get_argument("order_type", 1))
         pagesize = setting.ADMIN_PAGESIZE
-
-        ft = (Order.status == status)
+        if status == -2:
+            ft = (Order.status > -2)
+        else:
+            ft = (Order.status == status)
         if order_type:
             ft &= (Order.order_type == order_type)
         if keyword:
@@ -927,23 +930,34 @@ class ProductOrdersHandler(AdminBaseHandler):
         else:
             totalpage = total / pagesize
         orders = q.paginate(page, pagesize)
+        if archive:
+            active = 'p_order_a'
+        else:
+            active = 'p_order'
         self.render('admin/order/product_orders.html', orders=orders, total=total, page=page, pagesize=pagesize,
-                    totalpage=totalpage, status=status, active='p_order', begin_date=begin_date, end_date=end_date,
-                    keyword=keyword, order_type=order_type)
+                    totalpage=totalpage, status=status, active=active, begin_date=begin_date, end_date=end_date,
+                    keyword=keyword, order_type=order_type, archive=archive)
 
 
 @route(r'/admin/product_order/(\d+)', name='admin_product_order_detail')  # 订单详情
 class ProductOrderDetailHandler(AdminBaseHandler):
     def get(self, oid):
         o = Order.get(id=oid)
+        archive = self.get_argument("archive", '')
         num = '%' + o.ordernum + '%'
         stores=Store.select().where(Store.store_type==0)
-        self.render('admin/order/product_order_detail.html', o=o, active='p_order')
+        if archive:
+            active = 'p_order_a'
+        else:
+            active = 'p_order'
+
+        self.render('admin/order/product_order_detail.html', o=o, active=active)
 
 
 @route(r'/admin/insurance_orders', name='admin_insurance_orders')  # 保险订单管理
 class InsuranceOrderHandler(AdminBaseHandler):
     def get(self):
+        archive = self.get_argument("archive", '')
         page = int(self.get_argument("page", 1))
         status = int(self.get_argument("status", 0))
         keyword = self.get_argument("keyword", '')
@@ -980,9 +994,13 @@ class InsuranceOrderHandler(AdminBaseHandler):
             totalpage = total / pagesize
         orders = q.paginate(page, pagesize)
         items = Area.select().where(Area.pid >> None)
+        if archive:
+            active = 'i_order_a'
+        else:
+            active = 'i_order'
 
         self.render('admin/order/insurance_orders.html', orders=orders, total=total, page=page, pagesize=pagesize,
-                    totalpage=totalpage, status=status, active='',begin_date=begin_date,end_date=end_date,
+                    totalpage=totalpage, status=status, active=active,begin_date=begin_date,end_date=end_date,
                     keyword=keyword, items=items, default_province=default_province, default_city=default_city,
                     default_status=status, Area=Area)
 
@@ -997,60 +1015,46 @@ class InsuranceOrderDetailHandler(AdminBaseHandler):
             return None
 
     def get(self, oid):
+        archive = self.get_argument("archive", '')
         status = int(self.get_argument('status', 1))
         page = int(self.get_argument('page', 1))
         o = InsuranceOrder.get(id=oid)
         poid = (int(oid) * 73 + 997)
         poid2 = (int(oid) * 91 + 97)
-        # if o.ordertype == 2:
-        #     sql = ' select a.id, a.name from tb_store a where a.business_type=%s '
-        #     q = db.handle.execute_sql(sql % (o.ordertype))
-        # elif o.ordertype == 1:
-        #     sql = 'select a.id, a.name from tb_store a where a.business_type=%s '
-        #     q = db.handle.execute_sql(sql % o.ordertype)
-        # stores = []
-        # dictI = {}
-        # keys = []
-        # # # lists = Insurances.select().order_by(Insurances.sort)
-        # # for list in lists:
-        # #     keys.append(list.eName)
-        # #     dictI[list.eName] = [list.name, list.style]
-        # for row in q.fetchall():
-        #     stores.append({'id':row[0], 'name':row[1]})
-        # insurances = Product.select().where((Product.is_index==o.ordertype) & (Product.status == 1))
-        # ior = self.getInsuranceOrderReceiving(oid)
-        # paytime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(o.paytime))
-        #
-        # flag = 0
-        # msg0 = msg1 = msg2 = ''
-        # if o.forceI == 'on':
-        #     msg0 = '交强险【】折：【】元，车船税:【】元，'
-        # for key in keys:
-        #     if key == 'forceI':
-        #         continue
-        #     if o.__dict__['_data'][key] and o.__dict__['_data'][key] != 'false':
-        #         flag = 1
-        # if flag:
-        #     msg1 = '商业险【】折:【】元，'
-        #     msg2 = '其中：'
-        # msgs = msg0+msg1+'总计：【】元；\n'+msg2
-        # # if CheckScoreArea().checkAreaInsurance(o.store.area_code, o.insurance.id):
-        # #     is_score = 1
-        # # else:
-        # #     is_score = 0
-        # if o.summary:
-        #     msgs = o.summary
-        # elif msg1:
-        #     for key in keys:
-        #         prc = o.__dict__['_data'][key]
-        #         if prc and prc != 'false':
-        #             if prc != 'true' and prc != 'ture':
-        #                 msgs += dictI[key][0]+':【】元，保额'+ prc+'元\n'
-        #             elif key != 'forceI':
-        #                 msgs += dictI[key][0]+':【】元\n'
-        # self.render('admin/order/insuranceorder_detail.html', o=o, products=insurances,stores=stores,
-        #             active='insurance', dictI=dictI, ior=ior, paytime=paytime, msgs=msgs, keys=keys,
-        #             state=state, status=status, page=page, poid=poid, poid2=poid2, is_score=is_score)
+        i_items = InsuranceItem.select().order_by(InsuranceItem.sort)
+        insurances = Insurance.select()
+
+        programs = []
+        insurance_order_prices = InsuranceOrderPrice.select().where(InsuranceOrderPrice.insurance == o)
+        for program in insurance_order_prices:
+            i_item_list = []
+            for i_item in i_items:
+                if program.__dict__['_data'][i_item.eName]:
+                    i_item_list.append({
+                        'name': i_item.name,
+                        'e_name': i_item.eName,
+                        'value': program.__dict__['_data'][i_item.eName]
+                    })
+            rates = InsuranceScoreExchange.get_score_policy(o.store.area_code, program.insurance)
+            programs.append({
+                'pid': program.id,
+                'insurance': program.insurance,
+                'gift_policy': program.gift_policy,
+                'score': program.score,
+                'total_price': program.total_price,
+                'force_price': program.force_price,
+                'business_price': program.business_price,
+                'vehicle_tax_price': program.vehicle_tax_price,
+                'program': i_item_list,
+                'rates': rates
+            })
+        if archive:
+            active = 'i_order_a'
+        else:
+            active = 'i_order'
+
+        self.render('admin/order/insurance_order_detail.html', active=active, o=o, insurances=insurances,
+                    poid=poid, poid2=poid2, programs=programs)
 
     def post(self, oid):
         state = self.get_argument('state', 'processing')
@@ -1068,15 +1072,35 @@ class InsuranceOrderDetailHandler(AdminBaseHandler):
         saveAndSendMSG = self.get_argument("saveAndSendMSG", '0')
         LubeOrScore = self.get_argument("LubeOrScore", '')
         scoreNum = self.get_argument("scoreNum", '')
-        if LubeOrScore == '2':
-            o.LubeOrScore = int(LubeOrScore)
-            scoreNum = int(scoreNum) if scoreNum else 0
-        elif LubeOrScore == '1':
-            o.LubeOrScore = 1
-            scoreNum = 0
+        '''
+        programs = {
+            'program_id': 2,
+            'i_id': 1,
+            'i_items': {'forceI': 1000, 'driverI':500},
+            'gift_policy': 1,
+            'score': 0,
+            'force_price': 5005,
+            'business_price':6000,
+            'vehicle_tax_price': 500,
+            'total_price': 110505,
+            'psummary': 短信,
+            'is_send_msg': 0
+        }
+        '''
+        programs = simplejson.loads(self.get_body_argument('programs'))
+
+        iop = InsuranceOrderPrice.get(id=programs['program_id'])
+        iop.created = int(time.time())
+        iop.admin_user = self.get_admin_user()
+        iop.gift_policy = programs['gift_policy']
+        if programs['gift_policy'] == 2:
+            iop.score = programs['score']
         else:
-            o.LubeOrScore = 0
-            scoreNum = 0
+            iop.score = 0
+        total_price = programs['total_price']
+        force_price = programs['force_price']
+        business_price = programs['business_price']
+        vehicle_tax_price = programs['vehicle_tax_price']
 
         o.summary = summary
         o.localsummary = localsummary

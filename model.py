@@ -644,8 +644,8 @@ class InsuranceOrderPrice(db.Model):
     insurance = ForeignKeyField(Insurance, db_column='insurance_id')  # 所购保险公司ID
     created = IntegerField(default=0)  # 报价时间
     admin_user = ForeignKeyField(AdminUser, db_column='admin_user_id', null=True)  # 报价人员
-    score = IntegerField(default=0)  # 卖的这单保险可以获取多少积分
     gift_policy = IntegerField(default=0)  # 礼品策略 1反油， 2反积分
+    score = IntegerField(default=0)  # 卖的这单保险可以获取多少积分
     total_price = FloatField(default=0.0)  # 保险订单总价格
     force_price = FloatField(default=0.0)  # 交强险 价格
     business_price = FloatField(default=0.0)  # 商业险价格

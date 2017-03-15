@@ -199,7 +199,7 @@
         var category_attribute_value_list = [];
         $("#attributeContainer tr").each(function(index,element){
             var item = {};
-            item.attribute_id = $(this).find('td[name="category_attribute"]').attr('cid')
+            item.attribute_id = $(this).find('td[name="category_attribute"]').attr('cid');
             item.attribute_value_id = $(this).find('select[name="category_attribute_value"]').val();
             category_attribute_value_list.push(item);
         });
