@@ -773,19 +773,37 @@ class MobileShopCarHandler(MobileBaseHandler):
         result = {'flag': 0, 'msg': '', "data": []}
         user = self.get_user()
         if user:
-            for item in user.store.cart_items:
-                result['data'].append({
-                    'sppid': item.store_product_price.id,
-                    'prid': item.store_product_price.product_release.id,
-                    'pid': item.store_product_price.product_release.product.id,
-                    'name': item.store_product_price.product_release.product.name,
-                    'price': item.store_product_price.price,
-                    'unit': item.store_product_price.product_release.product.unit,
-                    'cover': item.store_product_price.product_release.product.cover,
-                    'status': (item.store_product_price.active & item.store_product_price.product_release.active & item.store_product_price.product_release.product.active),
-                    'quantity': item.quantity,
-                    'storeid': user.store.id
-                })
+            saler_store_list = []
+            for item in user.store.cart_items.order_by(ShopCart.created.desc()):
+                if (item.store_product_price.active and item.store_product_price.product_release.active and
+                        item.store_product_price.product_release.product.active):
+                    saler_store_id = item.store_product_price.store.id
+                    if saler_store_id not in saler_store_list:
+                        result['data'].append({
+                            'saler_store_name': item.store_product_price.store.name,
+                            'products': [{
+                                'sppid': item.store_product_price.id,
+                                'prid': item.store_product_price.product_release.id,
+                                'pid': item.store_product_price.product_release.product.id,
+                                'name': item.store_product_price.product_release.product.name,
+                                'price': item.store_product_price.price,
+                                'unit': item.store_product_price.product_release.product.unit,
+                                'cover': item.store_product_price.product_release.product.cover,
+                                'quantity': item.quantity
+                            }]
+                        })
+                    else:
+                        result['data'][saler_store_list.index(saler_store_id)]['products'].append({
+                            'sppid': item.store_product_price.id,
+                            'prid': item.store_product_price.product_release.id,
+                            'pid': item.store_product_price.product_release.product.id,
+                            'name': item.store_product_price.product_release.product.name,
+                            'price': item.store_product_price.price,
+                            'unit': item.store_product_price.product_release.product.unit,
+                            'cover': item.store_product_price.product_release.product.cover,
+                            'quantity': item.quantity
+                        })
+                    saler_store_list.append(saler_store_id)
             result['flag'] = 1
         else:
             result['msg'] = '请先登录'
