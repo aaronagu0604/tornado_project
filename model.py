@@ -645,6 +645,8 @@ class InsuranceOrderPrice(db.Model):
     created = IntegerField(default=0)  # 报价时间
     admin_user = ForeignKeyField(AdminUser, db_column='admin_user_id', null=True)  # 报价人员
     gift_policy = IntegerField(default=0)  # 礼品策略 1反油， 2反积分
+    response = IntegerField(default=0)  # 是否保价 1后台客服已经报价，0未报价
+    status = IntegerField(default=1)  # 状态 1有效，0已过期
     score = IntegerField(default=0)  # 卖的这单保险可以获取多少积分
     total_price = FloatField(default=0.0)  # 保险订单总价格
     force_price = FloatField(default=0.0)  # 交强险 价格
@@ -731,11 +733,11 @@ class InsuranceOrder(db.Model):
     deliver_company = CharField(max_length=255, null=True)  # 快递公司
     deliver_num = CharField(max_length=255, null=True)  # 保单邮寄快递号
 
-    status = IntegerField(default=0)  # 0待确认 1待付款 2已付款 3已办理 4已邮寄 -1已删除(取消)
+    status = IntegerField(default=0)  # 0待确认 1待付款 2待出单 3完成 4已过期 -1已删除(取消)
     cancel_reason = CharField(default='', max_length=1024)  # 取消原因
     cancel_time = IntegerField(default=0)  # 取消时间
     sms_content = CharField(max_length=1024, null=True)  # 短信通知内容
-    sms_sent_time = IntegerField(default=1)  # 发送时间
+    sms_sent_time = IntegerField(default=1)  # 短信发送时间
     local_summary = CharField(max_length=256, null=True)  # 本地备注
     pay_time = IntegerField(default=0)  # 支付时间
     deal_time = IntegerField(default=0)  # 完成时间
