@@ -1,0 +1,48 @@
+#coding:utf-8
+
+
+RSA_ALIPAY_PUBLIC = """-----BEGIN PUBLIC KEY-----
+MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCnxj/9qwVfgoUh/y2W89L6BkRAFljhNhgPdyPuBV64bfQNN1PjbCzkIM6qRdKBoLPXmKKMiFYnkd6rAoprih3/PrQEB/VsW8OoM8fxn67UDYuyBTqA23MML9q1+ilIZwBC2AQ2UBVOrFXfFl75p6/B5KsiNG9zpgmLCUYuLkxpLQIDAQAB
+-----END PUBLIC KEY-----"""
+
+# 商户私钥
+RSA_PRIVATE = """-----BEGIN RSA PRIVATE KEY-----
+MIIEpAIBAAKCAQEAwgtM3jf3a9f3BVeppgtR8bs4U8IiYU9uX7iZq8tVJV/dfLZXNe/+U+pegHKCJDEm08wm/ZQuWndUqXbQ3xpoAItlZp
+1M4LSMk/aI2FTO9rxoMuBhJA5i2vtiHDvvb4XahOitj9eNuHsYLUQG372shZvbanClKPdyWQjNutNTC5UeJMCVOasi8Gby9eDHbx+M3Cba
+OOHAA9ob21fOLJnay1Gy2O2k8/3jQlIbv+x26UEJigBKYS4A1xSeXKWjlrULWfPQDJOBLGMgr9ek3kOfY9mecW50Ly7p0O0tDEP9cyqlEr
+4YxoH9sOS3csdPsWdY+pX9ebApkIBSm2pR/MzsbQIDAQABAoIBAQCJhBKkxYr+DZ6NVbPv7cPUCXeAvGs7BVzWT2/wdPhRtV+1G1Aw9HUM
+KWNxqjUayw6WOO9E9HfpOvpv4rlh80fTYvaowz+RW8LotWYD0g6eg6VgsO2G7P8X6+F62urz4Suc13zxHLTeEbZvle89LyGNyoe0JkKWBs
+8t0/Rgu5T19irbdZ66ednlsghzl44xZmPD785o3lGq1/xS+cLMLVDzhxcwI1H0LupAP4iykrlgwQ0zMxE8h9IXCW6evPG7lQ90mWOGAmZw
+PLI+/tzWVymDr1aBcb30MRyYjq9tH7R/0r+0Yd8Mo/1Zr4DJ/Kztl6sZpFujbcpTNXU2wOpizLqhAoGBAOPkHfc0Wi1i5xAFyXXjpOshjn
+JGI6WJtW/T7Oj9GkGN3d48DsEvDDif32ILYhakpMljLBRdQmK4NU9sltHxrnouq1IRDvKhbm2M0BL0ecNqj/iZtMiclg/816c37g2GZDR+
+CWKAvK7asAWzxySJyM5LFmHr1srpqcM9L5xYZ+0FAoGBANn6bt7ct8rmD0AE8UsL62YSZCPtfcKWy8Z0BgMkngjZ7e/mojE1a6R0b59dAP
+hjYBl6lKrepgxxJT7Dz4/S/ZDg+mjw/vqjekAVTeno1ykH6sVAKzf0mo4kE6Bz9Dafgg5oZIGK/Sj4yGNyaQnSpm+8db1jJWWMDpjekreb
+IN5JAoGAZwAyvwmNfJgIIYjMDpmOb6viCypCcE52kA20NXY4SMrLLeftL0mJd4pi15iXg+50gIVvZeDk4WOqzLQi0s8uchDn5BbLr8Rg+e
+i8HuUap8VhPxaRzF5hwOYhvnWcBcbpQYR5z2iqX0l+Z4VjC9Ouy/bKLgX/NgU4coMUItEeX9UCgYEArpH4FRfjQeW5tOXAcP/cyGRWOsfK
+ffrSu97TqdS7lA8klYq5vnsv+AcgFhsf2c2MextG0Ql7Jl+/GmMrad3qIQtswHqxWf1uvL/TJE/LcRrcFJjtg+SrmsadyVTT8qMQP4WvaG
+ftk9Cae7p3ENzZWocuLDypCIiAcEFgcxcT3bECgYAVHjtU8/czPoN7NaHtrWYhD9Jsqtgp+PYwbDXOhxKnoRyncPe1tPmjL4oSHmDRX08D
+xf32+mYYWt7gg87gWnq4T65wRHOjyzhq7hNy8x7dJp7qZVQFwOwDEGuzALERLUs1WUj3NBsxzrAhT1jy5cnquo/7PtMznfhfJf6SPrfqIA==
+-----END RSA PRIVATE KEY-----"""
+
+RSA_PUBLIC = """-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwgtM3jf3a9f3BVeppgtR8bs4U8IiYU9uX7iZq8tVJV/dfLZXNe/+U+pegHKCJD
+Em08wm/ZQuWndUqXbQ3xpoAItlZp1M4LSMk/aI2FTO9rxoMuBhJA5i2vtiHDvvb4XahOitj9eNuHsYLUQG372shZvbanClKPdyWQjNutNT
+C5UeJMCVOasi8Gby9eDHbx+M3CbaOOHAA9ob21fOLJnay1Gy2O2k8/3jQlIbv+x26UEJigBKYS4A1xSeXKWjlrULWfPQDJOBLGMgr9ek3k
+OfY9mecW50Ly7p0O0tDEP9cyqlEr4YxoH9sOS3csdPsWdY+pX9ebApkIBSm2pR/MzsbQIDAQAB
+-----END PUBLIC KEY-----"""
+
+partner_id = ''  # 支付宝后台的合作商ID
+key = "d2fmn3xc7f45bxl21qfjdojhw7q0049t"
+alipay_account = "pay.chezhuangjia@520czj.com"  # 商家的支付宝邮箱
+
+# 交易过程中服务器异步通知的页面 要用 http://格式的完整路径，不允许加?id=123这类自定义参数
+NOTIFY_URL = 'http://www.520czj.com/mobile/alipay_notify'
+
+
+
+
+
+
+
+
+

@@ -642,7 +642,7 @@ class InsuranceOrderPrice(db.Model):
     id = PrimaryKeyField()
     insurance_order_id = IntegerField()  # 所属保险订单ID
     insurance = ForeignKeyField(Insurance, db_column='insurance_id')  # 所购保险公司ID
-    created = IntegerField(default=0)  # 报价时间
+    created = IntegerField(default=0)  # 报价/修改 时间
     admin_user = ForeignKeyField(AdminUser, db_column='admin_user_id', null=True)  # 报价人员
     gift_policy = IntegerField(default=0)  # 礼品策略 1反油， 2反积分
     response = IntegerField(default=0)  # 是否保价 1后台客服已经报价，0未报价
@@ -652,6 +652,8 @@ class InsuranceOrderPrice(db.Model):
     force_price = FloatField(default=0.0)  # 交强险 价格
     business_price = FloatField(default=0.0)  # 商业险价格
     vehicle_tax_price = FloatField(default=0.0)  # 车船税价格
+    sms_content = CharField(max_length=1024, null=True)  # 短信通知内容
+    status = IntegerField(default=0)  # 报价单的状态 0未报价 1已报价 2不可再修改 -1关闭
 
     # 交强险
     forceI = CharField(max_length=32, default='')  # 是否包含交强险
@@ -659,28 +661,33 @@ class InsuranceOrderPrice(db.Model):
 
     # 商业险-主险-车辆损失险
     damageI = CharField(max_length=32, default='')
-    damageIPlus = CharField(max_length=32, default='')
     damageIPrice = FloatField(null=True)
+    damageIPlus = CharField(max_length=32, default='')
+    damageIPlusPrice = FloatField(null=True)
 
     # 商业险-主险-第三者责任险，含保额
     thirdDutyI = CharField(max_length=32, default='')
-    thirdDutyIPlus = CharField(max_length=32, default='')
     thirdDutyIPrice = FloatField(null=True)
+    thirdDutyIPlus = CharField(max_length=32, default='')
+    thirdDutyIPlusPrice = FloatField(null=True)
 
     # 商业险-主险-机动车全车盗抢险
     robbingI = CharField(max_length=32, default='')
-    robbingIPlus = CharField(max_length=32, default='')
     robbingIPrice = FloatField(null=True)
+    robbingIPlus = CharField(max_length=32, default='')
+    robbingIPlusPrice = FloatField(null=True)
 
     # 商业险-主险-机动车车上人员责任险（司机），含保额
     driverDutyI = CharField(max_length=32, default='')
-    driverDutyIPlus = CharField(max_length=32, default='')
     driverDutyIPrice = FloatField(null=True)
+    driverDutyIPlus = CharField(max_length=32, default='')
+    driverDutyIPlusPrice = FloatField(null=True)
 
     # 商业险-主险-机动车车上人员责任险（乘客），含保额
     passengerDutyI = CharField(max_length=32, default='')
-    passengerDutyIPlus = CharField(max_length=32, default='')
     passengerDutyIPrice = FloatField(null=True)
+    passengerDutyIPlus = CharField(max_length=32, default='')
+    passengerDutyIPlusPrice = FloatField(null=True)
 
     # 商业险-附加险-玻璃单独破碎险
     glassI = CharField(max_length=32, default='')
@@ -688,18 +695,21 @@ class InsuranceOrderPrice(db.Model):
 
     # 商业险-附加险-车身划痕损失险，含保额
     scratchI = CharField(max_length=32, default='')
-    scratchIPlus = CharField(max_length=32, default='')
     scratchIPrice = FloatField(null=True)
+    scratchIPlus = CharField(max_length=32, default='')
+    scratchIPlusPrice = FloatField(null=True)
 
     # 商业险-附加险-自燃损失险
     fireDamageI = CharField(max_length=32, default='')
-    fireDamageIPlus = CharField(max_length=32, default='')
     fireDamageIPrice = FloatField(null=True)
+    fireDamageIPlus = CharField(max_length=32, default='')
+    fireDamageIPlusPrice = FloatField(null=True)
 
     # 商业险-附加险-发动机涉水损失险
     wadeI = CharField(max_length=32, default='')
-    wadeIPlus = CharField(max_length=32, default='')
     wadeIPrice = FloatField(null=True)
+    wadeIPlus = CharField(max_length=32, default='')
+    wadeIPlusPrice = FloatField(null=True)
 
     # 商业险-附加险-机动车损失保险无法找到第三方特约金
     thirdSpecialI = CharField(max_length=32, default='')
@@ -878,6 +888,14 @@ class BlockItem(db.Model):
     class Meta:
         db_table = 'tb_block_item'
 
+
+class BlockItemArea(db.Model):
+    id = PrimaryKeyField()
+    block_item = ForeignKeyField(BlockItem)  # 广告ID
+    area_code = CharField(max_length=50)  # 发布地区的code
+
+    class Meta:
+        db_table = 'tb_block_item_area'
 
 # 支付通知内容
 class PaymentNotify(db.Model):

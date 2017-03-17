@@ -2,18 +2,20 @@
 # coding=utf8
 
 import logging
-import setting
-import simplejson
-from lib.route import route
 import math
-from model import *
-import uuid
-from handler import MobileBaseHandler, require_auth
 import random
+import uuid
+
+import simplejson
+
+import setting
+from handler import MobileBaseHandler, require_auth
 from lib.mqhelper import create_msg
-from lib.payment.alipay import get_pay_url
-from lib.payment.wxPay import UnifiedOrder_pub
+import lib.payment.ali_app_pay as alipay
 from lib.payment.upay import Trade
+from lib.payment.wxPay import UnifiedOrder_pub
+from lib.route import route
+from model import *
 
 
 @route(r'/mobile', name='mobile_app')
@@ -752,7 +754,7 @@ class MobileAddShopCarHandler(MobileBaseHandler):
             car.save()
             result['flag'] = 1
         else:
-            result['msg'] = '转入参数异常'
+            result['msg'] = '传入参数异常'
         self.write(simplejson.dumps(result))
         self.finish()
 
@@ -975,11 +977,8 @@ class MobileNewOrderHandler(MobileBaseHandler):
             result['data']['order_id'] = order.id
             result['data']['payment'] = payment
             if payment == 1:  # 1支付宝  2微信 3银联 4余额
-                response_url = get_pay_url(order.ordernum.encode('utf-8'), u'车装甲商品', str(total_price))
-                if len(response_url) > 0:
-                    result['data']['pay_info'] = response_url
-                else:
-                    result['data']['pay_info'] = ''
+                pay_info = alipay.switch_to_utf_8(total_price, '车装甲商品', '创建订单时支付', order.ordernum)
+                result['data']['pay_info'] = pay_info
             elif payment == 2:
                 pay_info = UnifiedOrder_pub().getPrepayId(order.ordernum.encode('utf-8'), u'车装甲商品',
                                                           int(total_price * 100))
@@ -1288,7 +1287,7 @@ class MobilePayOrderHandler(MobileBaseHandler):
                 else:
                     self.after_pay_operation(order, total_price, user, order_type)
             elif payment == 1:  # 1支付宝  2微信 3银联 4余额
-                response_url = get_pay_url(order.ordernum.encode('utf-8'), u'车装甲商品', str(total_price))
+                response_url = alipay.switch_to_utf_8(total_price, '车装甲商品', '订单支付', order.ordernum)
                 result['data']['pay_info'] = response_url
             elif payment == 2:
                 pay_info = UnifiedOrder_pub().getPrepayId(order.ordernum.encode('utf-8'), u'车装甲商品',

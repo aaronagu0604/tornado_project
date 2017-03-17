@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
-import urllib2
 import types
-from urllib import urlencode, urlopen
-from hashcompat import md5_constructor as md5
+import urllib2
 import xml.etree.ElementTree as etree
-from aliconfig import Settings
+
+from lib.payment.alipay_web.aliconfig import Settings
+from lib.payment.alipay_web.hashcompat import md5_constructor as md5
+
 
 def build_request_params(params):
     """生成要请求给支付宝的参数数组

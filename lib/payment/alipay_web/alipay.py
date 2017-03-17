@@ -1,14 +1,38 @@
 # -*- coding: utf-8 -*-
 import time
-import urllib2
 import urllib
+import urllib2
 import xml.etree.ElementTree as etree
+
 try:
     from urllib.parse import parse_qs as _parse_qs  # py3
 except ImportError:
     from urlparse import parse_qs as _parse_qs  # Python 2.6+
-from aliconfig import Settings
-import core
+from lib.payment.alipay_web.aliconfig import Settings
+import lib.payment.alipay_web.core
+
+def alipay_sign(total_amount, subject, body, ordernum):
+    notify_url = Settings.NOTIFY_URL
+    timestamp = time.strftime('%Y-%m-%d!%H:%M:%S', time.localtime())
+    strs = '''app_id=%s&
+            biz_content={
+                "timeout_express": "30m",
+                "seller_id": "",
+                "product_code": "QUICK_MSECURITY_PAY",
+                "total_amount": %s,
+                "subject": %s,
+                "body": %s,
+                "out_trade_no": %s
+            }&
+            charset=utf-8&
+            format=json&
+            method=alipay.trade.app.pay&
+            notify_url=%s&
+            sign_type=RSA2&
+            timestamp=%s&
+            version=1.0''' % (2016052701450725, total_amount, subject, body, ordernum, notify_url, timestamp)
+    new_str = strs.replace(' ', '').replace('\n', '').replace('!',' ')
+    print unicode(new_str).encode('utf-8')
 
 
 def get_pay_url(tn, subject, total_fee, isCZ=False):
@@ -35,7 +59,7 @@ def get_pay_url(tn, subject, total_fee, isCZ=False):
                   "req_id": req_id,
                   "req_data": req_token_data.replace("\n", ""),
                   }
-    token_params = core.build_request_params(temp_param)
+    token_params = lib.payment.alipay_web.core.build_request_params(temp_param)
     request_url = "%s?_input_charset=%s" % (_GATEWAY, Settings.INPUT_CHARSET)
     data = urllib.urlencode(token_params)
 
@@ -48,7 +72,7 @@ def get_pay_url(tn, subject, total_fee, isCZ=False):
     fr_temp_params = temp_param
     fr_temp_params["service"] = "alipay.wap.auth.authAndExecute"
     fr_temp_params["req_data"] = req_data
-    fr_params = core.build_request_params(fr_temp_params)
+    fr_params = lib.payment.alipay_web.core.build_request_params(fr_temp_params)
     alipay_query_str = urllib.urlencode(fr_params)
     alipay_url = "%s?%s" % (_GATEWAY, alipay_query_str)
     return alipay_url
@@ -69,3 +93,7 @@ def parse_response(query_params, sign_type="MD5"):
         token = tree.find("request_token").text
         params.update({"request_token": token})
     return params
+
+
+if __name__ == '__main__':
+    alipay_sign('10', 'insurance', 'insurance_order', 'U220I110')

@@ -1,18 +1,19 @@
 #!/usr/bin/env python
 # coding=utf8
 
-import logging
-import setting
+import os
+
 import simplejson
+from PIL import Image, ImageDraw, ImageFont
+
+import setting
+from handler import MobileBaseHandler
+from handler import require_auth
+import lib.payment.ali_app_pay as alipay
+from lib.payment.upay import Trade
+from lib.payment.wxPay import UnifiedOrder_pub
 from lib.route import route
 from model import *
-from handler import MobileBaseHandler
-import os
-from PIL import Image, ImageDraw, ImageFont
-from lib.payment.alipay import get_pay_url
-from lib.payment.wxPay import UnifiedOrder_pub
-from lib.payment.upay import Trade
-from handler import require_auth
 
 
 @route(r'/mobile/mine', name='mobile_mine')  # app我的主界面
@@ -583,7 +584,8 @@ class MobileFundRechargeHandler(MobileBaseHandler):
 
         result['data']['payment'] = payment
         if payment == 1:  # 1支付宝  2微信 3银联
-            response_url = get_pay_url(order_num, u'车装甲商品', price, True)
+            # response_url = get_pay_url(order_num, u'车装甲商品', price, True)
+            response_url = alipay.switch_to_utf_8(price, '充值', '车装甲充值', order_num)
             if len(response_url) > 0:
                 result['data']['pay_info'] = response_url
                 result['flag'] = 1
