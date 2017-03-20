@@ -5,6 +5,7 @@
 import base64
 import time
 import rsa
+import urllib
 import alipay_config as Settings
 
 SIGN_TYPE = 'SHA-256'
@@ -45,6 +46,35 @@ def switch_to_utf_8(total_price, subject, body, ordernum):
     strings, sign_string = alipay_sign(total_price, subject, body, ordernum)
     return unicode((strings + '&sign=' + sign_string), encoding='utf-8')
 
+def switch_to_urlencode(utf_8_string):
+    doct = {}
+    for key_value in utf_8_string.split('&'):
+        (key, value) = key_value.split('=', 1)
+        doct[key] = value.encode("UTF-8")
+    # print sorted(dict.iteritems(), key=lambda asd:asd[1])
+    print '---'
+    print urllib.urlencode(doct)
+
+# def params_filter(params):
+#     """ 对字典排序并除去数组中的空值和签名参数
+#
+#     返回数组和链接串
+#     """
+#     ks = params.keys()
+#     ks.sort()
+#     new_params = {}
+#     prestr = ''
+#     for k in ks:
+#         v = params[k]
+#         k = smart_str(k, Settings.INPUT_CHARSET)
+#         if k not in ('sign', 'sign_type') and v != '':
+#             new_params[k] = smart_str(v, Settings.INPUT_CHARSET)
+#             prestr += '%s=%s&' % (k, new_params[k])
+#     prestr = prestr[:-1]
+#     return new_params, prestr
+
+
+
 # 验证自签名
 def check_sign(message, sign):
     sign = base64.b64decode(sign)
@@ -52,14 +82,15 @@ def check_sign(message, sign):
     return rsa.verify(message, sign, pubkey)
 
 def test():
-    print switch_to_utf_8('10', 'insurance', '你好', 'U220I110')
+    u = switch_to_utf_8('10', 'insurance', '你好', 'U220I110')
+    print urllib.urlencode(u)
     print isinstance(switch_to_utf_8('10', 'insurance', '你好', 'U220I110'), unicode)
     message, sign = alipay_sign('10', 'insurance', '你好', 'U220I110')
     print check_sign(message, sign)
 
 
-
-
+switch_to_urlencode(switch_to_utf_8('10', 'insurance', '你好', 'U220I110'))
+# test()
 # print a
 # print isinstance(a, unicode)
 # import chardet

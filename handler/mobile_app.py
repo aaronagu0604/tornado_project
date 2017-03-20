@@ -746,12 +746,17 @@ class MobileAddShopCarHandler(MobileBaseHandler):
         sppid = self.get_body_argument("sppid", None)
         quantity = self.get_body_argument("quantity", 1)
         if user and sppid:
-            car = ShopCart()
-            car.store = user.store
-            car.store_product_price = sppid
-            car.quantity = quantity
-            car.created = int(time.time())
-            car.save()
+            try:
+                spp = ShopCart.get(store_product_price=sppid)
+                spp.quantity += int(quantity)
+                spp.save()
+            except:
+                car = ShopCart()
+                car.store = user.store
+                car.store_product_price = sppid
+                car.quantity = quantity
+                car.created = int(time.time())
+                car.save()
             result['flag'] = 1
         else:
             result['msg'] = '传入参数异常'

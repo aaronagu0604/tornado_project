@@ -845,7 +845,6 @@ class EditProductHandler(AdminBaseHandler):
 class BlockHandler(AdminBaseHandler):
     def get(self):
         blocks = Block.select()
-
         self.render('admin/App/block.html', blocks=blocks, active='block')
 
 
@@ -853,49 +852,140 @@ class BlockHandler(AdminBaseHandler):
 class EditBlockHandler(AdminBaseHandler):
     def get(self, aid):
         if aid == '0':
-            blocks = Block()
+            block = Block()
         else:
             try:
-                blocks = Block.get(id=int(aid))
+                block = Block.get(id=int(aid))
             except:
                 self.flash("此广告不存在")
                 self.redirect("/admin/block")
                 return
 
-        self.render('admin/ad/block_edit.html', blocks=blocks, active='block')
+        self.render('admin/App/block_edit.html', block=block, active='block')
 
     def post(self, aid):
         aid = int(aid)
-        name = self.get_argument("name", None)
+        name = self.get_argument('name', None)
+        tag = self.get_body_argument('tag', None)
+        file = self.get_body_argument('file', None)
         remark = self.get_argument("remark", None)
         category = self.get_argument("ad_location_category", None)
         try:
-            msg = u"广告位修改成功"
             if aid == 0:
-                ad = AdType()
+                block = Block()
                 msg = u"广告位添加成功"
             else:
-                ad = AdType.get(id=aid)
+                block = Block.get(id=aid)
+                msg = u"广告位修改成功"
             if self.request.files:
                 datetime = time.strftime('%Y%m%d%H%M%S', time.localtime(time.time()))  # 获取当前时间作为图片名称
                 filename = str(datetime) + ".jpg"
-                if not os.path.exists('upload/ad'):
-                        os.mkdir('upload/ad')
-                with open('upload/ad/' + filename, "wb") as f:
-                    f.write(self.request.files["file"][0]["body"])
-                ad.imagename = '/upload/ad/'+filename
-            ad.name = name
-            ad.remark = remark
-            ad.category = category
-            ad.save()
+                # if not os.path.exists('upload/block'):
+                #         os.mkdir('upload/block')
+                # with open('upload/block/' + filename, "wb") as f:
+                #     f.write(self.request.files["file"][0]["body"])
+                # block.imagename = '/upload/block/'+filename
+            block.name = name
+            block.remark = remark
+            block.category = category
+            block.save()
             self.flash(msg)
-            self.redirect("/admin/ad_type")
+            self.redirect("/admin/block")
             return
         except Exception, ex:
             self.flash(str(ex))
-            self.redirect("/admin/ad_type")
-            # self.render('admin/ad/edit_ad_type.html', ad=ad, active='ads')
+            self.redirect("/admin/block")
 
+
+@route(r'/admin/advertisement', name='admin_ad')
+class AdvertisementHandler(AdminBaseHandler):
+    def get(self):
+        ads = BlockItem.select().order_by(BlockItem.block)
+        items = Area.select().where(Area.pid >> None).order_by(Area.spell, Area.sort)
+        self.render('admin/App/ads.html', ads=ads, active='ads', items=items)
+
+
+@route(r'/admin/edit_ad/(\d+)', name='admin_ad_edit')
+class EditAdHandler(AdminBaseHandler):
+    def get(self, aid):
+        items = Area.select().where((Area.pid >> None) & (Area.is_delete == 0) & (Area.is_site == 1)).order_by(
+            Area.spell, Area.sort)
+        aid = int(aid)
+
+        try:
+            ad = BlockItem.get(id=aid)
+        except:
+            self.flash("此广告不存在")
+            self.redirect("/admin/advertisement")
+            return
+        blocks = Block.select()
+        self.render('admin/App/ad_e.html', items=items, ad=ad, active='ads', blocks=blocks)
+
+    def post(self, aid):
+        aid = int(aid)
+
+        url = self.get_argument("url", None)
+        imgalt = self.get_argument("imgalt", None)
+        sort = int(self.get_argument("sort", 1))
+        type = int(self.get_argument("sel_type", 0))
+        province_code = self.get_argument("province_code", None)
+        city_code = self.get_argument("city_code", None)
+        remark = self.get_argument("remark", None)
+        adsize = self.get_argument("adsize", None)
+        status = int(self.get_argument("status", 0))
+        try:
+            ad = Ad.get(id=aid)
+        except:
+            self.flash("此广告不存在")
+            self.redirect("/admin/ads")
+            return
+
+        ad.url = url
+        ad.imgalt = imgalt
+        ad.sort = sort
+        ad.atype = type
+        ad.remark = remark
+        ad.flag = status
+        ad.adsize = adsize
+        try:
+            if province_code != '' and city_code != '':
+                ad.city = city_code
+                ad.city_code = ad.city.code
+            if self.request.files:
+                datetime = time.strftime('%Y%m%d%H%M%S', time.localtime(time.time()))  # 获取当前时间作为图片名称
+                filename = str(datetime) + ".jpg"
+                with open('upload/ad/' + filename, "wb") as f:
+                    f.write(self.request.files["file"][0]["body"])
+                ad.picurl = '/upload/ad/' + filename
+            ad.validate()
+            ad.save()
+            self.flash(u"广告修改成功")
+            self.redirect("/admin/ads")
+            return
+        except Exception, ex:
+            self.flash(str(ex))
+            self.redirect("/admin/editad/" + str(aid))
+
+        self.render('admin/ad/editad.html', ad=ad, active='ads')
+
+@route(r'/admin/hot_search', name='admin_hot_search')
+class HotSearchHandler(AdminBaseHandler):
+    def get(self):
+        page = int(self.get_argument("page", '1') if len(self.get_argument("page", '1')) > 0 else '1')
+        pagesize = self.settings['admin_pagesize']
+        status = int(self.get_argument('status', -1))
+        if status != -1:
+            search = HotSearch.select().where(HotSearch.status == status)
+        else:
+            search = HotSearch.select().where(HotSearch.status != -1)
+        total = search.count()
+        if total % pagesize > 0:
+            totalpage = total / pagesize + 1
+        else:
+            totalpage = total / pagesize
+        s = search.order_by(HotSearch.quantity.desc()).paginate(page, pagesize)
+        self.render('/admin/App/hot_search.html', search=s, active='hot_search', total=total, page=page,
+                    pagesize=pagesize, totalpage=totalpage, status=status)
 
 # --------------------------------------------------------订单管理------------------------------------------------------
 @route(r'/admin/product_orders', name='admin_product_orders')  # 普通商品订单
@@ -1025,7 +1115,8 @@ class InsuranceOrderDetailHandler(AdminBaseHandler):
         insurances = Insurance.select()
 
         programs = []
-        insurance_order_prices = InsuranceOrderPrice.select().where(InsuranceOrderPrice.insurance == o)
+        print('--------%s-------'%oid)
+        insurance_order_prices = InsuranceOrderPrice.select().where(InsuranceOrderPrice.insurance == oid)
         for program in insurance_order_prices:
             i_item_list = []
             for i_item in i_items:
@@ -1057,21 +1148,6 @@ class InsuranceOrderDetailHandler(AdminBaseHandler):
                     poid=poid, poid2=poid2, programs=programs)
 
     def post(self, oid):
-        state = self.get_argument('state', 'processing')
-        status = int(self.get_argument('status', 1))
-        page = int(self.get_argument('page', 1))
-        o = InsuranceOrder.get(id=oid)
-        pid = int(self.get_argument("sel_pid", '0'))
-        sid = int(self.get_argument("sid", '0'))
-        summary = self.get_argument("psummary", '')
-        localsummary = self.get_argument("localsummary", '')
-        price = float(self.get_argument("price", '0'))
-        forceIprc = float(self.get_argument("forceIprc", '0'))
-        businessIprc = float(self.get_argument("businessIprc", '0'))
-        vehicleTax = float(self.get_argument("vehicleTax", '0'))
-        saveAndSendMSG = self.get_argument("saveAndSendMSG", '0')
-        LubeOrScore = self.get_argument("LubeOrScore", '')
-        scoreNum = self.get_argument("scoreNum", '')
         '''
         programs = {
             'program_id': 2,
@@ -1088,69 +1164,37 @@ class InsuranceOrderDetailHandler(AdminBaseHandler):
         }
         '''
         programs = simplejson.loads(self.get_body_argument('programs'))
+        insurance_order = InsuranceOrder.get(id=oid)
 
         iop = InsuranceOrderPrice.get(id=programs['program_id'])
+        if iop.status == 2 or iop.status == -1:  # 不可修改的报价和已关闭的报价pass
+            self.flash('此条报价不可再修改')
+            self.redirect('admin/insurance_order/%s' % oid)
+            return
         iop.created = int(time.time())
         iop.admin_user = self.get_admin_user()
         iop.gift_policy = programs['gift_policy']
+        iop.sms_content = programs['sms_content']
         if programs['gift_policy'] == 2:
-            iop.score = programs['score']
+            iop.score = int(programs['score'])
         else:
             iop.score = 0
-        total_price = programs['total_price']
-        force_price = programs['force_price']
-        business_price = programs['business_price']
-        vehicle_tax_price = programs['vehicle_tax_price']
-
-        o.summary = summary
-        o.localsummary = localsummary
-        o.insurance = pid
-        o.price = price
-        o.forceIprc = forceIprc
-        o.businessIprc = businessIprc
-        o.vehicleTax = vehicleTax
-        o.lasteditedby = self.get_admin_user().username
-        now = int(time.time())
-        o.lasteditedtime = now
-        o.deadline = now + setting.deadlineTime
-        if sid:
-            o.store = sid
-        if o.LubeOrScore == 2 and scoreNum == 0:
-            area_code = Store.get(id=sid).area_code[:8]
-            # scoreNum, o.profit = ReScore().rescore(area_code, pid, forceIprc, businessIprc, price)
-
-        if o.status == 3:
-            self.flash("已完成的订单不能再修改")
-            self.redirect('/admin/insurance/%s'%oid)
-        elif o.status == 0:
-            o.status = 1
-            o.scoreNum = scoreNum
-        else:
-            o.scoreNum = scoreNum
-        o.save()
+        if iop.status == 0:  # 仅未报价的可以修改以下内容
+            iop.total_price = programs['total_price']
+            iop.force_price = programs['force_price']
+            iop.business_price = programs['business_price']
+            iop.vehicle_tax_price = programs['vehicle_tax_price']
+            for key in programs['i_items']:
+                iop.__dict__['_data'][key+'Price'] = programs['i_items'][key]
+        iop.save()
         self.flash("保存成功")
-        insurances = Product.select().where((Product.is_index==o.ordertype) & (Product.status == 1))
-        if o.ordertype == 2:
-            sql = ''' select a.id, a.name from tb_store a join  tb_order_sent_history  b on a.id=b.store_id where a.business_type=%s and  b.order_id = %s '''
-            q = db.handle.execute_sql(sql % (o.ordertype,oid))
-        elif o.ordertype == 1:
-            sql = ''' select a.id, a.name from tb_store a where a.business_type=1 '''
-            q = db.handle.execute_sql(sql)
-        stores = []
-        for row in q.fetchall():
-            stores.append({'id':row[0], 'name':row[1]})
-        mobile = o.user.mobile
-        if not summary:
-            summary = u'无'
-        if saveAndSendMSG == '1':
-            sms = {'mobile': mobile, 'body': [o.ordernum, o.insurance.name, str(price), summary], 'signtype': '1',
-                   'isyzm': 'changePrice'}
+
+        if programs['is_send_msg'] == '1':
+            sms = {'mobile': insurance_order.store.mobile, 'body': [insurance_order.ordernum, iop.insurance.name,
+                    str(iop.total_price), programs['sms_content']], 'signtype': '1', 'isyzm': 'changePrice'}
             # create_msg(simplejson.dumps(sms), 'sms')  #变更价格
-        ior = self.getInsuranceOrderReceiving(oid)
-        paytime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(o.paytime))
-        msgs = o.summary
-        self.render('admin/order/insuranceorder_detail.html', o=o,stores=stores, products=insurances,
-                    active='insurance', ior=ior, paytime=paytime, msgs=msgs,state=state, status=status, page=page)
+
+        self.redirect('admin/insurance_order/%s'%oid)
 
 
 

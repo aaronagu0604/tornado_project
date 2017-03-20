@@ -1,0 +1,56 @@
+{% extends "layout/admin.html" %}
+{% block content %}
+<div class="row">
+    {%set messages=handler.get_flashed_messages() %}
+    {%if messages%}
+    <div class="msg">
+        {% for type, msg in messages%}
+        <span style="color:red;">{{msg}}</span>
+        {% endfor %}
+    </div>
+    {%endif%}
+    <nav>
+        <div class="navbar-header" style="float: left">
+            <a class="navbar-brand" href="#">广告管理</a>
+        </div>
+        <div class="navbar-header" style="float: right;margin-top:15px;">
+            <a href="/admin/edit_ad/0" style="padding:5px 8px;border:1px solid #438bca;border-radius:4px;color:#438bca;font-size:16px;">添加广告</a>
+        </div>
+    </nav>
+</div>
+<div class="row">
+    <div class="panel panel-primary">
+        <div class="table-responsive">
+            <table class="table table-hover" id="tb_users" cellpadding="0" cellspacing="0" border="0" style="text-align:center;width:100%;">
+                <thead>
+                <tr style="background:#528acb;color:#fff;text-align:center;height:38px;line-height:38px;">
+                    <th style="width:10%;text-align:center;">编号</th>
+                    <th style="width:20%;text-align:center;">广告位置</th>
+                    <th style="width:30%;text-align:center;">广告名称</th>
+                    <th style="width:10%;text-align:center;">开通地区</th>
+                    <th style="width:10%;text-align:center;">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for ad in ads %}
+                <tr>
+                    <td>{{ad.id}}</td>
+                    <td>{{ad.block.name}}</td>
+                    <td>{{ad.name}}</td>
+                    <td>西安</td>
+                    <td>
+                        <a href="/admin/edit_ad/{{ad.id}}"style="padding:4px 5px;border:1px solid #438bca;color:#438bca;border-radius:4px;font-size:12px;text-decoration:none;">修改</a>
+                        {% if ad.active == 0 %}
+                        <a style="padding:4px 5px;border:1px solid #438bca;color:#438bca;border-radius:4px;font-size:12px;text-decoration:none;" href="/admin/delad/{{ad.id}}/1 " onclick="return confirm('确定启用此广告?')">启用</a>
+                        {%else%}
+                        <a href="/admin/delad/{{ad.id}}/0 " onclick="return confirm('确定停用此广告?')" style="padding:4px 5px;border:1px solid #438bca;color:#438bca;border-radius:4px;font-size:12px;text-decoration:none;">停用</a>
+                        {%endif%}
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

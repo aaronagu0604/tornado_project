@@ -190,6 +190,10 @@
                             <input type="button" data-id="{{o.id}}" id="btnCancel" class="btn btn-outline btn-primary btn-xs" value="取消订单" style="width:90px;height:32px;background:#528ACB;color:#fff;border:none;border-radius:4px;margin-top:10px;">
                     </tr>
                     {% endif %}
+                    <tr>
+                        <td>取消订单：<input class="form-control" name="cancel_cause" type="text" value="{{o.cancelreason}}" style="width:480px;height:86px;">
+                            <input type="button" data-id="{{o.id}}" class="btn btn-outline btn-primary btn-xs" value="本地备注" style="width:90px;height:32px;background:#528ACB;color:#fff;border:none;border-radius:4px;margin-top:10px;">
+                    </tr>
                     </tbody>
                 </table>
             </div>
@@ -205,7 +209,7 @@
                 <li>
                     <div class="am-gallery-item">
                         <a href="{{o.id_card_front}}" class="">
-                            <img style="width:197;height:197" src="{{o.id_card_front}}"/>
+                            <img style="width:197px;height:197px" src="{{o.id_card_front}}"/>
                         </a>
                     </div>
                 </li>

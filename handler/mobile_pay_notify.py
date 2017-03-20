@@ -2,15 +2,17 @@
 # coding=utf8
 
 import logging
-import setting
+
 import simplejson
+from tornado.web import RequestHandler
+
+import setting
+from lib.mqhelper import create_msg
+from lib.payment.alipay_web.core import notify_verify
+from lib.payment.upay import Trade
+from lib.payment.wxPay import Notify_pub
 from lib.route import route
 from model import *
-from lib.mqhelper import create_msg
-from tornado.web import RequestHandler
-from lib.payment.core import notify_verify
-from lib.payment.wxPay import Notify_pub
-from lib.payment.upay import Trade
 
 
 # ------------------------------------------------购物回调--------------------------------------------------------------

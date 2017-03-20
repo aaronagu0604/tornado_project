@@ -65,9 +65,9 @@ def get_pay_url(tn, subject, total_fee, isCZ=False):
 
     response = urllib2.urlopen(request_url, data=data).read()
     response_params = parse_response(response, Settings.SIGN_TYPE)
-    #获得token
+    # 获得token
     token = response_params["request_token"]
-    #再组装数据，生成签名，请求获得支付链接
+    # 再组装数据，生成签名，请求获得支付链接
     req_data = "<auth_and_execute_req><request_token>%s</request_token></auth_and_execute_req>" % (token)
     fr_temp_params = temp_param
     fr_temp_params["service"] = "alipay.wap.auth.authAndExecute"

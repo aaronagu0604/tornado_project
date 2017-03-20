@@ -214,6 +214,64 @@ class AjaxGetSubAreas(BaseHandler):
             'click': "pop('全部地域-产品信息', '" + url + "');",
             'open': 'true'
         })
+        print nodes
+        self.write(simplejson.dumps(nodes))
+
+
+@route(r'/ajax/area_tree', name='ajax_GetAreaTree')  # 获取所有地区
+class AjaxGetAllAreas(BaseHandler):
+    def get(self):
+        nodes = []
+        codes = []
+        items = Area.select()
+        for item in items:
+            if len(item.code) == 12:
+                codes.append(item.code)
+                codes.append(item.code[:8])
+                codes.append(item.code[:4])
+            elif len(item.code) == 8:
+                codes.append(item.code)
+                codes.append(item.code[:4])
+                keyword = '' + item.code + '%'
+                ft = (Area.code % keyword) & (Area.is_delete == 0)
+                items = Area.select().where(ft)
+                for sub in items:
+                    codes.append(sub.code)
+            elif len(item.code) == 4:
+                codes.append(item.code)
+                keyword = '' + item.code + '%'
+                ft = (Area.code % keyword) & (Area.is_delete == 0)
+                items = Area.select().where(ft)
+                for sub in items:
+                    codes.append(sub.code)
+
+        un_codes = list(set(codes))
+        if len(un_codes) > 0:
+            items = Area.select().where(Area.code << un_codes)
+            for item in items:
+                title = item.name + '-产品信息'
+                url = '/admin/store_area_product?sid=' + str(1) + '&code=' + item.code
+                nodes.append({
+                    'id': item.id,
+                    'pId': item.pid.id if item.pid else 0,
+                    'name': item.name,
+                    'data': item.code,
+                    'target': '_top',
+                    'click': "pop('" + title + "', '"+url+"');",
+                    'open': 'true' if len(item.code) < 8 else 'false'
+                })
+
+        url = '/admin/store_area_product?sid=1'
+        nodes.append({
+            'id': 0,
+            'pId': -1,
+            'name': '全部',
+            'data': '',
+            'target': '_top',
+            'click': "pop('全部地域-产品信息', '" + url + "');",
+            'open': 'true'
+        })
+        print nodes
         self.write(simplejson.dumps(nodes))
 
 
