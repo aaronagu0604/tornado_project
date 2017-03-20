@@ -21,6 +21,7 @@ settings.update({
     'autoescape': None
 })
 
+
 memcachedb = memcache.Client([settings['memcache_host']])
 
 bcc = None
