@@ -31,48 +31,34 @@ def join_string(total_amount, subject, body, ordernum):
         sign_type=RSA2&
         timestamp=%s&
         version=1.0''' % ('2016052701450725', total_amount, subject, body, ordernum, notify_url, timestamp)
-    return before_sign.replace(' ', '').replace('\n', '').replace('!', ' ')
+    join_str = before_sign.replace(' ', '').replace('\n', '').replace('!', ' ')
+    return join_str
 
-# 签名字符串
-def alipay_sign(total_price, subject, body, ordernum):
-    private_key = rsa.PrivateKey._load_pkcs1_pem(Settings.RSA_PRIVATE)
-    strings = join_string(total_price, subject, body, ordernum)
-    sign = rsa.sign(strings, private_key, SIGN_TYPE)
-    b64sing = base64.b64encode(sign)
-    return strings, b64sing
 
-# 拼接字符串与签名并转为utf-8
-def switch_to_utf_8(total_price, subject, body, ordernum):
-    strings, sign_string = alipay_sign(total_price, subject, body, ordernum)
-    return unicode((strings + '&sign=' + sign_string), encoding='utf-8')
-
+# 拼接后的字符串转为urlencode
 def switch_to_urlencode(utf_8_string):
+    if not isinstance(utf_8_string, unicode):
+        utf_8_string = unicode(utf_8_string, encoding='utf-8')
     doct = {}
     for key_value in utf_8_string.split('&'):
         (key, value) = key_value.split('=', 1)
-        doct[key] = value.encode("UTF-8")
-    # print sorted(dict.iteritems(), key=lambda asd:asd[1])
-    print '---'
-    print urllib.urlencode(doct)
+        doct[key] = value.encode('UTF-8')
+    return urllib.urlencode(doct)
 
-# def params_filter(params):
-#     """ 对字典排序并除去数组中的空值和签名参数
-#
-#     返回数组和链接串
-#     """
-#     ks = params.keys()
-#     ks.sort()
-#     new_params = {}
-#     prestr = ''
-#     for k in ks:
-#         v = params[k]
-#         k = smart_str(k, Settings.INPUT_CHARSET)
-#         if k not in ('sign', 'sign_type') and v != '':
-#             new_params[k] = smart_str(v, Settings.INPUT_CHARSET)
-#             prestr += '%s=%s&' % (k, new_params[k])
-#     prestr = prestr[:-1]
-#     return new_params, prestr
 
+# 字符串排序
+def sort_string(string):
+    str_result = ''
+    for str_tmp in sorted(string.split('&')):
+        str_result = str_result + '&' + str_tmp
+    return str_result.strip('&')
+
+
+# 签名原字符串
+def alipay_sign(strings):
+    private_key = rsa.PrivateKey._load_pkcs1_pem(Settings.RSA_PRIVATE)
+    sign = rsa.sign(strings, private_key, SIGN_TYPE)
+    return base64.b64encode(sign)
 
 
 # 验证自签名
@@ -81,16 +67,45 @@ def check_sign(message, sign):
     pubkey = rsa.PublicKey.load_pkcs1_openssl_pem(Settings.RSA_PUBLIC)
     return rsa.verify(message, sign, pubkey)
 
+
+# 获取最终签名后的字符串
+def get_alipay_string(total_price, subject, body, ordernum):
+    after_join_string = join_string(total_price, subject, body, ordernum)
+    sign_string = alipay_sign(after_join_string)
+    url_string = switch_to_urlencode(after_join_string)
+    sorted_string = sort_string(url_string)
+    result_string = (sorted_string + '&' + switch_to_urlencode('sign='+sign_string)).replace('+', '%20')
+    return result_string
+
+
 def test():
-    u = switch_to_utf_8('10', 'insurance', '你好', 'U220I110')
-    print urllib.urlencode(u)
-    print isinstance(switch_to_utf_8('10', 'insurance', '你好', 'U220I110'), unicode)
-    message, sign = alipay_sign('10', 'insurance', '你好', 'U220I110')
-    print check_sign(message, sign)
+    string_demo = '''app_id=2015052600090779&biz_content={"timeout_express":"30m","seller_id":"","product_code":"QUICK_MSECURITY_PAY","total_amount":"0.01","subject":"1","body":"我是测试数据","out_trade_no":"IQJZSRC1YMQB5HU"}&charset=utf-8&format=json&method=alipay.trade.app.pay&notify_url=http://domain.merchant.com/payment_notify&sign_type=RSA2&timestamp=2016-08-25 20:26:31&version=1.0'''
+    sign_string = alipay_sign(string_demo)
+    url_string = switch_to_urlencode(string_demo)
+    sorted_string = sort_string(url_string)
+    result_string = (sorted_string + '&' + switch_to_urlencode('sign='+sign_string)).replace('+', '%20')
+    return result_string
 
 
-switch_to_urlencode(switch_to_utf_8('10', 'insurance', '你好', 'U220I110'))
-# test()
+
+
+# print test()
+# string_demo = '''app_id=2015052600090779&biz_content={"timeout_express":"30m","seller_id":"","product_code":"QUICK_MSECURITY_PAY","total_amount":"0.01","subject":"1","body":"我是测试数据","out_trade_no":"IQJZSRC1YMQB5HU"}&charset=utf-8&format=json&method=alipay.trade.app.pay&notify_url=http://domain.merchant.com/payment_notify&sign_type=RSA2&timestamp=2016-08-25 20:26:31&version=1.0&sign=cYmuUnKi5QdBsoZEAbMXVMmRWjsuUj+y48A2DvWAVVBuYkiBj13CFDHu2vZQvmOfkjE0YqCUQE04kqm9Xg3tIX8tPeIGIFtsIyp/M45w1ZsDOiduBbduGfRo1XRsvAyVAv2hCrBLLrDI5Vi7uZZ77Lo5J0PpUUWwyQGt0M4cj8g='''
+
+# private_key = rsa.PrivateKey._load_pkcs1_pem(Settings.RSA_PRIVATE)
+# sign = rsa.sign(unicode('我', encoding='utf-8'), private_key, SIGN_TYPE)
+# print base64.b64encode(sign)
+print str('我')
+# switch_to_urlencode(unicode(string_demo, encoding='utf-8'))
+
+# print isinstance(unicode('a', encoding='utf-8'), unicode)
+# print unicode('a', encoding='utf-8').decode('ascii')
+# # from curses import ascii
+# # print ascii.isascii('a')
+# print '我'.encode('ascii')
+# print unicode('我', encoding='utf-8').decode('utf-8').encode('ascii')
+
+# print isinstance(unicode('我', encoding='utf-8').decode('ascii'), unicode)
 # print a
 # print isinstance(a, unicode)
 # import chardet

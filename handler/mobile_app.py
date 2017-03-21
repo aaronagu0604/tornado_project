@@ -1292,7 +1292,7 @@ class MobilePayOrderHandler(MobileBaseHandler):
                 else:
                     self.after_pay_operation(order, total_price, user, order_type)
             elif payment == 1:  # 1支付宝  2微信 3银联 4余额
-                response_url = alipay.switch_to_utf_8(total_price, '车装甲商品', '订单支付', order.ordernum)
+                response_url = alipay.get_alipay_string(total_price, '车装甲商品', '订单支付', order.ordernum)
                 result['data']['pay_info'] = response_url
             elif payment == 2:
                 pay_info = UnifiedOrder_pub().getPrepayId(order.ordernum.encode('utf-8'), u'车装甲商品',
