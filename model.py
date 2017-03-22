@@ -499,17 +499,17 @@ class Order(db.Model):
     address = ForeignKeyField(StoreAddress, db_column='store_address_id')  # 收件信息
     delivery = ForeignKeyField(Delivery, db_column='delivery_id', null=True)  # 物流公司
     delivery_num = CharField(max_length=64, null=True)  # 物流单号
-    ordered = IntegerField(default=0)  # 下单时间
-    payment = IntegerField(default=0)  # 付款方式  1支付宝  2微信 3银联 4余额
-    message = CharField(null=True)  # 留言/备注
     order_type = IntegerField(default=1)  # 付款方式 1金钱订单 2积分订单
+    payment = IntegerField(default=0)  # 付款方式  1支付宝  2微信 3银联 4余额 5积分
     total_price = FloatField(default=0.0)  # 价格，实际所有子订单商品价格之和
     pay_balance = FloatField(default=0.0)  # 余额支付金额
     pay_price = FloatField(default=0.0)  # 实际第三方支付价格
+    ordered = IntegerField(default=0)  # 下单时间
     pay_time = IntegerField(default=0)  # 支付时间
     status = IntegerField(default=0)  # 0待付款 1待发货 2待收货 3交易完成（待评价） 4已评价 5申请退款 6已退款 -1已取消
     trade_no = CharField(max_length=64, default='')  # 支付宝交易号or微信支付订单号or银联支付查询流水号
     order_count = IntegerField(default=0)  # 首单、二单、三单
+    message = CharField(null=True)  # 留言/备注
     buyer_del = IntegerField(default=0)  # 买家删除已经完成的订单 1删除
 
     def change_status(self, status):  # -1已删除, 0待付款 1待发货 2待收货 3交易完成（待评价） 4已评价 5申请退款 6已退款 9已取消

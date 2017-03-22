@@ -212,7 +212,6 @@ def productOrderSearch(ft, type, index):
                 'cover': soi.product.cover,
                 'price': soi.store_product_price.price,
                 'quantity': soi.quantity,
-                'pay_type': 'score' if soi.store_product_price.score > 0 else 'price',
                 'attributes': [attribute.value for attribute in soi.product.attributes]
             })
         result.append({
@@ -220,6 +219,7 @@ def productOrderSearch(ft, type, index):
             'ordernum': so.order.ordernum,
             'saler_store': so.saler_store.name,
             'buyer_store': so.buyer_store.name,
+            'order_type': so.order.order_type,
             'price': so.price,
             'status': so.status,
             'items': items,
