@@ -222,45 +222,20 @@ class AjaxGetSubAreas(BaseHandler):
 class AjaxGetAllAreas(BaseHandler):
     def get(self):
         nodes = []
-        codes = []
+        # items = Area.select().where((Area.pid >> None) | (Area.code == 00270001))
         items = Area.select()
         for item in items:
-            if len(item.code) == 12:
-                codes.append(item.code)
-                codes.append(item.code[:8])
-                codes.append(item.code[:4])
-            elif len(item.code) == 8:
-                codes.append(item.code)
-                codes.append(item.code[:4])
-                keyword = '' + item.code + '%'
-                ft = (Area.code % keyword) & (Area.is_delete == 0)
-                items = Area.select().where(ft)
-                for sub in items:
-                    codes.append(sub.code)
-            elif len(item.code) == 4:
-                codes.append(item.code)
-                keyword = '' + item.code + '%'
-                ft = (Area.code % keyword) & (Area.is_delete == 0)
-                items = Area.select().where(ft)
-                for sub in items:
-                    codes.append(sub.code)
-
-        un_codes = list(set(codes))
-        if len(un_codes) > 0:
-            items = Area.select().where(Area.code << un_codes)
-            for item in items:
-                title = item.name + '-产品信息'
-                url = '/admin/store_area_product?sid=' + str(1) + '&code=' + item.code
-                nodes.append({
-                    'id': item.id,
-                    'pId': item.pid.id if item.pid else 0,
-                    'name': item.name,
-                    'data': item.code,
-                    'target': '_top',
-                    'click': "pop('" + title + "', '"+url+"');",
-                    'open': 'true' if len(item.code) < 8 else 'false'
-                })
-
+            title = item.name + '-产品信息'
+            url = '/admin/store_area_product?sid=' + str(1) + '&code=' + item.code
+            nodes.append({
+                'id': item.id,
+                'pId': item.pid.id if item.pid else 0,
+                'name': item.name,
+                'data': item.code,
+                'target': '_top',
+                'click': "pop('" + title + "', '"+url+"');",
+                'open': 'true' if len(item.code) < 8 else 'false'
+            })
         url = '/admin/store_area_product?sid=1'
         nodes.append({
             'id': 0,
@@ -271,7 +246,6 @@ class AjaxGetAllAreas(BaseHandler):
             'click': "pop('全部地域-产品信息', '" + url + "');",
             'open': 'true'
         })
-        print nodes
         self.write(simplejson.dumps(nodes))
 
 
@@ -427,4 +401,91 @@ class WebAppCarItemListHandler(BaseHandler):
         pagesize = 10
         #
         self.write(simplejson.dumps(result))
+
+
+@route(r'/ajax/get_score_rate', name='ajax_get_score_rate')  # 获取返佣比率
+class WebAppCarItemListHandler(BaseHandler):
+    def get(self):
+        result = {'flag': 0, 'msg': '', "data": {}}
+        pid = self.get_argument('pid', None)
+        try:
+            iop = InsuranceOrderPrice.get(id=pid)
+            io = InsuranceOrder.get(id=iop.insurance_order_id)
+            print io.store.area_code, iop.insurance.id
+            rates = InsuranceScoreExchange.get_score_policy(io.store.area_code, iop.insurance.id)
+            if rates:
+                iis = InsuranceItem.select().where(InsuranceItem.style_id > 1)
+                result['data']['force_tax'] = rates.force_tax_rate
+                result['data']['business_tax'] = rates.business_tax_rate
+                result['data']['ali_rate'] = rates.ali_rate
+                result['data']['profit_rate'] = rates.profit_rate
+                result['data']['base_money'] = rates.base_money
+                for ii in iis:
+                    if iop.__dict__['_data'][ii.eName]:
+                        business = True
+                        break
+                if iop.forceI and business:
+                    result['data']['business_s'] = rates.business_exchange_rate2
+                    result['data']['force_s'] = rates.force_exchange_rate2
+                else:
+                    result['data']['business_s'] = rates.business_exchange_rate
+                    result['data']['force_s'] = rates.force_exchange_rate
+            else:
+                result['data']['force_tax'] = 0
+                result['data']['business_tax'] = 0
+                result['data']['ali_rate'] = 0
+                result['data']['profit_rate'] = 0
+                result['data']['base_money'] = 0
+                result['data']['business_s'] = 0
+                result['data']['force_s'] = 0
+            result['flag'] = 1
+            print result['data']
+        except Exception, e:
+            result['msg'] = u'系统错误%s'%str(e)
+            print e.message
+
+        self.write(simplejson.dumps(result))
+
+
+@route(r'/ajax/save_iop_data', name='ajax_save_iop')  # 根据订单ID取消订单
+class SaveIOPHandler(BaseHandler):
+    def post(self):
+        result = {'flag': 0, 'msg': '', 'data': ''}
+        groups = self.get_body_argument('groups', None)
+        i_items = self.get_body_argument("i_items", None)
+
+        if not (groups and i_items):
+            result['msg'] = u'参数不全'
+            self.write(simplejson.dumps(result))
+            return
+        groups = simplejson.loads(groups)
+        i_items = simplejson.loads(i_items)
+        pid = InsuranceOrderPrice.get(id=groups['pid'])
+        now = int(time.time())
+        if pid.response == 0 or pid.response == 1:
+            pid.created = now
+            pid.admin_user = self.get_admin_user()
+            pid.gift_policy = groups['gift_policy']
+            pid.response = 1
+            pid.status = 1
+            if groups['gift_policy'] == '2':
+                pid.score = groups['score']
+            else:
+                pid.score = 0
+            pid.total_price = groups['total_price']
+            pid.force_price = groups['force_price']
+            pid.business_price = groups['business_price']
+            pid.vehicle_tax_price = groups['vehicle_tax_price']
+            pid.sms_content = groups['psummary']
+            for item in i_items:
+                pid.__dict__['_data'][item+'Price'] = i_items[item]
+            pid.save()
+            result['flag'] = 1
+        else:
+            result['msg'] = u'该方案已不可再更改'
+
+        self.write(simplejson.dumps(result))
+
+
+
 

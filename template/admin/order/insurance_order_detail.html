@@ -112,7 +112,7 @@
                 <h3 class="panel-title">订单基本信息</h3>
             </div>
             <div class="panel-body">
-                <table class="table table-condensed" cellpadding="0" cellspacing="0" border="0" style="text-align:left;">
+                <table class="table table-condensed">
                     <tbody>
                     <tr>
                         <td>订单号：{{o.ordernum}}</td>
@@ -191,7 +191,7 @@
                     </tr>
                     {% endif %}
                     <tr>
-                        <td>取消订单：<input class="form-control" name="cancel_cause" type="text" value="{{o.cancelreason}}" style="width:480px;height:86px;">
+                        <td>本地备注：<input class="form-control" name="cancel_cause" type="text" value="{{o.cancelreason}}" style="width:480px;height:86px;">
                             <input type="button" data-id="{{o.id}}" class="btn btn-outline btn-primary btn-xs" value="本地备注" style="width:90px;height:32px;background:#528ACB;color:#fff;border:none;border-radius:4px;margin-top:10px;">
                     </tr>
                     </tbody>
@@ -244,8 +244,8 @@
             <div class="panel-heading">
                 <h3 class="panel-title">方案ID：{{program['pid']}}</h3>
             </div>
-            <div class="panel-body">
-                <table name="a" class="table table-condensed" cellpadding="0" cellspacing="0" border="0" style="text-align:left;">
+            <div id="{{program['pid']}}" class="panel-body">
+                <table class="table table-condensed">
                     <tbody>
                     <tr>
                         <td>
@@ -256,7 +256,13 @@
                                 {% endfor %}
                             </select>
                         </td>
-                        <td></td>
+                        <td>
+                            <label>返佣方式：</label>
+                            <select name="gift_policy">
+                                <option value="1" {{ 1 == program['gift_policy'] and "selected" or '' }}>返油</option>
+                                <option value="2" {{ 2 == program['gift_policy'] and "selected" or '' }}>返积分</option>
+                            </select>
+                        </td>
                     </tr>
 
                     {% for i_item in program['program'] %}
@@ -266,42 +272,59 @@
                             {% if i_item['value']!='1' %}
                             险额：{{i_item['value']}}
                             {% endif %}
-                            报价：<input name="i_item" e_name="{{ i_item['e_name'] }}" value="" style="width: 80px;"/>
+                            报价：<input name="i_item" e_name="{{i_item['e_name']}}" c_name="{{i_item['name']}}" i_type="{{i_item['style_id']}}" value="{{i_item['price']}}" style="width: 80px;"/>
                         </td>
                     </tr>
                     {% endfor %}
-
                     <tr>
                         <td>
-                            <label>返佣方式：</label>
-                            <select name="gift_policy">
-                                <option value="1" {{ 1 == program['gift_policy'] and "selected" or '' }}>返油</option>
-                                <option value="2" {{ 2 == program['gift_policy'] and "selected" or '' }}>返积分</option>
-                            </select>
+                            车船税：<input name="vehicle_tax_price" value="{{program['vehicle_tax_price']}}" style="width: 80px;"/>
                         </td>
-                        {% if 1 == program['gift_policy'] %}
                         <td></td>
-                        {% else %}
-                        <td>返点：<input name="{{ program['score'] }}" value="" style="width: 80px;"/>
-                            返点率：<input name="{{ program['rates'] }}" value="" style="width: 80px;"/>
-                        </td>
-                        {% endif %}
                     </tr>
                     <tr>
                         <td>
-                            交强险总价：<input name="force_price" value="{{program['force_price']}}" style="width: 80px;"/>
+                            商业险折扣：<input name="business_rate" value="" style="width: 80px;"/>
                         </td>
+                        <td>
+                            交强险折扣：<input name="force_rate" value="" style="width: 80px;"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>返点率（百分数）：
+                            <input name="business_s" value="" placeholder="商业返佣率" style="width: 100px;"/>
+                            <input name="force_s" value="" placeholder="交强返佣率" style="width: 100px;"/>
+                            <input name="ali_rate" value="" placeholder="转账费率" style="width: 80px;"/>
+                            <input name="profit" value="" placeholder="利润率" style="width: 80px;"/>
+                            <input name="business_tax" value="" placeholder="商业【税率】" style="width: 100px;"/>
+                            <input name="force_tax" value="" placeholder="交强【税率】" style="width: 100px;"/>
+                            <input name="base_money" value="" placeholder="起兑金额" style="width: 100px;"/>
+                        </td>
+                        <td>
+                            <span onclick="get_score_rate({{ program['pid'] }})" style="float:left;padding:5px 10px;margin-left:20px;margin-top:3px;background:#438bca;color:#fff;border-radius:4px;font-size:14px;cursor:pointer;">获取返点</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span onclick="auto_calculation({{ program['pid'] }})" style="float:left;padding:5px 10px;margin-left:20px;margin-top:3px;background:#438bca;color:#fff;border-radius:4px;font-size:14px;cursor:pointer;">自动计算</span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
                         <td>
                             商业险总价：<input name="business_price" value="{{program['business_price']}}" style="width: 80px;"/>
                         </td>
+                        <td>
+                            交强险总价：<input name="force_price" value="{{program['force_price']}}" style="width: 80px;"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>返点：<input name="score" value="{{program['score']}}" style="width: 80px;"/></td>
+                        <td></td>
                     </tr>
                     <tr>
                         <td>
-                            车船税总价：<input name="vehicle_tax_price" value="{{program['vehicle_tax_price']}}" style="width: 80px;"/>
+                            总价：<input name="total_price" value="{{program['total_price']}}" style="width: 80px;"/>
                         </td>
-                        <td>
-                            总&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;价：<input name="total_price" value="{{program['total_price']}}" style="width: 80px;"/>
-                        </td>
+                        <td></td>
                     </tr>
                     <tr>
                         <td>
@@ -310,11 +333,10 @@
                         <td></td>
                     </tr>
                     <tr>
-                        <td></td>
+                        <td>最终方案：<input name="last_program" value="" style="width: 80px;"/></td>
                         <td>
-                            <span onclick="auto_calculation({{program['pid']}})" style="float:left;padding:5px 10px;margin-left:20px;margin-top:3px;background:#438bca;color:#fff;border-radius:4px;font-size:14px;cursor:pointer;">自动计算</span>
-                            <span onclick="change_status('{{o.ordernum}}')" style="float:left;padding:5px 10px;margin-left:20px;margin-top:3px;background:#438bca;color:#fff;border-radius:4px;font-size:14px;cursor:pointer;">保存</span>
-                            <span onclick="change_status('{{o.ordernum}}')" style="float:left;padding:5px 10px;margin-left:20px;margin-top:3px;background:#438bca;color:#fff;border-radius:4px;font-size:14px;cursor:pointer;">保存并发短信</span>
+                            <span onclick="saveData({{ program['pid'] }})" style="float:left;padding:5px 10px;margin-left:20px;margin-top:3px;background:#438bca;color:#fff;border-radius:4px;font-size:14px;cursor:pointer;">保存</span>
+                            <span onclick="saveData({{ program['pid'] }})" style="float:left;padding:5px 10px;margin-left:20px;margin-top:3px;background:#438bca;color:#fff;border-radius:4px;font-size:14px;cursor:pointer;">保存并发短信</span>
                         </td>
                     </tr>
                     </tbody>
@@ -406,18 +428,157 @@
             }
         });
     }
+    // 自动计算
+    function auto_calculation(program_id){
+        // 根据获取 ID 获取元素
+        var program = document.getElementById(program_id);
+        // 获取数据
+        var insurance = $(program).find('select[name="insurance"]').val();   // 保险 ID
+        var gift_policy = $(program).find('select[name="gift_policy"]').val();   // 返佣方式
+        var vehicle_tax_price = $(program).find('input[name="vehicle_tax_price"]').val();    // 车船税价格
+        var business_rate = $(program).find('input[name="business_rate"]').val();    // 商业险折扣
+        if( business_rate == ''){
+            business_rate = 10;
+        }
+        var force_rate = $(program).find('input[name="force_rate"]').val();    // 交强险折扣
+        if( force_rate == ''){
+            force_rate = 10;
+        }
+        var business_s = $(program).find('input[name="business_s"]').val();    // 商业险返佣率
+        var force_s = $(program).find('input[name="force_s"]').val();    // 交强险返佣率
+        var ali_rate = $(program).find('input[name="ali_rate"]').val();    // 转账费率
+        var profit = $(program).find('input[name="profit"]').val();    // 利润率
+        var business_tax = $(program).find('input[name="business_tax"]').val();    // 商业险税率
+        var force_tax = $(program).find('input[name="force_tax"]').val();    // 交强险税率
 
-    function auto_calculation(a){
-        console.debug('------');
-        $(a).each(function(){
+        var total_force = 0;
+        var total_business = 0;
+        var insurance_details = '';
+        // 获取循环的险种数据
+        $(program).find('table tr td').each(function (index, element) {
+            var i_item_name = $(this).find('input[name="i_item"]').attr('c_name');
             var i_item = $(this).find('input[name="i_item"]').attr('e_name');
-            var a = $(this).find('input[name="i_item"]').val();
-            var i_id = $(this).find('select[name="insurance"]').val();
-            if(i_id){
-                console.debug(i_id, i_item, a);
+            var i_type = $(this).find('input[name="i_item"]').attr('i_type');
+            var i_item_value = $(this).find('input[name="i_item"]').val();
+            if(i_type == 1){
+                total_force = i_item_value*force_rate/10;    // 交强险总金额
+                insurance_details = insurance_details+i_item_name+i_item_value+'元\n';
+            }else if (i_type == 2 | i_type == 3){
+                total_business = total_business*1 + i_item_value*1;    // 商业险总金额
+                insurance_details = insurance_details+i_item_name+i_item_value+'元\n';
             }
-            console.debug('------');
+        });
+        // 计算总额
+        total_business = (total_business*business_rate/10);
+        var total_price = total_force + total_business + vehicle_tax_price*1;
+        var score = total_business*(1-business_tax/100)*business_s/100 + total_force*(1-force_tax/100)*force_s/100 - total_price*(ali_rate/100+profit/100);
+        if(gift_policy == '2'){
+            $(program).find('input[name="score"]').val(score.toFixed(0));
+        } else {
+            $(program).find('input[name="score"]').val(0);
+        }
+        // 回填
+        $(program).find('input[name="business_price"]').val(total_business.toFixed(2));
+        $(program).find('input[name="force_price"]').val(total_force.toFixed(2));
+        $(program).find('input[name="total_price"]').val(total_price.toFixed(2));
+        var msg = '';
+        if(business_rate == '10'){
+            msg = '商业险'+total_business+'元\n'
+        } else{
+            msg = '商业险'+business_rate+'折'+total_business+'元\n'
+        }
+        if(force_rate == '10'){
+            msg = msg+'交强险'+total_force+'元\n'
+        } else {
+            msg = msg+'交强险'+force_rate+'折'+total_force+'元\n'
+        }
+        msg = msg+'车船税'+vehicle_tax_price+'元\n' + '合计'+total_price+'元；\n'+'其中:'+insurance_details;
+        $(program).find('textarea[name="psummary"]').val(msg);
+    }
+    // 获取返点
+    function get_score_rate(pid) {
+        var program = document.getElementById(pid);
+        var gift_policy = $(program).find('select[name="gift_policy"]').val();   // 获取返佣方式
 
+        $.get("/ajax/get_score_rate", {pid: pid}, function (data) {
+            var obj = jQuery.parseJSON(data);
+            if (obj.flag == 1) {
+                if (gift_policy == '1') {
+                    alert('返佣方式为返油，所以返点为0！');
+                    $(program).find('input[name="business_s"]').val(0);    // 商业险返佣率
+                    $(program).find('input[name="force_s"]').val(0);    // 交强险返佣率
+                    $(program).find('input[name="ali_rate"]').val(0);    // 转账费率
+                    $(program).find('input[name="profit"]').val(0);    // 利润率
+                    $(program).find('input[name="business_tax"]').val(0);    // 商业险税率
+                    $(program).find('input[name="force_tax"]').val(0);    // 交强险税率
+                    $(program).find('input[name="base_money"]').val(0);    // 起兑金额
+                } else {
+                    $(program).find('input[name="business_s"]').val(obj.data.business_s);    // 商业险返佣率
+                    $(program).find('input[name="force_s"]').val(obj.data.force_s);    // 交强险返佣率
+                    $(program).find('input[name="ali_rate"]').val(obj.data.ali_rate);    // 转账费率
+                    $(program).find('input[name="profit"]').val(obj.data.profit_rate);    // 利润率
+                    $(program).find('input[name="business_tax"]').val(obj.data.business_tax);    // 商业险税率
+                    $(program).find('input[name="force_tax"]').val(obj.data.force_tax);    // 交强险税率
+                    $(program).find('input[name="base_money"]').val(obj.data.base_money);    // 起兑金额
+                }
+            }
+            else {
+                alert(obj.msg);
+            }
+        });
+    }
+    // 保存
+    function  saveData(program_id) {
+        // 根据获取 ID 获取元素
+        var program = document.getElementById(program_id);
+        // 获取数据
+        var i_items = {};
+        $(program).find('table tr td').each(function (index, element) {
+            var i_item = $(this).find('input[name="i_item"]').attr('e_name');
+            var i_type = $(this).find('input[name="i_item"]').attr('i_type');
+            var i_item_value = $(this).find('input[name="i_item"]').val();
+            if(i_type == 1 | i_type == 2 | i_type == 3){
+                i_items[i_item] = i_item_value;
+            }
+        });
+
+        var insurance = $(program).find('select[name="insurance"]').val();   // 保险 ID
+        var gift_policy = $(program).find('select[name="gift_policy"]').val();   // 返佣方式
+        var vehicle_tax_price = $(program).find('input[name="vehicle_tax_price"]').val();    // 车船税价格
+        var business_price = $(program).find('input[name="business_price"]').val();    // 商业险价格
+        var force_price = $(program).find('input[name="force_price"]').val();    // 交强险价格
+        var total_price = $(program).find('input[name="total_price"]').val();    // 总价
+        var score = $(program).find('input[name="score"]').val();    // 积分
+        var psummary = $(program).find('textarea[name="psummary"]').val();    // 短信
+        var last_program = $(program).find('input[name="last_program"]').val();    // 是否最终方案
+        var groups = {};
+        groups['pid'] = program_id;
+        groups['insurance'] = insurance;
+        groups['gift_policy'] = gift_policy;
+        groups['vehicle_tax_price'] = vehicle_tax_price;
+        groups['business_price'] = business_price;
+        groups['force_price'] = force_price;
+        groups['total_price'] = total_price;
+        groups['score'] = score;
+        groups['psummary'] = psummary;
+        groups['last_program'] = last_program;
+        for(var key in groups){
+            console.debug(key, groups[key]);
+            if(groups[key] ){
+
+            }
+        }
+        for(var key in i_items){
+            console.debug(key, i_items[key]);
+        }
+
+        $.post('/ajax/save_iop_data', {_xsrf:xsrf, i_items:JSON.stringify(i_items), groups:JSON.stringify(groups)}, function (data) {
+            var obj = jQuery.parseJSON(data);
+            if (obj.flag == 1) {
+                alert('保存成功!');
+            } else {
+                alert(obj.msg);
+            }
         });
     }
 

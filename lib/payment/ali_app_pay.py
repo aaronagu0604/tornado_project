@@ -19,10 +19,10 @@ def join_string(total_amount, subject, body, ordernum):
             "timeout_express": "30m",
             "seller_id": "",
             "product_code": "QUICK_MSECURITY_PAY",
-            "total_amount": %s,
-            "subject": %s,
-            "body": %s,
-            "out_trade_no": %s
+            "total_amount": "%s",
+            "subject": "%s",
+            "body": "%s",
+            "out_trade_no": "%s"
         }&
         charset=utf-8&
         format=json&
@@ -95,7 +95,6 @@ def test():
 # private_key = rsa.PrivateKey._load_pkcs1_pem(Settings.RSA_PRIVATE)
 # sign = rsa.sign(unicode('我', encoding='utf-8'), private_key, SIGN_TYPE)
 # print base64.b64encode(sign)
-print str('我')
 # switch_to_urlencode(unicode(string_demo, encoding='utf-8'))
 
 # print isinstance(unicode('a', encoding='utf-8'), unicode)

@@ -9,6 +9,10 @@ import time
 import logging
 import setting
 
+from tornado.gen import coroutine
+from tornado.web import asynchronous
+from tornado.concurrent import run_on_executor
+from concurrent.futures import ThreadPoolExecutor
 
 @route(r'/admin', name='admin_index')  # 后台首页
 class IndexHandler(AdminBaseHandler):
@@ -908,10 +912,8 @@ class AdvertisementHandler(AdminBaseHandler):
 @route(r'/admin/edit_ad/(\d+)', name='admin_ad_edit')
 class EditAdHandler(AdminBaseHandler):
     def get(self, aid):
-        items = Area.select().where((Area.pid >> None) & (Area.is_delete == 0) & (Area.is_site == 1)).order_by(
-            Area.spell, Area.sort)
+        items = Area.select().where(Area.pid >> None)
         aid = int(aid)
-
         try:
             ad = BlockItem.get(id=aid)
         except:
@@ -923,7 +925,6 @@ class EditAdHandler(AdminBaseHandler):
 
     def post(self, aid):
         aid = int(aid)
-
         url = self.get_argument("url", None)
         imgalt = self.get_argument("imgalt", None)
         sort = int(self.get_argument("sort", 1))
@@ -1115,7 +1116,6 @@ class InsuranceOrderDetailHandler(AdminBaseHandler):
         insurances = Insurance.select()
 
         programs = []
-        print('--------%s-------'%oid)
         insurance_order_prices = InsuranceOrderPrice.select().where(InsuranceOrderPrice.insurance == oid)
         for program in insurance_order_prices:
             i_item_list = []
@@ -1124,7 +1124,9 @@ class InsuranceOrderDetailHandler(AdminBaseHandler):
                     i_item_list.append({
                         'name': i_item.name,
                         'e_name': i_item.eName,
-                        'value': program.__dict__['_data'][i_item.eName]
+                        'style_id': i_item.style_id,
+                        'value': program.__dict__['_data'][i_item.eName],
+                        'price': program.__dict__['_data'][i_item.eName+'Price'] if program.__dict__['_data'][i_item.eName+'Price'] else 0
                     })
             rates = InsuranceScoreExchange.get_score_policy(o.store.area_code, program.insurance)
             programs.append({
@@ -1197,52 +1199,8 @@ class InsuranceOrderDetailHandler(AdminBaseHandler):
         self.redirect('admin/insurance_order/%s'%oid)
 
 
-
-@route(r'/admin/gift_area', name='admin_area')  # 积分区域管理
-class AreaHandler(AdminBaseHandler):
-    def get(self):
-        defultCode = self.get_argument('defultCode', '0')
-        defultSub = int(self.get_argument('defultSub', 0))
-        items = Area.select().where((Area.pid >> None ) & (Area.is_delete == 0)).order_by(Area.sort,Area.id,Area.spell)
-
-        self.render('admin/insurance/score_list.html', items=items, active='gift_area',
-                    defultCode=defultCode, defultSub=defultSub)
-
-
-@route(r'/admin/changeareascorestatu/(\d+)', name='admin_score_area_del')  # 修改积分区域状态
-class AdminScoreAreaDelHandler(AdminBaseHandler):
-    def get(self,id):
-        status = int(self.get_argument('status', 0))
-        try:
-            area = Area.get(id = id)
-            if len(area.code) == 8:   # 市
-                area.is_scorearea = status
-                area.save()
-                codelike = area.code[:4] + '%'
-                areas = Area.select().where(Area.code % codelike)
-                pStatus = 0
-                for a in areas:
-                    if len(a.code)==8 and a.is_scorearea == 1:
-                        pStatus = 1
-                        break
-                p = Area.get(code=area.code[:4])
-                p.is_scorearea = pStatus
-                p.save()
-            else:   # 省
-                area.is_scorearea = status
-                area.save()
-                areas = Area.select().where(Area.pid==id)
-                for a in areas:
-                    a.is_scorearea = status
-                    a.save()
-            self.flash(u"修改成功！")
-        except Exception, e:
-            logging.info('Error: %s'%e.message)
-            self.flash(u"修改失败！")
-        self.redirect('/admin/gift_area?defultCode=%s&defultSub=%s'%(area.code, 1))
-
-
-@route(r'/admin/insurance', name='admin_insurance_list')  # 保险列表
+# --------------------------------------------------------保险业务------------------------------------------------------
+@route(r'/admin/insurance', name='admin_insurance_list')  # 保险公司列表
 class InsuranceList(AdminBaseHandler):
     def get(self):
         iid = int(self.get_argument('iid', 0))
@@ -1356,6 +1314,7 @@ class InsuranceLube(AdminBaseHandler):
         self.render("admin/insurance/lube.html", item=item, iid=iid, area_code=area_code)
 
 
+# --------------------------------------------------------SK润滑油------------------------------------------------------
 @route(r'/admin/sk', name='admin_sk')  # 后台SK产品维护
 class SKHandler(AdminBaseHandler):
     def get(self):
@@ -1423,4 +1382,263 @@ class SKCarHandler(AdminBaseHandler):
         self.render("admin/sk/car_map.html", brands=bs, type=type, active='sk_car', engine_1=engine_1,
                     engine_2=engine_2, gearbox_1=gearbox_1, gearbox_2=gearbox_2, total=total,
                     totalpage=totalpage, page=page, pagesize=pagesize)
+
+
+# -----------------------------------------------------------系统设置---------------------------------------------------
+@route(r'/admin/send_msg', name='admin_sms_send')  # 短信群发
+class SendMsgHandler(AdminBaseHandler):
+    def get(self):
+        items = Area.select().where(Area.pid >> None)
+        self.render('admin/sysSetting/send_msg.html', active='msg', items=items)
+
+    def post(self):
+        content_log = {}
+        number = self.get_body_argument('number', '')
+        content = self.get_body_argument('content', '')
+        title = self.get_body_argument('title', '')
+        is_users = self.get_body_argument('is_users', '')
+        user_type = int(self.get_body_argument('user_type',-1))
+        sms_type = int(self.get_body_argument('sms_type',-1))
+        province = self.get_body_argument('province_code', '')
+        city = self.get_body_argument('city_code', '')
+        district = self.get_body_argument('district_code', '')
+        get_mobile = self.get_body_argument('get_mobile', '')
+
+        if district:
+            area_code = district + '%'
+        elif city:
+            area_code = city + '%'
+        elif province:
+            area_code = province + '%'
+        else:
+            area_code = None
+        if get_mobile and area_code:
+            mobiles = ''
+            stores = Store.select(Store.mobile).where(Store.area_code % area_code)
+            for store in stores:
+                mobiles += store.mobile + ','
+            print mobiles
+            with open('mobiles.txt', 'w') as f:
+                f.write(mobiles.strip(','))
+            self.redirect('/admin/send_msg')
+            return
+        # 极光推送
+        if sms_type == 0:
+            if is_users == 'all_user':
+                content_log['content'] = u'为用户 所有用户 推送极光消息，消息内容：' + content
+                # create_msg(simplejson.dumps({'body': content}), 'all_jpush')
+                self.flash("推送成功")
+            elif is_users == 'user':
+                if number:
+                    content_log['content'] = u'为用户 ' + number + u' 推送极光消息，消息内容：' + content
+                    num = number.split(',')
+                    for n in num:
+                        sms = {'apptype': 1, 'body': content, 'receiver': [n]}
+                        # create_msg(simplejson.dumps(sms), 'jpush')
+                    self.flash("推送成功")
+                else:
+                    self.flash("请输入电话号码！")
+            elif is_users == 'group_user':
+                    if user_type > -1:
+                        content_log['content'] = u'为用户组 ' + str(user_type) + u' 推送极光消息，消息内容：' + content
+                        # create_msg(simplejson.dumps({'body': content, 'grade': user_type}), 'group_jpush')
+                        self.flash("推送成功")
+                        # users = User.select(User.mobile).where((User.grade == user_type) & (User.isactive == 1)).dicts()
+                        # for u in users:
+                        #     if len(u['mobile']) == 11:
+                        #         sms = {'apptype': 1, 'body': content, 'receiver': [u['mobile']]}
+                        #         create_msg(simplejson.dumps(sms), 'jpush')
+                    else:
+                        self.flash("请选择分组")
+        # 短信
+        elif sms_type == 1:
+            if is_users and content:
+                if is_users == 'all_user':
+                    stores = Store.select()
+                    mobiles = ''
+                    for s in stores:
+                        #获取所有用户手机号码并于英文逗号隔开
+                        if len(s.mobile) == 11:
+                            mobiles += s.mobile + ','
+                            logging.info('---%s-%s--%s' % (s.id, s.name, s.mobile))
+                    j = 0
+                    #每次发送号码不能大于600个 7200字符
+                    while j < (stores.count() + 599) / 600:
+                        if len(mobiles) > 7200:
+                            cells = mobiles[0:7200]
+                        else:
+                            cells = mobiles
+                        sms = {'mobile': cells, 'body': content, 'signtype': '1', 'isyzm': ''}
+                        # create_msg(simplejson.dumps(sms), 'sms')
+                        #删除已发送的手机号码
+                        mobiles = mobiles[(j+1)*7200:]
+                        j += 1
+                    self.flash("发送成功")
+                elif is_users == 'user':
+                    if number:
+                        sms = {'mobile': number, 'body': content, 'signtype': '1', 'isyzm': ''}
+                        # create_msg(simplejson.dumps(sms), 'sms')
+                        self.flash("发送成功")
+                    else:
+                        self.flash("请输入电话号码！")
+                elif is_users == 'group_user':
+                    area_code = 0
+                    if district and district != '0':
+                        area_code = district+'%'
+                    elif city and city != '0':
+                        area_code = city+'%'
+                    elif province and province != 0:
+                        area_code = province+'%'
+                    if area_code:
+                        stores = Store.select().where(Store.area_code % area_code)
+                        mobiles = ''
+                        for s in stores:
+                            #获取所有用户手机号码并于英文逗号隔开
+                            if len(s.mobile) == 11:
+                                mobiles += s.mobile + ','
+                                logging.info('---%s-%s-%s-%s'%(s.id, s.name, s.area_code, s.mobile))
+                        j = 0
+                        logging.info('-----%s---%s---'%(content, mobiles))
+                        #每次发送号码不能大于600个 7200字符
+                        while j < (stores.count() + 599) / 600:
+                            if len(mobiles) > 7200:
+                                cells = mobiles[0:7200]
+                            else:
+                                cells = mobiles
+                            sms = {'mobile': cells, 'body': content, 'signtype': '1', 'isyzm': ''}
+                            #create_msg(simplejson.dumps(sms), 'sms')
+                            #删除已发送的手机号码
+                            mobiles = mobiles[(j+1)*7200:]
+                            j += 1
+                        self.flash("发送成功")
+                    else:
+                        self.flash("请选择地区")
+            else:
+                self.flash("尚未填写短信内容")
+        # 站内
+        elif sms_type == 2:
+            pass
+        items = Area.select().where((Area.pid >> None) & (Area.is_delete == 0) & (Area.is_site == 1))
+        self.redirect('/admin/send_msg')
+
+
+@route(r'/admin/log', name='admin_log')  # 系统日志
+class LogHandler(AdminBaseHandler):
+    def get(self):
+        page = int(self.get_argument('page', 1))
+        pagesize = setting.ADMIN_PAGESIZE
+
+        logs = AdminUserLog.select().order_by(AdminUserLog.created.desc())
+        total = logs.count()
+        if total % pagesize > 0:
+            totalpage = total / pagesize + 1
+        else:
+            totalpage = total / pagesize if (total / pagesize) > 0 else 1
+        logs = logs.paginate(page, pagesize)
+
+        self.render('admin/sysSetting/logs.html', active='log', logs=logs, page=page, totalpage=totalpage, total=total)
+
+
+@route(r'/admin/pw', name='password')  # 密码管理
+class PasswordHandler(AdminBaseHandler):
+    def get(self):
+        self.render('admin/sysSetting/password.html', active='pw')
+
+    def post(self):
+        opassword = self.get_argument("Password", None)
+        password = self.get_argument("NPassword", None)
+        apassword = self.get_argument("RNPassword", None)
+        if opassword and password and apassword:
+            if len(password) < 6:
+                self.flash("请确认输入6位以上新密码")
+            elif password != apassword:
+                self.flash("请确认新密码和重复密码一致")
+            else:
+                user = self.get_admin_user()
+                if user.check_password(opassword):
+                    user.password = AdminUser.create_password(password)
+                    user.save()
+                    self.session['admin'] = user
+                    self.session.save()
+                    self.flash("修改密码成功。")
+                else:
+                    self.flash("请输入正确的原始密码")
+        else:
+            self.flash("请输入原始密码和新密码")
+        self.redirect('/admin/pw')
+
+
+# ----------------------------------------------------------其它--------------------------------------------------------
+@route(r'/admin/gift_area', name='admin_area')  # 积分区域管理
+class AreaHandler(AdminBaseHandler):
+    def get(self):
+        defultCode = self.get_argument('defultCode', '0')
+        defultSub = int(self.get_argument('defultSub', 0))
+        items = Area.select().where((Area.pid >> None ) & (Area.is_delete == 0)).order_by(Area.sort,Area.id,Area.spell)
+
+        self.render('admin/insurance/score_list.html', items=items, active='gift_area',
+                    defultCode=defultCode, defultSub=defultSub)
+
+
+@route(r'/admin/changeareascorestatu/(\d+)', name='admin_score_area_del')  # 修改积分区域状态
+class AdminScoreAreaDelHandler(AdminBaseHandler):
+    def get(self,id):
+        status = int(self.get_argument('status', 0))
+        try:
+            area = Area.get(id = id)
+            if len(area.code) == 8:   # 市
+                area.is_scorearea = status
+                area.save()
+                codelike = area.code[:4] + '%'
+                areas = Area.select().where(Area.code % codelike)
+                pStatus = 0
+                for a in areas:
+                    if len(a.code)==8 and a.is_scorearea == 1:
+                        pStatus = 1
+                        break
+                p = Area.get(code=area.code[:4])
+                p.is_scorearea = pStatus
+                p.save()
+            else:   # 省
+                area.is_scorearea = status
+                area.save()
+                areas = Area.select().where(Area.pid==id)
+                for a in areas:
+                    a.is_scorearea = status
+                    a.save()
+            self.flash(u"修改成功！")
+        except Exception, e:
+            logging.info('Error: %s'%e.message)
+            self.flash(u"修改失败！")
+        self.redirect('/admin/gift_area?defultCode=%s&defultSub=%s'%(area.code, 1))
+
+
+@route(r'/admin/loop', name='admin_loop')  # 死循环
+class LoopTestHandler(AdminBaseHandler):
+    executor = ThreadPoolExecutor(2)
+    @asynchronous
+    @coroutine
+    def get(self):
+        a = yield self._sleep()
+        self.write("when i sleep s")
+        self.finish()
+
+    @run_on_executor
+    def _sleep(self):
+        for i in xrange(10):
+            time.sleep(1)
+            print '--%(num)s--' % {'num': i}
+        # self.write('end test')
+        return 1
+
+
+
+
+
+
+
+
+
+
+
 

@@ -1,0 +1,78 @@
+{% extends "layout/admin.html" %}
+{% block css %}
+<link href="/style/css/plugins/dataTables.bootstrap.css" rel="stylesheet">
+{% endblock %}
+{% block content %}
+
+<div class="row">
+    <nav>
+        <div>
+            <a class="navbar-brand" href="#">系统日志</a>
+        </div>
+    </nav>
+</div>
+
+<div class="row">
+    <div class="panel panel-primary">
+        <div class="table-responsive">
+            <table class="table table-hover" id="tb_users" cellpadding="0" cellspacing="0" border="0" style="text-align:center;width:100%;">
+                <thead>
+                <tr style="background:#528acb;color:#fff;text-align:center;height:38px;line-height:38px;">
+                    <th style="width:5%;text-align:center;">用户</th>
+                    <th style="width:5%;text-align:center;">时间</th>
+                    <th style="width:5%;text-align:center;">内容</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for log in logs %}
+                <tr>
+                    <td>
+                        <span style="color:#ff5231;">{{log.admin_user.realname}}</span>
+                    </td>
+                    <td>
+                        <span style="color:#ff5231;">{{log.created|datetimeformat}}</span>
+                    </td>
+                    <td>
+                        <span style="color:#ff5231;">{{log.content}}</span>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <div>
+                <div class="col-sm-4">
+                    <div class="dataTables_info" role="alert" aria-live="polite" aria-relevant="all">
+                        当前：第{{page}}页 / {{totalpage}}页，合计{{total}}条
+                    </div>
+                </div>
+                <div class="col-sm-8">
+                    <div class="dataTables_paginate paging_simple_numbers">
+                        <ul class="pagination  pagination-sm" id="pageUl" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+{% block js %}
+<script src="/style/js/jquery.twbsPagination.min.js"></script>
+<script>
+    $(document).ready(function() {
+
+        $('#pageUl').twbsPagination({
+            first:'首页',
+            prev:'上一页',
+            next:'下一页',
+            last:'尾页',
+            totalPages: {{totalpage}},
+        startPage: {{page}},
+        visiblePages: 8,
+            onPageClick: function (event, page) {
+            self.location="/admin/product_orders?status={{status}}&begin_date={{begin_date or ''}}&end_date={{end_date or ''}}&keyword={{keyword or ''}}&order_type={{order_type}}&page="+page;
+        }
+    });
+})
+</script>
+{% endblock %}

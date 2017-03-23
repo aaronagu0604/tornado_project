@@ -94,7 +94,7 @@
                         </li>
                     </ul>
                     </li>
-                    <li {% if active=='block' or active=='block_items' or active=='hot_search' %} class="active" {%endif %}>
+                    <li {% if active=='block' or active=='ads' or active=='hot_search' %} class="active" {%endif %}>
                     <a  href="#"><i class="fa fa-briefcase fa-fw"></i>&nbsp;&nbsp;&nbsp;App管理
                         <span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level">
@@ -102,7 +102,7 @@
                             <a {% if active=='block' %}class="active"{% endif %} href="/admin/block">广告位管理</a>
                         </li>
                         <li>
-                            <a {% if active=='block_items' %}class="active"{% endif %} href="/admin/advertisement">广告管理</a>
+                            <a {% if active=='ads' %}class="active"{% endif %} href="/admin/advertisement">广告管理</a>
                         </li>
                         <li>
                             <a {% if active=='hot_search' %}class="active"{% endif %} href="/admin/hot_search">热门搜索</a>
@@ -136,7 +136,6 @@
                     <a  href="#"><i class="fa fa-qrcode fa-fw"></i>&nbsp;&nbsp;&nbsp;财务对账
                         <span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level">
-
                         <li>
                             <a {% if active=='payback' %}class="active"{% endif %} href="/admin/mobile/payback">退款处理</a>
                         </li>
@@ -223,19 +222,18 @@
                         <a href="#"><i class="fa fa-unlock fa-fw"></i>&nbsp;&nbsp;&nbsp;系统设置
                             <span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
+                            <!--<li>-->
+                                <!--<a {% if active=='static' %} class="active"{% endif %} href="/admin/static">静态页面</a>-->
+                            <!--</li>-->
                             <li>
-                                <a {% if active=='static' %} class="active"{% endif %} href="/admin/static">静态页面</a>
-                            </li>
-
-                            <li>
-                                <a {% if active=='msg' %} class="active"{% endif %} href="/admin/msg">消息群发</a>
+                                <a {% if active=='msg' %} class="active"{% endif %} href="/admin/send_msg">消息群发</a>
                             </li>
                             <li>
                                 <a {% if active=='log' %}class="active"{% endif %} href="/admin/log">系统日志</a>
                             </li>
-                            <li>
-                                <a {% if active=='update' %}class="active"{% endif %} href="/admin/update">更新管理</a>
-                            </li>
+                            <!--<li>-->
+                                <!--<a {% if active=='update' %}class="active"{% endif %} href="/admin/update">更新管理</a>-->
+                            <!--</li>-->
                             <li>
                                 <a {% if active=='pw' %} class="active"{% endif %} href="/admin/pw">修改密码</a>
                             </li>

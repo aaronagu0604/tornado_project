@@ -559,7 +559,8 @@ class SubOrder(db.Model):
     order = ForeignKeyField(Order, related_name='sub_orders', db_column='order_id')  # 所属订单
     saler_store = ForeignKeyField(Store, related_name='saler_sub_orders', db_column='saler_store_id')  # 卖家
     buyer_store = ForeignKeyField(Store, related_name='buyer_sub_orders', db_column='buyer_store_id')  # 买家
-    price = FloatField(default=0)  # 购买时产品价格或积分
+    price = FloatField(default=0)  # 购买时产品价格
+    score = IntegerField(default=0)  # 积分
     status = IntegerField(default=0)  # 0待付款 1待发货 2待收货 3交易完成（待评价） 4已评价 5申请退款 6已退款 -1已取消
     fail_reason = CharField(default='', max_length=1024)  # 取消或退款原因
     fail_time = IntegerField(default=0)  # 取消或退款时间
@@ -645,7 +646,7 @@ class InsuranceOrderPrice(db.Model):
     created = IntegerField(default=0)  # 报价/修改 时间
     admin_user = ForeignKeyField(AdminUser, db_column='admin_user_id', null=True)  # 报价人员
     gift_policy = IntegerField(default=0)  # 礼品策略 1反油， 2反积分
-    response = IntegerField(default=0)  # 是否保价 1后台客服已经报价，0未报价
+    response = IntegerField(default=0)  # 0未报价 1已经报价 2不可再修改 -1关闭
     status = IntegerField(default=1)  # 状态 1有效，0已过期
     score = IntegerField(default=0)  # 卖的这单保险可以获取多少积分
     total_price = FloatField(default=0.0)  # 保险订单总价格
@@ -653,7 +654,6 @@ class InsuranceOrderPrice(db.Model):
     business_price = FloatField(default=0.0)  # 商业险价格
     vehicle_tax_price = FloatField(default=0.0)  # 车船税价格
     sms_content = CharField(max_length=1024, null=True)  # 短信通知内容
-    status = IntegerField(default=0)  # 报价单的状态 0未报价 1已报价 2不可再修改 -1关闭
 
     # 交强险
     forceI = CharField(max_length=32, default='')  # 是否包含交强险
@@ -789,7 +789,7 @@ class InsuranceOrder(db.Model):
         db_table = 'tb_insurance_orders'
 
 
-# 卖保险兑积分，积分兑现表
+# 卖保险兑积分，积分兑现
 class InsuranceScoreExchange(db.Model):
     id = PrimaryKeyField()
     area_code = CharField(max_length=12)  # 地区code

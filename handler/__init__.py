@@ -3,7 +3,7 @@
 
 
 from tornado.web import RequestHandler
-from model import User, Store
+from model import User
 from lib.session import Session
 from lib.mixin import FlashMessagesMixin
 import logging

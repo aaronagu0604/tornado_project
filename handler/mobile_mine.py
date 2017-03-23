@@ -221,6 +221,7 @@ def productOrderSearch(ft, type, index):
             'buyer_store': so.buyer_store.name,
             'order_type': so.order.order_type,
             'price': so.price,
+            'score': so.score,
             'status': so.status,
             'items': items,
             'ordered': time.strftime('%Y-%m-%d %H-%M-%S', time.localtime(so.order.ordered)),

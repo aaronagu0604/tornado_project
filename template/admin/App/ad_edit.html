@@ -1,4 +1,55 @@
 {% extends "layout/admin.html" %}
+
+{% block js %}
+<script>
+    function SetImg(id)
+    {
+        $.get("/ajax/GetAdTypeImg", {pcode: id, t: Math.random()}, function (data) {
+            data = jQuery.parseJSON(data);
+            if (data.flag == 1) {
+                $('#ats').attr('href', '/upload/ad/'+data.data);
+            }
+        });
+    }
+
+    function GetSubAreas(pcode, has_sub) {
+        if(has_sub!=1)
+            return;
+        $.get("/ajax/GetSubScoreAreas", { pcode: pcode,  t: Math.random() }, function (data) {
+            data = jQuery.parseJSON(data);
+            if(data.flag==1)                {
+                isex=$("#span" + pcode).attr("data-ex");
+                code=$("#span"+ pcode).attr("data-code");
+                blank=$("#span"+ pcode).attr("data-blank");
+                blank=blank+"&nbsp;&nbsp;——";
+                if(isex*1==0){
+                    $("#span"+pcode).attr("data-ex","1")
+                    var html=""
+                    for(var i=0; i< data.data.length; i++){
+                        html+="<tr id=\"tr"+data.data[i]["code"]+"\">";
+                        if(data.data[i]["has_sub"]*1==1) {
+                            html+="  <td align=left style=\"cursor:pointer\" onclick=\"GetSubAreas('"+data.data[i]["code"]+"')\">";
+                        }else {
+                            html+="  <td align=left style=\"cursor:normal\" onclick=\"GetSubAreas('"+data.data[i]["code"]+"')\">";
+                        }
+                        html+="</span>"+  blank + data.data[i]["name"];
+                    }
+                    $(html).insertAfter("#tr"+code);
+                }
+                else{
+                    $("tr[id^='tr"+code+"'][id!='tr"+code+"']").remove();
+                    $("#span"+pcode).attr("data-ex","0")
+                }
+            }
+            else{
+                alert(data.msg)
+            }
+        });
+    }
+    window.onload=GetSubAreas('0027',0);
+</script>
+{% endblock %}
+
 {% block content %}
 <div class="row">
     <nav>
@@ -8,6 +59,31 @@
     </nav>
 </div>
 <div class="row">
+
+    <div class="col-xs-3">
+        <div class="panel panel-primary">
+            <div class="panel-body">
+                <table class="table table-hover" id="tb_users" cellpadding="0" cellspacing="0" border="0" style="text-align:center;width:100%;">
+                <thead>
+                <tr >
+                    <th style="width:15%;text-align:center;">名称</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for item in items %}
+                <tr id="tr{{item.code}}">
+                    <td align=left onclick="GetSubAreas('{{item.code}}',{{item.has_sub}})">
+                        &nbsp;&nbsp;<span id="span{{item.code}}"  data-blank="" data-ex="0" data-code="{{item.code}}"></span>+
+                    </td>
+                    <th><input type="checkbox" name="hot" {% if category and category.hot==1 %} checked='true' {%endif%}>{{item.name}}</th>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-9">
     <div class="panel panel-primary">
         <div class="panel-body">
             {%set messages=handler.get_flashed_messages() %}
@@ -18,6 +94,7 @@
                 {% endfor %}
             </div>
             {%endif%}
+
             <form action="" method="post" enctype="multipart/form-data">
                 {{xsrf()}}
                 <div class="form-group has-success row">
@@ -97,20 +174,6 @@
             </form>
         </div>
     </div>
+    </div>
 </div>
-
-{% endblock %}
-{% block js %}
-<script>
-
-    function SetImg(id)
-    {
-        $.get("/ajax/GetAdTypeImg", {pcode: id, t: Math.random()}, function (data) {
-            data = jQuery.parseJSON(data);
-            if (data.flag == 1) {
-                $('#ats').attr('href', '/upload/ad/'+data.data);
-            }
-        });
-    }
-</script>
 {% endblock %}
