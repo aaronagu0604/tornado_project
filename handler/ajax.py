@@ -6,6 +6,7 @@ from handler import BaseHandler
 from lib.route import route
 from model import *
 from bootloader import db
+from lib.mqhelper import create_msg
 
 
 @route(r'/ajax/GetSubAreas', name='ajax_GetSubAreas')  # 获取下级区域
@@ -447,13 +448,13 @@ class WebAppCarItemListHandler(BaseHandler):
         self.write(simplejson.dumps(result))
 
 
-@route(r'/ajax/save_iop_data', name='ajax_save_iop')  # 根据订单ID取消订单
+@route(r'/ajax/save_iop_data', name='ajax_save_iop')  # 保存报价后的方案
 class SaveIOPHandler(BaseHandler):
     def post(self):
         result = {'flag': 0, 'msg': '', 'data': ''}
         groups = self.get_body_argument('groups', None)
-        i_items = self.get_body_argument("i_items", None)
-
+        i_items = self.get_body_argument('i_items', None)
+        send_msg = self.get_body_argument('send_msg', None)
         if not (groups and i_items):
             result['msg'] = u'参数不全'
             self.write(simplejson.dumps(result))
@@ -480,6 +481,8 @@ class SaveIOPHandler(BaseHandler):
             for item in i_items:
                 pid.__dict__['_data'][item+'Price'] = i_items[item]
             pid.save()
+            if send_msg == '1':
+                create_msg()
             result['flag'] = 1
         else:
             result['msg'] = u'该方案已不可再更改'

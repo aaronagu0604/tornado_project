@@ -60,10 +60,11 @@ class UploadImageHandler(BaseHandler):
         result['data'] = ''
         result['msg'] = ''
         try:
-            logging.info('start upload image')
+            # logging.info('start upload image')
+            is_admin = self.get_body_argument('is_admin', None)
             meta = self.request.files['file'][0]
             suffix = meta['filename'].split('.')[-1]
-            logging.info('file suffix: ' + suffix)
+            # logging.info('file suffix: ' + suffix)
             fullname, arr, filename = self.get_full_file_name('image', suffix)
             while os.path.exists(fullname):
                 logging.info('已经存在文件：' + fullname)
@@ -78,7 +79,10 @@ class UploadImageHandler(BaseHandler):
             logging.info('upload image failing: ' + e.message)
             result['flag'] = 0
             result['msg'] = 'fail in upload image'
-        self.write(simplejson.dumps(result))
+        if is_admin:
+            self.redirect('http://127.0.0.1:8890/admin/upload_pic?data=%s' % result['data'])
+        else:
+            self.write(simplejson.dumps(result))
 
 
 class ViewHandler(BaseHandler):

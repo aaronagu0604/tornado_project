@@ -1,0 +1,72 @@
+{% extends "layout/admin.html" %}
+{% block content %}
+<div class="row">
+    <nav>
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">广告位信息</a>
+        </div>
+    </nav>
+</div>
+<div class="row">
+    <div class="panel panel-primary">
+        <form role="form" enctype="multipart/form-data" action="http://img.520czj.com/upload/image" method="post">
+            {{xsrf()}}
+            <div class="panel-body">
+                {%set messages=handler.get_flashed_messages() %}
+                {%if messages%}
+                <div class="msg">
+                    {% for type, msg in messages%}
+                    <span>{{msg}}</span>
+                    {% endfor %}
+                </div>
+                {%endif%}
+                <div class="form-group has-success">
+                    <label class="control-label">图片位置</label>
+                    <input type="text" class="form-control" value="{{data}}" style="width:480px;">
+                </div>
+                <div class="form-group has-success">
+                    <label class="control-label">图示</label>
+                    <input id="file" type="file" class="form-control"  name="file" style="width:480px;">
+                    <img src="{{data}}" height="200">
+                </div>
+                <div class="form-group has-success">
+                    <a class="btn btn-outline btn-warning btn-sm" href="/admin/ad_type" style="padding:7px 28px;border:1px solid #438bca;color:#438bca;border-radius:4px;font-size:16px;margin-right:30px;">取消</a>
+                    <input type="submit" value="提交" class="btn btn-outline btn-primary btn-sm" style="width:90px;height:32px;background:#438bca;color:#fff;border-radius:4px;border:none;font-size:16px;">
+                </div>
+            </div>
+            <input type="hidden" name="is_admin" value="1">
+        </form>
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<script>
+    // 保存
+    //    var xsrf='{{handler.xsrf_token}}';
+    //    function  saveData() {
+    //        var fileInput = document. getElementById("file");
+    //        var file = fileInput.files[0];
+    //
+    //        $.post('http://127.0.0.1:8889/upload/image', {_xsrf: xsrf, file: file}, function (data) {
+    //            var obj = jQuery.parseJSON(data);
+    //            if (obj.flag == 1) {
+    //                alert(obj.data);
+    //            } else {
+    //                alert(obj.msg);
+    //            }
+    //        });
+    //    }
+
+</script>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+

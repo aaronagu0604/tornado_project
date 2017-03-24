@@ -1139,6 +1139,7 @@ class InsuranceOrderDetailHandler(AdminBaseHandler):
                 'business_price': program.business_price,
                 'vehicle_tax_price': program.vehicle_tax_price,
                 'program': i_item_list,
+                'msg': program.sms_content if program.sms_content else '',
                 'rates': rates
             })
         if archive:
@@ -1385,6 +1386,13 @@ class SKCarHandler(AdminBaseHandler):
 
 
 # -----------------------------------------------------------系统设置---------------------------------------------------
+@route(r'/admin/upload_pic', name='admin_upload_pic')    # 图片上传
+class UploadPicHandler(AdminBaseHandler):
+    def get(self):
+        data = self.get_argument('data', '')
+        self.render('admin/sysSetting/picture_edit.html', active='pic', data=data)
+
+
 @route(r'/admin/send_msg', name='admin_sms_send')  # 短信群发
 class SendMsgHandler(AdminBaseHandler):
     def get(self):
