@@ -674,48 +674,48 @@ def move_insuranceporderprice():
             thirdDutyIPlusPrice=None,
 
             # 商业险-主险-机动车全车盗抢险
-            robbingI =item.robbingI,
-            robbingIPrice =None,
-            robbingIPlus =item.robbingSpecialI,
-            robbingIPlusPrice =None,
+            robbingI=item.robbingI,
+            robbingIPrice=None,
+            robbingIPlus=item.robbingSpecialI,
+            robbingIPlusPrice=None,
 
             # 商业险-主险-机动车车上人员责任险（司机），含保额
-            driverDutyI =item.driverDutyI,
-            driverDutyIPrice =None,
-            driverDutyIPlus =item.driverDutySpecialI,
-            driverDutyIPlusPrice =None,
+            driverDutyI=item.driverDutyI,
+            driverDutyIPrice=None,
+            driverDutyIPlus=item.driverDutySpecialI,
+            driverDutyIPlusPrice=None,
 
             # 商业险-主险-机动车车上人员责任险（乘客），含保额
-            passengerDutyI =item.passengerDutyI,
-            passengerDutyIPrice =None,
-            passengerDutyIPlus =item.passengerDutySpecialI,
-            passengerDutyIPlusPrice =None,
+            passengerDutyI=item.passengerDutyI,
+            passengerDutyIPrice=None,
+            passengerDutyIPlus=item.passengerDutySpecialI,
+            passengerDutyIPlusPrice=None,
 
             # 商业险-附加险-玻璃单独破碎险
-            glassI =item.glassI,
-            glassIPrice =None,
+            glassI=item.glassI,
+            glassIPrice=None,
 
             # 商业险-附加险-车身划痕损失险，含保额
-            scratchI =item.scratchI,
-            scratchIPrice =None,
-            scratchIPlus =item.scratchSpecialI,
-            scratchIPlusPrice =None,
+            scratchI=item.scratchI,
+            scratchIPrice=None,
+            scratchIPlus=item.scratchSpecialI,
+            scratchIPlusPrice=None,
 
             # 商业险-附加险-自燃损失险
-            fireDamageI =item.normalDamageI,
-            fireDamageIPrice =None,
-            fireDamageIPlus =item.normalDamageSpecialI,
-            fireDamageIPlusPrice =None,
+            fireDamageI=item.normalDamageI,
+            fireDamageIPrice=None,
+            fireDamageIPlus=item.normalDamageSpecialI,
+            fireDamageIPlusPrice=None,
 
             # 商业险-附加险-发动机涉水损失险
-            wadeI =item.wadeI,
-            wadeIPrice =None,
-            wadeIPlus =item.wadeSpecialI,
-            wadeIPlusPrice =None,
+            wadeI=item.wadeI,
+            wadeIPrice=None,
+            wadeIPlus=item.wadeSpecialI,
+            wadeIPlusPrice=None,
 
             # 商业险-附加险-机动车损失保险无法找到第三方特约金
-            thirdSpecialI =item.thirdSpecialI,
-            thirdSpecialIPrice =None,
+            thirdSpecialI=item.thirdSpecialI,
+            thirdSpecialIPrice=None,
         )
         insurance_order_price_map[item.id] = insuranceorderprice.id
         print insuranceorderprice.id
@@ -857,3 +857,40 @@ def move_orderitem():
 
 if __name__ == '__main__':
     move_delivery()
+    move_bankcard()
+    move_area()
+    move_category()
+    move_categoryattribute()
+    move_categoryattributeitem()
+    move_brand()
+    move_brandcategory()
+    move_adminuser()
+    move_adminuserlog()
+    move_store()
+    move_storebankaccount()
+    move_storeaddress()
+    move_storearea()
+    move_user()
+    move_scorerecord()
+    move_moneyrecord()
+    move_block()
+    move_blockitem()
+    move_blockitemarea()
+    move_product()
+    move_productpic()
+    move_productattributevalue()
+    move_productrelease()
+    move_storeproductprice()
+    move_insurance()
+    move_insuranceitems()
+    move_insurancearea()
+    move_insuranceprice()
+    move_insuranceexchange()
+    move_feedback()
+    move_insuranceporderprice()
+    move_insuranceorder()
+    move_cart()
+    move_settlement()
+    move_Order()
+    move_suborder()
+    move_orderitem()
