@@ -215,6 +215,26 @@ class StoreAddress(db.Model):
         db_table = 'tb_store_address'
 
 
+# 提现表
+class Withdraw(db.Model):
+    id = PrimaryKeyField()
+    user = ForeignKeyField(User, related_name='withdraws', db_column='user_id')  # 用户
+    account_type = IntegerField(default=0)  # 提现账户类型 0银行卡 1支付宝
+    account_truename = CharField(max_length=32, default='')  # 银行卡姓名
+    account_name = CharField(max_length=64, default='')  # 银行名称
+    account_branchname = CharField(max_length=64, default='')  # 支行名称
+    account_account = CharField(max_length=32, default='')  # 银行卡号
+    sum_money = FloatField(default=0.0)  # 提现金额
+    status = IntegerField(default=0)  # 处理状态
+    apply_time = IntegerField(default=0)  # 申请时间
+    processing_time = IntegerField(default=0)  # 处理时间
+    processing_by = ForeignKeyField(AdminUser, db_column='updated_by', null=True)  # 处理人
+    processing_result = CharField(max_length=64, default='')  # 处理结果
+
+    class Meta:
+        db_table = 'tb_withdraw'
+
+
 # 资金变动记录
 class MoneyRecord(db.Model):
     id = PrimaryKeyField()

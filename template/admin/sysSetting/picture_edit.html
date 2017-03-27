@@ -22,7 +22,8 @@
                 {%endif%}
                 <div class="form-group has-success">
                     <label class="control-label">图片位置</label>
-                    <input type="text" class="form-control" value="{{data}}" style="width:480px;">
+                    <input id="contents" type="text" class="form-control" value="{{data}}" style="width:480px;">
+                    <input type="button" onClick="jsCopy();" value="复制" style="transform:translateY(100px);	-webkit-transform:translateY(-1px);"/>
                 </div>
                 <div class="form-group has-success">
                     <label class="control-label">图示</label>
@@ -41,22 +42,15 @@
 {% endblock %}
 {% block js %}
 <script>
-    // 保存
-    //    var xsrf='{{handler.xsrf_token}}';
-    //    function  saveData() {
-    //        var fileInput = document. getElementById("file");
-    //        var file = fileInput.files[0];
-    //
-    //        $.post('http://127.0.0.1:8889/upload/image', {_xsrf: xsrf, file: file}, function (data) {
-    //            var obj = jQuery.parseJSON(data);
-    //            if (obj.flag == 1) {
-    //                alert(obj.data);
-    //            } else {
-    //                alert(obj.msg);
-    //            }
-    //        });
-    //    }
-
+    function jsCopy(){
+        var e=document.getElementById("contents");//对象是contents
+        e.select(); //选择对象
+        var e="hello world";
+        tag=document.execCommand("Copy"); //执行浏览器复制命令
+        if(tag){
+            alert('复制内容成功');
+        }
+    }
 </script>
 {% endblock %}
 

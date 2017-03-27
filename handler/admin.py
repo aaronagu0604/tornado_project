@@ -8,6 +8,7 @@ import simplejson
 import time
 import logging
 import setting
+import os
 
 from tornado.gen import coroutine
 from tornado.web import asynchronous
@@ -521,10 +522,12 @@ class CategoryEditHandler(AdminBaseHandler):
         category.sort = sort
         category.hot = 1 if hot else 0
         category.active = 1 if active else 0
-        message_path = 'C:/Users/agu/Desktop/tmp/'
+        message_path = setting.admin_file_path + 'category'
         try:
             datetime = time.strftime('%Y%m%d%H%M%S', time.localtime(time.time()))  # 获取当前时间作为图片名称
             if mobile_img:
+                if not os.path.isdir(message_path):
+                    os.makedirs(message_path)
                 filename = message_path + str(datetime) + "_mobile.jpg"
                 with open(filename, "wb") as f:
                     f.write(mobile_img)
@@ -677,9 +680,10 @@ class EditBrandHandler(AdminBaseHandler):
             if self.request.files:
                 datetime = time.strftime('%Y%m%d%H%M%S', time.localtime(time.time()))  # 获取当前时间作为图片名称
                 filename = str(datetime) + ".jpg"
-                # with open('upload/ad/' + filename, "wb") as f:
-                #     f.write(self.request.files["file"][0]["body"])
-                ad.logo = '/upload/ad/' + filename
+                file_path = setting.admin_file_path + 'brand'
+                with open(file_path + filename, "wb") as f:
+                    f.write(self.request.files["file"][0]["body"])
+                ad.logo = file_path + filename
             ad.name = name
             ad.engname = engname
             ad.pinyin = pinyin
@@ -884,11 +888,12 @@ class EditBlockHandler(AdminBaseHandler):
             if self.request.files:
                 datetime = time.strftime('%Y%m%d%H%M%S', time.localtime(time.time()))  # 获取当前时间作为图片名称
                 filename = str(datetime) + ".jpg"
-                # if not os.path.exists('upload/block'):
-                #         os.mkdir('upload/block')
-                # with open('upload/block/' + filename, "wb") as f:
-                #     f.write(self.request.files["file"][0]["body"])
-                # block.imagename = '/upload/block/'+filename
+                file_path = setting.admin_file_path+'/App'
+                if not os.path.isdir(file_path):
+                    os.makedirs(file_path)
+                with open(file_path + filename, "wb") as f:
+                    f.write(self.request.files["file"][0]["body"])
+                block.imagename = '/upload/block/'+filename
             block.name = name
             block.remark = remark
             block.category = category
@@ -911,7 +916,14 @@ class AdvertisementHandler(AdminBaseHandler):
 
 @route(r'/admin/edit_ad/(\d+)', name='admin_ad_edit')
 class EditAdHandler(AdminBaseHandler):
+    executor = ThreadPoolExecutor(2)
+    @asynchronous
+    @coroutine
     def get(self, aid):
+        a = yield self.show_ad(aid)
+
+    @run_on_executor
+    def show_ad(self, aid):
         items = Area.select().where(Area.pid >> None)
         aid = int(aid)
         try:
@@ -969,6 +981,7 @@ class EditAdHandler(AdminBaseHandler):
 
         self.render('admin/ad/editad.html', ad=ad, active='ads')
 
+
 @route(r'/admin/hot_search', name='admin_hot_search')
 class HotSearchHandler(AdminBaseHandler):
     def get(self):
@@ -987,6 +1000,43 @@ class HotSearchHandler(AdminBaseHandler):
         s = search.order_by(HotSearch.quantity.desc()).paginate(page, pagesize)
         self.render('/admin/App/hot_search.html', search=s, active='hot_search', total=total, page=page,
                     pagesize=pagesize, totalpage=totalpage, status=status)
+
+
+# -------------------------------------------------------财务对账-------------------------------------------------------
+@route(r'/admin/withdraw', name='admin_withdraw')  # 提现管理列表
+class WithdrawHandler(AdminBaseHandler):
+    def get(self):
+        page = int(self.get_argument("page", '1'))
+        pagesize = self.settings['admin_pagesize']
+        key = self.get_argument("keyword", None)
+        begindate = self.get_argument("begindate", '')
+        enddate = self.get_argument("enddate", '')
+        status = self.get_argument("status", '')
+
+        ft = (Withdraw.id > 0)
+        if begindate and enddate:
+            begin = time.strptime(begindate, "%Y-%m-%d")
+            end = time.strptime((enddate + " 23:59:59"), "%Y-%m-%d %H:%M:%S")
+            ft = ft & (Withdraw.apply_time > time.mktime(begin)) & (Withdraw.apply_time < time.mktime(end))
+
+        if status:
+            ft = ft & (Withdraw.status == status)
+        if key:
+            keyword = '%' + key + '%'
+            ft = ft & ((User.username % keyword) | ((User.mobile % keyword)))
+            uq = Withdraw.select().join(User, on=(Withdraw.user == User.id)).where(ft)
+        else:
+            uq = Withdraw.select().where(ft)
+        total = uq.count()
+        if total % pagesize > 0:
+            totalpage = total / pagesize + 1
+        else:
+            totalpage = total / pagesize
+        lists = uq.order_by(Withdraw.apply_time.desc()).paginate(page, pagesize)
+        self.render('/admin/finance/withdraw.html', lists=lists, total=total, page=page, pagesize=pagesize,
+                    totalpage=totalpage, active='withdraw', keyword=key, begindate=begindate, enddate=enddate,
+                    status=status)
+
 
 # --------------------------------------------------------订单管理------------------------------------------------------
 @route(r'/admin/product_orders', name='admin_product_orders')  # 普通商品订单
