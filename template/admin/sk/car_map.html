@@ -9,15 +9,22 @@
     <nav>
         <div class="navbar-header" style="float: left">
             <a class="navbar-brand" href="#" style="font-weight:500;">SK产品车型映射</a>
+
         </div>
         <div class="pull-right">
             <form class="navbar-form navbar-left" action="">
+                <button class="btn btn-warning" type="button" >
+                         保存
+                     </button>
                 <label class="num">未设置数据：&nbsp;</label>
                 <div class="btn-group btn-group-xs">
                     <a href="/admin/sk_car?type=1" class="btn btn-default {{type==1 and 'active'}}">发动机油基本({{engine_1}})</a>
                     <a href="/admin/sk_car?type=2" class="btn btn-default {{type==2 and 'active'}}">发动机油推荐({{engine_2}})</a>
                     <a href="/admin/sk_car?type=3" class="btn btn-default {{type==3 and 'active'}}">变速箱油基本({{gearbox_1}})</a>
                     <a href="/admin/sk_car?type=4" class="btn btn-default {{type==4 and 'active'}}">变速箱油推荐({{gearbox_2}})</a>
+                    <a href="/admin/sk_car?type=5" class="btn btn-default {{type==5 and 'active'}}">刹车油({{brake_oil}})</a>
+                    <a href="/admin/sk_car?type=6" class="btn btn-default {{type==6 and 'active'}}">防冻液({{antifreeze_solution}})</a>
+
                 </div>
             </form>
         </div>

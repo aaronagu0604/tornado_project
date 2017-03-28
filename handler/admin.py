@@ -1500,6 +1500,8 @@ class SKCarHandler(AdminBaseHandler):
         engine_2 = CarItem.select().where((CarItem.active == 1) & (CarItem.car_sk_engine_2 >> None)).count()
         gearbox_1 = CarItem.select().where((CarItem.active == 1) & (CarItem.car_sk_gearbox_1 >> None)).count()
         gearbox_2 = CarItem.select().where((CarItem.active == 1) & (CarItem.car_sk_gearbox_2 >> None)).count()
+        brake_oil = CarItem.select().where((CarItem.active == 1) & (CarItem.brake_oil >> None)).count()
+        antifreeze_solution = CarItem.select().where((CarItem.active == 1) & (CarItem.antifreeze_solution >> None)).count()
 
         ft = ((CarBrand.active == 1) & (CarItem.active == 1) & (Car.active == 1))
         ft2 = ((CarItem.active == 1) & (Car.active == 1))
@@ -1535,7 +1537,8 @@ class SKCarHandler(AdminBaseHandler):
 
         self.render("admin/sk/car_map.html", brands=bs, type=type, active='sk_car', engine_1=engine_1,
                     engine_2=engine_2, gearbox_1=gearbox_1, gearbox_2=gearbox_2, total=total,
-                    totalpage=totalpage, page=page, pagesize=pagesize)
+                    totalpage=totalpage, page=page, pagesize=pagesize, antifreeze_solution=antifreeze_solution,
+                    brake_oil=brake_oil)
 
 
 # -----------------------------------------------------------系统设置---------------------------------------------------

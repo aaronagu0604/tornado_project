@@ -1044,6 +1044,7 @@ class CarSK(db.Model):
     id = PrimaryKeyField()
     name = CharField(max_length=50)  # SK产品名
     intro = CharField(max_length=500)  # SK产品介绍
+    api_level = CharField(max_length=100, null=True)  # api级别
     logo = CharField(max_length=1000, null=True)  # SK产品logo
     category = IntegerField(default=1)  # 状态 1发动机油，2变速箱油
     active = IntegerField(default=1)  # 状态 0删除 1有效
