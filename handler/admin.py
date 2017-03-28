@@ -1140,6 +1140,49 @@ class ExportTradeListHandler(AdminBaseHandler):
                     totalpage=totalpage, status=status, active=active, begin_date=begin_date, end_date=end_date,
                     archive=archive)
 
+    @route(r'/admin/store_liquidity/(\d+)', name='admin_store_liquidit')  #
+    class StoreLiquiditHandler(AdminBaseHandler):
+        def get(self, sid):
+            page = int(self.get_argument("page", '1'))
+            pagesize = self.settings['admin_pagesize']
+            keyword = self.get_argument("keyword", '')
+            begindate = self.get_argument("begindate", '')
+            enddate = self.get_argument("enddate", '')
+            type = self.get_argument("type", '1')
+            if type == '1':
+                ft = (ScoreRecord.status == 1) & (ScoreRecord.store == sid)
+                if begindate and enddate:
+                    begin = time.strptime(begindate, "%Y-%m-%d")
+                    end = time.strptime((enddate + " 23:59:59"), "%Y-%m-%d %H:%M:%S")
+                    ft = ft & (ScoreRecord.created > time.mktime(begin)) & (ScoreRecord.created < time.mktime(end))
+                if keyword:
+                    key = '%' + keyword + '%'
+                    ft = ft & (ScoreRecord.ordernum % key)
+                srs = ScoreRecord.select().where(ft)
+            else:
+                ft = (MoneyRecord.status == 1) & (MoneyRecord.store == sid)
+                if begindate and enddate:
+                    begin = time.strptime(begindate, "%Y-%m-%d")
+                    end = time.strptime((enddate + " 23:59:59"), "%Y-%m-%d %H:%M:%S")
+                    ft = ft & (MoneyRecord.apply_time > time.mktime(begin)) & (
+                    MoneyRecord.apply_time < time.mktime(end))
+                if keyword:
+                    key = '%' + keyword + '%'
+                    ft = ft & (MoneyRecord.in_num % key)
+                srs = MoneyRecord.select().where(ft)
+            total = srs.count()
+            if total % pagesize > 0:
+                totalpage = total / pagesize + 1
+            else:
+                totalpage = total / pagesize
+            if type == '1':
+                lists = srs.order_by(ScoreRecord.created.desc()).paginate(page, pagesize)
+            else:
+                lists = srs.order_by(MoneyRecord.apply_time.desc()).paginate(page, pagesize)
+            self.render('/admin/finance/liquidity.html', lists=lists, total=total, page=page, pagesize=pagesize,
+                        totalpage=totalpage, active='withdraw', keyword=keyword, begindate=begindate, enddate=enddate,
+                        sid=sid, type=type)
+
 
 # --------------------------------------------------------订单管理------------------------------------------------------
 @route(r'/admin/product_orders', name='admin_product_orders')  # 普通商品订单
@@ -1500,8 +1543,6 @@ class SKCarHandler(AdminBaseHandler):
         engine_2 = CarItem.select().where((CarItem.active == 1) & (CarItem.car_sk_engine_2 >> None)).count()
         gearbox_1 = CarItem.select().where((CarItem.active == 1) & (CarItem.car_sk_gearbox_1 >> None)).count()
         gearbox_2 = CarItem.select().where((CarItem.active == 1) & (CarItem.car_sk_gearbox_2 >> None)).count()
-        brake_oil = CarItem.select().where((CarItem.active == 1) & (CarItem.brake_oil >> None)).count()
-        antifreeze_solution = CarItem.select().where((CarItem.active == 1) & (CarItem.antifreeze_solution >> None)).count()
 
         ft = ((CarBrand.active == 1) & (CarItem.active == 1) & (Car.active == 1))
         ft2 = ((CarItem.active == 1) & (Car.active == 1))
@@ -1537,8 +1578,7 @@ class SKCarHandler(AdminBaseHandler):
 
         self.render("admin/sk/car_map.html", brands=bs, type=type, active='sk_car', engine_1=engine_1,
                     engine_2=engine_2, gearbox_1=gearbox_1, gearbox_2=gearbox_2, total=total,
-                    totalpage=totalpage, page=page, pagesize=pagesize, antifreeze_solution=antifreeze_solution,
-                    brake_oil=brake_oil)
+                    totalpage=totalpage, page=page, pagesize=pagesize)
 
 
 # -----------------------------------------------------------系统设置---------------------------------------------------

@@ -489,6 +489,35 @@ class SaveIOPHandler(BaseHandler):
 
         self.write(simplejson.dumps(result))
 
+
+@route(r'/ajax/withdraw_change_status', name='ajax_withdraw_change_status')  # 更新提现状态
+class WithdrawChangeStatusHandler(BaseHandler):
+    def post(self):
+        result = 0
+        fid = int(self.get_argument("fid", 0))
+        try:
+            if fid != 0:
+                p = Withdraw.get(Withdraw.id == fid)
+                status_old = p.status
+                p.status = p.status + 1
+                if p.status == 1:
+                    p.processing_result = u'汇款完成'
+                if p.status > 1:
+                    p.status = 1
+                p.processing_time = int(time.time())
+                p.processing_by = self.get_admin_user()
+                p.save()
+                result = p.status
+                if status_old == 0 and p.status == 1:
+                    #已经给您的${bankName}尾号为${bankNum}的银行卡汇款，将于两小时内到账，请注意查收。
+                    sms = {'mobile': p.user.mobile, 'body': [p.account_name, p.account_account[-4:]], 'signtype': '1',
+                           'isyzm': 'accountNotice'}
+                    create_msg(simplejson.dumps(sms), 'sms')
+
+        except Exception, e:
+            result = -1
+        self.write(simplejson.dumps(result))
+
 @route(r'/ajax/export_trade_list', name='ajax_trade_export')  # 生成网站交易明细的csv
 class TradeExportHandler(BaseHandler):
     # 导出出单明细
@@ -659,6 +688,7 @@ class InsuranceExportHandler(BaseHandler):
         except Exception, e:
             result['msg'] = e.message
         self.write(simplejson.dumps(result))
+
 
 
 

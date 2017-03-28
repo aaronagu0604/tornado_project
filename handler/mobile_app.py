@@ -248,7 +248,7 @@ class MobileHomeHandler(MobileBaseHandler):
     @apiVersion 1.0.0
     @api {get} /mobile/home 01. 首页
     @apiDescription app首页数据，
-    banner 首页轮播;
+    banner 首页轮播：保险link: "czj://banner/insurance/1", 商品link: "czj://banner/product/1", HTML link: "czj://banner/html/1"
     insurance  首页保险;
     hot_category 热门分类;
     hot_brand  热销产品;

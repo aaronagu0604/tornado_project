@@ -218,7 +218,7 @@ class StoreAddress(db.Model):
 # 提现表
 class Withdraw(db.Model):
     id = PrimaryKeyField()
-    user = ForeignKeyField(User, related_name='withdraws', db_column='user_id')  # 用户
+    store = ForeignKeyField(Store, related_name='withdraws', db_column='store_id')  # 用户
     account_type = IntegerField(default=0)  # 提现账户类型 0银行卡 1支付宝
     account_truename = CharField(max_length=32, default='')  # 银行卡姓名
     account_name = CharField(max_length=64, default='')  # 银行名称

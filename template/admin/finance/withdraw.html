@@ -26,10 +26,10 @@
 
                     <input type="text" name="keyword" id="keyword" value="{{keyword or ''}}" class="form-control" placeholder="内容查找" style="width:210px;height:34px;border:1px solid #ccc;border-bottom-left-radius:4px;border-top-left-radius:4px;"/>
                     <span class="input-group-btn">
-                 <button class="btn btn-default" type="submit" id="bt_submit">
-                     <i class="fa fa-search"></i>
-                 </button>
-            </span>
+                        <button class="btn btn-default" type="submit" id="bt_submit">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </span>
                 </div>
             </form>
         </div>
@@ -55,8 +55,7 @@
                 {% for a in lists %}
                 <tr>
                     <td>
-                        <a href="/admin/user/"></a><br>
-                        
+                        <a href="#" onclick="store_liquidity('{{a.store.id}}', '{{a.store.name}}')">{{a.store.name}}</a>
                     </td>
                     <td>
                         {% if a.account_type == 0 %}
@@ -122,8 +121,8 @@
             startPage: {{page}},
             visiblePages: 8,
             onPageClick: function (event, page) {
-                    self.location="/admin/withdraw?page="+page + "&status={{status}}&begindate={{begindate}}&enddate={{enddate}}&keyword={{keyword or ''}}";
-                }
+                self.location="/admin/withdraw?page="+page + "&status={{status}}&begindate={{begindate}}&enddate={{enddate}}&keyword={{keyword or ''}}";
+            }
         });
     });
     var xsrf='{{handler.xsrf_token}}';
@@ -149,5 +148,21 @@
             });
         });
     });
-    </script>
+
+    function store_liquidity(sid, s_name) {
+        var title = s_name + ' - 收支记录';
+        var url = '/admin/store_liquidity/' + sid;
+        pop(title, url);
+    }
+    function pop(title, url) {
+        layer.open({
+            type: 2,
+            title: title,
+            shadeClose: true,
+            shade: 0.8,
+            area: ['90%', '90%'],
+            content: url
+        });
+    }
+</script>
 {% endblock %}
