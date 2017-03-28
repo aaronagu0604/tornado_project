@@ -1037,6 +1037,109 @@ class WithdrawHandler(AdminBaseHandler):
                     totalpage=totalpage, active='withdraw', keyword=key, begindate=begindate, enddate=enddate,
                     status=status)
 
+@route(r'/admin/export_insurance_success', name='admin_export_insurance_success')  # 导出出单明细
+class ExportInsuranceSuccessHandler(AdminBaseHandler):
+    def get(self):
+        archive = self.get_argument("archive", '')
+        page = int(self.get_argument("page", 1))
+        status = int(self.get_argument("status", 0))
+        keyword = self.get_argument("keyword", '')
+        begin_date = self.get_argument("begin_date", '')
+        end_date = self.get_argument("end_date", '')
+        order_type = int(self.get_argument("order_type", 1))
+        pagesize = setting.ADMIN_PAGESIZE
+
+        ft = (InsuranceOrder.status >0)
+
+        if begin_date and end_date:
+            begin = time.strptime(begin_date, "%Y-%m-%d")
+            end = time.strptime((end_date + " 23:59:59"), "%Y-%m-%d %H:%M:%S")
+            ft &= (InsuranceOrder.ordered > time.mktime(begin)) & (InsuranceOrder.ordered < time.mktime(end))
+
+        q = InsuranceOrder.select().join(Store).where(ft).order_by(InsuranceOrder.ordered.asc())
+        total = q.count()
+        if total % pagesize > 0:
+            totalpage = total / pagesize + 1
+        else:
+            totalpage = total / pagesize
+        orders = q.paginate(page, pagesize)
+        if archive:
+            active = 'insurancesuccess'
+        else:
+            active = 'insurancesuccess'
+        self.render('admin/order/export_insurance_success.html', orders=orders, total=total, page=page, pagesize=pagesize,
+                    totalpage=totalpage, active=active, begin_date=begin_date, end_date=end_date,
+                    archive=archive)
+
+@route(r'/admin/export_trade_list', name='admin_export_trade_list')  # 导出出单明细
+class ExportTradeListHandler(AdminBaseHandler):
+    def get(self):
+        archive = self.get_argument("archive", '')
+        page = int(self.get_argument("page", 1))
+        status = int(self.get_argument("status", 0))
+        begin_date = self.get_argument("begin_date", '')
+        end_date = self.get_argument("end_date", '')
+        pagesize = setting.ADMIN_PAGESIZE
+        payment = {1: u'支付宝', 2: u'微信', 3: u'银联', 4: u'余额',5: u'other'}
+        orderft = (Order.status << [1, 2, 3, 4])
+        insuranceft = (InsuranceOrder.status << [1, 2, 3, 4])
+        if begin_date and end_date:
+            begin = time.strptime(begin_date, "%Y-%m-%d")
+            end = time.strptime((end_date + " 23:59:59"), "%Y-%m-%d %H:%M:%S")
+            orderft &= (Order.ordered > time.mktime(begin)) & (Order.ordered < time.mktime(end))
+            insuranceft &= (InsuranceOrder.ordered > time.mktime(begin)) & (InsuranceOrder.ordered < time.mktime(end))
+
+        orders = Order.select().join(Store).where(orderft).order_by(Order.ordered.asc())
+        insuranceorders = InsuranceOrder.select().join(Store).where(insuranceft).order_by(InsuranceOrder.ordered.asc())
+        total = orders.count() + insuranceorders.count()
+        data = []
+        for item in orders:
+            s = {}
+            s['id'] = str(item.id)
+            s['ordered'] = u'%s' % time.strftime('%Y-%m-%d', time.localtime(item.ordered))
+            s['ordernum'] = item.ordernum
+            s['payment'] = payment[item.payment]
+            s['moneyitem'] = u'润滑油'
+            s['useraddress'] = item.address.address
+            s['totalprice'] = str(item.total_price)
+            s['insurance'] = item.buyer_store.name
+            s['user'] = item.user.truename
+            s['incommission'] = None
+            s['outprice'] = None
+            s['outcommission'] = None
+            s['summary'] = item.message
+            data.append(s)
+
+        for item in insuranceorders:
+            s = {}
+            s['id'] = str(item.id)
+            s['ordered'] = u'%s' % time.strftime('%Y-%m-%d', time.localtime(item.ordered))
+            s['ordernum'] = item.ordernum
+            s['payment'] = payment[item.payment]
+            s['moneyitem'] = u'保险'
+            s['useraddress'] = item.delivery_address
+            s['totalprice'] = str(item.current_order_price.total_price)
+            s['insurance'] = item.current_order_price.insurance.name
+            s['user'] = item.user.truename
+            s['incommission'] = None
+            s['outprice'] = None
+            s['outcommission'] = None
+            s['summary'] = item.local_summary
+            data.append(s)
+
+        if total % pagesize > 0:
+            totalpage = total / pagesize + 1
+        else:
+            totalpage = total / pagesize
+        orders = data[10*(page-1):10*page-1]
+        if archive:
+            active = 'tradelist'
+        else:
+            active = 'tradelist'
+        self.render('admin/order/export_trade_list.html', orders=orders, total=total, page=page, pagesize=pagesize,
+                    totalpage=totalpage, status=status, active=active, begin_date=begin_date, end_date=end_date,
+                    archive=archive)
+
 
 # --------------------------------------------------------订单管理------------------------------------------------------
 @route(r'/admin/product_orders', name='admin_product_orders')  # 普通商品订单

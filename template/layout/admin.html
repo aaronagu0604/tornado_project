@@ -132,7 +132,7 @@
                             </li>
                         </ul>
                     </li>
-                    <li {% if active=='payback' or active == 'withdraw' or active == 'statement' %}class="active"{% endif %}>
+                    <li {% if active=='payback' or active == 'withdraw' or active == 'statement' or active == 'tradelist' or active == 'insurancesuccess'%}class="active"{% endif %}>
                     <a  href="#"><i class="fa fa-qrcode fa-fw"></i>&nbsp;&nbsp;&nbsp;财务对账
                         <span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level">
@@ -144,6 +144,12 @@
                         </li>
                         <li>
                             <a {% if active=='statement' %}class="active"{% endif %} href="/admin/mobile/statement">对账单</a>
+                        </li>
+                        <li>
+                            <a {% if active=='tradelist' %}class="tradelist"{% endif %} href="/admin/export_trade_list">网站交易明细</a>
+                        </li>
+                        <li>
+                            <a {% if active=='insurancesuccess' %}class="insurancesuccess"{% endif %} href="/admin/export_insurance_success">出单明细</a>
                         </li>
                     </ul>
                     </li>

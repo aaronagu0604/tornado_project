@@ -489,6 +489,176 @@ class SaveIOPHandler(BaseHandler):
 
         self.write(simplejson.dumps(result))
 
+@route(r'/ajax/export_trade_list', name='ajax_trade_export')  # 生成网站交易明细的csv
+class TradeExportHandler(BaseHandler):
+    # 导出出单明细
+    def export_insunrance_list(data, fname, title):
+        f = open('upload/' + fname, 'w')
+        try:
+            f.write((title + u'出单明细[' + time.strftime("%Y-%m-%d", time.localtime(int(time.time()))) + u']\n').encode(
+                'gb18030'))
+            f.write(
+                u'序号,日期,订单号,资金来源,资金项目,客户地址,金额,保险公司,车主/承保人,入账手续费,转出金额,转出手续费,备注\n'.encode('gb18030'))
+
+            for s in data:
+                line = s['id'] + u',' + \
+                       s['ordered'] + u',' + \
+                       s['ordernum'] + u',' + \
+                       s['payment'] + u',' + \
+                       s['moneyitem'] + u',' + \
+                       s['useraddress'] + u',' + \
+                       s['totalprice'] + u',' + \
+                       s['insurance'] + u',' + \
+                       s['user'] + u',' + \
+                       s['incommission'] + u',' + \
+                       s['outprice'] + u',' + \
+                       s['outcommission'] + u',' + \
+                       s['summary']
+                f.write(line.encode('gb18030'))
+
+        except Exception, e:
+            print e
+            pass
+        finally:
+            f.close()
+
+    def post(self):
+        begin_date = self.get_argument("begin_date", '')
+        end_date = self.get_argument("end_date", '')
+
+        ft = (Order.status << [1, 2, 3, 4])
+
+        if begin_date and end_date:
+            begin = time.strptime(begin_date, "%Y-%m-%d")
+            end = time.strptime((end_date + " 23:59:59"), "%Y-%m-%d %H:%M:%S")
+            ft &= (Order.ordered > time.mktime(begin)) & (Order.ordered < time.mktime(end))
+
+        result = {'flag': 0, 'msg': ''}
+        try:
+            payment = {1: u'支付宝', 2: u'微信', 3: u'银联', 4: u'余额'}
+            file_name = 'tradelist_export.csv'
+            orders = Order.select().join(Store).where(ft).order_by(Order.ordered.asc())
+            insuranceorders  = InsuranceOrder.select().join(Store).where(ft).order_by(InsuranceOrder.ordered.asc())
+            data = []
+            for item in orders:
+                s = {}
+                s['id'] = str(item.id)
+                s['ordered'] = u'%s' % time.strftime('%Y-%m-%d', time.localtime(item.ordered))
+                s['ordernum'] = item.ordernum
+                s['payment'] = payment[item.payment]
+                s['moneyitem'] = u'润滑油'
+                s['useraddress'] = item.address.address
+                s['totalprice'] = str(item.total_price)
+                s['insurance'] = item.buyer_store.name
+                s['user'] = item.user.name
+                s['incommission'] = None
+                s['outprice'] = None
+                s['outcommission'] = None
+                s['summary'] = item.message
+                data.append(s)
+
+            for item in insuranceorders:
+                s = {}
+                s['id'] = str(item.id)
+                s['ordered'] = u'%s' % time.strftime('%Y-%m-%d', time.localtime(item.ordered))
+                s['ordernum'] = item.ordernum
+                s['payment'] = payment[item.payment]
+                s['moneyitem'] = u'保险'
+                s['useraddress'] = item.delivery_address
+                s['totalprice'] = str(item.current_order_price.total_price)
+                s['insurance'] = item.current_order_price.insurance.name
+                s['user'] = item.user.name
+                s['incommission'] = None
+                s['outprice'] = None
+                s['outcommission'] = None
+                s['summary'] = item.local_summary
+                data.append(s)
+            self.export_stores(data, file_name)
+            result['msg'] = file_name
+            result['flag'] = 1
+        except Exception, e:
+            result['msg'] = e.message
+        self.write(simplejson.dumps(result))
+
+@route(r'/ajax/export_insurance_list', name='ajax_insurance_export')  # 生成出单明细的csv
+class InsuranceExportHandler(BaseHandler):
+    # 导出网站交易明细
+    def export_trade_list(data, fname, title):
+        f = open('upload/' + fname, 'w')
+        try:
+            f.write((title + u'网站交易明细[' + time.strftime("%Y-%m-%d", time.localtime(int(time.time()))) + u']\n').encode(
+                'gb18030'))
+            f.write(u'序号,出保单日期,联系电话,地区,门店,保险名称，车牌，车主，险种，经办人，登记人，金额，较强，车船，商业，快递，型号，返佣，数量（桶）,订单号,备注1,备注2,领油日期，领取人 \n'.encode(
+                    'gb18030'))
+
+            for s in data:
+                jiaoqiang = None
+                if s.current_order_price.force_price > 0:
+                    jiaoqiang = '交强'
+                if s.current_order_price.force_price > 0:
+                    jiaoqiang += ',车船'
+                if s.current_order_price.force_price > 0:
+                    jiaoqiang += ',商业'
+                gift  = None
+                if s.current_order_price.gift_policy == 2:
+                    gift = '佣金返积分'
+                elif s.current_order_price.gift_policy == 1:
+                    gift = '佣金返油'
+                else:
+                    gift = '无'
+
+                line = str(s.id) + u',' + \
+                    u'%s' % time.strftime('%Y-%m-%d', time.localtime(s.deal_time)) + u',' + \
+                    s.delivery_tel + u',' + \
+                    s.delivery_region + u',' + \
+                    s.store.name + u',' + \
+                    s.current_order_price.insurance.name + u',' + \
+                    u'车主' + u',' + \
+                    u'车牌' + u',' + \
+                    jiaoqiang + u',' + \
+                    s.current_order_price.admin_user.name + u',' + \
+                    u'登记人' + u',' + \
+                    str(s.total_price) + u',' + \
+                    str(s.current_order_price.force_price) + u',' + \
+                    str(s.current_order_price.vehicle_tax_price) + u',' + \
+                    str(s.current_order_price.business_price) + u',' + \
+                    s.deliver_company + u'(' + s.deliver_num + u')' + u',' + \
+                    gift + u',' + \
+                    str(s.current_order_price.score) + u',' + \
+                    s.ordernum + u',' + \
+                    s.local_summary + u',' + \
+                    u'备注2' + u',' + \
+                    u'领油日期' + u',' + \
+                    u'另有人'
+
+                f.write(line.encode('gb18030'))
+
+        except Exception, e:
+            print e
+            pass
+        finally:
+            f.close()
+    def post(self):
+        begin_date = self.get_argument("begin_date", '')
+        end_date = self.get_argument("end_date", '')
+
+        ft = (Order.status << [1, 2, 3, 4])
+
+        if begin_date and end_date:
+            begin = time.strptime(begin_date, "%Y-%m-%d")
+            end = time.strptime((end_date + " 23:59:59"), "%Y-%m-%d %H:%M:%S")
+            ft &= (Order.ordered > time.mktime(begin)) & (Order.ordered < time.mktime(end))
+
+        result = {'flag': 0, 'msg': ''}
+        try:
+            file_name = 'insurancelist_export.csv'
+            q = InsuranceOrder.select().join(Store).where(ft).order_by(InsuranceOrder.ordered.asc())
+            self.export_stores(q, file_name)
+            result['msg'] = file_name
+            result['flag'] = 1
+        except Exception, e:
+            result['msg'] = e.message
+        self.write(simplejson.dumps(result))
 
 
 
