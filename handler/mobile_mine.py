@@ -35,7 +35,7 @@ class MobileMineHandler(MobileBaseHandler):
         result['data']['store_name'] = ''
         result['data']['user_name'] = ''
         result['data']['active'] = '未审核'
-        result['data']['store_type'] = ''
+        result['data']['store_type'] = 2  # 默认未登陆未门店
         result['data']['store_price'] = 0
         result['data']['store_score'] = 0
 
@@ -57,13 +57,13 @@ class MobileMineHandler(MobileBaseHandler):
             result['data']['active'] = user.store.active
             result['data']['store_price'] = user.store.price
             result['data']['store_score'] = user.store.score
+            result['data']['store_type'] = user.store.store_type
             if user.store.active == 1:
                 result['data']['active'] = '未审核'
             elif user.store.active == 2:
                 result['data']['active'] = '审核被拒绝'
 
             if user.store.store_type == 1:
-                result['data']['store_type'] = '服务商'
                 # 查询子订单数据
                 sale_orders = SubOrder.select(SubOrder.status, fn.Count(SubOrder.id).alias('count')). \
                     where(SubOrder.status > -1, SubOrder.saler_del == 0, SubOrder.saler_store == user.store).\
@@ -78,7 +78,6 @@ class MobileMineHandler(MobileBaseHandler):
                     elif status == 5:  # 仅考虑申请退款的状态
                         result['data']['product_orders']['pay_back'] += count
             elif user.store.store_type == 2:
-                result['data']['store_type'] = '门店'
                 # 查询子订单数据
                 buy_orders = SubOrder.select(SubOrder.status, fn.Count(SubOrder.id).alias('count')). \
                     where(SubOrder.status > -1, SubOrder.buyer_del == 0, SubOrder.buyer_store == user.store).\
