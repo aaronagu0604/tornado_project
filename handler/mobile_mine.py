@@ -30,98 +30,82 @@ class MobileMineHandler(MobileBaseHandler):
     """
     def get(self):
         result = {'flag': 0, 'msg': '', "data": {}}
+
+        result['data']['login_flag'] = 0
+        result['data']['store_name'] = ''
+        result['data']['user_name'] = ''
+        result['data']['active'] = '未审核'
+        result['data']['store_type'] = ''
+        result['data']['store_price'] = 0
+        result['data']['store_score'] = 0
+
+        result['data']['insurance_orders'] = {}
+        result['data']['insurance_orders']['wait_pay'] = 0
+        result['data']['insurance_orders']['wait_send'] = 0
+        result['data']['insurance_orders']['finish'] = 0
+        result['data']['insurance_orders']['pay_back'] = 0
+        result['data']['product_orders'] = {}
+        result['data']['product_orders']['wait_pay'] = 0
+        result['data']['product_orders']['wait_send'] = 0
+        result['data']['product_orders']['wait_get'] = 0
+        result['data']['product_orders']['pay_back'] = 0
         user = self.get_user()
-        if user is None:  # 未登录
-            result['data']['store_name'] = ''
-            result['data']['user_name'] = ''
-            result['data']['store_type'] = ''
-            result['data']['store_price'] = 0
-            result['data']['store_score'] = 0
-            result['data']['show_sale_orders'] = 1
-            result['data']['show_buy_orders'] = 1
-            result['data']['show_product_manager'] = 1
-            result['data']['sale_orders'] = {}
-            result['data']['sale_orders']['wait_pay'] = 0
-            result['data']['sale_orders']['wait_send'] = 0
-            result['data']['sale_orders']['wait_get'] = 0
-            result['data']['sale_orders']['wait_comment'] = 0
-            result['data']['sale_orders']['wait_pay_back'] = 0
-            result['data']['buy_orders'] = {}
-            result['data']['buy_orders']['wait_pay'] = 0
-            result['data']['buy_orders']['wait_send'] = 0
-            result['data']['buy_orders']['wait_get'] = 0
-            result['data']['buy_orders']['wait_comment'] = 0
-            result['data']['buy_orders']['wait_pay_back'] = 0
-        else:  # 已登录
+        if user is not None:  # 已登录
+            result['data']['login_flag'] = 1
             result['data']['store_name'] = user.store.name
             result['data']['user_name'] = user.mobile
             result['data']['active'] = user.store.active
             result['data']['store_price'] = user.store.price
             result['data']['store_score'] = user.store.score
+            if user.store.active == 1:
+                result['data']['active'] = '未审核'
+            elif user.store.active == 2:
+                result['data']['active'] = '审核被拒绝'
+
             if user.store.store_type == 1:
                 result['data']['store_type'] = '服务商'
-                result['data']['show_sale_orders'] = 1
-                result['data']['show_buy_orders'] = 0
-                result['data']['show_product_manager'] = 1
-                result['data']['buy_orders'] = {}
-                result['data']['buy_orders']['wait_pay'] = 0
-                result['data']['buy_orders']['wait_send'] = 0
-                result['data']['buy_orders']['wait_get'] = 0
-                result['data']['buy_orders']['wait_comment'] = 0
-                result['data']['buy_orders']['wait_pay_back'] = 0
-                result['data']['sale_orders'] = {}
-                result['data']['sale_orders']['wait_pay'] = 0
-                result['data']['sale_orders']['wait_send'] = 0
-                result['data']['sale_orders']['wait_get'] = 0
-                result['data']['sale_orders']['wait_comment'] = 0
-                result['data']['sale_orders']['wait_pay_back'] = 0
                 # 查询子订单数据
                 sale_orders = SubOrder.select(SubOrder.status, fn.Count(SubOrder.id).alias('count')). \
                     where(SubOrder.status > -1, SubOrder.saler_del == 0, SubOrder.saler_store == user.store).\
                     group_by(SubOrder.status).tuples()
                 for status, count in sale_orders:
-                    if status == 0:
-                        result['data']['sale_orders']['wait_pay'] += count
+                    if status == 0:  # 0待付款 1待发货 2待收货 3交易完成（待评价） 4已评价 5申请退款 6已退款 -1已取消
+                        result['data']['product_orders']['wait_pay'] += count
                     elif status == 1:
-                        result['data']['sale_orders']['wait_send'] += count
+                        result['data']['product_orders']['wait_send'] += count
                     elif status == 2:
-                        result['data']['sale_orders']['wait_get'] += count
-                    elif status == 3:
-                        result['data']['sale_orders']['wait_comment'] += count
-                    elif status == 5 or status == 6:
-                        result['data']['sale_orders']['wait_pay_back'] += count
+                        result['data']['product_orders']['wait_get'] += count
+                    elif status == 5:  # 仅考虑申请退款的状态
+                        result['data']['product_orders']['pay_back'] += count
             elif user.store.store_type == 2:
                 result['data']['store_type'] = '门店'
-                result['data']['show_sale_orders'] = 0
-                result['data']['show_buy_orders'] = 1
-                result['data']['show_product_manager'] = 0
-                result['data']['sale_orders'] = {}
-                result['data']['sale_orders']['wait_pay'] = 0
-                result['data']['sale_orders']['wait_send'] = 0
-                result['data']['sale_orders']['wait_get'] = 0
-                result['data']['sale_orders']['wait_comment'] = 0
-                result['data']['sale_orders']['wait_pay_back'] = 0
-                result['data']['buy_orders'] = {}
-                result['data']['buy_orders']['wait_pay'] = 0
-                result['data']['buy_orders']['wait_send'] = 0
-                result['data']['buy_orders']['wait_get'] = 0
-                result['data']['buy_orders']['wait_comment'] = 0
-                result['data']['buy_orders']['wait_pay_back'] = 0
                 # 查询子订单数据
                 buy_orders = SubOrder.select(SubOrder.status, fn.Count(SubOrder.id).alias('count')). \
                     where(SubOrder.status > -1, SubOrder.buyer_del == 0, SubOrder.buyer_store == user.store).\
                     group_by(SubOrder.status).tuples()
                 for status, count in buy_orders:
                     if status == 0:
-                        result['data']['buy_orders']['wait_pay'] += count
+                        result['data']['product_orders']['wait_pay'] += count
                     elif status == 1:
-                        result['data']['buy_orders']['wait_send'] += count
+                        result['data']['product_orders']['wait_send'] += count
                     elif status == 2:
-                        result['data']['buy_orders']['wait_get'] += count
-                    elif status == 3:
-                        result['data']['buy_orders']['wait_comment'] += count
-                    elif status == 5 or status == 6:
-                        result['data']['buy_orders']['wait_pay_back'] += count
+                        result['data']['product_orders']['wait_get'] += count
+                    elif status == 5:
+                        result['data']['product_orders']['pay_back'] += count
+            insurance_orders = InsuranceOrder.select(InsuranceOrder.status, fn.Count(InsuranceOrder.id).alias('count')). \
+                where(InsuranceOrder.status > -1, InsuranceOrder.user_del == 0, InsuranceOrder.store == user.store). \
+                group_by(InsuranceOrder.status).tuples()
+            # 0待确认 1待出单 2完成 3退款 -1已删除(取消)
+            for status, count in insurance_orders:
+                if status == 0:
+                    result['data']['insurance_orders']['wait_pay'] += count
+                elif status == 1:
+                    result['data']['insurance_orders']['wait_send'] += count
+                elif status == 2:
+                    result['data']['insurance_orders']['finish'] += count
+                elif status == 3:
+                    result['data']['insurance_orders']['pay_back'] += count
+
         result['flag'] = 1
         self.write(simplejson.dumps(result))
         self.finish()
