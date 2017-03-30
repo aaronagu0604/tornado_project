@@ -5,7 +5,7 @@ import logging
 import math
 import random
 import uuid
-
+import time
 import simplejson
 
 import setting
@@ -17,6 +17,24 @@ from lib.payment.wxPay import UnifiedOrder_pub
 from lib.route import route
 from model import *
 
+"""
+    @apiGroup aaaa
+    @apiVersion 1.0.0
+    @api {get} /mobile 01. 车装甲协议
+    @apiDescription 车装甲协议；http://或者https://开头，跳转入webview；czj://开头，进入原生界面，详情如下：
+
+    @apiParam {String} insurance 进入购买保险详情，后跟保险ID（暂时不使用，已改为h5完成），例：czj://insurance/1
+    @apiParam {String} product 进入商品详情，后跟商品ID（暂时不使用，已改为h5完成），例：czj://product/1
+    @apiParam {String} brand 进入某品牌列表，后跟品牌ID，例：czj://brand/1
+    @apiParam {String} category 进入某分类列表，后跟分类ID，例：czj://category/1
+    @apiParam {String} insurance_order_list 进入保险订单列表，后跟状态，例：czj://insurance_order_list/0，表示报价列表
+    @apiParam {String} insurance_order_detail 进入保险订单详情，后跟保险订单ID，例：czj://insurance_order_detail/1
+    @apiParam {String} insurance_order_price 进入保险订单报价详情，后跟保险订单报价ID，例：czj://insurance_order_price/1
+    @apiParam {String} score_product 进入积分商城，例：czj://score_product
+    @apiParam {String} personal 进入个人信息维护，例：czj://personal
+    @apiParam {String} product_order_detail 进入普通订单详情，后跟普通订单ID，例：czj://product_order_detail/1
+    @apiParam {String} product_order_list 进入普通订单列表，后跟普通订单状态，例：czj://product_order_list/1，表示待发货
+    """
 
 @route(r'/mobile', name='mobile_app')
 class MobileAppHandler(MobileBaseHandler):
@@ -248,7 +266,7 @@ class MobileHomeHandler(MobileBaseHandler):
     @apiVersion 1.0.0
     @api {get} /mobile/home 01. 首页
     @apiDescription app首页数据，
-    banner 首页轮播：保险link: "czj://banner/insurance/1", 商品link: "czj://banner/product/1", HTML link: "czj://banner/html/1"
+    banner 首页轮播
     insurance  首页保险;
     hot_category 热门分类;
     hot_brand  热销产品;
@@ -261,7 +279,30 @@ class MobileHomeHandler(MobileBaseHandler):
     def get(self):
         result = {'flag': 0, 'msg': '', "data": {}}
         area_code = self.get_store_area_code()
+        user = self.get_user()
+        result['data']['login_flag'] = 0
+        result['data']['last_unread_price'] = {}
+        result['data']['last_unread_price']['show'] = 0
+        result['data']['last_unread_price']['msg'] = ''
+        result['data']['last_unread_price']['insurance'] = ''
+        result['data']['last_unread_price']['time'] = ''
+        result['data']['last_unread_price']['link'] = ''
+        if user is not None:
+            result['data']['login_flag'] = 1
+            # 最新报价
+            price_list = InsuranceOrderPrice.select(InsuranceOrderPrice).join(InsuranceOrder).\
+                where(InsuranceOrderPrice.read == 0, InsuranceOrderPrice.status == 1, InsuranceOrder.status == 0).\
+                order_by(InsuranceOrderPrice.created.desc())
+            if price_list.count() > 0:
+                dt = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(price_list[0].created))
+                result['data']['last_unread_price']['show'] = 1
+                result['data']['last_unread_price']['msg'] = '您有新的保险报价'
+                result['data']['last_unread_price']['insurance'] = price_list[0].insurance.name
+                result['data']['last_unread_price']['time'] = dt
+                result['data']['last_unread_price']['show'] = 'czj://insurance_order_price/' + \
+                                                              str(price_list[0].id)
 
+        # 获取首页banner列表，没有数据时使用西安的数据
         tmp_code = area_code
         banners = self.get_banner(tmp_code)
         while len(banners) == 0 and len(tmp_code) > 4:
@@ -271,6 +312,7 @@ class MobileHomeHandler(MobileBaseHandler):
             banners = self.get_banner(self.get_default_area_code())
         result['data']['banner'] = banners
 
+        # 保险
         tmp_code = area_code
         insurances = self.get_insurance(tmp_code)
         while len(insurances) == 0 and len(tmp_code) > 4:
@@ -278,8 +320,11 @@ class MobileHomeHandler(MobileBaseHandler):
             insurances = self.get_insurance(tmp_code)
         if len(insurances) == 0:
             insurances = self.get_insurance(self.get_default_area_code())
-        result['data']['insurance'] = insurances
+        result['data']['insurance'] = {}
+        result['data']['insurance']['title'] = '保险业务'
+        result['data']['insurance']['data'] = insurances
 
+        # 热门分类
         tmp_code = area_code
         categories = self.get_category(tmp_code)
         while len(categories) == 0 and len(tmp_code) > 4:
@@ -287,8 +332,11 @@ class MobileHomeHandler(MobileBaseHandler):
             categories = self.get_category(tmp_code)
         if len(categories) == 0:
             categories = self.get_category(self.get_default_area_code())
-        result['data']['hot_category'] = categories
+        result['data']['hot_category'] = {}
+        result['data']['hot_category']['title'] = '热门分类'
+        result['data']['hot_category']['data'] = categories
 
+        # 热销品牌
         tmp_code = area_code
         brands = self.get_brand(tmp_code)
         while len(brands) == 0 and len(tmp_code) > 4:
@@ -296,8 +344,11 @@ class MobileHomeHandler(MobileBaseHandler):
             brands = self.get_brand(tmp_code)
         if len(brands) == 0:
             brands = self.get_brand(self.get_default_area_code())
-        result['data']['hot_brand'] = brands
+        result['data']['hot_brand'] = {}
+        result['data']['hot_brand']['title'] = '热销品牌'
+        result['data']['hot_brand']['data'] = brands
 
+        # 推荐商品
         tmp_code = area_code
         recommends = self.get_recommend(tmp_code)
         while len(recommends) == 0 and len(tmp_code) > 4:
@@ -305,7 +356,22 @@ class MobileHomeHandler(MobileBaseHandler):
             recommends = self.get_recommend(tmp_code)
         if len(recommends) == 0:
             recommends = self.get_recommend(self.get_default_area_code())
-        result['data']['recommend'] = recommends
+        result['data']['recommend'] = {}
+        result['data']['recommend']['title'] = '为您推荐'
+        result['data']['recommend']['data'] = recommends
+
+        # 积分商品
+        tmp_code = area_code
+        score_product = self.get_score_product(tmp_code)
+        while len(score_product) == 0 and len(tmp_code) > 4:
+            tmp_code = tmp_code[0: -4]
+            score_product = self.get_score_product(tmp_code)
+        if len(score_product) == 0:
+            score_product = self.get_score_product(self.get_default_area_code())
+        result['data']['score_product'] = {}
+        result['data']['score_product']['title'] = '积分兑换'
+        result['data']['score_product']['data'] = score_product
+
         result['flag'] = 1
         self.write(simplejson.dumps(result))
         self.finish()
@@ -380,6 +446,24 @@ class MobileHomeHandler(MobileBaseHandler):
             where((Block.tag == 'recommend') & (Block.active == 1) & (BlockItem.active == 1)
                   & (BlockItem.area_code == area_code)).order_by(BlockItem.sort.asc()).tuples()
         for link, logo, name, price in recommends:
+            items.append({
+                'img': logo,
+                'name': name,
+                'price': price,
+                'link': link
+            })
+        return items
+
+    def get_score_product(self, area_code):
+        items = []
+        score_product = BlockItem.select(BlockItem.link, Product.cover, Product.name, StoreProductPrice.price).join(
+            Block). \
+            join(StoreProductPrice, on=BlockItem.ext_id == StoreProductPrice.id). \
+            join(ProductRelease, on=ProductRelease.id == StoreProductPrice.product_release). \
+            join(Product, on=Product.id == ProductRelease.product). \
+            where((Block.tag == 'score_product') & (Block.active == 1) & (BlockItem.active == 1)
+                  & (BlockItem.area_code == area_code)).order_by(BlockItem.sort.asc()).tuples()
+        for link, logo, name, price in score_product:
             items.append({
                 'img': logo,
                 'name': name,
