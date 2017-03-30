@@ -667,7 +667,8 @@ class InsuranceOrderPrice(db.Model):
     admin_user = ForeignKeyField(AdminUser, db_column='admin_user_id', null=True)  # 报价人员
     gift_policy = IntegerField(default=0)  # 礼品策略 1反油， 2反积分
     response = IntegerField(default=0)  # 0未报价 1已经报价 2不可再修改 -1关闭
-    status = IntegerField(default=1)  # 状态 1有效，0已过期
+    status = IntegerField(default=1)  # 状态 0已过期, 1有效
+    read = IntegerField(default=0)  # 状态 0未读, 1已读
     score = IntegerField(default=0)  # 卖的这单保险可以获取多少积分
     total_price = FloatField(default=0.0)  # 保险订单总价格
     force_price = FloatField(default=0.0)  # 交强险 价格
