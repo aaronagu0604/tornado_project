@@ -1271,7 +1271,7 @@ class MobileReceiverAddressHandler(MobileBaseHandler):
         for address in StoreAddress.select().where(StoreAddress.store==store).order_by(StoreAddress.is_default.desc()):
             result['data'].append({
                 'address_id': address.id,
-                'store_name': store.name,
+                # 'store_name': store.name,
                 'province': address.province,
                 'city': address.city,
                 'district': address.region,

@@ -1038,13 +1038,14 @@ class MobileOrderBaseHandler(MobileBaseHandler):
             else:
                 for address in user.store.addresses:
                     if address.is_default == 1:
-                        result['data']['address']['id'] = address.id
+                        result['data']['address']['address_id'] = address.id
                         result['data']['address']['mobile'] = address.mobile
                         result['data']['address']['province'] = address.province
                         result['data']['address']['city'] = address.city
                         result['data']['address']['district'] = address.region
                         result['data']['address']['address'] = address.address
-                        result['data']['address']['name'] = address.name
+                        result['data']['address']['receiver'] = address.name
+                        result['data']['address']['is_default'] = address.is_default
                         break
                 else:
                     result['data']['address'] = None
@@ -1355,7 +1356,6 @@ class MobilNewInsuranceOrderHandler(MobileBaseHandler):
     @apiParam {String} delivery_region 保单邮寄接收区域
     @apiParam {String} delivery_address 保单邮寄地址
     @apiParam {Int} gift_policy 礼品策略 1反油， 2反积分, 0无礼品
-/mobile/receiveraddress
     @apiSampleRequest /mobile/newinsuranceorder
     """
 
