@@ -511,19 +511,33 @@ class MobileDiscoverHandler(MobileBaseHandler):
         return items
 
     def get(self):
-        result = {'flag': 0, 'msg': '', 'data': {}}
+        result = {'flag': 0, 'msg': '', 'data': []}
         type = self.get_argument('type', None)
 
         if type == 'category':
-            result['data']['category'] = self.get_category()
-            result['data']['brand'] = []
+            result['data'].append({
+                'type': 'category',
+                'name': u'热门分类',
+                'value': self.get_category()
+            })
         elif type == 'brand':
-            result['data']['brand'] = self.get_brand()
-            result['data']['category'] = []
+            result['data'].append({
+                'type': 'brand',
+                'name': u'热销品牌',
+                'value': self.get_brand()
+            })
         else:
-            result['data']['category'] = self.get_category()[:6]
-            result['data']['brand'] = self.get_brand()[:6]
-
+            result['data'].append({
+                'type': 'category',
+                'name': u'热门分类',
+                'value': self.get_category()[:6]
+            })
+            result['data'].append({
+                'type': 'brand',
+                'name': u'热销品牌',
+                'value': self.get_brand()
+            })
+        result['flag'] = 1
         self.write(simplejson.dumps(result))
         self.finish()
 

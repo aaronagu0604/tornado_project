@@ -410,7 +410,8 @@ class MobileScoreStore(MobileBaseHandler):
                 'buy_count': spp.product_release.buy_count,
                 'cover': spp.product_release.product.cover,
                 'resume': spp.product_release.product.resume,
-                'storeName': spp.product_release.store.name
+                'storeName': spp.product_release.store.name,
+                'is_score': 1
             })
         result['flag'] = 1
         self.write(simplejson.dumps(result))
