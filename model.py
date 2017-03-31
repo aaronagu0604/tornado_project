@@ -880,6 +880,17 @@ class InsuranceScoreExchange(db.Model):
             return None
 
 
+# 帮助中心 返油政策
+class LubePolicy(db.Model):
+    id = PrimaryKeyField()
+    area_code = CharField(max_length=12)  # 地区code
+    insurance = ForeignKeyField(Insurance, related_name='lube_policy', db_column='insurance_id')
+    policy = CharField(max_length=4000)  # 返油政策的json串
+
+    class Meta:
+        db_table = "tb_lube_policy"
+
+
 # 手机端区块: 广告
 class Block(db.Model):
     id = PrimaryKeyField()
@@ -920,7 +931,7 @@ class BlockItemArea(db.Model):
         db_table = 'tb_block_item_area'
 
 
-# 手机端广告发布地区
+# 热搜
 class HotSearch(db.Model):
     id = PrimaryKeyField()
     keywords = CharField(max_length=32, default='') #搜索关键词
@@ -943,17 +954,6 @@ class PaymentNotify(db.Model):
 
     class Meta:
         db_table = 'tb_payment_notify'
-
-
-# 帮助中心 返油政策
-class LubePolicy(db.Model):
-    id = PrimaryKeyField()
-    area_code = CharField(max_length=12)  # 地区code
-    insurance = ForeignKeyField(Insurance, related_name='lube_policy', db_column='insurance_id')
-    policy = CharField(max_length=4000)  # 返油政策的json串
-
-    class Meta:
-        db_table = "tb_lube_policy"
 
 
 # 意见反馈

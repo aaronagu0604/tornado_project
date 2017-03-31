@@ -17,6 +17,21 @@ from lib.payment.wxPay import UnifiedOrder_pub
 from lib.route import route
 from model import *
 
+
+def get_insurance(area_code):
+    items = []
+    insurances = InsuranceArea.select(InsuranceArea.insurance). \
+        where((InsuranceArea.area_code == area_code) & (InsuranceArea.active == 1)). \
+        order_by(InsuranceArea.sort.asc())
+    for insurance in insurances:
+        items.append({
+            'img': insurance.logo,
+            'name': insurance.name,
+            'price': 0,
+            'link': setting.baseUrl + 'insurance/' + str(insurance.id)
+        })
+    return items
+
 """
     @apiGroup aaaa
     @apiVersion 1.0.0
@@ -24,6 +39,7 @@ from model import *
     @apiDescription 车装甲协议；http://或者https://开头，跳转入webview；czj://开头，进入原生界面，详情如下：
 
     @apiParam {String} insurance 进入购买保险详情，后跟保险ID（暂时不使用，已改为h5完成），例：czj://insurance/1
+    @apiParam {String} insurance_list 进入全部保险列表，例：czj://insurance_list
     @apiParam {String} product 进入商品详情，后跟商品ID（暂时不使用，已改为h5完成），例：czj://product/1
     @apiParam {String} brand 进入某品牌列表，后跟品牌ID，例：czj://brand/1
     @apiParam {String} category 进入某分类列表，后跟分类ID，例：czj://category/1
@@ -314,12 +330,10 @@ class MobileHomeHandler(MobileBaseHandler):
 
         # 保险
         tmp_code = area_code
-        insurances = self.get_insurance(tmp_code)
+        insurances = get_insurance(tmp_code)
         while len(insurances) == 0 and len(tmp_code) > 4:
             tmp_code = tmp_code[0: -4]
-            insurances = self.get_insurance(tmp_code)
-        if len(insurances) == 0:
-            insurances = self.get_insurance(self.get_default_area_code())
+            insurances = get_insurance(tmp_code)
         result['data']['insurance'] = {}
         result['data']['insurance']['title'] = '保险业务'
         result['data']['insurance']['data'] = insurances
@@ -387,21 +401,6 @@ class MobileHomeHandler(MobileBaseHandler):
                 'name': p.name,
                 'price': 0,
                 'link': p.link
-            })
-        return items
-
-    def get_insurance(self, area_code):
-        items = []
-        insurances = BlockItem.select(BlockItem.link, Insurance.logo, Insurance.name).join(Block). \
-            join(Insurance, on=BlockItem.ext_id == Insurance.id).where(
-            (Block.tag == 'insurance') & (Block.active == 1)
-            & (BlockItem.active == 1) & (BlockItem.area_code == area_code)).order_by(BlockItem.sort.asc()).tuples()
-        for link, logo, name in insurances:
-            items.append({
-                'img': logo,
-                'name': name,
-                'price': 0,
-                'link': link
             })
         return items
 
@@ -798,6 +797,34 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
         self.finish()
 
 
+@route(r'/mobile/insurance_list', name='mobile_insurance_list')  # 保险列表
+class MobileInsuranceListHandler(MobileBaseHandler):
+    """
+    @apiGroup app
+    @apiVersion 1.0.0
+    @api {get} /mobile/insurance_list 04.1. 保险列表
+    @apiDescription 保险列表
+
+    @apiHeader {String} token 用户登录凭证
+
+    @apiSampleRequest /mobile/insurance_list
+    """
+
+    def get(self):
+        result = {'flag': 0, 'msg': '', "data": {}}
+        user = self.get_user()
+        if user is not None:
+            tmp_code = user.store.area_code
+            insurances = get_insurance(tmp_code)
+            while len(insurances) == 0 and len(tmp_code) > 4:
+                tmp_code = tmp_code[0: -4]
+                insurances = get_insurance(tmp_code)
+            result['data']['insurance'] = insurances
+            result['flag'] = 1
+        self.write(simplejson.dumps(result))
+        self.finish()
+
+
 @route(r'/mobile/product', name='mobile_product')  # 产品详情页
 class MobileProductHandler(MobileBaseHandler):
     """
@@ -819,6 +846,29 @@ class MobileProductHandler(MobileBaseHandler):
         type = self.get_argument("type", None)
         product={'name': '测试产品'}
         self.render('mobile/product.html', product=product)
+
+
+@route(r'/mobile/insurance', name='mobile_insurance')  # 保险详情页
+class MobileInsuranceHandler(MobileBaseHandler):
+    """
+    @apiGroup app
+    @apiVersion 1.0.0
+    @api {get} /mobile/product 05.1. 保险详情页
+    @apiDescription 保险详情页,返回html代码
+
+    @apiHeader {String} token 用户登录凭证
+
+    @apiParam {Int} id 保险ID
+    @apiParam {Int} type 当前打开的产品的来源；1从app 2从分享
+
+    @apiSampleRequest /mobile/insurance
+    """
+    def get(self):
+        result = {'flag': 0, 'msg': '', "data": {}}
+        id = self.get_argument("id", None)
+        type = self.get_argument("type", None)
+        insurance={'name': '测试产品'}
+        self.render('mobile/insurance.html', insurance=insurance)
 
 
 @route(r'/mobile/addshopcar', name='mobile_add_shop_car')  # 添加购物车
@@ -862,6 +912,38 @@ class MobileAddShopCarHandler(MobileBaseHandler):
         self.finish()
 
 
+@route(r'/mobile/deleteshopcar', name='mobile_delete_shop_car')  # 移出购物车
+class MobileDeleteShopCarHandler(MobileBaseHandler):
+    """
+    @apiGroup app
+    @apiVersion 1.0.0
+    @api {post} /mobile/deleteshopcar 06.1. 移出购物车
+    @apiDescription 移出购物车
+
+    @apiHeader {String} token 用户登录凭证
+
+    @apiParam {String} sppids 地区产品价格ID集合，如：[1,3,6]
+
+    @apiSampleRequest /mobile/deleteshopcar
+    """
+
+    @require_auth
+    def post(self):
+        user = self.get_user()
+        result = {'flag': 0, 'msg': '', "data": {}}
+        sppids = simplejson.loads(self.get_body_argument("sppids", '[]'))
+        if user and len(sppids) > 0:
+            query = ShopCart.delete().where(ShopCart.store == user.store,
+                                            ShopCart.store_product_price << sppids)
+            query.execute()
+
+            result['flag'] = 1
+        else:
+            result['msg'] = '传入参数异常'
+        self.write(simplejson.dumps(result))
+        self.finish()
+
+
 @route(r'/mobile/shopcar', name='mobile_shopcar')  # 手机端购物车内容获取
 class MobileShopCarHandler(MobileBaseHandler):
     """
@@ -877,13 +959,16 @@ class MobileShopCarHandler(MobileBaseHandler):
     def get(self):
         result = {'flag': 0, 'msg': '', "data": []}
         user = self.get_user()
+        result['data']['login_flag'] = 0
         if user:
+            result['data']['login_flag'] = 1
             saler_store_list = []
             for item in user.store.cart_items.order_by(ShopCart.created.desc()):
                 if (item.store_product_price.active and item.store_product_price.product_release.active and
                         item.store_product_price.product_release.product.active):
                     saler_store_id = item.store_product_price.store.id
                     if saler_store_id not in saler_store_list:
+                        saler_store_list.append(saler_store_id)
                         result['data'].append({
                             'saler_store_name': item.store_product_price.store.name,
                             'products': [{
@@ -908,7 +993,7 @@ class MobileShopCarHandler(MobileBaseHandler):
                             'cover': item.store_product_price.product_release.product.cover,
                             'quantity': item.quantity
                         })
-                    saler_store_list.append(saler_store_id)
+
             result['flag'] = 1
         else:
             result['msg'] = '请先登录'
