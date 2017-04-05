@@ -158,10 +158,10 @@ def move_category():
             sort=None,  # 旧的没有
             img_m=None,  # 旧的没有
             img_pc=None,  # 旧的没有
-            hot=None,  # 旧的没有
+            hot=0,  # 旧的没有,设置默认值：0
             active=item.flag
         )
-        print category.id
+        print 'move_category:%d--%d' % (old_category.count(), category.id)
         category_map[item.id] = category.id
 
 # categoryattribute:类型属性
@@ -174,10 +174,10 @@ def move_categoryattribute():
             category=category_map[item.PinPaiType],
             name=item.name,
             ename=item.ename,
-            sort=None,
+            sort=0,  # 旧的没有，设置默认值：0（有效）
             active=1,  # 旧的没有，设置默认值：1（有效）
         )
-        print attribute.id
+        print 'move_categoryattribute:%d'%(attribute.id)
         category_attribute_map[item.id] = attribute.id
 
 # categoryattributeitem:类型属性具体类型
@@ -190,9 +190,9 @@ def move_categoryattributeitem():
             category_attribute=category_attribute_map[item.PPTA_id],
             name=item.name,
             intro=None,
-            sort=None
+            sort=0  # 旧的没有，设置默认值：0（有效）
         )
-        print att_item.id
+        print 'move_categoryattributeitem:%d' % att_item.id
         category_att_item_map[item.id] = att_item.id
 
 '''
@@ -215,7 +215,7 @@ def move_brand():
             sort=1,  # 旧的没有,设置默认值：1
             active=item.flag
         )
-        print brand.id
+        print 'move_brand:%d' % brand.id
         brand_map[item.id] = brand.id
 
 # brandcategory:品牌产品类型
@@ -242,7 +242,7 @@ def move_adminuser():
             password=item.password,
             mobile=item.mobile,
             email=item.email,
-            code=item.code,  # 旧的没有
+            code=item.code,
             realname=item.realname,
             roles=item.roles,
             signuped=item.signuped,
@@ -303,7 +303,7 @@ def move_storebankaccount():
     old_bank = Old_User.select()
     old_data = [{
         'store': store_map[item.store.id],
-        'account_type': None,
+        'account_type': 0,  # 旧的没有，设置默认值：0
         'alipay_truename': item.alipay_truename,
         'alipay_account': item.alipay_account,
         'bank_truename': item.bank_truename,
@@ -326,8 +326,8 @@ def move_storeaddress():
                     'name': item.name,
                     'mobile': item.mobile,
                     'is_default': item.isdefault,
-                    'created': None,
-                    'create_by': None,
+                    'created': 0,  # 旧的没有，设置默认值：0
+                    'create_by': user_map[item.user.id],
                 } for item in old_address]
     print old_data
     New_StoreAddress.insert_many(old_data)
@@ -358,7 +358,7 @@ def move_user():
             signuped=item.signuped,
             lsignined=item.lsignined,
             store=store_map[item.store.id],
-            token=None,  # 旧的没有
+            token=item.token,  # 旧的没有
             last_pay_type=1,  # 旧的没有，设置默认值：1
             active=item.isactive
         )
@@ -370,7 +370,7 @@ def move_scorerecord():
     old_record = Old_Score.select()
     old_data = [{
         'user': user_map[item.user],
-        'store': None,
+        'store': store_map[item.user.store.id],
         'ordernum': item.orderNum,
         'type': item.jftype,
         'process_type': item.stype,
@@ -432,9 +432,9 @@ def move_blockitem():
         blockitem = New_BlockItem.create(
             area_code=item.city_code,
             block=block_map[item.atype.id],
-            name=None,
-            link=None,
-            ext_id=None,
+            name='数据库迁移数据',  # 旧的没有，暂时设置，后期人工处理
+            link=0,  # 旧的没有，设置默认值：0
+            ext_id=0,  # 旧的没有，设置默认值：0
             remark=item.remark,
             img=item.imgalt,
             sort=item.sort,
@@ -466,7 +466,7 @@ def move_product():
             brand=brand_map[item.pinpai.id],
             category=category_map[item.categoryfront.id],
             resume=item.resume,
-            unit=None,  # 旧的没有
+            unit='单位',  # 旧的没有，暂时设置，后期人工处理
             intro=item.intro,
             cover=item.cover,
             is_score=item.is_score,
@@ -493,8 +493,8 @@ def move_productattributevalue():
     old_data = [{
         'product': product_map[item.product.id],
         'attribute': item.attribute,
-        'attribute_item': None,  # 旧的没有，需要额外处理
-        'value': None,  # 旧的没有，需要额外处理
+        'attribute_item': 0,  # 旧的没有，需要额外处理
+        'value': 0,  # 旧的没有，需要额外处理
     } for item in old_attribute]
     print old_data
     New_ProductAttributeValue.insert_many(old_data)
@@ -550,7 +550,7 @@ def move_insurance():
             eName=None,
             intro=item.resume,
             logo=item.cover,
-            sort=None,  # 旧的没有
+            sort=0,  # 旧的没有，设置默认值：0
             active=item.status  # 旧的没有，设置默认值：1（有效）
         )
         insurance_map[item.id] = insurance.id
@@ -577,9 +577,9 @@ def move_insurancearea():
     old_data = [{
         'area_code': item.area_code,
         'insurance': insurance_item_map[item.iid.id],
-        'lube_ok': None,  # 旧的没有
-        'score_ok': None,  # 旧的没有
-        'sort': None,  # 旧的没有
+        'lube_ok': 1,  # 旧的没有，设置默认值：1
+        'score_ok': 1,  # 旧的没有，设置默认值：1
+        'sort': 0,  # 旧的没有，设置默认值：0
         'active': item.iswork
     } for item in old_area]
     print old_data
@@ -604,11 +604,11 @@ def move_insuranceexchange():
         'created': item.time,
 
         'business_exchange_rate': item.rate,
-        'business_exchange_rate2': None,  # 旧的没有
+        'business_exchange_rate2': 0,  # 旧的没有
         'business_tax_rate': item.businessTaxRate,
 
         'force_exchange_rate': item.forceRate,
-        'force_exchange_rate2': None,  # 旧的没有
+        'force_exchange_rate2': 0,  # 旧的没有
         'force_tax_rate': item.forceTaxRate,
 
         'ali_rate': item.aliRate,
@@ -650,72 +650,72 @@ def move_insuranceporderprice():
             gift_policy=item.LubeOrScore,
             response=1,  # 旧的没有
             status=1,  # 旧的没有
-            score =0,  # 旧的没有
+            score=0,  # 旧的没有
             total_price=item.price,  # 保险订单总价格
             force_price=item.forceIprc,  # 交强险 价格
             business_price=item.businessIprc,  # 商业险价格
             vehicle_tax_price=item.vehicleTax,  # 车船税价格
-            sms_content=None,  # 旧的没有
+            sms_content=0,  # 旧的没有
 
             # 交强险
             forceI=item.forceI,  # 是否包含交强险
-            forceIPrice=None,
+            forceIPrice=0,
 
             # 商业险-主险-车辆损失险
             damageI=item.damageI,
-            damageIPrice=None,
+            damageIPrice=0,
             damageIPlus=item.damageSpecialI,
-            damageIPlusPrice=None,
+            damageIPlusPrice=0,
 
             # 商业险-主险-第三者责任险，含保额
             thirdDutyI=item.thirdDutyI,
-            thirdDutyIPrice=None,
+            thirdDutyIPrice=0,
             thirdDutyIPlus=item.thirdDutySpecialI,
-            thirdDutyIPlusPrice=None,
+            thirdDutyIPlusPrice=0,
 
             # 商业险-主险-机动车全车盗抢险
             robbingI=item.robbingI,
-            robbingIPrice=None,
+            robbingIPrice=0,
             robbingIPlus=item.robbingSpecialI,
-            robbingIPlusPrice=None,
+            robbingIPlusPrice=0,
 
             # 商业险-主险-机动车车上人员责任险（司机），含保额
             driverDutyI=item.driverDutyI,
-            driverDutyIPrice=None,
+            driverDutyIPrice=0,
             driverDutyIPlus=item.driverDutySpecialI,
-            driverDutyIPlusPrice=None,
+            driverDutyIPlusPrice=0,
 
             # 商业险-主险-机动车车上人员责任险（乘客），含保额
             passengerDutyI=item.passengerDutyI,
-            passengerDutyIPrice=None,
+            passengerDutyIPrice=0,
             passengerDutyIPlus=item.passengerDutySpecialI,
-            passengerDutyIPlusPrice=None,
+            passengerDutyIPlusPrice=0,
 
             # 商业险-附加险-玻璃单独破碎险
             glassI=item.glassI,
-            glassIPrice=None,
+            glassIPrice=0,
 
             # 商业险-附加险-车身划痕损失险，含保额
             scratchI=item.scratchI,
-            scratchIPrice=None,
+            scratchIPrice=0,
             scratchIPlus=item.scratchSpecialI,
-            scratchIPlusPrice=None,
+            scratchIPlusPrice=0,
 
             # 商业险-附加险-自燃损失险
             fireDamageI=item.normalDamageI,
-            fireDamageIPrice=None,
+            fireDamageIPrice=0,
             fireDamageIPlus=item.normalDamageSpecialI,
-            fireDamageIPlusPrice=None,
+            fireDamageIPlusPrice=0,
 
             # 商业险-附加险-发动机涉水损失险
             wadeI=item.wadeI,
-            wadeIPrice=None,
+            wadeIPrice=0,
             wadeIPlus=item.wadeSpecialI,
-            wadeIPlusPrice=None,
+            wadeIPlusPrice=0,
 
             # 商业险-附加险-机动车损失保险无法找到第三方特约金
             thirdSpecialI=item.thirdSpecialI,
-            thirdSpecialIPrice=None,
+            thirdSpecialIPrice=0,
         )
         insurance_order_price_map[item.id] = insuranceorderprice.id
         print insuranceorderprice.id
@@ -754,12 +754,12 @@ def move_insuranceorder():
             'status': item.status,
             'cancel_reason': item.cancelreason,
             'cancel_time': item.cancel_time,
-            'sms_content': None,
-            'sms_sent_time': None,
+            'sms_content': '',  # 就得没有，暂时设置，后期需要人工处理
+            'sms_sent_time': item.lasteditedtime,
             'local_summary': item.localsummary,
             'pay_time': item.paytime,
-            'deal_time': None,
-            'order_count': None,
+            'deal_time': item.ordered,
+            'order_count': 0,
             'pay_account': item.pay_account,
             'trade_no': item.trade_no,
             'user_del': item.userDel
@@ -772,7 +772,7 @@ def move_cart():
     old_cart = Old_Cart.select()
     old_data = [{
         'store': store_map[item.user.store.id],  # 旧的没有,是否指的是购买方
-        'store_product_price': None,  # 旧的没有
+        'store_product_price': 0,  # 旧的没有,暂时设置，后期需要人工处理
         'quantity': item.quantity,
         'created': item.created
     } for item in old_cart]
@@ -800,7 +800,7 @@ def move_Order():
     old_data = [{
         'ordernum': item.ordernum,
         'user': item.user,
-        'buyer_store': None,  # 旧的没有
+        'buyer_store': 0,  # 旧的没有，暂时设置0
         'address': item.address,
         'delivery': delivery_map[item.delivery.id],
         'delivery_num': item.deliverynum,
@@ -810,12 +810,12 @@ def move_Order():
         'order_type': item.order_type,  # 付款方式 1金钱订单 2积分订单
         'total_price': item.currentprice,  # 就得没有，暂时设置为这个
         'pay_balance': item.pay_balance,
-        'pay_price': None,
+        'pay_price': 0,  # 旧的没有，暂时设置默认值
         'pay_time': item.paytime,
         'status': item.status,
         'trade_no': item.trade_no,
         'order_count': 0,
-        'buyer_del': None
+        'buyer_del': 0  # 旧的没有，暂时设置
     } for item in old_order]
     print old_data
     New_Order.insert_many(old_data)
@@ -828,16 +828,16 @@ def move_suborder():
     for item in old_suborder:
         suborder = New_SubOrder.create(
             order=order_map[item.order.id],
-            saler_store=None,
-            buyer_store=None,
-            price=None,
-            status=None,
+            saler_store=0,
+            buyer_store=0,
+            price=item.order.price,
+            status=item.order.status,
             fail_reason=None,
-            fail_time=None,
+            fail_time=0,
             delivery_time=delivery_map[item.order.delivery.item.id],
             settlement=settlement_map[item.order.settlement.id],
-            saler_del=None,
-            buyer_del=None,
+            saler_del=0,
+            buyer_del=0,
         )
         suborder_map[item.id] = suborder.id
 
@@ -846,9 +846,9 @@ def move_orderitem():
     old_orderitem = Old_OrderItem.select()
     old_data = [{
         'order': order_map[item.order.id],
-        'sub_order': None,  # 旧的没有，需要处理
+        'sub_order': 0,  # 旧的没有，需要处理
         'product': product_map[item.productid],
-        'store_product_price': None,
+        'store_product_price': 0,
         'quantity': item.quantity,
         'price': item.price
     } for item in old_orderitem]
