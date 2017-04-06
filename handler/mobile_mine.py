@@ -1357,6 +1357,23 @@ class MobileReceiverAddressHandler(MobileBaseHandler):
         result['flag'] = 1
         self.write(simplejson.dumps(result))
 
+@route(r'/mobile/deleteaddress',name='mobile_delete_receiver_address')
+class MobileDeleteAddressHandler(MobileBaseHandler):
+    @require_auth
+    def post(self):
+        user = self.get_user()
+        store_address_id = self.get_body_argument('store_address_id', None)
+        result = {'flag': 0, 'msg': '', "data": {}}
+        if user and store_address_id:
+            query = StoreAddress.delete().where(StoreAddress.id == store_address_id)
+            query.execute()
+
+            result['flag'] = 1
+        else:
+            result['msg'] = '传入参数异常'
+        self.write(simplejson.dumps(result))
+        self.finish()
+
 
 @route(r'/mobile/feedback', name='mobile_my_feedback')  # 意见反馈
 class MobileFeedbackHandler(MobileBaseHandler):
