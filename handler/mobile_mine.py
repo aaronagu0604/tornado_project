@@ -1269,8 +1269,9 @@ class MobileReceiverAddressHandler(MobileBaseHandler):
         result = {'flag': 0, 'msg': '', "data": []}
         store = self.get_user().store
         for address in StoreAddress.select().where(StoreAddress.store==store).order_by(StoreAddress.is_default.desc()):
-            areas = Area.select(Area.code << [address.province, address.city, address.region])
+            areas = Area.select().where(Area.code << [address.province, address.city, address.region])
             area_map = {item.code: item.name for item in areas}
+
             result['data'].append({
                 'address_id': address.id,
                 # 'store_name': store.name,
