@@ -1322,37 +1322,36 @@ class MobileReceiverAddressHandler(MobileBaseHandler):
         address = self.get_body_argument('address', None)
         is_default = int(self.get_body_argument('is_default', 0))
         created = int(time.time())
-        
-        if cancel_def_id and store_address_id:
-            store_address_cancel = StoreAddress.get(id=cancel_def_id)
-            store_address_cancel.is_default = 0
-            store_address_cancel.save()
-            store_address_set = StoreAddress.get(id=store_address_id)
-            store_address_set.is_default = 1
-            store_address_set.save()
-            result['msg'] = '修改成功'
-        else:
+
+        if store_address_id:
+            sa = StoreAddress.get(id=store_address_id)
             if is_default:
+                sa.is_default = is_default
                 for store_address in user.store.addresses:
                     if store_address.is_default:
                         store_address.is_default = 0
                         store_address.save()
-            if store_address_id:
-                sa = StoreAddress.get(id=store_address_id)
+
+            if receiver:
                 sa.name = receiver
+            if mobile:
                 sa.mobile = mobile
+            if province:
                 sa.province = province
+            if city:
                 sa.city = city
+            if region:
                 sa.region = region
+            if address:
                 sa.address = address
-                sa.is_default = is_default
-                sa.create_by = user
-                sa.save()
-                result['msg'] = '修改成功'
-            else:
-                StoreAddress.create(store=user.store, province=province, city=city, region=region, address=address,
-                                    name=receiver, mobile=mobile, is_default=is_default, create_by=user, created=created)
-                result['msg'] = '创建成功'
+
+            sa.create_by = user
+            sa.save()
+            result['msg'] = '修改成功'
+        else:
+            StoreAddress.create(store=user.store, province=province, city=city, region=region, address=address,
+                                name=receiver, mobile=mobile, is_default=is_default, create_by=user, created=created)
+            result['msg'] = '创建成功'
 
         result['flag'] = 1
         self.write(simplejson.dumps(result))
