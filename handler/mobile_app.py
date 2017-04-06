@@ -753,15 +753,15 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
             join(Store, on=(Store.id == ProductRelease.store)).where(ft).dicts()
         # 排序
         if sort == '1':
-            products.order_by(StoreProductPrice.price.desc())
+            products = products.order_by(StoreProductPrice.price.desc())
         elif sort == '2':
-            products.order_by(StoreProductPrice.price.asc())
+            products = products.order_by(StoreProductPrice.price.asc())
         elif sort == '3':
-            products.order_by(ProductRelease.buy_count.desc())
+            products = products.order_by(ProductRelease.buy_count.desc())
         elif sort == '4':
-            products.order_by(ProductRelease.buy_count.asc())
+            products = products.order_by(ProductRelease.buy_count.asc())
         else:
-            products.order_by(ProductRelease.sort.desc())
+            products = products.order_by(ProductRelease.sort.desc())
         ps = products.paginate(index, setting.MOBILE_PAGESIZE)
         for p in ps:
             productList.append({
@@ -776,6 +776,7 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
                 'resume': p['resume'],
                 'storeName': p['sName']
             })
+
         return productList
 
     def get(self):
