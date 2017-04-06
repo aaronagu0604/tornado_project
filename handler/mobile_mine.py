@@ -1269,12 +1269,17 @@ class MobileReceiverAddressHandler(MobileBaseHandler):
         result = {'flag': 0, 'msg': '', "data": []}
         store = self.get_user().store
         for address in StoreAddress.select().where(StoreAddress.store==store).order_by(StoreAddress.is_default.desc()):
+            areas = Area.select(Area.code << [address.province, address.city, address.region])
+            area_map = {item.code: item.name for item in areas}
             result['data'].append({
                 'address_id': address.id,
                 # 'store_name': store.name,
                 'province': address.province,
+                'province_name': area_map[address.province],
                 'city': address.city,
+                'city_name': area_map[address.city],
                 'district': address.region,
+                'district_name': area_map[address.region],
                 'address': address.address,
                 'receiver': address.name,
                 'mobile': address.mobile,
