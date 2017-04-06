@@ -959,9 +959,9 @@ class MobileShopCarHandler(MobileBaseHandler):
     def get(self):
         result = {'flag': 0, 'msg': '', "data": []}
         user = self.get_user()
-        result['data']['login_flag'] = 0
+        result['login_flag'] = 0
         if user:
-            result['data']['login_flag'] = 1
+            result['login_flag'] = 1
             saler_store_list = []
             for item in user.store.cart_items.order_by(ShopCart.created.desc()):
                 if (item.store_product_price.active and item.store_product_price.product_release.active and
