@@ -1349,6 +1349,11 @@ class MobileReceiverAddressHandler(MobileBaseHandler):
             sa.save()
             result['msg'] = '修改成功'
         else:
+            if is_default:
+                for store_address in user.store.addresses:
+                    if store_address.is_default:
+                        store_address.is_default = 0
+                        store_address.save()
             StoreAddress.create(store=user.store, province=province, city=city, region=region, address=address,
                                 name=receiver, mobile=mobile, is_default=is_default, create_by=user, created=created)
             result['msg'] = '创建成功'
