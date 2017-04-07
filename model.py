@@ -960,8 +960,8 @@ class PaymentNotify(db.Model):
 class Feedback(db.Model):
     id = PrimaryKeyField()
     user = ForeignKeyField(User, db_column='user_id', null=True)  # 用户
-    suggest = CharField(max_length=32)  # 意见建议
-    img = CharField(max_length=32)  # 图片
+    suggest = CharField(max_length=255)  # 意见建议
+    img = CharField(max_length=255)  # 图片
 
     class Meta:
         db_table = "tb_feedback"
