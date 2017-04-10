@@ -260,7 +260,7 @@ def move_adminuser():
             password=item.password,
             mobile=item.mobile,
             email=item.email,
-            code=item.code,
+            code="",  # 旧的没找到，暂时设置空
             realname=item.realname,
             roles=item.roles,
             signuped=item.signuped,
