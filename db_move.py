@@ -219,6 +219,9 @@ brand_map = {}
 def move_brand():
     old_brand = Old_PinPai.select(~Old_PinPai.name.contains('险') & ~Old_PinPai.intro.contains('险') & Old_PinPai.ptype==0)
     for item in old_brand:
+        if not item.name:
+            continue
+        print item.name
         brand = New_Brand.create(
             name=item.name,
             engname=item.engname,
@@ -227,7 +230,7 @@ def move_brand():
             intro=item.intro,
             hot=0,  # 旧的没有，设置默认值：0(否)
             sort=1,  # 旧的没有,设置默认值：1
-            active=item.flag
+            active=1
         )
         print 'move_brand:%d' % brand.id
         brand_map[item.id] = brand.id
