@@ -265,20 +265,20 @@ def move_adminuser():
             roles=item.roles,
             signuped=item.signuped,
             lsignined=item.lsignined,
-            active=item.active
+            active=item.isactive
         )
-        print adminuser.id,adminuser.name
+        print adminuser.id,adminuser.username
         adminuser_map[item.id] = adminuser.id
 
 # adminuserlog: 管理账户日志
 def move_adminuserlog():
-    old_adminlog = Old_AdminLog.select()
+    old_adminlog = Old_AdminLog.select(Old_AdminLog.user.id << adminuser_map.keys())
     old_data = [{
         'admin_user': adminuser_map[item.user.id],
         'created': item.dotime,
         'content': item.content
     } for item in old_adminlog]
-    print old_data
+    print old_data.count()
     New_AdminUserLog.insert_many(old_data)
 '''
 # 店铺相关
