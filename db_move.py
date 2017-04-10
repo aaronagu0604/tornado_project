@@ -185,7 +185,7 @@ def move_categoryattribute():
     old_attribute = Old_PPTAttribute.select()
     for item in old_attribute:
         attribute = New_CategoryAttribute.create(
-            category=category_map[item.PinPaiType],
+            category=category_map[item.PinPaiType.id],
             name=item.name,
             ename=item.ename,
             sort=0,  # 旧的没有，设置默认值：0（有效）
@@ -201,7 +201,7 @@ def move_categoryattributeitem():
     old_item = Old_PPTAQuantity.select()
     for item in old_item:
         att_item = New_CategoryAttributeItems.create(
-            category_attribute=category_attribute_map[item.PPTA_id],
+            category_attribute=category_attribute_map[item.PPTA_id.id],
             name=item.name,
             intro=None,
             sort=0  # 旧的没有，设置默认值：0（有效）
@@ -332,7 +332,7 @@ def move_storebankaccount():
 def move_storeaddress():
     old_address = Old_UserAddr.select()
     old_data = [{
-                    'store': store_map[item.user.store],
+                    'store': store_map[item.user.store.id],
                     'province': item.province,
                     'city': item.city,
                     'region': item.region,
@@ -350,8 +350,8 @@ def move_storeaddress():
 def move_storearea():
     old_area = Old_StoreServerArea.select()
     old_data = [{
-        'area': area_map[item.aid],
-        'store': store_map[item.sid]
+        'area': area_map[item.aid.id],
+        'store': store_map[item.sid.id]
     } for item in old_area]
     print old_data
     New_StoreArea.insert_many(old_data)
@@ -383,7 +383,7 @@ def move_user():
 def move_scorerecord():
     old_record = Old_Score.select()
     old_data = [{
-        'user': user_map[item.user],
+        'user': user_map[item.user.id],
         'store': store_map[item.user.store.id],
         'ordernum': item.orderNum,
         'type': item.jftype,
@@ -928,7 +928,7 @@ def move_orderitem():
     old_data = [{
         'order': order_map[item.order.id],
         'sub_order': 0,  # 旧的没有，需要处理
-        'product': product_map[item.productid],
+        'product': product_map[item.product.id],
         'store_product_price': 0,
         'quantity': item.quantity,
         'price': item.price
