@@ -278,7 +278,7 @@ def move_adminuserlog():
         'created': item.dotime,
         'content': item.content
     } for item in old_adminlog]
-    print old_data.count()
+    print 'move_adminlog',old_adminlog.count()
     New_AdminUserLog.insert_many(old_data)
 '''
 # 店铺相关
@@ -289,7 +289,10 @@ store_map = {}
 def move_store():
     old_store = Old_Store.select()
     for item in old_store:
-        user = Old_User.get(Old_User.store == item)
+        try:
+            user = Old_User.get(Old_User.store == item)
+        except Exception:
+            continue
         store = New_Store.create(
             store_type=item.store_type,
             admin_code=None,  # 旧的没有
