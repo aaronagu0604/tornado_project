@@ -217,7 +217,7 @@ def move_categoryattributeitem():
 brand_map = {}
 
 def move_brand():
-    old_brand = Old_PinPai.select(~Old_PinPai.name.contains('险') & ~Old_PinPai.intro.contains('险'))
+    old_brand = Old_PinPai.select()
     for item in old_brand:
         if not item.name:
             continue
