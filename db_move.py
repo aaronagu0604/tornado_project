@@ -46,7 +46,7 @@ from db_model import InsuranceOrderReceiving as Old_InsuranceOrderReceiving
 from db_model import GroupOrder as Old_GroupOrder
 from db_model import OrderItem as Old_OrderItem
 from db_model import HelpCenter as Old_HelpCenter
-
+from db_model import Hot_Search as Old_HotSearch
 # newdatabase
 from model import Delivery as New_Delivery
 from model import Area as New_Area
@@ -87,10 +87,21 @@ from model import BlockItemArea as New_BlockItemArea
 from model import Feedback as New_Feedback
 from model import BankCard as New_BankCard
 from model import LubePolicy as New_LubePolicy
+from model import HotSearch as New_HotSearch
 
 '''
 # 第一部分：无依赖的基础数据
 '''
+def move_hotsearch():
+    old_hot = Old_HotSearch.select()
+    old_data = [{
+        'keywords':item.keywords,
+        'quantity':item.quantity,
+        'status':item.status,
+        'last_time':item.last_time
+    } for item in old_hot]
+    New_HotSearch.insert_many(old_data)
+
 # delivery:物流公司
 delivery_map = {}
 
@@ -926,6 +937,7 @@ def move_orderitem():
     New_OrderItem.insert_many(old_data)
 
 if __name__ == '__main__':
+    move_hotsearch()
     move_delivery()
     move_bankcard()
     move_area()
