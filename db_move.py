@@ -2,6 +2,7 @@
 # coding=utf8
 
 import datetime
+import simplejson
 '''
 # 数据库迁移代码
 # 思路：
@@ -44,6 +45,7 @@ from db_model import InsuranceOrder as Old_InsuranceOrder
 from db_model import InsuranceOrderReceiving as Old_InsuranceOrderReceiving
 from db_model import GroupOrder as Old_GroupOrder
 from db_model import OrderItem as Old_OrderItem
+from db_model import HelpCenter as Old_HelpCenter
 
 # newdatabase
 from model import Delivery as New_Delivery
@@ -84,6 +86,7 @@ from model import BlockItem as New_BlockItem
 from model import BlockItemArea as New_BlockItemArea
 from model import Feedback as New_Feedback
 from model import BankCard as New_BankCard
+from model import LubePolicy as New_LubePolicy
 
 '''
 # 第一部分：无依赖的基础数据
@@ -618,6 +621,73 @@ def move_insuranceexchange():
     print old_data
     New_InsuranceScoreExchange.insert_many(old_data)
 
+
+def _has_dic(src=[], dickey=None):
+    for index, item in enumerate(src):
+        if item['gift'] == dickey:
+            return index
+    else:
+        return -1
+# 送油策略
+def move_lubeexchange():
+    old_policy = Old_HelpCenter.select()
+    for item in old_policy:
+        insurance = New_Insurance.get(New_Insurance.name.contains(item.iCompany))
+        try:
+            tmppolicy = New_LubePolicy.get(New_LubePolicy.area_code == item.area_code,
+                                                  New_LubePolicy.insurance == insurance)
+        except Exception:
+            tmppolicy = None
+
+        if tmppolicy:
+            policy = simplejson.loads(tmppolicy.policy)
+            index = _has_dic(policy, item.driverGift)
+            if index >= 0:
+                policy[index]['item'].append(
+                    {
+                        'name': item.insurance,
+                        'driver': item.driverGiftNum,
+                        'store': item.party2GiftNum,
+                        'minprice': int(minp),
+                        'maxprice': int(maxp),
+                        'flag': 1  # 暂时不知道设置为什么值，设置为1
+                    }
+                )
+            else:
+                policy.append(
+                    {
+                        'gift': item.driverGift,
+                        'items': [{
+                            'name': item.insurance,
+                            'driver': item.driverGiftNum,
+                            'store': item.party2GiftNum,
+                            'minprice': int(minp),
+                            'maxprice': int(maxp),
+                            'flag': 1  # 暂时不知道设置为什么值，设置为1
+                        }]
+                    }
+                )
+            tmppolicy.policy(simplejson.dumps(policy))
+            tmppolicy.save()
+        else:
+            minp,maxp = item.price.split()
+            data = [{
+                'gift': item.driverGift,
+                'items': [{
+                    'name': item.insurance,
+                    'driver': item.driverGiftNum,
+                    'store': item.party2GiftNum,
+                    'minprice': int(minp),
+                    'maxprice': int(maxp),
+                    'flag': 1  # 暂时不知道设置为什么值，设置为1
+                }]
+            }]
+            New_LubePolicy.create(
+                area_code=item.area_code,
+                insurance=insurance,
+                policy=simplejson.dumps(data)
+            )
+
 '''
 # 第三部分：互相依赖记录数据
 '''
@@ -886,6 +956,7 @@ if __name__ == '__main__':
     move_insurancearea()
     move_insuranceprice()
     move_insuranceexchange()
+    move_lubeexchange()
     move_feedback()
     move_insuranceporderprice()
     move_insuranceorder()
