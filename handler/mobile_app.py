@@ -207,10 +207,10 @@ class MobileRegHandler(MobileBaseHandler):
             user.store = sid.id
             user.token = setting.user_token_prefix + str(uuid.uuid4())
             user.save()
-            province_name = Area.get(code=province).name
-            city_name = Area.get(code=city).name
-            district_name = Area.get(code=district).name
-            StoreAddress.create(store=sid.id, province=province_name, city=city_name, region=district_name, address=address,
+            # province_name = Area.get(code=province).name
+            # city_name = Area.get(code=city).name
+            # district_name = Area.get(code=district).name
+            StoreAddress.create(store=sid.id, province=province, city=city, region=district, address=address,
                                 street='', name=legalPerson, mobile=mobile, created=now, create_by=user.id)
             self.application.memcachedb.set(user.token, str(user.id), setting.user_expire)
             result['data'] = {
@@ -1038,12 +1038,17 @@ class MobileOrderBaseHandler(MobileBaseHandler):
                 result['msg'] = '请选择购买的产品'
             else:
                 for address in user.store.addresses:
+                    areas = Area.select().where(Area.code << [address.province, address.city, address.region])
+                    area_map = {item.code: item.name for item in areas}
                     if address.is_default == 1:
                         result['data']['address']['address_id'] = address.id
                         result['data']['address']['mobile'] = address.mobile
                         result['data']['address']['province'] = address.province
+                        result['data']['address']['province_name'] = area_map[address.province]
                         result['data']['address']['city'] = address.city
+                        result['data']['address']['city_name'] = area_map[address.city]
                         result['data']['address']['district'] = address.region
+                        result['data']['address']['district_name'] = area_map[address.region]
                         result['data']['address']['address'] = address.address
                         result['data']['address']['receiver'] = address.name
                         result['data']['address']['is_default'] = address.is_default
