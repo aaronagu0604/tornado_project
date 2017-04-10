@@ -203,7 +203,7 @@ def move_categoryattributeitem():
         att_item = New_CategoryAttributeItems.create(
             category_attribute=category_attribute_map[item.PPTA_id.id],
             name=item.name,
-            intro=None,
+            intro="默认",
             sort=0  # 旧的没有，设置默认值：0（有效）
         )
         print 'move_categoryattributeitem:%d' % att_item.id
