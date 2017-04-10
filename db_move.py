@@ -169,10 +169,10 @@ def move_category():
     for item in old_category:
         category = New_Category.create(
             name=item.name,
-            sort=None,  # 旧的没有
+            sort=1,  # 旧的没有
             img_m=None,  # 旧的没有
             img_pc=None,  # 旧的没有
-            hot=0,  # 旧的没有,设置默认值：0
+            hot=1,  # 旧的没有,设置默认值：0
             active=item.flag
         )
         print 'move_category:%d--%d' % (old_category.count(), category.id)
