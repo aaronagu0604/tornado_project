@@ -417,13 +417,19 @@ class ProductPublishHandler(AdminBaseHandler):
 class AdminUserHandler(AdminBaseHandler):
     def get(self, admin_id):
         page = int(self.get_body_argument("page", '1'))
+        pagesize = setting.ADMIN_PAGESIZE
         try:
             qadminuser = AdminUser.select()
             if int(admin_id) > 0:
                 adminUser = AdminUser.get(id=admin_id)
+                default_province = adminUser.area_code[0:4]
+                default_city = adminUser.area_code[0:8]
+                default_district = adminUser.area_code
             else:
                 adminUser = None
-            pagesize = setting.ADMIN_PAGESIZE
+                default_province = ''
+                default_city = ''
+                default_district = ''
 
             total = qadminuser.count()
             if total % pagesize > 0:
@@ -431,8 +437,11 @@ class AdminUserHandler(AdminBaseHandler):
             else:
                 totalpage = total / pagesize
             ivs = qadminuser.order_by(AdminUser.id.desc()).paginate(page, pagesize)
+            items = Area.select().where(Area.pid >> None)
+
             self.render("admin/user/admin_user.html",ivs=ivs, adminUser=adminUser, total=total, page=page,
-                        pagesize=pagesize, totalpage=totalpage, active='admin_user')
+                        pagesize=pagesize, totalpage=totalpage, active='admin_user', items=items, Area=Area,
+                        default_province=default_province, default_city=default_city, default_district=default_district)
         except Exception, e:
             self.write("程序出错了，可能是参数传递错误！")
 
@@ -446,6 +455,17 @@ class AdminUserHandler(AdminBaseHandler):
         roles = self.get_argument('roles', '')
         active = self.get_argument('active', '')
         code = self.get_argument('code', '')
+        province_code = self.get_argument('province_code', '')
+        city_code = self.get_argument('city_code', '')
+        district_code = self.get_argument('district_code', '')
+        if district_code and district_code != '0':
+            area_code = district_code
+        elif city_code and city_code != '0':
+            area_code = city_code
+        elif province_code and province_code != '0':
+            area_code = province_code
+        else:
+            area_code = ''
         user = self.get_admin_user()
         is_root = ('A' in user.roles or 'D' in user.roles)
 
@@ -459,6 +479,7 @@ class AdminUserHandler(AdminBaseHandler):
             adminUser.email = email
             adminUser.roles = roles
             adminUser.code = code
+            adminUser.area_code = area_code
             adminUser.realname = realname
             if active == 'on':
                 adminUser.active = 1
@@ -474,6 +495,7 @@ class AdminUserHandler(AdminBaseHandler):
             adminUser.email = email
             adminUser.realname = realname
             adminUser.code = code
+            adminUser.area_code = area_code
             if is_root:
                 adminUser.roles = roles
                 if active:

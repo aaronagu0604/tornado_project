@@ -21,9 +21,9 @@ class AjaxGetSubAreas(BaseHandler):
         try:
             parent_code = self.get_argument("parent_code", '')
             keyword = '' + parent_code + '%'
-            ft = (Area.code % keyword) & (Area.is_delete == 0) & (db.fn.length(Area.code) == len(parent_code) + 4)
+            ft = ((Area.code % keyword) & (Area.is_delete == 0) & (db.fn.length(Area.code) == len(parent_code) + 4))
 
-            items = Area.select().where(ft).order_by(Area.sort, Area.id, Area.spell)
+            items = Area.select().where(ft).order_by(Area.sort, Area.id)
             result["flag"] = 1
             result["data"] = []
             for item in items:

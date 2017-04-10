@@ -6,14 +6,14 @@
     </ol>
 </div>
 <div style="color: red; font-size: 0.6em; margin-bottom: 25px;">
-    {%set messages=handler.get_flashed_messages() %}
-    {%-if messages-%}
+    {% set messages=handler.get_flashed_messages() %}
+    {% if messages %}
     <div>
         {% for type, msg in messages%}
         {{msg}}
         {% endfor %}
     </div>
-    {%-endif-%}
+    {% endif %}
 </div>
 <form class="form-horizontal" id="form" method="post" action="/admin/admin_user/{{adminUser and adminUser.id or 0}}">
     {{xsrf()}}
@@ -60,13 +60,30 @@ border-top-right-radius: 4px;padding-left:15px;
                         </tr>
                         <tr style="border:none;">
                             <th>
+                                <label class="num">服务地区： </label>
+                                <select name="province_code" id="province_code" onchange="province_change(this.value,0)" data-default="{{default_province}}" style="height:28px;margin-left:10px;margin-top:10px;border-radius:4px;" >
+                                    <option value="">--选择省份--</option>
+                                    {% for area in items %}
+                                    <option value="{{area.code}}" {{area.code==default_province and 'selected' or ''}}>{{area.name}}</option>
+                                    {% endfor %}
+                                </select>
+                                <select name="city_code" id="city_code" onchange="city_change(this.value,0)" data-default="{{default_city}}" style="height:28px;margin-left:10px;margin-top:10px;border-radius:4px;" >
+                                    <option value="">--选择城市--</option>
+                                </select>
+                                <select name="district_code" id="district_code" data-default="{{default_district}}" style="height:28px;margin-left:10px;margin-top:10px;border-radius:4px;">
+                                    <option value="">--选择区县--</option>
+                                </select>
+                            </th>
+                        </tr>
+                        <tr style="border:none;">
+                            <th>
                                 <input type="checkbox" name="active" {% if adminUser and adminUser.active==1%}checked='true'{%endif%}>是否启用
                             </th>
                         </tr>
                         {% endif %}
                         </tbody>
                     </table>
-                    <input type="button" id="btnSave" value="保存" class="btn btn-outline btn-default btn-xs" style="width:90px;height:32px;background:#438bca;color:#fff;border:none;border-radius:4px;font-size:16px;">
+                    <input type="submit" value="保存" class="btn btn-outline btn-default btn-xs" style="width:90px;height:32px;background:#438bca;color:#fff;border:none;border-radius:4px;font-size:16px;">
                     <a href="/admin/admin_user/0">新建用户</a>
                 </div>
             </div>
@@ -88,36 +105,25 @@ border-top-right-radius: 4px;padding-left:15px;
                                 <th style="width:10%;text-align:center;">用户名</th>
                                 <th style="width:10%;text-align:center;">真实姓名</th>
                                 <th style="width:10%;text-align:center;">用户角色</th>
-                                <th style="width:15%;text-align:center;">手机</th>
-                                <th style="width:25%;text-align:center;">最后登录时间</th>
+                                <th style="width:10%;text-align:center;">服务地区</th>
+                                <th style="width:10%;text-align:center;">手机</th>
+                                <th style="width:20%;text-align:center;">最后登录时间</th>
                                 <th style="width:10%;text-align:center;">帐户状态</th>
                                 <th style="width:10%;text-align:center;">操作</th>
                             </tr>
-                            {% for o in ivs -%}
+                            {% for o in ivs %}
                             <tr>
-                                <td>
-                                    {{o.id}}
-                                </td>
-                                <td>
-                                    {{o.username}}
-                                </td>
-                                <td>
-                                    {{o.realname}}
-                                </td>
+                                <td>{{o.id}}</td>
+                                <td>{{o.username}}</td>
+                                <td>{{o.realname}}</td>
                                 <td>{{o.roles}}</td>
-                                <td>
-                                    {{o.mobile}}
-                                </td>
+                                <td>{{Area().get_detailed_address(o.area_code)}}</td>
+                                <td>{{o.mobile}}</td>
                                 <td>{{o.lsignined | datetimeformat}}</td>
-                                <td>
-                                    {{o.isactive==0 and '<span style="color:#ff5231;">删除</span>' or '<span style="color:#438bca;">启用</span>'}}
-                                    {% if o.roles.count('+')>0%}可改价{%endif%}
-                                </td>
-                                <td>
-                                    <a class="btn btn-outline btn-primary btn-xs" href="/admin/admin_user/{{o.id}}">编辑</a>
-                                </td>
+                                <td>{{o.isactive==0 and '<span style="color:#ff5231;">删除</span>' or '<span style="color:#438bca;">启用</span>'}}</td>
+                                <td><a class="btn btn-outline btn-primary btn-xs" href="/admin/admin_user/{{o.id}}">编辑</a></td>
                             </tr>
-                            {%- endfor %}
+                            {% endfor %}
                             </tbody>
                         </table>
                         <div>
@@ -141,26 +147,8 @@ border-top-right-radius: 4px;padding-left:15px;
 </form>
 {% endblock %}
 {% block js %}
-<script src="/style2/js/jquery.twbsPagination.min.js"></script>
-<script src="/style2/js/layer/layer.min.js" type="text/javascript"></script>
+<script src="/style/js/jquery.twbsPagination.min.js"></script>
 <script>
-    $(function() {
-        $("#btnSave").click(function(){
-            var title=$("#txttitle").val();
-            var content=$("#txtcontent").val();
-            if(title==""){
-                alert($("#txttitle").attr("placeholder"))
-                $("#txttitle").focus();
-                return;
-            }
-            if(content==""){
-                alert($("#txtcontent").attr("placeholder"))
-                $("#txtcontent").focus();
-                return;
-            }
-            $('#form').submit();
-        });
-    });
     $(document).ready(function() {
         $('#pageUl').twbsPagination({
             first:'首页',
@@ -170,10 +158,62 @@ border-top-right-radius: 4px;padding-left:15px;
             totalPages: {{totalpage}},
             startPage: {{page}},
             visiblePages: 8,
-            onPageClick: function (event, page) {
-                    self.location="/admin/admin_user/"+{{adminUser and adminUser.id or 0}}+"?page="+page;//{{store.id}}/{{adminUser and adminUser.id or 0}}
-                }
+                onPageClick: function (event, page) {
+                self.location="/admin/admin_user/"+{{adminUser and adminUser.id or 0}}+"?page="+page;//{{store.id}}/{{adminUser and adminUser.id or 0}}
+            }
         });
     });
+
+    $(function(){
+        init_province();
+    });
+    function init_province(){
+        var province_code=$("#province_code").attr("data-default");
+        var city_code=$("#city_code").attr("data-default");
+        var district_code=$("#district_code").attr("data-default");
+        console.debug(city_code)
+        if(province_code.length > 0){
+            province_change(province_code, city_code);
+            if(parseInt(city_code)){
+                city_change(city_code, district_code)
+            }
+        }
+    }
+    function province_change(id, default_id){
+        $("#district_code > option").remove();
+        $("#district_code").append("<option value=\"0\">--选择区县--</option>");
+        $("#city_code > option").remove();
+        $("#city_code").append("<option value=\"0\">--选择城市--</option>");
+        if(id > 0){
+            GetSubAreas(id, "city_code", default_id);
+        }
+    }
+    function city_change(id, default_id){
+        $("#district_code > option").remove();
+        $("#district_code").append("<option value=\"0\">--选择区县--</option>");
+        if(id > 0){
+            GetSubAreas(id, "district_code", default_id);
+        }
+    }
+    function GetSubAreas(id, ddl_id, default_id) {
+        $.get("/ajax/GetSubAreas", { parent_code: id,  t: Math.random() }, function (data) {
+            data = jQuery.parseJSON(data);
+            if(data.flag==1){
+                for(var i=0; i< data.data.length; i++){
+                    if(default_id.length > 0){
+                        if(data.data[i]["code"] == default_id){
+                            $("#" + ddl_id).append("<option value=\"" + data.data[i]["code"] + "\" selected>" + data.data[i]["name"] + "</option>");
+                        } else{
+                            $("#" + ddl_id).append("<option value=\"" + data.data[i]["code"] + "\">" + data.data[i]["name"] + "</option>");
+                        }
+                    } else {
+                        $("#" + ddl_id).append("<option value=\"" + data.data[i]["code"] + "\">" + data.data[i]["name"] + "</option>");
+                    }
+                }
+            } else {
+                alert(data.msg)
+            }
+        });
+    }
 </script>
 {% endblock %}

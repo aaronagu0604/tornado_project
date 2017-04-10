@@ -71,6 +71,7 @@ class AdminUser(db.Model):
     mobile = CharField(max_length=12)  # 手机号
     email = CharField(max_length=128)  # email
     code = CharField(max_length=20)  # 业务推广人员编号
+    area_code = CharField(max_length=40)  # 区域编码
     realname = CharField(max_length=32)  # 真实姓名
     roles = CharField(max_length=8)  # D开发人员；A管理员；Y运营；S市场；K客服；C仓库；Z直踩点；B编辑；G采购；P批发商；J经销商；R采购APP入库；+经销商价格修改权限（可组合，如：DA）
     signuped = IntegerField(default=0)  # 注册时间
