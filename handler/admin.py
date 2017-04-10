@@ -916,7 +916,7 @@ class AdvertisementHandler(AdminBaseHandler):
 
 @route(r'/admin/edit_ad/(\d+)', name='admin_ad_edit')
 class EditAdHandler(AdminBaseHandler):
-    executor = ThreadPoolExecutor(2)
+    executor = ThreadPoolExecutor(20)
     @asynchronous
     @coroutine
     def get(self, aid):
@@ -924,6 +924,7 @@ class EditAdHandler(AdminBaseHandler):
 
     @run_on_executor
     def show_ad(self, aid):
+        print('----------------in show ad----------------')
         items = Area.select().where(Area.pid >> None)
         aid = int(aid)
         try:
@@ -1245,8 +1246,10 @@ class ProductOrderDetailHandler(AdminBaseHandler):
 class InsuranceOrderHandler(AdminBaseHandler):
     def get(self):
         archive = self.get_argument("archive", '')
-        page = int(self.get_argument("page", 1))
-        status = int(self.get_argument("status", 0))
+        page = self.get_argument("page", 1)
+        page = 1 if page else int(page)
+        status = self.get_argument("status", '')
+        status = int(status) if status else -2
         keyword = self.get_argument("keyword", '')
         begin_date = self.get_argument("begin_date", '')
         end_date = self.get_argument("end_date", '')
@@ -1257,7 +1260,12 @@ class InsuranceOrderHandler(AdminBaseHandler):
         default_city = city
         default_province = province
         # 0待确认 1待付款 2付款完成 3已办理 4已邮寄 -1已删除(取消)
-        ft = (InsuranceOrder.status == status)
+        print self.request.arguments
+        print self.request.body_arguments
+        if status != -2:
+            ft = (InsuranceOrder.status == status)
+        else:
+            ft = (InsuranceOrder.status > -2)
         if keyword:
             keyw = '%' + keyword + '%'
             ft &= ((InsuranceOrder.ordernum % keyw)|(InsuranceOrder.mobile % keyw))
@@ -1294,17 +1302,8 @@ class InsuranceOrderHandler(AdminBaseHandler):
 
 @route(r'/admin/insurance_order/(\d+)', name='admin_insurance_order_detail')  # 保险订单详情
 class InsuranceOrderDetailHandler(AdminBaseHandler):
-    def getInsuranceOrderReceiving(self, oid):
-        iors = InsuranceOrderReceiving.select().where(InsuranceOrderReceiving.orderid==oid)
-        if iors.count()>0:
-            return iors[0]
-        else:
-            return None
-
     def get(self, oid):
         archive = self.get_argument("archive", '')
-        status = int(self.get_argument('status', 1))
-        page = int(self.get_argument('page', 1))
         o = InsuranceOrder.get(id=oid)
         poid = (int(oid) * 73 + 997)
         poid2 = (int(oid) * 91 + 97)
@@ -1312,7 +1311,8 @@ class InsuranceOrderDetailHandler(AdminBaseHandler):
         insurances = Insurance.select()
 
         programs = []
-        insurance_order_prices = InsuranceOrderPrice.select().where(InsuranceOrderPrice.insurance == oid)
+        insurance_order_prices = InsuranceOrderPrice.select().where(InsuranceOrderPrice.insurance_order_id == oid)
+        print insurance_order_prices.count()
         for program in insurance_order_prices:
             i_item_list = []
             for i_item in i_items:
@@ -1394,6 +1394,57 @@ class InsuranceOrderDetailHandler(AdminBaseHandler):
             # create_msg(simplejson.dumps(sms), 'sms')  #变更价格
 
         self.redirect('admin/insurance_order/%s'%oid)
+
+
+@route(r'/admin/new_program/(\d+)', name='admin_new_program')  # 保险订单详情
+class NewProgramHandler(AdminBaseHandler):
+    def get(self, oid):
+        i_items = InsuranceItem.select().order_by(InsuranceItem.sort)
+        insurances = Insurance.select().order_by(Insurance.sort)
+        insurance_list = []
+        for insurance in insurances:
+            insurance_list.append({
+                'id': insurance.id,
+                'name': insurance.name
+            })
+        i_item_list = []
+        for i_item in i_items:
+            i_item_list.append({
+                'eName': i_item.eName,
+                'name': i_item.name,
+                'style': i_item.style,
+                'style_id': i_item.style_id,
+                'insurance_prices': [i_price.coverage for i_price in i_item.insurance_prices]
+            })
+
+        self.render('admin/order/insurance_order_new_program.html', oid=oid, i_item_list=i_item_list,
+                    insurance_list=insurance_list)
+
+    def post(self, oid):
+        insurance = self.get_body_argument('insurance', None)
+        gift_policy = self.get_body_argument('gift_policy', None)
+        datas = {}
+        for data in self.request.body.split('&'):
+            key, value = data.split('=', 1)
+            if value:
+                datas[key] = value
+        iop = InsuranceOrderPrice()
+        iop.insurance_order_id = oid
+        iop.insurance = insurance
+        iop.gift_policy = gift_policy if gift_policy else 1
+        iop.admin_user = self.get_admin_user()
+        iop.created = time.time()
+        i_items = InsuranceItem.select().order_by(InsuranceItem.sort)
+        for i_item in i_items:
+            if i_item.eName in datas:
+                if i_item.eName+'_p' in datas:
+                    iop.__dict__['_data'][i_item.eName] = self.get_body_argument(i_item.eName+'_p', None)
+                else:
+                    iop.__dict__['_data'][i_item.eName] = '1'
+        iop.save()
+        
+        self.write(u'新建成功')
+        # self.redirect('/admin/insurance_order/%s'%oid)
 
 
 # --------------------------------------------------------保险业务------------------------------------------------------
@@ -1829,7 +1880,7 @@ class LoopTestHandler(AdminBaseHandler):
 
     @run_on_executor
     def _sleep(self):
-        for i in xrange(10):
+        for i in xrange(20):
             time.sleep(1)
             print '--%(num)s--' % {'num': i}
         # self.write('end test')

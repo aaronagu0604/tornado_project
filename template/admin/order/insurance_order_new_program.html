@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="/style/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/style/css/plugins/dataTables.bootstrap.css" rel="stylesheet">
+</head>
+<body>
+<div class="row" style="margin:5px 5px 0 5px;">
+    <div class="panel panel-primary">
+        <div class="row">
+            <div>
+                <form class="navbar-form navbar-left" action="" method="post">
+                    {{xsrf()}}
+                <div>
+                    <label>保险公司：</label>
+                    <select name="insurance">
+                        {% for insurance in insurance_list %}
+                        <option value="{{insurance['id']}}">{{insurance['name']}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% for i in i_item_list %}
+                <div>
+                    <input type="checkbox" name="{{i['eName']}}">{{i['name']}}
+                    {% if i['insurance_prices'] %}
+                    <label>险额：</label>
+                    <select name="{{i['eName']}}_p">
+                        {% for iip in i['insurance_prices'] %}
+                        <option value="{{iip}}">{{iip}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% endif %}
+                {% endfor %}
+                <div>
+                    <input type="checkbox" name="gift_policy" value="2" onclick="gift_check(this)"> 返积分
+                    <input type="checkbox" name="gift_policy" value="1" onclick="gift_check(this)"> 返油
+                </div>
+                <button type="submit" style="width:90px;height:36px;margin-left:30px;border:none;background:#438bca;color:#fff;border-radius:4px;font-size:16px;">确定</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+<script>
+    function gift_check(obj){
+        var gift_policy = document.forms[0].gift_policy;
+        for (var i = 0; i < gift_policy.length; i++) {
+            gift_policy[i].checked = false;
+        }
+        obj.checked = true;
+    }
+    function  post_i_item() {
+        var localsummary = document.getElementById("localsummary").value;
+
+        var program = document.getElementById(program_id);
+        // 获取数据
+        var insurance = $(program).find('select[name="insurance"]').val();   // 保险 ID
+        var gift_policy = $(program).find('select[name="gift_policy"]').val();   // 返佣方式
+        var vehicle_tax_price = $(program).find('input[name="vehicle_tax_price"]').val();    // 车船税价格
+        var business_rate = $(program).find('input[name="business_rate"]').val();    // 商业险折扣
+
+        $.post("/ajax/submit_local_summary", { _xsrf:xsrf, ordernum:ordernum, localsummary:localsummary}, function (data) {
+            var obj = jQuery.parseJSON(data);
+            if (obj.flag == 1) {
+                alert('成功');
+            }
+            else {
+                alert(obj.msg);
+            }
+        });
+    }
+</script>

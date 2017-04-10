@@ -895,20 +895,20 @@ class MobileAddShopCarHandler(MobileBaseHandler):
         sppid = self.get_body_argument("sppid", None)
         quantity = self.get_body_argument("quantity", 1)
         if user and sppid:
-            try:
-                spp = ShopCart.get(store_product_price=sppid)
-                spp.quantity += int(quantity)
-                spp.save()
-            except:
+            has_product = ShopCart.select().where(ShopCart.store_product_price == sppid).count()
+            if has_product > 0:
+                result['msg'] = u'该商品已存在'
+            else:
                 car = ShopCart()
                 car.store = user.store
                 car.store_product_price = sppid
                 car.quantity = quantity
                 car.created = int(time.time())
                 car.save()
+                result['msg'] = u'添加成功'
             result['flag'] = 1
         else:
-            result['msg'] = '传入参数异常'
+            result['msg'] = u'传入参数异常'
         self.write(simplejson.dumps(result))
         self.finish()
 
@@ -997,7 +997,7 @@ class MobileShopCarHandler(MobileBaseHandler):
 
             result['flag'] = 1
         else:
-            result['msg'] = '请先登录'
+            result['msg'] = u'请先登录'
         self.write(simplejson.dumps(result))
         self.finish()
 
@@ -1035,7 +1035,7 @@ class MobileOrderBaseHandler(MobileBaseHandler):
         sppids = self.get_argument('sppids', '').strip(',').split(',')
         if user is not None:
             if not sppids[0]:
-                result['msg'] = '请选择购买的产品'
+                result['msg'] = u'请选择购买的产品'
             else:
                 for address in user.store.addresses:
                     areas = Area.select().where(Area.code << [address.province, address.city, address.region])
@@ -1248,8 +1248,6 @@ class MobilInsuranceOrderBaseHandler(MobileBaseHandler):
         @apiDescription 创建保险订单前的获取数据，获取用户门店的默认地址、返油积分设置等
 
         @apiHeader {String} token 用户登录凭证
-
-        @apiParam {Int} insurance 保险公司ID
 
         @apiSampleRequest /mobile/insuranceorderbase
         """

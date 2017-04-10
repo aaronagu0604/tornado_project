@@ -8,6 +8,11 @@ from model import *
 from bootloader import db
 from lib.mqhelper import create_msg
 
+from tornado.gen import coroutine
+from tornado.web import asynchronous
+from tornado.concurrent import run_on_executor
+from concurrent.futures import ThreadPoolExecutor
+
 
 @route(r'/ajax/GetSubAreas', name='ajax_GetSubAreas')  # 获取下级区域
 class AjaxGetSubAreas(BaseHandler):
@@ -191,18 +196,42 @@ class AjaxGetSubAreas(BaseHandler):
 
         un_codes = list(set(codes))
         if len(un_codes) > 0:
-            items = Area.select().where(Area.code << un_codes)
+            # items = Area.select(Area.id.alias('id'), Area.pid.alias('pid'), Area.name.alias('name'),
+            #                     Area.code.alias('code')).where(Area.code << un_codes).dicts()
+            # nodes = [{
+            #         'id': item['id'],
+            #         'pId': item['pid'] if item['pid'] else 0,
+            #         'name': item['name'],
+            #         'data': item['code'],
+            #         'target': '_top',
+            #         'click': "pop('" + item['name'] + '-产品信息' + "', '"+'/admin/store_area_product?sid=' + str(store_id) + '&code=' + item['code']+"');",
+            #          'open': 'true' if len(item.code) < 8 else 'false'
+            # } for item in items]
+            # items = Area.select().where(Area.code << un_codes)
+            items = Area.select(Area.id.alias('id'), Area.pid.alias('pid'), Area.name.alias('name'),
+                                Area.code.alias('code')).where(Area.code << un_codes).dicts()
+            nodes = [{
+                    'id': item['id'],
+                    'pId': item['pid'] if item['pid'] else 0,
+                    'name': item['name'],
+                    'data': item['code'],
+                    'target': '_top',
+                    'click': "pop('" + item['name'] + '-产品信息' + "', '"+'/admin/store_area_product?sid=' + str(store_id) + '&code=' + item['code']+"');",
+                     'open': 'true' if len(item.code) < 8 else 'false'
+            } for item in items]
+
+
             for item in items:
-                title = item.name + '-产品信息'
-                url = '/admin/store_area_product?sid=' + str(store_id) + '&code=' + item.code
+                title = item['name'] + '-产品信息'
+                url = '/admin/store_area_product?sid=' + str(store_id) + '&code=' + item['code']
                 nodes.append({
-                    'id': item.id,
-                    'pId': item.pid.id if item.pid else 0,
-                    'name': item.name,
-                    'data': item.code,
+                    'id': item['id'],
+                    'pId': item['pid'] if item['pid'] else 0,
+                    'name': item['name'],
+                    'data': item['code'],
                     'target': '_top',
                     'click': "pop('" + title + "', '"+url+"');",
-                    'open': 'true' if len(item.code) < 8 else 'false'
+                    'open': 'true' if len(item['code']) < 8 else 'false'
                 })
 
         url = '/admin/store_area_product?sid=' + str(store_id)
@@ -221,24 +250,26 @@ class AjaxGetSubAreas(BaseHandler):
 
 @route(r'/ajax/area_tree', name='ajax_GetAreaTree')  # 获取所有地区
 class AjaxGetAllAreas(BaseHandler):
+    executor = ThreadPoolExecutor(20)
+    @asynchronous
+    @coroutine
     def get(self):
-        nodes = []
-        # items = Area.select().where((Area.pid >> None) | (Area.code == 00270001))
-        items = Area.select()
-        for item in items:
-            title = item.name + '-产品信息'
-            url = '/admin/store_area_product?sid=' + str(1) + '&code=' + item.code
-            nodes.append({
-                'id': item.id,
-                'pId': item.pid.id if item.pid else 0,
-                'name': item.name,
-                'data': item.code,
+        a = yield self.get_all_area()
+
+    @run_on_executor
+    def get_all_area(self):
+        items = Area.select(Area.id.alias('id'), Area.pid.alias('pid'), Area.name.alias('name'), Area.code.alias('code')).dicts()
+        nodes = [{
+                'id': item['id'],
+                'pId': item['pid'] if item['pid'] else 0,
+                'name': item['name'],
+                'data': item['code'],
                 'target': '_top',
-                'click': "pop('" + title + "', '"+url+"');",
-                'open': 'true' if len(item.code) < 8 else 'false'
-            })
+                'click': "pop('" + item['name'] + '-产品信息' + "', '"+'/admin/store_area_product?sid=' + str(1) + '&code=' + item['code']+"');",
+                 'open': 'false'
+        } for item in items]
         url = '/admin/store_area_product?sid=1'
-        nodes.append({
+        nodes.insert(0, {
             'id': 0,
             'pId': -1,
             'name': '全部',

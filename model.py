@@ -640,7 +640,7 @@ class InsuranceItem(db.Model):
     id = PrimaryKeyField()
     eName = CharField(max_length=32, default='')  # 英文名
     name = CharField(max_length=32, default='')  # 中文名
-    style = CharField(max_length=32, default='')  # 分类
+    style = CharField(max_length=32, default='')  # 分类名
     style_id = IntegerField(default=0)  # 分类id 交强险1  商业险主险2  商业险附加险3
     sort = IntegerField(default=1)  # 排序
 

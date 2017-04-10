@@ -41,7 +41,7 @@
                 </select>
                 <div class="btn-group btn-group-xs">
                     <select class="form-control" name="status" id="sel_type" style="width:100px;">
-                        <option value="-2" {{ status==-2 and 'selected' or '' }}>全部</option>
+                        <option value="-2" {{ status=='-2' and 'selected' or '' }}>全部</option>
                         <option value="0" {{ status==0 and 'selected' or '' }}>待确认</option>
                         <option value="1" {{ status==1 and 'selected' or '' }}>待付款</option>
                         <option value="2" {{ status==2 and 'selected' or '' }}>已付款</option>
