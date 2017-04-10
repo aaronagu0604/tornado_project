@@ -237,7 +237,8 @@ def move_brand():
 
 # brandcategory:品牌产品类型
 def move_brandcategory():
-    old_brandcategory = Old_PinPai.select(Old_PinPai.id << brand_map.keys())  # 过滤后只余下新数据库brand对应的PinPai数据
+    old_brandcategory = Old_PinPai.select()  # 过滤后只余下新数据库brand对应的PinPai数据
+    print old_brandcategory.count(),brand_map,category_map
     old_data = [{
         'brand': brand_map[item.id],
         'category': category_map[item.ptype.id]
