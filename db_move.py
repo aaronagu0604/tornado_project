@@ -332,7 +332,7 @@ def move_storebankaccount():
         'bank_name': item.bank_name,
         'is_default': 0  # 旧的没有，设置默认值：0（否）
     } for item in old_bank]
-    print 'move storebankaccount',old_bank.count()
+    print 'move storebankaccount',old_data, old_bank.count()
     New_StoreBankAccount.insert_many(old_data)
 
 # storeaddress:店铺收货地址
@@ -351,7 +351,7 @@ def move_storeaddress():
                     'created': 0,  # 旧的没有，设置默认值：0
                     'create_by': None,
                 } for item in old_address]
-    print 'move store address:', old_address.count()
+    print 'move storeaddress:', old_data, old_address.count()
     New_StoreAddress.insert_many(old_data)
 
 # storearea:店铺服务区域
@@ -361,7 +361,7 @@ def move_storearea():
         'area': area_map[item.aid.id],
         'store': store_map[item.sid.id]
     } for item in old_area]
-    print old_data
+    print 'move storearea:', old_data,old_area.count()
     New_StoreArea.insert_many(old_data)
 '''
 # 店铺用户
@@ -380,7 +380,7 @@ def move_user():
             signuped=item.signuped,
             lsignined=item.lsignined,
             store=store_map[item.store.id],
-            token=item.token,  # 旧的没有
+            token=None,  # 旧的没有
             last_pay_type=1,  # 旧的没有，设置默认值：1
             active=item.isactive
         )
