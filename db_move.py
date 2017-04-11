@@ -100,6 +100,7 @@ def move_hotsearch():
         'status':item.status,
         'last_time':item.last_time
     } for item in old_hot]
+    print 'move hotsearch:', old_data
     New_HotSearch.insert_many(old_data).execute()
 
 # delivery:物流公司
@@ -111,6 +112,7 @@ def move_delivery():
         delivery = New_Delivery.create(
             name=item.name
         )
+        print 'move delivery:', item.id
         delivery_map[item.id] = delivery.id
 
 # bank:银行卡类型
@@ -126,7 +128,7 @@ def move_bankcard():
         'card_digits': item.card_digits,
         'demo': item.demo
     } for item in old_bankcard]
-    print old_data
+    print 'move bankcard:', old_data
     New_BankCard.insert_many(old_data).execute()
 
 # area: 区域
@@ -152,7 +154,7 @@ def move_area():
             is_scorearea=item.is_scorearea,
             is_lubearea=item.is_lubearea
         )
-        print area.id
+        print 'move area:', area.id
         area_map[item.id] = area.id
 
 '''
@@ -243,7 +245,7 @@ def move_brandcategory():
         'brand': brand_map[item.id],
         'category': category_map[item.ptype.id]
     } for item in old_brandcategory]
-    print old_data
+    print 'move brandcategory:', old_data
     New_BrandCategory.insert_many(old_data).execute()
 
 '''
@@ -316,7 +318,7 @@ def move_store():
             active=item.check_state,
             created=item.created
         )
-        print store.id
+        print 'move store:', store.id
         store_map[item.id] = store.id
 
 # storebank:店铺账户
@@ -406,7 +408,7 @@ def move_scorerecord():
         'created': item.created,
         'status': item.isactive
     } for item in old_record]
-    print old_data
+    print 'move scorerecord:', old_data
     New_ScoreRecord.insert_many(old_data).execute()
 
 # moneyrecord:资金流水
@@ -429,7 +431,7 @@ def move_moneyrecord():
         'processing_time': item.processing_time,
         'processing_by': adminuser_map[item.processing_by.id]
     } for item in old_record if item.user.store]
-    print old_data
+    print 'move moneyrecord:', old_data
     New_MoneyRecord.insert_many(old_data).execute()
 
 # block:广告区域
@@ -447,7 +449,7 @@ def move_block():
             img=item.imagename,
             active=1  # 旧的没有，设置默认 值1（有效）
         )
-        print block.id
+        print 'move block:', block.id
         block_map[item.id] = block.id
 
 # blockitem：广告
@@ -467,7 +469,7 @@ def move_blockitem():
             sort=item.sort,
             activ=item.flag
         )
-        print blockitem.id
+        print 'move blockitem:', blockitem.id
         block_item_map[item.id] = blockitem.id
 
 # blockitemarea:广告投放区域
@@ -477,7 +479,7 @@ def move_blockitemarea():
         'block_item': block_item_map[item.id],
         'area_code': item.city_code
     } for item in old_blockitem]
-    print old_data
+    print 'move blockitemarea:', old_data
     New_BlockItemArea.insert_many(old_data).execute()
 '''
 # 产品部分
