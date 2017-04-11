@@ -580,18 +580,18 @@ def move_storeproductprice():
 insurance_map = {}
 
 def move_insurance():
-    old_insurance = Old_Product.select(Old_Product.is_index == 1)
+    old_insurance = Old_Product.select().where(Old_Product.is_index == 1)
     for item in old_insurance:
         insurance = New_Insurance.create(
             name=item.name,
-            eName=None,
+            eName='',
             intro=item.resume,
             logo=item.cover,
             sort=0,  # 旧的没有，设置默认值：0
             active=item.status  # 旧的没有，设置默认值：1（有效）
         )
         insurance_map[item.id] = insurance.id
-    print insurance.id.insurance.name
+    print 'move insurance:', old_insurance.count()
 
 # insuranceitems:保险子项目
 insurance_item_map = {}
@@ -607,7 +607,7 @@ def move_insuranceitems():
             sort=item.sort,
         )
         insurance_item_map[item.id] = insurance_item.id
-    print insurance_item.id,insurance_item.name
+    print 'move insuranceitems:', old_insurance_items.count()
 
 def move_insurancearea():
     old_area = Old_CurrencyExchangeList.select()
