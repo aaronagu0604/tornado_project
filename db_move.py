@@ -323,7 +323,7 @@ def move_store():
 def move_storebankaccount():
     old_bank = Old_User.select()
     old_data = [{
-        'store': store_map[item.store.id] if item.store else None,
+        'store': store_map[item.store.id] if item.store and store_map.has_key(item.store.id) else None,
         'account_type': 0,  # 旧的没有，设置默认值：0
         'alipay_truename': item.alipay_truename,
         'alipay_account': item.alipay_account,
