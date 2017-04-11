@@ -611,14 +611,26 @@ def move_insuranceitems():
 
 def move_insurancearea():
     old_area = Old_CurrencyExchangeList.select()
-    old_data = [{
-        'area_code': item.area_code,
-        'insurance': insurance_map[item.iid.id],
-        'lube_ok': 1,  # 旧的没有，设置默认值：1
-        'score_ok': 1,  # 旧的没有，设置默认值：1
-        'sort': 0,  # 旧的没有，设置默认值：0
-        'active': item.iswork
-    } for item in old_area if not item.iid.id ==0]
+    old_data = []
+    tmp = []
+    for item in old_area:
+        try:
+            if item.iid.id == 0:
+                continue
+        except Exception:
+            continue
+        if (item.iid.id, item.area_code) in tmp:
+            continue
+        else:
+            tmp.append((item.iid.id, item.area_code))
+            old_data.append({
+                'area_code': item.area_code,
+                'insurance': insurance_map[item.iid.id],
+                'lube_ok': 1,  # 旧的没有，设置默认值：1
+                'score_ok': 1,  # 旧的没有，设置默认值：1
+                'sort': 0,  # 旧的没有，设置默认值：0
+                'active': item.iswork
+            })
     print 'move insurancearea:', old_data
     if old_data:
         New_InsuranceArea.insert_many(old_data).execute()
@@ -627,7 +639,7 @@ def move_insurancearea():
 def move_insuranceprice():
     old_price = Old_InsurancePrice.select()
     old_data = [{
-        'insurance_item': insurance_item_map[item.pid.id],
+        'insurance_item': insurance_map[item.pid.id],
         'coverage': item.name
     } for item in old_price]
     print 'move insuranceprice', old_data
@@ -638,7 +650,7 @@ def move_insuranceexchange():
     old_exchange = Old_CurrencyExchangeList.select()
     old_data = [{
         'area_code': item.area_code,
-        'insurance': insurance_item_map[item.iid.id],
+        'insurance': insurance_map[item.iid.id],
         'created': item.time,
 
         'business_exchange_rate': item.rate,
