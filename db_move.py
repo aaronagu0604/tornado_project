@@ -782,63 +782,63 @@ def move_insuranceporderprice():
             sms_content=0,  # 旧的没有
 
             # 交强险
-            forceI=item.forceI,  # 是否包含交强险
+            forceI=0,  # 是否包含交强险
             forceIPrice=0,
 
             # 商业险-主险-车辆损失险
-            damageI=item.damageI,
+            damageI=0,
             damageIPrice=0,
-            damageIPlus=item.damageSpecialI,
+            damageIPlus=0,
             damageIPlusPrice=0,
 
             # 商业险-主险-第三者责任险，含保额
-            thirdDutyI=item.thirdDutyI,
+            thirdDutyI=0,
             thirdDutyIPrice=0,
-            thirdDutyIPlus=item.thirdDutySpecialI,
+            thirdDutyIPlus=0,
             thirdDutyIPlusPrice=0,
 
             # 商业险-主险-机动车全车盗抢险
-            robbingI=item.robbingI,
+            robbingI=0,
             robbingIPrice=0,
-            robbingIPlus=item.robbingSpecialI,
+            robbingIPlus=0,
             robbingIPlusPrice=0,
 
             # 商业险-主险-机动车车上人员责任险（司机），含保额
-            driverDutyI=item.driverDutyI,
+            driverDutyI=0,
             driverDutyIPrice=0,
-            driverDutyIPlus=item.driverDutySpecialI,
+            driverDutyIPlus=0,
             driverDutyIPlusPrice=0,
 
             # 商业险-主险-机动车车上人员责任险（乘客），含保额
-            passengerDutyI=item.passengerDutyI,
+            passengerDutyI=0,
             passengerDutyIPrice=0,
-            passengerDutyIPlus=item.passengerDutySpecialI,
+            passengerDutyIPlus=0,
             passengerDutyIPlusPrice=0,
 
             # 商业险-附加险-玻璃单独破碎险
-            glassI=item.glassI,
+            glassI=0,
             glassIPrice=0,
 
             # 商业险-附加险-车身划痕损失险，含保额
-            scratchI=item.scratchI,
+            scratchI=0,
             scratchIPrice=0,
-            scratchIPlus=item.scratchSpecialI,
+            scratchIPlus=0,
             scratchIPlusPrice=0,
 
             # 商业险-附加险-自燃损失险
-            fireDamageI=item.normalDamageI,
+            fireDamageI=0,
             fireDamageIPrice=0,
-            fireDamageIPlus=item.normalDamageSpecialI,
+            fireDamageIPlus=0,
             fireDamageIPlusPrice=0,
 
             # 商业险-附加险-发动机涉水损失险
-            wadeI=item.wadeI,
+            wadeI=0,
             wadeIPrice=0,
-            wadeIPlus=item.wadeSpecialI,
+            wadeIPlus=0,
             wadeIPlusPrice=0,
 
             # 商业险-附加险-机动车损失保险无法找到第三方特约金
-            thirdSpecialI=item.thirdSpecialI,
+            thirdSpecialI=0,
             thirdSpecialIPrice=0,
         )
         insurance_order_price_map[item.id] = insuranceorderprice.id
