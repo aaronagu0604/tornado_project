@@ -639,7 +639,7 @@ def move_insurancearea():
 def move_insuranceprice():
     old_price = Old_InsurancePrice.select()
     old_data = [{
-        'insurance_item': insurance_map[item.pid.id],
+        'insurance_item': insurance_item_map[item.pid.id],
         'coverage': item.name
     } for item in old_price]
     print 'move insuranceprice', old_data
