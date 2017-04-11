@@ -332,7 +332,7 @@ def move_storebankaccount():
         'bank_name': item.bank_name,
         'is_default': 0  # 旧的没有，设置默认值：0（否）
     } for item in old_bank]
-    print old_data
+    print 'move storebankaccount',old_bank.count()
     New_StoreBankAccount.insert_many(old_data)
 
 # storeaddress:店铺收货地址
