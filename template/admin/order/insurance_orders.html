@@ -30,7 +30,7 @@
             <form class="navbar-form navbar-left" action="" method="get" role="search">
                 <input type="hidden" name="page" value="1">
                 <label class="num">地区：</label>
-                <select name="province_code" id="province_code" onchange="province_change(this.value,0)" data-default="{{default_province}}" style="width:120px;">
+                <select name="province_code" id="province_code" onchange="province_change(this.value, 0)" data-default="{{default_province}}" style="width:120px;">
                     <option value="">--请选择省份--</option>
                     {% for area in items %}
                     <option value="{{area.code}}" {{area.code==default_province and 'selected' or ''}}>{{area.name}}</option>
@@ -200,11 +200,8 @@
 <script src="/style/js/jquery.twbsPagination.min.js"></script>
 <script>
     $(document).ready(function() {
-        //console.debug('------------');
         var province_code=$("#province_code").attr("data-default");
         var city_code=$("#city_code").attr("data-default");
-        //var district_code=$("#district_code").attr("data-default");
-        //console.debug(province_code);
         if(province_code.length>0){
             console.debug(city_code);
             province_change(province_code, city_code);
@@ -234,15 +231,14 @@
     });
 
 function province_change(id, default_id){
-//    var id = $(obj).val();
     $("#city_code > option").remove();
     $("#city_code").append("<option value=\"0\">--请选择城市--</option>");
     if(id > 0){
         GetSubAreas(id, "city_code", default_id);
     }
 }
-function GetSubAreas(id,ddl_id, default_id) {
-    $.get("/ajax/GetSubAreas", { pcode: id,  t: Math.random() }, function (data) {
+function GetSubAreas(id, ddl_id, default_id) {
+    $.get("/ajax/GetSubAreas", { parent_code: id,  t: Math.random() }, function (data) {
         data = jQuery.parseJSON(data);
         if(data.flag==1){
             for(var i=0; i< data.data.length; i++){

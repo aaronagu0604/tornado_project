@@ -1306,7 +1306,7 @@ class MobilInsuranceOrderBaseHandler(MobileBaseHandler):
                 if i_item.insurance_prices:
                     result['data'][i_item.eName] = [i_price.coverage for i_price in i_item.insurance_prices]
                 else:
-                    result['data'][i_item.eName] = '1'
+                    result['data'][i_item.eName] = []
         except Exception, ex:
             result['data']['delivery_to'] = ''
             result['data']['delivery_tel'] = ''

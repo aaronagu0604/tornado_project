@@ -860,11 +860,13 @@ class InsuranceScoreExchange(db.Model):
         for i in insurances:
             if i['i_id'] not in temp_insurance_id:
                 temp_insurance_id.append(i['i_id'])
+                gift = 'score,' if i['is_score'] else ''
+                gift = gift+'lube,' if i['is_lube'] else gift
+                gift = gift.strip(',')
                 insurance_list.append({
                     'id': i['i_id'],
                     'name': i['i_name'],
-                    'is_score': i['is_score'],
-                    'is_lube': i['is_lube']
+                    'gift': gift
                 })
         return insurance_list
 

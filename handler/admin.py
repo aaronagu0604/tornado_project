@@ -1282,8 +1282,7 @@ class InsuranceOrderHandler(AdminBaseHandler):
         default_city = city
         default_province = province
         # 0待确认 1待付款 2付款完成 3已办理 4已邮寄 -1已删除(取消)
-        print self.request.arguments
-        print self.request.body_arguments
+
         if status != -2:
             ft = (InsuranceOrder.status == status)
         else:
@@ -1295,14 +1294,20 @@ class InsuranceOrderHandler(AdminBaseHandler):
             begin = time.strptime(begin_date, "%Y-%m-%d")
             end = time.strptime((end_date + " 23:59:59"), "%Y-%m-%d %H:%M:%S")
             ft = ft & (InsuranceOrder.paytime > time.mktime(begin)) & (InsuranceOrder.paytime < time.mktime(end))
+
         if district and district != '0':
-            ft &= (Store.area_code==district)
+            ft &= (Store.area_code == district)
         elif city and city != '0':
-            city = city + '%'
-            ft &= (Store.area_code % city)
+            search_area = city + '%'
+            ft &= (Store.area_code % search_area)
         elif province and province != '0':
-            province = province+'%'
-            ft &= (Store.area_code % province)
+            search_area = province + '%'
+            ft &= (Store.area_code % search_area)
+        admin_user = self.get_admin_user()
+        if admin_user.area_code:
+            area_code = admin_user.area_code + '%'
+            ft &= (Store.area_code % area_code)
+
         q = InsuranceOrder.select().join(Store).where(ft).order_by(InsuranceOrder.ordered.desc())
         total = q.count()
         if total % pagesize > 0:
