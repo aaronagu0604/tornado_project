@@ -857,7 +857,7 @@ def move_insuranceorder():
             'ordernum': item.ordernum,
             'user': user_map[item.user.id],
             'store': store_map[item.store.id],
-            'current_order_price': item.product,
+            'current_order_price': insurance_order_price_map[item.id],
 
             'id_card_front': item.idcard,
             'id_card_back': item.idcardback,
@@ -888,19 +888,19 @@ def move_insuranceorder():
             'trade_no': item.trade_no,
             'user_del': item.userDel
         })
-    print old_data
+    print 'move insuranceorder:', old_data
     New_InsuranceOrder.insert_many(old_data).execute()
 
 # cart:购物车:购物车建议可以不导入
 def move_cart():
-    old_cart = Old_Cart.select()
+    old_cart = Old_Cart.select(Old_Cart.user << user_map.keys())
     old_data = [{
         'store': store_map[item.user.store.id],  # 旧的没有,是否指的是购买方
         'store_product_price': 0,  # 旧的没有,暂时设置，后期需要人工处理
         'quantity': item.quantity,
         'created': item.created
     } for item in old_cart]
-    print old_data
+    print 'move cart:', old_data
     New_ShopCart.insert_many(old_data).execute()
 
 # settlement:结算
@@ -914,7 +914,7 @@ def move_settlement():
             created=item.created
         )
         settlement_map[item.id] = settlement.id
-    print settlement.id
+    print 'move settlement:', old_settlement.count()
 
 # order:产品订单
 order_map = {}
