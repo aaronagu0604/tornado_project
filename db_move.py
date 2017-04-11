@@ -337,7 +337,7 @@ def move_storebankaccount():
 
 # storeaddress:店铺收货地址
 def move_storeaddress():
-    old_address = Old_UserAddr.select()
+    old_address = Old_UserAddr.select().where(Old_UserAddr.user.store << store_map.keys())
     old_data = [{
                     'store': store_map[item.user.store.id],
                     'province': item.province,
@@ -348,9 +348,9 @@ def move_storeaddress():
                     'mobile': item.mobile,
                     'is_default': item.isdefault,
                     'created': 0,  # 旧的没有，设置默认值：0
-                    'create_by': user_map[item.user.id],
+                    'create_by': None,
                 } for item in old_address]
-    print old_data
+    print 'move store address:', old_address.count()
     New_StoreAddress.insert_many(old_data)
 
 # storearea:店铺服务区域
