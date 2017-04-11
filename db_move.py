@@ -765,7 +765,7 @@ def move_insuranceporderprice():
         try:
             adminuser = New_AdminUser.get(New_AdminUser.name == item.lasteditedby)
         except Exception:
-            continue
+            adminuser = New_AdminUser.get(New_AdminUser.id == 1)
         insuranceorderprice = New_InsuranceOrderPrice.create(
             insurance_order_id=None,  # 旧的没有
             insurance=insurance_map[item.insurance.id],
@@ -842,7 +842,7 @@ def move_insuranceporderprice():
             thirdSpecialIPrice=0,
         )
         insurance_order_price_map[item.id] = insuranceorderprice.id
-        print insuranceorderprice.id
+    print 'move insuranceorderprice', old_insurance_order_price.count()
 
 # insuranceorder:保险订单
 def move_insuranceorder():
