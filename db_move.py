@@ -724,7 +724,7 @@ def move_lubeexchange():
             tmppolicy.policy(simplejson.dumps(policy))
             tmppolicy.save()
         else:
-            minp,maxp = item.price.split()
+            minp,maxp = item.price.split('-')
             data = [{
                 'gift': item.driverGift,
                 'items': [{
@@ -753,7 +753,7 @@ def move_feedback():
         'suggest': item.content,
         'img': None  # 旧的没有
     } for item in old_feedback]
-    print old_data
+    print 'move feedback:', old_data
     New_Feedback.insert_many(old_data).execute()
 
 # insuranceorderprice:保险报价单
@@ -1011,7 +1011,7 @@ if __name__ == '__main__':
     move_insurancearea()
     move_insuranceprice()
     move_insuranceexchange()
-    move_lubeexchange()
+    #move_lubeexchange()
     move_feedback()
     move_insuranceporderprice()
     move_insuranceorder()
