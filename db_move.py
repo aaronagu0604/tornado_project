@@ -747,7 +747,7 @@ def move_lubeexchange():
 '''
 # feedback:反馈建议
 def move_feedback():
-    old_feedback = Old_Feedback.select()
+    old_feedback = Old_Feedback.select().where(Old_Feedback.user << user_map.keys())
     old_data = [{
         'user': user_map[item.user.id],
         'suggest': item.content,
@@ -765,7 +765,7 @@ def move_insuranceporderprice():
         try:
             adminuser = New_AdminUser.get(New_AdminUser.name == item.lasteditedby)
         except Exception:
-            adminuser = 0
+            continue
         insuranceorderprice = New_InsuranceOrderPrice.create(
             insurance_order_id=None,  # 旧的没有
             insurance=insurance_map[item.insurance.id],
