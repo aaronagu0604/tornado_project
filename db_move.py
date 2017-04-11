@@ -547,7 +547,7 @@ def move_productrelease():
         )
         product_release_map[item.id] = release.id
 
-        print 'move productrelease:', release.id, release.name
+        print 'move productrelease:', release.id
 
 # storeproductprice:店铺区域产品价格
 store_product_price_map = {}
