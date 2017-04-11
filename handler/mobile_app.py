@@ -1024,17 +1024,23 @@ class MobileOrderBaseHandler(MobileBaseHandler):
 
     @apiHeader {String} token 用户登录凭证
 
-    @apiParam {String} spp_dicts 地区产品价格ID， 格式：{1:2, 3:2, 9:1} key为sppid，value为count
+    @apiParam {String} spp_dicts 地区产品价格ID， 格式：[{"quantity":1,"sppid":3},{"quantity":1,"sppid":5}]
 
     @apiSampleRequest /mobile/orderbase
     """
     @require_auth
     def get(self):
         user = self.get_user()
-        result = {'flag': 0, 'msg': '', 'data': {'address':{}, 'store':[]}}
-        spp_dicts = simplejson.loads(self.get_argument('sppids', ''))
-        sppids = [key for key in spp_dicts]
-        if sppids:
+        result = {'flag': 0, 'msg': '', 'data': {'address': {}, 'store': []}}
+        try:
+            spp_dicts = simplejson.loads(self.get_argument('spp_dicts'))
+            spp_dicts = {int(spp_dict['sppid']): int(spp_dict['quantity']) for spp_dict in spp_dicts}
+        except Exception, e:
+            result['msg'] = u'入参错误'
+            self.write(simplejson.dumps(result))
+            return
+        if spp_dicts:
+            sppids = [key for key in spp_dicts]
             if user is not None:
                 for address in user.store.addresses:
                     areas = Area.select().where(Area.code << [address.province, address.city, address.region])
@@ -1056,30 +1062,30 @@ class MobileOrderBaseHandler(MobileBaseHandler):
                     result['data']['address'] = None
                 result['data']['last_pay_type'] = user.last_pay_type
 
-                stores = Store.select(Store).join(StoreProductPrice).\
-                    where((StoreProductPrice.active == 1) & (StoreProductPrice.id << sppids)).group_by(StoreProductPrice.store)
-                for i, store in enumerate(stores):
-                    products = []
-                    product_list = StoreProductPrice.select().\
-                        where((StoreProductPrice.active == 1) & (StoreProductPrice.id << sppids)).\
-                        order_by(StoreProductPrice.store)
-                    for product_price in product_list:
-                        products.append({
+                stores = []
+                product_list = StoreProductPrice.select().\
+                    where((StoreProductPrice.active == 1) & (StoreProductPrice.id << sppids)).order_by(StoreProductPrice.store)
+                for product_price in product_list:
+                    products = {
                             'sppid': product_price.id,
-                            'count': spp_dicts[product_price.id],
+                            'quantity': spp_dicts[product_price.id],
                             'name': product_price.product_release.product.name,
                             'price': product_price.price,
                             'score': product_price.score,
                             'img': product_price.product_release.product.cover,
                             'attributes': [attribute.value for attribute in product_price.product_release.product.attributes]
+                        }
+                    if product_price.store.id not in stores:
+                        result['data']['store'].append({
+                            'name': product_price.store.name,
+                            'store_tel': product_price.store.mobile,
+                            'sid': product_price.store.id,
+                            'service_tel': setting.COM_TEL,
+                            'products': [products]
                         })
-                    result['data']['store'].append({
-                        'name': store.name,
-                        'store_tel': store.mobile,
-                        'id': store.id,
-                        'service_tel': setting.COM_TEL,
-                        'products': products
-                    })
+                        stores.append(product_price.store.id)
+                    else:
+                        result['data']['store'][stores.index(product_price.store.id)]['products'].append(products)
                 result['flag'] = 1
             else:
                 result['msg'] = u'请登录后再购买'
@@ -1103,7 +1109,7 @@ class MobileNewOrderHandler(MobileBaseHandler):
     @apiParam {Int} order_type 订单类型  1金钱订单  2积分订单
     @apiParam {Int} payment 付款方式  1支付宝  2微信 3银联 4余额 5积分
     @apiParam {Float} total_price 订单总价
-    @apiParam {String} products 产品数据集合，如：[{sid:1, price:119, products:[{sppid:1, count:1}]}, ……]；
+    @apiParam {String} products 产品数据集合，如：[{sid:1, price:119, products:[{sppid:1, quantity:1}]}, ……]；
     sid为店铺ID；price为该店铺的金额；sppid为StoreProductPrice的ID，count为产品数量；服务端将订单按Store拆分为多个SubOrder
 
     @apiSampleRequest /mobile/neworder
@@ -1228,7 +1234,7 @@ class MobileNewOrderHandler(MobileBaseHandler):
                     order_item.sub_order = sub_order
                     order_item.product = spp.product_release.product
                     order_item.store_product_price = spp
-                    order_item.quantity = product['count']
+                    order_item.quantity = product['quantity']
                     order_item.price = spp.price if order_type == 1 else spp.score
                     order_item.save()
             result['flag'] = 1
