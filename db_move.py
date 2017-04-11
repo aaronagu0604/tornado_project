@@ -493,7 +493,7 @@ def move_product():
         product = New_Product.create(
             name=item.name,
             brand=brand_map[item.pinpai.id],
-            category=category_map[item.categoryfront.id],
+            category=category_map[item.pinpai.ptype.id],
             resume=item.resume,
             unit='单位',  # 旧的没有，暂时设置，后期人工处理
             intro=item.intro,
