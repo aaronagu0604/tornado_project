@@ -337,7 +337,8 @@ def move_storebankaccount():
 
 # storeaddress:店铺收货地址
 def move_storeaddress():
-    old_address = Old_UserAddr.select().where(Old_UserAddr.user.store << store_map.keys())
+    old_user = Old_User.select().where(Old_User.store << store_map.keys())
+    old_address = Old_UserAddr.select().where(Old_UserAddr.user << old_user)
     old_data = [{
                     'store': store_map[item.user.store.id],
                     'province': item.province,
