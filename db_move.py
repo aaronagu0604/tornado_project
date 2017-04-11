@@ -534,8 +534,11 @@ def move_productattributevalue():
 product_release_map = {}
 
 def move_productrelease():
-    old_release = Old_ProductStandard.select()
+    old_release = Old_ProductStandard.select(Old_ProductStandard.product << product_map.keys())
     for item in old_release:
+        if not store_map.has_key(item.store.id):
+            continue
+
         release = New_ProductRelease.create(
             product=product_map[item.product.id],
             store=store_map[item.store.id],
