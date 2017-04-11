@@ -416,15 +416,15 @@ def move_moneyrecord():
         'user': user_map[item.user.id],
         'store': store_map[item.user.store.id],
         'process_type': 2,  # 1.0系统提现都为出钱。所以设置为2
-        'process_message': item.remark,
-        'process_log': item.log,
-        'in_num': None,  # 旧的没有
+        'process_message': item.processing_result,
+        'process_log': '',
+        'in_num': '',  # 旧的没有
         'out_account_type': item.account_type,
         'out_account_truename': item.account_truename,
         'out_account_account': item.account_account,
         'out_account_name': item.account_branchname,
-        'money': item.balance,
-        'status': item.isactive,
+        'money': item.sum_money,
+        'status': item.status,
         'apply_time': item.apply_time,
         'processing_time': item.processing_time,
         'processing_by': adminuser_map[item.processing_by.id]
@@ -441,7 +441,7 @@ def move_block():
     old_block = Old_AdType.select()
     for item in old_block:
         block = New_Block.create(
-            tag=None,
+            tag='',
             name=item.name,
             remark=item.remark,
             img=item.imagename,
