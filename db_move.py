@@ -658,7 +658,7 @@ def move_insuranceexchange():
         old_data.append({
             'area_code': item.area_code,
             'insurance': insurance_map[item.iid.id],
-            'created': item.time,
+            'created': item.localtime,
 
             'business_exchange_rate': item.rate,
             'business_exchange_rate2': 0,  # 旧的没有
