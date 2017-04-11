@@ -335,25 +335,6 @@ def move_storebankaccount():
     print 'move storebankaccount',old_data, old_bank.count()
     New_StoreBankAccount.insert_many(old_data).execute()
 
-# storeaddress:店铺收货地址
-def move_storeaddress():
-    old_user = Old_User.select().where(Old_User.store << store_map.keys())
-    old_address = Old_UserAddr.select().where(Old_UserAddr.user << old_user)
-    old_data = [{
-                    'store': store_map[item.user.store.id],
-                    'province': item.province,
-                    'city': item.city,
-                    'region': item.region,
-                    'address': item.address,
-                    'name': item.name,
-                    'mobile': item.mobile,
-                    'is_default': item.isdefault,
-                    'created': 0,  # 旧的没有，设置默认值：0
-                    'create_by': 0,
-                } for item in old_address]
-    print 'move storeaddress:', old_data, old_address.count()
-    New_StoreAddress.insert_many(old_data).execute()
-
 # storearea:店铺服务区域
 def move_storearea():
     old_area = Old_StoreServerArea.select()
@@ -386,6 +367,25 @@ def move_user():
         )
         user_map[item.id] = user.id
     print 'move users:', old_user.count()
+
+# storeaddress:店铺收货地址
+def move_storeaddress():
+    old_user = Old_User.select().where(Old_User.store << store_map.keys())
+    old_address = Old_UserAddr.select().where(Old_UserAddr.user << old_user)
+    old_data = [{
+                    'store': store_map[item.user.store.id],
+                    'province': item.province,
+                    'city': item.city,
+                    'region': item.region,
+                    'address': item.address,
+                    'name': item.name,
+                    'mobile': item.mobile,
+                    'is_default': item.isdefault,
+                    'created': 0,  # 旧的没有，设置默认值：0
+                    'create_by': user_map[item.user.id],
+                } for item in old_address]
+    print 'move storeaddress:', old_data, old_address.count()
+    New_StoreAddress.insert_many(old_data).execute()
 
 # scorerecord:积分流水
 def move_scorerecord():
@@ -958,9 +958,9 @@ if __name__ == '__main__':
     move_adminuserlog()
     move_store()
     move_storebankaccount()
-    move_storeaddress()
     move_storearea()
     move_user()
+    move_storeaddress()
     move_scorerecord()
     move_moneyrecord()
     move_block()
