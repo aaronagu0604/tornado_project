@@ -648,24 +648,31 @@ def move_insuranceprice():
 # insurancescoreexchange:保险积分兑换规则
 def move_insuranceexchange():
     old_exchange = Old_CurrencyExchangeList.select()
-    old_data = [{
-        'area_code': item.area_code,
-        'insurance': insurance_map[item.iid.id],
-        'created': item.time,
+    old_data = []
+    for item in old_exchange:
+        try:
+            if item.iid.id == 0:
+                continue
+        except Exception:
+            continue
+        old_data.append({
+            'area_code': item.area_code,
+            'insurance': insurance_map[item.iid.id],
+            'created': item.time,
 
-        'business_exchange_rate': item.rate,
-        'business_exchange_rate2': 0,  # 旧的没有
-        'business_tax_rate': item.businessTaxRate,
+            'business_exchange_rate': item.rate,
+            'business_exchange_rate2': 0,  # 旧的没有
+            'business_tax_rate': item.businessTaxRate,
 
-        'force_exchange_rate': item.forceRate,
-        'force_exchange_rate2': 0,  # 旧的没有
-        'force_tax_rate': item.forceTaxRate,
+            'force_exchange_rate': item.forceRate,
+            'force_exchange_rate2': 0,  # 旧的没有
+            'force_tax_rate': item.forceTaxRate,
 
-        'ali_rate': item.aliRate,
-        'profit_rate': item.profitRate,
-        'base_money': item.baseMoney
-    } for item in old_exchange]
-    print old_data
+            'ali_rate': item.aliRate,
+            'profit_rate': item.profitRate,
+            'base_money': item.baseMoney
+        })
+    print 'move insuranceexchange:', old_data
     New_InsuranceScoreExchange.insert_many(old_data).execute()
 
 
