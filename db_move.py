@@ -321,7 +321,7 @@ def move_store():
 
 # storebank:店铺账户
 def move_storebankaccount():
-    old_bank = Old_User.select()
+    old_bank = Old_User.select(Old_User.store << store_map.keys())
     old_data = [{
         'store': store_map[item.store.id],
         'account_type': 0,  # 旧的没有，设置默认值：0
@@ -331,7 +331,7 @@ def move_storebankaccount():
         'bank_account': item.bank_account,
         'bank_name': item.bank_name,
         'is_default': 0  # 旧的没有，设置默认值：0（否）
-    } for item in old_bank if item.store]
+    } for item in old_bank]
     print 'move storebankaccount',old_bank.count()
     New_StoreBankAccount.insert_many(old_data)
 
