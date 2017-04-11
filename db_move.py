@@ -272,7 +272,7 @@ def move_adminuser():
 
 # adminuserlog: 管理账户日志
 def move_adminuserlog():
-    old_adminlog = Old_AdminLog.select().where(Old_AdminLog.user.id << adminuser_map.keys())
+    old_adminlog = Old_AdminLog.select().where(Old_AdminLog.user << adminuser_map.keys())
     old_data = [{
         'admin_user': adminuser_map[item.user.id],
         'created': item.dotime,
