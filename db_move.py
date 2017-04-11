@@ -349,7 +349,7 @@ def move_storeaddress():
                     'mobile': item.mobile,
                     'is_default': item.isdefault,
                     'created': 0,  # 旧的没有，设置默认值：0
-                    'create_by': None,
+                    'create_by': 0,
                 } for item in old_address]
     print 'move storeaddress:', old_data, old_address.count()
     New_StoreAddress.insert_many(old_data).execute()
