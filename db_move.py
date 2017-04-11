@@ -760,7 +760,7 @@ def move_feedback():
 insurance_order_price_map = {}
 
 def move_insuranceporderprice():
-    old_insurance_order_price = Old_InsuranceOrder.select()
+    old_insurance_order_price = Old_InsuranceOrder.select().where(Old_InsuranceOrder.insurance << insurance_map.keys())
     for item in old_insurance_order_price:
         try:
             adminuser = New_AdminUser.get(New_AdminUser.name == item.lasteditedby)
@@ -846,7 +846,7 @@ def move_insuranceporderprice():
 
 # insuranceorder:保险订单
 def move_insuranceorder():
-    old_order = Old_InsuranceOrder.select()
+    old_order = Old_InsuranceOrder.select().where(Old_InsuranceOrder.insurance << insurance_map.keys())
     old_data = []
     for item in old_order:
         try:
