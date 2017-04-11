@@ -536,7 +536,10 @@ product_release_map = {}
 def move_productrelease():
     old_release = Old_ProductStandard.select(Old_ProductStandard.product << product_map.keys())
     for item in old_release:
-        if not store_map.has_key(item.store.id):
+        try:
+            if not store_map.has_key(item.store.id):
+                continue
+        except Exception:
             continue
 
         release = New_ProductRelease.create(
