@@ -1024,7 +1024,7 @@ class MobileOrderBaseHandler(MobileBaseHandler):
 
     @apiHeader {String} token 用户登录凭证
 
-    @apiParam {String} sppids 地区产品价格ID， 格式：1,2,3
+    @apiParam {String} spp_dicts 地区产品价格ID， 格式：{1:2, 3:2, 9:1} key为sppid，value为count
 
     @apiSampleRequest /mobile/orderbase
     """
@@ -1032,11 +1032,10 @@ class MobileOrderBaseHandler(MobileBaseHandler):
     def get(self):
         user = self.get_user()
         result = {'flag': 0, 'msg': '', 'data': {'address':{}, 'store':[]}}
-        sppids = self.get_argument('sppids', '').strip(',').split(',')
-        if user is not None:
-            if not sppids[0]:
-                result['msg'] = u'请选择购买的产品'
-            else:
+        spp_dicts = simplejson.loads(self.get_argument('sppids', ''))
+        sppids = [key for key in spp_dicts]
+        if sppids:
+            if user is not None:
                 for address in user.store.addresses:
                     areas = Area.select().where(Area.code << [address.province, address.city, address.region])
                     area_map = {item.code: item.name for item in areas}
@@ -1067,6 +1066,7 @@ class MobileOrderBaseHandler(MobileBaseHandler):
                     for product_price in product_list:
                         products.append({
                             'sppid': product_price.id,
+                            'count': spp_dicts[product_price.id],
                             'name': product_price.product_release.product.name,
                             'price': product_price.price,
                             'score': product_price.score,
@@ -1081,8 +1081,10 @@ class MobileOrderBaseHandler(MobileBaseHandler):
                         'products': products
                     })
                 result['flag'] = 1
+            else:
+                result['msg'] = u'请登录后再购买'
         else:
-            result['msg'] = '请登录后再购买'
+            result['msg'] = u'请选择购买的产品'
         self.write(simplejson.dumps(result))
         self.finish()
 
