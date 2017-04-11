@@ -603,7 +603,7 @@ def move_insuranceitems():
             name=item.name,
             eName=item.eName,
             style=item.style,
-            style_id=item.style_id,
+            style_id=1,  # 旧的数据库和model字段不匹配，暂时设置为1
             sort=item.sort,
         )
         insurance_item_map[item.id] = insurance_item.id
@@ -619,7 +619,7 @@ def move_insurancearea():
         'sort': 0,  # 旧的没有，设置默认值：0
         'active': item.iswork
     } for item in old_area]
-    print old_data
+    print 'move insurancearea:', old_data
     New_InsuranceArea.insert_many(old_data).execute()
 
 # insuranceprice:保额
@@ -629,7 +629,7 @@ def move_insuranceprice():
         'insurance_item': insurance_item_map[item.pid.id],
         'coverage': item.name
     } for item in old_price]
-    print old_data
+    print 'move insuranceprice', old_data
     New_InsurancePrice.insert_many(old_data).execute()
 
 # insurancescoreexchange:保险积分兑换规则
