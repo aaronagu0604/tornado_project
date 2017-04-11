@@ -613,7 +613,7 @@ def move_insurancearea():
     old_area = Old_CurrencyExchangeList.select()
     old_data = [{
         'area_code': item.area_code,
-        'insurance': insurance_item_map[item.iid.id],
+        'insurance': insurance_map[item.iid.id],
         'lube_ok': 1,  # 旧的没有，设置默认值：1
         'score_ok': 1,  # 旧的没有，设置默认值：1
         'sort': 0,  # 旧的没有，设置默认值：0
