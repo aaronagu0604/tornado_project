@@ -321,7 +321,7 @@ def move_store():
 
 # storebank:店铺账户
 def move_storebankaccount():
-    old_bank = Old_User.select(Old_User.store << store_map.keys())
+    old_bank = Old_User.select().where(Old_User.store << store_map.keys())
     old_data = [{
         'store': store_map[item.store.id],
         'account_type': 0,  # 旧的没有，设置默认值：0
