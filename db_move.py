@@ -353,7 +353,10 @@ user_map = {}
 def move_user():
     old_user = Old_User.select()
     for item in old_user:
-        if (not item.store) or store_map.has_key(item.store.id):
+        try:
+            if (not item.store) or (not store_map.has_key(item.store.id)):
+                continue
+        except Exception:
             continue
         user = New_User.create(
             mobile=item.mobile,
