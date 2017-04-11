@@ -618,9 +618,10 @@ def move_insurancearea():
         'score_ok': 1,  # 旧的没有，设置默认值：1
         'sort': 0,  # 旧的没有，设置默认值：0
         'active': item.iswork
-    } for item in old_area]
+    } for item in old_area if item.iid]
     print 'move insurancearea:', old_data
-    New_InsuranceArea.insert_many(old_data).execute()
+    if old_data:
+        New_InsuranceArea.insert_many(old_data).execute()
 
 # insuranceprice:保额
 def move_insuranceprice():
