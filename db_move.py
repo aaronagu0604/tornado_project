@@ -353,6 +353,8 @@ user_map = {}
 def move_user():
     old_user = Old_User.select()
     for item in old_user:
+        if (not item.store) or store_map.has_key(item.store.id):
+            continue
         user = New_User.create(
             mobile=item.mobile,
             password=item.password,
@@ -360,7 +362,7 @@ def move_user():
             role=item.userlevel,
             signuped=item.signuped,
             lsignined=item.lsignined,
-            store=store_map[item.store.id] if not item.store else 0,
+            store=store_map[item.store.id],
             token=None,  # 旧的没有
             last_pay_type=1,  # 旧的没有，设置默认值：1
             active=item.isactive
