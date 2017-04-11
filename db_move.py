@@ -428,7 +428,7 @@ def move_moneyrecord():
         'apply_time': item.apply_time,
         'processing_time': item.processing_time,
         'processing_by': adminuser_map[item.processing_by.id]
-    } for item in old_record]
+    } for item in old_record if item.user.store]
     print old_data
     New_MoneyRecord.insert_many(old_data).execute()
 
