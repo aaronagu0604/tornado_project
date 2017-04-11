@@ -206,8 +206,8 @@ def move_categoryattributeitem():
             intro="默认",
             sort=0  # 旧的没有，设置默认值：0（有效）
         )
-        print 'move_categoryattributeitem:%d' % att_item.id
         category_att_item_map[item.id] = att_item.id
+    print 'move_categoryattributeitem:%d' % old_item.count()
 
 '''
 # 商品品牌部分
@@ -232,8 +232,8 @@ def move_brand():
             sort=1,  # 旧的没有,设置默认值：1
             active=1
         )
-        print 'move_brand:%d' % brand.id
         brand_map[item.id] = brand.id
+    print 'move_brand:', old_brand.count()
 
 # brandcategory:品牌产品类型
 def move_brandcategory():
@@ -267,8 +267,8 @@ def move_adminuser():
             lsignined=item.lsignined,
             active=item.isactive
         )
-        print adminuser.id,adminuser.username
         adminuser_map[item.id] = adminuser.id
+    print 'move admin user:', old_adminuser.count()
 
 # adminuserlog: 管理账户日志
 def move_adminuserlog():
@@ -323,7 +323,7 @@ def move_store():
 def move_storebankaccount():
     old_bank = Old_User.select()
     old_data = [{
-        'store': store_map[item.store.id] if item.store and store_map.has_key(item.store.id) else None,
+        'store': store_map[item.store.id],
         'account_type': 0,  # 旧的没有，设置默认值：0
         'alipay_truename': item.alipay_truename,
         'alipay_account': item.alipay_account,
@@ -331,7 +331,7 @@ def move_storebankaccount():
         'bank_account': item.bank_account,
         'bank_name': item.bank_name,
         'is_default': 0  # 旧的没有，设置默认值：0（否）
-    } for item in old_bank]
+    } for item in old_bank if item.store]
     print 'move storebankaccount',old_bank.count()
     New_StoreBankAccount.insert_many(old_data)
 
