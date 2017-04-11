@@ -751,7 +751,7 @@ def move_feedback():
     old_data = [{
         'user': user_map[item.user.id],
         'suggest': item.content,
-        'img': None  # 旧的没有
+        'img': ''  # 旧的没有
     } for item in old_feedback]
     print 'move feedback:', old_data
     New_Feedback.insert_many(old_data).execute()
