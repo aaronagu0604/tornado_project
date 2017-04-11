@@ -394,7 +394,7 @@ def move_storeaddress():
 
 # scorerecord:积分流水
 def move_scorerecord():
-    old_record = Old_Score.select()
+    old_record = Old_Score.select().where(Old_Score.user << user_map.keys())
     old_data = [{
         'user': user_map[item.user.id],
         'store': store_map[item.user.store.id],
@@ -404,14 +404,14 @@ def move_scorerecord():
         'process_log': item.log,
         'score': item.score,
         'created': item.created,
-        'isactive': item.isactive
+        'status': item.isactive
     } for item in old_record]
     print old_data
     New_ScoreRecord.insert_many(old_data).execute()
 
 # moneyrecord:资金流水
 def move_moneyrecord():
-    old_record = Old_Withdraw.select()
+    old_record = Old_Withdraw.select().where(Old_Withdraw.user << user_map.keys())
     old_data = [{
         'user': user_map[item.user.id],
         'store': store_map[item.user.store.id],
