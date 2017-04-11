@@ -525,8 +525,10 @@ def move_productattributevalue():
         'attribute_item': 0,  # 旧的没有，需要额外处理
         'value': 0,  # 旧的没有，需要额外处理
     } for item in old_attribute]
-    print old_data
-    New_ProductAttributeValue.insert_many(old_data).execute()
+
+    if old_data:
+        New_ProductAttributeValue.insert_many(old_data).execute()
+    print 'move productattributevalue:', old_data
 
 # productrelease:产品发布
 product_release_map = {}
@@ -545,7 +547,7 @@ def move_productrelease():
         )
         product_release_map[item.id] = release.id
 
-        print release.id,release.name
+        print 'move productrelease:', release.id, release.name
 
 # storeproductprice:店铺区域产品价格
 store_product_price_map = {}
@@ -563,7 +565,7 @@ def move_storeproductprice():
             active=1  # 旧的没有，设置默认值：1
         )
         store_product_price_map[item.id] = price.id
-        print price.id,price.name
+        print 'move storeproductprice', price.id, price.name
 
 '''
 # 保险部分
