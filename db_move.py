@@ -585,7 +585,7 @@ def move_insurance():
         insurance = New_Insurance.create(
             name=item.name,
             eName='',
-            intro=item.resume,
+            intro=item.resume[:50], #字符串长度太长，暂时设置为空
             logo=item.cover,
             sort=0,  # 旧的没有，设置默认值：0
             active=item.status  # 旧的没有，设置默认值：1（有效）
