@@ -100,7 +100,7 @@ def move_hotsearch():
         'status':item.status,
         'last_time':item.last_time
     } for item in old_hot]
-    New_HotSearch.insert_many(old_data)
+    New_HotSearch.insert_many(old_data).execute()
 
 # delivery:物流公司
 delivery_map = {}
@@ -127,7 +127,7 @@ def move_bankcard():
         'demo': item.demo
     } for item in old_bankcard]
     print old_data
-    New_BankCard.insert_many(old_data)
+    New_BankCard.insert_many(old_data).execute()
 
 # area: 区域
 area_map = {}
@@ -244,7 +244,7 @@ def move_brandcategory():
         'category': category_map[item.ptype.id]
     } for item in old_brandcategory]
     print old_data
-    New_BrandCategory.insert_many(old_data)
+    New_BrandCategory.insert_many(old_data).execute()
 
 '''
 # 管理员账号
@@ -279,7 +279,7 @@ def move_adminuserlog():
         'content': item.content
     } for item in old_adminlog]
     print 'move_adminlog',old_adminlog.count()
-    New_AdminUserLog.insert_many(old_data)
+    New_AdminUserLog.insert_many(old_data).execute()
 '''
 # 店铺相关
 '''
@@ -333,7 +333,7 @@ def move_storebankaccount():
         'is_default': 0  # 旧的没有，设置默认值：0（否）
     } for item in old_bank]
     print 'move storebankaccount',old_data, old_bank.count()
-    New_StoreBankAccount.insert_many(old_data)
+    New_StoreBankAccount.insert_many(old_data).execute()
 
 # storeaddress:店铺收货地址
 def move_storeaddress():
@@ -352,7 +352,7 @@ def move_storeaddress():
                     'create_by': None,
                 } for item in old_address]
     print 'move storeaddress:', old_data, old_address.count()
-    New_StoreAddress.insert_many(old_data)
+    New_StoreAddress.insert_many(old_data).execute()
 
 # storearea:店铺服务区域
 def move_storearea():
@@ -362,7 +362,7 @@ def move_storearea():
         'store': store_map[item.sid.id]
     } for item in old_area]
     print 'move storearea:', old_data,old_area.count()
-    New_StoreArea.insert_many(old_data)
+    New_StoreArea.insert_many(old_data).execute()
 '''
 # 店铺用户
 '''
@@ -379,13 +379,13 @@ def move_user():
             role=item.userlevel,
             signuped=item.signuped,
             lsignined=item.lsignined,
-            store=store_map[item.store.id],
+            store=store_map[item.store.id] if not item.store else 0,
             token=None,  # 旧的没有
             last_pay_type=1,  # 旧的没有，设置默认值：1
             active=item.isactive
         )
-        print user.id
         user_map[item.id] = user.id
+    print 'move users:', old_user.count()
 
 # scorerecord:积分流水
 def move_scorerecord():
@@ -402,7 +402,7 @@ def move_scorerecord():
         'isactive': item.isactive
     } for item in old_record]
     print old_data
-    New_ScoreRecord.insert_many(old_data)
+    New_ScoreRecord.insert_many(old_data).execute()
 
 # moneyrecord:资金流水
 def move_moneyrecord():
@@ -425,7 +425,7 @@ def move_moneyrecord():
         'processing_by': adminuser_map[item.processing_by.id]
     } for item in old_record]
     print old_data
-    New_MoneyRecord.insert_many(old_data)
+    New_MoneyRecord.insert_many(old_data).execute()
 
 # block:广告区域
 block_map = {}
@@ -473,7 +473,7 @@ def move_blockitemarea():
         'area_code': item.city_code
     } for item in old_blockitem]
     print old_data
-    New_BlockItemArea.insert_many(old_data)
+    New_BlockItemArea.insert_many(old_data).execute()
 '''
 # 产品部分
 '''
@@ -507,7 +507,7 @@ def move_productpic():
                     'sort': 0  # 旧的没有，设置为默认值：0
                 } for item in old_productpic]
     print old_data
-    New_ProductPic.insert_many(old_data)
+    New_ProductPic.insert_many(old_data).execute()
 
 # productattributevalue:产品型号
 def move_productattributevalue():
@@ -519,7 +519,7 @@ def move_productattributevalue():
         'value': 0,  # 旧的没有，需要额外处理
     } for item in old_attribute]
     print old_data
-    New_ProductAttributeValue.insert_many(old_data)
+    New_ProductAttributeValue.insert_many(old_data).execute()
 
 # productrelease:产品发布
 product_release_map = {}
@@ -605,7 +605,7 @@ def move_insurancearea():
         'active': item.iswork
     } for item in old_area]
     print old_data
-    New_InsuranceArea.insert_many(old_data)
+    New_InsuranceArea.insert_many(old_data).execute()
 
 # insuranceprice:保额
 def move_insuranceprice():
@@ -615,7 +615,7 @@ def move_insuranceprice():
         'coverage': item.name
     } for item in old_price]
     print old_data
-    New_InsurancePrice.insert_many(old_data)
+    New_InsurancePrice.insert_many(old_data).execute()
 
 # insurancescoreexchange:保险积分兑换规则
 def move_insuranceexchange():
@@ -638,7 +638,7 @@ def move_insuranceexchange():
         'base_money': item.baseMoney
     } for item in old_exchange]
     print old_data
-    New_InsuranceScoreExchange.insert_many(old_data)
+    New_InsuranceScoreExchange.insert_many(old_data).execute()
 
 
 def _has_dic(src=[], dickey=None):
@@ -719,7 +719,7 @@ def move_feedback():
         'img': None  # 旧的没有
     } for item in old_feedback]
     print old_data
-    New_Feedback.insert_many(old_data)
+    New_Feedback.insert_many(old_data).execute()
 
 # insuranceorderprice:保险报价单
 insurance_order_price_map = {}
@@ -854,7 +854,7 @@ def move_insuranceorder():
             'user_del': item.userDel
         })
     print old_data
-    New_InsuranceOrder.insert_many(old_data)
+    New_InsuranceOrder.insert_many(old_data).execute()
 
 # cart:购物车:购物车建议可以不导入
 def move_cart():
@@ -866,7 +866,7 @@ def move_cart():
         'created': item.created
     } for item in old_cart]
     print old_data
-    New_ShopCart.insert_many(old_data)
+    New_ShopCart.insert_many(old_data).execute()
 
 # settlement:结算
 settlement_map = {}
@@ -907,7 +907,7 @@ def move_Order():
         'buyer_del': 0  # 旧的没有，暂时设置
     } for item in old_order]
     print old_data
-    New_Order.insert_many(old_data)
+    New_Order.insert_many(old_data).execute()
 
 # suborder:子订单
 suborder_map = {}
@@ -942,7 +942,7 @@ def move_orderitem():
         'price': item.price
     } for item in old_orderitem]
     print old_data
-    New_OrderItem.insert_many(old_data)
+    New_OrderItem.insert_many(old_data).execute()
 
 if __name__ == '__main__':
     move_hotsearch()
