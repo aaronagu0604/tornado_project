@@ -928,7 +928,7 @@ def move_Order():
         old_data.append({
             'ordernum': item.ordernum,
             'user': user_map[item.user.id],
-            'buyer_store': 0,  # 旧的没有，暂时设置0
+            'buyer_store': store_map[item.user.store.id],  # 旧的没有，暂时设置0
             'address': item.address,
             'delivery': delivery,
             'delivery_num': deliverynum,
