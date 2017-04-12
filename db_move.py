@@ -853,6 +853,7 @@ def move_insuranceorder():
             reciver = Old_InsuranceOrderReceiving.get(Old_InsuranceOrderReceiving.orderid == item)
         except Exception:
             continue
+        addr = reciver.address.encode('utf-8')
 
         old_data.append({
             'ordernum': item.ordernum,
@@ -869,9 +870,9 @@ def move_insuranceorder():
 
             'delivery_to': reciver.contact,
             'delivery_tel': reciver.mobile,
-            'delivery_province': reciver.address[:reciver.address.find(u'省')+1],
-            'delivery_city': reciver.address[reciver.address.find(u'省')+1:reciver.address[:reciver.address.find(u'市')]+1],
-            'delivery_region': reciver.address[reciver.address.find(u'市'):],
+            'delivery_province': addr[:addr.find(u'省')+1],
+            'delivery_city': addr[addr.find(u'省')+1:addr.find(u'市')+1],
+            'delivery_region': addr[addr.find(u'市'):],
             'delivery_address': reciver.paddress,
             'deliver_company': '',
             'deliver_num': '',
