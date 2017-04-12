@@ -913,26 +913,38 @@ order_map = {}
 
 def move_Order():
     old_order = Old_Order.select().where(Old_Order.user << user_map.keys())
-    old_data = [{
-        'ordernum': item.ordernum,
-        'user': user_map[item.user.id],
-        'buyer_store': 0,  # 旧的没有，暂时设置0
-        'address': item.address,
-        'delivery': delivery_map[item.delivery.id],
-        'delivery_num': item.deliverynum,
-        'ordered': item.ordered,
-        'payment': item.payment,
-        'message': item.message,
-        'order_type': item.order_type,  # 付款方式 1金钱订单 2积分订单
-        'total_price': item.currentprice,  # 就得没有，暂时设置为这个
-        'pay_balance': item.pay_balance,
-        'pay_price': 0,  # 旧的没有，暂时设置默认值
-        'pay_time': item.paytime,
-        'status': item.status,
-        'trade_no': item.trade_no,
-        'order_count': 0,
-        'buyer_del': 0  # 旧的没有，暂时设置
-    } for item in old_order]
+    old_data = []
+    for item in old_order:
+        try:
+            if item.delivery:
+                delivery=delivery_map[item.delivery.id]
+                deliverynum = item.deliverynum
+            else:
+                delivery = None
+                deliverynum = None
+        except Exception:
+            pass
+
+        old_data.append({
+            'ordernum': item.ordernum,
+            'user': user_map[item.user.id],
+            'buyer_store': 0,  # 旧的没有，暂时设置0
+            'address': item.address,
+            'delivery': delivery,
+            'delivery_num': deliverynum,
+            'ordered': item.ordered,
+            'payment': item.payment,
+            'message': item.message,
+            'order_type': item.order_type,  # 付款方式 1金钱订单 2积分订单
+            'total_price': item.currentprice,  # 就得没有，暂时设置为这个
+            'pay_balance': item.pay_balance,
+            'pay_price': 0,  # 旧的没有，暂时设置默认值
+            'pay_time': item.paytime,
+            'status': item.status,
+            'trade_no': item.trade_no,
+            'order_count': 0,
+            'buyer_del': 0  # 旧的没有，暂时设置
+        })
 
     New_Order.insert_many(old_data).execute()
     print 'move order:', len(old_data)
