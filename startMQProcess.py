@@ -10,7 +10,7 @@ import simplejson
 import setting
 from dayuSms import sendmsg
 from mqProcess.emailhelper import sendemail
-from mqProcess.jpushhelper import pushmsg
+#from mqProcess.jpushhelper import pushmsg
 
 logger = logging.getLogger('startMQProcess')
 logger.addHandler(logging.StreamHandler())
@@ -39,7 +39,7 @@ with rabbitpy.Connection(url) as conn:
                             logging.error(pushcontent['body'])
                             logging.error(pushcontent['receiver'])
 
-                            pushmsg(1, pushcontent['body'], pushcontent['receiver'])
+                            #pushmsg(1, pushcontent['body'], pushcontent['receiver'])
                         except Exception, e:
                             logging.error(e.message)
                     else:
