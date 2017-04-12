@@ -895,26 +895,6 @@ def move_insuranceorder():
     New_InsuranceOrder.insert_many(old_data).execute()
     print 'move insuranceorder:', len(old_data)
 
-# cart:购物车:购物车建议可以不导入
-def move_cart():
-    old_cart = Old_Cart.select().where(Old_Cart.user << user_map.keys())
-    old_data = []
-    for item in old_cart:
-        try:
-            if item.user.store.id:
-                pass
-        except Exception:
-            continue
-        old_data.append({
-            'store': store_map[item.user.store.id],  # 旧的没有,是否指的是购买方
-            'store_product_price': 1,  # 旧的没有,暂时设置，后期需要人工处理
-            'quantity': item.quantity,
-            'created': item.created
-        })
-
-    New_ShopCart.insert_many(old_data).execute()
-    print 'move cart:', old_cart.count()
-
 # settlement:结算
 settlement_map = {}
 def move_settlement():
@@ -994,6 +974,26 @@ def move_orderitem():
     New_OrderItem.insert_many(old_data).execute()
     print 'move orderitem:', len(old_data)
 
+# cart:购物车:购物车建议可以不导入
+def move_cart():
+    old_cart = Old_Cart.select().where(Old_Cart.user << user_map.keys())
+    old_data = []
+    for item in old_cart:
+        try:
+            if item.user.store.id:
+                pass
+        except Exception:
+            continue
+        old_data.append({
+            'store': store_map[item.user.store.id],  # 旧的没有,是否指的是购买方
+            'store_product_price': 1,  # 旧的没有,暂时设置，后期需要人工处理
+            'quantity': item.quantity,
+            'created': item.created
+        })
+
+    New_ShopCart.insert_many(old_data).execute()
+    print 'move cart:', old_cart.count()
+
 if __name__ == '__main__':
     move_hotsearch()
     move_delivery()
@@ -1030,8 +1030,8 @@ if __name__ == '__main__':
     move_feedback()
     move_insuranceporderprice()
     move_insuranceorder()
-    #move_cart()
     move_settlement()
     move_Order()
     move_suborder()
     move_orderitem()
+    #move_cart()
