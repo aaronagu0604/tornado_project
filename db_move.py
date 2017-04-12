@@ -552,7 +552,7 @@ def move_productattributevalue():
 product_release_map = {}
 
 def move_productrelease():
-    old_release = Old_ProductStandard.select(Old_ProductStandard.product << product_map.keys())
+    old_release = Old_ProductStandard.select().where(Old_ProductStandard.product << product_map.keys())
     print 'move productrelease select:', old_release.count()
     step = 0
     for item in old_release:
