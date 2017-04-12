@@ -32,6 +32,7 @@ def get_insurance(area_code):
         })
     return items
 
+
 """
     @apiGroup aaaa
     @apiVersion 1.0.0
@@ -581,14 +582,16 @@ class MobileDiscoverHandler(MobileBaseHandler):
                 })
         # 保险商城
         area_code = self.get_store_area_code()
-        insurances = get_insurance(area_code)
-        while len(insurances) == 0 and len(area_code) > 3:
-            area_code = area_code[0: -4]
-            insurances = get_insurance(area_code)
+        # tmp_area = area_code
+        # insurances = get_insurance(tmp_area)
+        # while len(insurances) == 0 and len(tmp_area) > 3:
+        #     tmp_area = tmp_area[0: -4]
+        #     insurances = get_insurance(tmp_area)
         result['data'][2]['subs'].append({
             'cid': 0,
             'name': u'保险分类',
-            'subs': insurances
+            'subs': InsuranceArea.get_insurances_link(area_code),
+            # 'test': insurances
         })
 
         result['flag'] = 1

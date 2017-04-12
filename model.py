@@ -7,7 +7,7 @@ import hashlib
 from bootloader import db
 from lib.util import vmobile
 import re
-
+import setting
 
 # 地区表
 class Area(db.Model):
@@ -636,6 +636,37 @@ class InsuranceArea(db.Model):
 
     class Meta:
         db_table = 'tb_insurance_area'
+
+    @classmethod
+    def append_areas(cls, area_code):
+        codes = []
+        if len(area_code) == 12:
+            codes.append(area_code)
+            codes.append(area_code[:8])
+            codes.append(area_code[:4])
+        elif len(area_code) == 8:
+            codes.append(area_code)
+            codes.append(area_code[:4])
+        elif len(area_code) == 4:
+            codes.append(area_code)
+        return codes
+
+    @classmethod
+    def get_insurances_link(cls, area_code):  # 获取该地区所有保险公司及链接
+        temp_insurance_id = []
+        insurance_list = []
+        codes = cls.append_areas(area_code)
+        insurances = InsuranceArea.select().where((InsuranceArea.area_code << codes) & (InsuranceArea.active == 1))
+        for i in insurances:
+            if i.id not in temp_insurance_id:
+                temp_insurance_id.append(i.id)
+                insurance_list.append({
+                    'img': i.insurance.logo,
+                    'name': i.insurance.name,
+                    'price': 0,
+                    'link': setting.baseUrl + 'insurance/' + str(i.insurance.id)
+                })
+        return insurance_list
 
 
 # 保险子险种
