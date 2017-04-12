@@ -107,8 +107,9 @@ class AdminUserLog(db.Model):
 # 门店
 class Store(db.Model):
     id = PrimaryKeyField()
-    store_type = IntegerField(default=1)  # 门店类型 1服务商 2社会修理厂（门店）
+    store_type = IntegerField(default=1)  # 门店类型 1经销商 2社会修理厂（门店）
     admin_code = CharField(max_length=20, null=True)  # 业务推广人员编号
+    franchiser = IntegerField(default=0)  # 如果门店是修理厂，该字段是给修理厂返油的经销商
     admin_user = ForeignKeyField(AdminUser, related_name='stores', db_column='admin_user_id', null=True)  # 业务推广人员
     name = CharField(max_length=100)  # 门店名称
     area_code = CharField(max_length=40)  # 区域编码
@@ -345,6 +346,7 @@ class Category(db.Model):
     id = PrimaryKeyField()
     name = CharField(max_length=20)  # 分类名
     sort = CharField(max_length=20)  # 显示顺序
+    category_type = IntegerField(default=0)  # 1配件商城 2汽车装潢
     img_m = CharField(max_length=256, null=True)  # 分类图片手机端
     img_pc = CharField(max_length=256, null=True)  # 分类图片PC端
     hot = IntegerField(default=1)  # 热门分类
