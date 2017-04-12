@@ -376,23 +376,25 @@ def move_user():
     print 'move users:', old_user.count()
 
 # storeaddress:店铺收货地址
+store_addr_map = {}
 def move_storeaddress():
     old_user = Old_User.select().where(Old_User.store << store_map.keys())
     old_address = Old_UserAddr.select().where(Old_UserAddr.user << old_user)
-    old_data = [{
-                    'store': store_map[item.user.store.id],
-                    'province': item.province,
-                    'city': item.city,
-                    'region': item.region,
-                    'address': item.address,
-                    'name': item.name,
-                    'mobile': item.mobile,
-                    'is_default': item.isdefault,
-                    'created': 0,  # 旧的没有，设置默认值：0
-                    'create_by': user_map[item.user.id],
-                } for item in old_address]
-    print 'move storeaddress:', old_data, old_address.count()
-    New_StoreAddress.insert_many(old_data).execute()
+    for item in old_address:
+        storeaddress = New_StoreAddress.create(
+                        store=store_map[item.user.store.id],
+                        province=item.province,
+                        city=item.city,
+                        region=item.region,
+                        address=item.address,
+                        name=item.name,
+                        mobile=item.mobile,
+                        is_default=item.isdefault,
+                        created=0,  # 旧的没有，设置默认值：0
+                        create_by=user_map[item.user.id]
+                    )
+        store_addr_map[item.id] = storeaddress.id
+    print 'move storeaddress:', old_address.count()
 
 # scorerecord:积分流水
 def move_scorerecord():
@@ -929,7 +931,7 @@ def move_Order():
             'ordernum': item.ordernum,
             'user': user_map[item.user.id],
             'buyer_store': store_map[item.user.store.id],  # 旧的没有，暂时设置0
-            'address': item.address,
+            'address': store_addr_map[item.address.id],
             'delivery': delivery,
             'delivery_num': deliverynum,
             'ordered': item.ordered,
