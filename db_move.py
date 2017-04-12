@@ -897,14 +897,22 @@ def move_insuranceorder():
 # cart:购物车:购物车建议可以不导入
 def move_cart():
     old_cart = Old_Cart.select(Old_Cart.user << user_map.keys())
-    old_data = [{
-        'store': store_map[item.user.store.id],  # 旧的没有,是否指的是购买方
-        'store_product_price': 0,  # 旧的没有,暂时设置，后期需要人工处理
-        'quantity': item.quantity,
-        'created': item.created
-    } for item in old_cart]
-    print 'move cart:', old_data
+    old_data = []
+    for item in old_cart:
+        try:
+            if item.user.store.id:
+                pass
+        except Exception:
+            continue
+        old_data.append({
+            'store': store_map[item.user.store.id],  # 旧的没有,是否指的是购买方
+            'store_product_price': 0,  # 旧的没有,暂时设置，后期需要人工处理
+            'quantity': item.quantity,
+            'created': item.created
+        })
+
     New_ShopCart.insert_many(old_data).execute()
+    print 'move cart:', old_cart.count()
 
 # settlement:结算
 settlement_map = {}
