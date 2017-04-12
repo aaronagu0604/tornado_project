@@ -580,14 +580,19 @@ def move_productrelease():
 store_product_price_map = {}
 
 def move_storeproductprice():
-    old_price = Old_ReleaseArea.select()
+    old_price = Old_ProductStandard.select().where(Old_ProductStandard.product << product_map.keys())
     for item in old_price:
+        try:
+            if not store_map.has_key(item.store.id):
+                continue
+        except Exception:
+            continue
         price = New_StoreProductPrice.create(
-            product_release=store_product_price_map[item.psid],
+            product_release=product_release_map[item.id],
             store=store_map[item.store.id],
             area_code=item.area_code,
-            price=item.price,
-            score=0,  # 旧的没有，设置默认值：0
+            price=item.ourprice,
+            score=item.scoreNum,  # 旧的没有，设置默认值：0
             created=datetime.datetime.now(),
             active=1  # 旧的没有，设置默认值：1
         )
