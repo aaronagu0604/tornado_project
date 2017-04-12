@@ -872,7 +872,7 @@ def move_insuranceorder():
             'delivery_tel': reciver.mobile,
             'delivery_province': addr[:addr.find(u'省')+1],
             'delivery_city': addr[addr.find(u'省')+1:addr.find(u'市')+1],
-            'delivery_region': addr[addr.find(u'市'):addr.find(u'市')+5],
+            'delivery_region': addr[addr.find(u'市'):addr.find(u'市')+3],
             'delivery_address': reciver.paddress,
             'deliver_company': '',
             'deliver_num': '',
