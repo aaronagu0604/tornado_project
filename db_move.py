@@ -556,13 +556,13 @@ def move_productrelease():
     print 'move productrelease select:', old_release.count()
     step = 0
     for item in old_release:
-        try:
-            if not store_map.has_key(item.store.id):
-                print 'continue'
-                continue
-        except Exception, e:
-            print e
-            continue
+        # try:
+        #     if not store_map.has_key(item.store.id):
+        #         print 'continue'
+        #         continue
+        # except Exception, e:
+        #     print 'try except:', e
+        #     continue
 
         release = New_ProductRelease.create(
             product=product_map[item.product.id],
