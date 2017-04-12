@@ -851,9 +851,7 @@ def move_insuranceorder():
     for item in old_order:
         try:
             reciver = Old_InsuranceOrderReceiving.get(Old_InsuranceOrderReceiving.orderid == item)
-            print reciver
-        except Exception, e:
-            print e
+        except Exception:
             continue
 
         old_data.append({
@@ -872,11 +870,11 @@ def move_insuranceorder():
             'delivery_to': reciver.contact,
             'delivery_tel': reciver.mobile,
             'delivery_province': reciver.address,
-            'delivery_city': None,
-            'delivery_region': None,
+            'delivery_city': '',
+            'delivery_region': '',
             'delivery_address': reciver.paddress,
-            'deliver_company': None,
-            'deliver_num': None,
+            'deliver_company': '',
+            'deliver_num': '',
 
             'status': item.status,
             'cancel_reason': item.cancelreason,
