@@ -977,7 +977,7 @@ def move_orderitem():
             order=order_map[item.order.id],
             sub_order=suborder.id,  # 旧的没有，需要处理
             product=product_map[item.product.id],
-            store_product_price=0,
+            store_product_price=store_product_price_map[item.product_standard.id],
             quantity=item.quantity,
             price=item.price
         )
