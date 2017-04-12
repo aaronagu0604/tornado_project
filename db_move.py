@@ -907,7 +907,7 @@ def move_cart():
             continue
         old_data.append({
             'store': store_map[item.user.store.id],  # 旧的没有,是否指的是购买方
-            'store_product_price': 0,  # 旧的没有,暂时设置，后期需要人工处理
+            'store_product_price': 1,  # 旧的没有,暂时设置，后期需要人工处理
             'quantity': item.quantity,
             'created': item.created
         })
@@ -1030,7 +1030,7 @@ if __name__ == '__main__':
     move_feedback()
     move_insuranceporderprice()
     move_insuranceorder()
-    move_cart()
+    #move_cart()
     move_settlement()
     move_Order()
     move_suborder()
