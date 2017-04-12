@@ -25,10 +25,10 @@ def get_insurance(area_code):
         order_by(InsuranceArea.sort.asc())
     for insurance in insurances:
         items.append({
-            'img': insurance.logo,
-            'name': insurance.name,
+            'img': insurance.insurance.logo,
+            'name': insurance.insurance.name,
             'price': 0,
-            'link': setting.baseUrl + 'insurance/' + str(insurance.id)
+            'link': setting.baseUrl + 'insurance/' + str(insurance.insurance.id)
         })
     return items
 
@@ -312,7 +312,7 @@ class MobileHomeHandler(MobileBaseHandler):
             if price_list.count() > 0:
                 dt = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(price_list[0].created))
                 result['data']['last_unread_price']['show'] = 1
-                result['data']['last_unread_price']['msg'] = '您有新的保险报价'
+                result['data']['last_unread_price']['msg'] = u'您有新的保险报价'
                 result['data']['last_unread_price']['insurance'] = price_list[0].insurance.name
                 result['data']['last_unread_price']['time'] = dt
                 result['data']['last_unread_price']['show'] = 'czj://insurance_order_price/' + str(price_list[0].id)
@@ -334,9 +334,6 @@ class MobileHomeHandler(MobileBaseHandler):
         while len(insurances) == 0 and len(tmp_code) > 4:
             tmp_code = tmp_code[0: -4]
             insurances = get_insurance(tmp_code)
-        # result['data']['insurance'] = {}
-        # result['data']['insurance']['title'] = '保险业务'
-        # result['data']['insurance']['data'] = insurances
         result['data']['category'].append({'title': u'保险业务', 'data': insurances})
 
         # 热门分类
@@ -347,9 +344,6 @@ class MobileHomeHandler(MobileBaseHandler):
             categories = self.get_category(tmp_code)
         if len(categories) == 0:
             categories = self.get_category(self.get_default_area_code())
-        # result['data']['hot_category'] = {}
-        # result['data']['hot_category']['title'] = '热门分类'
-        # result['data']['hot_category']['data'] = categories
         result['data']['category'].append({'title': u'热门分类', 'data': categories})
 
         # 热销品牌
@@ -360,9 +354,6 @@ class MobileHomeHandler(MobileBaseHandler):
             brands = self.get_brand(tmp_code)
         if len(brands) == 0:
             brands = self.get_brand(self.get_default_area_code())
-        # result['data']['hot_brand'] = {}
-        # result['data']['hot_brand']['title'] = '热销品牌'
-        # result['data']['hot_brand']['data'] = brands
         result['data']['category'].append({'title': u'热销品牌', 'data': brands})
 
         # 推荐商品
@@ -373,9 +364,6 @@ class MobileHomeHandler(MobileBaseHandler):
             recommends = self.get_recommend(tmp_code)
         if len(recommends) == 0:
             recommends = self.get_recommend(self.get_default_area_code())
-        # result['data']['recommend'] = {}
-        # result['data']['recommend']['title'] = '为您推荐'
-        # result['data']['recommend']['data'] = recommends
         result['data']['category'].append({'title': u'为您推荐', 'data': recommends})
 
         # 积分商品
@@ -386,9 +374,6 @@ class MobileHomeHandler(MobileBaseHandler):
             score_product = self.get_score_product(tmp_code)
         if len(score_product) == 0:
             score_product = self.get_score_product(self.get_default_area_code())
-        # result['data']['score_product'] = {}
-        # result['data']['score_product']['title'] = '积分兑换'
-        # result['data']['score_product']['data'] = score_product
         result['data']['category'].append({'title': u'积分兑换', 'data': score_product})
 
         result['flag'] = 1
@@ -560,22 +545,51 @@ class MobileDiscoverHandler(MobileBaseHandler):
     """
     def get(self):
         result = {'flag': 0, 'msg': '', 'data': [{'name': u'配件商城', 'subs':[]}, {'name': u'汽车装潢', 'subs':[]}, {'name': u'保险商城', 'subs':[]}]}
-        store_area = self.get_store_area_code()
-        area_code = store_area if store_area else self.get_default_area_code()
         categories = Category.select().where(Category.active == 1)
         for category in categories:
+            # 配件商城
             if category.category_type == 1:
-                subs = []
                 bcs = BrandCategory.select().where(BrandCategory.category == category)
-                for bc in bcs:
-                    subs.append({
-                        'bid': bc.brand,
-                    })
+                subs = [{
+                        'bid': bc.brand.id,
+                        'img': bc.brand.logo,
+                        'name': bc.brand.name
+                    } for bc in bcs]
+                # for bc in bcs:
+                #     subs.append({
+                #         'bid': bc.brand.id,
+                #         'img': bc.brand.logo,
+                #         'name': bc.brand.name
+                #     })
                 result['data'][0]['subs'].append({
                     'cid': category.id,
                     'name': category.name,
-                    'subs': []
+                    'subs': subs
                 })
+            # 汽车装潢
+            elif category.category_type == 2:
+                bcs = BrandCategory.select().where(BrandCategory.category == category)
+                subs = [{
+                            'bid': bc.brand.id,
+                            'img': bc.brand.logo,
+                            'name': bc.brand.name
+                        } for bc in bcs]
+                result['data'][1]['subs'].append({
+                    'cid': category.id,
+                    'name': category.name,
+                    'subs': subs
+                })
+        # 保险商城
+        area_code = self.get_store_area_code()
+        insurances = get_insurance(area_code)
+        while len(insurances) == 0 and len(area_code) > 3:
+            area_code = area_code[0: -4]
+            insurances = get_insurance(area_code)
+        result['data'][2]['subs'].append({
+            'cid': 0,
+            'name': u'保险分类',
+            'subs': insurances
+        })
 
         result['flag'] = 1
         self.write(simplejson.dumps(result))
