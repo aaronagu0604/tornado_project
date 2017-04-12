@@ -553,11 +553,15 @@ product_release_map = {}
 
 def move_productrelease():
     old_release = Old_ProductStandard.select(Old_ProductStandard.product << product_map.keys())
+    print 'move productrelease select:', old_release.count()
+    step = 0
     for item in old_release:
         try:
             if not store_map.has_key(item.store.id):
+                print 'continue'
                 continue
-        except Exception:
+        except Exception, e:
+            print e
             continue
 
         release = New_ProductRelease.create(
@@ -569,9 +573,10 @@ def move_productrelease():
             sort=item.weights,
             active=item.is_pass
         )
+        step += 1
         product_release_map[item.id] = release.id
 
-    print 'move productrelease:', old_release.count()
+    print 'move productrelease:', step
 
 # storeproductprice:店铺区域产品价格
 store_product_price_map = {}
