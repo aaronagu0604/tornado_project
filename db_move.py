@@ -880,9 +880,9 @@ def move_insuranceorder():
 
             'status': item.status,
             'cancel_reason': item.cancelreason,
-            'cancel_time': item.cancel_time,
+            'cancel_time': item.canceltime,
             'sms_content': '',  # 就得没有，暂时设置，后期需要人工处理
-            'sms_sent_time': item.lasteditedtime,
+            'sms_sent_time': item.paytime,
             'local_summary': item.localsummary,
             'pay_time': item.paytime,
             'deal_time': item.ordered,
