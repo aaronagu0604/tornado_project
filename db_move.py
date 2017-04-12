@@ -854,7 +854,8 @@ def move_insuranceorder():
         except Exception:
             continue
         addr = reciver.address.decode('utf-8')
-
+        if not insurance_order_price_map.has_key(item.id):
+            continue
         old_data.append({
             'ordernum': item.ordernum,
             'user': user_map[item.user.id],
