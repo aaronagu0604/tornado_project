@@ -962,7 +962,7 @@ def move_orderitem():
         suborder = New_SubOrder.create(
             order=order_map[order.id],
             saler_store=store_map[item.product_standard.store.id],
-            buyer_store=user_map[order.user.store.id],
+            buyer_store=store_map[order.user.store.id],
             price=item.price,
             status=order.status,
             fail_reason=order.cancelreason,
