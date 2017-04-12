@@ -851,8 +851,10 @@ def move_insuranceorder():
     for item in old_order:
         try:
             reciver = Old_InsuranceOrderReceiving.get(Old_InsuranceOrderReceiving.orderid.id == item.id)
+            print reciver, reciver.contact
         except Exception:
-            reciver = 0
+            continue
+
         old_data.append({
             'ordernum': item.ordernum,
             'user': user_map[item.user.id],
@@ -888,7 +890,7 @@ def move_insuranceorder():
             'trade_no': item.trade_no,
             'user_del': item.userDel
         })
-    print 'move insuranceorder:', old_data
+    print 'move insuranceorder:', len(old_data)
     New_InsuranceOrder.insert_many(old_data).execute()
 
 # cart:购物车:购物车建议可以不导入
@@ -941,7 +943,7 @@ def move_Order():
         'order_count': 0,
         'buyer_del': 0  # 旧的没有，暂时设置
     } for item in old_order]
-    print old_data
+    print 'move order:', old_data
     New_Order.insert_many(old_data).execute()
 
 # suborder:子订单
@@ -964,6 +966,7 @@ def move_suborder():
             buyer_del=0,
         )
         suborder_map[item.id] = suborder.id
+    print 'move suborder:',old_suborder.count()
 
 # orderitem:订单内容
 def move_orderitem():
@@ -976,7 +979,7 @@ def move_orderitem():
         'quantity': item.quantity,
         'price': item.price
     } for item in old_orderitem]
-    print old_data
+    print 'move orderitem:', old_data
     New_OrderItem.insert_many(old_data).execute()
 
 if __name__ == '__main__':
