@@ -981,6 +981,7 @@ def move_orderitem():
     for item in old_orderitem:
         try:
             order = Old_Order.get(Old_Order.id == item.order.id)
+            productstandard = Old_ProductStandard.get(Old_ProductStandard.id == item.product_standard.id)
         except Exception:
             continue
 
@@ -1002,7 +1003,7 @@ def move_orderitem():
             order=order_map[item.order.id],
             sub_order=suborder.id,  # 旧的没有，需要处理
             product=product_map[item.product.id],
-            store_product_price=store_product_price_map[item.product_standard.id],
+            store_product_price=store_product_price_map[productstandard.id],
             quantity=item.quantity,
             price=item.price
         )
