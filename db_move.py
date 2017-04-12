@@ -896,7 +896,7 @@ def move_insuranceorder():
 
 # cart:购物车:购物车建议可以不导入
 def move_cart():
-    old_cart = Old_Cart.select(Old_Cart.user << user_map.keys())
+    old_cart = Old_Cart.select().where(Old_Cart.user << user_map.keys())
     old_data = []
     for item in old_cart:
         try:
@@ -917,7 +917,7 @@ def move_cart():
 # settlement:结算
 settlement_map = {}
 def move_settlement():
-    old_settlement = Old_Settlement.select()
+    old_settlement = Old_Settlement.select().where(Old_Settlement.user << user_map.keys())
     for item in old_settlement:
         settlement = New_Settlement.create(
             user=user_map[item.user.id],
@@ -931,10 +931,10 @@ def move_settlement():
 order_map = {}
 
 def move_Order():
-    old_order = Old_Order.select()
+    old_order = Old_Order.select().where(Old_Order.user << user_map.keys())
     old_data = [{
         'ordernum': item.ordernum,
-        'user': item.user,
+        'user': user_map[item.user.id],
         'buyer_store': 0,  # 旧的没有，暂时设置0
         'address': item.address,
         'delivery': delivery_map[item.delivery.id],
@@ -952,8 +952,9 @@ def move_Order():
         'order_count': 0,
         'buyer_del': 0  # 旧的没有，暂时设置
     } for item in old_order]
-    print 'move order:', old_data
+
     New_Order.insert_many(old_data).execute()
+    print 'move order:', len(old_data)
 
 # suborder:子订单
 suborder_map = {}
@@ -975,7 +976,7 @@ def move_suborder():
             buyer_del=0,
         )
         suborder_map[item.id] = suborder.id
-    print 'move suborder:',old_suborder.count()
+    print 'move suborder:', old_suborder.count()
 
 # orderitem:订单内容
 def move_orderitem():
@@ -988,8 +989,9 @@ def move_orderitem():
         'quantity': item.quantity,
         'price': item.price
     } for item in old_orderitem]
-    print 'move orderitem:', old_data
+
     New_OrderItem.insert_many(old_data).execute()
+    print 'move orderitem:', len(old_data)
 
 if __name__ == '__main__':
     move_hotsearch()
