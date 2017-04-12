@@ -915,7 +915,7 @@ order_map = {}
 
 def move_Order():
     old_order = Old_Order.select().where(Old_Order.user << user_map.keys())
-    old_data = []
+
     for item in old_order:
         try:
             if item.delivery:
@@ -927,66 +927,62 @@ def move_Order():
         except Exception:
             pass
 
-        old_data.append({
-            'ordernum': item.ordernum,
-            'user': user_map[item.user.id],
-            'buyer_store': store_map[item.user.store.id],  # 旧的没有，暂时设置0
-            'address': store_addr_map[item.address.id],
-            'delivery': delivery,
-            'delivery_num': deliverynum,
-            'ordered': item.ordered,
-            'payment': item.payment,
-            'message': item.message,
-            'order_type': item.order_type,  # 付款方式 1金钱订单 2积分订单
-            'total_price': item.currentprice,  # 就得没有，暂时设置为这个
-            'pay_balance': item.pay_balance,
-            'pay_price': 0,  # 旧的没有，暂时设置默认值
-            'pay_time': item.paytime,
-            'status': item.status,
-            'trade_no': item.trade_no,
-            'order_count': 0,
-            'buyer_del': 0  # 旧的没有，暂时设置
-        })
-
-    New_Order.insert_many(old_data).execute()
-    print 'move order:', len(old_data)
-
-# suborder:子订单
-suborder_map = {}
-
-def move_suborder():
-    old_suborder = Old_GroupOrder.select()
-    for item in old_suborder:
-        suborder = New_SubOrder.create(
-            order=order_map[item.order.id],
-            saler_store=0,
-            buyer_store=0,
-            price=item.order.price,
-            status=item.order.status,
-            fail_reason=None,
-            fail_time=0,
-            delivery_time=delivery_map[item.order.delivery.item.id],
-            settlement=settlement_map[item.order.settlement.id],
-            saler_del=0,
-            buyer_del=0,
+        order = New_Order.create(
+            ordernum=item.ordernum,
+            user=user_map[item.user.id],
+            buyer_store=store_map[item.user.store.id],  # 旧的没有，暂时设置0
+            address=store_addr_map[item.address.id],
+            delivery=delivery,
+            delivery_num=deliverynum,
+            ordered=item.ordered,
+            payment=item.payment,
+            message=item.message,
+            order_type=item.order_type,  # 付款方式 1金钱订单 2积分订单
+            total_price=item.currentprice,  # 就得没有，暂时设置为这个
+            pay_balance=item.pay_balance,
+            pay_price=0,  # 旧的没有，暂时设置默认值
+            pay_time=item.paytime,
+            status=item.status,
+            trade_no=item.trade_no,
+            order_count=0,
+            buyer_del=0  # 旧的没有，暂时设置
         )
-        suborder_map[item.id] = suborder.id
-    print 'move suborder:', old_suborder.count()
+        order_map[item.id] = order.id
+    print 'move order:', old_order.count()
 
 # orderitem:订单内容
 def move_orderitem():
     old_orderitem = Old_OrderItem.select()
-    old_data = [{
-        'order': order_map[item.order.id],
-        'sub_order': 0,  # 旧的没有，需要处理
-        'product': product_map[item.product.id],
-        'store_product_price': 0,
-        'quantity': item.quantity,
-        'price': item.price
-    } for item in old_orderitem]
+    for item in old_orderitem:
+        try:
+            order = Old_Order.get(Old_Order.id == item.order.id)
+        except Exception:
+            continue
 
-    New_OrderItem.insert_many(old_data).execute()
-    print 'move orderitem:', len(old_data)
+        suborder = New_SubOrder.create(
+            order=order_map[order.id],
+            saler_store=store_map[item.product_standard.store.id],
+            buyer_store=user_map[order.user.store.id],
+            price=item.price,
+            status=order.status,
+            fail_reason=order.cancelreason,
+            fail_time=order.canceltime,
+            delivery_time=order.distributiontime,
+            settlement=settlement_map[item.order.settlement.id],
+            saler_del=0,
+            buyer_del=0,
+        )
+
+        New_OrderItem.create(
+            order=order_map[item.order.id],
+            sub_order=suborder.id,  # 旧的没有，需要处理
+            product=product_map[item.product.id],
+            store_product_price=0,
+            quantity=item.quantity,
+            price=item.price
+        )
+
+    print 'move orderitem:', old_orderitem.count()
 
 # cart:购物车:购物车建议可以不导入
 def move_cart():
@@ -1046,6 +1042,5 @@ if __name__ == '__main__':
     move_insuranceorder()
     move_settlement()
     move_Order()
-    move_suborder()
     move_orderitem()
     #move_cart()
