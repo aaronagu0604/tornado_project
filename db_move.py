@@ -553,7 +553,6 @@ product_release_map = {}
 
 def move_productrelease():
     old_release = Old_ProductStandard.select().where(Old_ProductStandard.product << product_map.keys())
-    print 'move productrelease select:', old_release.count()
     step = 0
     for item in old_release:
         try:
@@ -574,13 +573,14 @@ def move_productrelease():
         step += 1
         product_release_map[item.id] = release.id
 
-    print 'move productrelease:', step
+    print 'move productrelease:', step, '/', old_release.count()
 
 # storeproductprice:店铺区域产品价格
 store_product_price_map = {}
 
 def move_storeproductprice():
     old_price = Old_ProductStandard.select().where(Old_ProductStandard.product << product_map.keys())
+    step = 0
     for item in old_price:
         try:
             if not store_map.has_key(item.store.id):
@@ -593,11 +593,12 @@ def move_storeproductprice():
             area_code=item.area_code,
             price=item.ourprice,
             score=item.scoreNum,  # 旧的没有，设置默认值：0
-            created=datetime.datetime.now(),
+            created=item.add_time,
             active=1  # 旧的没有，设置默认值：1
         )
+        step += 1
         store_product_price_map[item.id] = price.id
-    print 'move storeproductprice:', old_price.count()
+    print 'move storeproductprice:', step
 
 '''
 # 保险部分
