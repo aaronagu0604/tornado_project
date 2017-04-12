@@ -869,9 +869,9 @@ def move_insuranceorder():
 
             'delivery_to': reciver.contact,
             'delivery_tel': reciver.mobile,
-            'delivery_province': reciver.address,
-            'delivery_city': '',
-            'delivery_region': '',
+            'delivery_province': reciver.address[:reciver.address.find(u'省')+1],
+            'delivery_city': reciver.address[reciver.address.find(u'省')+1:reciver.address[:reciver.address.find(u'市')]+1],
+            'delivery_region': reciver.address[reciver.address.find(u'市'):],
             'delivery_address': reciver.paddress,
             'deliver_company': '',
             'deliver_num': '',
@@ -889,8 +889,9 @@ def move_insuranceorder():
             'trade_no': item.trade_no,
             'user_del': item.userDel
         })
-    print 'move insuranceorder:', len(old_data)
+
     New_InsuranceOrder.insert_many(old_data).execute()
+    print 'move insuranceorder:', len(old_data)
 
 # cart:购物车:购物车建议可以不导入
 def move_cart():
