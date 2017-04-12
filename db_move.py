@@ -853,7 +853,7 @@ def move_insuranceorder():
             reciver = Old_InsuranceOrderReceiving.get(Old_InsuranceOrderReceiving.orderid == item)
         except Exception:
             continue
-        addr = reciver.address.encode('utf-8')
+        addr = reciver.address.decode('utf-8')
 
         old_data.append({
             'ordernum': item.ordernum,
