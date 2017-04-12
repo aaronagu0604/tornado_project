@@ -355,7 +355,7 @@ def move_storearea():
         'store': store_map[item.sid.id]
     } for item in old_area]
     New_StoreArea.insert_many(old_data).execute()
-    print 'move storearea:', old_data, old_area.count()
+    print 'move storearea:', old_area.count()
 
 '''
 # 店铺用户
