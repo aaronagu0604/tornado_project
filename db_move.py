@@ -967,8 +967,8 @@ def move_orderitem():
             status=order.status,
             fail_reason=order.cancelreason,
             fail_time=order.canceltime,
-            delivery_time=order.distributiontime,
-            settlement=settlement_map[item.order.settlement.id],
+            delivery_time=order.distributiontime if order.distributiontime else 0,
+            settlement=settlement_map[order.settlement.id] if settlement_map.has_key(order.settlement.id) else None,
             saler_del=0,
             buyer_del=0,
         )
