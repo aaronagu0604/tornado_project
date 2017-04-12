@@ -100,8 +100,9 @@ def move_hotsearch():
         'status':item.status,
         'last_time':item.last_time
     } for item in old_hot]
-    print 'move hotsearch:', old_data
+
     New_HotSearch.insert_many(old_data).execute()
+    print 'move hotsearch:', len(old_data)
 
 # delivery:物流公司
 delivery_map = {}
@@ -112,8 +113,9 @@ def move_delivery():
         delivery = New_Delivery.create(
             name=item.name
         )
-        print 'move delivery:', item.id
+
         delivery_map[item.id] = delivery.id
+    print 'move delivery:', old_delivery.count()
 
 # bank:银行卡类型
 def move_bankcard():
@@ -128,8 +130,9 @@ def move_bankcard():
         'card_digits': item.card_digits,
         'demo': item.demo
     } for item in old_bankcard]
-    print 'move bankcard:', old_data
+
     New_BankCard.insert_many(old_data).execute()
+    print 'move bankcard:', len(old_data)
 
 # area: 区域
 area_map = {}
@@ -154,8 +157,9 @@ def move_area():
             is_scorearea=item.is_scorearea,
             is_lubearea=item.is_lubearea
         )
-        print 'move area:', area.id
+
         area_map[item.id] = area.id
+    print 'move area:', old_area.count()
 
 '''
 # 第二部分：互相依赖基础数据
@@ -177,8 +181,9 @@ def move_category():
             hot=1,  # 旧的没有,设置默认值：0
             active=item.flag
         )
-        print 'move_category:%d--%d' % (old_category.count(), category.id)
+
         category_map[item.id] = category.id
+    print 'move_category:', old_category.count()
 
 # categoryattribute:类型属性
 category_attribute_map = {}
@@ -193,8 +198,9 @@ def move_categoryattribute():
             sort=0,  # 旧的没有，设置默认值：0（有效）
             active=1,  # 旧的没有，设置默认值：1（有效）
         )
-        print 'move_categoryattribute:%d'%(attribute.id)
+
         category_attribute_map[item.id] = attribute.id
+    print 'move_categoryattribute:', old_attribute.count()
 
 # categoryattributeitem:类型属性具体类型
 category_att_item_map = {}
@@ -245,8 +251,9 @@ def move_brandcategory():
         'brand': brand_map[item.id],
         'category': category_map[item.ptype.id]
     } for item in old_brandcategory]
-    print 'move brandcategory:', old_data
+
     New_BrandCategory.insert_many(old_data).execute()
+    print 'move brandcategory:', len(old_data)
 
 '''
 # 管理员账号
@@ -280,8 +287,9 @@ def move_adminuserlog():
         'created': item.dotime,
         'content': item.content
     } for item in old_adminlog]
-    print 'move_adminlog',old_adminlog.count()
+
     New_AdminUserLog.insert_many(old_data).execute()
+    print 'move_adminlog', old_adminlog.count()
 '''
 # 店铺相关
 '''
@@ -318,8 +326,9 @@ def move_store():
             active=item.check_state,
             created=item.created
         )
-        print 'move store:', store.id
+
         store_map[item.id] = store.id
+    print 'move store:', old_store.count()
 
 # storebank:店铺账户
 def move_storebankaccount():
@@ -334,8 +343,9 @@ def move_storebankaccount():
         'bank_name': item.bank_name,
         'is_default': 0  # 旧的没有，设置默认值：0（否）
     } for item in old_bank]
-    print 'move storebankaccount',old_data, old_bank.count()
+
     New_StoreBankAccount.insert_many(old_data).execute()
+    print 'move storebankaccount', old_bank.count()
 
 # storearea:店铺服务区域
 def move_storearea():
@@ -344,8 +354,9 @@ def move_storearea():
         'area': area_map[item.aid.id],
         'store': store_map[item.sid.id]
     } for item in old_area]
-    print 'move storearea:', old_data,old_area.count()
     New_StoreArea.insert_many(old_data).execute()
+    print 'move storearea:', old_data, old_area.count()
+
 '''
 # 店铺用户
 '''
@@ -410,8 +421,9 @@ def move_scorerecord():
         'created': item.created,
         'status': item.isactive
     } for item in old_record]
-    print 'move scorerecord:', old_data
+
     New_ScoreRecord.insert_many(old_data).execute()
+    print 'move scorerecord:', len(old_data)
 
 # moneyrecord:资金流水
 def move_moneyrecord():
@@ -433,8 +445,9 @@ def move_moneyrecord():
         'processing_time': item.processing_time,
         'processing_by': adminuser_map[item.processing_by.id]
     } for item in old_record if item.user.store and item.processing_by]
-    print 'move moneyrecord:', old_data
+
     New_MoneyRecord.insert_many(old_data).execute()
+    print 'move moneyrecord:', len(old_data)
 
 # block:广告区域
 block_map = {}
@@ -451,8 +464,9 @@ def move_block():
             img=item.imagename,
             active=1  # 旧的没有，设置默认 值1（有效）
         )
-        print 'move block:', block.id
+
         block_map[item.id] = block.id
+    print 'move block:', old_block.count()
 
 # blockitem：广告
 block_item_map = {}
@@ -471,8 +485,8 @@ def move_blockitem():
             sort=item.sort,
             activ=item.flag
         )
-        print 'move blockitem:', blockitem.id
         block_item_map[item.id] = blockitem.id
+    print 'move blockitem:', old_blockitem.count()
 
 # blockitemarea:广告投放区域
 def move_blockitemarea():
@@ -481,7 +495,8 @@ def move_blockitemarea():
         'block_item': block_item_map[item.id],
         'area_code': item.city_code
     } for item in old_blockitem if item.city_code]
-    print 'move blockitemarea:', old_data
+
+    print 'move blockitemarea:', len(old_data)
     New_BlockItemArea.insert_many(old_data).execute()
 '''
 # 产品部分
@@ -504,8 +519,9 @@ def move_product():
             created=item.created,
             active=item.status  # 旧的没有，暂时这样处理
         )
-        print product.id
+
         product_map[item.id] = product.id
+    print 'move product:', old_prodcut.count()
 
 # productpic:产品附图
 def move_productpic():
@@ -515,7 +531,7 @@ def move_productpic():
                     'pic': item.path,
                     'sort': 0  # 旧的没有，设置为默认值：0
                 } for item in old_productpic]
-    print old_data
+    print 'move productpic:', len(old_data)
     New_ProductPic.insert_many(old_data).execute()
 
 # productattributevalue:产品型号
@@ -530,7 +546,7 @@ def move_productattributevalue():
 
     if old_data:
         New_ProductAttributeValue.insert_many(old_data).execute()
-    print 'move productattributevalue:', old_data
+    print 'move productattributevalue:', len(old_data)
 
 # productrelease:产品发布
 product_release_map = {}
