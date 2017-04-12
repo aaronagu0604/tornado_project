@@ -952,7 +952,7 @@ def move_Order():
 
 # orderitem:订单内容
 def move_orderitem():
-    old_orderitem = Old_OrderItem.select()
+    old_orderitem = Old_OrderItem.select().where(Old_OrderItem.store_product_price << product_release_map.keys())
     for item in old_orderitem:
         try:
             order = Old_Order.get(Old_Order.id == item.order.id)
