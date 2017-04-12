@@ -571,7 +571,7 @@ def move_productrelease():
         )
         product_release_map[item.id] = release.id
 
-        print 'move productrelease:', release.id
+    print 'move productrelease:', old_release.count()
 
 # storeproductprice:店铺区域产品价格
 store_product_price_map = {}
@@ -589,7 +589,7 @@ def move_storeproductprice():
             active=1  # 旧的没有，设置默认值：1
         )
         store_product_price_map[item.id] = price.id
-        print 'move storeproductprice', price.id, price.name
+    print 'move storeproductprice:', old_price.count()
 
 '''
 # 保险部分
@@ -649,7 +649,7 @@ def move_insurancearea():
                 'sort': 0,  # 旧的没有，设置默认值：0
                 'active': item.iswork
             })
-    print 'move insurancearea:', old_data
+    print 'move insurancearea:', len(old_data)
     if old_data:
         New_InsuranceArea.insert_many(old_data).execute()
 
@@ -660,7 +660,7 @@ def move_insuranceprice():
         'insurance_item': insurance_item_map[item.pid.id],
         'coverage': item.name
     } for item in old_price]
-    print 'move insuranceprice', old_data
+    print 'move insuranceprice', len(old_data)
     New_InsurancePrice.insert_many(old_data).execute()
 
 # insurancescoreexchange:保险积分兑换规则
@@ -690,7 +690,7 @@ def move_insuranceexchange():
             'profit_rate': item.profitRate,
             'base_money': item.baseMoney
         })
-    print 'move insuranceexchange:', old_data
+    print 'move insuranceexchange:', len(old_data)
     New_InsuranceScoreExchange.insert_many(old_data).execute()
 
 
@@ -771,7 +771,7 @@ def move_feedback():
         'suggest': item.content,
         'img': ''  # 旧的没有
     } for item in old_feedback]
-    print 'move feedback:', old_data
+    print 'move feedback:', len(old_data)
     New_Feedback.insert_many(old_data).execute()
 
 # insuranceorderprice:保险报价单
