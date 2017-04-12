@@ -850,9 +850,11 @@ def move_insuranceorder():
     old_data = []
     for item in old_order:
         try:
-            reciver = Old_InsuranceOrderReceiving.get(Old_InsuranceOrderReceiving.orderid.id == item.id)
-            print reciver, reciver.contact
-        except Exception:
+            reciver = item.i_order_id
+            if reciver.count() >= 1:
+                reciver = reciver[0]
+        except Exception, e:
+            print e
             continue
 
         old_data.append({
