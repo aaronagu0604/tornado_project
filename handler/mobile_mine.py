@@ -911,7 +911,7 @@ class MobileBindBankCardHandler(MobileBaseHandler):
     """
     @apiGroup fund
     @apiVersion 1.0.0
-    @api {get} /mobile/bank_card 06. 绑定银行卡
+    @api {post} /mobile/bank_card 06. 绑定银行卡
     @apiDescription 绑定银行卡
     @apiHeader {String} token 用户登录凭证
     @apiParam {String} is_delete 是否删除 0否 1是
@@ -980,7 +980,7 @@ class MobileBindAlipayHandler(MobileBaseHandler):
     """
     @apiGroup fund
     @apiVersion 1.0.0
-    @api {get} /mobile/bind_alipay 08. 绑定银行卡
+    @api {post} /mobile/bind_alipay 08. 绑定银行卡
     @apiDescription 绑定银行卡
     @apiHeader {String} token 用户登录凭证
     @apiParam {String} alipay_truename 支付宝主人姓名
