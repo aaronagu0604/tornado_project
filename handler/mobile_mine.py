@@ -254,7 +254,7 @@ class MobilPurchaseOrderHandler(MobileBaseHandler):
         self.write(simplejson.dumps(result))
 
 
-@route(r'/mobile/sellorder', name='mobile_sell_order')  # 普通商品售出订单
+@route(r'/mobile/orderdetail', name='mobile_sell_order')  # 普通商品售出订单
 class MobileSellOrderHandler(MobileBaseHandler):
     """
     @apiGroup mine
@@ -283,6 +283,109 @@ class MobileSellOrderHandler(MobileBaseHandler):
             result['msg'] = '系统错误'
         self.write(simplejson.dumps(result))
 
+@route(r'/mobile/sellorder', name='mobile_order_detail')  # 普通商品订单详情
+class MobileOrderDetailHandler(MobileBaseHandler):
+    """
+    @apiGroup mine
+    @apiVersion 1.0.0
+    @api {get} /mobile/sellorder 03. 普通商品售出订单
+    @apiDescription 普通商品售出订单
+
+    @apiHeader {String} token 用户登录凭证
+
+    @apiParam {String} type 订单状态类型 all全部，unpay待支付，undispatch待发货，unreceipt待收货，success交易完成/待评价， delete删除
+    @apiParam {Int} index 每页起始个数
+
+    @apiSampleRequest /mobile/sellorder
+    """
+    @require_auth
+    def get(self):
+        result = {'flag': 0, 'msg': '', "data": {}}
+        oid = int(self.get_argument("id"))
+        order = Order.get(id=oid)
+
+        # scolor = ''
+        # if n.status == -1:
+        #     s = '已删除'
+        # elif n.status == 0 and n.payment:
+        #     s = '待付款'
+        #     scolor = 'assertive'
+        # elif (n.status == 0 and n.payment == 0) or n.status == 1:
+        #     s = '待处理'
+        #     scolor = 'assertive'
+        # elif n.status == 2:
+        #     s = '正在处理'
+        #     scolor = 'balanced'
+        # elif n.status == 3:
+        #     s = '待收货'
+        #     scolor = 'balanced'
+        # elif n.status == 4:
+        #     s = '交易完成'
+        # elif n.status == 5:
+        #     s = '已取消'
+        # else:
+        #     s = str(n.status) + '-' + str(n.payment)
+        #
+        # p = ''
+        # if n.payment == 0:
+        #     p = '货到付款'
+        # elif n.payment == 1:
+        #     p = '支付宝'
+        # elif n.payment == 2:
+        #     p = '账户余额'
+        # elif n.payment == 3:
+        #     p = '网银支付'
+        # elif n.payment == 4:
+        #     p = '合并支付'
+        # elif n.payment == 8:
+        #     p = '积分换购'
+        # elif n.payment == 6:
+        #     p = '微信支付'
+        # elif n.payment == 7:
+        #     p = '银联支付'
+        # elif n.payment == 9:
+        #     p = '系统补发'
+        result['data']['address'] = {
+            'name':order.address.mobile,
+            'mobile': order.address.mobile,
+            'address': '%%%%'%(order.address.province,
+                               order.address.city,
+                               order.address.region,
+                               order.address.address,)
+        }
+        result['data']['id'] = order.id
+        result['data']['ordernum'] = order.ordernum
+        result['data']['payment'] = order.payment
+        result['data']['ordered'] = time.strftime('%Y-%m-%d', time.localtime(order.ordered))
+
+        suborders = []
+        for suborder in order.sub_orders:
+            products = []
+            for product in suborder.items:
+                pics = [item.pic for item in product.product_release.product.pics]
+                pic = None
+                if pics:
+                    pic = pics[0]
+                productattibute = ProductAttributeValue.get(ProductAttributeValue.product == product.product_release.product)
+                attribute = "%s %s"%(
+                    productattibute.name,
+                    productattibute.value
+                )
+                products.append({
+                    'img': pic,
+                    'name': product.name,
+                    'price': product.price,
+                    'quantity': product.quantity,
+                    'attribute': attribute
+                })
+            suborders.append({
+                'name': suborder.saler_store.name,
+                'consultmobile': suborder.saler_store.mobile,
+                'complainmobile': suborder.saler_store.mobile,
+                'products': products
+            })
+        result['data']['suborder'] = suborders
+        self.write(simplejson.dumps(result))
 
 @route(r'/mobile/insuranceorder', name='mobile_insurance_order')  # 保险订单
 class MobileInsuranceOrderHandler(MobileBaseHandler):
@@ -341,6 +444,89 @@ class MobileInsuranceOrderHandler(MobileBaseHandler):
                 'deadline': time.strftime('%Y-%m-%d %H-%M-%S', time.localtime(io.ordered + setting.INSURANCE_ORDER_TIME_OUT))
             })
         result['flag'] = 1
+        self.write(simplejson.dumps(result))
+
+@route(r'/mobile/insuranceorderdetail', name='mobile_insurance_order_detail')  # 保险订单详情
+class MobileInsuranceOrderDetailHandler(MobileBaseHandler):
+    """
+    @apiGroup mine
+    @apiVersion 1.0.0
+    @api {get} /mobile/insuranceorderdetail
+    @apiDescription 保险订单详情
+
+    @apiHeader {String} token 用户登录凭证
+
+    @apiParam {Int} id 订单id
+
+    @apiSampleRequest /mobile/insuranceorderdetail
+    """
+
+    @require_auth
+    def get(self):
+        result = {'flag': 0, 'msg': '', "data": []}
+        iList = {'subjoin': [], 'main': [], 'force': 'false'}
+        ioid = int(self.get_argument('id', 1))
+        insuranceorder = InsuranceOrder.get(id=ioid)
+        insuranceitem = InsuranceItem.select().order_by(InsuranceItem.sort)
+        for i in insuranceitem:
+            iValue = getattr(insuranceorder, i.eName)
+            if i.style == u'交强险':
+                iList['force'] = iValue if iValue else ''
+            elif i.style == u'商业险-主险' and iValue != 'false' and iValue:
+                iList['main'].append({'eName': i.eName, 'name': i.name, 'style': i.style, 'value': iValue})
+            elif i.style == u'商业险-附加险' and iValue != 'false' and iValue:
+                iList['subjoin'].append({'eName': i.eName, 'name': i.name, 'style': i.style, 'value': iValue})
+
+        if insuranceorder.LubeOrScore == 1:
+            commission = u'返佣返油（三个工作日内送达）'
+        elif insuranceorder.LubeOrScore == 2:
+            commission = str(insuranceorder.scoreNum) + u'积分'
+        else:
+            commission = u'无'
+        result["flag"] = 1
+        now = int(time.time())
+        deadlineWarning = ''
+        if insuranceorder.status == 1:  # 待确认
+            if not insuranceorder.deadline:
+                insuranceorder.deadline = now + setting.deadlineTime
+                insuranceorder.save()
+            elif now >= insuranceorder.deadline:
+                insuranceorder.status = 5
+                insuranceorder.cancelreason = u'超时未支付'
+                insuranceorder.save()
+        if insuranceorder.status == 1 and now < insuranceorder.deadline:
+            deadlineWarning = u'订单将于%s失效' % time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(insuranceorder.deadline))
+
+        result['data'] = {
+            'id': insuranceorder.id,
+            'ordernum': insuranceorder.ordernum,
+            'ordereddate': insuranceorder.ordered,
+            'hotline': '13912345678',
+            'paytype': insuranceorder.payment,
+            'deadlinewarning': deadlineWarning,
+            'insuranceorderprice': {
+                'status': insuranceorder.status,
+                'insurance': insuranceorder.insurance.name,
+                'created': insuranceorder.current_order_price.created,
+                'iList': iList,
+                'price': insuranceorder.current_order_price.total_price,
+                'score': insuranceorder.current_order_price.score
+            },
+            'imgs': {
+                'id_card_front': insuranceorder.id_card_front,
+                'id_card_back': insuranceorder.id_card_back,
+                'drive_card_front': insuranceorder.drive_card_front,
+                'drive_card_back': insuranceorder.drive_card_back
+            },
+            'delivery': {
+                'delivery_to': insuranceorder.delivery_to,
+                'mobile': insuranceorder.mobile,
+                'address': '%s%s%s%s' % (insuranceorder.delivery_province,
+                                    insuranceorder.delivery_city,
+                                    insuranceorder.delivery_region,
+                                    insuranceorder.delivery_address)
+            }
+        }
         self.write(simplejson.dumps(result))
 
 
