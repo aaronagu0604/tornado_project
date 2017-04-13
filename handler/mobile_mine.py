@@ -199,7 +199,7 @@ def productOrderSearch(ft, type, index):
                 'order_type': so.order.order_type
             })
         result.append({
-            'id': so.id,
+            'id': so.order.id,
             'ordernum': so.order.ordernum,
             'saler_store': so.saler_store.name,
             'buyer_store': so.buyer_store.name,
@@ -348,10 +348,10 @@ class MobileOrderDetailHandler(MobileBaseHandler):
         result['data']['address'] = {
             'name':order.address.mobile,
             'mobile': order.address.mobile,
-            'address': '%%%%'%(order.address.province,
+            'address': '%s%s%s%s'%(order.address.province,
                                order.address.city,
                                order.address.region,
-                               order.address.address,)
+                               order.address.address)
         }
         result['data']['id'] = order.id
         result['data']['ordernum'] = order.ordernum
@@ -362,18 +362,18 @@ class MobileOrderDetailHandler(MobileBaseHandler):
         for suborder in order.sub_orders:
             products = []
             for product in suborder.items:
-                pics = [item.pic for item in product.product_release.product.pics]
+                pics = [item.pic for item in product.product.pics]
                 pic = None
                 if pics:
                     pic = pics[0]
-                productattibute = ProductAttributeValue.get(ProductAttributeValue.product == product.product_release.product)
+                productattibute = ProductAttributeValue.get(ProductAttributeValue.product == product.product)
                 attribute = "%s %s"%(
-                    productattibute.name,
+                    productattibute.attribute.name,
                     productattibute.value
                 )
                 products.append({
                     'img': pic,
-                    'name': product.name,
+                    'name': product.product.name,
                     'price': product.price,
                     'quantity': product.quantity,
                     'attribute': attribute
@@ -469,7 +469,7 @@ class MobileInsuranceOrderDetailHandler(MobileBaseHandler):
         insuranceorder = InsuranceOrder.get(id=ioid)
         insuranceitem = InsuranceItem.select().order_by(InsuranceItem.sort)
         for i in insuranceitem:
-            iValue = getattr(insuranceorder, i.eName)
+            iValue = getattr(insuranceorder.current_order_price, i.eName)
             if i.style == u'交强险':
                 iList['force'] = iValue if iValue else ''
             elif i.style == u'商业险-主险' and iValue != 'false' and iValue:
@@ -477,10 +477,10 @@ class MobileInsuranceOrderDetailHandler(MobileBaseHandler):
             elif i.style == u'商业险-附加险' and iValue != 'false' and iValue:
                 iList['subjoin'].append({'eName': i.eName, 'name': i.name, 'style': i.style, 'value': iValue})
 
-        if insuranceorder.LubeOrScore == 1:
+        if insuranceorder.current_order_price.gift_policy == 1:
             commission = u'返佣返油（三个工作日内送达）'
-        elif insuranceorder.LubeOrScore == 2:
-            commission = str(insuranceorder.scoreNum) + u'积分'
+        elif insuranceorder.current_order_price.gift_policy == 2:
+            commission = str(insuranceorder.current_order_price.score) + u'积分'
         else:
             commission = u'无'
         result["flag"] = 1
@@ -506,7 +506,7 @@ class MobileInsuranceOrderDetailHandler(MobileBaseHandler):
             'deadlinewarning': deadlineWarning,
             'insuranceorderprice': {
                 'status': insuranceorder.status,
-                'insurance': insuranceorder.insurance.name,
+                'insurance': insuranceorder.current_order_price.insurance.name,
                 'created': insuranceorder.current_order_price.created,
                 'iList': iList,
                 'price': insuranceorder.current_order_price.total_price,
@@ -520,7 +520,7 @@ class MobileInsuranceOrderDetailHandler(MobileBaseHandler):
             },
             'delivery': {
                 'delivery_to': insuranceorder.delivery_to,
-                'mobile': insuranceorder.mobile,
+                'mobile': insuranceorder.delivery_tel,
                 'address': '%s%s%s%s' % (insuranceorder.delivery_province,
                                     insuranceorder.delivery_city,
                                     insuranceorder.delivery_region,
