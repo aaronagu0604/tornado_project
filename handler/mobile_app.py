@@ -412,11 +412,9 @@ class MobileHomeHandler(MobileBaseHandler):
 
     def get_brand(self, area_code):
         items = []
-        brands = BlockItem.select(BlockItem.link, Brand.logo, Brand.name).join(Block). \
-            join(Brand, on=BlockItem.ext_id == Brand.id).where((Block.tag == 'hot_brand') & (Block.active == 1)
-                                                               & (BlockItem.active == 1) & (
-                                                               BlockItem.area_code == area_code)).order_by(
-            BlockItem.sort.asc()).tuples()
+        brands = BlockItem.select(BlockItem.link, Brand.logo, Brand.name).join(Block).join(Brand, on=(BlockItem.ext_id == Brand.id)).\
+            where((Block.tag=='hot_brand') & (Block.active==1) & (BlockItem.active==1) & (BlockItem.area_code==area_code)).\
+            order_by(BlockItem.sort.asc()).tuples()
         for link, logo, name in brands:
             items.append({
                 'img': logo,
@@ -556,12 +554,6 @@ class MobileDiscoverHandler(MobileBaseHandler):
                         'img': bc.brand.logo,
                         'name': bc.brand.name
                     } for bc in bcs]
-                # for bc in bcs:
-                #     subs.append({
-                #         'bid': bc.brand.id,
-                #         'img': bc.brand.logo,
-                #         'name': bc.brand.name
-                #     })
                 result['data'][0]['subs'].append({
                     'cid': category.id,
                     'name': category.name,

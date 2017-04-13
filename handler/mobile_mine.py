@@ -885,15 +885,15 @@ class MobileBindBankCardHandler(MobileBaseHandler):
         self.write(simplejson.dumps(result))
 
 
-@route(r'/mobile/bind_bank_card')  # 绑定银行卡
+@route(r'/mobile/bank_card')  # 银行卡列表、绑定银行卡
 class MobileBindBankCardHandler(MobileBaseHandler):
     """
     @apiGroup fund
     @apiVersion 1.0.0
-    @api {get} /mobile/bind_bank_card 05. 绑定银行卡
-    @apiDescription 绑定银行卡
+    @api {get} /mobile/bank_card 05. 银行卡列表
+    @apiDescription 银行卡列表
     @apiHeader {String} token 用户登录凭证
-    @apiSampleRequest /mobile/bind_bank_card
+    @apiSampleRequest /mobile/bank_card
     """
     @require_auth
     def get(self):
@@ -911,7 +911,7 @@ class MobileBindBankCardHandler(MobileBaseHandler):
     """
     @apiGroup fund
     @apiVersion 1.0.0
-    @api {get} /mobile/bind_bank_card 06. 绑定银行卡
+    @api {get} /mobile/bank_card 06. 绑定银行卡
     @apiDescription 绑定银行卡
     @apiHeader {String} token 用户登录凭证
     @apiParam {String} is_delete 是否删除 0否 1是
@@ -920,7 +920,7 @@ class MobileBindBankCardHandler(MobileBaseHandler):
     @apiParam {String} bank_truename 持卡人姓名
     @apiParam {String} bank_account 卡号
     @apiParam {String} vcode 验证码
-    @apiSampleRequest /mobile/bind_bank_card
+    @apiSampleRequest /mobile/bank_card
     """
     @require_auth
     def post(self):
