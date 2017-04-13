@@ -1474,6 +1474,28 @@ class NewProgramHandler(AdminBaseHandler):
         # self.redirect('/admin/insurance_order/%s'%oid)
 
 
+@route(r'/admin/delinsurance/(\d+)', name='admin_delete_insurance')  # 保险订单 删除或完成
+class InsuranceOrderDelHandler(AdminBaseHandler):
+    def get(self, oid):
+        status = int(self.get_argument('status', '1'))
+        page = self.get_argument('page', 1)
+        try:
+            io = InsuranceOrder.get(id=oid)
+            if status < 2:
+                io.status = -1
+                io.save()
+            elif status == 2:  # 赠送积分，创建积分记录
+                if io.status == 2:
+                    ReScore().rewardScore_insurance(io.user.id, io.LubeOrScore, io.scoreNum, io.ordernum)
+                    io.status = 3
+                    io.save()
+                else:
+                    self.flash(u'该订单不能完成状态为:%s'%(io.status))
+        except Exception, e:
+            logging.info('Error: /admin/delinsurance/%s, %s'%(oid, e.message))
+        self.redirect('/admin/insurances/processing?status=%s&page=%s'%(status,page))
+
+
 # --------------------------------------------------------保险业务------------------------------------------------------
 @route(r'/admin/insurance', name='admin_insurance_list')  # 保险公司列表
 class InsuranceList(AdminBaseHandler):

@@ -897,7 +897,7 @@ class MobileBindBankCardHandler(MobileBaseHandler):
     """
     @require_auth
     def get(self):
-        result = {'flag': 0, 'msg': '', 'data': []}
+        result = {'flag': 1, 'msg': '', 'data': []}
         store = self.get_user().store
         sbas = StoreBankAccount.select().where((StoreBankAccount.store == store) & (StoreBankAccount.account_type == 0))
         for sba in sbas:

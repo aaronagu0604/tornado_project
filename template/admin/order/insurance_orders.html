@@ -22,9 +22,7 @@
 
 <div class="row">
     <nav>
-        <div>
-            <a class="navbar-brand" href="#">保险订单</a>
-        </div>
+        <div><a class="navbar-brand" href="#">保险订单</a></div>
 
         <div class="pull-right">
             <form class="navbar-form navbar-left" action="" method="get" role="search">
@@ -73,47 +71,29 @@
             <table class="table table-hover" id="tb_users" cellpadding="0" cellspacing="0" border="0" style="text-align:center;">
                 <thead>
                 <tr style="background:#528acb;color:#fff;text-align:center;height:38px;line-height:38px;">
-                    <th style="width:10%;text-align:center;">订单号</th>
-                    <th style="width:8%;text-align:center;">用户账户</th>
-                    <th style="width:8%;text-align:center;">门店地址</th>
-                    <th style="width:8%;text-align:center;">下单时间</th>
-                    <th style="width:8%;text-align:center;">支付时间</th>
+                    <th style="width:8%;text-align:center;">订单号</th>
+                    <th style="width:8%;text-align:center;">店铺</th>
+                    <th style="width:15%;text-align:center;">地址</th>
+                    <th style="width:10%;text-align:center;">下单时间</th>
+                    <th style="width:10%;text-align:center;">支付时间</th>
                     <th style="width:7%;text-align:center;">保险名称</th>
-                    <th style="width:6%;text-align:center;">价格</th>
-                    <th style="width:8%;text-align:center;">状态</th>
-                    <th style="width:8%;text-align:center;">优惠</th>
+                    <th style="width:5%;text-align:center;">价格</th>
+                    <th style="width:6%;text-align:center;">状态</th>
+                    <th style="width:4%;text-align:center;">优惠</th>
                     <th style="width:8%;text-align:center;">支付方式</th>
-                    <th style="width:10%;text-align:center;">本地备注</th>
-                    <th style="width:10%;text-align:center;">操作</th>
+                    <th style="width:12%;text-align:center;">本地备注</th>
+                    <th style="width:5%;text-align:center;">操作</th>
                 </tr>
                 </thead>
                 <tbody>
                 {% for o in orders %}
                 <tr>
                     <td>
-                        <label class="checkbox-inline">
-                            {{o.ordernum}}
-                            {% if o.store %}
-                            <br><span style="color: #ff5231;">({{o.store.name}})</span>
-                            {% endif %}
-                        </label>
+                        <a href="/admin/insurance_order/{{o.id}}?state={{state}}&status={{status}}&page={{page}}">{{o.ordernum}}</a>
                     </td>
-                    <td><a href="/admin/user/{{o.user.id}}" target="_blank">{{o.user.username}}</a>
-                    <td>
-                        {% set a = Area.get(code = o.store.area_code) %}
-                        {% if a.pid %}
-                            {% set addr = a.pid.name+' '+a.name %}
-                            {% if a.pid.pid %}
-                                {% set addr = a.pid.pid.name+' '+a.pid.name %}
-                            {% endif %}
-                        {% else %}
-                            {% set addr = a.name %}
-                        {% endif %}
-                        {{ addr }}
-                    </td>
-                    <td>
-                        {{o.ordered|datetimeformat}}
-                    </td>
+                    <td>{{o.store.name}}</td>
+                    <td>{{Area.get_detailed_address(o.store.area_code)}}</td>
+                    <td>{{o.ordered|datetimeformat}}</td>
                     <td>
                         {% if o.paytime == 0 %}
                         --
@@ -121,9 +101,7 @@
                         {{o.ordered|datetimeformat}}
                         {% endif %}
                     </td>
-                    <td>
-                        {{o.current_order_price.insurance.name}}
-                    </td>
+                    <td>{{o.current_order_price.insurance.name}}</td>
                     <td>{{o.current_order_price.total_price}}</td>
                     <td>
                         {% if o.status==0 %}
@@ -140,9 +118,9 @@
                     </td>
                     <td>
                         {% if o.current_order_price.gift_policy == 2 %}
-                        佣金返积分
+                        返现
                         {% elif o.current_order_price.gift_policy == 1 %}
-                        佣金返油
+                        返油
                         {% else %}
                         无
                         {% endif %}
@@ -167,13 +145,12 @@
                         {%endif%}
                     </td>
                     <td>
-                        <a href="/admin/insurance_order/{{o.id}}?state={{state}}&status={{status}}&page={{page}}" class="btn btn-outline btn-primary btn-xs">详情</a>
-                        {% if status==1 or status==0 %}
+                        {% if o.status==1 or o.status==0 %}
                         <a href="/admin/delinsurance/{{o.id}}?status={{status}}&page={{page}}" onclick="return confirm('确定关闭？');"
                            class="btn btn-outline btn-primary btn-xs">关闭</a>
-                        {% elif status==2 %}
+                        {% elif o.status==2 %}
                         <a href="/admin/delinsurance/{{o.id}}?status={{status}}&page={{page}}" onclick="return confirm('确定完成？');"
-                           class="btn btn-outline btn-primary btn-xs">完成</a>
+                           class="btn btn-outline btn-primary btn-xs"  style="color:#00FF00">完成</a>
                         {% endif %}
                     </td>
                 </tr>
