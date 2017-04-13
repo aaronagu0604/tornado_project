@@ -980,8 +980,8 @@ class MobileBindAlipayHandler(MobileBaseHandler):
     """
     @apiGroup fund
     @apiVersion 1.0.0
-    @api {post} /mobile/bind_alipay 08. 绑定银行卡
-    @apiDescription 绑定银行卡
+    @api {post} /mobile/bind_alipay 08. 绑定/修改支付宝
+    @apiDescription 绑定/修改支付宝
     @apiHeader {String} token 用户登录凭证
     @apiParam {String} alipay_truename 支付宝主人姓名
     @apiParam {String} alipay_account 支付宝账号
