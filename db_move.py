@@ -997,10 +997,10 @@ def move_orderitem():
             status=order.status,
             fail_reason=order.cancelreason,
             fail_time=order.canceltime,
-            delivery_time=order.distributiontime if order.distributiontime else 0,
+            delivery_time=order.delivery_time,
             settlement=settlement_map[settlement.id] if settlement else None,
             saler_del=0,
-            buyer_del=0,
+            buyer_del=0
         )
 
         New_OrderItem.create(
