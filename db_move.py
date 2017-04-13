@@ -984,6 +984,10 @@ def move_orderitem():
             productstandard = Old_ProductStandard.get(Old_ProductStandard.id == item.product_standard.id)
         except Exception:
             continue
+        try:
+            settlement = Old_Settlement.get(Old_Settlement.id == order.settlement.id)
+        except Exception:
+            settlement = None
 
         suborder = New_SubOrder.create(
             order=order_map[order.id],
@@ -994,7 +998,7 @@ def move_orderitem():
             fail_reason=order.cancelreason,
             fail_time=order.canceltime,
             delivery_time=order.distributiontime if order.distributiontime else 0,
-            settlement=settlement_map[order.settlement.id] if settlement_map.has_key(order.settlement.id) else None,
+            settlement=settlement_map[settlement.id] if settlement else None,
             saler_del=0,
             buyer_del=0,
         )
