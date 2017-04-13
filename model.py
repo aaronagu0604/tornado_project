@@ -59,6 +59,14 @@ class Area(db.Model):
         except:
             return ''
 
+    @staticmethod
+    def get_area_name(area_code):
+        try:
+            name = Area.get(code=area_code).name
+        except Exception, e:
+            name = None
+        return name
+
     class Meta:
         db_table = 'tb_area'
 

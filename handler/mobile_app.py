@@ -1359,7 +1359,10 @@ class MobilInsuranceOrderBaseHandler(MobileBaseHandler):
             result['data']['delivery_province'] = address.province
             result['data']['delivery_city'] = address.city
             result['data']['delivery_region'] = address.region
-            result['data']['delivery_address'] = address.address
+            result['data']['delivery_province'] = address.province
+            result['data']['delivery_city_name'] = Area.get_area_name(address.city)
+            result['data']['delivery_region_name'] = Area.get_area_name(address.region)
+            result['data']['delivery_address_name'] = Area.get_area_name(address.address)
             result['data']['insurance_message'] = InsuranceScoreExchange.get_insurances(area_code)
             for i_item in InsuranceItem.select():
                 if i_item.insurance_prices:
