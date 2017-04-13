@@ -254,7 +254,7 @@ class MobilPurchaseOrderHandler(MobileBaseHandler):
         self.write(simplejson.dumps(result))
 
 
-@route(r'/mobile/orderdetail', name='mobile_sell_order')  # 普通商品售出订单
+@route(r'/mobile/sellorder', name='mobile_sell_order')  # 普通商品售出订单
 class MobileSellOrderHandler(MobileBaseHandler):
     """
     @apiGroup mine
@@ -283,7 +283,7 @@ class MobileSellOrderHandler(MobileBaseHandler):
             result['msg'] = '系统错误'
         self.write(simplejson.dumps(result))
 
-@route(r'/mobile/sellorder', name='mobile_order_detail')  # 普通商品订单详情
+@route(r'/mobile/orderdetail', name='mobile_order_detail')  # 普通商品订单详情
 class MobileOrderDetailHandler(MobileBaseHandler):
     """
     @apiGroup mine
