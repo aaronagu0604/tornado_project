@@ -980,7 +980,10 @@ def move_orderitem():
     old_orderitem = Old_OrderItem.select().where(Old_OrderItem.product_standard << product_release_map.keys())
     for item in old_orderitem:
         try:
+
             order = Old_Order.get(Old_Order.id == item.order.id)
+            if not order_map.has_key(order.id):
+                continue
             productstandard = Old_ProductStandard.get(Old_ProductStandard.id == item.product_standard.id)
         except Exception:
             continue
