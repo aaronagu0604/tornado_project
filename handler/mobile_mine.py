@@ -904,7 +904,8 @@ class MobileBindBankCardHandler(MobileBaseHandler):
             result['data'].append({
                 'bank_id': sba.id,
                 'bank_name': sba.bank_name,
-                'bank_account': sba.bank_account[-5:]
+                'bank_account': sba.bank_account[-5:],
+                'bank_pic': 'http://img.520czj.com/image/2017/03/30/server1_20170330105157qZLrVyRADMFhYHzQKtEGdmPs.jpg'
             })
         self.write(simplejson.dumps(result))
 

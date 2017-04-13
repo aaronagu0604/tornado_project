@@ -1477,7 +1477,8 @@ class NewProgramHandler(AdminBaseHandler):
 @route(r'/admin/delinsurance/(\d+)', name='admin_delete_insurance')  # 保险订单 删除或完成
 class InsuranceOrderDelHandler(AdminBaseHandler):
     def get(self, oid):
-        status = int(self.get_argument('status', '1'))
+        status = self.get_argument('status', '')
+        status = int(status) if status else 1
         page = self.get_argument('page', 1)
         try:
             io = InsuranceOrder.get(id=oid)
@@ -1486,7 +1487,8 @@ class InsuranceOrderDelHandler(AdminBaseHandler):
                 io.save()
             elif status == 2:  # 赠送积分，创建积分记录
                 if io.status == 2:
-                    ReScore().rewardScore_insurance(io.user.id, io.LubeOrScore, io.scoreNum, io.ordernum)
+                    # ReScore().rewardScore_insurance(io.user.id, io.LubeOrScore, io.scoreNum, io.ordernum)
+                    # MoneyRecord.create()
                     io.status = 3
                     io.save()
                 else:
