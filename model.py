@@ -312,6 +312,7 @@ class StoreBankAccount(db.Model):
     bank_truename = CharField(max_length=32, default='')  # 银行卡主人姓名
     bank_account = CharField(max_length=32, default='')  # 银行卡号
     bank_name = CharField(max_length=64, default='')  # 银行名称
+    bank_branch_name = CharField(max_length=64, default='')  # 支行名称
     is_default = IntegerField(default=0)  # 是否默认
 
     @staticmethod
@@ -806,7 +807,7 @@ class InsuranceOrder(db.Model):
     deliver_company = CharField(max_length=255, null=True)  # 快递公司
     deliver_num = CharField(max_length=255, null=True)  # 保单邮寄快递号
 
-    status = IntegerField(default=0)  # 0待确认 1待出单 2完成 3退款 -1已删除(取消)
+    status = IntegerField(default=0)  # 0待核价 1已核价/待支付 2已支付/待出单 3完成（已送积分/油） 4退款 5补款 -1已删除(取消)
     cancel_reason = CharField(default='', max_length=1024)  # 取消原因
     cancel_time = IntegerField(default=0)  # 取消时间
     sms_content = CharField(max_length=1024, null=True)  # 短信通知内容

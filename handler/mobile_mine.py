@@ -213,6 +213,7 @@ def productOrderSearch(ft, type, index):
         })
     return result
 
+
 @route(r'/mobile/purchaseorder', name='mobile_purchase_order')  # 普通商品采购订单
 class MobilPurchaseOrderHandler(MobileBaseHandler):
     """
@@ -282,6 +283,7 @@ class MobileSellOrderHandler(MobileBaseHandler):
         except Exception:
             result['msg'] = '系统错误'
         self.write(simplejson.dumps(result))
+
 
 @route(r'/mobile/orderdetail', name='mobile_order_detail')  # 普通商品订单详情
 class MobileOrderDetailHandler(MobileBaseHandler):
@@ -387,6 +389,7 @@ class MobileOrderDetailHandler(MobileBaseHandler):
         result['data']['suborder'] = suborders
         self.write(simplejson.dumps(result))
 
+
 @route(r'/mobile/insuranceorder', name='mobile_insurance_order')  # 保险订单
 class MobileInsuranceOrderHandler(MobileBaseHandler):
     """
@@ -446,12 +449,13 @@ class MobileInsuranceOrderHandler(MobileBaseHandler):
         result['flag'] = 1
         self.write(simplejson.dumps(result))
 
+
 @route(r'/mobile/insuranceorderdetail', name='mobile_insurance_order_detail')  # 保险订单详情
 class MobileInsuranceOrderDetailHandler(MobileBaseHandler):
     """
     @apiGroup mine
     @apiVersion 1.0.0
-    @api {get} /mobile/insuranceorderdetail
+    @api {get} /mobile/insuranceorderdetail 10. 保险订单详情
     @apiDescription 保险订单详情
 
     @apiHeader {String} token 用户登录凭证
@@ -527,6 +531,61 @@ class MobileInsuranceOrderDetailHandler(MobileBaseHandler):
                                     insuranceorder.delivery_address)
             }
         }
+        self.write(simplejson.dumps(result))
+
+
+@route(r'/mobile/insurance_method', name='mobile_insurance_method')  # 保险订单历史方案
+class MobileInsuranceMethodHandler(MobileBaseHandler):
+    """
+    @apiGroup mine
+    @apiVersion 1.0.0
+    @api {get} /mobile/insurance_method 11. 保险订单历史方案
+    @apiDescription 保险订单历史方案
+
+    @apiHeader {String} token 用户登录凭证
+
+    @apiParam {Int} id 订单id
+
+    @apiSampleRequest /mobile/insurance_method
+    """
+
+    @require_auth
+    def get(self):
+        result = {'flag': 0, 'msg': '', "data": []}
+        io_id = self.get_argument('id', '')
+        if io_id:
+            io_id = int(io_id)
+        else:
+            result['msg'] = u'订单号不能为空'
+            self.write(simplejson.dumps(result))
+            return
+
+        ops = InsuranceOrderPrice.select().where(InsuranceOrderPrice.insurance_order_id == io_id)
+        print ops.count()
+        for iop in ops:
+            force = ''
+            main = []
+            subjoin = []
+            insuranceitem = InsuranceItem.select().order_by(InsuranceItem.sort)
+            for i in insuranceitem:
+                if iop.status == 1 and iop.response > 0:
+                    iValue = getattr(iop, i.eName)
+                    if i.style == u'交强险':
+                        force = iValue if iValue else ''
+                    elif i.style == u'商业险-主险' and iValue != 'false' and iValue:
+                        main.append({'eName': i.eName, 'name': i.name, 'style': i.style, 'value': iValue})
+                    elif i.style == u'商业险-附加险' and iValue != 'false' and iValue:
+                        subjoin.append({'eName': i.eName, 'name': i.name, 'style': i.style, 'value': iValue})
+            result['data'].append({
+                'iop_id': iop.id,
+                'force': force,
+                'main': main,
+                'subjoin': subjoin,
+                'gift_policy': iop.gift_policy,
+                'score': iop.score,
+                'total_price': iop.total_price
+            })
+
         self.write(simplejson.dumps(result))
 
 

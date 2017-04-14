@@ -60,23 +60,6 @@ border-top-right-radius: 4px;padding-left:15px;
                         </tr>
                         <tr style="border:none;">
                             <th>
-                                <label class="num">服务地区： </label>
-                                <select name="province_code" id="province_code" onchange="province_change(this.value,0)" data-default="{{default_province}}" style="height:28px;margin-left:10px;margin-top:10px;border-radius:4px;" >
-                                    <option value="">--选择省份--</option>
-                                    {% for area in items %}
-                                    <option value="{{area.code}}" {{area.code==default_province and 'selected' or ''}}>{{area.name}}</option>
-                                    {% endfor %}
-                                </select>
-                                <select name="city_code" id="city_code" onchange="city_change(this.value,0)" data-default="{{default_city}}" style="height:28px;margin-left:10px;margin-top:10px;border-radius:4px;" >
-                                    <option value="">--选择城市--</option>
-                                </select>
-                                <select name="district_code" id="district_code" data-default="{{default_district}}" style="height:28px;margin-left:10px;margin-top:10px;border-radius:4px;">
-                                    <option value="">--选择区县--</option>
-                                </select>
-                            </th>
-                        </tr>
-                        <tr style="border:none;">
-                            <th>
                                 <input type="checkbox" name="active" {% if adminUser and adminUser.active==1%}checked='true'{%endif%}>是否启用
                             </th>
                         </tr>
@@ -105,7 +88,6 @@ border-top-right-radius: 4px;padding-left:15px;
                                 <th style="width:10%;text-align:center;">用户名</th>
                                 <th style="width:10%;text-align:center;">真实姓名</th>
                                 <th style="width:10%;text-align:center;">用户角色</th>
-                                <th style="width:10%;text-align:center;">服务地区</th>
                                 <th style="width:10%;text-align:center;">手机</th>
                                 <th style="width:20%;text-align:center;">最后登录时间</th>
                                 <th style="width:10%;text-align:center;">帐户状态</th>
@@ -117,7 +99,6 @@ border-top-right-radius: 4px;padding-left:15px;
                                 <td>{{o.username}}</td>
                                 <td>{{o.realname}}</td>
                                 <td>{{o.roles}}</td>
-                                <td>{{Area().get_detailed_address(o.area_code)}}</td>
                                 <td>{{o.mobile}}</td>
                                 <td>{{o.lsignined | datetimeformat}}</td>
                                 <td>{{o.isactive==0 and '<span style="color:#ff5231;">删除</span>' or '<span style="color:#438bca;">启用</span>'}}</td>
@@ -163,57 +144,5 @@ border-top-right-radius: 4px;padding-left:15px;
             }
         });
     });
-
-    $(function(){
-        init_province();
-    });
-    function init_province(){
-        var province_code=$("#province_code").attr("data-default");
-        var city_code=$("#city_code").attr("data-default");
-        var district_code=$("#district_code").attr("data-default");
-        console.debug(city_code)
-        if(province_code.length > 0){
-            province_change(province_code, city_code);
-            if(parseInt(city_code)){
-                city_change(city_code, district_code)
-            }
-        }
-    }
-    function province_change(id, default_id){
-        $("#district_code > option").remove();
-        $("#district_code").append("<option value=\"0\">--选择区县--</option>");
-        $("#city_code > option").remove();
-        $("#city_code").append("<option value=\"0\">--选择城市--</option>");
-        if(id > 0){
-            GetSubAreas(id, "city_code", default_id);
-        }
-    }
-    function city_change(id, default_id){
-        $("#district_code > option").remove();
-        $("#district_code").append("<option value=\"0\">--选择区县--</option>");
-        if(id > 0){
-            GetSubAreas(id, "district_code", default_id);
-        }
-    }
-    function GetSubAreas(id, ddl_id, default_id) {
-        $.get("/ajax/GetSubAreas", { parent_code: id,  t: Math.random() }, function (data) {
-            data = jQuery.parseJSON(data);
-            if(data.flag==1){
-                for(var i=0; i< data.data.length; i++){
-                    if(default_id.length > 0){
-                        if(data.data[i]["code"] == default_id){
-                            $("#" + ddl_id).append("<option value=\"" + data.data[i]["code"] + "\" selected>" + data.data[i]["name"] + "</option>");
-                        } else{
-                            $("#" + ddl_id).append("<option value=\"" + data.data[i]["code"] + "\">" + data.data[i]["name"] + "</option>");
-                        }
-                    } else {
-                        $("#" + ddl_id).append("<option value=\"" + data.data[i]["code"] + "\">" + data.data[i]["name"] + "</option>");
-                    }
-                }
-            } else {
-                alert(data.msg)
-            }
-        });
-    }
 </script>
 {% endblock %}
