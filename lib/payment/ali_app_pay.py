@@ -9,8 +9,8 @@ import urllib
 import urllib2
 import simplejson
 import alipay_config as Settings
-
-ALI_GATEWAY_URL = "https://mapi.alipay.com/gateway.do?"
+from payqrcode import createqrcode
+ALI_GATEWAY_URL = "https://openapi.alipay.com/gateway.do?"
 
 SIGN_TYPE = 'SHA-256'
 
@@ -38,6 +38,26 @@ def join_string(total_amount, subject, body, ordernum):
     join_str = before_sign.replace(' ', '').replace('\n', '').replace('!', ' ')
     return join_str
 
+def join_string_qrcode(total_amount, subject, body, ordernum):
+    notify_url = Settings.NOTIFY_URL
+    timestamp = time.strftime('%Y-%m-%d!%H:%M:%S', time.localtime())
+    before_sign = '''app_id=%s&
+        biz_content={
+            "timeout_express": "30m",
+            "total_amount": "%s",
+            "subject": "%s",
+            "body": "%s",
+            "out_trade_no": "%s"
+        }&
+        charset=utf-8&
+        format=json&
+        method=alipay.trade.precreate&
+        notify_url=%s&
+        sign_type=RSA2&
+        timestamp=%s&
+        version=1.0''' % ('2016052701450725', total_amount, subject, body, ordernum, notify_url, timestamp)
+    join_str = before_sign.replace(' ', '').replace('\n', '').replace('!', ' ')
+    return join_str
 
 # 拼接后的字符串转为urlencode
 def switch_to_urlencode(utf_8_string):
@@ -81,14 +101,24 @@ def get_alipay_string(total_price, subject, body, ordernum):
     result_string = (sorted_string + '&' + switch_to_urlencode('sign='+sign_string)).replace('+', '%20')
     return result_string
 
-def get_alipay_qrcode(total_price, subject, body, ordernum):
-    parameters = get_alipay_string(total_price, subject, body, ordernum)
+# 获取最终签名后的字符串
+def get_alipay_string_qrcode(total_price, subject, body, ordernum):
+    after_join_string = join_string_qrcode(total_price, subject, body, ordernum)
+    sign_string = alipay_sign(after_join_string)
+    url_string = switch_to_urlencode(after_join_string)
+    sorted_string = sort_string(url_string)
+    result_string = (sorted_string + '&' + switch_to_urlencode('sign='+sign_string)).replace('+', '%20')
+    return result_string
+
+def get_alipay_qrcode(total_price=0.01, subject='czjqrcodetest', body='testproduct', ordernum='u4i19001235'):
+    parameters = get_alipay_string_qrcode(total_price, subject, body, ordernum)
     req = urllib2.Request(ALI_GATEWAY_URL+parameters)
     res_data = urllib2.urlopen(req)
     res = res_data.read()
+    print res
     resdic = simplejson.loads(res)
     if resdic['alipay_trade_precreate_response']['msg'] == 'Success':
-        return resdic['alipay_trade_precreate_response']['qr_code']
+        return createqrcode(resdic['alipay_trade_precreate_response']['qr_code'])
     else:
         return None
 
@@ -103,7 +133,8 @@ def test():
     return result_string
 
 
-
+if __name__ == '__main__':
+    print get_alipay_qrcode()
 
 # print test()
 # string_demo = '''app_id=2015052600090779&biz_content={"timeout_express":"30m","seller_id":"","product_code":"QUICK_MSECURITY_PAY","total_amount":"0.01","subject":"1","body":"我是测试数据","out_trade_no":"IQJZSRC1YMQB5HU"}&charset=utf-8&format=json&method=alipay.trade.app.pay&notify_url=http://domain.merchant.com/payment_notify&sign_type=RSA2&timestamp=2016-08-25 20:26:31&version=1.0&sign=cYmuUnKi5QdBsoZEAbMXVMmRWjsuUj+y48A2DvWAVVBuYkiBj13CFDHu2vZQvmOfkjE0YqCUQE04kqm9Xg3tIX8tPeIGIFtsIyp/M45w1ZsDOiduBbduGfRo1XRsvAyVAv2hCrBLLrDI5Vi7uZZ77Lo5J0PpUUWwyQGt0M4cj8g='''
