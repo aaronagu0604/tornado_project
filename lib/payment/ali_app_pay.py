@@ -6,7 +6,11 @@ import base64
 import time
 import rsa
 import urllib
+import urllib2
+import simplejson
 import alipay_config as Settings
+
+ALI_GATEWAY_URL = "https://mapi.alipay.com/gateway.do?"
 
 SIGN_TYPE = 'SHA-256'
 
@@ -76,6 +80,18 @@ def get_alipay_string(total_price, subject, body, ordernum):
     sorted_string = sort_string(url_string)
     result_string = (sorted_string + '&' + switch_to_urlencode('sign='+sign_string)).replace('+', '%20')
     return result_string
+
+def get_alipay_qrcode(total_price, subject, body, ordernum):
+    parameters = get_alipay_string(total_price, subject, body, ordernum)
+    req = urllib2.Request(ALI_GATEWAY_URL+parameters)
+    res_data = urllib2.urlopen(req)
+    res = res_data.read()
+    resdic = simplejson.loads(res)
+    if resdic['alipay_trade_precreate_response']['msg'] == 'Success':
+        return resdic['alipay_trade_precreate_response']['qr_code']
+    else:
+        return None
+
 
 
 def test():

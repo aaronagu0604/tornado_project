@@ -292,7 +292,7 @@ class UnifiedOrder_pub(Wxpay_client_pub):
     def createXml(self):
         """生成接口参数xml"""
         # 检测必填参数
-        self.parameters["notify_url"] = WxPayConf_pub.NOTIFY_URL_CZ if self.isCZ else WxPayConf_pub.NOTIFY_URL
+        self.parameters["notify_url"] = WxPayConf_pub.NOTIFY_URL if self.isCZ else WxPayConf_pub.NOTIFY_URL
         self.parameters["trade_type"] = 'APP'
         if any(self.parameters[key] is None for key in ("out_trade_no", "body", "total_fee", "notify_url", "trade_type")):
             raise ValueError("missing parameter")

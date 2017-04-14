@@ -419,11 +419,11 @@ class MobileInsuranceOrderHandler(MobileBaseHandler):
         elif type == 'paid':  # 付款完成
             ft &= (InsuranceOrder.status == 2) & (InsuranceOrder.user_del == 0)
         elif type == 'success':  # 已办理
-            ft &= (Order.status == 3) & (InsuranceOrder.user_del == 0)
+            ft &= (InsuranceOrder.status == 3) & (InsuranceOrder.user_del == 0)
         elif type == 'post':  # 已邮寄
-            ft &= (Order.status == 4) & (InsuranceOrder.user_del == 0)
+            ft &= (InsuranceOrder.status == 4) & (InsuranceOrder.user_del == 0)
         elif type == 'delete':  # 删除
-            ft &= ((Order.status == -1) | (InsuranceOrder.user_del == 1))
+            ft &= ((InsuranceOrder.status == -1) | (InsuranceOrder.user_del == 1))
         else:
             result['msg'] = '输入参数有误'
             return
@@ -752,7 +752,7 @@ class MobileFundRechargeHandler(MobileBaseHandler):
         user = self.get_user()
         payment = int(self.get_argument('payment', 0))
         price = int(self.get_argument('price', 0))
-        order_num = 'U%sR%s'%(user.id, str(time.time())[1:10]).encode('utf-8')
+        order_num = ('U%sR%s'%(user.id, str(time.time())[1:10])).encode('utf-8')
 
         result['data']['payment'] = payment
         if payment == 1:  # 1支付宝  2微信 3银联
