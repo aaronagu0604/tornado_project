@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+<link href="/style/css/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+<link href="/style/css/plugins/dataTables.bootstrap.css" rel="stylesheet">
+<div class="mskeLayBg"></div>
+<div class="row">
+    <div class="col-xs-3">
+        <div class="panel panel-primary">
+            <div class="panel-body">
+                <div>
+                    <ul id="treeDemo" class="ztree"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<script src="/style/js/jquery-1.11.1.min.js"></script>
+<script src="/style/js/chosen.jquery.js"></script>
+<script language="javascript" type="text/javascript" src="/style/js/My97DatePicker/WdatePicker.js"></script>
+<script src="/style/js/bootstrap.min.js"></script>
+<script src="/style/js/plugins/metisMenu/metisMenu.min.js"></script>
+<script src="/style/js/sb-admin-2.js"></script>
+
+<script type="text/javascript" src="/style/js/jquery.ztree.core.min.js"></script>
+<script type="text/javascript" src="/style/js/jquery.ztree.excheck.min.js"></script>
+<script type="text/javascript" src="/style/js/layer/layer.js"></script>
+<script src="/style/js/jquery.twbsPagination.min.js"></script>
+<script>
+    var xsrf='{{handler.xsrf_token}}';
+
+    $(document).ready(function() {
+        var setting = {
+            async: {
+                enable: true,
+                type:"get",
+                contentType: "application/json",
+                url:"/ajax/area_tree",
+                dataFilter: filter
+            },
+            data: {
+                simpleData: {
+                    enable: true
+                }
+            },
+            check: {
+                enable: true
+            },
+        };
+
+        function filter(treeId, parentNode, childNodes) {
+            if (!childNodes) return null;
+            for (var i=0, l=childNodes.length; i<l; i++) {
+                childNodes[i].name = childNodes[i].name.replace(/\.n/g, '.');
+            }
+            return childNodes;
+        }
+        $.fn.zTree.init($("#treeDemo"), setting);
+    });
+
+    function pop(title, url) {
+        layer.open({
+            type: 2,
+            title: title,
+            shadeClose: true,
+            shade: 0.8,
+            area: ['90%', '90%'],
+            content: url
+        });
+    }
+</script>
+
+</body>
+
+
+</html>

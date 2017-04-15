@@ -302,8 +302,19 @@ class SalerProductHandler(AdminBaseHandler):
         else:
             totalpage = total / pagesize if (total / pagesize) > 0 else 1
         cfs = cfs.order_by(ProductRelease.id.asc()).paginate(page, pagesize)
+
         self.render('admin/user/saler_product.html', s=store, products=cfs, total=total, page=page, pagesize=pagesize,
                     totalpage=totalpage, active='saler', keyword=keyword)
+
+
+@route(r'/admin/change_release_area/(\d+)', name='admin_change_release_area')  # 经销商产品地域信息
+class ChangeReleaseAreaHandler(AdminBaseHandler):
+    def get(self, store_id):
+        sas = StoreArea.select().where(StoreArea.store == store_id)
+        codes = [sa.area.code for sa in sas]
+        items = Area.select().where(Area.pid >> None)
+
+        self.render('admin/user/change_release_area.html', codes=codes, items=items)
 
 
 @route(r'/admin/store_area_product', name='admin_store_area_product')  # 经销商产品地域价格信息
@@ -946,7 +957,6 @@ class EditAdHandler(AdminBaseHandler):
 
     @run_on_executor
     def show_ad(self, aid):
-        print('----------------in show ad----------------')
         items = Area.select().where(Area.pid >> None)
         aid = int(aid)
         try:

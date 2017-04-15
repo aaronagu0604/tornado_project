@@ -461,6 +461,36 @@ class MobileHomeHandler(MobileBaseHandler):
         return items
 
 
+@route(r'/mobile/get_bank_name', name='GetBankName')  # 用户获取银行卡名称
+class MobileGetBankNameHandler(MobileBaseHandler):
+    """
+    @apiGroup auth
+    @apiVersion 1.0.0
+    @api {get} /mobile/get_bank_name 05. 获取银行卡名称
+    @apiDescription 获取银行卡名称
+
+    @apiHeader {String} token 用户登录凭证
+
+    @apiParam {String} bank_number 银行卡号
+
+    @apiSampleRequest /mobile/get_bank_name
+    """
+    def get(self):
+        result = {'flag': 0, 'data': {'id': 0, 'bank_name': ''}, 'msg': ''}
+        bank_number = self.get_argument('bank_number', None)
+
+        rows = BankCard.select().where(BankCard.card_bin == db.fn.LEFT(bank_number, BankCard.bin_digits))
+        if rows.count() > 0:
+            u = rows[0]
+            result['data'] = {
+                'id': u.id,
+                'bank_name': u.bank_name
+            }
+            result['flag'] = 1
+
+        self.write(simplejson.dumps(result))
+
+
 # -----------------------------------------------------普通商品---------------------------------------------------------
 @route(r'/mobile/discover_old', name='mobile_discover_old')  # 发现
 class MobileDiscoverOldHandler(MobileBaseHandler):

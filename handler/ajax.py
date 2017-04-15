@@ -196,44 +196,17 @@ class AjaxGetSubAreas(BaseHandler):
 
         un_codes = list(set(codes))
         if len(un_codes) > 0:
-            # items = Area.select(Area.id.alias('id'), Area.pid.alias('pid'), Area.name.alias('name'),
-            #                     Area.code.alias('code')).where(Area.code << un_codes).dicts()
-            # nodes = [{
-            #         'id': item['id'],
-            #         'pId': item['pid'] if item['pid'] else 0,
-            #         'name': item['name'],
-            #         'data': item['code'],
-            #         'target': '_top',
-            #         'click': "pop('" + item['name'] + '-产品信息' + "', '"+'/admin/store_area_product?sid=' + str(store_id) + '&code=' + item['code']+"');",
-            #          'open': 'true' if len(item.code) < 8 else 'false'
-            # } for item in items]
-            # items = Area.select().where(Area.code << un_codes)
             items = Area.select(Area.id.alias('id'), Area.pid.alias('pid'), Area.name.alias('name'),
                                 Area.code.alias('code')).where(Area.code << un_codes).dicts()
             nodes = [{
-                    'id': item['id'],
-                    'pId': item['pid'] if item['pid'] else 0,
-                    'name': item['name'],
-                    'data': item['code'],
-                    'target': '_top',
-                    'click': "pop('" + item['name'] + '-产品信息' + "', '"+'/admin/store_area_product?sid=' + str(store_id) + '&code=' + item['code']+"');",
-                     'open': 'true' if len(item.code) < 8 else 'false'
+                'id': item['id'],
+                'pId': item['pid'] if item['pid'] else 0,
+                'name': item['name'],
+                'data': item['code'],
+                'target': '_top',
+                'click': "pop('" + item['name'] + '-产品信息' + "', '"+'/admin/store_area_product?sid=' + str(store_id) + '&code=' + item['code']+"');",
+                 'open': 'true' if len(item['code']) < 8 else 'false'
             } for item in items]
-
-
-            for item in items:
-                title = item['name'] + '-产品信息'
-                url = '/admin/store_area_product?sid=' + str(store_id) + '&code=' + item['code']
-                nodes.append({
-                    'id': item['id'],
-                    'pId': item['pid'] if item['pid'] else 0,
-                    'name': item['name'],
-                    'data': item['code'],
-                    'target': '_top',
-                    'click': "pop('" + title + "', '"+url+"');",
-                    'open': 'true' if len(item['code']) < 8 else 'false'
-                })
-
         url = '/admin/store_area_product?sid=' + str(store_id)
         nodes.append({
             'id': 0,
@@ -278,6 +251,7 @@ class AjaxGetAllAreas(BaseHandler):
             'click': "pop('全部地域-产品信息', '" + url + "');",
             'open': 'true'
         })
+        print nodes
         self.write(simplejson.dumps(nodes))
 
 
