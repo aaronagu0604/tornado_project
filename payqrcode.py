@@ -10,7 +10,7 @@ from poster.encode import multipart_encode
 from poster.streaminghttp import register_openers
 
 FILE_SERVER = 'http://img.520czj.com/upload/image'
-PILIMAGE_FILE = os.getcwd()+'/upload/block/'
+PILIMAGE_FILE = os.getcwd()+"/upload/"
 
 def postRequest(data):
     try:
@@ -32,7 +32,7 @@ def postRequest(data):
 def createqrcode(content='default content'):
     qr = qrcode.make(content)
     filename = PILIMAGE_FILE+str(time.time())[1:10]+'.jpeg'
-    qr.save(filename+'.jpeg', format='jpeg')
+    qr.save(filename, format='jpeg')
     st = postRequest(open(filename, 'rb'))
     return st
 

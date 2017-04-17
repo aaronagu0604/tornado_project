@@ -293,7 +293,6 @@ class UnifiedOrder_pub(Wxpay_client_pub):
         """生成接口参数xml"""
         # 检测必填参数
         self.parameters["notify_url"] = WxPayConf_pub.NOTIFY_URL if self.isCZ else WxPayConf_pub.NOTIFY_URL
-        self.parameters["trade_type"] = 'APP'
         if any(self.parameters[key] is None for key in ("out_trade_no", "body", "total_fee", "notify_url", "trade_type")):
             raise ValueError("missing parameter")
         if self.parameters["trade_type"] == "JSAPI" and self.parameters["openid"] is None:
@@ -305,13 +304,19 @@ class UnifiedOrder_pub(Wxpay_client_pub):
         self.parameters["sign"] = self.getSign(self.parameters)  # 签名
         return self.arrayToXml(self.parameters)
 
-    def getPrepayId(self, out_trade_no, body, total_fee):
+    def getPrepayId(self, out_trade_no, body, total_fee, trade_type='APP'):
         """获取prepay_id"""
         self.parameters["out_trade_no"] = out_trade_no
         self.parameters["body"] = body
         self.parameters["total_fee"] = total_fee
+        self.parameters["trade_type"] = 'APP'
+        if trade_type == 'NATIVE':
+            self.parameters["trade_type"] = 'NATIVE'
+            self.parameters["product_id"] = out_trade_no
+
         self.postXml()  # 以post方式提交xml到对应的接口url
         self.result = self.xmlToArray(self.response)
+
         sign_again_params = {}
         try:
             if self.result['prepay_id']:

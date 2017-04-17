@@ -110,12 +110,12 @@ def get_alipay_string_qrcode(total_price, subject, body, ordernum):
     result_string = (sorted_string + '&' + switch_to_urlencode('sign='+sign_string)).replace('+', '%20')
     return result_string
 
+# 获取支付宝二维码支付二维码图片链接地址
 def get_alipay_qrcode(total_price=0.01, subject='czjqrcodetest', body='testproduct', ordernum='u4i19001235'):
     parameters = get_alipay_string_qrcode(total_price, subject, body, ordernum)
     req = urllib2.Request(ALI_GATEWAY_URL+parameters)
     res_data = urllib2.urlopen(req)
     res = res_data.read()
-    print res
     resdic = simplejson.loads(res)
     if resdic['alipay_trade_precreate_response']['msg'] == 'Success':
         return createqrcode(resdic['alipay_trade_precreate_response']['qr_code'])

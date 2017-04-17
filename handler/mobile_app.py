@@ -1089,7 +1089,7 @@ def pay_order(payment, total_price, ordernum, log):
         # pay_info = alipay.switch_to_utf_8(total_price, u'车装甲', log, ordernum)
         pay_info = alipay.get_alipay_string(total_price, u'车装甲', log, ordernum)
     elif payment == 2:
-        pay_info = UnifiedOrder_pub().getPrepayId(ordernum, log, int(total_price * 100))
+        pay_info = UnifiedOrder_pub().getPrepayId(ordernum, log, int(total_price * 100), 'NATIVE')
     elif payment == 3:
         pay_info = Trade().trade(ordernum, total_price)
     return pay_info
