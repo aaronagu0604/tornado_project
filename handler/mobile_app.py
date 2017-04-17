@@ -708,10 +708,10 @@ class MobileFilterHandler(MobileBaseHandler):
         result = {'flag': 0, 'msg': '', "data": {}}
         id = self.get_argument("id", None)
         flag = self.get_argument("flag", None)
-        sort = self.get_argument("sort", None)
+        # sort = self.get_argument("sort", None)
 
         if not (flag and id):
-            result['msg'] = '分类或品牌不能为空'
+            result['msg'] = u'分类或品牌不能为空'
             self.write(simplejson.dumps(result))
             return
         else:
@@ -735,7 +735,7 @@ class MobileFilterHandler(MobileBaseHandler):
                         'name': bc.brand.name
                     })
             else:
-                result['msg'] = '未查到该分类'
+                result['msg'] = u'未查到该分类'
                 self.write(simplejson.dumps(result))
                 return
         elif flag == 1:  # 品牌一定
@@ -753,11 +753,11 @@ class MobileFilterHandler(MobileBaseHandler):
                         'attribute': self.getCategoryAttribute(bc)
                     })
             else:
-                result['msg'] = '未查到该品牌'
+                result['msg'] = u'未查到该品牌'
                 self.write(simplejson.dumps(result))
                 return
         else:
-            result['msg'] = '输入参数错误'
+            result['msg'] = u'输入参数错误'
             self.write(simplejson.dumps(result))
             return
 
@@ -874,7 +874,17 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
         attribute = attribute.strip(',').split(',') if attribute else None
         area_code = self.get_store_area_code()
 
-        result['data'] = self.getProductList(keyword, sort, category, brand, attribute, index, area_code)
+        result['data']['products'] = self.getProductList(keyword, sort, category, brand, attribute, index, area_code)
+        if category or brand:
+            result['data']['category'] = category
+            result['data']['brand'] = brand
+        else:
+            try:
+                result['data']['category'] = Product.get(id=result['data']['products'][0]['pid']).category.id
+                result['data']['brand'] = Product.get(id=result['data']['products'][0]['pid']).brand.id
+            except Exception, e:
+                result['data']['category'] = ''
+                result['data']['brand'] = ''
         self.write(simplejson.dumps(result))
         self.finish()
 
