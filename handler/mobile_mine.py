@@ -235,7 +235,7 @@ class MobilPurchaseOrderHandler(MobileBaseHandler):
         sos = SubOrder.select().join(Order).where(ft)
         for so in sos:
             so.status = -1
-            so.fail_reason = '超时未支付'
+            so.fail_reason = u'超时未支付'
             so.save()
 
     @require_auth
@@ -251,7 +251,7 @@ class MobilPurchaseOrderHandler(MobileBaseHandler):
             result['data'] = productOrderSearch(ft, type, index)
             result['flag'] = 1
         except Exception:
-            result['msg'] = '系统错误'
+            result['msg'] = u'系统错误'
         self.write(simplejson.dumps(result))
 
 
@@ -938,9 +938,9 @@ class MobileBindBankCardHandler(MobileBaseHandler):
                 }
                 result['flag'] = 1
             else:
-                result['msg'] = '未查找到该卡银行'
+                result['msg'] = u'未查找到该卡银行'
         else:
-            result['msg'] = "卡号或持卡人姓名不合法"
+            result['msg'] = u'卡号或持卡人姓名不合法'
         self.write(simplejson.dumps(result))
 
 

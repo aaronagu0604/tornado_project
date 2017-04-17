@@ -316,6 +316,9 @@ class ChangeReleaseAreaHandler(AdminBaseHandler):
 
         self.render('admin/user/change_release_area.html', codes=codes, items=items)
 
+    def post(self, store_id):
+        print '----------'
+        print self.request.body
 
 @route(r'/admin/store_area_product', name='admin_store_area_product')  # 经销商产品地域价格信息
 class SalerProductAreaPriceHandler(AdminBaseHandler):

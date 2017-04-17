@@ -70,8 +70,10 @@ class MobileGetVCodeAppHandler(MobileBaseHandler):
     @api {post} /mobile/getvcode 01. 获取验证码
     @apiDescription 获取验证码
 
-    @apiParam {String} mobile 电话号码
-    @apiParam {Int} flag 验证码类型： 0注册 1忘记密码 2绑定手机号 3提现
+    @apiHeader {String} token 用户登录凭证
+
+    @apiParam {String} mobile 电话号码（1.3.4不用传）
+    @apiParam {Int} flag 验证码类型： 0注册 1忘记密码 2绑定手机号 3提现 4绑定银行卡/支付宝
 
     @apiSampleRequest /mobile/getvcode
     """
@@ -79,19 +81,18 @@ class MobileGetVCodeAppHandler(MobileBaseHandler):
         result = {'flag': 0, 'msg': '', "data": {}}
         mobile = self.get_body_argument("mobile", None)
         flag = self.get_body_argument("flag", None)
-
-        user = User.select().where(User.mobile == mobile)
+        user = self.get_user()
         if flag == 0:
-            if user.count() > 0:
-                result['msg'] = '您已经是车装甲会员'
+            if user:
+                result['msg'] = u'您已经是车装甲会员'
                 self.write(simplejson.dumps(result))
                 return
-        elif flag == 1:
-            if user.count() == 0:
-                result['msg'] = '您还不是车装甲会员'
+        elif flag == 1 or flag == 3 or flag == 4:
+            if not user:
+                result['msg'] = u'您还不是车装甲会员'
                 self.write(simplejson.dumps(result))
                 return
-
+            mobile = user.mobile
         VCode.delete().where(VCode.created < (int(time.time()) - 30 * 60)).execute()
 
         uservcode = VCode()
@@ -101,20 +102,20 @@ class MobileGetVCodeAppHandler(MobileBaseHandler):
         uservcode.flag = flag
         if uservcode.validate():
             if VCode.select().where((VCode.mobile == mobile) & (VCode.flag == flag)).count() > 3:
-                result['msg'] = '您的操作过于频繁，请稍后再试'
+                result['msg'] = u'您的操作过于频繁，请稍后再试'
             else:
                 try:
                     uservcode.save()
                     result['flag'] = 1
-                    result['msg'] = '验证码已发送'
+                    result['msg'] = u'验证码已发送'
                     logging.info('getvcode: ' + str(uservcode.vcode) + '; flag=' + str(flag))
                     sms = {'mobile': mobile, 'body': str(uservcode.vcode), 'signtype': '1', 'isyzm': 'vcode'}
                     create_msg(simplejson.dumps(sms), 'sms')  # 验证码
                 except Exception, ex:
-                    result['msg'] = '验证码发送失败，请联系400客服处理'
+                    result['msg'] = u'验证码发送失败，请联系400客服处理'
 
         else:
-            result['msg'] = '验证码发送失败，请联系400客服处理'
+            result['msg'] = u'验证码发送失败，请联系400客服处理'
 
         self.write(simplejson.dumps(result))
         self.finish()
