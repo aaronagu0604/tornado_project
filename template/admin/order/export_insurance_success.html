@@ -137,15 +137,15 @@
                     </td>
                     <td>{{o.current_order_price.admin_user.name}}</td>
                     <td>登记人</td>
-                    <td style="color:#ff5231;">{{o.total_price}}</td>
-                    <td style="color:#ff5231;">{{o.current_order_price.force_price}}</td>
-                    <td style="color:#ff5231;">{{o.current_order_price.vehicle_tax_price}}</td>
-                    <td style="color:#ff5231;">{{o.current_order_price.business_price}}</td>
+                    <td>{{o.total_price}}</td>
+                    <td>{{o.current_order_price.force_price}}</td>
+                    <td>{{o.current_order_price.vehicle_tax_price}}</td>
+                    <td>{{o.current_order_price.business_price}}</td>
                     <td>
-                        <span style="color:#ff5231;">{{o.deliver_company}}</span>
-                        <br><span style="color: red;">({{o.deliver_num}})</span>
+                        <span>{{o.deliver_company}}</span>
+                        <br><span>({{o.deliver_num}})</span>
                     </td>
-                    <td style="color:#ff5231;">型号</td>
+                    <td>型号</td>
                     <td>
                         {% if o.current_order_price.gift_policy == 2 %}
                         佣金返积分
@@ -155,12 +155,12 @@
                         无
                         {% endif %}
                     </td>
-                    <td style="color:#ff5231;">{{o.current_order_price.score}}</td>
-                    <td style="color:#ff5231;">{{o.ordernum}}</td>
-                    <td style="color:#ff5231;">{{o.local_summary}}</td>
-                    <td style="color:#ff5231;">备注2</td>
-                    <td style="color:#ff5231;">领油日期</td>
-                    <td style="color:#ff5231;">领取人</td>
+                    <td>{{o.current_order_price.score}}</td>
+                    <td>{{o.ordernum}}</td>
+                    <td>{{o.local_summary}}</td>
+                    <td>备注2</td>
+                    <td>领油日期</td>
+                    <td>领取人</td>
                 </tr>
                 {% endfor %}
                 </tbody>
