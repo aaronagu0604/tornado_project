@@ -933,6 +933,8 @@ class MobileWithdrawCashHandler(MobileBaseHandler):
                     'bank_name': u'支付宝',
                     'bank_pic': 'http://img.hb.aicdn.com/f36700ea3039da9f49d23c11ebf1be1aec12996a439da-5HoGoW_fw658'
                 })
+        else:
+            result['msg'] = u'无可用提现账户'
 
         self.write(simplejson.dumps(result))
 
