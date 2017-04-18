@@ -777,7 +777,7 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
     @apiHeader {String} token 用户登录凭证
 
     @apiParam {String} keyword 搜索关键字
-    @apiParam {String} sort 价格排序 1正序， 2逆序； 默认为1  销量排序 1正序， 2逆序； 默认2
+    @apiParam {String} sort 价格排序 1正序， 2逆序； 默认为1  销量排序 3正序， 4逆序； 默认2
     @apiParam {String} category 分类ID， 单选
     @apiParam {String} brand 品牌ID组合， 多选, 例：1,2,3
     @apiParam {String} attribute 属性ID组合, 多选, 例： 1,2,3
@@ -861,7 +861,7 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
         return productList
 
     def get(self):
-        result = {'flag': 0, 'msg': '', "data": {}}
+        result = {'flag': 1, 'msg': '', "data": {}}
         keyword = self.get_argument("keyword", None)
         sort = self.get_argument("sort", None)
         category = self.get_argument("category", None)
