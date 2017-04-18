@@ -186,6 +186,7 @@ def productOrderSearch(ft, type, index):
         ft &= ((Order.status == -1) | (SubOrder.buyer_del == 1))
 
     result = []
+    orders = []
     sos = SubOrder.select().join(Order).where(ft).order_by(Order.ordered.desc()).paginate(index, setting.MOBILE_PAGESIZE)
     for so in sos:
         items = []
@@ -198,19 +199,23 @@ def productOrderSearch(ft, type, index):
                 'attributes': [attribute.value for attribute in soi.product.attributes],
                 'order_type': so.order.order_type
             })
-        result.append({
-            'id': so.order.id,
-            'ordernum': so.order.ordernum,
-            'saler_store': so.saler_store.name,
-            'buyer_store': so.buyer_store.name,
-            'order_type': so.order.order_type,
-            'price': so.price,
-            'score': so.score,
-            'status': so.status,
-            'items': items,
-            'ordered': time.strftime('%Y-%m-%d %H-%M-%S', time.localtime(so.order.ordered)),
-            'deadline': time.strftime('%Y-%m-%d %H-%M-%S', time.localtime(so.order.ordered + setting.PRODUCT_ORDER_TIME_OUT))
-        })
+        if so.order.id in orders:
+            pass
+        else:
+            orders.append(so.order.id)
+            result.append({
+                'id': so.order.id,
+                'ordernum': so.order.ordernum,
+                'saler_store': so.saler_store.name,
+                'buyer_store': so.buyer_store.name,
+                'order_type': so.order.order_type,
+                'price': so.price,
+                'score': so.score,
+                'status': so.status,
+                'items': items,
+                'ordered': time.strftime('%Y-%m-%d %H-%M-%S', time.localtime(so.order.ordered)),
+                'deadline': time.strftime('%Y-%m-%d %H-%M-%S', time.localtime(so.order.ordered + setting.PRODUCT_ORDER_TIME_OUT))
+            })
     return result
 
 
