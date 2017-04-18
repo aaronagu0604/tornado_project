@@ -81,6 +81,12 @@ class MobileGetVCodeAppHandler(MobileBaseHandler):
         result = {'flag': 0, 'msg': '', "data": {}}
         mobile = self.get_body_argument("mobile", None)
         flag = self.get_body_argument("flag", None)
+        if flag:
+            flag = int(flag)
+        else:
+            result['msg'] = u'入参错误'
+            self.write(simplejson.dumps(result))
+            return
         user = self.get_user()
         if flag == 0:
             if user:
@@ -106,16 +112,15 @@ class MobileGetVCodeAppHandler(MobileBaseHandler):
             else:
                 try:
                     uservcode.save()
-                    result['flag'] = 1
-                    result['msg'] = u'验证码已发送'
                     logging.info('getvcode: ' + str(uservcode.vcode) + '; flag=' + str(flag))
                     sms = {'mobile': mobile, 'body': str(uservcode.vcode), 'signtype': '1', 'isyzm': 'vcode'}
                     create_msg(simplejson.dumps(sms), 'sms')  # 验证码
+                    result['flag'] = 1
+                    result['msg'] = u'验证码已发送'
                 except Exception, ex:
                     result['msg'] = u'验证码发送失败，请联系400客服处理'
-
         else:
-            result['msg'] = u'验证码发送失败，请联系400客服处理'
+            result['msg'] = u'手机号格式错误'
 
         self.write(simplejson.dumps(result))
         self.finish()
@@ -384,9 +389,9 @@ class MobileHomeHandler(MobileBaseHandler):
 
     def get_banner(self, area_code):
         items = []
-        banners = BlockItem.select(BlockItem).join(Block) \
-            .where((Block.tag == 'banner') & (Block.active == 1) & (BlockItem.active == 1)
-                   & (BlockItem.area_code == area_code)).order_by(BlockItem.sort.asc())
+        banners = BlockItem.select(BlockItem).join(Block).\
+            where((Block.tag == 'banner') & (Block.active == 1) & (BlockItem.active == 1) & (BlockItem.area_code == area_code)).\
+            order_by(BlockItem.sort.asc())
         for p in banners:
             items.append({
                 'img': p.img,
@@ -577,14 +582,18 @@ class MobileDiscoverHandler(MobileBaseHandler):
         result = {'flag': 0, 'msg': '', 'data': [{'name': u'配件商城', 'subs':[]}, {'name': u'汽车装潢', 'subs':[]}, {'name': u'保险商城', 'subs':[]}]}
         categories = Category.select().where(Category.active == 1)
         for category in categories:
-            # 配件商城
+            bcs = BlockItem.select(BlockItem.link, Brand.logo, Brand.name).\
+                join(Brand, on=(BlockItem.ext_id == Brand.id)).\
+                join(BrandCategory, on=(Brand.id == BrandCategory.brand)).\
+                where(BrandCategory.category == category).tuples()
+            subs = [{
+                'img': logo,
+                'name': name,
+                'price': 0,
+                'link': link
+            } for link, logo, name in bcs]
+            #  配件商城
             if category.category_type == 1:
-                bcs = BrandCategory.select().where(BrandCategory.category == category)
-                subs = [{
-                        'bid': bc.brand.id,
-                        'img': bc.brand.logo,
-                        'name': bc.brand.name
-                    } for bc in bcs]
                 result['data'][0]['subs'].append({
                     'cid': category.id,
                     'name': category.name,
@@ -592,12 +601,6 @@ class MobileDiscoverHandler(MobileBaseHandler):
                 })
             # 汽车装潢
             elif category.category_type == 2:
-                bcs = BrandCategory.select().where(BrandCategory.category == category)
-                subs = [{
-                            'bid': bc.brand.id,
-                            'img': bc.brand.logo,
-                            'name': bc.brand.name
-                        } for bc in bcs]
                 result['data'][1]['subs'].append({
                     'cid': category.id,
                     'name': category.name,
@@ -605,16 +608,10 @@ class MobileDiscoverHandler(MobileBaseHandler):
                 })
         # 保险商城
         area_code = self.get_store_area_code()
-        # tmp_area = area_code
-        # insurances = get_insurance(tmp_area)
-        # while len(insurances) == 0 and len(tmp_area) > 3:
-        #     tmp_area = tmp_area[0: -4]
-        #     insurances = get_insurance(tmp_area)
         result['data'][2]['subs'].append({
             'cid': 0,
             'name': u'保险分类',
             'subs': InsuranceArea.get_insurances_link(area_code),
-            # 'test': insurances
         })
 
         result['flag'] = 1
@@ -676,39 +673,20 @@ class MobileFilterHandler(MobileBaseHandler):
                 'id' = 9,
                 'name' = '导航仪',
                 'brand' = [{'id'= 6, 'name'='杰成'}, {}]
+
             }],
 
             'brandList' = [{
                 'id' = 66,
                 'name' = 'SK',
                 'categorys' = [{'id' = 10, 'name' = '润滑油'}]
-            }]
-
-            'products' = [{
-                'psid': n.id,
-                'pid': n.product.id,
-                'name': n.product.name+' '+n.copies,
-                'price': n.price,
-                'sales': n.orders,
-                'originalPrice': n.orginalprice,
-                'ourprice': n.pf_price, #销售价（门店）修改成批发价
-                'pf_price': n.pf_price,
-                'copies': n.copies,
-                'unit': n.unit if n.unit else u'件',
-                'categoryID': n.product.categoryfront.id,
-                'sku': n.product.sku,
-                'cover': PassMobileImg(n.product.cover),
-                'standard': n.name,
-                'resume': n.product.resume,
-                'status': n.product.status,
-                'storeName': n.store.name,
+                'attribute' = []
             }]
         }
         '''
         result = {'flag': 0, 'msg': '', "data": {}}
         id = self.get_argument("id", None)
         flag = self.get_argument("flag", None)
-        # sort = self.get_argument("sort", None)
 
         if not (flag and id):
             result['msg'] = u'分类或品牌不能为空'

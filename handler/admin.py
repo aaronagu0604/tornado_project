@@ -320,6 +320,7 @@ class ChangeReleaseAreaHandler(AdminBaseHandler):
         print '----------'
         print self.request.body
 
+
 @route(r'/admin/store_area_product', name='admin_store_area_product')  # 经销商产品地域价格信息
 class SalerProductAreaPriceHandler(AdminBaseHandler):
     def get(self):
