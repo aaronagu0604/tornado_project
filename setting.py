@@ -108,7 +108,9 @@ popularizePIC = [{
     'addr2Height': 1057,
     'phoneWidth': 96,
     'phoneHeight': 1133
-}]
+}
+
+]
 
 
 bank_en = {
