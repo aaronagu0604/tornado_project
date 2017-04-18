@@ -467,10 +467,9 @@ class GetGiftOilHandler(BaseHandler):
         try:
             iop = InsuranceOrderPrice.get(id=iopid)
             insurance = InsuranceOrder.get(id=iop.insurance_order_id)
-            print insurance.store.area_code, iop.insurance.id
             policy = LubePolicy.get_oil_policy(insurance.store.area_code, iid)
             policylist = simplejson.loads(policy.policy)
-            print policylist
+
             if forcetotal and businesstotal:
                 flag = 3
                 totalprice = forcetotal + businesstotal
@@ -486,9 +485,6 @@ class GetGiftOilHandler(BaseHandler):
             role = None
             for item in policylist:
                 for p in item['items']:
-                    print (int(p['minprice']), totalprice), (int(p['minprice']) <= totalprice)
-                    print (totalprice , int(p['maxprice'])), (totalprice <= int(p['maxprice']))
-                    print (flag == int(p['flag'])), (flag == int(p['flag']))
                     if (int(p['minprice']) <= totalprice) and (totalprice <= int(p['maxprice'])) and (flag == int(p['flag'])):
                         role = p
                         role['oiltype'] = item['gift']
