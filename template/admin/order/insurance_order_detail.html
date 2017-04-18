@@ -308,10 +308,10 @@
                     </tr>
                     <tr>
                         <td>返油（桶）：
-                            <input name="business_s" value="" placeholder="车主型号" style="width: 100px;"/>
-                            <input name="force_s" value="" placeholder="车主桶数" style="width: 100px;"/>
-                            <input name="ali_rate" value="" placeholder="门店型号" style="width: 80px;"/>
-                            <input name="profit" value="" placeholder="门店桶数" style="width: 80px;"/>
+                            <input name="driveroiltype" value="" placeholder="车主型号" style="width: 100px;"/>
+                            <input name="driveroilnum" value="" placeholder="车主桶数" style="width: 100px;"/>
+                            <input name="storeoiltype" value="" placeholder="门店型号" style="width: 80px;"/>
+                            <input name="storeoilnum" value="" placeholder="门店桶数" style="width: 80px;"/>
                         </td>
                         <td>
                             <span onclick="get_lube({{ program['pid'] }})" style="float:left;padding:5px 10px;margin-left:20px;margin-top:3px;background:#438bca;color:#fff;border-radius:4px;font-size:14px;cursor:pointer;">获取返油</span>
@@ -446,6 +446,70 @@
             }
         });
     }
+    // 计算返油数据
+    function get_lube(program_id){
+        // 根据获取 ID 获取元素
+        var program = document.getElementById(program_id);
+        // 获取数据
+        var insurance = $(program).find('select[name="insurance"]').val();   // 保险 ID
+        var gift_policy = $(program).find('select[name="gift_policy"]').val();   // 返佣方式
+        var vehicle_tax_price = $(program).find('input[name="vehicle_tax_price"]').val();    // 车船税价格
+        var business_rate = $(program).find('input[name="business_rate"]').val();    // 商业险折扣
+        if( business_rate == ''){
+            business_rate = 10;
+        }
+        var force_rate = $(program).find('input[name="force_rate"]').val();    // 交强险折扣
+        if( force_rate == ''){
+            force_rate = 10;
+        }
+        var business_s = $(program).find('input[name="business_s"]').val();    // 商业险返佣率
+        var force_s = $(program).find('input[name="force_s"]').val();    // 交强险返佣率
+        var ali_rate = $(program).find('input[name="ali_rate"]').val();    // 转账费率
+        var profit = $(program).find('input[name="profit"]').val();    // 利润率
+        var business_tax = $(program).find('input[name="business_tax"]').val();    // 商业险税率
+        var force_tax = $(program).find('input[name="force_tax"]').val();    // 交强险税率
+
+        var total_force = 0;
+        var total_business = 0;
+        var insurance_details = '';
+        // 获取循环的险种数据
+        $(program).find('table tr td').each(function (index, element) {
+            var i_item_name = $(this).find('input[name="i_item"]').attr('c_name');
+            var i_item = $(this).find('input[name="i_item"]').attr('e_name');
+            var i_type = $(this).find('input[name="i_item"]').attr('i_type');
+            var i_item_value = $(this).find('input[name="i_item"]').val();
+            if(i_type == 1){
+                total_force = i_item_value*force_rate/10;    // 交强险总金额
+                insurance_details = insurance_details+i_item_name+i_item_value+'元\n';
+            }else if (i_type == 2 | i_type == 3){
+                total_business = total_business*1 + i_item_value*1;    // 商业险总金额
+                insurance_details = insurance_details+i_item_name+i_item_value+'元\n';
+            }
+        });
+        // 计算总额
+        total_business = (total_business*business_rate/10);
+        var total_price = total_force + total_business + vehicle_tax_price*1;
+        var score = total_business*(1-business_tax/100)*business_s/100 + total_force*(1-force_tax/100)*force_s/100 - total_price*(ali_rate/100+profit/100);
+        if(gift_policy == '2'){
+            $(program).find('input[name="score"]').val(score.toFixed(0));
+        } else {
+            $(program).find('input[name="score"]').val(0);
+        }
+        // 回填
+        $.post("/ajax/caculate_gift_oil", { _xsrf:xsrf, insurance:insurance, area_code: area_code, business:total_business, force:total_force}, function (data) {
+            var obj = jQuery.parseJSON(data);
+            if (obj.flag == 1) {
+                $(program).find('input[name="driveroiltype"]').val(total_business.toFixed(2));
+                $(program).find('input[name="driveroilnum"]').val(total_force.toFixed(2));
+                $(program).find('input[name="driveroiltype"]').val(total_price.toFixed(2));
+                $(program).find('input[name="driveroilnum"]').val(total_price.toFixed(2));
+            }
+            else {
+                alert(obj.msg);
+            }
+        });
+    }
+
     // 自动计算
     function auto_calculation(program_id){
         // 根据获取 ID 获取元素

@@ -452,6 +452,53 @@ class WebAppCarItemListHandler(BaseHandler):
 
         self.write(simplejson.dumps(result))
 
+@route(r'/ajax/caculate_gift_oil', name='ajax_get_score_rate')  # 获取返佣比率
+class GetGiftOilHandler(BaseHandler):
+    def get(self):
+        result = {'flag': 0, 'msg': '', "data": {}}
+        ioid = self.get_argument('ioid', None)
+        forcetotal = self.get_argument('forcetotal', 0)
+        businesstotal = self.get_argument('businesstotal', 0)
+        iopid = self.get_argument('iopid', None)
+        flag = 0
+        try:
+            io = InsuranceOrder.get(id=ioid)
+
+            policy = LubePolicy.get(LubePolicy.area_code == io.store.area_code, LubePolicy.insurance == io.insurance.id)
+            policydic = simplejson.loads(policy.policy)
+            storetype = None
+            storenum = 0
+            drivertype = None
+            drivernum = 0
+            if policydic:
+                if forcetotal and businesstotal:
+                    flag = 3
+                elif forcetotal:
+                    flag = 1
+                elif businesstotal:
+                    flag = 2
+                else:
+                    flag = 0
+                    result['data']['drivertype'] = ''
+                    result['data']['driveroilnum'] = 0
+                    result['data']['storetype'] = ''
+                    result['data']['storeoilnum'] = 0
+                result['data']['drivertype'] = ''
+                result['data']['driveroilnum'] = 0
+                result['data']['storetype'] = ''
+                result['data']['storeoilnum'] = 0
+            else:
+                result['data']['drivertype'] = ''
+                result['data']['driveroilnum'] = 0
+                result['data']['storetype'] = ''
+                result['data']['storeoilnum'] = 0
+            result['flag'] = 1
+            print result['data']
+        except Exception, e:
+            result['msg'] = u'系统错误%s'%str(e)
+            print e.message
+
+        self.write(simplejson.dumps(result))
 
 @route(r'/ajax/save_iop_data', name='ajax_save_iop')  # 保存报价后的方案
 class SaveIOPHandler(BaseHandler):

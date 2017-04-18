@@ -1365,6 +1365,7 @@ class InsuranceOrderDetailHandler(AdminBaseHandler):
                         'price': program.__dict__['_data'][i_item.eName+'Price'] if program.__dict__['_data'][i_item.eName+'Price'] else 0
                     })
             rates = InsuranceScoreExchange.get_score_policy(o.store.area_code, program.insurance)
+            lubepolicy = LubePolicy.select().where(LubePolicy.area_code == o.store.area_code)
             programs.append({
                 'pid': program.id,
                 'insurance': program.insurance,
