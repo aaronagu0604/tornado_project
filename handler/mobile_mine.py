@@ -1054,10 +1054,10 @@ class MobileBindBankCardHandler(MobileBaseHandler):
         vcode = self.get_body_argument('vcode', None)
 
         store = self.get_user().store
-        if not VCode.check_vcode(store.mobile, vcode, 2):
-            result['msg'] = '请输入正确的验证码'
+        if not VCode.check_vcode(store.mobile, vcode, 4):
+            result['msg'] = u'请输入正确的验证码'
         elif is_delete and bank_id:
-            StoreBankAccount().delete().where(StoreBankAccount.id==bank_id).execute()
+            StoreBankAccount().delete().where(StoreBankAccount.id == bank_id).execute()
         elif bank_name and truename and account:
             sba = StoreBankAccount()
             if StoreBankAccount.select().where((StoreBankAccount.is_default==1) & (StoreBankAccount.store==store)).count() > 0:
@@ -1069,10 +1069,9 @@ class MobileBindBankCardHandler(MobileBaseHandler):
             sba.bank_account = account
             sba.bank_name = bank_name
             result['flag'] = 1
-            result['msg'] = '绑定银行卡成功'
-
+            result['msg'] = u'绑定银行卡成功'
         else:
-            result['msg'] = '参数有误'
+            result['msg'] = u'参数有误'
         self.write(simplejson.dumps(result))
 
 
@@ -1116,28 +1115,30 @@ class MobileBindAlipayHandler(MobileBaseHandler):
         alipay_account = self.get_body_argument('alipay_account', None)
         vcode = self.get_body_argument('vcode', None)
         store = self.get_user().store
-        if not VCode.check_vcode(store.mobile, vcode, 2):
-            result['msg'] = '请输入正确的验证码'
+        if not VCode.check_vcode(store.mobile, vcode, 4):
+            result['msg'] = u'请输入正确的验证码'
         elif alipay_truename and alipay_account:
-            result['flag'] = 1
-            result['msg'] = '绑定支付宝成功'
             sbas = StoreBankAccount.select().where((StoreBankAccount.account_type==1) & (StoreBankAccount.store==store))
             if sbas.count() > 0:
                 sbas[0].alipay_truename = alipay_truename
                 sbas[0].alipay_account = alipay_account
                 sbas[0].account_type = 1
                 sbas[0].save()
+                result['flag'] = 1
+                result['msg'] = u'修改支付宝成功'
             elif StoreBankAccount.check_alipay(alipay_truename, alipay_account):
                 sba = StoreBankAccount()
                 sba.alipay_truename = alipay_truename
                 sba.alipay_account = alipay_account
                 sba.account_type = 1
+                sba.store = store
                 sba.save()
+                result['flag'] = 1
+                result['msg'] = u'绑定支付宝成功'
             else:
-                result['flag'] = 0
-                result['msg'] = '支付宝账号或支付宝主人姓名不合法'
+                result['msg'] = u'支付宝账号或支付宝主人姓名不合法'
         else:
-            result['msg'] = '参数有误'
+            result['msg'] = u'参数有误'
 
         self.write(simplejson.dumps(result))
 

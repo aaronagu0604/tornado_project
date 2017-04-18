@@ -9,7 +9,7 @@ import logging
 def create_msg(body, type):
     try:
         url = 'amqp://' + setting.MQUSER + ':' + setting.MQPASSWORD + '@' + setting.MQSERVER + ':' + setting.MQPORT + '/%2f'
-
+        print url
         with rabbitpy.Connection(url) as conn:
             with conn.channel() as channel:
                 exchange = rabbitpy.Exchange(channel=channel, name=setting.MQEXCHANGENAME, durable=True)

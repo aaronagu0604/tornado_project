@@ -194,11 +194,11 @@ class VCode(db.Model):
             return False
 
     @staticmethod
-    def check_vcode(self, mobile, vcode, flag):
+    def check_vcode(mobile, vcode, flag):
         if not (mobile and vcode and flag):
             return False
         VCode.delete().where(VCode.created < (int(time.time()) - 10 * 60)).execute()
-        if VCode.select().where((VCode.mobile==mobile) & (VCode.vcode==vcode) & (VCode.flag==flag)).count() > 0:
+        if VCode.select().where((VCode.mobile == mobile) & (VCode.vcode == vcode) & (VCode.flag == flag)).count() > 0:
             return True
         else:
             return False
