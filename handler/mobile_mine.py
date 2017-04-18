@@ -209,7 +209,7 @@ def productOrderSearch(ft, type, index):
                 'saler_store': so.saler_store.name,
                 'buyer_store': so.buyer_store.name,
                 'order_type': so.order.order_type,
-                'price': so.price,
+                'price': so.order.total_price,
                 'score': so.score,
                 'status': so.status,
                 'items': items,
