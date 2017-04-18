@@ -1066,12 +1066,15 @@ class MobileBindBankCardHandler(MobileBaseHandler):
         vcode = self.get_body_argument('vcode', None)
 
         store = self.get_user().store
-        if not VCode.check_vcode(store.mobile, vcode, 4):
+        if is_delete == '1':
+            sba = StoreBankAccount().delete().where(StoreBankAccount.id == bank_id).execute()
+            if sba:
+                result['flag'] = 1
+                result['msg'] = u'删除成功'
+            else:
+                result['msg'] = u'未找到该银行卡'
+        elif not VCode.check_vcode(store.mobile, vcode, 4):
             result['msg'] = u'请输入正确的验证码'
-        elif is_delete == '1' and bank_id:
-            StoreBankAccount().delete().where(StoreBankAccount.id == bank_id).execute()
-            result['flag'] = 1
-            result['msg'] = u'删除成功'
         elif bank_name and truename and account:
             if not StoreBankAccount.check_bank(truename, account):
                 result['msg'] = u'银行卡号或姓名不合法'
