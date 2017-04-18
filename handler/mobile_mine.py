@@ -397,6 +397,44 @@ class MobileOrderDetailHandler(MobileBaseHandler):
         result['data']['suborder'] = suborders
         self.write(simplejson.dumps(result))
 
+@route(r'/mobile/deleteorder', name='mobile_order_detail')  # 删除商品订单
+class MobileDeleteOrderHandler(MobileBaseHandler):
+    """
+    @apiGroup mine
+    @apiVersion 1.0.0
+    @api {get} /mobile/deleteorder 03. 删除商品订单
+    @apiDescription 删除商品订单
+
+    @apiHeader {String} token 用户登录凭证
+    @apiParam {Int} id 订单id
+    @apiParam {Int} ordertype 订单状态：0：买家，1：卖家
+
+    @apiSampleRequest /mobile/deleteorder
+    """
+    @require_auth
+    def post(self):
+        result = {'flag': 0, 'msg': '', "data": {}}
+        oid = int(self.get_argument("id"))
+        ordertype = int(self.get_argument('ordertype', 1))
+        user = self.get_user()
+        try:
+            ft = Order.id == oid & Order.status << [1]
+            if ordertype == 0:
+                ft = ft & Order.user == user
+            else:
+                ft = ft & user.store.id << [item.saler_store.id for item in Order.sub_orders]
+            order = Order.get(ft)
+            if order.status in [1]:
+                order.status = -1
+                order.save()
+                result['flag'] = 1
+            else:
+                result['flag'] = 0
+                result['msg'] = u'当前状态不允许删除'
+        except Exception:
+            result['msg'] = u'该订单不存在'
+            result['flag'] = 0
+        self.write(simplejson.dumps(result))
 
 @route(r'/mobile/insuranceorder', name='mobile_insurance_order')  # 保险订单
 class MobileInsuranceOrderHandler(MobileBaseHandler):
