@@ -1046,6 +1046,7 @@ class MobileBindBankCardHandler(MobileBaseHandler):
     @apiParam {String} is_delete 是否删除 0否 1是
     @apiParam {String} bank_id 删除的银行卡ID
     @apiParam {String} bank_name 银行名
+    @apiParam {String} bank_branch_name 支行名
     @apiParam {String} bank_truename 持卡人姓名
     @apiParam {String} bank_account 卡号
     @apiParam {String} vcode 验证码
@@ -1058,6 +1059,7 @@ class MobileBindBankCardHandler(MobileBaseHandler):
         bank_id = self.get_body_argument('bank_id', None)
         bank_name = self.get_body_argument('bank_name', None)
         truename = self.get_body_argument('bank_truename', None)
+        bank_branch_name = self.get_body_argument('bank_branch_name', None)
         account = self.get_body_argument('bank_account', None)
         vcode = self.get_body_argument('vcode', None)
 
@@ -1069,6 +1071,7 @@ class MobileBindBankCardHandler(MobileBaseHandler):
             result['flag'] = 1
             result['msg'] = u'删除成功'
         elif bank_name and truename and account:
+
             sba = StoreBankAccount()
             if StoreBankAccount.select().where((StoreBankAccount.is_default == 1) & (StoreBankAccount.store == store)).count() > 0:
                 sba.is_default = 0
@@ -1078,6 +1081,8 @@ class MobileBindBankCardHandler(MobileBaseHandler):
             sba.bank_truename = truename
             sba.bank_account = account
             sba.bank_name = bank_name
+            sba.bank_branch_name = bank_branch_name
+            sba.save()
             result['flag'] = 1
             result['msg'] = u'绑定银行卡成功'
         else:
@@ -1128,7 +1133,7 @@ class MobileBindAlipayHandler(MobileBaseHandler):
         if not VCode.check_vcode(store.mobile, vcode, 4):
             result['msg'] = u'请输入正确的验证码'
         elif alipay_truename and alipay_account:
-            sbas = StoreBankAccount.select().where((StoreBankAccount.account_type==1) & (StoreBankAccount.store==store))
+            sbas = StoreBankAccount.select().where((StoreBankAccount.account_type == 1) & (StoreBankAccount.store == store))
             if sbas.count() > 0:
                 sbas[0].alipay_truename = alipay_truename
                 sbas[0].alipay_account = alipay_account
@@ -1142,6 +1147,7 @@ class MobileBindAlipayHandler(MobileBaseHandler):
                 sba.alipay_account = alipay_account
                 sba.account_type = 1
                 sba.store = store
+                sba.is_default = 1
                 sba.save()
                 result['flag'] = 1
                 result['msg'] = u'绑定支付宝成功'
