@@ -632,7 +632,7 @@ class MobileFilterHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/filter
     """
-    def getCategoryAttribute(self, bc):
+    def getCategoryAttribute(self, bc, cid):
         '''
         attributeList = [{
             'id': id,
@@ -655,7 +655,8 @@ class MobileFilterHandler(MobileBaseHandler):
                     'name': item.name
                 })
             attributeList.append({
-                'id': attribute.id,
+                'cid': cid,
+                'aid': attribute.id,
                 'name': attribute.name,
                 'ename': attribute.ename,
                 'values': tmpList
@@ -663,21 +664,6 @@ class MobileFilterHandler(MobileBaseHandler):
         return attributeList
 
     def get(self):
-        ''''
-        {
-            'categoryList' = [{
-                'id' = 10,
-                'attribute' = []
-            },{
-                'id' = 9,
-                'attribute' = []
-            }],
-            'brandList' = [{
-                'id' = 66,
-                'name' = 'SK'
-            }]
-        }
-        '''
         result = {'flag': 0, 'msg': '', "data": {}}
         id = self.get_argument("id", None)
         flag = self.get_argument("flag", None)
@@ -695,10 +681,7 @@ class MobileFilterHandler(MobileBaseHandler):
         if flag == 2:    # 分类一定
             brandCategorys = BrandCategory.select().where(BrandCategory.category == id)
             if brandCategorys.count() > 0:
-                result['data']['categoryList'].append({
-                    'id': brandCategorys[0].category.id,
-                    'attribute': self.getCategoryAttribute(brandCategorys[0])
-                })
+                result['data']['categoryList'] = self.getCategoryAttribute(brandCategorys[0], brandCategorys[0].category.id)
                 for bc in brandCategorys:
                     result['data']['brandList'].append({
                         'id': bc.brand.id,
@@ -716,10 +699,7 @@ class MobileFilterHandler(MobileBaseHandler):
                     'name': brandCategorys[0].brand.name
                 })
                 for bc in brandCategorys:
-                    result['data']['categoryList'].append({
-                        'id': bc.category.id,
-                        'attribute': self.getCategoryAttribute(bc)
-                    })
+                    result['data']['categoryList'] += self.getCategoryAttribute(bc, bc.category.id)
             else:
                 result['msg'] = u'未查到该品牌'
                 self.write(simplejson.dumps(result))
@@ -746,7 +726,7 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
 
     @apiParam {String} keyword 搜索关键字
     @apiParam {String} sort 价格排序 1正序， 2逆序； 默认为1  销量排序 3正序， 4逆序； 默认2
-    @apiParam {String} category 分类ID， 单选
+    @apiParam {String} category 分类ID， 多选, 例：1,2,3
     @apiParam {String} brand 品牌ID组合， 多选, 例：1,2,3
     @apiParam {String} attribute 属性ID组合, 多选, 例： 1,2,3
     @apiParam {Int} index
@@ -832,17 +812,21 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
         result = {'flag': 1, 'msg': '', "data": {}}
         keyword = self.get_argument("keyword", None)
         sort = self.get_argument("sort", None)
-        category = self.get_argument("category", None)
-        brand = self.get_argument("brand", None)
-        attribute = self.get_argument("attribute", None)
+        category = self.get_argument("category", '')
+        brand = self.get_argument("brand", '')
+        attribute = self.get_argument("attribute", '')
         index = self.get_argument("index", None)
 
         index = int(index) if index else 1
-        brand = brand.strip(',').split(',') if brand else None
-        attribute = attribute.strip(',').split(',') if attribute else None
+        categories = list(set(category.strip(',').split(',')))
+        brands = brand.strip(',').split(',')
+        attributes = attribute.strip(',').split(',')
         area_code = self.get_store_area_code()
 
-        result['data']['products'] = self.getProductList(keyword, sort, category, brand, attribute, index, area_code)
+        if len(categories) > 1:
+            result['data']['products'] = []
+        else:
+            result['data']['products'] = self.getProductList(keyword, sort, categories[0], brands, attributes, index, area_code)
         if category or brand:
             result['data']['category'] = category
             result['data']['brand'] = brand
