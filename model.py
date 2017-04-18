@@ -332,7 +332,7 @@ class StoreBankAccount(db.Model):
             return False
         if not (re.match('^[A-Za-z]+$', name) or re.match(u'^[\u4e00-\u9fa5]+$', name)):
             return False
-        if re.match(r'^[0-9a-zA-Z_]{0,19}@[0-9a-zA-Z]{1,13}\.[com,cn,net,cc]{1,3}$',account):
+        if re.match(r'^[0-9a-zA-Z_]{0,19}@[0-9a-zA-Z]{1,13}\.[com,cn,net,cc]{1,3}$', account) or re.match(r'^[0-9]{11}$', account):
             return True
         else:
             return False
