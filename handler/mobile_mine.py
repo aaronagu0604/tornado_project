@@ -907,6 +907,7 @@ class MobileWithdrawCashHandler(MobileBaseHandler):
         store_bank_accounts = StoreBankAccount.select().where(StoreBankAccount.store==store,
                                   ).order_by(StoreBankAccount.is_default.desc())
         for bank_account in store_bank_accounts:
+            result['flag'] = 1
             if bank_account.account_type == 0:
                 result['data'].append({
                     'bank_id': bank_account.id,
