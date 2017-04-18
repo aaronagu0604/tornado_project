@@ -456,44 +456,51 @@ class WebAppCarItemListHandler(BaseHandler):
 class GetGiftOilHandler(BaseHandler):
     def get(self):
         result = {'flag': 0, 'msg': '', "data": {}}
-        ioid = self.get_argument('ioid', None)
-        forcetotal = self.get_argument('forcetotal', 0)
-        businesstotal = self.get_argument('businesstotal', 0)
+        iid = int(self.get_argument('insurance', 0))
+        iopid = int(self.get_argument('iopid', 0))
+        forcetotal = int(self.get_argument('force', 0))
+        businesstotal = int(self.get_argument('business', 0))
         iopid = self.get_argument('iopid', None)
         flag = 0
+        policy = None
+        print iopid,iid,forcetotal,businesstotal
         try:
-            io = InsuranceOrder.get(id=ioid)
-
-            policy = LubePolicy.get(LubePolicy.area_code == io.store.area_code, LubePolicy.insurance == io.insurance.id)
-            policydic = simplejson.loads(policy.policy)
-            storetype = None
-            storenum = 0
-            drivertype = None
-            drivernum = 0
-            if policydic:
-                if forcetotal and businesstotal:
-                    flag = 3
-                elif forcetotal:
-                    flag = 1
-                elif businesstotal:
-                    flag = 2
-                else:
-                    flag = 0
-                    result['data']['drivertype'] = ''
-                    result['data']['driveroilnum'] = 0
-                    result['data']['storetype'] = ''
-                    result['data']['storeoilnum'] = 0
-                result['data']['drivertype'] = ''
-                result['data']['driveroilnum'] = 0
-                result['data']['storetype'] = ''
-                result['data']['storeoilnum'] = 0
+            iop = InsuranceOrderPrice.get(id=iopid)
+            insurance = InsuranceOrder.get(id=iop.insurance_order_id)
+            print insurance.store.area_code, iop.insurance.id
+            policy = LubePolicy.get_oil_policy(insurance.store.area_code, iid)
+            policylist = simplejson.loads(policy.policy)
+            print policylist
+            if forcetotal and businesstotal:
+                flag = 3
+                totalprice = forcetotal + businesstotal
+            elif forcetotal:
+                flag = 1
+                totalprice = forcetotal
+            elif businesstotal:
+                flag = 2
+                totalprice = businesstotal
             else:
-                result['data']['drivertype'] = ''
-                result['data']['driveroilnum'] = 0
-                result['data']['storetype'] = ''
-                result['data']['storeoilnum'] = 0
-            result['flag'] = 1
-            print result['data']
+                flag = 0
+                totalprice = 0
+            role = None
+            for item in policylist:
+                for p in item['items']:
+                    print (int(p['minprice']), totalprice), (int(p['minprice']) <= totalprice)
+                    print (totalprice , int(p['maxprice'])), (totalprice <= int(p['maxprice']))
+                    print (flag == int(p['flag'])), (flag == int(p['flag']))
+                    if (int(p['minprice']) <= totalprice) and (totalprice <= int(p['maxprice'])) and (flag == int(p['flag'])):
+                        role = p
+                        role['oiltype'] = item['gift']
+
+            if role:
+                result['data']['driveroiltype'] = role['oiltype']
+                result['data']['driveroilnum'] = role['driver']
+                result['data']['storeoiltype'] = role['oiltype']
+                result['data']['storeoilnum'] = role['store']
+                result['flag'] = 1
+            else:
+                result['msg'] = u'无可用规则'
         except Exception, e:
             result['msg'] = u'系统错误%s'%str(e)
             print e.message

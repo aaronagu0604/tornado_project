@@ -359,6 +359,7 @@ class MobileOrderDetailHandler(MobileBaseHandler):
         result['data']['ordernum'] = order.ordernum
         result['data']['payment'] = order.payment
         result['data']['ordered'] = time.strftime('%Y-%m-%d', time.localtime(order.ordered))
+        result['data']['totalprice'] = order.total_price
 
         suborders = []
         for suborder in order.sub_orders:

@@ -930,6 +930,33 @@ class LubePolicy(db.Model):
     insurance = ForeignKeyField(Insurance, related_name='lube_policy', db_column='insurance_id')
     policy = CharField(max_length=4000)  # 返油政策的json串
 
+    @classmethod
+    def append_areas(cls, area_code):
+        codes = []
+        if len(area_code) == 12:
+            codes.append(area_code)
+            codes.append(area_code[:8])
+            codes.append(area_code[:4])
+        elif len(area_code) == 8:
+            codes.append(area_code)
+            codes.append(area_code[:4])
+        elif len(area_code) == 4:
+            codes.append(area_code)
+        return codes
+
+    @classmethod
+    def get_oil_policy(cls, area_code, insurance_id):  # 根据保险公司和地区获取返佣比率
+        codes = cls.append_areas(area_code)
+        print codes
+        configs = LubePolicy.select(). \
+            join(Area, on=(Area.code == LubePolicy.area_code)). \
+            where((LubePolicy.area_code << codes) & (LubePolicy.insurance == insurance_id) &
+                  (Area.is_lubearea == 1)).order_by(db.fn.LENGTH(LubePolicy.area_code).desc())
+        if configs.count() > 0:
+            return configs[0]
+        else:
+            return None
+
     class Meta:
         db_table = "tb_lube_policy"
 
