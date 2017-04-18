@@ -914,14 +914,16 @@ class MobileWithdrawCashHandler(MobileBaseHandler):
         for bank_account in store_bank_accounts:
             result['flag'] = 1
             if bank_account.account_type == 0:
-
-                url = 'https://apimg.alipay.com/combo.png?&t='
+                url = None
+                for k,v in setting.bank_en.items():
+                    if v.find(bank_account.bank_name)>=0:
+                        url = 'https://apimg.alipay.com/combo.png?&t=%s'%k
                 result['data']['items'].append({
                     'bank_id': bank_account.id,
                     'account_type': bank_account.account_type,
                     'bank_account': bank_account.bank_account,
                     'bank_name': bank_account.bank_name,
-                    'bank_pic': 'http://img.520czj.com/image/2017/03/30/server1_20170330105157qZLrVyRADMFhYHzQKtEGdmPs.jpg'
+                    'bank_pic': url
                 })
             else:
                 result['data']['items'].append({
@@ -929,7 +931,7 @@ class MobileWithdrawCashHandler(MobileBaseHandler):
                     'account_type': bank_account.account_type,
                     'bank_account': bank_account.alipay_account,
                     'bank_name': u'支付宝',
-                    'bank_pic': 'http://img.520czj.com/image/2017/03/30/server1_20170330105157qZLrVyRADMFhYHzQKtEGdmPs.jpg'
+                    'bank_pic': 'http://img.hb.aicdn.com/f36700ea3039da9f49d23c11ebf1be1aec12996a439da-5HoGoW_fw658'
                 })
 
         self.write(simplejson.dumps(result))
