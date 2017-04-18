@@ -905,14 +905,22 @@ class MobileWithdrawCashHandler(MobileBaseHandler):
         result = {'flag': 0, 'msg': '', "data": []}
         store = self.get_user().store
         store_bank_accounts = StoreBankAccount.select().where(StoreBankAccount.store==store,
-                                  StoreBankAccount.account_type==0).order_by(StoreBankAccount.is_default.desc())
+                                  ).order_by(StoreBankAccount.is_default.desc())
         for bank_account in store_bank_accounts:
-            result['data'].append({
-                'bank_id': bank_account.id,
-                'account_type': bank_account.account_type,
-                'bank_account': bank_account.bank_account,
-                'bank_name': bank_account.bank_name
-            })
+            if bank_account.account_type == 0:
+                result['data'].append({
+                    'bank_id': bank_account.id,
+                    'account_type': bank_account.account_type,
+                    'bank_account': bank_account.bank_account,
+                    'bank_name': bank_account.bank_name
+                })
+            else:
+                result['data'].append({
+                    'bank_id': bank_account.id,
+                    'account_type': bank_account.account_type,
+                    'bank_account': bank_account.alipay_account,
+                    'bank_name': u'支付宝',
+                })
 
         self.write(simplejson.dumps(result))
 
