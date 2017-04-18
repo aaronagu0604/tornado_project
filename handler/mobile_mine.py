@@ -1064,11 +1064,13 @@ class MobileBindBankCardHandler(MobileBaseHandler):
         store = self.get_user().store
         if not VCode.check_vcode(store.mobile, vcode, 4):
             result['msg'] = u'请输入正确的验证码'
-        elif is_delete and bank_id:
+        elif is_delete == '1' and bank_id:
             StoreBankAccount().delete().where(StoreBankAccount.id == bank_id).execute()
+            result['flag'] = 1
+            result['msg'] = u'删除成功'
         elif bank_name and truename and account:
             sba = StoreBankAccount()
-            if StoreBankAccount.select().where((StoreBankAccount.is_default==1) & (StoreBankAccount.store==store)).count() > 0:
+            if StoreBankAccount.select().where((StoreBankAccount.is_default == 1) & (StoreBankAccount.store == store)).count() > 0:
                 sba.is_default = 0
             else:
                 sba.is_default = 1
