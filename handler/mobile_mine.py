@@ -554,6 +554,8 @@ class MobileInsuranceMethodHandler(MobileBaseHandler):
         result = {'flag': 0, 'msg': '', "data": []}
         io_id = self.get_argument('id', '')
         if io_id:
+            result['flag'] = 1
+            result['msg'] = u'订单号存在'
             io_id = int(io_id)
         else:
             result['msg'] = u'订单号不能为空'
@@ -563,6 +565,7 @@ class MobileInsuranceMethodHandler(MobileBaseHandler):
         ops = InsuranceOrderPrice.select().where(InsuranceOrderPrice.insurance_order_id == io_id)
         print ops.count()
         for iop in ops:
+
             force = ''
             main = []
             subjoin = []
