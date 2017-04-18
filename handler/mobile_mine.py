@@ -365,6 +365,7 @@ class MobileOrderDetailHandler(MobileBaseHandler):
         result['data']['payment'] = order.payment
         result['data']['ordered'] = time.strftime('%Y-%m-%d', time.localtime(order.ordered))
         result['data']['totalprice'] = order.total_price
+        result['data']['status'] = order.status
 
         suborders = []
         for suborder in order.sub_orders:
@@ -913,7 +914,8 @@ class MobileWithdrawCashHandler(MobileBaseHandler):
                     'bank_id': bank_account.id,
                     'account_type': bank_account.account_type,
                     'bank_account': bank_account.bank_account,
-                    'bank_name': bank_account.bank_name
+                    'bank_name': bank_account.bank_name,
+                    'bank_pic': 'http://img.520czj.com/image/2017/03/30/server1_20170330105157qZLrVyRADMFhYHzQKtEGdmPs.jpg'
                 })
             else:
                 result['data'].append({
@@ -921,6 +923,7 @@ class MobileWithdrawCashHandler(MobileBaseHandler):
                     'account_type': bank_account.account_type,
                     'bank_account': bank_account.alipay_account,
                     'bank_name': u'支付宝',
+                    'bank_pic': 'http://img.520czj.com/image/2017/03/30/server1_20170330105157qZLrVyRADMFhYHzQKtEGdmPs.jpg'
                 })
 
         self.write(simplejson.dumps(result))
