@@ -392,6 +392,8 @@ class MobileOrderDetailHandler(MobileBaseHandler):
                 'complainmobile': suborder.saler_store.mobile,
                 'products': products
             })
+        if suborders:
+            result['flag'] = 1
         result['data']['suborder'] = suborders
         self.write(simplejson.dumps(result))
 
