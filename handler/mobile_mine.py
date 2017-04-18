@@ -904,18 +904,19 @@ class MobileWithdrawCashHandler(MobileBaseHandler):
     @require_auth
     def get(self):
 
-        result = {'flag': 0, 'msg': '', "data": []}
+        result = {'flag': 0, 'msg': '', "data": {}}
         store = self.get_user().store
         store_bank_accounts = StoreBankAccount.select().where(StoreBankAccount.store==store,
                                   ).order_by(StoreBankAccount.is_default.desc())
         result['data']['totalprice'] = store.price
         result['data']['withdrawline'] = 100
+        result['data']['items'] = []
         for bank_account in store_bank_accounts:
             result['flag'] = 1
             if bank_account.account_type == 0:
 
                 url = 'https://apimg.alipay.com/combo.png?&t='
-                result['data'].append({
+                result['data']['items'].append({
                     'bank_id': bank_account.id,
                     'account_type': bank_account.account_type,
                     'bank_account': bank_account.bank_account,
@@ -923,7 +924,7 @@ class MobileWithdrawCashHandler(MobileBaseHandler):
                     'bank_pic': 'http://img.520czj.com/image/2017/03/30/server1_20170330105157qZLrVyRADMFhYHzQKtEGdmPs.jpg'
                 })
             else:
-                result['data'].append({
+                result['data']['items'].append({
                     'bank_id': bank_account.id,
                     'account_type': bank_account.account_type,
                     'bank_account': bank_account.alipay_account,
