@@ -627,8 +627,8 @@ class MobileFilterHandler(MobileBaseHandler):
     @api {get} /mobile/filter 03. 普通商品筛选界面
     @apiDescription 普通商品筛选界面，未登陆使用西安code
 
-    @apiParam {Int} id 品牌或者分类ID
     @apiParam {Int} flag 1品牌 2分类
+    @apiParam {Int} id 品牌或者分类ID
 
     @apiSampleRequest /mobile/filter
     """
@@ -667,20 +667,14 @@ class MobileFilterHandler(MobileBaseHandler):
         {
             'categoryList' = [{
                 'id' = 10,
-                'name' = '润滑油',
-                'brand' = [{'id'= 9, 'name'='SK'}, {}]
+                'attribute' = []
             },{
                 'id' = 9,
-                'name' = '导航仪',
-                'brand' = [{'id'= 6, 'name'='杰成'}, {}]
-
+                'attribute' = []
             }],
-
             'brandList' = [{
                 'id' = 66,
-                'name' = 'SK',
-                'categorys' = [{'id' = 10, 'name' = '润滑油'}]
-                'attribute' = []
+                'name' = 'SK'
             }]
         }
         '''
@@ -703,12 +697,10 @@ class MobileFilterHandler(MobileBaseHandler):
             if brandCategorys.count() > 0:
                 result['data']['categoryList'].append({
                     'id': brandCategorys[0].category.id,
-                    'name': brandCategorys[0].category.name,
                     'attribute': self.getCategoryAttribute(brandCategorys[0])
                 })
-                result['data']['categoryList'][0]['brand'] = []
                 for bc in brandCategorys:
-                    result['data']['categoryList'][0]['brand'].append({
+                    result['data']['brandList'].append({
                         'id': bc.brand.id,
                         'name': bc.brand.name
                     })
@@ -723,11 +715,9 @@ class MobileFilterHandler(MobileBaseHandler):
                     'id': brandCategorys[0].brand.id,
                     'name': brandCategorys[0].brand.name
                 })
-                result['data']['brandList'][0]['category'] = []
                 for bc in brandCategorys:
-                    result['data']['brandList'][0]['category'].append({
+                    result['data']['categoryList'].append({
                         'id': bc.category.id,
-                        'name': bc.category.name,
                         'attribute': self.getCategoryAttribute(bc)
                     })
             else:

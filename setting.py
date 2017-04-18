@@ -110,7 +110,6 @@ popularizePIC = [{
     'phoneHeight': 1133
 }]
 
-
 bank_en = {
   "SRCB": "深圳农村商业银行",
   "BGB": "广西北部湾银行",
