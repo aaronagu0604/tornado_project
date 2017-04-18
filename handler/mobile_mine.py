@@ -1071,7 +1071,10 @@ class MobileBindBankCardHandler(MobileBaseHandler):
             result['flag'] = 1
             result['msg'] = u'删除成功'
         elif bank_name and truename and account:
-
+            if not StoreBankAccount.check_bank(truename, account):
+                result['msg'] = u'银行卡号或姓名不合法'
+                self.write(simplejson.dumps(result))
+                return
             sba = StoreBankAccount()
             if StoreBankAccount.select().where((StoreBankAccount.is_default == 1) & (StoreBankAccount.store == store)).count() > 0:
                 sba.is_default = 0

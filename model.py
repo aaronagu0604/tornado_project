@@ -317,25 +317,22 @@ class StoreBankAccount(db.Model):
 
     @staticmethod
     def check_bank(name, account):
-        if name.strip() == '':
-            return False
         if not (re.match('^[A-Za-z]+$', name) or re.match(u'^[\u4e00-\u9fa5]+$', name)):
             return False
-        accountC = len(account)
-        if re.match(r'^[0-9]{17,22}$',account) or re.match(r'^[0-9]{16}$',account):
+        if re.match(r'^[0-9]{17,22}$', account) or re.match(r'^[0-9]{16}$', account):
             return True
         else:
             return False
+
     @staticmethod
     def check_alipay(name, account):
-        if name.strip() == '':
-            return False
         if not (re.match('^[A-Za-z]+$', name) or re.match(u'^[\u4e00-\u9fa5]+$', name)):
             return False
         if re.match(r'^[0-9a-zA-Z_]{0,19}@[0-9a-zA-Z]{1,13}\.[com,cn,net,cc]{1,3}$', account) or re.match(r'^[0-9]{11}$', account):
             return True
         else:
             return False
+
     class Meta:
         db_table = 'tb_store_bank_accounts'
 
@@ -381,9 +378,7 @@ class CategoryAttribute(db.Model):
 # 商品分类属性可选值
 class CategoryAttributeItems(db.Model):
     id = PrimaryKeyField()
-    category_attribute = ForeignKeyField(CategoryAttribute, related_name='items',
-                                         db_column='category_attribute_id')  # 商品分类属性值
-
+    category_attribute = ForeignKeyField(CategoryAttribute, related_name='items', db_column='category_attribute_id')  # 商品分类属性值
     name = CharField(max_length=20)  # 名称
     intro = CharField(max_length=20)  # 简介
     sort = IntegerField(default=1)  # 显示顺序
