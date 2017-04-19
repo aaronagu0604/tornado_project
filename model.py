@@ -179,6 +179,70 @@ class User(db.Model):
         db_table = 'tb_users'
 
 
+# 店铺收货地址
+class StoreAddress(db.Model):
+    id = PrimaryKeyField()
+    store = ForeignKeyField(Store, related_name='addresses', db_column='store_id')  # 店铺
+    province = CharField(max_length=16, default='陕西')  # 省份
+    city = CharField(max_length=16, default='西安')  # 城市
+    region = CharField(max_length=32, null='')  # 区域
+    address = CharField(max_length=128, null=True)  # 详细地址
+    name = CharField(max_length=16, null=True)  # 收件人姓名
+    mobile = CharField(max_length=11, null=True)  # 收件人电话
+    is_default = IntegerField(default=1)  # 是否默认 0否 1是
+    created = IntegerField(default=0)  # 创建时间
+    create_by = ForeignKeyField(User, db_column='user_id')  # 创建人
+
+    class Meta:
+        db_table = 'tb_store_address'
+
+
+# 经销商服务区域
+class StoreArea(db.Model):
+    id = PrimaryKeyField()
+    area = ForeignKeyField(Area, db_column='area_id')  # 地区
+    store = ForeignKeyField(Store, related_name='service_areas', db_column='store_id')  # 店铺
+
+    class Meta:
+        db_table = 'tb_store_area'
+
+
+# 门店银行、支付宝账户
+class StoreBankAccount(db.Model):
+    id = PrimaryKeyField()
+    store = ForeignKeyField(Store, related_name='store_bank_accounts', db_column='store_id')  # 店铺
+    account_type = IntegerField(default=0)  # 账户类型 0银联 1支付宝
+    alipay_truename = CharField(max_length=32, default='')  # 支付主人宝姓名
+    alipay_account = CharField(max_length=128, default='')  # 支付宝账号
+    bank_truename = CharField(max_length=32, default='')  # 银行卡主人姓名
+    bank_account = CharField(max_length=32, default='')  # 银行卡号
+    bank_name = CharField(max_length=64, default='')  # 银行名称
+    bank_branch_name = CharField(max_length=64, default='')  # 支行名称
+    is_default = IntegerField(default=0)  # 是否默认
+
+    @staticmethod
+    def check_bank(name, account):
+        if not (re.match('^[A-Za-z]+$', name) or re.match(u'^[\u4e00-\u9fa5]+$', name)):
+            return False
+        if re.match(r'^[0-9]{17,22}$', account) or re.match(r'^[0-9]{16}$', account):
+            return True
+        else:
+            return False
+
+    @staticmethod
+    def check_alipay(name, account):
+        if not (re.match('^[A-Za-z]+$', name) or re.match(u'^[\u4e00-\u9fa5]+$', name)):
+            return False
+        if re.match(r'^[0-9a-zA-Z_]{0,19}@[0-9a-zA-Z]{1,13}\.[com,cn,net,cc]{1,3}$', account) or re.match(
+                r'^[0-9]{11}$', account):
+            return True
+        else:
+            return False
+
+    class Meta:
+        db_table = 'tb_store_bank_accounts'
+
+
 # 手机验证码
 class VCode(db.Model):
     id = PrimaryKeyField()
@@ -205,24 +269,6 @@ class VCode(db.Model):
 
     class Meta:
         db_table = 'tb_user_vcodes'
-
-
-# 店铺收货地址
-class StoreAddress(db.Model):
-    id = PrimaryKeyField()
-    store = ForeignKeyField(Store, related_name='addresses', db_column='store_id')  # 店铺
-    province = CharField(max_length=16, default='陕西')  # 省份
-    city = CharField(max_length=16, default='西安')  # 城市
-    region = CharField(max_length=32, null='')  # 区域
-    address = CharField(max_length=128, null=True)  # 详细地址
-    name = CharField(max_length=16, null=True)  # 收件人姓名
-    mobile = CharField(max_length=11, null=True)  # 收件人电话
-    is_default = IntegerField(default=1)  # 是否默认 0否 1是
-    created = IntegerField(default=0)  # 创建时间
-    create_by = ForeignKeyField(User, db_column='user_id')  # 创建人
-
-    class Meta:
-        db_table = 'tb_store_address'
 
 
 # 提现表
@@ -300,51 +346,6 @@ class ScoreRecord(db.Model):
                                       score=score, created=now, status=1)
         except:
             return False
-
-
-# 门店银行、支付宝账户
-class StoreBankAccount(db.Model):
-    id = PrimaryKeyField()
-    store = ForeignKeyField(Store, related_name='store_bank_accounts', db_column='store_id')  # 店铺
-    account_type = IntegerField(default=0)  # 账户类型 0银联 1支付宝
-    alipay_truename = CharField(max_length=32, default='')  # 支付主人宝姓名
-    alipay_account = CharField(max_length=128, default='')  # 支付宝账号
-    bank_truename = CharField(max_length=32, default='')  # 银行卡主人姓名
-    bank_account = CharField(max_length=32, default='')  # 银行卡号
-    bank_name = CharField(max_length=64, default='')  # 银行名称
-    bank_branch_name = CharField(max_length=64, default='')  # 支行名称
-    is_default = IntegerField(default=0)  # 是否默认
-
-    @staticmethod
-    def check_bank(name, account):
-        if not (re.match('^[A-Za-z]+$', name) or re.match(u'^[\u4e00-\u9fa5]+$', name)):
-            return False
-        if re.match(r'^[0-9]{17,22}$', account) or re.match(r'^[0-9]{16}$', account):
-            return True
-        else:
-            return False
-
-    @staticmethod
-    def check_alipay(name, account):
-        if not (re.match('^[A-Za-z]+$', name) or re.match(u'^[\u4e00-\u9fa5]+$', name)):
-            return False
-        if re.match(r'^[0-9a-zA-Z_]{0,19}@[0-9a-zA-Z]{1,13}\.[com,cn,net,cc]{1,3}$', account) or re.match(r'^[0-9]{11}$', account):
-            return True
-        else:
-            return False
-
-    class Meta:
-        db_table = 'tb_store_bank_accounts'
-
-
-# 经销商服务区域
-class StoreArea(db.Model):
-    id = PrimaryKeyField()
-    area = ForeignKeyField(Area, db_column='area_id')  # 地区
-    store = ForeignKeyField(Store, related_name='service_areas', db_column='store_id')  # 店铺
-
-    class Meta:
-        db_table = 'tb_store_area'
 
 
 # 商品分类

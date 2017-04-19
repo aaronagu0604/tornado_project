@@ -633,10 +633,10 @@ class MobileFilterHandler(MobileBaseHandler):
     @apiVersion 1.0.0
     @api {get} /mobile/filter 03. 普通商品筛选界面
     @apiDescription 普通商品筛选界面，未登陆使用西安code
-
+    @apiHeader {String} token 用户登录凭证
     @apiParam {Int} flag 1品牌 2分类
     @apiParam {Int} id 品牌或者分类ID
-
+    @apiParam {String} is_mine 1我的商品 非1或不传商品列表中的筛选
     @apiSampleRequest /mobile/filter
     """
     def getCategoryAttribute(self, bc, cid):
@@ -674,6 +674,7 @@ class MobileFilterHandler(MobileBaseHandler):
         result = {'flag': 0, 'msg': '', "data": {}}
         id = self.get_argument("id", None)
         flag = self.get_argument("flag", None)
+        is_mine = self.get_argument("is_mine", '')
 
         if not (flag and id):
             result['msg'] = u'分类或品牌不能为空'
@@ -711,6 +712,16 @@ class MobileFilterHandler(MobileBaseHandler):
                 })
                 for bc in brandCategorys:
                     result['data']['filter_items'] += self.getCategoryAttribute(bc, bc.category.id)
+                if is_mine == '1':
+                    user = self.get_user()
+                    if user and user.store and user.store.store_type == 1:
+                        result['data']['filter_items'].append({
+                            'cid': id,
+                            'ename': 'service_area',
+                            'aid': -1,
+                            'name': u'品牌',
+                            'values': [{'id': service_area.id, 'name': service_area.name} for service_area in user.store.service_areas]
+                        })
             else:
                 result['msg'] = u'未查到该品牌'
                 self.write(simplejson.dumps(result))
@@ -753,7 +764,7 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
             fts = []
             c = Category.get(id=category)
             for i, a in enumerate(c.attributes):
-                cais = CategoryAttributeItems.select().where((CategoryAttributeItems.category_attribute==a) & (CategoryAttributeItems.id<<attribute))
+                cais = CategoryAttributeItems.select().where((CategoryAttributeItems.category_attribute == a) & (CategoryAttributeItems.id << attribute))
                 for j, cai in enumerate(cais):
                     if j == 0:
                         fts.append((ProductAttributeValue.value == cai.name))
@@ -768,7 +779,7 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
             ft = (Product.id << pids)
         elif category:
             ft &= (Product.category == category)
-        ft &= ((StoreProductPrice.price>0) & (StoreProductPrice.active==1) & (ProductRelease.active==1))
+        ft &= ((StoreProductPrice.price > 0) & (StoreProductPrice.active == 1) & (ProductRelease.active == 1))
         if keyword:
             keyword = '%' + '%'
             ft &= (Product.name % keyword)
@@ -838,16 +849,20 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
             result['data']['products'] = []
         else:
             result['data']['products'] = self.getProductList(keyword, sort, categories[0], brands, attributes, index, area_code)
+
+        result['data']['category'] = ''
+        result['data']['brand'] = ''
         if category or brand:
             result['data']['category'] = category
             result['data']['brand'] = brand
         else:
             try:
-                result['data']['category'] = Product.get(id=result['data']['products'][0]['pid']).category.id
-                result['data']['brand'] = Product.get(id=result['data']['products'][0]['pid']).brand.id
+                if u'油' in keyword or u'仪' in keyword:
+                    result['data']['category'] = Product.get(id=result['data']['products'][0]['pid']).category.id
+                else:
+                    result['data']['brand'] = Product.get(id=result['data']['products'][0]['pid']).brand.id
             except Exception, e:
-                result['data']['category'] = ''
-                result['data']['brand'] = ''
+                pass
         self.write(simplejson.dumps(result))
         self.finish()
 
