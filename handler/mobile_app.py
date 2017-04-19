@@ -16,6 +16,7 @@ from lib.payment.upay import Trade
 from lib.payment.wxPay import UnifiedOrder_pub
 from lib.route import route
 from model import *
+from mqProcess.jpushhelper import set_device_info
 
 
 def get_insurance(area_code):
@@ -242,6 +243,8 @@ class MobileLoginHandler(MobileBaseHandler):
 
     @apiParam {String} mobile 电话号码
     @apiParam {String} password 密码
+    @apiParam {String} jpush 极光推送标识符
+    @apiParam {Sting} apptype 应用标识符 1 安卓 2 苹果
 
     @apiSampleRequest /mobile/login
     """
@@ -249,6 +252,8 @@ class MobileLoginHandler(MobileBaseHandler):
         result = {'flag': 0, 'msg': '', "data": {}}
         mobile = self.get_body_argument("mobile", None)
         password = self.get_body_argument("password", None)
+        jpushtag = self.get_body_argument('jpush', None)
+        apptype = self.get_body_argument('apptype', None)
         if mobile and password:
             try:
                 user = User.get(User.mobile == mobile)
@@ -268,6 +273,8 @@ class MobileLoginHandler(MobileBaseHandler):
                             result['data']['token'] = token
                             result['data']['uid'] = user.id
                             user.updatesignin(token)
+                            if jpushtag:
+                                set_device_info(jpushtag,[user.store.area_code],user.mobile)
                         else:
                             result['msg'] = '登录失败'
                     else:

@@ -10,7 +10,7 @@ import simplejson
 import setting
 from dayuSms import sendmsg
 from mqProcess.emailhelper import sendemail
-#from mqProcess.jpushhelper import pushmsg
+from mqProcess.jpushhelper import send_users_base_alias,send_users_base_tags
 
 logger = logging.getLogger('startMQProcess')
 logger.addHandler(logging.StreamHandler())
@@ -38,8 +38,11 @@ with rabbitpy.Connection(url) as conn:
                             logging.error(pushcontent['apptype'])
                             logging.error(pushcontent['body'])
                             logging.error(pushcontent['receiver'])
-
-                            #pushmsg(1, pushcontent['body'], pushcontent['receiver'])
+                            logging.errror(pushcontent['pushtype'])
+                            if pushcontent['pushtype'] == 'alias':
+                                send_users_base_alias(pushcontent['alias'],pushcontent['body'])
+                            else:
+                                send_users_base_tags(pushcontent['tags'],pushcontent['body'])
                         except Exception, e:
                             logging.error(e.message)
                     else:
