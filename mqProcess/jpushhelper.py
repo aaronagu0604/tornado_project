@@ -6,7 +6,7 @@ import logging
 import setting
 
 _jpush = jpush.JPush(setting.jpush_key, setting.jpush_secret)
-device = _jpush.create_device()
+
 
 '''
 # 设置设备信息（标签与别名）
@@ -15,15 +15,16 @@ device = _jpush.create_device()
 @ apiParam {String} alias 推送别名
 '''
 def set_device_info(regist_id, tags=[], alias=None):
-    reg_id = regist_id
-    entity = {}
+    device = _jpush.create_device()
 
-    if tags:
-        entity['tag'] = _jpush.divece(tags)
+    reg_id = regist_id
+    entity = jpush.device_tag(jpush.add("shanxi", "xian"))
+
     if alias:
         entity['alias'] = alias
 
-    result = device.set_deviceinfo(reg_id, entity)
+    print entity
+    result = device.set_devicemobile(reg_id, entity)
 
 '''
 # 根据标标签推送
@@ -59,9 +60,9 @@ def send_users_base_alias(alias, body):
     push.send()
 
 if __name__ == '__main__':
-    regist=None
-    tags = []
-    alias = None
+    regist='101d85590977d2a2e49'
+    tags = ['shanxi', 'xian']
+    alias = 'guoxiaohong'
     set_device_info(regist,tags,alias)
     send_users_base_alias(alias, 'ceshi for jpush base alias')
     send_users_base_tags(tags,'ceshi for jpush base tags')

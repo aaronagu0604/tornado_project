@@ -19,6 +19,9 @@ ADMIN_PAGESIZE = 20  # 管理后台页面数据条数
 USER_PAGESIZE = 10  # 商家后台页面数据条数
 MOBILE_PAGESIZE = 20  # 移动端数据条数
 
+jpush_key = '9f9e2aa1b214a96c4b149528'
+jpush_secret = '719a15df65626c0a50e60fc6'
+
 COM_TEL = '4006904200'  # 客服热线
 
 MQSERVER = '127.0.0.1'
