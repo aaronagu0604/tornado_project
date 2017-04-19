@@ -676,17 +676,18 @@ class MobileFilterHandler(MobileBaseHandler):
             flag = int(flag)
             id = int(id)
 
-        result['data']['categoryList'] = []
-        result['data']['brandList'] = []
+        result['data']['filter_items'] = []
         if flag == 2:    # 分类一定
             brandCategorys = BrandCategory.select().where(BrandCategory.category == id)
             if brandCategorys.count() > 0:
-                result['data']['categoryList'] = self.getCategoryAttribute(brandCategorys[0], brandCategorys[0].category.id)
-                for bc in brandCategorys:
-                    result['data']['brandList'].append({
-                        'id': bc.brand.id,
-                        'name': bc.brand.name
-                    })
+                result['data']['filter_items'].append({
+                    'cid': id,
+                    'ename': 'pp',
+                    'aid': 0,
+                    'name': u'品牌',
+                    'values': [{'id': bc.brand.id, 'name': bc.brand.name} for bc in brandCategorys]
+                })
+                result['data']['filter_items'] += self.getCategoryAttribute(brandCategorys[0], brandCategorys[0].category.id)
             else:
                 result['msg'] = u'未查到该分类'
                 self.write(simplejson.dumps(result))
@@ -694,12 +695,15 @@ class MobileFilterHandler(MobileBaseHandler):
         elif flag == 1:  # 品牌一定
             brandCategorys = BrandCategory.select().where(BrandCategory.brand == id)
             if brandCategorys.count() > 0:
-                result['data']['brandList'].append({
-                    'id': brandCategorys[0].brand.id,
-                    'name': brandCategorys[0].brand.name
+                result['data']['filter_items'].append({
+                    'cid': id,
+                    'ename': 'pp',
+                    'aid': 0,
+                    'name': u'品牌',
+                    'values': [{'id': brandCategorys[0].brand.id, 'name': brandCategorys[0].brand.name}]
                 })
                 for bc in brandCategorys:
-                    result['data']['categoryList'] += self.getCategoryAttribute(bc, bc.category.id)
+                    result['data']['filter_items'] += self.getCategoryAttribute(bc, bc.category.id)
             else:
                 result['msg'] = u'未查到该品牌'
                 self.write(simplejson.dumps(result))
