@@ -1257,7 +1257,7 @@ class MobileMyProductsHandler(MobileBaseHandler):
     """
     @require_auth
     def get(self):
-        result = {'flag': 1, 'msg': '', "data": {'products': [], 'brand': []}}
+        result = {'flag': 1, 'msg': '', "data": {'products': [], 'brand': ''}}
         keyword = self.get_argument('keyword', '')
         area_code = self.get_argument('area_code', '')
         page = self.get_argument('page', '')
@@ -1278,10 +1278,7 @@ class MobileMyProductsHandler(MobileBaseHandler):
             ft &= (Product.brand << ft_brand)
         product_releases = ProductRelease.select().join(StoreProductPrice).where(ft)
         for product_release in product_releases:
-            result['data']['brand'].append({
-                'id': product_release.product.brand.id,
-                'name': product_release.product.brand.name
-            })
+            result['data']['brand'] = result['data']['brand'] + ',' + str(product_release.product.brand.id)
         prs = product_releases.paginate(page, pagesize)
         for product_release in prs:
             result['data']['products'].append({
