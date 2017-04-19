@@ -1249,22 +1249,21 @@ class MobileMyProductsHandler(MobileBaseHandler):
 
     @apiHeader {String} token 用户登录凭证
 
-    @apiParam {String} keyword 关键字搜索
-    @apiParam {String} area_code 地区code 逗号分隔
-    @apiParam {String} category 分类ID， 多选, 例：1,2,3
+    @apiParam {String} area_code 地区code 逗号分隔，例： 00270001,00270002
     @apiParam {String} brand 品牌ID组合， 多选, 例：1,2,3
-    @apiParam {String} attribute 属性ID组合, 多选, 例： 1,2,3
+    @apiParam {Int} page 页数
 
     @apiSampleRequest /mobile/myproducts
     """
     @require_auth
     def get(self):
-        result = {'flag': 1, 'msg': '', "data": {'products': [], 'category': '', 'brand': ''}}
+        result = {'flag': 1, 'msg': '', "data": {'products': [], 'brand': []}}
         keyword = self.get_argument('keyword', '')
         area_code = self.get_argument('area_code', '')
-        category = self.get_argument('category', '')
+        page = self.get_argument('page', '')
+        page = int(page) if page else 1
+        pagesize = setting.MOBILE_PAGESIZE
         brand = self.get_argument('brand', '')
-        attribute = self.get_argument("attribute", '')
         store = self.get_user().store
 
         ft = (ProductRelease.store == store)
@@ -1274,32 +1273,17 @@ class MobileMyProductsHandler(MobileBaseHandler):
         if area_code:
             area_code = area_code.strip(',').split(',')
             ft &= (StoreProductPrice.area_code << area_code)
-        categories = []
-        if category:
-            categories = list(set(category.strip(',').split(',')))
-            if len(categories) != 1:
-                self.write(simplejson.dumps(result))
-                return
-            else:
-                ft &= (Product.category == categories[0])
         if brand:
             ft_brand = brand.strip(',').split(',')
             ft &= (Product.brand << ft_brand)
         product_releases = ProductRelease.select().join(StoreProductPrice).where(ft)
-        pr_ids = [product_release.id for product_release in product_releases]
-        ft = (ProductRelease.id << pr_ids)
-        if categories and attribute:
-            attribute = attribute.strip(',').split(',')
-            c = Category.get(id=categories[0])
-            ft1 = None
-            for i, a in enumerate(c.attributes):
-                cais = CategoryAttributeItems.select().where((CategoryAttributeItems.category_attribute == a) & (CategoryAttributeItems.id << attribute))
-                for j, cai in enumerate(cais):
-                    ft2 = (ProductAttributeValue.value == cai.name) if j == 0 else ft2 | (ProductAttributeValue.value == cai.name)
-                ft1 = ft2 if i == 0 else ft1 & ft2
-            if ft1:
-                product_releases = ProductRelease.select().join(Product).where(ft & ft1)
         for product_release in product_releases:
+            result['data']['brand'].append({
+                'id': product_release.product.brand.id,
+                'name': product_release.product.brand.name
+            })
+        prs = product_releases.paginate(page, pagesize)
+        for product_release in prs:
             result['data']['products'].append({
                 'pid': product_release.product.id,
                 'prid': product_release.id,
@@ -1308,8 +1292,6 @@ class MobileMyProductsHandler(MobileBaseHandler):
                 'attributes': [attributes.value for attributes in product_release.product.attributes],
                 'area_price': [{'sppid': spp.id, 'area': spp.area_code, 'price': spp.price, 'active': spp.active} for spp in product_release.area_prices]
             })
-        result['data']['category'] = category
-        result['data']['brand'] = brand
         self.write(simplejson.dumps(result))
 
 
@@ -1318,7 +1300,7 @@ class MobileFilterMyProductsHandler(MobileBaseHandler):
     """
     @apiGroup mine
     @apiVersion 1.0.0
-    @api {get} /mobile/filtermyproducts 13. 我的商品筛选(/mobile/filter代替本接口)
+    @api {get} /mobile/filtermyproducts 13.
     @apiDescription 我的商品筛选
 
     @apiHeader {String} token 用户登录凭证
@@ -1327,10 +1309,9 @@ class MobileFilterMyProductsHandler(MobileBaseHandler):
     """
     @require_auth
     def get(self):
-        result = {'flag': 0, 'msg': '', "data": {}}
+        result = {'flag': 1, 'msg': '', "data": {}}
         store = self.get_user().store
         brand_list = []
-        category_list = []
         serve_area_list = []
         for p in store.products:
             if p.brand.name not in brand_list:
@@ -1338,23 +1319,15 @@ class MobileFilterMyProductsHandler(MobileBaseHandler):
                     'name': p.brand.name,
                     'id': p.brand.id
                 })
-            if p.category.name not in category_list:
-                category_list.append({
-                    'name': p.category.name,
-                    'id': p.category.id
-                })
         for service_area in store.service_areas:
             serve_area_list.append({
                 'name': service_area.area.name,
                 'area_code': service_area.area_code
             })
-
         result['data'] = {
             'brand': brand_list,
-            'category': category_list,
             'serve_area': serve_area_list
         }
-        result['flag'] = 1
         self.write(simplejson.dumps(result))
 
 

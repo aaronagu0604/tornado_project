@@ -636,7 +636,6 @@ class MobileFilterHandler(MobileBaseHandler):
     @apiHeader {String} token 用户登录凭证
     @apiParam {Int} flag 1品牌 2分类
     @apiParam {Int} id 品牌或者分类ID
-    @apiParam {String} is_mine 1我的商品 非1或不传商品列表中的筛选
     @apiSampleRequest /mobile/filter
     """
     def getCategoryAttribute(self, bc, cid):
@@ -674,7 +673,6 @@ class MobileFilterHandler(MobileBaseHandler):
         result = {'flag': 0, 'msg': '', "data": {}}
         id = self.get_argument("id", None)
         flag = self.get_argument("flag", None)
-        is_mine = self.get_argument("is_mine", '')
 
         if not (flag and id):
             result['msg'] = u'分类或品牌不能为空'
@@ -712,16 +710,6 @@ class MobileFilterHandler(MobileBaseHandler):
                 })
                 for bc in brandCategorys:
                     result['data']['filter_items'] += self.getCategoryAttribute(bc, bc.category.id)
-                if is_mine == '1':
-                    user = self.get_user()
-                    if user and user.store and user.store.store_type == 1:
-                        result['data']['filter_items'].append({
-                            'cid': id,
-                            'ename': 'service_area',
-                            'aid': -1,
-                            'name': u'品牌',
-                            'values': [{'id': service_area.id, 'name': service_area.name} for service_area in user.store.service_areas]
-                        })
             else:
                 result['msg'] = u'未查到该品牌'
                 self.write(simplejson.dumps(result))
