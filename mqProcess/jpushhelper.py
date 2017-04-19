@@ -63,6 +63,21 @@ def send_users_base_alias(alias, body):
     print push.payload
     push.send()
 
+def send_users_base_regid(reg_id, body):
+    push = _jpush.create_push()
+    alias1 = {"registration_id": [reg_id]}
+    # push.audience = jpush.audience(
+    #     alias1
+    # )
+    push.audience = jpush.all_
+    ios_msg = jpush.ios(alert=body, badge="+1", sound="a.caf", extras={'k1': 'v1'})
+    android_msg = jpush.android(alert=body)
+    push.notification = jpush.notification(alert=body, android=android_msg, ios=ios_msg)
+
+    push.platform = jpush.all_
+    print push.payload
+    push.send()
+
 def aliasuser():
     device = _jpush.create_device()
     alias = "guoxiaohong"
@@ -73,12 +88,18 @@ def taglist():
     device = _jpush.create_device()
     print device.get_taglist()
 
+def getdeviceinfo(reg_id):
+    device = _jpush.create_device()
+    device.get_deviceinfo(reg_id)
+
 if __name__ == '__main__':
     regist='101d85590977d2a2e49'
     tags = ['shanxi', 'xian']
     alias = ['guoxiaohong']
     # aliasuser()
     # taglist()
-    set_device_info(regist,tags,alias)
+    # getdeviceinfo(regist)
+    # set_device_info(regist,tags,alias)
+    send_users_base_regid(regist,'ceshi for jpush base alias')
     # send_users_base_alias(alias, 'ceshi for jpush base alias')
     # send_users_base_tags(tags,'ceshi for jpush base tags')
