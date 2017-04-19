@@ -1204,6 +1204,7 @@ class MobileMoneyRecordHandler(MobileBaseHandler):
                 'process_message': record.process_message,
                 'in_num': record.in_num,
                 'money': record.money,
+                'status': record.status,
                 'apply_time': time.strftime('%Y-%m-%d %H:%M:S', time.localtime(record.apply_time)),
                 'processing_time': time.strftime('%Y-%m-%d %H:%M:S', time.localtime(record.processing_time))
             })
