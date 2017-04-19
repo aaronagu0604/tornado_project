@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # coding=utf8
 
-import jpush as jpush
+import jpush
 import logging
 import setting
-
+import traceback
 _jpush = jpush.JPush(setting.jpush_key, setting.jpush_secret)
 
 
@@ -23,8 +23,9 @@ def set_device_info(regist_id, tags=[], alias=None):
     if alias:
         entity['alias'] = alias
 
-    print entity
+    print (entity)
     result = device.set_devicemobile(reg_id, entity)
+
 
 '''
 # 根据标标签推送
@@ -40,7 +41,7 @@ def send_users_base_tags(tags, body):
     ios_msg = jpush.ios(alert=body, badge="+1", sound="a.caf", extras={'k1': 'v1'})
     android_msg = jpush.android(alert=body)
     push.notification = jpush.notification(alert=body, android=android_msg, ios=ios_msg)
-
+    print push.payload
     push.send()
 '''
 # 根据别名推送
@@ -49,20 +50,35 @@ def send_users_base_tags(tags, body):
 '''
 def send_users_base_alias(alias, body):
     push = _jpush.create_push()
-    alias = {"alias": [alias]}
-    push.audience = jpush.audience(alias)
+    alias1 = {"alias": alias}
+    push.audience = jpush.audience(
+        alias1
+    )
 
     ios_msg = jpush.ios(alert=body, badge="+1", sound="a.caf", extras={'k1': 'v1'})
     android_msg = jpush.android(alert=body)
     push.notification = jpush.notification(alert=body, android=android_msg, ios=ios_msg)
 
     push.platform = jpush.all_
+    print push.payload
     push.send()
+
+def aliasuser():
+    device = _jpush.create_device()
+    alias = "guoxiaohong"
+    platform = "android,ios"
+    print device.get_aliasuser(alias, platform)
+
+def taglist():
+    device = _jpush.create_device()
+    print device.get_taglist()
 
 if __name__ == '__main__':
     regist='101d85590977d2a2e49'
     tags = ['shanxi', 'xian']
-    alias = 'guoxiaohong'
+    alias = ['guoxiaohong']
+    # aliasuser()
+    # taglist()
     set_device_info(regist,tags,alias)
-    send_users_base_alias(alias, 'ceshi for jpush base alias')
-    send_users_base_tags(tags,'ceshi for jpush base tags')
+    # send_users_base_alias(alias, 'ceshi for jpush base alias')
+    # send_users_base_tags(tags,'ceshi for jpush base tags')
