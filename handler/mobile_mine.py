@@ -960,6 +960,7 @@ class MobileWithdrawCashHandler(MobileBaseHandler):
                 now = int(time.time())
                 store.price -= money
                 s = StoreBankAccount.get(id=bank_id)
+                result['flag'] = 1
                 if account_type == 0:
                     account_truename = s.bank_truename
                     account_account = s.bank_account
