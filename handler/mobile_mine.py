@@ -1182,7 +1182,6 @@ class MobileMoneyRecordHandler(MobileBaseHandler):
     @apiDescription 绑定/修改支付宝
     @apiHeader {String} token 用户登录凭证
     @apiParam {String} process_type 1入账 2出账 不传则全部
-    @apiParam {String} status 0未处理 1已处理 不传全部
     @apiParam {String} index 分页页数：从1开始
     @apiSampleRequest /mobile/moneyrecord
     """
@@ -1191,12 +1190,9 @@ class MobileMoneyRecordHandler(MobileBaseHandler):
         result = {'flag': 1, 'msg': '', 'data': []}
         store = self.get_user().store
         process_type = self.get_argument('process_type', None)
-        status = self.get_argument('status', None)
         index = int(self.get_argument('index', 1))
 
         ft = (MoneyRecord.store == store)
-        if status:
-             ft &= (MoneyRecord.status == int(status))
         if process_type:
             ft &= (MoneyRecord.process_type == int(process_type))
         money_records = MoneyRecord.select().where(ft)
