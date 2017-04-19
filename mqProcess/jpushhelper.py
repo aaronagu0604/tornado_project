@@ -19,13 +19,11 @@ def set_device_info(regist_id, tags=[], alias=None):
     entity = {}
 
     if tags:
-        entity['tag'] = {'add': tags}
+        entity['tag'] = _jpush.divece(tags)
     if alias:
         entity['alias'] = alias
 
     result = device.set_deviceinfo(reg_id, entity)
-    print (result.status_code)
-    print (result.payload)
 
 '''
 # 根据标标签推送
@@ -61,4 +59,9 @@ def send_users_base_alias(alias, body):
     push.send()
 
 if __name__ == '__main__':
-    pass
+    regist=None
+    tags = []
+    alias = None
+    set_device_info(regist,tags,alias)
+    send_users_base_alias(alias, 'ceshi for jpush base alias')
+    send_users_base_tags(tags,'ceshi for jpush base tags')

@@ -19,7 +19,7 @@ class AjaxGetSubAreas(BaseHandler):
     def get(self):
         result = {'flag': 0, 'data': [], 'msg': ''}
         try:
-            parent_code = self.get_argument("parent_code", '')
+            parent_code = self.get_argument("pcode", '')
             keyword = '' + parent_code + '%'
             ft = ((Area.code % keyword) & (Area.is_delete == 0) & (db.fn.length(Area.code) == len(parent_code) + 4))
 
@@ -32,6 +32,8 @@ class AjaxGetSubAreas(BaseHandler):
                     'code': item.code,
                     'name': item.name
                 })
+            else:
+                result['msg'] = u'无对应子区域'
         except Exception, ex:
             result["flag"] = 0
             result["msg"] = ex.message
