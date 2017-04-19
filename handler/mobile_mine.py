@@ -955,33 +955,38 @@ class MobileWithdrawCashHandler(MobileBaseHandler):
         money = int(self.get_body_argument('money', None))
         bank_id = self.get_body_argument('bank_id', None)
         account_type = int(self.get_body_argument('account_type', 0))
-        if money and bank_id:
-            if money <= store.price:
-                now = int(time.time())
-                store.price -= money
-                s = StoreBankAccount.get(id=bank_id)
-                result['flag'] = 1
-                if account_type == 0:
-                    account_truename = s.bank_truename
-                    account_account = s.bank_account
-                    account_name = s.bank_name
-                    MoneyRecord.create(user=user, store=user.store, process_type=1, process_log='提现',
-                                       out_account_type=account_type, out_account_truename=account_truename,
-                                       out_account_account=account_account, out_account_name=account_name,
-                                       money=money, status=0, apply_time=now)
-                elif account_type == 1:
-                    account_truename = s.alipay_truename
-                    account_account = s.alipay_account
-                    MoneyRecord.create(user=user, store=user.store, process_type=1, process_log='提现',
-                                       out_account_type=account_type, out_account_truename=account_truename,
-                                       ut_account_account=account_account, money=money, status=0, apply_time=now)
+        try:
+            if money and bank_id:
+                if money <= store.price:
+                    now = int(time.time())
+                    store.price -= money
+                    s = StoreBankAccount.get(id=bank_id)
+                    result['flag'] = 1
+                    if account_type == 0:
+                        account_truename = s.bank_truename
+                        account_account = s.bank_account
+                        account_name = s.bank_name
+                        MoneyRecord.create(user=user, store=user.store, process_type=1, process_log='提现',
+                                           out_account_type=account_type, out_account_truename=account_truename,
+                                           out_account_account=account_account, out_account_name=account_name,
+                                           money=money, status=0, apply_time=now)
+                        store.save()
+                    elif account_type == 1:
+                        account_truename = s.alipay_truename
+                        account_account = s.alipay_account
+                        MoneyRecord.create(user=user, store=user.store, process_type=1, process_log='提现',
+                                           out_account_type=account_type, out_account_truename=account_truename,
+                                           ut_account_account=account_account, money=money, status=0, apply_time=now)
+                        store.save()
+                    else:
+                        result['msg'] = '目前仅支持银联与支付宝'
                 else:
-                    result['msg'] = '目前仅支持银联与支付宝'
+                    result['msg'] = '提现金额不足'
             else:
-                result['msg'] = '提现金额不足'
-        else:
-            result['msg'] = '参数有误'
-
+                result['msg'] = '参数有误'
+        except Exception,e:
+            result['flag'] = 0
+            print e
         self.write(simplejson.dumps(result))
 
 
@@ -1177,6 +1182,8 @@ class MobileMoneyRecordHandler(MobileBaseHandler):
     @apiDescription 绑定/修改支付宝
     @apiHeader {String} token 用户登录凭证
     @apiParam {String} process_type 1入账 2出账 不传则全部
+    @apiParam {String} status 0未处理 1已处理 不传全部
+    @apiParam {String} index 分页页数：从1开始
     @apiSampleRequest /mobile/moneyrecord
     """
     @require_auth
@@ -1184,11 +1191,16 @@ class MobileMoneyRecordHandler(MobileBaseHandler):
         result = {'flag': 1, 'msg': '', 'data': []}
         store = self.get_user().store
         process_type = self.get_argument('process_type', None)
+        status = self.get_argument('status', None)
+        index = int(self.get_argument('index', 1))
 
-        ft = ((MoneyRecord.store==store) & (MoneyRecord.status==1))
+        ft = (MoneyRecord.store == store)
+        if status:
+             ft &= (MoneyRecord.status == int(status))
         if process_type:
-            ft &= (MoneyRecord.process_type == process_type)
+            ft &= (MoneyRecord.process_type == int(process_type))
         money_records = MoneyRecord.select().where(ft)
+        money_records = money_records.paginate(index, setting.MOBILE_PAGESIZE)
         for record in money_records:
             result['data'].append({
                 'record_id': record.id,
