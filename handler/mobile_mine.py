@@ -1251,7 +1251,7 @@ class MobileMyProductsHandler(MobileBaseHandler):
 
     @apiParam {String} area_code 地区code 逗号分隔，例： 00270001,00270002
     @apiParam {String} brand 品牌ID组合， 多选, 例：1,2,3
-    @apiParam {Int} page 页数
+    @apiParam {Int} index 页数
 
     @apiSampleRequest /mobile/myproducts
     """
@@ -1260,8 +1260,8 @@ class MobileMyProductsHandler(MobileBaseHandler):
         result = {'flag': 1, 'msg': '', "data": {'products': [], 'brand': ''}}
         keyword = self.get_argument('keyword', '')
         area_code = self.get_argument('area_code', '')
-        page = self.get_argument('page', '')
-        page = int(page) if page else 1
+        index = self.get_argument('index', '')
+        index = int(index) if index else 1
         pagesize = setting.MOBILE_PAGESIZE
         brand = self.get_argument('brand', '')
         store = self.get_user().store
@@ -1279,7 +1279,7 @@ class MobileMyProductsHandler(MobileBaseHandler):
         product_releases = ProductRelease.select().join(StoreProductPrice).where(ft)
         for product_release in product_releases:
             result['data']['brand'] = result['data']['brand'] + ',' + str(product_release.product.brand.id)
-        prs = product_releases.paginate(page, pagesize)
+        prs = product_releases.paginate(index, pagesize)
         for product_release in prs:
             result['data']['products'].append({
                 'pid': product_release.product.id,

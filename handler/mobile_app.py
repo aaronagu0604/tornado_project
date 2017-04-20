@@ -739,7 +739,7 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
     @apiParam {String} category 分类ID， 多选, 例：1,2,3
     @apiParam {String} brand 品牌ID组合， 多选, 例：1,2,3
     @apiParam {String} attribute 属性ID组合, 多选, 例： 1,2,3
-    @apiParam {Int} index
+    @apiParam {Int} index 页数
 
     @apiSampleRequest /mobile/discoverproducts
     """
@@ -828,7 +828,6 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
         brand = self.get_argument("brand", '')
         attribute = self.get_argument("attribute", '')
         index = self.get_argument("index", None)
-
         index = int(index) if index else 1
         categories = list(set(category.strip(',').split(',')))
         brands = brand.strip(',').split(',') if brand else []
@@ -1011,50 +1010,50 @@ class MobileShopCarHandler(MobileBaseHandler):
     @apiDescription app  手机端购物车内容获取
 
     @apiHeader {String} token 用户登录凭证
+    @apiParam {Int} index 页数
 
     @apiSampleRequest /mobile/shopcar
     """
+    @require_auth
     def get(self):
         result = {'flag': 0, 'msg': '', "data": []}
         user = self.get_user()
-        result['login_flag'] = 0
-        if user:
-            result['login_flag'] = 1
-            saler_store_list = []
-            for item in user.store.cart_items.order_by(ShopCart.created.desc()):
-                if (item.store_product_price.active and item.store_product_price.product_release.active and
-                        item.store_product_price.product_release.product.active):
-                    saler_store_id = item.store_product_price.store.id
-                    if saler_store_id not in saler_store_list:
-                        saler_store_list.append(saler_store_id)
-                        result['data'].append({
-                            'saler_store_name': item.store_product_price.store.name,
-                            'products': [{
-                                'sppid': item.store_product_price.id,
-                                'prid': item.store_product_price.product_release.id,
-                                'pid': item.store_product_price.product_release.product.id,
-                                'name': item.store_product_price.product_release.product.name,
-                                'price': item.store_product_price.price,
-                                'unit': item.store_product_price.product_release.product.unit,
-                                'cover': item.store_product_price.product_release.product.cover,
-                                'quantity': item.quantity
-                            }]
-                        })
-                    else:
-                        result['data'][saler_store_list.index(saler_store_id)]['products'].append({
-                            'sppid': item.store_product_price.id,
-                            'prid': item.store_product_price.product_release.id,
-                            'pid': item.store_product_price.product_release.product.id,
-                            'name': item.store_product_price.product_release.product.name,
-                            'price': item.store_product_price.price,
-                            'unit': item.store_product_price.product_release.product.unit,
-                            'cover': item.store_product_price.product_release.product.cover,
-                            'quantity': item.quantity
-                        })
-
+        index = self.get_argument('index', '')
+        index = int(index) if index else 1
+        saler_store_list = []
+        for item in user.store.cart_items.order_by(ShopCart.created.desc()).paginate(index, setting.MOBILE_PAGESIZE):
+            is_sale = (item.store_product_price.active & item.store_product_price.product_release.active &
+                       item.store_product_price.product_release.product.active)
+            saler_store_id = item.store_product_price.store.id
+            if saler_store_id not in saler_store_list:
+                saler_store_list.append(saler_store_id)
+                result['data'].append({
+                    'saler_store_name': item.store_product_price.store.name,
+                    'products': [{
+                        'sppid': item.store_product_price.id,
+                        'prid': item.store_product_price.product_release.id,
+                        'pid': item.store_product_price.product_release.product.id,
+                        'name': item.store_product_price.product_release.product.name,
+                        'price': item.store_product_price.price,
+                        'unit': item.store_product_price.product_release.product.unit,
+                        'cover': item.store_product_price.product_release.product.cover,
+                        'quantity': item.quantity,
+                        'is_sale': is_sale
+                    }]
+                })
+            else:
+                result['data'][saler_store_list.index(saler_store_id)]['products'].append({
+                    'sppid': item.store_product_price.id,
+                    'prid': item.store_product_price.product_release.id,
+                    'pid': item.store_product_price.product_release.product.id,
+                    'name': item.store_product_price.product_release.product.name,
+                    'price': item.store_product_price.price,
+                    'unit': item.store_product_price.product_release.product.unit,
+                    'cover': item.store_product_price.product_release.product.cover,
+                    'quantity': item.quantity,
+                    'is_sale': is_sale
+                })
             result['flag'] = 1
-        else:
-            result['msg'] = u'请先登录'
         self.write(simplejson.dumps(result))
         self.finish()
 
