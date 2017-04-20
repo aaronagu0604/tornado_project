@@ -964,7 +964,7 @@ class MobileAddShopCarHandler(MobileBaseHandler):
                 car.created = int(time.time())
                 car.save()
                 result['msg'] = u'添加成功'
-            result['flag'] = 1
+                result['flag'] = 1
         else:
             result['msg'] = u'传入参数异常'
         self.write(simplejson.dumps(result))

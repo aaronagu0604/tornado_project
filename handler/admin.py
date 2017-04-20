@@ -315,11 +315,21 @@ class ChangeReleaseAreaHandler(AdminBaseHandler):
         codes = [sa.area.code for sa in sas]
         items = Area.select().where(Area.pid >> None)
 
-        self.render('admin/user/change_release_area.html', codes=codes, items=items)
+        self.render('admin/user/change_release_area.html', codes=codes, items=items, sid=store_id)
 
     def post(self, store_id):
-        print '----------'
         print self.request.body
+        flag = self.get_body_argument('flag', '')
+        area_codes = self.get_body_argument('area_codes', '')
+
+        area_codes = area_codes.split(',')
+        if flag == '1':
+            sas = StoreArea.select().join(Area).where(StoreArea.store == store_id)
+            for sa in sas:
+                for area_code in area_codes:
+                    if area_code[len(sa.code)] == sa.code:
+                        area_codes.remove(area_code)
+
 
 
 @route(r'/admin/store_area_product', name='admin_store_area_product')  # 经销商产品地域价格信息

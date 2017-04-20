@@ -19,7 +19,8 @@
                 </div>
 
                 <div class="form-group has-success">
-                    <a href="#" class="btn btn-xs btn-success" onclick="publish()">提交</a>
+                    <a href="#" class="btn btn-xs btn-success" onclick="publish(1)">添加</a>
+                    <a href="#" class="btn btn-xs btn-success" onclick="publish(0)">删除</a>
                 </div>
             </form>
         </div>
@@ -41,7 +42,7 @@
 <script>
     var xsrf='{{handler.xsrf_token}}';
 
-    function publish() {
+    function publish(flag) {
         var zTree = $.fn.zTree.getZTreeObj("treeDemo");
         var nodes = zTree.getCheckedNodes(true);
         var check_list = [];
@@ -60,7 +61,7 @@
                     if(check_list.indexOf(nodes[i].data.substring(0, 4)) == -1 &&
                         check_list.indexOf(nodes[i].data) == -1)
                     {
-                        check_list.push(nodes[i].data)
+                        check_list.push(nodes[i].data);
                         codes.push(nodes[i].data);
                     }
                 }
@@ -71,13 +72,19 @@
             }
         }
         console.log(codes);
-//        if(codes.length > 0) {
-//            var url = '/admin/product_publish/{{s.id}}?codes=' + codes.toString();
-//            pop('发布商品', url);
-//        }
-//        else {
-//            layer.alert('请选择要发布的地区');
-//        }
+        if(codes.length > 0) {
+            $.post("/admin/change_release_area/{{sid}}", { _xsrf:xsrf, flag:flag, area_codes:codes.toString()}, function (data) {
+                console.debug('-----post success-----')
+//                data = jQuery.parseJSON(data);
+//                layer.alert(data.msg);
+//                if(data.flag==1){
+//                    location.reload();
+//                }
+            });
+        }
+        else {
+            layer.alert('请选择要发布的地区');
+        }
     }
 
     $(document).ready(function() {
