@@ -146,10 +146,10 @@ class MobileCheckVCodeAppHandler(MobileBaseHandler):
         mobile = self.get_body_argument('mobile', None)
         vcode = self.get_body_argument('vcode', None)
         flag = self.get_body_argument("flag", None)
-        if VCode.check_vcode(None, mobile, vcode, flag):
+        if VCode.check_vcode(mobile, vcode, flag):
             result['flag'] = 1
         else:
-            result['msg'] = "请输入正确的手机号或验证码"
+            result['msg'] = u'请输入正确的手机号或验证码'
         self.write(simplejson.dumps(result))
 
 
