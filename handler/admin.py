@@ -1748,7 +1748,7 @@ class SendMsgHandler(AdminBaseHandler):
         if sms_type == 0:
             if is_users == 'all_user':
                 content_log['content'] = u'为用户 所有用户 推送极光消息，消息内容：' + content
-                create_msg(simplejson.dumps({'body': content, 'jpushtype':'tags', 'tags':['all']}), 'all_jpush')
+                create_msg(simplejson.dumps({'body': content, 'jpushtype':'tags', 'tags':['all']}), 'jpush')
                 self.flash("推送成功")
             elif is_users == 'user':
                 if number:
@@ -1761,17 +1761,18 @@ class SendMsgHandler(AdminBaseHandler):
                 else:
                     self.flash("请输入电话号码！")
             elif is_users == 'group_user':
-                    if user_type > -1:
-                        content_log['content'] = u'为用户组 ' + str(user_type) + u' 推送极光消息，消息内容：' + content
-                        create_msg(simplejson.dumps({'body': content, 'jpushtype':'tags', 'tags':[user_type]}), 'jpush')
-                        self.flash("推送成功")
-                        # users = User.select(User.mobile).where((User.grade == user_type) & (User.isactive == 1)).dicts()
-                        # for u in users:
-                        #     if len(u['mobile']) == 11:
-                        #         sms = {'apptype': 1, 'body': content, 'receiver': [u['mobile']]}
-                        #         create_msg(simplejson.dumps(sms), 'jpush')
-                    else:
-                        self.flash("请选择分组")
+                content_log['content'] = u'为用户组 ' + str(user_type) + u' 推送极光消息，消息内容：' + content
+                tags = []
+                if province != '0':
+                    tags.append(province)
+                if city != '0':
+                    tags.append(city)
+                if district != '0':
+                    tags.append(district)
+                print user_type, tags
+                create_msg(simplejson.dumps({'body': content, 'jpushtype': 'tags', 'tags': tags}),
+                           'jpush')
+                self.flash("推送成功")
         # 短信
         elif sms_type == 1:
             if is_users and content:
