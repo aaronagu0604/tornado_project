@@ -117,6 +117,7 @@ def get_alipay_qrcode(total_price=0.01, subject='czjqrcodetest', body='testprodu
     res_data = urllib2.urlopen(req)
     res = res_data.read()
     resdic = simplejson.loads(res)
+    print resdic
     if resdic['alipay_trade_precreate_response']['msg'] == 'Success':
         return createqrcode(resdic['alipay_trade_precreate_response']['qr_code'])
     else:

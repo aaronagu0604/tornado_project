@@ -1680,7 +1680,7 @@ class MobileDeleteAddressHandler(MobileBaseHandler):
     @require_auth
     def post(self):
         user = self.get_user()
-        store_address_id = self.get_body_argument('store_address_id', None)
+        store_address_id = int(self.get_body_argument('store_address_id', None))
         result = {'flag': 0, 'msg': '', "data": {}}
         if user and store_address_id:
             query = StoreAddress.delete().where(StoreAddress.id == store_address_id)
