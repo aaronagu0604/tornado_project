@@ -749,22 +749,24 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
         ft = (Product.active==1)
         # 根据规格参数搜索
         if category and attribute:
-            fts = []
+            ft1 = ft2 = None
             c = Category.get(id=category)
             for i, a in enumerate(c.attributes):
-                cais = CategoryAttributeItems.select().where((CategoryAttributeItems.category_attribute == a) & (CategoryAttributeItems.id << attribute))
-                for j, cai in enumerate(cais):
-                    if j == 0:
-                        fts.append((ProductAttributeValue.value == cai.name))
-                    else:
-                        fts[i] |= (ProductAttributeValue.value == cai.name)
-            for i, f in enumerate(fts):
-                if i == 0:
-                    products = Product.select().join(ProductAttributeValue).where(f)
-                else:
-                    products = Product.select().join(ProductAttributeValue).where(f & (Product.id << pids))
+                cais = CategoryAttributeItems.select().where((CategoryAttributeItems.category_attribute == a.id) & (CategoryAttributeItems.id << attribute))
+                for cai in cais:
+                    ft2 = (ProductAttributeValue.value == cai.name) if not ft2 else ft2 | (ProductAttributeValue.value == cai.name)
+                if ft2:
+                    ft1 = ft2 if not ft1 else ft1 & ft2
+            if ft1:
+                products = Product.select().join(ProductAttributeValue).where(ft1)
                 pids = [product.id for product in products]
-            ft = (Product.id << pids)
+                ft = (Product.id << pids)
+            # for i, f in enumerate(fts):
+            #     if i == 0:
+            #         products = Product.select().join(ProductAttributeValue).where(f)
+            #     else:
+            #         products = Product.select().join(ProductAttributeValue).where(f & (Product.id << pids))
+            #     pids = [product.id for product in products]
         elif category:
             ft &= (Product.category == category)
         ft &= ((StoreProductPrice.price > 0) & (StoreProductPrice.active == 1) & (ProductRelease.active == 1))
@@ -829,8 +831,8 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
 
         index = int(index) if index else 1
         categories = list(set(category.strip(',').split(',')))
-        brands = brand.strip(',').split(',')
-        attributes = attribute.strip(',').split(',')
+        brands = brand.strip(',').split(',') if brand else []
+        attributes = attribute.strip(',').split(',') if attribute else []
         area_code = self.get_store_area_code()
 
         if len(categories) > 1:
