@@ -320,16 +320,41 @@ class ChangeReleaseAreaHandler(AdminBaseHandler):
     def post(self, store_id):
         print self.request.body
         flag = self.get_body_argument('flag', '')
-        area_codes = self.get_body_argument('area_codes', '')
-
-        area_codes = area_codes.split(',')
+        area_codes = self.get_body_argument('area_codes', '').split(',')
+        result = {'msg': ''}
         if flag == '1':
-            sas = StoreArea.select().join(Area).where(StoreArea.store == store_id)
-            for sa in sas:
+            for sa in StoreArea.select().join(Area).where(StoreArea.store == store_id):
                 for area_code in area_codes:
                     if area_code[len(sa.code)] == sa.code:
                         area_codes.remove(area_code)
+                        break
+            for area_code in area_codes:
+                try:
+                    aid = Area.get(code=area_code).id
+                    StoreArea.create(area=aid, store=store_id)
+                except Exception, e:
+                    pass
+            result['msg'] = u'添加成功，刷新销售商品页'
+        elif flag == '0':
+            sas = [sa.code for sa in StoreArea.select().join(Area).where(StoreArea.store == store_id)]
+            need_add_area = []
+            need_del_area = []
+            for area_code in area_codes:
+                for sa in sas:
+                    if area_code in sa.code:
+                        need_del_area.append(sa.code)
+                    if (sa.code in area_code) and (sa.code != area_code):
+                        Area.select().where(Area.code == sa.code) & (db.fn.Length(Area.code) == 4)
 
+            for area_code in area_codes:
+                try:
+                    aid = Area.get(code=area_code)
+                    StoreArea.delete().where((StoreArea.store == store_id) & (StoreArea.area == aid)).execute()
+                except Exception, e:
+                    pass
+            result['msg'] = u'删除成功，刷新销售商品页'
+        else:
+            result['msg'] = u'传入参数异常'
 
 
 @route(r'/admin/store_area_product', name='admin_store_area_product')  # 经销商产品地域价格信息

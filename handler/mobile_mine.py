@@ -1597,19 +1597,12 @@ class MobileReceiverAddressHandler(MobileBaseHandler):
     def get(self):
         result = {'flag': 0, 'msg': '', "data": []}
         store = self.get_user().store
-        for address in StoreAddress.select().where(StoreAddress.store==store).order_by(StoreAddress.is_default.desc()):
-            areas = Area.select().where(Area.code << [address.province, address.city, address.region])
-            area_map = {item.code: item.name for item in areas}
-
+        for address in StoreAddress.select().where(StoreAddress.store == store).order_by(StoreAddress.is_default.desc()):
             result['data'].append({
                 'address_id': address.id,
-                # 'store_name': store.name,
                 'province': address.province,
-                'province_name': area_map[address.province],
                 'city': address.city,
-                'city_name': area_map[address.city],
                 'district': address.region,
-                'district_name': area_map[address.region],
                 'address': address.address,
                 'receiver': address.name,
                 'mobile': address.mobile,
@@ -1625,8 +1618,7 @@ class MobileReceiverAddressHandler(MobileBaseHandler):
     @apiDescription 修改收货地址
 
     @apiHeader {String} token 用户登录凭证
-    @apiParam {Int} store_address_id 门店收货地址ID（仅创建新收货地址时不用传）
-    @apiParam {Int} cancel_def_id 取消收货地址的ID（仅修改默认收货地址时传）
+    @apiParam {Int} store_address_id 门店收货地址ID（创建新收货地址时不用传）
     @apiParam {String} receiver 收货人姓名
     @apiParam {String} mobile 收货人手机号
     @apiParam {String} province 省
@@ -1642,7 +1634,6 @@ class MobileReceiverAddressHandler(MobileBaseHandler):
         result = {'flag': 0, 'msg': '', "data": {}}
         user = self.get_user()
         store_address_id = self.get_body_argument('store_address_id', None)
-        cancel_def_id = self.get_body_argument('cancel_def_id', None)
         receiver = self.get_body_argument('receiver', None)
         mobile = self.get_body_argument('mobile', None)
         province = self.get_body_argument('province', None)
@@ -1652,15 +1643,15 @@ class MobileReceiverAddressHandler(MobileBaseHandler):
         is_default = int(self.get_body_argument('is_default', 0))
         created = int(time.time())
 
+        if is_default:
+            for store_address in user.store.addresses:
+                if store_address.is_default:
+                    store_address.is_default = 0
+                    store_address.save()
+
         if store_address_id:
             sa = StoreAddress.get(id=store_address_id)
-            if is_default:
-                sa.is_default = is_default
-                for store_address in user.store.addresses:
-                    if store_address.is_default:
-                        store_address.is_default = 0
-                        store_address.save()
-
+            sa.is_default = is_default
             if receiver:
                 sa.name = receiver
             if mobile:
@@ -1673,22 +1664,16 @@ class MobileReceiverAddressHandler(MobileBaseHandler):
                 sa.region = region
             if address:
                 sa.address = address
-
-            sa.create_by = user
             sa.save()
-            result['msg'] = '修改成功'
+            result['msg'] = u'修改成功'
         else:
-            if is_default:
-                for store_address in user.store.addresses:
-                    if store_address.is_default:
-                        store_address.is_default = 0
-                        store_address.save()
             StoreAddress.create(store=user.store, province=province, city=city, region=region, address=address,
                                 name=receiver, mobile=mobile, is_default=is_default, create_by=user, created=created)
-            result['msg'] = '创建成功'
+            result['msg'] = u'创建成功'
 
         result['flag'] = 1
         self.write(simplejson.dumps(result))
+
 
 @route(r'/mobile/deleteaddress',name='mobile_delete_receiver_address')
 class MobileDeleteAddressHandler(MobileBaseHandler):
@@ -1700,12 +1685,10 @@ class MobileDeleteAddressHandler(MobileBaseHandler):
         if user and store_address_id:
             query = StoreAddress.delete().where(StoreAddress.id == store_address_id)
             query.execute()
-
             result['flag'] = 1
         else:
-            result['msg'] = '传入参数异常'
+            result['msg'] = u'传入参数异常'
         self.write(simplejson.dumps(result))
-        self.finish()
 
 
 @route(r'/mobile/feedback', name='mobile_my_feedback')  # 意见反馈
