@@ -852,6 +852,8 @@ class MobileFundRechargeHandler(MobileBaseHandler):
     @apiDescription 资金充值
 
     @apiHeader {String} token 用户登录凭证
+    @apiParam {String} payment 1支付宝 2微信 3银联
+    @apiParam {Int} price充值金额
 
     @apiSampleRequest /mobile/fundrecharge
     """
