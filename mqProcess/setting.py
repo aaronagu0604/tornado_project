@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ######## jpush ########
+# jpush old key
 # jpush_key = 'bb9fc37f914d94589c6d7c4d'  # jpush key
 # jpush_secret = '0b058bd331eae435fa38f20e'  # jpush secret
 jpush_key = "9f9e2aa1b214a96c4b149528"
