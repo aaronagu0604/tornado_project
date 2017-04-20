@@ -272,6 +272,7 @@ def move_adminuser():
             code="",  # 旧的没找到，暂时设置空
             realname=item.realname,
             roles=item.roles,
+            area_code='',
             signuped=item.signuped,
             lsignined=item.lsignined,
             active=item.isactive
