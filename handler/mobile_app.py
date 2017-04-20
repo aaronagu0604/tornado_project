@@ -954,7 +954,7 @@ class MobileAddShopCarHandler(MobileBaseHandler):
         sppid = self.get_body_argument("sppid", None)
         quantity = self.get_body_argument("quantity", 1)
         if user and sppid:
-            has_product = ShopCart.select().where(ShopCart.store_product_price == sppid).count()
+            has_product = ShopCart.select().where((ShopCart.store_product_price == sppid) & (ShopCart.store == user.store)).count()
             if has_product > 0:
                 result['msg'] = u'该商品已存在'
             else:
@@ -993,13 +993,11 @@ class MobileDeleteShopCarHandler(MobileBaseHandler):
         result = {'flag': 0, 'msg': '', "data": {}}
         sppids = simplejson.loads(self.get_body_argument("sppids", '[]'))
         if user and len(sppids) > 0:
-            query = ShopCart.delete().where(ShopCart.store == user.store,
-                                            ShopCart.store_product_price << sppids)
+            query = ShopCart.delete().where(ShopCart.store == user.store, ShopCart.store_product_price << sppids)
             query.execute()
-
             result['flag'] = 1
         else:
-            result['msg'] = '传入参数异常'
+            result['msg'] = u'传入参数异常'
         self.write(simplejson.dumps(result))
         self.finish()
 
