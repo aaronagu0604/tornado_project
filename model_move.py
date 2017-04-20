@@ -4,10 +4,10 @@
 import time
 from peewee import *
 import hashlib
-from bootloader import db_move as db
+from bootloader import db
 from lib.util import vmobile
 import re
-
+import setting
 
 # 地区表
 class Area(db.Model):
@@ -59,6 +59,14 @@ class Area(db.Model):
         except:
             return ''
 
+    @staticmethod
+    def get_area_name(area_code):
+        try:
+            name = Area.get(code=area_code).name
+        except Exception, e:
+            name = None
+        return name
+
     class Meta:
         db_table = 'tb_area'
 
@@ -71,6 +79,7 @@ class AdminUser(db.Model):
     mobile = CharField(max_length=12)  # 手机号
     email = CharField(max_length=128)  # email
     code = CharField(max_length=20)  # 业务推广人员编号
+    area_code = CharField(max_length=40)  # 区域编码
     realname = CharField(max_length=32)  # 真实姓名
     roles = CharField(max_length=8)  # D开发人员；A管理员；Y运营；S市场；K客服；C仓库；Z直踩点；B编辑；G采购；P批发商；J经销商；R采购APP入库；+经销商价格修改权限（可组合，如：DA）
     signuped = IntegerField(default=0)  # 注册时间
@@ -106,8 +115,9 @@ class AdminUserLog(db.Model):
 # 门店
 class Store(db.Model):
     id = PrimaryKeyField()
-    store_type = IntegerField(default=1)  # 门店类型 1服务商 2社会修理厂（门店）
+    store_type = IntegerField(default=1)  # 门店类型 1经销商 2社会修理厂（门店）
     admin_code = CharField(max_length=20, null=True)  # 业务推广人员编号
+    franchiser = IntegerField(default=0)  # 如果门店是修理厂，该字段是给修理厂返油的经销商
     admin_user = ForeignKeyField(AdminUser, related_name='stores', db_column='admin_user_id', null=True)  # 业务推广人员
     name = CharField(max_length=100)  # 门店名称
     area_code = CharField(max_length=40)  # 区域编码
@@ -184,11 +194,11 @@ class VCode(db.Model):
             return False
 
     @staticmethod
-    def check_vcode(self, mobile, vcode, flag):
+    def check_vcode(mobile, vcode, flag):
         if not (mobile and vcode and flag):
             return False
         VCode.delete().where(VCode.created < (int(time.time()) - 10 * 60)).execute()
-        if VCode.select().where((VCode.mobile==mobile) & (VCode.vcode==vcode) & (VCode.flag==flag)).count() > 0:
+        if VCode.select().where((VCode.mobile == mobile) & (VCode.vcode == vcode) & (VCode.flag == flag)).count() > 0:
             return True
         else:
             return False
@@ -302,29 +312,27 @@ class StoreBankAccount(db.Model):
     bank_truename = CharField(max_length=32, default='')  # 银行卡主人姓名
     bank_account = CharField(max_length=32, default='')  # 银行卡号
     bank_name = CharField(max_length=64, default='')  # 银行名称
+    bank_branch_name = CharField(max_length=64, default='')  # 支行名称
     is_default = IntegerField(default=0)  # 是否默认
 
     @staticmethod
     def check_bank(name, account):
-        if name.strip() == '':
-            return False
         if not (re.match('^[A-Za-z]+$', name) or re.match(u'^[\u4e00-\u9fa5]+$', name)):
             return False
-        accountC = len(account)
-        if re.match(r'^[0-9]{17,22}$',account) or re.match(r'^[0-9]{16}$',account):
+        if re.match(r'^[0-9]{17,22}$', account) or re.match(r'^[0-9]{16}$', account):
             return True
         else:
             return False
+
     @staticmethod
     def check_alipay(name, account):
-        if name.strip() == '':
-            return False
         if not (re.match('^[A-Za-z]+$', name) or re.match(u'^[\u4e00-\u9fa5]+$', name)):
             return False
-        if re.match(r'^[0-9a-zA-Z_]{0,19}@[0-9a-zA-Z]{1,13}\.[com,cn,net,cc]{1,3}$',account):
+        if re.match(r'^[0-9a-zA-Z_]{0,19}@[0-9a-zA-Z]{1,13}\.[com,cn,net,cc]{1,3}$', account) or re.match(r'^[0-9]{11}$', account):
             return True
         else:
             return False
+
     class Meta:
         db_table = 'tb_store_bank_accounts'
 
@@ -344,6 +352,7 @@ class Category(db.Model):
     id = PrimaryKeyField()
     name = CharField(max_length=20)  # 分类名
     sort = CharField(max_length=20)  # 显示顺序
+    category_type = IntegerField(default=0)  # 1配件商城 2汽车装潢
     img_m = CharField(max_length=256, null=True)  # 分类图片手机端
     img_pc = CharField(max_length=256, null=True)  # 分类图片PC端
     hot = IntegerField(default=1)  # 热门分类
@@ -369,9 +378,7 @@ class CategoryAttribute(db.Model):
 # 商品分类属性可选值
 class CategoryAttributeItems(db.Model):
     id = PrimaryKeyField()
-    category_attribute = ForeignKeyField(CategoryAttribute, related_name='items',
-                                         db_column='category_attribute_id')  # 商品分类属性值
-
+    category_attribute = ForeignKeyField(CategoryAttribute, related_name='items', db_column='category_attribute_id')  # 商品分类属性值
     name = CharField(max_length=20)  # 名称
     intro = CharField(max_length=20)  # 简介
     sort = IntegerField(default=1)  # 显示顺序
@@ -634,13 +641,44 @@ class InsuranceArea(db.Model):
     class Meta:
         db_table = 'tb_insurance_area'
 
+    @classmethod
+    def append_areas(cls, area_code):
+        codes = []
+        if len(area_code) == 12:
+            codes.append(area_code)
+            codes.append(area_code[:8])
+            codes.append(area_code[:4])
+        elif len(area_code) == 8:
+            codes.append(area_code)
+            codes.append(area_code[:4])
+        elif len(area_code) == 4:
+            codes.append(area_code)
+        return codes
+
+    @classmethod
+    def get_insurances_link(cls, area_code):  # 获取该地区所有保险公司及链接
+        temp_insurance_id = []
+        insurance_list = []
+        codes = cls.append_areas(area_code)
+        insurances = InsuranceArea.select().where((InsuranceArea.area_code << codes) & (InsuranceArea.active == 1))
+        for i in insurances:
+            if i.id not in temp_insurance_id:
+                temp_insurance_id.append(i.id)
+                insurance_list.append({
+                    'img': i.insurance.logo,
+                    'name': i.insurance.name,
+                    'price': 0,
+                    'link': setting.baseUrl + 'insurance/' + str(i.insurance.id)
+                })
+        return insurance_list
+
 
 # 保险子险种
 class InsuranceItem(db.Model):
     id = PrimaryKeyField()
     eName = CharField(max_length=32, default='')  # 英文名
     name = CharField(max_length=32, default='')  # 中文名
-    style = CharField(max_length=32, default='')  # 分类
+    style = CharField(max_length=32, default='')  # 分类名
     style_id = IntegerField(default=0)  # 分类id 交强险1  商业险主险2  商业险附加险3
     sort = IntegerField(default=1)  # 排序
 
@@ -764,7 +802,7 @@ class InsuranceOrder(db.Model):
     deliver_company = CharField(max_length=255, null=True)  # 快递公司
     deliver_num = CharField(max_length=255, null=True)  # 保单邮寄快递号
 
-    status = IntegerField(default=0)  # 0待确认 1待出单 2完成 3退款 -1已删除(取消)
+    status = IntegerField(default=0)  # 0待核价 1已核价/待支付 2已支付/待出单 3完成（已送积分/油） 4退款 5补款 -1已删除(取消)
     cancel_reason = CharField(default='', max_length=1024)  # 取消原因
     cancel_time = IntegerField(default=0)  # 取消时间
     sms_content = CharField(max_length=1024, null=True)  # 短信通知内容
@@ -886,6 +924,33 @@ class LubePolicy(db.Model):
     area_code = CharField(max_length=12)  # 地区code
     insurance = ForeignKeyField(Insurance, related_name='lube_policy', db_column='insurance_id')
     policy = CharField(max_length=4000)  # 返油政策的json串
+
+    @classmethod
+    def append_areas(cls, area_code):
+        codes = []
+        if len(area_code) == 12:
+            codes.append(area_code)
+            codes.append(area_code[:8])
+            codes.append(area_code[:4])
+        elif len(area_code) == 8:
+            codes.append(area_code)
+            codes.append(area_code[:4])
+        elif len(area_code) == 4:
+            codes.append(area_code)
+        return codes
+
+    @classmethod
+    def get_oil_policy(cls, area_code, insurance_id):  # 根据保险公司和地区获取返佣比率
+        codes = cls.append_areas(area_code)
+        print codes
+        configs = LubePolicy.select(). \
+            join(Area, on=(Area.code == LubePolicy.area_code)). \
+            where((LubePolicy.area_code << codes) & (LubePolicy.insurance == insurance_id) &
+                  (Area.is_lubearea == 1)).order_by(db.fn.LENGTH(LubePolicy.area_code).desc())
+        if configs.count() > 0:
+            return configs[0]
+        else:
+            return None
 
     class Meta:
         db_table = "tb_lube_policy"
