@@ -44,6 +44,7 @@ except ImportError:
     pycurl = None
 import logging
 from wxconfig import WxPayConf_pub
+from payqrcode import createqrcode
 
 
 """单例模式"""
@@ -304,15 +305,12 @@ class UnifiedOrder_pub(Wxpay_client_pub):
         self.parameters["sign"] = self.getSign(self.parameters)  # 签名
         return self.arrayToXml(self.parameters)
 
-    def getPrepayId(self, out_trade_no, body, total_fee, trade_type='APP'):
+    def getPrepayId(self, out_trade_no, body, total_fee):
         """获取prepay_id"""
         self.parameters["out_trade_no"] = out_trade_no
         self.parameters["body"] = body
         self.parameters["total_fee"] = total_fee
         self.parameters["trade_type"] = 'APP'
-        if trade_type == 'NATIVE':
-            self.parameters["trade_type"] = 'NATIVE'
-            self.parameters["product_id"] = out_trade_no
 
         self.postXml()  # 以post方式提交xml到对应的接口url
         self.result = self.xmlToArray(self.response)
@@ -338,6 +336,67 @@ class UnifiedOrder_pub(Wxpay_client_pub):
         except Exception, err:
             sign_again_params['result'] = 'error: get prepayid error.'
         return sign_again_params
+
+"""二维码支付接口类"""
+class Qrcode_pub(Wxpay_client_pub):
+    """统一支付接口类"""
+    def __init__(self, timeout=WxPayConf_pub.CURL_TIMEOUT, isCZ=False):
+        # 设置接口链接
+        self.url = "https://api.mch.weixin.qq.com/pay/unifiedorder"
+        # 设置curl超时时间
+        self.curl_timeout = timeout
+        self.isCZ = isCZ
+        super(UnifiedOrder_pub, self).__init__()
+
+    def createXml(self):
+        """生成接口参数xml"""
+        # 检测必填参数
+        self.parameters["notify_url"] = WxPayConf_pub.NOTIFY_URL if self.isCZ else WxPayConf_pub.NOTIFY_URL
+        if any(self.parameters[key] is None for key in ("out_trade_no", "body", "total_fee", "notify_url", "trade_type")):
+            raise ValueError("missing parameter")
+        if self.parameters["trade_type"] == "JSAPI" and self.parameters["openid"] is None:
+            raise ValueError("JSAPI need openid parameters")
+        self.parameters["appid"] = WxPayConf_pub.APPID  # 公众账号ID
+        self.parameters["mch_id"] = WxPayConf_pub.MCHID  # 商户号
+        self.parameters["spbill_create_ip"] = "127.0.0.1"  # 终端ip
+        self.parameters["nonce_str"] = self.createNoncestr()  # 随机字符串
+        self.parameters["sign"] = self.getSign(self.parameters)  # 签名
+        return self.arrayToXml(self.parameters)
+
+    def getPrepayId(self, out_trade_no, body, total_fee):
+        """获取prepay_id"""
+        self.parameters["out_trade_no"] = out_trade_no
+        self.parameters["body"] = body
+        self.parameters["total_fee"] = total_fee
+        self.parameters["trade_type"] = 'NATIVE'
+        self.parameters["product_id"] = out_trade_no
+
+        self.postXml()  # 以post方式提交xml到对应的接口url
+        self.result = self.xmlToArray(self.response)
+
+        sign_again_params = {}
+        try:
+            if self.result['code_url']:
+                sign_again_params = {
+                    'code_url': self.result['code_url'],
+                }
+                if self.result['return_code'] == 'SUCCESS' and self.result['result_code'] == 'SUCCESS':
+                    sign_again_params['result'] = 'SUCCESS'
+                else:
+                    sign_again_params['result'] = self.result['err_code']
+            else:
+                sign_again_params['result'] = 'error: prepayid is null.'
+        except Exception, err:
+            sign_again_params['result'] = 'error: get prepayid error.'
+        return sign_again_params
+
+    def getPayQrcode(self,out_trade_no, body, total_fee):
+        parameters = self.getPrepayId(out_trade_no, body, total_fee)
+        print parameters
+        if parameters['result'] == 'SUCCESS':
+            return createqrcode(parameters['code_url'])
+        else:
+            return None
 
 """订单查询接口"""
 class OrderQuery_pub(Wxpay_client_pub):

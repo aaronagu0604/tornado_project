@@ -13,7 +13,7 @@ from handler import MobileBaseHandler, require_auth
 from lib.mqhelper import create_msg
 import lib.payment.ali_app_pay as alipay
 from lib.payment.upay import Trade
-from lib.payment.wxPay import UnifiedOrder_pub
+from lib.payment.wxPay import UnifiedOrder_pub,Qrcode_pub
 from lib.route import route
 from model import *
 from mqProcess.jpushhelper import set_device_info
@@ -1065,6 +1065,10 @@ def pay_order(payment, total_price, ordernum, log):
         pay_info = UnifiedOrder_pub().getPrepayId(ordernum, log, int(total_price * 100))
     elif payment == 3:
         pay_info = Trade().trade(ordernum, total_price)
+    elif payment == 6:
+        pay_info = alipay.get_alipay_qrcode(total_price, u'车装甲', log, ordernum)
+    elif payment == 7:
+        pay_info = Qrcode_pub().getPayQrcode(ordernum, log, int(total_price * 100))
     return pay_info
 
 
@@ -1586,7 +1590,13 @@ class MobilePayOrderHandler(MobileBaseHandler):
                 else:
                     self.after_pay_operation(order, total_price, user, order_type)
             result['data']['pay_info'] = pay_order(payment, total_price, order.ordernum, log)
+
             result['flag'] = 1
+            if payment in [6,7] and not result['data']['pay_info']:
+                result['flag'] = 0
+                result['msg'] = '获取二维码失败'
+            else:
+                result['data']['payment'] = payment
         else:
             result['msg'] = "传入参数异常"
         self.write(simplejson.dumps(result))

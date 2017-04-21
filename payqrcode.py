@@ -6,8 +6,10 @@ import urllib2
 import simplejson
 import time
 import os
+import random
 from poster.encode import multipart_encode
 from poster.streaminghttp import register_openers
+
 
 FILE_SERVER = 'http://img.520czj.com/upload/image'
 PILIMAGE_FILE = os.getcwd()+"/upload/"
@@ -31,10 +33,10 @@ def postRequest(data):
 
 def createqrcode(content='default content'):
     qr = qrcode.make(content)
-    filename = PILIMAGE_FILE+str(time.time())[1:10]+'.jpeg'
+    filename = PILIMAGE_FILE+str(time.time())[1:10]+str(random.randrange(1,10000))+'.jpeg'
     qr.save(filename, format='jpeg')
     st = postRequest(open(filename, 'rb'))
     return st
 
 if __name__ == '__main__':
-    print createqrcode('hello world')
+    print createqrcode('https://qr.alipay.com/bax05783myafczpvylrq604b')
