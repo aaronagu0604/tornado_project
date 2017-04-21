@@ -993,7 +993,7 @@ def move_orderitem():
         except Exception:
             settlement = None
 
-        suborder = New_SubOrder.create(
+        suborder = New_SubOrder.get_or_create(
             order=order_map[order.id],
             saler_store=store_map[item.product_standard.store.id],
             buyer_store=store_map[order.user.store.id],
