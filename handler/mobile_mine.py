@@ -355,7 +355,10 @@ class MobileOrderDetailHandler(MobileBaseHandler):
         result['data']['address'] = {
             'name':order.address.mobile,
             'mobile': order.address.mobile,
-            'address': '%s%s%s%s'%(order.address.province, order.address.city, order.address.region, order.address.address)
+            'province': order.address.province,
+            'city': order.address.city,
+            'district': order.address.region,
+            'address': order.address.address
         }
         result['data']['id'] = order.id
         result['data']['ordernum'] = order.ordernum
