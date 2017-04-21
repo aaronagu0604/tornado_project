@@ -52,6 +52,8 @@ user_token_prefix = "mt:"  # 用户登录token的前缀
 CASH_MIN_MONEY = 0  # 积分兑现最小金额
 CASH_RATE = 1.0  # 积分兑现比率 money = score * cashRate
 
+deadlineTime = 86400*240    # 一天86400秒
+
 def get_help_center_remark(area_code):
     if area_code[:8] == '00160016':
         return '大地车险承保仅限15万以内家庭使用非营运客车车辆'

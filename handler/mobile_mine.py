@@ -547,15 +547,12 @@ class MobileInsuranceOrderDetailHandler(MobileBaseHandler):
         now = int(time.time())
         deadlineWarning = ''
         if insuranceorder.status == 1:  # 待确认
-            if not insuranceorder.deadline:
-                insuranceorder.deadline = now + setting.deadlineTime
-                insuranceorder.save()
-            elif now >= insuranceorder.deadline:
+            if now >= (insuranceorder.ordered + setting.deadlineTime):
                 insuranceorder.status = 5
                 insuranceorder.cancelreason = u'超时未支付'
                 insuranceorder.save()
-        if insuranceorder.status == 1 and now < insuranceorder.deadline:
-            deadlineWarning = u'订单将于%s失效' % time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(insuranceorder.deadline))
+        if insuranceorder.status == 1 and now < (insuranceorder.ordered + setting.deadlineTime):
+            deadlineWarning = u'订单将于%s失效' % time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(setting.deadlineTime - now + insuranceorder.ordered))
 
         result['data'] = {
             'id': insuranceorder.id,

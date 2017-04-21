@@ -346,7 +346,7 @@ class Qrcode_pub(Wxpay_client_pub):
         # 设置curl超时时间
         self.curl_timeout = timeout
         self.isCZ = isCZ
-        super(UnifiedOrder_pub, self).__init__()
+        super(Qrcode_pub, self).__init__()
 
     def createXml(self):
         """生成接口参数xml"""
