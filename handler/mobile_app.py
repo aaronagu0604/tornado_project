@@ -1592,7 +1592,7 @@ class MobilePayOrderHandler(MobileBaseHandler):
             result['data']['pay_info'] = pay_order(payment, total_price, order.ordernum, log)
 
             result['flag'] = 1
-            if payment in [6,7] and not result['data']['pay_info']:
+            if payment in [6, 7] and not result['data']['pay_info']:
                 result['flag'] = 0
                 result['msg'] = '获取二维码失败'
             else:
