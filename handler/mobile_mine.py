@@ -289,6 +289,7 @@ class MobileSellOrderHandler(MobileBaseHandler):
             result['msg'] = '系统错误'
         self.write(simplejson.dumps(result))
 
+
 @route(r'/mobile/suborderdetail', name='mobile_order_detail')  # 售出商品订单详情
 class MobileSubOrderDetailHandler(MobileBaseHandler):
     """
@@ -308,48 +309,6 @@ class MobileSubOrderDetailHandler(MobileBaseHandler):
         result = {'flag': 0, 'msg': '', "data": {}}
         soid = int(self.get_argument("id"))
         suborder = SubOrder.get(id=soid)
-
-        # scolor = ''
-        # if n.status == -1:
-        #     s = '已删除'
-        # elif n.status == 0 and n.payment:
-        #     s = '待付款'
-        #     scolor = 'assertive'
-        # elif (n.status == 0 and n.payment == 0) or n.status == 1:
-        #     s = '待处理'
-        #     scolor = 'assertive'
-        # elif n.status == 2:
-        #     s = '正在处理'
-        #     scolor = 'balanced'
-        # elif n.status == 3:
-        #     s = '待收货'
-        #     scolor = 'balanced'
-        # elif n.status == 4:
-        #     s = '交易完成'
-        # elif n.status == 5:
-        #     s = '已取消'
-        # else:
-        #     s = str(n.status) + '-' + str(n.payment)
-        #
-        # p = ''
-        # if n.payment == 0:
-        #     p = '货到付款'
-        # elif n.payment == 1:
-        #     p = '支付宝'
-        # elif n.payment == 2:
-        #     p = '账户余额'
-        # elif n.payment == 3:
-        #     p = '网银支付'
-        # elif n.payment == 4:
-        #     p = '合并支付'
-        # elif n.payment == 8:
-        #     p = '积分换购'
-        # elif n.payment == 6:
-        #     p = '微信支付'
-        # elif n.payment == 7:
-        #     p = '银联支付'
-        # elif n.payment == 9:
-        #     p = '系统补发'
         result['data']['address'] = {
             'name': suborder.order.address.mobile,
             'mobile': suborder.order.address.mobile,
@@ -369,10 +328,7 @@ class MobileSubOrderDetailHandler(MobileBaseHandler):
             if pics:
                 pic = pics[0]
             productattibute = ProductAttributeValue.get(ProductAttributeValue.product == product.product)
-            attribute = "%s %s" % (
-                productattibute.attribute.name,
-                productattibute.value
-            )
+            attribute = "%s %s" % (productattibute.attribute.name, productattibute.value)
             items.append({
                 'img': pic,
                 'name': product.product.name,
@@ -406,48 +362,6 @@ class MobileOrderDetailHandler(MobileBaseHandler):
         result = {'flag': 0, 'msg': '', "data": {}}
         oid = int(self.get_argument("id"))
         order = Order.get(id=oid)
-
-        # scolor = ''
-        # if n.status == -1:
-        #     s = '已删除'
-        # elif n.status == 0 and n.payment:
-        #     s = '待付款'
-        #     scolor = 'assertive'
-        # elif (n.status == 0 and n.payment == 0) or n.status == 1:
-        #     s = '待处理'
-        #     scolor = 'assertive'
-        # elif n.status == 2:
-        #     s = '正在处理'
-        #     scolor = 'balanced'
-        # elif n.status == 3:
-        #     s = '待收货'
-        #     scolor = 'balanced'
-        # elif n.status == 4:
-        #     s = '交易完成'
-        # elif n.status == 5:
-        #     s = '已取消'
-        # else:
-        #     s = str(n.status) + '-' + str(n.payment)
-        #
-        # p = ''
-        # if n.payment == 0:
-        #     p = '货到付款'
-        # elif n.payment == 1:
-        #     p = '支付宝'
-        # elif n.payment == 2:
-        #     p = '账户余额'
-        # elif n.payment == 3:
-        #     p = '网银支付'
-        # elif n.payment == 4:
-        #     p = '合并支付'
-        # elif n.payment == 8:
-        #     p = '积分换购'
-        # elif n.payment == 6:
-        #     p = '微信支付'
-        # elif n.payment == 7:
-        #     p = '银联支付'
-        # elif n.payment == 9:
-        #     p = '系统补发'
         result['data']['address'] = {
             'name':order.address.mobile,
             'mobile': order.address.mobile,
@@ -472,10 +386,7 @@ class MobileOrderDetailHandler(MobileBaseHandler):
                 if pics:
                     pic = pics[0]
                 productattibute = ProductAttributeValue.get(ProductAttributeValue.product == product.product)
-                attribute = "%s %s"%(
-                    productattibute.attribute.name,
-                    productattibute.value
-                )
+                attribute = "%s %s"%(productattibute.attribute.name, productattibute.value)
                 products.append({
                     'img': pic,
                     'name': product.product.name,
@@ -493,6 +404,7 @@ class MobileOrderDetailHandler(MobileBaseHandler):
             result['flag'] = 1
         result['data']['suborder'] = suborders
         self.write(simplejson.dumps(result))
+
 
 @route(r'/mobile/deleteorder', name='mobile_order_detail')  # 删除商品订单
 class MobileDeleteOrderHandler(MobileBaseHandler):
@@ -532,6 +444,7 @@ class MobileDeleteOrderHandler(MobileBaseHandler):
             result['msg'] = u'该订单不存在'
             result['flag'] = 0
         self.write(simplejson.dumps(result))
+
 
 @route(r'/mobile/insuranceorder', name='mobile_insurance_order')  # 保险订单
 class MobileInsuranceOrderHandler(MobileBaseHandler):
@@ -731,6 +644,67 @@ class MobileInsuranceMethodHandler(MobileBaseHandler):
                 'score': iop.score,
                 'total_price': iop.total_price
             })
+
+        self.write(simplejson.dumps(result))
+
+
+@route(r'/mobile/deliveryOrder', name='mobile_delivery_order')  # 手机端处理订单（发货）
+class MobileDeliveryOrderHandler(MobileBaseHandler):
+    """
+    @apiGroup mine
+    @apiVersion 1.0.0
+    @api {get} /mobile/deliveryOrder 12. 手机端处理订单（发货）
+    @apiDescription 手机端处理订单（发货）
+    @apiHeader {String} token 用户登录凭证
+    @apiSampleRequest /mobile/deliveryOrder
+    """
+    @require_auth
+    def get(self):
+        result = {'flag': 1, 'msg': '', 'data': [{'id': delivery.id, 'name': delivery.name} for delivery in Delivery.select()]}
+        self.write(simplejson.dumps(result))
+        self.finish()
+
+    """
+    @apiGroup mine
+    @apiVersion 1.0.0
+    @api {post} /mobile/deliveryOrder 13. 保险订单历史方案
+    @apiDescription 保险订单历史方案
+
+    @apiHeader {String} token 用户登录凭证
+
+    @apiParam {Int} oid 订单oid
+    @apiParam {Int} did 物流公司id
+    @apiParam {Int} delivery_num 物流单号
+
+    @apiSampleRequest /mobile/deliveryOrder
+    """
+    @require_auth
+    def post(self):
+        result = {'flag': 0, 'msg': '', 'data': ''}
+        oid = self.get_body_argument('oid', None)
+        did = self.get_body_argument('did', None)
+        delivery_num = self.get_body_argument('delivery_num', None)
+        user = self.get_user()
+
+        if not (oid and did and delivery_num):
+            result['msg'] = u'传入参数异常'
+            self.write(simplejson.dumps(result))
+            return
+        sub_orders = SubOrder.select().join(Order).where((SubOrder.saler_store == user.store) & (Order.id == oid) & (SubOrder.status == 1))
+        if sub_orders:
+            sub_orders[0].status = 2
+            sub_orders[0].delivery = int(did)
+            sub_orders[0].delivery_num = delivery_num
+            sub_orders[0].save()
+            if len(set([sub_order.status for sub_order in sub_orders])) == 1:
+                sub_orders[0].order.status = 2
+                sub_orders[0].order.save()
+            # sms = {'mobile': sub_orders.address.mobile, 'body': sub_orders.ordernum, 'signtype': '1', 'isyzm': 'shipments'}
+            # 'body': u"订单号：" + order.ordernum + u"商品已发货，如有质量投诉请拨" + self.settings['com_tel'],
+            # create_msg(simplejson.dumps(sms), 'sms')  # 发货
+            result['flag'] = 1
+        else:
+            result['msg'] = u'该订单不可发货'
 
         self.write(simplejson.dumps(result))
 
@@ -1771,7 +1745,7 @@ class MobileReceiverAddressHandler(MobileBaseHandler):
         self.write(simplejson.dumps(result))
 
 
-@route(r'/mobile/deleteaddress',name='mobile_delete_receiver_address')
+@route(r'/mobile/deleteaddress',name='mobile_delete_receiver_address')  # 删除收货地址
 class MobileDeleteAddressHandler(MobileBaseHandler):
     @require_auth
     def post(self):

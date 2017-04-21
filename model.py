@@ -525,8 +525,6 @@ class Order(db.Model):
     user = ForeignKeyField(User, related_name='orders', db_column='user_id')  # 买家
     buyer_store = ForeignKeyField(Store, related_name='orders', db_column='buyer_store_id')  # 买家所属店铺
     address = ForeignKeyField(StoreAddress, db_column='store_address_id')  # 收件信息
-    delivery = ForeignKeyField(Delivery, db_column='delivery_id', null=True)  # 物流公司
-    delivery_num = CharField(max_length=64, null=True)  # 物流单号
     order_type = IntegerField(default=1)  # 付款方式 1金钱订单 2积分订单
     payment = IntegerField(default=0)  # 付款方式  1支付宝  2微信 3银联 4余额 5积分
     total_price = FloatField(default=0.0)  # 价格，实际所有子订单商品价格之和
@@ -590,6 +588,8 @@ class SubOrder(db.Model):
     price = FloatField(default=0)  # 购买时产品价格
     score = IntegerField(default=0)  # 积分
     status = IntegerField(default=0)  # 0待付款 1待发货 2待收货 3交易完成（待评价） 4已评价 5申请退款 6已退款 -1已取消
+    delivery = ForeignKeyField(Delivery, db_column='delivery_id', null=True)  # 物流公司
+    delivery_num = CharField(max_length=64, null=True)  # 物流单号
     fail_reason = CharField(default='', max_length=1024)  # 取消或退款原因
     fail_time = IntegerField(default=0)  # 取消或退款时间
     delivery_time = IntegerField(default=0)  # 发货时间

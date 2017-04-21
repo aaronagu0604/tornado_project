@@ -1059,7 +1059,6 @@ class MobileShopCarHandler(MobileBaseHandler):
 def pay_order(payment, total_price, ordernum, log):
     pay_info = ''
     if payment == 1:  # 1支付宝  2微信 3银联 4余额 5积分 6立即支付宝 7立即微信
-        # pay_info = alipay.switch_to_utf_8(total_price, u'车装甲', log, ordernum)
         pay_info = alipay.get_alipay_string(total_price, u'车装甲', log, ordernum)
     elif payment == 2:
         pay_info = UnifiedOrder_pub().getPrepayId(ordernum, log, int(total_price * 100))
@@ -1206,8 +1205,12 @@ class MobileNewOrderHandler(MobileBaseHandler):
             items = simplejson.loads(products)
             if order_type == 1:
                 total_price = float(total_price)
-            else:
+            elif order_type == 2:
                 total_price = int(total_price)
+            else:
+                result['msg'] = u'支付方式不正确'
+                self.write(simplejson.dumps(result))
+                return
             check_result, log = self.check_products_price(order_type, total_price, items)
             if not check_result:
                 result['msg'] = log
@@ -1247,30 +1250,29 @@ class MobileNewOrderHandler(MobileBaseHandler):
                     score_record.score = total_price
                     score_record.status = 1
                     score_record.save()
-            else:
-                if payment == 4:  # 余额支付
-                    if user.store.price < total_price:
-                        result['msg'] = u"您的余额不足"
-                        self.write(simplejson.dumps(result))
-                        return
-                    else:
-                        user.store.price -= total_price
-                        user.store.save()
-                        order.status = 1
-                        order.pay_time = now
-                        order.save()
-                        money_record = MoneyRecord()
-                        money_record.user = user
-                        money_record.store = user.store
-                        money_record.process_type = 2
-                        money_record.process_log = u'购买产品使用余额支付, 订单号：' + order.ordernum
-                        money_record.status = 1
-                        money_record.money = total_price
-                        money_record.apply_time = now
-                        money_record.save()
+            elif payment == 4:  # 余额支付
+                if user.store.price < total_price:
+                    result['msg'] = u"您的余额不足"
+                    self.write(simplejson.dumps(result))
+                    return
                 else:
-                    order.status = 0
+                    user.store.price -= total_price
+                    user.store.save()
+                    order.status = 1
+                    order.pay_time = now
                     order.save()
+                    money_record = MoneyRecord()
+                    money_record.user = user
+                    money_record.store = user.store
+                    money_record.process_type = 2
+                    money_record.process_log = u'购买产品使用余额支付, 订单号：' + order.ordernum
+                    money_record.status = 1
+                    money_record.money = total_price
+                    money_record.apply_time = now
+                    money_record.save()
+            else:
+                order.status = 0
+                order.save()
             for item in items:
                 sub_order = SubOrder()
                 sub_order.order = order
@@ -1360,10 +1362,7 @@ class MobilInsuranceOrderBaseHandler(MobileBaseHandler):
             result['data']['delivery_tel'] = address.mobile
             result['data']['delivery_province'] = address.province
             result['data']['delivery_city'] = address.city
-            result['data']['delivery_region'] = address.region
-            result['data']['delivery_province_name'] = Area.get_area_name(address.province)
-            result['data']['delivery_city_name'] = Area.get_area_name(address.city)
-            result['data']['delivery_region_name'] = Area.get_area_name(address.region)
+            result['data']['delivery_district'] = address.region
             result['data']['delivery_address'] = address.address
             result['data']['insurance_message'] = InsuranceScoreExchange.get_insurances(area_code)
             for i_item in InsuranceItem.select():
@@ -1376,7 +1375,7 @@ class MobilInsuranceOrderBaseHandler(MobileBaseHandler):
             result['data']['delivery_tel'] = ''
             result['data']['delivery_province'] = ''
             result['data']['delivery_city'] = ''
-            result['data']['delivery_region'] = ''
+            result['data']['delivery_district'] = ''
             result['data']['delivery_address'] = ''
             result['data']['insurance_message'] = {}
         result['flag'] = 1
@@ -1423,7 +1422,7 @@ class MobilNewInsuranceOrderHandler(MobileBaseHandler):
     @apiParam {String} delivery_tel 保单邮寄接收人电话
     @apiParam {String} delivery_province 保单邮寄接收省份
     @apiParam {String} delivery_city 保单邮寄接收城市
-    @apiParam {String} delivery_region 保单邮寄接收区域
+    @apiParam {String} delivery_district 保单邮寄接收区域
     @apiParam {String} delivery_address 保单邮寄地址
     @apiParam {Int} gift_policy 礼品策略 1反油， 2反积分, 0无礼品
     @apiSampleRequest /mobile/newinsuranceorder
@@ -1441,7 +1440,7 @@ class MobilNewInsuranceOrderHandler(MobileBaseHandler):
         delivery_tel = self.get_body_argument('delivery_tel', None)
         delivery_province = self.get_body_argument('delivery_province', None)
         delivery_city = self.get_body_argument('delivery_city', None)
-        delivery_region = self.get_body_argument('delivery_region', None)
+        delivery_district = self.get_body_argument('delivery_district', None)
         delivery_address = self.get_body_argument('delivery_address', None)
         gift_policy = self.get_body_argument('gift_policy', None)
 
@@ -1466,7 +1465,7 @@ class MobilNewInsuranceOrderHandler(MobileBaseHandler):
         thirdSpecialI = self.get_body_argument('thirdSpecialI', '')
 
         user = self.get_user()
-        if user and gift_policy and delivery_address and delivery_city and delivery_province and delivery_region and \
+        if user and gift_policy and delivery_address and delivery_city and delivery_province and delivery_district and \
             delivery_tel and delivery_to and insurance and drive_card_back and drive_card_front and id_card_back and \
             id_card_front:
             order = InsuranceOrder()
@@ -1481,7 +1480,7 @@ class MobilNewInsuranceOrderHandler(MobileBaseHandler):
             order.delivery_tel = delivery_tel
             order.delivery_province = delivery_province
             order.delivery_city = delivery_city
-            order.delivery_region = delivery_region
+            order.delivery_district = delivery_district
             order.delivery_address = delivery_address
             order.status = 0
             order.save()
