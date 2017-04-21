@@ -289,6 +289,102 @@ class MobileSellOrderHandler(MobileBaseHandler):
             result['msg'] = '系统错误'
         self.write(simplejson.dumps(result))
 
+@route(r'/mobile/suborderdetail', name='mobile_order_detail')  # 售出商品订单详情
+class MobileSubOrderDetailHandler(MobileBaseHandler):
+    """
+    @apiGroup mine
+    @apiVersion 1.0.0
+    @api {get} /mobile/suborderdetail 03. 普通商品售出订单
+    @apiDescription 商品售出订单
+
+    @apiHeader {String} token 用户登录凭证
+
+    @apiParam {Int} id 子订单id
+
+    @apiSampleRequest /mobile/suborderdetail
+    """
+    @require_auth
+    def get(self):
+        result = {'flag': 0, 'msg': '', "data": {}}
+        soid = int(self.get_argument("id"))
+        suborder = SubOrder.get(id=soid)
+
+        # scolor = ''
+        # if n.status == -1:
+        #     s = '已删除'
+        # elif n.status == 0 and n.payment:
+        #     s = '待付款'
+        #     scolor = 'assertive'
+        # elif (n.status == 0 and n.payment == 0) or n.status == 1:
+        #     s = '待处理'
+        #     scolor = 'assertive'
+        # elif n.status == 2:
+        #     s = '正在处理'
+        #     scolor = 'balanced'
+        # elif n.status == 3:
+        #     s = '待收货'
+        #     scolor = 'balanced'
+        # elif n.status == 4:
+        #     s = '交易完成'
+        # elif n.status == 5:
+        #     s = '已取消'
+        # else:
+        #     s = str(n.status) + '-' + str(n.payment)
+        #
+        # p = ''
+        # if n.payment == 0:
+        #     p = '货到付款'
+        # elif n.payment == 1:
+        #     p = '支付宝'
+        # elif n.payment == 2:
+        #     p = '账户余额'
+        # elif n.payment == 3:
+        #     p = '网银支付'
+        # elif n.payment == 4:
+        #     p = '合并支付'
+        # elif n.payment == 8:
+        #     p = '积分换购'
+        # elif n.payment == 6:
+        #     p = '微信支付'
+        # elif n.payment == 7:
+        #     p = '银联支付'
+        # elif n.payment == 9:
+        #     p = '系统补发'
+        result['data']['address'] = {
+            'name': suborder.order.address.mobile,
+            'mobile': suborder.order.address.mobile,
+            'province': suborder.order.address.province,
+            'city': suborder.order.address.city,
+            'district': suborder.order.address.region,
+            'address': suborder.order.address.address
+        }
+
+        result['data']['totalprice'] = suborder.price
+        result['data']['status'] = suborder.status
+
+        items = []
+        for product in suborder.items:
+            pics = [item.pic for item in product.product.pics]
+            pic = None
+            if pics:
+                pic = pics[0]
+            productattibute = ProductAttributeValue.get(ProductAttributeValue.product == product.product)
+            attribute = "%s %s" % (
+                productattibute.attribute.name,
+                productattibute.value
+            )
+            items.append({
+                'img': pic,
+                'name': product.product.name,
+                'price': product.price,
+                'quantity': product.quantity,
+                'attribute': attribute
+            })
+        if items:
+            result['flag'] = 1
+        result['data']['items'] = items
+        self.write(simplejson.dumps(result))
+
 
 @route(r'/mobile/orderdetail', name='mobile_order_detail')  # 普通商品订单详情
 class MobileOrderDetailHandler(MobileBaseHandler):

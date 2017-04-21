@@ -1058,11 +1058,11 @@ class MobileShopCarHandler(MobileBaseHandler):
 # -------------------------------------------------------商品/保险订单--------------------------------------------------
 def pay_order(payment, total_price, ordernum, log):
     pay_info = ''
-    if payment == 1:  # 1支付宝  2微信 3银联 4余额 5积分
+    if payment == 1:  # 1支付宝  2微信 3银联 4余额 5积分 6立即支付宝 7立即微信
         # pay_info = alipay.switch_to_utf_8(total_price, u'车装甲', log, ordernum)
         pay_info = alipay.get_alipay_string(total_price, u'车装甲', log, ordernum)
     elif payment == 2:
-        pay_info = UnifiedOrder_pub().getPrepayId(ordernum, log, int(total_price * 100), 'NATIVE')
+        pay_info = UnifiedOrder_pub().getPrepayId(ordernum, log, int(total_price * 100))
     elif payment == 3:
         pay_info = Trade().trade(ordernum, total_price)
     return pay_info
@@ -1356,7 +1356,10 @@ class MobilInsuranceOrderBaseHandler(MobileBaseHandler):
             result['data']['delivery_tel'] = address.mobile
             result['data']['delivery_province'] = address.province
             result['data']['delivery_city'] = address.city
-            result['data']['delivery_district'] = address.region
+            result['data']['delivery_region'] = address.region
+            result['data']['delivery_province_name'] = Area.get_area_name(address.province)
+            result['data']['delivery_city_name'] = Area.get_area_name(address.city)
+            result['data']['delivery_region_name'] = Area.get_area_name(address.region)
             result['data']['delivery_address'] = address.address
             result['data']['insurance_message'] = InsuranceScoreExchange.get_insurances(area_code)
             for i_item in InsuranceItem.select():
@@ -1369,7 +1372,7 @@ class MobilInsuranceOrderBaseHandler(MobileBaseHandler):
             result['data']['delivery_tel'] = ''
             result['data']['delivery_province'] = ''
             result['data']['delivery_city'] = ''
-            result['data']['delivery_district'] = ''
+            result['data']['delivery_region'] = ''
             result['data']['delivery_address'] = ''
             result['data']['insurance_message'] = {}
         result['flag'] = 1
@@ -1416,7 +1419,7 @@ class MobilNewInsuranceOrderHandler(MobileBaseHandler):
     @apiParam {String} delivery_tel 保单邮寄接收人电话
     @apiParam {String} delivery_province 保单邮寄接收省份
     @apiParam {String} delivery_city 保单邮寄接收城市
-    @apiParam {String} delivery_district 保单邮寄接收区域
+    @apiParam {String} delivery_region 保单邮寄接收区域
     @apiParam {String} delivery_address 保单邮寄地址
     @apiParam {Int} gift_policy 礼品策略 1反油， 2反积分, 0无礼品
     @apiSampleRequest /mobile/newinsuranceorder
@@ -1434,7 +1437,7 @@ class MobilNewInsuranceOrderHandler(MobileBaseHandler):
         delivery_tel = self.get_body_argument('delivery_tel', None)
         delivery_province = self.get_body_argument('delivery_province', None)
         delivery_city = self.get_body_argument('delivery_city', None)
-        delivery_district = self.get_body_argument('delivery_district', None)
+        delivery_region = self.get_body_argument('delivery_region', None)
         delivery_address = self.get_body_argument('delivery_address', None)
         gift_policy = self.get_body_argument('gift_policy', None)
 
@@ -1459,7 +1462,7 @@ class MobilNewInsuranceOrderHandler(MobileBaseHandler):
         thirdSpecialI = self.get_body_argument('thirdSpecialI', '')
 
         user = self.get_user()
-        if user and gift_policy and delivery_address and delivery_city and delivery_province and delivery_district and \
+        if user and gift_policy and delivery_address and delivery_city and delivery_province and delivery_region and \
             delivery_tel and delivery_to and insurance and drive_card_back and drive_card_front and id_card_back and \
             id_card_front:
             order = InsuranceOrder()
@@ -1474,7 +1477,7 @@ class MobilNewInsuranceOrderHandler(MobileBaseHandler):
             order.delivery_tel = delivery_tel
             order.delivery_province = delivery_province
             order.delivery_city = delivery_city
-            order.delivery_district = delivery_district
+            order.delivery_region = delivery_region
             order.delivery_address = delivery_address
             order.status = 0
             order.save()
@@ -1526,7 +1529,7 @@ class MobilePayOrderHandler(MobileBaseHandler):
     @apiHeader {String} token 用户登录凭证
 
     @apiParam {String} order_number 订单号
-    @apiParam {Int} payment 支付方式
+    @apiParam {Int} payment 支付方式 1支付宝  2微信 3银联 4余额 5积分 6立即支付宝 7立即微信
 
     @apiSampleRequest /mobile/payorder
     """
