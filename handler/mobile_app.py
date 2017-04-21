@@ -215,9 +215,6 @@ class MobileRegHandler(MobileBaseHandler):
             user.store = sid.id
             user.token = setting.user_token_prefix + str(uuid.uuid4())
             user.save()
-            # province_name = Area.get(code=province).name
-            # city_name = Area.get(code=city).name
-            # district_name = Area.get(code=district).name
             StoreAddress.create(store=sid.id, province=province, city=city, region=district, address=address,
                                 street='', name=legalPerson, mobile=mobile, created=now, create_by=user.id)
             self.application.memcachedb.set(user.token, str(user.id), setting.user_expire)
@@ -227,7 +224,7 @@ class MobileRegHandler(MobileBaseHandler):
                 'active': 0
             }
             result['flag'] = 1
-            result['msg'] = '注册成功'
+            result['msg'] = u'注册成功'
         except Exception, ex:
             result['msg'] = ex.message
         self.write(simplejson.dumps(result))
@@ -1100,17 +1097,12 @@ class MobileOrderBaseHandler(MobileBaseHandler):
             sppids = [key for key in spp_dicts]
             if user is not None:
                 for address in user.store.addresses:
-                    areas = Area.select().where(Area.code << [address.province, address.city, address.region])
-                    area_map = {item.code: item.name for item in areas}
                     if address.is_default == 1:
                         result['data']['address']['address_id'] = address.id
                         result['data']['address']['mobile'] = address.mobile
                         result['data']['address']['province'] = address.province
-                        result['data']['address']['province_name'] = area_map[address.province]
                         result['data']['address']['city'] = address.city
-                        result['data']['address']['city_name'] = area_map[address.city]
                         result['data']['address']['district'] = address.region
-                        result['data']['address']['district_name'] = area_map[address.region]
                         result['data']['address']['address'] = address.address
                         result['data']['address']['receiver'] = address.name
                         result['data']['address']['is_default'] = address.is_default
@@ -1364,10 +1356,7 @@ class MobilInsuranceOrderBaseHandler(MobileBaseHandler):
             result['data']['delivery_tel'] = address.mobile
             result['data']['delivery_province'] = address.province
             result['data']['delivery_city'] = address.city
-            result['data']['delivery_region'] = address.region
-            result['data']['delivery_province_name'] = Area.get_area_name(address.province)
-            result['data']['delivery_city_name'] = Area.get_area_name(address.city)
-            result['data']['delivery_region_name'] = Area.get_area_name(address.region)
+            result['data']['delivery_district'] = address.region
             result['data']['delivery_address'] = address.address
             result['data']['insurance_message'] = InsuranceScoreExchange.get_insurances(area_code)
             for i_item in InsuranceItem.select():
@@ -1380,7 +1369,7 @@ class MobilInsuranceOrderBaseHandler(MobileBaseHandler):
             result['data']['delivery_tel'] = ''
             result['data']['delivery_province'] = ''
             result['data']['delivery_city'] = ''
-            result['data']['delivery_region'] = ''
+            result['data']['delivery_district'] = ''
             result['data']['delivery_address'] = ''
             result['data']['insurance_message'] = {}
         result['flag'] = 1
@@ -1427,7 +1416,7 @@ class MobilNewInsuranceOrderHandler(MobileBaseHandler):
     @apiParam {String} delivery_tel 保单邮寄接收人电话
     @apiParam {String} delivery_province 保单邮寄接收省份
     @apiParam {String} delivery_city 保单邮寄接收城市
-    @apiParam {String} delivery_region 保单邮寄接收区域
+    @apiParam {String} delivery_district 保单邮寄接收区域
     @apiParam {String} delivery_address 保单邮寄地址
     @apiParam {Int} gift_policy 礼品策略 1反油， 2反积分, 0无礼品
     @apiSampleRequest /mobile/newinsuranceorder
@@ -1445,7 +1434,7 @@ class MobilNewInsuranceOrderHandler(MobileBaseHandler):
         delivery_tel = self.get_body_argument('delivery_tel', None)
         delivery_province = self.get_body_argument('delivery_province', None)
         delivery_city = self.get_body_argument('delivery_city', None)
-        delivery_region = self.get_body_argument('delivery_region', None)
+        delivery_district = self.get_body_argument('delivery_district', None)
         delivery_address = self.get_body_argument('delivery_address', None)
         gift_policy = self.get_body_argument('gift_policy', None)
 
@@ -1470,7 +1459,7 @@ class MobilNewInsuranceOrderHandler(MobileBaseHandler):
         thirdSpecialI = self.get_body_argument('thirdSpecialI', '')
 
         user = self.get_user()
-        if user and gift_policy and delivery_address and delivery_city and delivery_province and delivery_region and \
+        if user and gift_policy and delivery_address and delivery_city and delivery_province and delivery_district and \
             delivery_tel and delivery_to and insurance and drive_card_back and drive_card_front and id_card_back and \
             id_card_front:
             order = InsuranceOrder()
@@ -1485,7 +1474,7 @@ class MobilNewInsuranceOrderHandler(MobileBaseHandler):
             order.delivery_tel = delivery_tel
             order.delivery_province = delivery_province
             order.delivery_city = delivery_city
-            order.delivery_region = delivery_region
+            order.delivery_district = delivery_district
             order.delivery_address = delivery_address
             order.status = 0
             order.save()

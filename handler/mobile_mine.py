@@ -355,10 +355,7 @@ class MobileOrderDetailHandler(MobileBaseHandler):
         result['data']['address'] = {
             'name':order.address.mobile,
             'mobile': order.address.mobile,
-            'province': order.address.province,
-            'city': order.address.city,
-            'district': order.address.region,
-            'address': order.address.address
+            'address': '%s%s%s%s'%(order.address.province, order.address.city, order.address.region, order.address.address)
         }
         result['data']['id'] = order.id
         result['data']['ordernum'] = order.ordernum
@@ -572,10 +569,10 @@ class MobileInsuranceOrderDetailHandler(MobileBaseHandler):
             'delivery': {
                 'delivery_to': insuranceorder.delivery_to,
                 'mobile': insuranceorder.delivery_tel,
-                'province': insuranceorder.delivery_province,
-                'city': insuranceorder.delivery_city,
-                'district': insuranceorder.delivery_region,
-                'address': insuranceorder.delivery_address
+                'address': '%s%s%s%s' % (insuranceorder.delivery_province,
+                                    insuranceorder.delivery_city,
+                                    insuranceorder.delivery_region,
+                                    insuranceorder.delivery_address)
             }
         }
         self.write(simplejson.dumps(result))
@@ -852,8 +849,6 @@ class MobileFundRechargeHandler(MobileBaseHandler):
     @apiDescription 资金充值
 
     @apiHeader {String} token 用户登录凭证
-    @apiParam {String} payment 1支付宝 2微信 3银联
-    @apiParam {Int} price充值金额
 
     @apiSampleRequest /mobile/fundrecharge
     """
@@ -1682,7 +1677,7 @@ class MobileDeleteAddressHandler(MobileBaseHandler):
     @require_auth
     def post(self):
         user = self.get_user()
-        store_address_id = int(self.get_body_argument('store_address_id', None))
+        store_address_id = self.get_body_argument('store_address_id', None)
         result = {'flag': 0, 'msg': '', "data": {}}
         if user and store_address_id:
             query = StoreAddress.delete().where(StoreAddress.id == store_address_id)

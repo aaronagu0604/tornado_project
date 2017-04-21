@@ -341,21 +341,24 @@ class ChangeReleaseAreaHandler(AdminBaseHandler):
             need_del_area = []
             for area_code in area_codes:
                 for sa in sas:
-                    if area_code in sa.code:
+                    if area_code in sa.code:  # 例：已有市要删省，把已有的市删掉
                         need_del_area.append(sa.code)
-                    if (sa.code in area_code) and (sa.code != area_code):
-                        Area.select().where(Area.code == sa.code) & (db.fn.Length(Area.code) == 4)
-
-            for area_code in area_codes:
-                try:
-                    aid = Area.get(code=area_code)
-                    StoreArea.delete().where((StoreArea.store == store_id) & (StoreArea.area == aid)).execute()
-                except Exception, e:
-                    pass
+                    elif sa.code in area_code:  # 例：已有省要删市或区，删除省添加本省其它市
+                        store_code_son_len = len(sa.code) + 4
+                        store_code_g_son_len = len(sa.code) + 8
+                        if store_code_son_len == len(area_code):
+                            need_add_area = [area.code for area in Area.select().where((Area.code == sa.code) &
+                                (db.fn.Length(Area.code) == store_code_son_len) | (db.fn.Length(Area.code) == store_code_g_son_len))]
+                            need_add_area.remove(area_code)
+            for area_code in need_del_area:
+                StoreArea.delete().join(Area).where((StoreArea.store == store_id) & (Area.code == area_code)).execute()
+            for area_code in need_add_area:
+                aid = Area.get(code=area_code).id
+                StoreArea.create(area=aid, store=store_id)
             result['msg'] = u'删除成功，刷新销售商品页'
         else:
             result['msg'] = u'传入参数异常'
-
+        self.write(simplejson.dumps(result))
 
 @route(r'/admin/store_area_product', name='admin_store_area_product')  # 经销商产品地域价格信息
 class SalerProductAreaPriceHandler(AdminBaseHandler):
