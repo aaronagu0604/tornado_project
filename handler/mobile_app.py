@@ -317,7 +317,8 @@ class MobileHomeHandler(MobileBaseHandler):
         if user is not None:
             result['data']['login_flag'] = 1
             # 最新报价
-            price_list = InsuranceOrderPrice.select(InsuranceOrderPrice).join(InsuranceOrder).\
+            price_list = InsuranceOrderPrice.select(InsuranceOrderPrice).\
+                join(InsuranceOrder, on=(InsuranceOrderPrice.insurance_order_id == InsuranceOrder.id)).\
                 where(InsuranceOrderPrice.read == 0, InsuranceOrderPrice.status == 1, InsuranceOrder.status == 0).\
                 order_by(InsuranceOrderPrice.created.desc())
             if price_list.count() > 0:
