@@ -43,8 +43,7 @@ def get_insurance(area_code):
     @apiParam {String} insurance 进入购买保险详情，后跟保险ID（暂时不使用，已改为h5完成），例：czj://insurance/1
     @apiParam {String} insurance_list 进入全部保险列表，例：czj://insurance_list
     @apiParam {String} product 进入商品详情，后跟商品ID（暂时不使用，已改为h5完成），例：czj://product/1
-    @apiParam {String} brand 进入某品牌列表，后跟品牌ID，例：czj://brand/1
-    @apiParam {String} category 进入某分类列表，后跟分类ID，例：czj://category/1
+    @apiParam {String} category 进入某分类、某品牌列表，后跟分类、品牌ID，ID为0标识所有；例：czj://category/1/brand/1
     @apiParam {String} insurance_order_list 进入保险订单列表，后跟状态，例：czj://insurance_order_list/0，表示报价列表
     @apiParam {String} insurance_order_detail 进入保险订单详情，后跟保险订单ID，例：czj://insurance_order_detail/1
     @apiParam {String} insurance_order_price 进入保险订单报价详情，后跟保险订单报价ID，例：czj://insurance_order_price/1
@@ -298,6 +297,7 @@ class MobileHomeHandler(MobileBaseHandler):
     hot_category 热门分类;
     hot_brand  热销产品;
     recommend  为你推荐;
+    last_unread_price 新报价
 
     @apiHeader {String} token 用户登录凭证
 
