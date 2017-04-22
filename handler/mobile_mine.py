@@ -205,6 +205,7 @@ def productOrderSearch(ft, type, index):
             orders.append(so.order.id)
             result.append({
                 'id': so.order.id,
+                'soid': so.id,
                 'ordernum': so.order.ordernum,
                 'saler_store': so.saler_store.name,
                 'buyer_store': so.buyer_store.name,
@@ -295,19 +296,19 @@ class MobileSubOrderDetailHandler(MobileBaseHandler):
     """
     @apiGroup mine
     @apiVersion 1.0.0
-    @api {get} /mobile/suborderdetail 03. 普通商品售出订单
-    @apiDescription 商品售出订单
+    @api {get} /mobile/suborderdetail 03. 售出商品订单详情
+    @apiDescription 售出商品订单详情
 
     @apiHeader {String} token 用户登录凭证
 
-    @apiParam {Int} id 子订单id
+    @apiParam {Int} soid 子订单id
 
     @apiSampleRequest /mobile/suborderdetail
     """
     @require_auth
     def get(self):
         result = {'flag': 0, 'msg': '', "data": {}}
-        soid = int(self.get_argument("id"))
+        soid = int(self.get_argument("soid"))
         suborder = SubOrder.get(id=soid)
         result['data']['address'] = {
             'name': suborder.order.address.mobile,
@@ -320,6 +321,7 @@ class MobileSubOrderDetailHandler(MobileBaseHandler):
 
         result['data']['totalprice'] = suborder.price
         result['data']['status'] = suborder.status
+        result['data']['ordernum'] = suborder.order.ordernum
 
         items = []
         for product in suborder.items:
@@ -645,53 +647,59 @@ class MobileInsuranceMethodHandler(MobileBaseHandler):
         self.write(simplejson.dumps(result))
 
 
-@route(r'/mobile/deliveryOrder', name='mobile_delivery_order')  # 手机端处理订单（发货）
+@route(r'/mobile/deliveryorder', name='mobile_delivery_order')  # 手机端处理订单（发货）
 class MobileDeliveryOrderHandler(MobileBaseHandler):
     """
     @apiGroup mine
     @apiVersion 1.0.0
-    @api {get} /mobile/deliveryOrder 12. 手机端处理订单（发货）
-    @apiDescription 手机端处理订单（发货）
+    @api {get} /mobile/deliveryorder 12. 获取快递公司信息
+    @apiDescription 获取快递公司信息
     @apiHeader {String} token 用户登录凭证
-    @apiSampleRequest /mobile/deliveryOrder
+    @apiSampleRequest /mobile/deliveryorder
     """
     @require_auth
     def get(self):
-        result = {'flag': 1, 'msg': '', 'data': [{'id': delivery.id, 'name': delivery.name} for delivery in Delivery.select()]}
+        result = {'flag': 1, 'msg': '', 'data': [{'id': delivery.id, 'name': delivery.name, 'img': delivery.img} for delivery in Delivery.select()]}
         self.write(simplejson.dumps(result))
         self.finish()
 
     """
     @apiGroup mine
     @apiVersion 1.0.0
-    @api {post} /mobile/deliveryOrder 13. 保险订单历史方案
-    @apiDescription 保险订单历史方案
+    @api {post} /mobile/deliveryorder 13. 经销商发货
+    @apiDescription 经销商发货
 
     @apiHeader {String} token 用户登录凭证
 
-    @apiParam {Int} oid 订单oid
+    @apiParam {Int} soid 子订单id
     @apiParam {Int} did 物流公司id
     @apiParam {Int} delivery_num 物流单号
 
-    @apiSampleRequest /mobile/deliveryOrder
+    @apiSampleRequest /mobile/deliveryorder
     """
     @require_auth
     def post(self):
         result = {'flag': 0, 'msg': '', 'data': ''}
-        oid = self.get_body_argument('oid', None)
+        soid = self.get_body_argument('soid', None)
         did = self.get_body_argument('did', None)
         delivery_num = self.get_body_argument('delivery_num', None)
         user = self.get_user()
 
-        if not (oid and did and delivery_num):
+        if not (soid and did and delivery_num):
             result['msg'] = u'传入参数异常'
             self.write(simplejson.dumps(result))
             return
-        sub_orders = SubOrder.select().join(Order).where((SubOrder.saler_store == user.store) & (Order.id == oid) & (SubOrder.status == 1))
+        if not user.store.store_type == 1:
+            result['msg'] = u'您不是经销商'
+            self.write(simplejson.dumps(result))
+            return
+
+        sub_orders = SubOrder.select().join(Order).where((SubOrder.saler_store == user.store) & (SubOrder.id == soid) & (SubOrder.status == 1))
         if sub_orders:
             sub_orders[0].status = 2
             sub_orders[0].delivery = int(did)
             sub_orders[0].delivery_num = delivery_num
+            sub_orders[0].delivery_time = int(time.time())
             sub_orders[0].save()
             if len(set([sub_order.status for sub_order in sub_orders])) == 1:
                 sub_orders[0].order.status = 2
