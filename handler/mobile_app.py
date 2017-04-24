@@ -610,7 +610,6 @@ class MobileDiscoverHandler(MobileBaseHandler):
     @apiDescription 发现
 
     @apiHeader {String} token 用户登录凭证
-
     @apiSampleRequest /mobile/discover
     """
     def get(self):
@@ -630,7 +629,7 @@ class MobileDiscoverHandler(MobileBaseHandler):
                     'price': 0,
                     'link': link
                 } for link, logo, name in bcs],
-                'ads': {'img':'', 'link': ''}
+                'ads': {'img': 'http://img.520czj.com/image/2017/04/24/c1zpvt053ui5c.jpg', 'link': link}
             })
         # 保险商城
         area_code = self.get_store_area_code()
@@ -638,7 +637,7 @@ class MobileDiscoverHandler(MobileBaseHandler):
             'cid': 0,
             'name': u'保险分类',
             'subs': InsuranceArea.get_insurances_link(area_code),
-            'ads': {'img': '', 'link': ''}
+            'ads': {'img': 'http://img.520czj.com/image/2017/04/24/AC7G79854266.jpg', 'link': link}
         })
 
         self.write(simplejson.dumps(result))
