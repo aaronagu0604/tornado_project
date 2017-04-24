@@ -86,13 +86,9 @@
                 </div>
                 <div style="margin:0 auto;text-align: center;" class="row">
                     <div style="margin: 1rem 4rem;">
-                        {% if product['type'] !='1' %}
     <a href="#" onclick="showDetail()"
                            class="button button-success">查看更多详情</a>
-                        {% else %}
-                        <a href="#" onclick="showDetail()"
-                           class="button button-success">查看更多详情</a>
-     {% endif %}
+
                         </div>
                 </div>
             </div>
@@ -117,9 +113,7 @@
 <script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm.min.js' charset='utf-8'></script>
 <script src="/style/mobile/swiper3.07.jquery.min.js"></script>
 <script type="text/javascript">
-    $(function () {
-
-    //ban
+$(function () {
     var mySwiper = new Swiper('.swiper-container', {
         pagination: '.swiper-pagination',
         autoplay: 5000//可选选项，自动滑动
@@ -137,10 +131,9 @@ function showDetail() {
 }
 
 function showMain() {
-$('#tab2').attr('class', 'tab');
+    $('#tab2').attr('class', 'tab');
     $('#tab1').attr('class', 'tab active');
 }
-
 
 </script>
 </body>

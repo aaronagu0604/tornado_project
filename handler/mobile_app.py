@@ -933,15 +933,17 @@ class MobileProductHandler(MobileBaseHandler):
     @apiHeader {String} token 用户登录凭证
 
     @apiParam {Int} id 产品或门店产品价格ID
-    @apiParam {Int} type 当前打开的产品的来源；1从app 2从分享
+    @apiParam {Int} from 当前打开的产品的来源；1从app 2从分享
+    @apiParam {Int} price 销售商品；1普通销售商品 2积分商品
 
     @apiSampleRequest /mobile/product
     """
     def get(self):
         result = {'flag': 0, 'msg': '', "data": {}}
         id = self.get_argument("id", None)
-        type = self.get_argument("type", 2)
-        product={'name': '测试产品', 'type': type}
+        f = self.get_argument("from", 2)
+        type = self.get_argument("price", 2)
+        product={'name': '测试产品', 'type': f}
         self.render('mobile/product.html', product=product)
 
 
