@@ -74,7 +74,6 @@
         console.log(codes);
         if(codes.length > 0) {
             $.post("/admin/change_release_area/{{sid}}", { _xsrf:xsrf, flag:flag, area_codes:codes.toString()}, function (data) {
-                console.debug('-----post success-----')
                 data = jQuery.parseJSON(data);
                 layer.alert(data.msg);
             });

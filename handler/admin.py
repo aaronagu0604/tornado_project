@@ -55,7 +55,6 @@ class LoginHandler(BaseHandler):
                 else:
                     self.flash("密码错误")
             except Exception, e:
-                print e
                 self.flash("此用户不存在")
         else:
             self.flash("请输入用户名或者密码")
@@ -318,14 +317,13 @@ class ChangeReleaseAreaHandler(AdminBaseHandler):
         self.render('admin/user/change_release_area.html', codes=codes, items=items, sid=store_id)
 
     def post(self, store_id):
-        print self.request.body
         flag = self.get_body_argument('flag', '')
         area_codes = self.get_body_argument('area_codes', '').split(',')
         result = {'msg': ''}
         if flag == '1':
             for sa in StoreArea.select().join(Area).where(StoreArea.store == store_id):
                 for area_code in area_codes:
-                    if area_code[len(sa.code)] == sa.code:
+                    if area_code[:len(sa.area.code)] == sa.area.code:
                         area_codes.remove(area_code)
                         break
             for area_code in area_codes:
@@ -336,25 +334,34 @@ class ChangeReleaseAreaHandler(AdminBaseHandler):
                     pass
             result['msg'] = u'添加成功，刷新销售商品页'
         elif flag == '0':
-            sas = [sa.code for sa in StoreArea.select().join(Area).where(StoreArea.store == store_id)]
-            need_add_area = []
-            need_del_area = []
+            sas = [sa.area.code for sa in StoreArea.select().join(Area).where(StoreArea.store == store_id)]
+            need_add_area_id = []
+            need_del_area_code = []
             for area_code in area_codes:
-                for sa in sas:
-                    if area_code in sa.code:  # 例：已有市要删省，把已有的市删掉
-                        need_del_area.append(sa.code)
-                    elif sa.code in area_code:  # 例：已有省要删市或区，删除省添加本省其它市
-                        store_code_son_len = len(sa.code) + 4
-                        store_code_g_son_len = len(sa.code) + 8
-                        if store_code_son_len == len(area_code):
-                            need_add_area = [area.code for area in Area.select().where((Area.code == sa.code) &
-                                (db.fn.Length(Area.code) == store_code_son_len) | (db.fn.Length(Area.code) == store_code_g_son_len))]
-                            need_add_area.remove(area_code)
-            for area_code in need_del_area:
-                StoreArea.delete().join(Area).where((StoreArea.store == store_id) & (Area.code == area_code)).execute()
-            for area_code in need_add_area:
-                aid = Area.get(code=area_code).id
-                StoreArea.create(area=aid, store=store_id)
+                for sa_code in sas:
+                    if area_code in sa_code:  # 例：已有市要删省，把已有的市删掉。或已有市删除该市
+                        need_del_area_code.append(sa_code)
+                    elif sa_code in area_code:  # 例：已有省要删市或区，删除省添加本省其它市
+                        store_code_son_len = len(sa_code) + 4
+                        store_code_g_son_len = len(sa_code) + 8
+                        sa_code += '%'
+                        if store_code_son_len == len(area_code):  # 省删市或市删区
+                            need_add_area_id = [area.id for area in Area.select().where((Area.code % sa_code) &
+                                (db.fn.Length(Area.code) == store_code_son_len))]
+                            need_add_area_id.remove(Area.get(code=area_code).id)
+                        elif store_code_g_son_len == len(area_code):  # 省删区
+                            need_add_area_id = [area.id for area in Area.select().where((Area.code % sa_code) &
+                                (db.fn.Length(Area.code) == store_code_son_len))]
+                            need_add_area_id.remove(Area.get(code=area_code[:-4]).id)
+                            area_code_match = area_code[:-4] + '%'
+                            need_add_area_id = [area.id for area in Area.select().where((Area.code % area_code_match) &
+                                (db.fn.Length(Area.code) == store_code_g_son_len))]
+                            need_add_area_id.remove(Area.get(code=area_code).id)
+            print('---%s---%s---'%(need_add_area_id, need_del_area_code))
+            # need_del_sa_id = [sa.id for sa in StoreArea.select().join(Area).where((StoreArea.store == store_id) & (Area.code << need_del_area_code))]
+            # StoreArea.delete().where(StoreArea.id << need_del_sa_id).execute()
+            # for aid in need_add_area_id:
+            #     StoreArea.create(area=aid, store=store_id)
             result['msg'] = u'删除成功，刷新销售商品页'
         else:
             result['msg'] = u'传入参数异常'
@@ -1392,7 +1399,6 @@ class InsuranceOrderDetailHandler(AdminBaseHandler):
 
         programs = []
         insurance_order_prices = InsuranceOrderPrice.select().where(InsuranceOrderPrice.insurance_order_id == oid)
-        print insurance_order_prices.count()
         for program in insurance_order_prices:
             i_item_list = []
             for i_item in i_items:
@@ -1777,7 +1783,6 @@ class SendMsgHandler(AdminBaseHandler):
             stores = Store.select(Store.mobile).where(Store.area_code % area_code)
             for store in stores:
                 mobiles += store.mobile + ','
-            print mobiles
             with open('mobiles.txt', 'w') as f:
                 f.write(mobiles.strip(','))
             self.redirect('/admin/send_msg')

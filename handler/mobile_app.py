@@ -21,9 +21,8 @@ from mqProcess.jpushhelper import set_device_info
 
 def get_insurance(area_code):
     items = []
-    insurances = InsuranceArea.select(InsuranceArea.insurance). \
-        where((InsuranceArea.area_code == area_code) & (InsuranceArea.active == 1)). \
-        order_by(InsuranceArea.sort.asc())
+    insurances = InsuranceArea.select(InsuranceArea.insurance).\
+        where((InsuranceArea.area_code == area_code) & (InsuranceArea.active == 1)).order_by(InsuranceArea.sort.asc())
     for insurance in insurances:
         items.append({
             'img': insurance.insurance.logo,
@@ -342,20 +341,20 @@ class MobileHomeHandler(MobileBaseHandler):
         result['data']['category'] = []
         # 保险
         tmp_code = area_code
-        insurances = get_insurance(tmp_code)
+        insurances = InsuranceArea.get_insurances_link(tmp_code)[:4]
         while len(insurances) == 0 and len(tmp_code) > 4:
             tmp_code = tmp_code[0: -4]
-            insurances = get_insurance(tmp_code)
+            insurances = get_insurance(tmp_code)[:4]
         result['data']['category'].append({'title': u'保险业务', 'data': insurances})
 
         # 热门分类
         tmp_code = area_code
-        categories = self.get_category(tmp_code)
+        categories = self.get_category(tmp_code)[:4]
         while len(categories) == 0 and len(tmp_code) > 4:
             tmp_code = tmp_code[0: -4]
-            categories = self.get_category(tmp_code)
+            categories = self.get_category(tmp_code)[:4]
         if len(categories) == 0:
-            categories = self.get_category(self.get_default_area_code())
+            categories = self.get_category(self.get_default_area_code())[:4]
         result['data']['category'].append({'title': u'热门分类', 'data': categories})
 
         # 热销品牌
@@ -437,37 +436,39 @@ class MobileHomeHandler(MobileBaseHandler):
 
     def get_recommend(self, area_code):
         items = []
-        recommends = BlockItem.select(BlockItem.link, Product.cover, Product.name, StoreProductPrice.price).join(
-            Block). \
+        recommends = BlockItem.select(BlockItem.link, Product.cover, Product.name, StoreProductPrice.price, ProductRelease.is_score).\
+            join(Block). \
             join(StoreProductPrice, on=BlockItem.ext_id == StoreProductPrice.id). \
             join(ProductRelease, on=ProductRelease.id == StoreProductPrice.product_release). \
             join(Product, on=Product.id == ProductRelease.product). \
             where((Block.tag == 'recommend') & (Block.active == 1) & (BlockItem.active == 1)
                   & (BlockItem.area_code == area_code)).order_by(BlockItem.sort.asc()).tuples()
-        for link, logo, name, price in recommends:
+        for link, logo, name, price, is_score in recommends:
             items.append({
                 'img': logo,
                 'name': name,
                 'price': price,
-                'link': link
+                'link': link,
+                'is_score': 0
             })
         return items
 
     def get_score_product(self, area_code):
         items = []
-        score_product = BlockItem.select(BlockItem.link, Product.cover, Product.name, StoreProductPrice.price).join(
-            Block). \
+        score_product = BlockItem.select(BlockItem.link, Product.cover, Product.name, StoreProductPrice.price, ProductRelease.is_score).\
+            join(Block). \
             join(StoreProductPrice, on=BlockItem.ext_id == StoreProductPrice.id). \
             join(ProductRelease, on=ProductRelease.id == StoreProductPrice.product_release). \
             join(Product, on=Product.id == ProductRelease.product). \
             where((Block.tag == 'score_product') & (Block.active == 1) & (BlockItem.active == 1)
                   & (BlockItem.area_code == area_code)).order_by(BlockItem.sort.asc()).tuples()
-        for link, logo, name, price in score_product:
+        for link, logo, name, price, is_score in score_product:
             items.append({
                 'img': logo,
                 'name': name,
                 'price': price,
-                'link': link
+                'link': link,
+                'is_score': is_score
             })
         return items
 
@@ -786,9 +787,9 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
             ProductRelease.id.alias('prid'), Product.id.alias('pid'), StoreProductPrice.id.alias('sppid'),
             Product.name.alias('name'), StoreProductPrice.price.alias('price'), Product.unit.alias('unit'),
             ProductRelease.buy_count.alias('buy_count'), Product.cover.alias('cover'),
-            Product.resume.alias('resume'), Store.name.alias('sName')). \
-            join(Product, on=(Product.id == ProductRelease.product)). \
-            join(StoreProductPrice, on=(StoreProductPrice.product_release == ProductRelease.id)). \
+            Product.resume.alias('resume'), Store.name.alias('sName'), ProductRelease.is_score.alias('is_score')).\
+            join(Product, on=(Product.id == ProductRelease.product)).\
+            join(StoreProductPrice, on=(StoreProductPrice.product_release == ProductRelease.id)).\
             join(Store, on=(Store.id == ProductRelease.store)).where(ft).dicts()
         # 排序
         if sort == '1':
@@ -813,7 +814,8 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
                 'buy_count': p['buy_count'],
                 'cover': p['cover'],
                 'resume': p['resume'],
-                'storeName': p['sName']
+                'storeName': p['sName'],
+                'is_score': p['is_score']
             })
 
         return productList
