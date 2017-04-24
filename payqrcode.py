@@ -12,7 +12,7 @@ from poster.streaminghttp import register_openers
 
 
 FILE_SERVER = 'http://img.520czj.com/upload/image'
-PILIMAGE_FILE = "/home/www/workspace/upload/"
+PILIMAGE_FILE = "/var/lib/jenkins/jobs/czj/workspace/upload/"
 
 def postRequest(data):
     try:
