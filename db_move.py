@@ -477,10 +477,10 @@ def move_blockitem():
     for item in old_blockitem:
         blockitem = New_BlockItem.create(
             area_code=item.city_code if item.city_code else '',
-            block=block_map[item.atype.id],
+            block=block_map[item.atype],
             name='数据库迁移数据',  # 旧的没有，暂时设置，后期人工处理
             link=0,  # 旧的没有，设置默认值：0
-            ext_id=block_map[item.atype.id],  # 旧的没有，设置默认值：0
+            ext_id=block_map[item.atype],  # 旧的没有，设置默认值：0
             remark=item.remark,
             img=item.imgalt,
             sort=item.sort,
