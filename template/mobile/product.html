@@ -15,13 +15,14 @@
 
 <body>
 <div class="page">
+    {% if product['type'] !='1' %}
     <header class="bar bar-nav">
-        <span class="icon icon-left pull-left"></span>
         <div class="buttons-tab">
-            <a href="#tab1" class="tab-link active button">商品</a>
-            <a href="#tab2" class="tab-link button">详情</a>
+            <a href="#tab1" id="ctab1" class="tab-link active button">商品</a>
+            <a href="#tab2" id="ctab2" class="tab-link button">详情</a>
         </div>
     </header>
+     {% endif %}
     <div class="content" style="background-color: #ededed;">
         <div class="tabs">
             <div id="tab1" class="tab active">
@@ -84,7 +85,15 @@
                         </div>
                 </div>
                 <div style="margin:0 auto;text-align: center;" class="row">
-                    <div style="margin: 1rem 4rem;"><a href="#" class="button button-success">查看更多详情</a></div>
+                    <div style="margin: 1rem 4rem;">
+                        {% if product['type'] !='1' %}
+    <a href="#" onclick="showDetail()"
+                           class="button button-success">查看更多详情</a>
+                        {% else %}
+                        <a href="#" onclick="showDetail()"
+                           class="button button-success">查看更多详情</a>
+     {% endif %}
+                        </div>
                 </div>
             </div>
             <div id="tab2" class="tab ">
@@ -117,7 +126,20 @@
     });
 });
 
+function showDetail() {
+    $('#tab1').attr('class', 'tab');
+    $('#tab2').attr('class', 'tab active');
 
+    if($('#ctab1')) {
+        $('#ctab1').attr('class', 'tab-link button');
+        $('#ctab2').attr('class', 'tab-link active button');
+    }
+}
+
+function showMain() {
+$('#tab2').attr('class', 'tab');
+    $('#tab1').attr('class', 'tab active');
+}
 
 
 </script>

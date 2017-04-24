@@ -930,8 +930,8 @@ class MobileProductHandler(MobileBaseHandler):
     def get(self):
         result = {'flag': 0, 'msg': '', "data": {}}
         id = self.get_argument("id", None)
-        type = self.get_argument("type", None)
-        product={'name': '测试产品'}
+        type = self.get_argument("type", 2)
+        product={'name': '测试产品', 'type': type}
         self.render('mobile/product.html', product=product)
 
 

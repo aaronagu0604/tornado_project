@@ -46,6 +46,19 @@ class MobileBaseHandler(RequestHandler):
     def get_default_area_code(self):
         return '00270001'  # 默认使用西安市的code
 
+    def render_string(self, template_name, **context):
+        context.update({
+            'xsrf': self.xsrf_form_html,
+            'request': self.request}
+        )
+
+        return self._jinja_render(path=self.get_template_path(), filename=template_name,
+                                  auto_reload=self.settings['debug'], **context)
+
+    def _jinja_render(self, path, filename, **context):
+        template = self.application.jinja_env.get_template(filename, parent=path)
+        return template.render(**context)
+
 
 class AdminPageNotFoundHandler(RequestHandler):
     def get(self):
