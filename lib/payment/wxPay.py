@@ -393,10 +393,13 @@ class Qrcode_pub(Wxpay_client_pub):
     def getPayQrcode(self,out_trade_no, body, total_fee):
         parameters = self.getPrepayId(out_trade_no, body, total_fee)
         print parameters
-        if parameters['result'] == 'SUCCESS':
-            return createqrcode(parameters['code_url'])
-        else:
-            return None
+        try:
+            if parameters['result'] == 'SUCCESS':
+                return createqrcode(parameters['code_url'])
+            else:
+                return None
+        except Exception,e:
+            return str(e)
 
 """订单查询接口"""
 class OrderQuery_pub(Wxpay_client_pub):
