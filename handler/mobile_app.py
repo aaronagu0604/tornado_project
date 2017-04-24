@@ -618,24 +618,34 @@ class MobileDiscoverHandler(MobileBaseHandler):
                 join(Brand, on=(BlockItem.ext_id == Brand.id)).\
                 join(BrandCategory, on=(Brand.id == BrandCategory.brand)).\
                 where(BrandCategory.category == category).tuples()
+
             result['data'].append({
-                'cid': category.id,
                 'name': category.name,
+                'cid': category.id,
                 'subs': [{
-                    'img': logo,
-                    'name': name,
-                    'price': 0,
-                    'link': link
-                } for link, logo, name in bcs],
-                'ads': {'img': 'http://img.520czj.com/image/2017/04/24/c1zpvt053ui5c.jpg', 'link': link}
+                    'name': u'热销品牌',
+                    'subs': [{'img': logo, 'name': name, 'price': 0, 'link': link} for link, logo, name in bcs]
+                },
+                {
+                    'name': u'不太热销的',
+                    'subs': [{'img': logo, 'name': name, 'price': 0, 'link': link} for link, logo, name in bcs]
+                }
+                ],
+                'ads': {'img': '', 'link': ''}
             })
         # 保险商城
         area_code = self.get_store_area_code()
         result['data'].append({
+            'name': u'保险商城',
             'cid': 0,
-            'name': u'保险分类',
-            'subs': InsuranceArea.get_insurances_link(area_code),
-            'ads': {'img': 'http://img.520czj.com/image/2017/04/24/AC7G79854266.jpg', 'link': link}
+            'subs': [{
+                'name': u'热门保险',
+                'subs': InsuranceArea.get_insurances_link(area_code)
+            },{
+                'name': u'不太热门保险',
+                'subs': InsuranceArea.get_insurances_link(area_code)
+            }],
+            'ads': {'img': '', 'link': ''}
         })
 
         self.write(simplejson.dumps(result))
