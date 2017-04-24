@@ -9,11 +9,12 @@ font-size: 0.7rem;
 .p_share {
 padding: 0.1rem 0rem;
 text-align: center;
-color:#3a3a3a;
+color:#aaa;
 }
 
 .p_small_font {
 font-size:0.4rem;
+    color:#aaa;
 }
 
 .p_price {
@@ -30,17 +31,40 @@ font-size:0.6rem;
 padding-left:1rem;
 }
 
-
 .p_detail {
-width: 100%;
-}
-
-.p_detail div {
 width: 100%;
 margin: 0;
 padding:0;
+display: block;
+word-wrap: break-word;
 }
 
-.p_detail div img {
-width: 100%;
+.p_detail img {
+max-width: 750px;
+vertical-align: top;
+border: 0;
+}
+
+.p_para_title {
+font-size: 0.8rem;
+margin:0 1.5rem;
+line-height:2rem;
+}
+
+.p_para_body {
+font-size: 0.7rem;
+text-align: center;
+margin:0 1.5rem;
+padding:0;
+border-top: thin solid #ccc;
+}
+
+.p_para_item {
+border-bottom:thin solid #ccc;
+margin: 0;
+line-height:1.6rem;
+}
+
+.p_para_item_left {
+border-right:thin solid #ccc;
 }
