@@ -957,6 +957,17 @@ class LubePolicy(db.Model):
     class Meta:
         db_table = "tb_lube_policy"
 
+# 店铺经销商返油反分积分映射表
+class SSILubePolicy(db.Model):
+    id = PrimaryKeyField()
+    store = ForeignKeyField(Store, related_name='store_policy', db_column='store_id')  #门店
+    insurance = ForeignKeyField(Insurance, related_name='insurance_policy', db_column='insurance_id')  # 保险公司
+    dealer_store = ForeignKeyField(Store, related_name='dealer_store_policy', db_column='dealer_store_id')  # 经销商
+    score = CharField(max_length=4000)  # 返油政策的json串  # 返积分政策
+    lube = CharField(max_length=4000)  # 返油政策的json串  #　返油政策
+
+    class Meta:
+        db_table = "tb_store_gift_policy"
 
 # 手机端区块: 广告
 class Block(db.Model):
