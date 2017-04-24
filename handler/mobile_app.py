@@ -614,34 +614,23 @@ class MobileDiscoverHandler(MobileBaseHandler):
     @apiSampleRequest /mobile/discover
     """
     def get(self):
-        # result = {'flag': 0, 'msg': '', 'data': [{'name': u'配件商城', 'subs':[]}, {'name': u'汽车装潢', 'subs':[]}, {'name': u'保险商城', 'subs':[]}]}
-        result = {'flag': 0, 'msg': '', 'data': []}
+        result = {'flag': 1, 'msg': '', 'data': []}
         categories = Category.select().where(Category.active == 1)
         for category in categories:
             bcs = BlockItem.select(BlockItem.link, Brand.logo, Brand.name).\
                 join(Brand, on=(BlockItem.ext_id == Brand.id)).\
                 join(BrandCategory, on=(Brand.id == BrandCategory.brand)).\
                 where(BrandCategory.category == category).tuples()
-            subs = [{
-                'img': logo,
-                'name': name,
-                'price': 0,
-                'link': link
-            } for link, logo, name in bcs]
-            #  配件商城
-            if category.category_type == 1:
-                result['data'].append({
-                    'cid': category.id,
-                    'name': category.name,
-                    'subs': subs
-                })
-            # 汽车装潢
-            elif category.category_type == 2:
-                result['data'].append({
-                    'cid': category.id,
-                    'name': category.name,
-                    'subs': subs
-                })
+            result['data'].append({
+                'cid': category.id,
+                'name': category.name,
+                'subs': [{
+                    'img': logo,
+                    'name': name,
+                    'price': 0,
+                    'link': link
+                } for link, logo, name in bcs]
+            })
         # 保险商城
         area_code = self.get_store_area_code()
         result['data'].append({
@@ -650,7 +639,6 @@ class MobileDiscoverHandler(MobileBaseHandler):
             'subs': InsuranceArea.get_insurances_link(area_code),
         })
 
-        result['flag'] = 1
         self.write(simplejson.dumps(result))
         self.finish()
 

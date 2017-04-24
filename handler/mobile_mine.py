@@ -173,17 +173,17 @@ class MobilStorePopularizeHandler(MobileBaseHandler):
 # ----------------------------------------------------订单--------------------------------------------------------------
 def productOrderSearch(ft, type, index):
     if type == 'all':  # 全部
-        ft &= (SubOrder.status > -1) & (SubOrder.buyer_del == 0)
+        ft &= (SubOrder.status > -1)
     elif type == 'unpay':  # 待付款订单
-        ft &= (SubOrder.status == 0) & (SubOrder.buyer_del == 0)
+        ft &= (SubOrder.status == 0)
     elif type == 'undispatch':  # 待发货
-        ft &= (SubOrder.status == 1) & (SubOrder.buyer_del == 0)
+        ft &= (SubOrder.status == 1)
     elif type == 'unreceipt':  # 待收货
-        ft &= (Order.status == 2) & (SubOrder.buyer_del == 0)
+        ft &= (Order.status == 2)
     elif type == 'success':  # 交易完成/待评价
-        ft &= (Order.status == 3) & (SubOrder.buyer_del == 0)
+        ft &= (Order.status == 3)
     elif type == 'delete':  # 删除
-        ft &= ((Order.status == -1) | (SubOrder.buyer_del == 1))
+        ft &= (Order.status == -1)
 
     result = []
     orders = []
@@ -220,7 +220,7 @@ def productOrderSearch(ft, type, index):
     return result
 
 
-@route(r'/mobile/purchaseorder', name='mobile_purchase_order')  # 普通商品采购订单
+@route(r'/mobile/purchaseorder', name='mobile_purchase_order')  # 普通商品订单（采购）
 class MobilPurchaseOrderHandler(MobileBaseHandler):
     """
     @apiGroup mine
@@ -252,7 +252,7 @@ class MobilPurchaseOrderHandler(MobileBaseHandler):
         user = self.get_user()
         # 先删除超时订单
         # self.delete_timeOut_order(user)
-        ft = (Order.user == user)
+        ft = (Order.user == user) & (SubOrder.buyer_del == 0)
         try:
             result['data'] = productOrderSearch(ft, type, index)
             result['flag'] = 1
@@ -261,90 +261,7 @@ class MobilPurchaseOrderHandler(MobileBaseHandler):
         self.write(simplejson.dumps(result))
 
 
-@route(r'/mobile/sellorder', name='mobile_sell_order')  # 普通商品售出订单
-class MobileSellOrderHandler(MobileBaseHandler):
-    """
-    @apiGroup mine
-    @apiVersion 1.0.0
-    @api {get} /mobile/sellorder 03. 普通商品售出订单
-    @apiDescription 普通商品售出订单
-
-    @apiHeader {String} token 用户登录凭证
-
-    @apiParam {String} type 订单状态类型 all全部，unpay待支付，undispatch待发货，unreceipt待收货，success交易完成/待评价， delete删除
-    @apiParam {Int} index 每页起始个数
-
-    @apiSampleRequest /mobile/sellorder
-    """
-    @require_auth
-    def get(self):
-        result = {'flag': 0, 'msg': '', "data": []}
-        type = self.get_argument("type", 'all')
-        index = int(self.get_argument('index', 1))
-        store = self.get_user().store
-        ft = (SubOrder.saler_store == store)
-        try:
-            result['data'] = productOrderSearch(ft, type, index)
-            result['flag'] = 1
-        except Exception:
-            result['msg'] = '系统错误'
-        self.write(simplejson.dumps(result))
-
-
-@route(r'/mobile/suborderdetail', name='mobile_order_detail')  # 售出商品订单详情
-class MobileSubOrderDetailHandler(MobileBaseHandler):
-    """
-    @apiGroup mine
-    @apiVersion 1.0.0
-    @api {get} /mobile/suborderdetail 03. 售出商品订单详情
-    @apiDescription 售出商品订单详情
-
-    @apiHeader {String} token 用户登录凭证
-
-    @apiParam {Int} soid 子订单id
-
-    @apiSampleRequest /mobile/suborderdetail
-    """
-    @require_auth
-    def get(self):
-        result = {'flag': 0, 'msg': '', "data": {}}
-        soid = int(self.get_argument("soid"))
-        suborder = SubOrder.get(id=soid)
-        result['data']['address'] = {
-            'name': suborder.order.address.mobile,
-            'mobile': suborder.order.address.mobile,
-            'province': suborder.order.address.province,
-            'city': suborder.order.address.city,
-            'district': suborder.order.address.region,
-            'address': suborder.order.address.address
-        }
-
-        result['data']['totalprice'] = suborder.price
-        result['data']['status'] = suborder.status
-        result['data']['ordernum'] = suborder.order.ordernum
-
-        items = []
-        for product in suborder.items:
-            pics = [item.pic for item in product.product.pics]
-            pic = None
-            if pics:
-                pic = pics[0]
-            productattibute = ProductAttributeValue.get(ProductAttributeValue.product == product.product)
-            attribute = "%s %s" % (productattibute.attribute.name, productattibute.value)
-            items.append({
-                'img': pic,
-                'name': product.product.name,
-                'price': product.price,
-                'quantity': product.quantity,
-                'attribute': attribute
-            })
-        if items:
-            result['flag'] = 1
-        result['data']['items'] = items
-        self.write(simplejson.dumps(result))
-
-
-@route(r'/mobile/orderdetail', name='mobile_order_detail')  # 普通商品订单详情
+@route(r'/mobile/orderdetail', name='mobile_order_detail')  # 普通商品订单详情（采购）
 class MobileOrderDetailHandler(MobileBaseHandler):
     """
     @apiGroup mine
@@ -408,6 +325,89 @@ class MobileOrderDetailHandler(MobileBaseHandler):
         self.write(simplejson.dumps(result))
 
 
+@route(r'/mobile/sellorder', name='mobile_sell_order')  # 普通商品订单（售出）
+class MobileSellOrderHandler(MobileBaseHandler):
+    """
+    @apiGroup mine
+    @apiVersion 1.0.0
+    @api {get} /mobile/sellorder 03. 普通商品售出订单
+    @apiDescription 普通商品售出订单
+
+    @apiHeader {String} token 用户登录凭证
+
+    @apiParam {String} type 订单状态类型 all全部，unpay待支付，undispatch待发货，unreceipt待收货，success交易完成/待评价， delete删除
+    @apiParam {Int} index 每页起始个数
+
+    @apiSampleRequest /mobile/sellorder
+    """
+    @require_auth
+    def get(self):
+        result = {'flag': 0, 'msg': '', "data": []}
+        type = self.get_argument("type", 'all')
+        index = int(self.get_argument('index', 1))
+        store = self.get_user().store
+        ft = (SubOrder.saler_store == store)
+        try:
+            result['data'] = productOrderSearch(ft, type, index)
+            result['flag'] = 1
+        except Exception:
+            result['msg'] = '系统错误'
+        self.write(simplejson.dumps(result))
+
+
+@route(r'/mobile/suborderdetail', name='mobile_order_detail')  # 普通商品订单详情（售出）
+class MobileSubOrderDetailHandler(MobileBaseHandler):
+    """
+    @apiGroup mine
+    @apiVersion 1.0.0
+    @api {get} /mobile/suborderdetail 03. 售出商品订单详情
+    @apiDescription 售出商品订单详情
+
+    @apiHeader {String} token 用户登录凭证
+
+    @apiParam {Int} soid 子订单id
+
+    @apiSampleRequest /mobile/suborderdetail
+    """
+    @require_auth
+    def get(self):
+        result = {'flag': 0, 'msg': '', "data": {}}
+        soid = int(self.get_argument("soid"))
+        suborder = SubOrder.get(id=soid)
+        result['data']['address'] = {
+            'name': suborder.order.address.mobile,
+            'mobile': suborder.order.address.mobile,
+            'province': suborder.order.address.province,
+            'city': suborder.order.address.city,
+            'district': suborder.order.address.region,
+            'address': suborder.order.address.address
+        }
+
+        result['data']['totalprice'] = suborder.price
+        result['data']['status'] = suborder.status
+        result['data']['ordernum'] = suborder.order.ordernum
+
+        items = []
+        for product in suborder.items:
+            pics = [item.pic for item in product.product.pics]
+            pic = None
+            if pics:
+                pic = pics[0]
+            productattibute = ProductAttributeValue.get(ProductAttributeValue.product == product.product)
+            attribute = "%s %s" % (productattibute.attribute.name, productattibute.value)
+            items.append({
+                'img': pic,
+                'name': product.product.name,
+                'price': product.price,
+                'quantity': product.quantity,
+                'attribute': attribute
+            })
+        if items:
+            result['flag'] = 1
+        result['data']['items'] = items
+        self.write(simplejson.dumps(result))
+
+
 @route(r'/mobile/deleteorder', name='mobile_delete_order')  # 删除商品订单
 class MobileDeleteOrderHandler(MobileBaseHandler):
     """
@@ -461,7 +461,7 @@ class MobileInsuranceOrderHandler(MobileBaseHandler):
         type = self.get_argument("type", 'all')
         index = int(self.get_argument('index', 1))
         store = self.get_user().store
-        ft = (InsuranceOrder.store == store)
+        ft = ((InsuranceOrder.store == store) & (InsuranceOrder.user_del == 0))
         # 0待确认 1待付款 2付款完成 3已办理 4已邮寄 -1已删除(取消)
         if type == 'all':  # 全部
             ft &= (InsuranceOrder.status > -1) & (InsuranceOrder.user_del == 0)
@@ -478,7 +478,7 @@ class MobileInsuranceOrderHandler(MobileBaseHandler):
         elif type == 'delete':  # 删除
             ft &= ((InsuranceOrder.status == -1) | (InsuranceOrder.user_del == 1))
         else:
-            result['msg'] = '输入参数有误'
+            result['msg'] = u'输入参数有误'
             return
         ios = InsuranceOrder.select().where(ft).order_by(InsuranceOrder.ordered).paginate(index, setting.MOBILE_PAGESIZE)
         for io in ios:
