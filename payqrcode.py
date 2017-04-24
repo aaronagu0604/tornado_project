@@ -34,7 +34,7 @@ def postRequest(data):
 def createqrcode(content='default content'):
     qr = qrcode.make(content)
     filename = PILIMAGE_FILE+str(time.time())[1:10]+str(random.randrange(1,10000))+'.jpeg'
-    qr.save(filename)
+    qr.save(filename, format='jpeg')
     st = postRequest(open(filename, 'rb'))
     return st
 
