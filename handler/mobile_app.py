@@ -305,6 +305,7 @@ class MobileHomeHandler(MobileBaseHandler):
         result = {'flag': 0, 'msg': '', "data": {}}
         area_code = self.get_store_area_code()
         user = self.get_user()
+        print user,area_code
         result['data']['login_flag'] = 0
         result['data']['last_unread_price'] = {}
         result['data']['last_unread_price']['show'] = 0
@@ -387,6 +388,7 @@ class MobileHomeHandler(MobileBaseHandler):
         result['data']['category'].append({'title': u'积分兑换', 'data': score_product})
 
         result['flag'] = 1
+        print result
         self.write(simplejson.dumps(result))
         self.finish()
 
@@ -406,75 +408,71 @@ class MobileHomeHandler(MobileBaseHandler):
 
     def get_category(self, area_code):
         items = []
-        categories = BlockItem.select(BlockItem.link, Category.img_m, Category.name).join(Block). \
-            join(Category, on=BlockItem.ext_id == Category.id).where(
-            (Block.tag == 'hot_category') & (Block.active == 1)
-            & (BlockItem.active == 1) & (BlockItem.area_code == area_code)).order_by(BlockItem.sort.asc()).tuples()
-        for link, logo, name in categories:
+        if isinstance(area_code,list):
+            spps = StoreProductPrice.select().where(StoreProductPrice.area_code << area_code)
+        else:
+            spps = StoreProductPrice.select().where(StoreProductPrice.area_code == area_code)
+        pcs = [item.product_release.product.category.id for item in spps]
+        categories = Category.select().where(Category.id << pcs)
+        for item in categories:
             items.append({
-                'img': logo,
-                'name': name,
+                'img': item.img_m,
+                'name': item.name,
                 'price': 0,
-                'link': link
+                'link': 'czj://category/%s'%item.id
             })
         return items
 
     def get_brand(self, area_code):
         items = []
-        brands = BlockItem.select(BlockItem.link, Brand.logo, Brand.name).join(Block).join(Brand, on=(BlockItem.ext_id == Brand.id)).\
-            where((Block.tag=='hot_brand') & (Block.active==1) & (BlockItem.active==1) & (BlockItem.area_code==area_code)).\
-            order_by(BlockItem.sort.asc()).tuples()
-        for link, logo, name in brands:
+        if isinstance(area_code,list):
+            spps = StoreProductPrice.select().where(StoreProductPrice.area_code << area_code)
+        else:
+            spps = StoreProductPrice.select().where(StoreProductPrice.area_code == area_code)
+        pbs = [item.product_release.product.brand.id for item in spps]
+        brands = Brand.select().where(Brand.id << pbs)
+        for item in brands:
             items.append({
-                'img': logo,
-                'name': name,
+                'img': item.logo,
+                'name': item.name,
                 'price': 0,
-                'link': link
+                'link': 'czj://brand/%d'%item.id
             })
         return items
 
     def get_recommend(self, area_code):
         items = []
-        recommends = BlockItem.select(BlockItem.link, Product.cover, Product.name, StoreProductPrice.price,
-                                      ProductRelease.is_score, Store.name).\
-            join(Block).\
-            join(StoreProductPrice, on=BlockItem.ext_id == StoreProductPrice.id).\
-            join(ProductRelease, on=ProductRelease.id == StoreProductPrice.product_release).\
-            join(Store, on=(Store.id == ProductRelease.store)).\
-            join(Product, on=Product.id == ProductRelease.product).\
-            where((Block.tag == 'recommend') & (Block.active == 1) & (BlockItem.active == 1)
-                  & (BlockItem.area_code == area_code)).order_by(BlockItem.sort.asc()).tuples()
-        for link, logo, name, price, is_score, store in recommends:
+        if isinstance(area_code,list):
+            spps = StoreProductPrice.select().where(StoreProductPrice.area_code << area_code)
+        else:
+            spps = StoreProductPrice.select().where(StoreProductPrice.area_code == area_code)
+        for item in spps:
             items.append({
-                'img': logo,
-                'name': name,
-                'price': price,
-                'link': link,
+                'img': item.product_release.product.cover,
+                'name': item.product_release.product.name,
+                'price': item.price,
+                'link': 'czj://product/%d'%item.id,
                 'is_score': 0,
-                'storeName': store
+                'storeName': item.store.name
             })
         return items
 
     def get_score_product(self, area_code):
         items = []
-        score_product = BlockItem.select(BlockItem.link, Product.cover, Product.name, StoreProductPrice.price,
-                                         ProductRelease.is_score, Store.name).\
-            join(Block).\
-            join(StoreProductPrice, on=BlockItem.ext_id == StoreProductPrice.id).\
-            join(ProductRelease, on=ProductRelease.id == StoreProductPrice.product_release).\
-            join(Store, on=(Store.id == ProductRelease.store)).\
-            join(Product, on=Product.id == ProductRelease.product).\
-            where((Block.tag == 'score_product') & (Block.active == 1) & (BlockItem.active == 1)
-                  & (BlockItem.area_code == area_code)).order_by(BlockItem.sort.asc()).tuples()
-        for link, logo, name, price, is_score, store in score_product:
-            items.append({
-                'img': logo,
-                'name': name,
-                'price': price,
-                'link': link,
-                'is_score': is_score,
-                'storeName': store
-            })
+        if isinstance(area_code,list):
+            spps = StoreProductPrice.select().where(StoreProductPrice.area_code << area_code)
+        else:
+            spps = StoreProductPrice.select().where(StoreProductPrice.area_code == area_code)
+        for item in spps:
+            if item.product_release.is_score:
+                items.append({
+                    'img': item.product_release.product.logo,
+                    'name': item.product_release.product.name,
+                    'price': item.score,
+                    'link': 'czj://product/%d'%item.id,
+                    'is_score': True,
+                    'storeName': item.store.name
+                })
         return items
 
 
