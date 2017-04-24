@@ -466,7 +466,7 @@ class MobileHomeHandler(MobileBaseHandler):
         for item in spps:
             if item.product_release.is_score:
                 items.append({
-                    'img': item.product_release.product.logo,
+                    'img': item.product_release.product.cover,
                     'name': item.product_release.product.name,
                     'price': item.score,
                     'link': 'czj://product/%d'%item.id,
