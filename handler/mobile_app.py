@@ -421,7 +421,7 @@ class MobileHomeHandler(MobileBaseHandler):
                 'price': 0,
                 'link': 'czj://category/%s'%item.id
             })
-        return items
+        return items[:4]
 
     def get_brand(self, area_code):
         items = []
@@ -438,7 +438,7 @@ class MobileHomeHandler(MobileBaseHandler):
                 'price': 0,
                 'link': 'czj://brand/%d'%item.id
             })
-        return items
+        return items[:4]
 
     def get_recommend(self, area_code):
         items = []
@@ -455,7 +455,7 @@ class MobileHomeHandler(MobileBaseHandler):
                 'is_score': 0,
                 'storeName': item.store.name
             })
-        return items
+        return items[:4]
 
     def get_score_product(self, area_code):
         items = []
@@ -473,7 +473,7 @@ class MobileHomeHandler(MobileBaseHandler):
                     'is_score': True,
                     'storeName': item.store.name
                 })
-        return items
+        return items[:4]
 
 
 @route(r'/mobile/get_bank_name', name='GetBankName')  # 用户获取银行卡名称
