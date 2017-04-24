@@ -1012,10 +1012,10 @@ class BlockItemArea(db.Model):
 # 热搜
 class HotSearch(db.Model):
     id = PrimaryKeyField()
-    keywords = CharField(max_length=32, default='') #搜索关键词
-    quantity = IntegerField(default=1)    #搜索次数
-    status = IntegerField(default=0)    #0未审核   1已审核
-    last_time = IntegerField(default=0)  #最后搜索时间
+    keywords = CharField(max_length=32, default='')    # 搜索关键词
+    quantity = IntegerField(default=1)    # 搜索次数
+    status = IntegerField(default=0)    # 0未审核   1已审核
+    last_time = IntegerField(default=0)    # 最后搜索时间
 
     class Meta:
         db_table = "tb_hot_search"

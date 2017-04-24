@@ -2,7 +2,6 @@
 # coding=utf8
 
 import logging
-import math
 import random
 import uuid
 import time
@@ -436,39 +435,45 @@ class MobileHomeHandler(MobileBaseHandler):
 
     def get_recommend(self, area_code):
         items = []
-        recommends = BlockItem.select(BlockItem.link, Product.cover, Product.name, StoreProductPrice.price, ProductRelease.is_score).\
-            join(Block). \
-            join(StoreProductPrice, on=BlockItem.ext_id == StoreProductPrice.id). \
-            join(ProductRelease, on=ProductRelease.id == StoreProductPrice.product_release). \
-            join(Product, on=Product.id == ProductRelease.product). \
+        recommends = BlockItem.select(BlockItem.link, Product.cover, Product.name, StoreProductPrice.price,
+                                      ProductRelease.is_score, Store.name).\
+            join(Block).\
+            join(StoreProductPrice, on=BlockItem.ext_id == StoreProductPrice.id).\
+            join(ProductRelease, on=ProductRelease.id == StoreProductPrice.product_release).\
+            join(Store, on=(Store.id == ProductRelease.store)).\
+            join(Product, on=Product.id == ProductRelease.product).\
             where((Block.tag == 'recommend') & (Block.active == 1) & (BlockItem.active == 1)
                   & (BlockItem.area_code == area_code)).order_by(BlockItem.sort.asc()).tuples()
-        for link, logo, name, price, is_score in recommends:
+        for link, logo, name, price, is_score, store in recommends:
             items.append({
                 'img': logo,
                 'name': name,
                 'price': price,
                 'link': link,
-                'is_score': 0
+                'is_score': 0,
+                'storeName': store
             })
         return items
 
     def get_score_product(self, area_code):
         items = []
-        score_product = BlockItem.select(BlockItem.link, Product.cover, Product.name, StoreProductPrice.price, ProductRelease.is_score).\
-            join(Block). \
-            join(StoreProductPrice, on=BlockItem.ext_id == StoreProductPrice.id). \
-            join(ProductRelease, on=ProductRelease.id == StoreProductPrice.product_release). \
-            join(Product, on=Product.id == ProductRelease.product). \
+        score_product = BlockItem.select(BlockItem.link, Product.cover, Product.name, StoreProductPrice.price,
+                                         ProductRelease.is_score, Store.name).\
+            join(Block).\
+            join(StoreProductPrice, on=BlockItem.ext_id == StoreProductPrice.id).\
+            join(ProductRelease, on=ProductRelease.id == StoreProductPrice.product_release).\
+            join(Store, on=(Store.id == ProductRelease.store)).\
+            join(Product, on=Product.id == ProductRelease.product).\
             where((Block.tag == 'score_product') & (Block.active == 1) & (BlockItem.active == 1)
                   & (BlockItem.area_code == area_code)).order_by(BlockItem.sort.asc()).tuples()
-        for link, logo, name, price, is_score in score_product:
+        for link, logo, name, price, is_score, store in score_product:
             items.append({
                 'img': logo,
                 'name': name,
                 'price': price,
                 'link': link,
-                'is_score': is_score
+                'is_score': is_score,
+                'storeName': store
             })
         return items
 
@@ -503,8 +508,32 @@ class MobileGetBankNameHandler(MobileBaseHandler):
         self.write(simplejson.dumps(result))
 
 
+@route(r'/mobile/hot_search', name='mobile_hot_search')  # 热搜
+class MobileHotSearchHandler(MobileBaseHandler):
+    """
+    @apiGroup auth
+    @apiVersion 1.0.0
+    @api {get} /mobile/hot_search 热搜
+    @apiDescription 热搜关键字获取
+
+    @apiSampleRequest /mobile/hot_search
+    """
+
+    def get(self):
+        result = {'flag': 0, 'data': [], 'msg': ''}
+
+        rows = HotSearch.select().where(HotSearch.status == 1).order_by(HotSearch.quantity.desc()).limit(4)
+        if rows.count() > 0:
+            result['data'] = [hot_search.keywords for hot_search in rows]
+            result['flag'] = 1
+        else:
+            result['msg'] = u'暂无'
+
+        self.write(simplejson.dumps(result))
+
+
 # -----------------------------------------------------普通商品---------------------------------------------------------
-@route(r'/mobile/discover_old', name='mobile_discover_old')  # 发现
+@route(r'/mobile/discover_old', name='mobile_discover_old')  # 发现（旧发现页，已废除，新接口测试OK后删掉）
 class MobileDiscoverOldHandler(MobileBaseHandler):
     """
     @apiGroup app
@@ -585,7 +614,8 @@ class MobileDiscoverHandler(MobileBaseHandler):
     @apiSampleRequest /mobile/discover
     """
     def get(self):
-        result = {'flag': 0, 'msg': '', 'data': [{'name': u'配件商城', 'subs':[]}, {'name': u'汽车装潢', 'subs':[]}, {'name': u'保险商城', 'subs':[]}]}
+        # result = {'flag': 0, 'msg': '', 'data': [{'name': u'配件商城', 'subs':[]}, {'name': u'汽车装潢', 'subs':[]}, {'name': u'保险商城', 'subs':[]}]}
+        result = {'flag': 0, 'msg': '', 'data': []}
         categories = Category.select().where(Category.active == 1)
         for category in categories:
             bcs = BlockItem.select(BlockItem.link, Brand.logo, Brand.name).\
@@ -600,21 +630,21 @@ class MobileDiscoverHandler(MobileBaseHandler):
             } for link, logo, name in bcs]
             #  配件商城
             if category.category_type == 1:
-                result['data'][0]['subs'].append({
+                result['data'].append({
                     'cid': category.id,
                     'name': category.name,
                     'subs': subs
                 })
             # 汽车装潢
             elif category.category_type == 2:
-                result['data'][1]['subs'].append({
+                result['data'].append({
                     'cid': category.id,
                     'name': category.name,
                     'subs': subs
                 })
         # 保险商城
         area_code = self.get_store_area_code()
-        result['data'][2]['subs'].append({
+        result['data'].append({
             'cid': 0,
             'name': u'保险分类',
             'subs': InsuranceArea.get_insurances_link(area_code),
@@ -744,8 +774,7 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
     """
     def getProductList(self, keyword, sort, category, brand, attribute, index, area_code):
         productList = []
-        pids = []
-        ft = (Product.active==1)
+        ft = (Product.active == 1)
         # 根据规格参数搜索
         if category and attribute:
             ft1 = ft2 = None
@@ -820,6 +849,17 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
 
         return productList
 
+    def hot_search_add_keyword(self, keyword):
+        if keyword:
+            now = int(time.time())
+            hss = HotSearch.select().where(HotSearch.keyword == keyword)
+            if hss.count() > 0:
+                hss[0].quantity += 1
+                hss[0].last_time = now
+                hss[0].save()
+            else:
+                HotSearch.create(keyword=keyword, quantity=1, status=0, last_time=now)
+
     def get(self):
         result = {'flag': 1, 'msg': '', "data": {}}
         keyword = self.get_argument("keyword", None)
@@ -834,6 +874,7 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
         attributes = attribute.strip(',').split(',') if attribute else []
         area_code = self.get_store_area_code()
 
+        self.hot_search_add_keyword(keyword)
         if len(categories) > 1:
             result['data']['products'] = []
         else:

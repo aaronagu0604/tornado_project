@@ -1085,6 +1085,18 @@ class HotSearchHandler(AdminBaseHandler):
                     pagesize=pagesize, totalpage=totalpage, status=status)
 
 
+@route(r'/admin/search_change_status/(\d+)', name='admin_search_change_status')  # 更改搜索关键词状态
+class SearchChangeStatusHandler(AdminBaseHandler):
+    def get(self, tid):
+        page = int(self.get_argument("page", '1'))
+        status = int(self.get_argument('status', 0))
+        s = int(self.get_argument('s', 0))
+        hot = HotSearch.get(id=tid)
+        hot.status = status
+        hot.save()
+        self.redirect('/admin/hot_search?status=' + str(s) + '&page=' + str(page))
+
+
 # -------------------------------------------------------财务对账-------------------------------------------------------
 @route(r'/admin/withdraw', name='admin_withdraw')  # 提现管理列表
 class WithdrawHandler(AdminBaseHandler):
