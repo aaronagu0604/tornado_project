@@ -2354,7 +2354,7 @@ input[type="button"].button {
   border-radius: 0 1.35rem 1.35rem 0;
 }
 .buttons-tab {
-  background: white;
+  /*background: white;*/
   position: relative;
   padding: 0 5em;
 }
