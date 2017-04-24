@@ -26,7 +26,7 @@ font-size: 0.9rem;
 
 .p_sale {
 line-height:1.5rem;
-color: #565656;
+color: #aaa;
 font-size:0.6rem;
 padding-left:1rem;
 }
@@ -56,15 +56,15 @@ font-size: 0.7rem;
 text-align: center;
 margin:0 1.5rem;
 padding:0;
-border-top: thin solid #ccc;
+border-top: thin solid #eee;
 }
 
 .p_para_item {
-border-bottom:thin solid #ccc;
+border-bottom:thin solid #eee;
 margin: 0;
 line-height:1.6rem;
 }
 
 .p_para_item_left {
-border-right:thin solid #ccc;
+border-right:thin solid #eee;
 }
