@@ -12,7 +12,7 @@ from poster.streaminghttp import register_openers
 
 
 FILE_SERVER = 'http://img.520czj.com/upload/image'
-PILIMAGE_FILE = "/var/lib/jenkins/jobs/czj/workspace/upload/"
+PILIMAGE_FILE = os.path.split(os.path.realpath(__file__))[0] + "/upload/"
 
 def postRequest(data):
     try:
@@ -35,6 +35,7 @@ def createqrcode(content='default content'):
     qr = qrcode.make(content)
     filename = PILIMAGE_FILE+str(time.time())[1:10]+str(random.randrange(1,10000))+'.jpeg'
     qr.save(filename, format='jpeg')
+    print filename
     st = postRequest(open(filename, 'rb'))
     return st
 
