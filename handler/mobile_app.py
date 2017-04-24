@@ -326,7 +326,7 @@ class MobileHomeHandler(MobileBaseHandler):
                 result['data']['last_unread_price']['msg'] = u'您有新的保险报价'
                 result['data']['last_unread_price']['insurance'] = price_list[0].insurance.name
                 result['data']['last_unread_price']['time'] = dt
-                result['data']['last_unread_price']['show'] = 'czj://insurance_order_price/' + str(price_list[0].id)
+                result['data']['last_unread_price']['link'] = 'czj://insurance_order_price/' + str(price_list[0].id)
 
         # 获取首页banner列表，没有数据时使用西安的数据
         tmp_code = area_code
