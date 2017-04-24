@@ -629,7 +629,8 @@ class MobileDiscoverHandler(MobileBaseHandler):
                     'name': name,
                     'price': 0,
                     'link': link
-                } for link, logo, name in bcs]
+                } for link, logo, name in bcs],
+                'ads': {'img':'', 'link': ''}
             })
         # 保险商城
         area_code = self.get_store_area_code()
@@ -637,6 +638,7 @@ class MobileDiscoverHandler(MobileBaseHandler):
             'cid': 0,
             'name': u'保险分类',
             'subs': InsuranceArea.get_insurances_link(area_code),
+            'ads': {'img': '', 'link': ''}
         })
 
         self.write(simplejson.dumps(result))
