@@ -95,7 +95,7 @@ class Ad(db_old.Model):
     url = CharField(max_length=250)  # 商品连接地址
     picurl = CharField(max_length=50)  # 广告图片地址
     imgalt = CharField(max_length=50)  # 广告图片描述
-    atype = ForeignKeyField(AdType, db_column='atype')  # 广告类型 1首页大滚动 2首页小滚动，3为手机顶部首页广告 4手机腰部广告 5手机浏览推荐 6门店端采购小分类
+    atype = IntegerField(default=0)  # 广告类型 1首页大滚动 2首页小滚动，3为手机顶部首页广告 4手机腰部广告 5手机浏览推荐 6门店端采购小分类
     sort = IntegerField(default=1)  #排序顺序，数字越大排列越靠前
     city = ForeignKeyField(Area, related_name='ads_city', db_column='city_id', null=True)  # 城市ID
     city_code = CharField(max_length=50)  # 城市code

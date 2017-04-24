@@ -473,7 +473,7 @@ def move_block():
 block_item_map = {}
 
 def move_blockitem():
-    old_blockitem = Old_Ad.select()
+    old_blockitem = Old_Ad.select().where(Old_Ad.atype << block_map)
     for item in old_blockitem:
         blockitem = New_BlockItem.create(
             area_code=item.city_code if item.city_code else '',
