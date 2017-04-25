@@ -252,7 +252,7 @@ class MobilPurchaseOrderHandler(MobileBaseHandler):
         user = self.get_user()
         # 先删除超时订单
         # self.delete_timeOut_order(user)
-        ft = (Order.user == user) & (SubOrder.buyer_del == 0)
+        ft = (Order.user == user) & (Order.buyer_del == 0)
         try:
             result['data'] = productOrderSearch(ft, type, index)
             result['flag'] = 1

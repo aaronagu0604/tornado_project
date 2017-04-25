@@ -16,7 +16,7 @@ from lib.payment.wxPay import UnifiedOrder_pub,Qrcode_pub
 from lib.route import route
 from model import *
 from mqProcess.jpushhelper import set_device_info
-
+from PIL import ImageFont, Image, ImageDraw
 
 def get_insurance(area_code):
     items = []
@@ -1608,7 +1608,52 @@ class MobilePayOrderHandler(MobileBaseHandler):
         self.finish()
 
 
+# -----------------------------------------------------其它-------------------------------------------------------------
+@route(r'/mobile/storepopularize/(\d+)', name='store_popularize')  # 推广大使
+class StorePopularize(MobileBaseHandler):
+    def act_insurance(self, pop, uid, storeName, addr1, addr2, mobile, now):
+        pic = '%s_%s_'%(pop['PicPath'], str(uid))
+        oldPic = pic+'*'
+        newPic = '%s%s.png'%(pic, now)
+        ttfont = ImageFont.truetype(setting.typeface, pop['wordSize'])
+        im = Image.open(pop['basePicPath'])
+        draw = ImageDraw.Draw(im)
+        draw.text((pop['storeWidth'], pop['storeHeight']), storeName, fill=pop['wordColour'], font=ttfont)
+        draw.text((pop['addrWidth'], pop['addrHeight']), addr1, fill=pop['wordColour'], font=ttfont)
+        if addr2:
+            draw.text((pop['addr2Width'], pop['addr2Height']), addr2, fill=pop['wordColour'], font=ttfont)
+        draw.text((pop['phoneWidth'], pop['phoneHeight']), mobile, fill=pop['wordColour'], font=ttfont)
+        im.save(newPic)
+        return newPic[29:]
 
+    def get(self):
+        user = self.get_user()
+        result = {'flag': 0, 'data': [], 'msg': ''}
+        try:
+            storeName = user.store.name
+            addr = Area().get_detailed_address(user.store.area_code) + user.store.address
+            addr2 = ''
+            mobile = user.mobile
+            now = str(time.time())[:10]
+            for pop in setting.popularizePIC:
+                areaLimits = 0
+                for area_code in pop['area_code'].split(','):
+                    if user.store.area_code.startswith(area_code):
+                        areaLimits = 1
+                if len(addr) > pop['addr2tab']:
+                    addr1 = addr[:pop['addr2tab']]
+                    addr2 = addr[pop['addr2tab']:]
+                else:
+                    addr1 = addr
+                if areaLimits == 1:
+                    picPath = self.act_insurance(pop, user.id, storeName, addr1, addr2, mobile, now)
+                    result['data'].append(picPath)
+                    result['flag'] = 1
+
+        except Exception, e:
+            result['msg'] = u'生成图片错误'
+            logging.info('Error: /mobile/storepopularize/%s, %s'%(uid, e.message))
+        self.write(simplejson.dumps(result))
 
 
 
