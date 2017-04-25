@@ -151,7 +151,7 @@ def move_area():
             show_color=item.show_color,
             show_itf=item.show_itf,
             show_btf=item.show_btf,
-            image=imgurl+item.image if item.image else '',
+            image=item.image,
             sort=item.sort,
             is_delete=item.is_delete,
             is_site=item.is_site,
