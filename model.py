@@ -527,8 +527,9 @@ class Order(db.Model):
     buyer_store = ForeignKeyField(Store, related_name='orders', db_column='buyer_store_id')  # 买家所属店铺
     address = ForeignKeyField(StoreAddress, db_column='store_address_id')  # 收件信息
     order_type = IntegerField(default=1)  # 付款方式 1金钱订单 2积分订单
-    payment = IntegerField(default=0)  # 付款方式  1支付宝  2微信 3银联 4余额 5积分
+    payment = IntegerField(default=0)  # 支付方式  1支付宝  2微信 3银联 4余额 5积分
     total_price = FloatField(default=0.0)  # 价格，实际所有子订单商品价格之和
+    total_score = IntegerField(default=0)  # 积分
     pay_balance = FloatField(default=0.0)  # 余额支付金额
     pay_price = FloatField(default=0.0)  # 实际第三方支付价格
     ordered = IntegerField(default=0)  # 下单时间

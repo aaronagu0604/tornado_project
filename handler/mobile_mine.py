@@ -294,7 +294,9 @@ class MobileOrderDetailHandler(MobileBaseHandler):
         result['data']['payment'] = order.payment
         result['data']['ordered'] = time.strftime('%Y-%m-%d', time.localtime(order.ordered))
         result['data']['totalprice'] = order.total_price
+        result['data']['totalscore'] = order.total_score
         result['data']['status'] = order.status
+        result['data']['order_type'] = order.order_type
 
         suborders = []
         for suborder in order.sub_orders:
@@ -317,12 +319,51 @@ class MobileOrderDetailHandler(MobileBaseHandler):
                 'name': suborder.saler_store.name,
                 'consultmobile': suborder.saler_store.mobile,
                 'complainmobile': suborder.saler_store.mobile,
-                'products': products
+                'products': products,
+                'soid': suborder.id,
+                'price': suborder.price,
+                'score': suborder.score
             })
         if suborders:
             result['flag'] = 1
         result['data']['suborder'] = suborders
         self.write(simplejson.dumps(result))
+
+
+@route(r'/mobile/receiveorder', name='mobile_receive_order')  # 手机端处理订单（收货）
+class MobileReceiveOrderHandler(MobileBaseHandler):
+    """
+    @apiGroup mine
+    @apiVersion 1.0.0
+    @api {get} /mobile/receiveorder 14. 收货
+    @apiDescription 获取快递公司信息
+    @apiHeader {String} token 用户登录凭证
+    @apiSampleRequest /mobile/receiveorder
+    """
+
+    @require_auth
+    def get(self):
+        result = {'flag': 0, 'msg': '', 'data': ''}
+        soid = self.get_body_argument('soid', None)
+        user = self.get_user()
+
+        if not soid:
+            result['msg'] = u'传入参数异常'
+            self.write(simplejson.dumps(result))
+            return
+        sub_orders = SubOrder.select().join(Order).where((SubOrder.buyer_store == user.store) & (SubOrder.id == soid) & (SubOrder.status == 2))
+        if sub_orders.count() > 0:
+            sub_orders[0].status = 3
+            sub_orders[0].save()
+            if len(set([sub_order.status for sub_order in sub_orders])) == 1:
+                sub_orders[0].order.status = 3
+                sub_orders[0].order.save()
+            result['flag'] = 1
+        else:
+            result['msg'] = u'该订单不可收货'
+        self.write(simplejson.dumps(result))
+        return
+
 
 
 @route(r'/mobile/sellorder', name='mobile_sell_order')  # 普通商品订单（售出）
@@ -386,6 +427,8 @@ class MobileSubOrderDetailHandler(MobileBaseHandler):
         result['data']['totalprice'] = suborder.price
         result['data']['status'] = suborder.status
         result['data']['ordernum'] = suborder.order.ordernum
+        result['data']['score'] = suborder.score
+        result['data']['order_type'] = suborder.order.order_type
 
         items = []
         for product in suborder.items:
@@ -399,6 +442,7 @@ class MobileSubOrderDetailHandler(MobileBaseHandler):
                 'img': pic,
                 'name': product.product.name,
                 'price': product.price,
+                'score': product.score,
                 'quantity': product.quantity,
                 'attribute': attribute
             })
