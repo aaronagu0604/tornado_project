@@ -469,7 +469,7 @@ class MobileDeleteOrderHandler(MobileBaseHandler):
     @apiSampleRequest /mobile/deleteorder
     """
     @require_auth
-    def post(self):
+    def get(self):
         result = {'flag': 0, 'msg': '', "data": {}}
         oid = int(self.get_argument("id"))
         user = self.get_user()
