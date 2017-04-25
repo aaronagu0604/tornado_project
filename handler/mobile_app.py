@@ -901,11 +901,16 @@ class MobileProductHandler(MobileBaseHandler):
     @apiSampleRequest /mobile/product
     """
     def get(self):
-        result = {'flag': 0, 'msg': '', "data": {}}
         id = self.get_argument("id", None)
+        spp = StoreProductPrice.get(id=id)
         f = self.get_argument("from", 2)
         type = self.get_argument("price", 2)
-        product={'name': '测试产品', 'type': f}
+        product={'name': spp.product_release.product.name, 'type': type, 'from': f, 'id':id, 'price':spp.price,
+                 'pics':spp.product_release.product.pics, 'buy_count':spp.product_release.buy_count,
+                 'store':spp.store.name, 'mobile':spp.store.mobile}
+        if str(type) == '2':
+            product['price'] = spp.score
+
         self.render('mobile/product.html', product=product)
 
 

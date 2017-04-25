@@ -19,8 +19,13 @@ font-size:0.4rem;
 
 .p_price {
 line-height:1.5rem;
-padding-left: 0.3rem;
 color: red;
+font-size: 0.9rem;
+}
+
+.p_score {
+line-height:1.5rem;
+color: #4cd964;
 font-size: 0.9rem;
 }
 
