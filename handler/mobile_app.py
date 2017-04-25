@@ -928,7 +928,7 @@ class MobileInsuranceHandler(MobileBaseHandler):
         result = {'flag': 0, 'msg': '', "data": {}}
         id = self.get_argument("id", None)
         type = self.get_argument("type", None)
-        insurance={'name': '测试产品'}
+        insurance=Insurance.get(id=id)
         self.render('mobile/insurance.html', insurance=insurance)
 
 
