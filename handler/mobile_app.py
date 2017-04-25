@@ -349,10 +349,10 @@ class MobileHomeHandler(MobileBaseHandler):
 
         # 热门分类
         tmp_code = area_code
-        categories = self.get_category(tmp_code)[:4]
+        categories = self.get_category(tmp_code)
         while len(categories) == 0 and len(tmp_code) > 4:
             tmp_code = tmp_code[0: -4]
-            categories = self.get_category(tmp_code)[:4]
+            categories = self.get_category(tmp_code)
         if len(categories) == 0:
             categories = self.get_category(self.get_default_area_code())[:4]
         result['data']['category'].append({'title': u'热门分类', 'data': categories})
