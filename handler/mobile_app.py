@@ -388,7 +388,7 @@ class MobileHomeHandler(MobileBaseHandler):
         result['data']['category'].append({'title': u'积分兑换', 'data': score_product})
 
         result['flag'] = 1
-        print result
+
         self.write(simplejson.dumps(result))
         self.finish()
 

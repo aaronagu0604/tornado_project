@@ -89,6 +89,7 @@ from model_move import BankCard as New_BankCard
 from model_move import LubePolicy as New_LubePolicy
 from model_move import HotSearch as New_HotSearch
 
+imgurl = 'http://img.520czj.com'
 '''
 # 第一部分：无依赖的基础数据
 '''
@@ -150,7 +151,7 @@ def move_area():
             show_color=item.show_color,
             show_itf=item.show_itf,
             show_btf=item.show_btf,
-            image=item.image,
+            image=imgurl+item.image if item.image else '',
             sort=item.sort,
             is_delete=item.is_delete,
             is_site=item.is_site,
@@ -234,7 +235,7 @@ def move_brand():
             name=item.name,
             engname=item.engname,
             pinyin=item.pinyin,
-            logo=item.logo,
+            logo=imgurl+item.logo if item.logo else '',
             intro=item.intro,
             hot=0,  # 旧的没有，设置默认值：0(否)
             sort=1,  # 旧的没有,设置默认值：1
@@ -313,8 +314,8 @@ def move_store():
             address=item.address,
             legal_person=item.link_man,
             license_code=None,  # 旧的没有
-            license_image=item.image_license,
-            store_image=item.image,
+            license_image=imgurl+item.image_license,
+            store_image=imgurl+item.image,
             lng=item.x,
             lat=item.y,
             pay_password=None,  # 旧的没有
@@ -336,7 +337,7 @@ def move_storebankaccount():
     old_bank = Old_User.select().where(Old_User.store << store_map.keys())
     old_data = [{
         'store': store_map[item.store.id],
-        'account_type': 0,  # 旧的没有，设置默认值：0
+        'account_type': 0 if item.bank_account else 1,  # 旧的没有，设置默认值：0
         'alipay_truename': item.alipay_truename,
         'alipay_account': item.alipay_account,
         'bank_truename': item.bank_truename,
@@ -462,7 +463,7 @@ def move_block():
             tag='',
             name=item.name,
             remark=item.remark,
-            img=item.imagename,
+            img=imgurl+item.imagename if item.imagename else '',
             active=1  # 旧的没有，设置默认 值1（有效）
         )
 
@@ -482,7 +483,7 @@ def move_blockitem():
             link=0,  # 旧的没有，设置默认值：0
             ext_id=block_map[item.atype],  # 旧的没有，设置默认值：0
             remark=item.remark,
-            img=item.imgalt,
+            img=imgurl+item.picurl if item.picurl else '',
             sort=item.sort,
             activ=item.flag
         )
@@ -515,7 +516,7 @@ def move_product():
             resume=item.resume,
             unit='单位',  # 旧的没有，暂时设置，后期人工处理
             intro=item.intro,
-            cover=item.cover,
+            cover=imgurl+item.cover if item.cover else '',
             is_score=item.is_score,
             created=item.created,
             active=item.status  # 旧的没有，暂时这样处理
@@ -529,7 +530,7 @@ def move_productpic():
     old_productpic = Old_ProductPic.select()
     old_data = [{
                     'product': product_map[item.product.id],
-                    'pic': item.path,
+                    'pic': imgurl+item.path if item.path else '',
                     'sort': 0  # 旧的没有，设置为默认值：0
                 } for item in old_productpic]
     print 'move productpic:', len(old_data)
@@ -614,7 +615,7 @@ def move_insurance():
             name=item.name,
             eName='',
             intro=item.resume[:50], #字符串长度太长，暂时设置为空
-            logo=item.cover,
+            logo=imgurl+item.cover,
             sort=0,  # 旧的没有，设置默认值：0
             active=item.status  # 旧的没有，设置默认值：1（有效）
         )
