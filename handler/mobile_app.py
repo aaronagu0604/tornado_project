@@ -872,13 +872,13 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
     def hot_search_add_keyword(self, keyword):
         if keyword:
             now = int(time.time())
-            hss = HotSearch.select().where(HotSearch.keyword == keyword)
+            hss = HotSearch.select().where(HotSearch.keywords == keyword)
             if hss.count() > 0:
                 hss[0].quantity += 1
                 hss[0].last_time = now
                 hss[0].save()
             else:
-                HotSearch.create(keyword=keyword, quantity=1, status=0, last_time=now)
+                HotSearch.create(keywords=keyword, quantity=1, status=0, last_time=now)
 
     def get(self):
         result = {'flag': 1, 'msg': '', "data": {}}
