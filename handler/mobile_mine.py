@@ -355,7 +355,7 @@ class MobileSellOrderHandler(MobileBaseHandler):
         self.write(simplejson.dumps(result))
 
 
-@route(r'/mobile/suborderdetail', name='mobile_order_detail')  # 普通商品订单详情（售出）
+@route(r'/mobile/suborderdetail', name='mobile_suborder_detail')  # 普通商品订单详情（售出）
 class MobileSubOrderDetailHandler(MobileBaseHandler):
     """
     @apiGroup mine

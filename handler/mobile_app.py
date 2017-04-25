@@ -305,7 +305,7 @@ class MobileHomeHandler(MobileBaseHandler):
         result = {'flag': 0, 'msg': '', "data": {}}
         area_code = self.get_store_area_code()
         user = self.get_user()
-        print user,area_code
+
         result['data']['login_flag'] = 0
         result['data']['last_unread_price'] = {}
         result['data']['last_unread_price']['show'] = 0
@@ -408,13 +408,16 @@ class MobileHomeHandler(MobileBaseHandler):
 
     def get_category(self, area_code):
         items = []
-        if isinstance(area_code,list):
-            spps = StoreProductPrice.select().where(StoreProductPrice.area_code << area_code)
+        if isinstance(area_code, list):
+            ft = StoreProductPrice.area_code << area_code
         else:
-            spps = StoreProductPrice.select().where(StoreProductPrice.area_code == area_code)
-        pcs = [item.product_release.product.category.id for item in spps]
-        categories = Category.select().where(Category.id << pcs)
-        for item in categories:
+            ft = StoreProductPrice.area_code == area_code
+        spps = Category.select(). \
+            join(Product, on=Product.category == Category.id). \
+            join(ProductRelease, on=ProductRelease.product == Product.id). \
+            join(StoreProductPrice, on=StoreProductPrice.product_release == ProductRelease.id). \
+            where(ft)
+        for item in spps:
             items.append({
                 'img': item.img_m,
                 'name': item.name,
@@ -426,12 +429,15 @@ class MobileHomeHandler(MobileBaseHandler):
     def get_brand(self, area_code):
         items = []
         if isinstance(area_code,list):
-            spps = StoreProductPrice.select().where(StoreProductPrice.area_code << area_code)
+            ft = StoreProductPrice.area_code << area_code
         else:
-            spps = StoreProductPrice.select().where(StoreProductPrice.area_code == area_code)
-        pbs = [item.product_release.product.brand.id for item in spps]
-        brands = Brand.select().where(Brand.id << pbs)
-        for item in brands:
+            ft = StoreProductPrice.area_code == area_code
+        spps = Brand.select(). \
+            join(Product, on=Product.brand == Brand.id). \
+            join(ProductRelease, on=ProductRelease.product == Product.id). \
+            join(StoreProductPrice, on=StoreProductPrice.product_release == ProductRelease.id). \
+            where(ft)
+        for item in spps:
             items.append({
                 'img': item.logo,
                 'name': item.name,
@@ -443,36 +449,53 @@ class MobileHomeHandler(MobileBaseHandler):
     def get_recommend(self, area_code):
         items = []
         if isinstance(area_code,list):
-            spps = StoreProductPrice.select().where(StoreProductPrice.area_code << area_code)
+            ft = StoreProductPrice.area_code << area_code
         else:
-            spps = StoreProductPrice.select().where(StoreProductPrice.area_code == area_code)
-        for item in spps:
+            ft = StoreProductPrice.area_code == area_code
+        spps = Product.select(Product.id.alias('id'),
+                              Product.name.alias('name'),
+                              Product.cover.alias('cover'),
+                              StoreProductPrice.price.alias('price'),
+                              Store.name.alias('sname')). \
+            join(ProductRelease, on=(ProductRelease.product == Product.id)). \
+            join(Store, on=(Store.id == ProductRelease.store)). \
+            join(StoreProductPrice, on=(StoreProductPrice.product_release == ProductRelease.id)). \
+            where(ft).tuples()
+        for id,name,cover,price,sname in spps:
             items.append({
-                'img': item.product_release.product.cover,
-                'name': item.product_release.product.name,
-                'price': item.price,
-                'link': 'czj://product/%d'%item.id,
+                'img': cover,
+                'name': name,
+                'price': price,
+                'link': 'czj://product/%d'%id,
                 'is_score': 0,
-                'storeName': item.store.name
+                'storeName': sname
             })
         return items[:4]
 
     def get_score_product(self, area_code):
         items = []
         if isinstance(area_code,list):
-            spps = StoreProductPrice.select().where(StoreProductPrice.area_code << area_code)
+            ft = StoreProductPrice.area_code << area_code
         else:
-            spps = StoreProductPrice.select().where(StoreProductPrice.area_code == area_code)
-        for item in spps:
-            if item.product_release.is_score:
-                items.append({
-                    'img': item.product_release.product.cover,
-                    'name': item.product_release.product.name,
-                    'price': item.score,
-                    'link': 'czj://product/%d'%item.id,
-                    'is_score': True,
-                    'storeName': item.store.name
-                })
+            ft = StoreProductPrice.area_code == area_code
+        spps = Product.select(Product.id.alias('id'),
+                              Product.name.alias('name'),
+                              Product.cover.alias('cover'),
+                              StoreProductPrice.score.alias('score'),
+                              Store.name.alias('sname')). \
+            join(ProductRelease, on=(ProductRelease.product == Product.id)). \
+            join(Store, on=(Store.id == ProductRelease.store)). \
+            join(StoreProductPrice, on=(StoreProductPrice.product_release == ProductRelease.id)). \
+            where(ft, ProductRelease.is_score == 1).tuples()
+        for id,name,cover,score,sname in spps:
+            items.append({
+                'img': cover,
+                'name': name,
+                'price': score,
+                'link': 'czj://product/%d'%id,
+                'is_score': True,
+                'storeName': sname
+            })
         return items[:4]
 
 
