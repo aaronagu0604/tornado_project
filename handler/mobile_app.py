@@ -561,74 +561,6 @@ class MobileHotSearchHandler(MobileBaseHandler):
 
 
 # -----------------------------------------------------普通商品---------------------------------------------------------
-@route(r'/mobile/discover_old', name='mobile_discover_old')  # 发现（旧发现页，已废除，新接口测试OK后删掉）
-class MobileDiscoverOldHandler(MobileBaseHandler):
-    """
-    @apiGroup app
-    @apiVersion 1.0.0
-    @api {get} /mobile/discover 022. 发现
-    @apiDescription 发现
-
-    @apiHeader {String} token 用户登录凭证
-
-    @apiParam {String} type 入参为值category或brand category:分类更多； brand:品牌更多；不传就是发现页（两者都有）
-
-    @apiSampleRequest /mobile/discover
-    """
-    def get_category(self):
-        items = []
-        categories = Category.select().where(Category.active == 1).order_by(Category.hot.desc(), Category.sort.desc())
-        for categorie in categories:
-            items.append({
-                'id': categorie.id,
-                'img': categorie.img_m if categorie.img_m else '',
-                'name': categorie.name
-            })
-        return items
-
-    def get_brand(self):
-        items = []
-        brands = Brand.select().where(Brand.active == 1).order_by(Brand.hot.desc(), Brand.sort.desc())
-        for brand in brands:
-            items.append({
-                'id': brand.id,
-                'img': brand.logo if brand.logo else '',
-                'name': brand.name
-            })
-        return items
-
-    def get(self):
-        result = {'flag': 0, 'msg': '', 'data': []}
-        type = self.get_argument('type', None)
-
-        if type == 'category':
-            result['data'].append({
-                'type': 'category',
-                'name': u'热门分类',
-                'value': self.get_category()
-            })
-        elif type == 'brand':
-            result['data'].append({
-                'type': 'brand',
-                'name': u'热销品牌',
-                'value': self.get_brand()
-            })
-        else:
-            result['data'].append({
-                'type': 'category',
-                'name': u'热门分类',
-                'value': self.get_category()[:6]
-            })
-            result['data'].append({
-                'type': 'brand',
-                'name': u'热销品牌',
-                'value': self.get_brand()
-            })
-        result['flag'] = 1
-        self.write(simplejson.dumps(result))
-        self.finish()
-
-
 @route(r'/mobile/discover', name='mobile_discover')  # 发现
 class MobileDiscoverHandler(MobileBaseHandler):
     """
@@ -1233,7 +1165,7 @@ class MobileNewOrderHandler(MobileBaseHandler):
     @apiParam {Int} address 地址ID
     @apiParam {Int} order_type 订单类型  1金钱订单  2积分订单
     @apiParam {Int} payment 付款方式  1支付宝  2微信 3银联 4余额 5积分
-    @apiParam {Float} total_price 订单总价
+    @apiParam {Float} total_price 订单总价（金钱/积分）
     @apiParam {String} products 产品数据集合，如：[{sid:1, price:119, products:[{sppid:1, quantity:1}]}, ……]；
     sid为店铺ID；price为该店铺的金额；sppid为StoreProductPrice的ID，count为产品数量；服务端将订单按Store拆分为多个SubOrder
 
@@ -1300,6 +1232,7 @@ class MobileNewOrderHandler(MobileBaseHandler):
             order.message = ''
             order.order_type = order_type
             order.total_price = total_price if order_type == 1 else 0
+            order.total_score = total_price if order_type == 2 else 0
             order.ordernum = 'U' + str(user.id) + 'S' + str(order_now-setting.ORDERBEGIN)
             if order_type == 2 and payment == 5:
                 if user.store.score < total_price:

@@ -322,7 +322,9 @@ class MobileOrderDetailHandler(MobileBaseHandler):
                 'products': products,
                 'soid': suborder.id,
                 'price': suborder.price,
-                'score': suborder.score
+                'score': suborder.score,
+                'status': suborder.status,
+                'order_type': order.order_type
             })
         if suborders:
             result['flag'] = 1
@@ -363,7 +365,6 @@ class MobileReceiveOrderHandler(MobileBaseHandler):
             result['msg'] = u'该订单不可收货'
         self.write(simplejson.dumps(result))
         return
-
 
 
 @route(r'/mobile/sellorder', name='mobile_sell_order')  # 普通商品订单（售出）
@@ -415,20 +416,21 @@ class MobileSubOrderDetailHandler(MobileBaseHandler):
         result = {'flag': 0, 'msg': '', "data": {}}
         soid = int(self.get_argument("soid"))
         suborder = SubOrder.get(id=soid)
+        order = suborder.order
         result['data']['address'] = {
-            'name': suborder.order.address.mobile,
-            'mobile': suborder.order.address.mobile,
-            'province': suborder.order.address.province,
-            'city': suborder.order.address.city,
-            'district': suborder.order.address.region,
-            'address': suborder.order.address.address
+            'name': order.address.mobile,
+            'mobile': order.address.mobile,
+            'province': order.address.province,
+            'city': order.address.city,
+            'district': order.address.region,
+            'address': order.address.address
         }
 
         result['data']['totalprice'] = suborder.price
         result['data']['status'] = suborder.status
-        result['data']['ordernum'] = suborder.order.ordernum
+        result['data']['ordernum'] = order.ordernum
         result['data']['score'] = suborder.score
-        result['data']['order_type'] = suborder.order.order_type
+        result['data']['order_type'] = order.order_type
 
         items = []
         for product in suborder.items:
