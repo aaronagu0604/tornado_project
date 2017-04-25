@@ -338,15 +338,16 @@ class MobileReceiveOrderHandler(MobileBaseHandler):
     @apiGroup mine
     @apiVersion 1.0.0
     @api {get} /mobile/receiveorder 14. 收货
-    @apiDescription 获取快递公司信息
+    @apiDescription 收货按钮
     @apiHeader {String} token 用户登录凭证
+    @apiParam {Int} soid 子订单ID
     @apiSampleRequest /mobile/receiveorder
     """
 
     @require_auth
     def get(self):
         result = {'flag': 0, 'msg': '', 'data': ''}
-        soid = self.get_body_argument('soid', None)
+        soid = self.get_argument('soid', None)
         user = self.get_user()
 
         if not soid:
