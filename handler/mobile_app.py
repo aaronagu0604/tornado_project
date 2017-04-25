@@ -331,7 +331,7 @@ class MobileHomeHandler(MobileBaseHandler):
         # 获取首页banner列表，没有数据时使用西安的数据
         tmp_code = area_code
         banners = self.get_banner(tmp_code)
-        while len(banners) == 0 and len(tmp_code) > 4:
+        while len(tmp_code) > 4:
             tmp_code = tmp_code[0: -4]
             banners = self.get_banner(tmp_code)
         if len(banners) == 0:
@@ -417,14 +417,17 @@ class MobileHomeHandler(MobileBaseHandler):
             join(ProductRelease, on=ProductRelease.product == Product.id). \
             join(StoreProductPrice, on=StoreProductPrice.product_release == ProductRelease.id). \
             where(ft)
+        clist = []
         for item in spps:
-            items.append({
-                'img': item.img_m,
-                'name': item.name,
-                'price': 0,
-                'link': 'czj://category/%s'%item.id
-            })
-        return items[:4]
+            if item.id not in clist:
+                clist.append(item.id)
+                items.append({
+                    'img': item.img_m,
+                    'name': item.name,
+                    'price': 0,
+                    'link': 'czj://category/%s'%item.id
+                })
+        return items[:3]
 
     def get_brand(self, area_code):
         items = []
@@ -437,14 +440,18 @@ class MobileHomeHandler(MobileBaseHandler):
             join(ProductRelease, on=ProductRelease.product == Product.id). \
             join(StoreProductPrice, on=StoreProductPrice.product_release == ProductRelease.id). \
             where(ft)
+        blist = []
         for item in spps:
-            items.append({
-                'img': item.logo,
-                'name': item.name,
-                'price': 0,
-                'link': 'czj://brand/%d'%item.id
-            })
-        return items[:4]
+            if item.id not in blist:
+                blist.append(item.id)
+                items.append({
+                    'img': item.logo,
+                    'name': item.name,
+                    'price': 0,
+                    'link': 'czj://brand/%d'%item.id
+                })
+
+        return items[:3]
 
     def get_recommend(self, area_code):
         items = []
@@ -470,7 +477,7 @@ class MobileHomeHandler(MobileBaseHandler):
                 'is_score': 0,
                 'storeName': sname
             })
-        return items[:4]
+        return items[:6]
 
     def get_score_product(self, area_code):
         items = []
@@ -496,7 +503,7 @@ class MobileHomeHandler(MobileBaseHandler):
                 'is_score': True,
                 'storeName': sname
             })
-        return items[:4]
+        return items[:6]
 
 
 @route(r'/mobile/get_bank_name', name='GetBankName')  # 用户获取银行卡名称

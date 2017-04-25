@@ -31,7 +31,7 @@
                     <div>
                         <div><input type="file" class="form-control" name="file_mobile" style="width:480px;"></div>
                         {% if category and category.img_m %}
-                        <div style="position:absolute; top:200px; padding-left:200px;">
+                        <div style="width:480px;">
                             <img src="{{category.img_m}}" width="80" height="80" />
                         </div>
                         {% endif %}
@@ -42,7 +42,7 @@
                     <div>
                         <div><input type="file" class="form-control" name="file_pc" style="width:480px;"></div>
                         {%if category and category.img_pc%}
-                        <div style="position:absolute; top:300px; padding-left:400px;">
+                        <div style="width:480px;">
                             <img src="{{category.img_pc}}" width="80" height="80" />
                         </div>
                         {%endif%}

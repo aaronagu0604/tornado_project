@@ -9,7 +9,7 @@ import time
 import logging
 import setting
 import os
-
+from payqrcode import postRequest
 from tornado.gen import coroutine
 from tornado.web import asynchronous
 from tornado.concurrent import run_on_executor
@@ -614,12 +614,19 @@ class CategoryEditHandler(AdminBaseHandler):
                 filename = message_path + str(datetime) + "_mobile.jpg"
                 with open(filename, "wb") as f:
                     f.write(mobile_img)
-                category.img_m = filename
+                imgurl = postRequest(open(filename, 'rb'))
+                if not imgurl:
+                    imgurl = ''
+                category.img_m = imgurl
             if pc_img:
                 filename = message_path + str(datetime) + "_pc.jpg"
                 with open(filename, "wb") as f:
                     f.write(pc_img)
-                category.img_pc = filename
+                imgurl = postRequest(open(filename, 'rb'))
+                if not imgurl:
+                    imgurl = ''
+                category.img_m = imgurl
+                category.img_pc = imgurl
             category.save()
             self.flash(show_msg + u"成功")
         except Exception, ex:
@@ -1052,7 +1059,8 @@ class EditAdHandler(AdminBaseHandler):
                 filename = str(datetime) + ".jpg"
                 with open('upload/ad/' + filename, "wb") as f:
                     f.write(self.request.files["file"][0]["body"])
-                ad.picurl = '/upload/ad/' + filename
+                imgurl = postRequest(open(filename, 'rb'))
+                ad.picurl = imgurl if not imgurl else ''
             ad.validate()
             ad.save()
             self.flash(u"广告修改成功")
@@ -1193,7 +1201,7 @@ class ExportTradeListHandler(AdminBaseHandler):
             s['id'] = str(item.id)
             s['ordered'] = u'%s' % time.strftime('%Y-%m-%d', time.localtime(item.ordered))
             s['ordernum'] = item.ordernum
-            s['payment'] = payment[item.payment]
+            s['payment'] = payment[item.payment] if item.payment in payment.keys() else 'other'
             s['moneyitem'] = u'润滑油'
             s['useraddress'] = item.address.address
             s['totalprice'] = str(item.total_price)
