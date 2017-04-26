@@ -1602,31 +1602,26 @@ class MobileLubePolicyHandler(MobileBaseHandler):
                 'type': []
             }
         }
-        area_code = self.get_user().store.area_code
+        area_code = self.get_store_area_code()
         result['data']['remark'] = setting.get_help_center_remark(area_code)
         area_code_lenth = len(area_code)
         if area_code_lenth == 12:
-            rows = LubePolicy.select().where(LubePolicy.area_code==area_code).order_by(LubePolicy.sort, LubePolicy.sort2)
+            rows = LubePolicy.select().where(LubePolicy.area_code==area_code).order_by(LubePolicy.id)
         if area_code_lenth == 8 or (area_code_lenth == 12 and rows.count() <= 0):
-            rows = LubePolicy.select().where(LubePolicy.area_code == area_code[:8]).order_by(LubePolicy.sort, LubePolicy.sort2)
+            rows = LubePolicy.select().where(LubePolicy.area_code == area_code[:8]).order_by(LubePolicy.id)
         if area_code_lenth == 4 or (area_code_lenth > 4 and rows.count() <= 0):
-            rows = LubePolicy.select().where(LubePolicy.area_code == area_code[:12]).order_by(LubePolicy.sort, LubePolicy.sort2)
+            rows = LubePolicy.select().where(LubePolicy.area_code == area_code[:12]).order_by(LubePolicy.id)
+        policylist = []
         if rows.count() > 0:
-            iCompanyName = ''
-            totalICname = []
-            for row in rows:
-                self.i_cname = row.iCompany not in totalICname
-                if self.i_cname:
-                    totalICname.append(row.iCompany)
-                    iCompanyName += row.iCompany
-            if len(totalICname) > 1:
-                result = self.get_insurances_for_difI(rows, result, iCompanyName)
-            else:
-                result = self.get_insurances(rows, result)
+            for item in rows:
+                policylist.append({
+                    'name': item.insurance.name,
+                    'lube': simplejson.loads(item.policy)
+                })
             result['flag'] = 1
         else:
             result['msg'] = u'该地区的具体优惠政策请联系车装甲客服'
-        self.render('mobile/lube_protocol.html')
+        self.render('mobile/lube_protocol.html',policylist=policylist)
 
 
 # -----------------------------------------------------设置-------------------------------------------------------------

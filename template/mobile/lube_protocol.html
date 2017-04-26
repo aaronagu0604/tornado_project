@@ -18,22 +18,40 @@
     <div class="content" style="background-color: #ededed;">
         <div class="tabs">
             <div id="tab1" class="tab active">
-                <div class="list-block" style="margin: 0.2rem 0; padding:0.2rem 0 0.75rem 0; background-color:#ffffff;">
-                    <div class="p_para_title">商品参数</div>
-                    <div class="p_para_body" >
-                        <div class="row p_para_item" >
-                            <div class="col-50 p_para_item_left">品牌</div>
-                            <div class="col-50">SK</div>
+                <div class="list-block" style="background-color:#ffffff;">
+                    {% for policy in policylist %}
+                    <div class="p_para_title">保险公司 :  {{policy['name']}}</div>
+                        {% for lube in policy['lube'] %}
+                        <div class="p_para_title" style="background-color:#e0e0e0">油品型号 : {{lube['gift']}}</div>
+                        <div class="row p_para_body" >
+                            <div class="col-40">购买险种</div>
+                            <div class="col-25" >赠油数量(车主)</div>
+                            <div class="col-25">赠油数量(修理厂)</div>
                         </div>
-                        <div class="row p_para_item" >
-                            <div class="col-50 p_para_item_left" >分类</div>
-                            <div class="col-50">汽油机</div>
+                        {% for item in lube['items'] %}
+                        {% if item['flag'] == 1 %}
+                        <div class="row p_para_body" style="background-color:#ffffff;">
+                        {% elif item['flag'] == 2 %}
+                        <div class="row p_para_body" style="background-color:#96fed1;">
+                        {%else%}
+                        <div class="row p_para_body" style="background-color:#c1ffe4;">
+                        {%endif%}
+                            {% if item['flag'] == 1 %}
+                            <div class="col-40">单商业险({{item['minprice']}}-{{item['maxprice']}})</div>
+                            {% elif item['flag'] == 2 %}
+                            <div class="col-40">单交强险({{item['minprice']}}-{{item['maxprice']}})</div>
+                            {%else%}
+                            <div class="col-40">商业险+交强险({{item['minprice']}}-{{item['maxprice']}})</div>
+                            {%endif%}
+                            <div class="col-25" >{{item['driver']}}</div>
+                            <div class="col-25">{{item['store']}}</div>
                         </div>
-                        <div class="row p_para_item">
-                            <div class="col-50 p_para_item_left">类别</div>
-                            <div class="col-50">全合成机油</div>
-                        </div>
-                        </div>
+                        {% endfor %}
+                        {% endfor %}
+                    {% endfor %}
+                    <div class="p_para_warning" style="padding:1rem">
+                        <p style="color:red;font-size:0.5rem">注：单商业险兑付标准为补贴"修理厂赠油数量",不再送车主保养油品.修理厂如何分配给车主,由修理厂自行决定.</p>
+                    </div>
                 </div>
             </div>
         </div>
