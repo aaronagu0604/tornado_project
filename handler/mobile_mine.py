@@ -124,11 +124,9 @@ class MobilStorePopularizeHandler(MobileBaseHandler):
     @apiSampleRequest /mobile/storepopularize
     """
     def act_insurance(self, pop, uid, storeName, addr1, addr2, mobile, now):
+        print('----1----')
         pic = '%s_%s_'%(pop['PicPath'], str(uid))
-        oldPic = pic+'*'
         newPic = '%s%s.png'%(pic, now)
-        if not os.system('ls %s > /dev/null 2>&1'%oldPic):
-            os.system('rm -f '+oldPic)
         ttfont = ImageFont.truetype(setting.typeface, pop['wordSize'])
         im = Image.open(pop['basePicPath'])
         draw = ImageDraw.Draw(im)
@@ -145,10 +143,10 @@ class MobilStorePopularizeHandler(MobileBaseHandler):
         user = self.get_user()
         result = {'flag': 0, 'msg': '', "data": []}
         try:
-            storeName = u'店铺：' + user.store.name
-            addr = u'地址：' + Area.get_detailed_address(user.store.area_code) + user.store.address
+            storeName = user.store.name
+            addr = Area.get_detailed_address(user.store.area_code) + user.store.address
             addr2 = ''
-            mobile = u'电话：'+user.mobile
+            mobile = user.mobile
             now = str(time.time())[:10]
             for pop in setting.popularizePIC:
                 area_limits = 0
@@ -166,7 +164,7 @@ class MobilStorePopularizeHandler(MobileBaseHandler):
                     result['flag'] = 1
 
         except Exception, e:
-            result['msg'] = u'生成图片错误'
+            result['msg'] = u'生成图片错误：%s'%e
         self.write(simplejson.dumps(result))
 
 
