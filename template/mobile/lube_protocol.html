@@ -20,9 +20,9 @@
             <div id="tab1" class="tab active">
                 <div class="list-block" style="background-color:#ffffff;">
                     {% for policy in policylist %}
-                    <div class="p_para_title">保险公司 :  {{policy['name']}}</div>
+                    <div style="margin:0.6rem" class="p_para_title">保险公司 :  {{policy['name']}}</div>
                         {% for lube in policy['lube'] %}
-                        <div class="p_para_title" style="background-color:#e0e0e0">油品型号 : {{lube['gift']}}</div>
+                        <div style="margin:0.6rem" class="p_para_title" style="background-color:#e0e0e0">油品型号 : {{lube['gift']}}</div>
                         <div class="row p_para_body" >
                             <div class="col-40">购买险种</div>
                             <div class="col-25" >赠油数量(车主)</div>
