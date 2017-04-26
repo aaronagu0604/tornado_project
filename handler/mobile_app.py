@@ -27,7 +27,7 @@ def get_insurance(area_code):
             'img': insurance.insurance.logo,
             'name': insurance.insurance.name,
             'price': 0,
-            'link':'czj://insurance/%d'%insurance.insurance.id
+            'link': 'czj://insurance/%d'%insurance.insurance.id
         })
     return items
 
@@ -341,7 +341,8 @@ class MobileHomeHandler(MobileBaseHandler):
         result['data']['category'] = []
         # 保险
         tmp_code = area_code
-        insurances = InsuranceArea.get_insurances_link(tmp_code)[:4]
+        #insurances = InsuranceArea.get_insurances_link(tmp_code)[:4]
+        insurances = []
         while len(insurances) == 0 and len(tmp_code) > 4:
             tmp_code = tmp_code[0: -4]
             insurances = get_insurance(tmp_code)[:4]
