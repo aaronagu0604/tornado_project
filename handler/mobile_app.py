@@ -27,7 +27,7 @@ def get_insurance(area_code):
             'img': insurance.insurance.logo,
             'name': insurance.insurance.name,
             'price': 0,
-            'link': setting.baseUrl + 'insurance/' + str(insurance.insurance.id)
+            'link': setting.baseUrl + 'insurance?id=%d'%insurance.insurance.id
         })
     return items
 

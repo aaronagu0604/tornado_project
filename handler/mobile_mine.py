@@ -1625,7 +1625,7 @@ class MobileLubePolicyHandler(MobileBaseHandler):
             result['flag'] = 1
         else:
             result['msg'] = u'该地区的具体优惠政策请联系车装甲客服'
-        self.write(simplejson.dumps(result))
+        self.render('mobile/lube_protocol.html')
 
 
 # -----------------------------------------------------设置-------------------------------------------------------------
