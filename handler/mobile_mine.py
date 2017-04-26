@@ -127,6 +127,7 @@ class MobilStorePopularizeHandler(MobileBaseHandler):
     def act_insurance(self, pop, uid, storeName, addr1, addr2, mobile, now):
         pic = '%s_%s_'%(pop['PicPath'], str(uid))
         newPic = '%s%s.png'%(pic, now)
+        logging.info('----mk pic--%s---%s---%s'%(setting.typeface, pop['basePicPath'], pop['wordSize']))
         ttfont = ImageFont.truetype(setting.typeface, pop['wordSize'])
         logging.info('----1---%s-'%(pop['basePicPath']))
         im = Image.open(pop['basePicPath'])
