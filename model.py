@@ -904,6 +904,7 @@ class InsuranceScoreExchange(db.Model):
                     'id': i['i_id'],
                     'name': i['i_name'],
                     'is_score': i['is_score'],
+                    'is_cash': i['is_score'],
                     'is_lube': i['is_lube']
                 })
         return insurance_list
@@ -958,6 +959,7 @@ class LubePolicy(db.Model):
     class Meta:
         db_table = "tb_lube_policy"
 
+
 # 店铺经销商返油反分积分映射表
 class SSILubePolicy(db.Model):
     id = PrimaryKeyField()
@@ -969,6 +971,7 @@ class SSILubePolicy(db.Model):
 
     class Meta:
         db_table = "tb_store_gift_policy"
+
 
 # 手机端区块: 广告
 class Block(db.Model):
