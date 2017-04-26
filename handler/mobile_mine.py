@@ -15,6 +15,7 @@ from lib.payment.wxPay import UnifiedOrder_pub
 from lib.route import route
 from model import *
 import logging
+import shutil
 
 
 @route(r'/mobile/mine', name='mobile_mine')  # app我的主界面
@@ -127,9 +128,8 @@ class MobilStorePopularizeHandler(MobileBaseHandler):
     def act_insurance(self, pop, uid, storeName, addr1, addr2, mobile, now):
         pic = '%s_%s_'%(pop['PicPath'], str(uid))
         newPic = '%s%s.png'%(pic, now)
-        logging.info('----mk pic--%s---%s---%s'%(setting.typeface, pop['basePicPath'], pop['wordSize']))
+        newPic_name = newPic.split('/')[-1]
         ttfont = ImageFont.truetype(setting.typeface, pop['wordSize'])
-        logging.info('----1---%s-'%(pop['basePicPath']))
         im = Image.open(pop['basePicPath'])
         draw = ImageDraw.Draw(im)
         draw.text((pop['storeWidth'], pop['storeHeight']), storeName, fill=pop['wordColour'], font=ttfont)
@@ -138,14 +138,14 @@ class MobilStorePopularizeHandler(MobileBaseHandler):
             draw.text((pop['addr2Width'], pop['addr2Height']), addr2, fill=pop['wordColour'], font=ttfont)
         draw.text((pop['phoneWidth'], pop['phoneHeight']), mobile, fill=pop['wordColour'], font=ttfont)
         im.save(newPic)
-        return newPic[29:]
+        shutil.move(newPic, '/home/www/fileservice/data/image/store_popularize/%s'%newPic_name)
+        return 'http://img.520czj.com/image/store_popularize/' + newPic_name
 
     @require_auth
     def get(self):
         user = self.get_user()
         result = {'flag': 0, 'msg': '', "data": []}
         try:
-            logging.info('------0----')
             storeName = user.store.name
             addr = Area.get_detailed_address(user.store.area_code) + user.store.address
             addr2 = ''
@@ -162,13 +162,12 @@ class MobilStorePopularizeHandler(MobileBaseHandler):
                 else:
                     addr1 = addr
                 if area_limits == 1:
-                    logging.info('------in if ----')
                     picPath = self.act_insurance(pop, user.id, storeName, addr1, addr2, mobile, now)
                     result['data'].append(picPath)
                     result['flag'] = 1
 
         except Exception, e:
-            result['msg'] = u'生成图片错误：%s'%e
+            result['msg'] = u'生成图片失败'
         self.write(simplejson.dumps(result))
 
 

@@ -16,7 +16,6 @@ from lib.payment.wxPay import UnifiedOrder_pub,Qrcode_pub
 from lib.route import route
 from model import *
 from mqProcess.jpushhelper import set_device_info
-from PIL import ImageFont, Image, ImageDraw
 
 def get_insurance(area_code):
     items = []
