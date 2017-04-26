@@ -125,10 +125,10 @@ class MobilStorePopularizeHandler(MobileBaseHandler):
     @apiSampleRequest /mobile/storepopularize
     """
     def act_insurance(self, pop, uid, storeName, addr1, addr2, mobile, now):
-        logging.info('----1----')
         pic = '%s_%s_'%(pop['PicPath'], str(uid))
         newPic = '%s%s.png'%(pic, now)
         ttfont = ImageFont.truetype(setting.typeface, pop['wordSize'])
+        logging.info('----1---%s-'%(pop['basePicPath']))
         im = Image.open(pop['basePicPath'])
         draw = ImageDraw.Draw(im)
         draw.text((pop['storeWidth'], pop['storeHeight']), storeName, fill=pop['wordColour'], font=ttfont)
