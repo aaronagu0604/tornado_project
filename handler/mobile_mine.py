@@ -14,6 +14,7 @@ from lib.payment.upay import Trade
 from lib.payment.wxPay import UnifiedOrder_pub
 from lib.route import route
 from model import *
+import logging
 
 
 @route(r'/mobile/mine', name='mobile_mine')  # app我的主界面
@@ -124,7 +125,7 @@ class MobilStorePopularizeHandler(MobileBaseHandler):
     @apiSampleRequest /mobile/storepopularize
     """
     def act_insurance(self, pop, uid, storeName, addr1, addr2, mobile, now):
-        print('----1----')
+        logging.info('----1----')
         pic = '%s_%s_'%(pop['PicPath'], str(uid))
         newPic = '%s%s.png'%(pic, now)
         ttfont = ImageFont.truetype(setting.typeface, pop['wordSize'])
@@ -143,6 +144,7 @@ class MobilStorePopularizeHandler(MobileBaseHandler):
         user = self.get_user()
         result = {'flag': 0, 'msg': '', "data": []}
         try:
+            logging.info('------0----')
             storeName = user.store.name
             addr = Area.get_detailed_address(user.store.area_code) + user.store.address
             addr2 = ''
@@ -159,6 +161,7 @@ class MobilStorePopularizeHandler(MobileBaseHandler):
                 else:
                     addr1 = addr
                 if area_limits == 1:
+                    logging.info('------in if ----')
                     picPath = self.act_insurance(pop, user.id, storeName, addr1, addr2, mobile, now)
                     result['data'].append(picPath)
                     result['flag'] = 1
