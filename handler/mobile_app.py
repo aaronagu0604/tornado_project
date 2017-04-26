@@ -330,7 +330,7 @@ class MobileHomeHandler(MobileBaseHandler):
         # 获取首页banner列表，没有数据时使用西安的数据
         tmp_code = area_code
         banners = self.get_banner(tmp_code)
-        while len(tmp_code) > 4:
+        while len(banners) == 0 and len(tmp_code) > 4:
             tmp_code = tmp_code[0: -4]
             banners = self.get_banner(tmp_code)
         if len(banners) == 0:
@@ -394,7 +394,7 @@ class MobileHomeHandler(MobileBaseHandler):
 
     def get_banner(self, area_code):
         items = []
-        banners = BlockItem.select(BlockItem).join(Block).\
+        banners = BlockItem.select(BlockItem).join(Block, on=(Block.id == BlockItem.block)).\
             where((Block.tag == 'banner') & (Block.active == 1) & (BlockItem.active == 1) & (BlockItem.area_code == area_code)).\
             order_by(BlockItem.sort.asc())
         for p in banners:
@@ -404,6 +404,7 @@ class MobileHomeHandler(MobileBaseHandler):
                 'price': 0,
                 'link': p.link
             })
+        print area_code,banners.count()
         return items
 
     def get_category(self, area_code):
