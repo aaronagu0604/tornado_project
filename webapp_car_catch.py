@@ -185,28 +185,50 @@ def catch_car_item(browser, start):
     return 1
 
 
+def catch_car_item_detail(browser):
+    items = CarItem.select().where(CarItem.pl >> None).limit(1)
+    while len(items) == 1:
+        item = items[0]
+        browser.get(item.catch_url)
+        # time.sleep(1)
+        d = browser.find_element_by_class_name("mid row")
+        lilist = d.find_elements_by_xpath('./div/h5')
+        if len(lilist) > 0:
+            item.price = float(lilist[0].text.replace(u'万元', ''))
+            item.car_type = lilist[0].text.replace(u'万元', '')
+        d = browser.find_element_by_class_name("col-xs-4 brand-rank")
+        ll = d.find_elements_by_xpath('./h6/a')
+        if len(ll) > 0:
+            item.car_type = ll[0].text.replace(u'周关注排行', '')
+
+        item.save()
+        items = CarItem.select().where(CarItem.pl >> None).limit(1)
+        pass
+
+
 browser = webdriver.Firefox()
 # catch_brand(browser)
 # catch_car(browser)
 flag = 0
 start = 0
 ok_list = range(0, start)
-while flag == 0:
-    try:
-        flag = catch_car_item(browser, start)
-    except:
-        print 'get error, delete last item'
-        try:
-            carItem = CarItem.select().order_by(CarItem.id.desc()).limit(1)[0]
-            if carItem is not None:
-                start = carItem.car.id
-                if ok_list.index(start) == -1:
-                    CarItem.delete().where(CarItem.car == carItem.car).execute()
-                    CarItemGroup.delete().where(CarItemGroup.car == carItem.car).execute()
-                    print '--continue-- ', start
-                else:
-                    print 'need help 2!'
-                    flag = 1
-        except:
-            print 'need help!'
-            flag = 1
+# while flag == 0:
+#     try:
+#         flag = catch_car_item(browser, start)
+#     except:
+#         print 'get error, delete last item'
+#         try:
+#             carItem = CarItem.select().order_by(CarItem.id.desc()).limit(1)[0]
+#             if carItem is not None:
+#                 start = carItem.car.id
+#                 if ok_list.index(start) == -1:
+#                     CarItem.delete().where(CarItem.car == carItem.car).execute()
+#                     CarItemGroup.delete().where(CarItemGroup.car == carItem.car).execute()
+#                     print '--continue-- ', start
+#                 else:
+#                     print 'need help 2!'
+#                     flag = 1
+#         except:
+#             print 'need help!'
+#             flag = 1
+catch_car_item_detail(browser)

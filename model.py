@@ -1162,6 +1162,8 @@ class CarItem(db.Model):
     catch_url = CharField(max_length=1000, null=True)  # 抓取详情页面路径
     stop_sale = IntegerField(default=0)  # 停产？ 0正常销售 1已停产
     sort = FloatField(default=0.0)  # 厂家或品牌下的排序
+    car_type = CharField(max_length=50, null=True)  # 车型：suv或紧凑型车……
+    price = FloatField(default=0.0)  # 指导价格
     car_sk_engine_1 = ForeignKeyField(CarSK, related_name='engine_items_1', db_column='car_sk_engine_id_1', null=True)  # SK产品发动机推荐1
     car_sk_engine_2 = ForeignKeyField(CarSK, related_name='engine_items_2', db_column='car_sk_engine_id_2', null=True)  # SK产品发动机推荐2
     car_sk_gearbox_1 = ForeignKeyField(CarSK, related_name='gearbox_items_1', db_column='car_sk_gearbox_id_1', null=True)  # SK产品变速箱推荐1
