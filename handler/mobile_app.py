@@ -1023,12 +1023,14 @@ class MobileShopCarHandler(MobileBaseHandler):
     """
     @require_auth
     def get(self):
-        result = {'flag': 0, 'msg': '', "data": []}
+        result = {'flag': 0, 'msg': '', "data": [], 'products_count': ''}
         user = self.get_user()
         index = self.get_argument('index', '')
         index = int(index) if index else 1
         saler_store_list = []
-        for item in user.store.cart_items.order_by(ShopCart.created.desc()).paginate(index, setting.MOBILE_PAGESIZE):
+        items = user.store.cart_items.order_by(ShopCart.created.desc())
+        result['products_count'] = items.count()
+        for item in items.paginate(index, setting.MOBILE_PAGESIZE):
             is_sale = (item.store_product_price.active & item.store_product_price.product_release.active &
                        item.store_product_price.product_release.product.active)
             saler_store_id = item.store_product_price.store.id
@@ -1185,9 +1187,9 @@ class MobileNewOrderHandler(MobileBaseHandler):
                 for p in item['products']:
                     spp = StoreProductPrice.get(id=p['sppid'])
                     if order_type == 1:
-                        db_store_price += spp.price
+                        db_store_price += (spp.price * p['quantity'])
                     elif order_type == 2:
-                        db_store_price += spp.score
+                        db_store_price += (spp.score * p['quantity'])
                     else:
                         return False, u'入参错误 order_type'
                 if db_store_price != float(item['price']):
@@ -1491,7 +1493,7 @@ class MobilNewInsuranceOrderHandler(MobileBaseHandler):
             order.delivery_tel = delivery_tel
             order.delivery_province = delivery_province
             order.delivery_city = delivery_city
-            order.delivery_district = delivery_district
+            order.delivery_region = delivery_district
             order.delivery_address = delivery_address
             order.status = 0
             order.save()
@@ -1611,6 +1613,7 @@ class MobilePayOrderHandler(MobileBaseHandler):
             result['msg'] = "传入参数异常"
         self.write(simplejson.dumps(result))
         self.finish()
+
 
 # -----------------------------------------------------工具箱-------------------------------------------------------------
 @route(r'/mobile/tools', name='mobile_tools')  # 工具箱页

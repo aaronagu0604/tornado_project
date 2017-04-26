@@ -706,11 +706,12 @@ class InsuranceOrderPrice(db.Model):
     insurance = ForeignKeyField(Insurance, db_column='insurance_id')  # 所购保险公司ID
     created = IntegerField(default=0)  # 报价/修改 时间
     admin_user = ForeignKeyField(AdminUser, db_column='admin_user_id', null=True)  # 报价人员
-    gift_policy = IntegerField(default=0)  # 礼品策略 1反油， 2反积分
+    gift_policy = IntegerField(default=0)  # 礼品策略 1反油， 2反现金
     response = IntegerField(default=0)  # 0未报价 1已经报价 2不可再修改 -1关闭
     status = IntegerField(default=1)  # 状态 0已过期, 1有效
     read = IntegerField(default=0)  # 状态 0未读, 1已读
     score = IntegerField(default=0)  # 卖的这单保险可以获取多少积分
+    cash = FloatField(default=0.0)  # 返现金额
     total_price = FloatField(default=0.0)  # 保险订单总价格
     force_price = FloatField(default=0.0)  # 交强险 价格
     business_price = FloatField(default=0.0)  # 商业险价格
@@ -1060,6 +1061,17 @@ class BankCard(db.Model):
     bin_digits = IntegerField(null=True)
     card_digits = IntegerField(null=True)
     demo = CharField(max_length=50,null=True)
+
+    class Meta:
+        db_table = 'tb_bank_card_bin'
+
+
+# 推广底图
+class Popularize(db.Model):
+    id = PrimaryKeyField()
+    img = CharField(max_length=100, null=True)  # 图片名
+    sort = IntegerField(default=1)  # 排序
+    active = IntegerField(default=1)  # 状态 0删除 1有效
 
     class Meta:
         db_table = 'tb_bank_card_bin'

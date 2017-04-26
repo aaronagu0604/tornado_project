@@ -795,8 +795,8 @@ class MobileScoreHandler(MobileBaseHandler):
     """
     @apiGroup mine
     @apiVersion 1.0.0
-    @api {get} /mobile/score 05. 普通商品售出订单
-    @apiDescription 普通商品售出订单
+    @api {get} /mobile/score 05. 积分入口
+    @apiDescription 积分入口
 
     @apiHeader {String} token 用户登录凭证
 

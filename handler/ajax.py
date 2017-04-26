@@ -12,7 +12,7 @@ from tornado.gen import coroutine
 from tornado.web import asynchronous
 from tornado.concurrent import run_on_executor
 from concurrent.futures import ThreadPoolExecutor
-
+import logging
 
 @route(r'/ajax/GetSubAreas', name='ajax_GetSubAreas')  # 获取下级区域
 class AjaxGetSubAreas(BaseHandler):
@@ -517,6 +517,7 @@ class SaveIOPHandler(BaseHandler):
             self.write(simplejson.dumps(result))
             return
         groups = simplejson.loads(groups)
+        logging.info('---%s----'%str(groups))
         i_items = simplejson.loads(i_items)
         pid = InsuranceOrderPrice.get(id=groups['pid'])
         now = int(time.time())
