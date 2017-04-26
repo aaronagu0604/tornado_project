@@ -1568,7 +1568,16 @@ class InsuranceOrderDelHandler(AdminBaseHandler):
             elif status == 2:  # 赠送积分，创建积分记录
                 if io.status == 2:
                     # ReScore().rewardScore_insurance(io.user.id, io.LubeOrScore, io.scoreNum, io.ordernum)
-                    # MoneyRecord.create()
+                    iop = io.current_order_price
+                    if iop.gift_policy == 2:    # 返现
+                        now = int(time.time())
+                        money = iop.cash
+                        admin_user = self.get_admin_user()
+                        MoneyRecord.create(user=io.user, store=io.store, process_type=1, process_message=u'保险',
+                                           process_log=u'卖保险返现所得', money=money, status=1, apply_time=now,
+                                           processing_time=now, processing_by=admin_user)
+                    else:    # 返油
+                        self.flash(u'返油')
                     io.status = 3
                     io.save()
                 else:

@@ -413,6 +413,13 @@ class WebAppCarItemListHandler(BaseHandler):
 
 @route(r'/ajax/get_score_rate', name='ajax_get_score_rate')  # 获取返佣比率
 class WebAppCarItemListHandler(BaseHandler):
+    def get_return_cash(self, sid, iid):
+        try:
+            cash_policy = simplejson.loads(SSILubePolicy.get((SSILubePolicy.store == sid) & (SSILubePolicy.insurance == iid)).cash)
+        except Exception, e:
+            cash_policy = None
+        return cash_policy
+
     def get(self):
         result = {'flag': 0, 'msg': '', "data": {}}
         pid = self.get_argument('pid', None)
@@ -420,24 +427,25 @@ class WebAppCarItemListHandler(BaseHandler):
             iop = InsuranceOrderPrice.get(id=pid)
             io = InsuranceOrder.get(id=iop.insurance_order_id)
             print io.store.area_code, iop.insurance.id
-            rates = InsuranceScoreExchange.get_score_policy(io.store.area_code, iop.insurance.id)
+            # rates = InsuranceScoreExchange.get_score_policy(io.store.area_code, iop.insurance.id)
+            rates = self.get_return_cash(io.store.id, iop.insurance.id)
             if rates:
                 iis = InsuranceItem.select().where(InsuranceItem.style_id > 1)
-                result['data']['force_tax'] = rates.force_tax_rate
-                result['data']['business_tax'] = rates.business_tax_rate
-                result['data']['ali_rate'] = rates.ali_rate
-                result['data']['profit_rate'] = rates.profit_rate
-                result['data']['base_money'] = rates.base_money
+                result['data']['force_tax'] = rates['force_tax_rate']
+                result['data']['business_tax'] = rates['business_tax_rate']
+                result['data']['ali_rate'] = rates['ali_rate']
+                result['data']['profit_rate'] = rates['profit_rate']
+                result['data']['base_money'] = rates['base_money']
                 for ii in iis:
                     if iop.__dict__['_data'][ii.eName]:
                         business = True
                         break
                 if iop.forceI and business:
-                    result['data']['business_s'] = rates.business_exchange_rate2
-                    result['data']['force_s'] = rates.force_exchange_rate2
+                    result['data']['business_s'] = rates['business_exchange_rate2']
+                    result['data']['force_s'] = rates['force_exchange_rate2']
                 else:
-                    result['data']['business_s'] = rates.business_exchange_rate
-                    result['data']['force_s'] = rates.force_exchange_rate
+                    result['data']['business_s'] = rates['business_exchange_rate']
+                    result['data']['force_s'] = rates['force_exchange_rate']
             else:
                 result['data']['force_tax'] = 0
                 result['data']['business_tax'] = 0

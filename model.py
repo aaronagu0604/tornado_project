@@ -852,7 +852,7 @@ class InsuranceOrder(db.Model):
         db_table = 'tb_insurance_orders'
 
 
-# 卖保险兑积分，积分兑现
+# 卖保险兑现规则
 class InsuranceScoreExchange(db.Model):
     id = PrimaryKeyField()
     area_code = CharField(max_length=12)  # 地区code
@@ -964,7 +964,7 @@ class LubePolicy(db.Model):
 # 店铺经销商返油反分积分映射表
 class SSILubePolicy(db.Model):
     id = PrimaryKeyField()
-    store = ForeignKeyField(Store, related_name='store_policy', db_column='store_id')  #门店
+    store = ForeignKeyField(Store, related_name='store_policy', db_column='store_id')  # 门店
     insurance = ForeignKeyField(Insurance, related_name='insurance_policy', db_column='insurance_id')  # 保险公司
     dealer_store = ForeignKeyField(Store, related_name='dealer_store_policy', db_column='dealer_store_id')  # 经销商
     cash = CharField(max_length=4000)  # 返油政策的json串  # 返现政策

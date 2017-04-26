@@ -1024,7 +1024,7 @@ class MobileShopCarHandler(MobileBaseHandler):
     """
     @require_auth
     def get(self):
-        result = {'flag': 0, 'msg': '', "data": [], 'products_count': ''}
+        result = {'flag': 1, 'msg': '', "data": [], 'products_count': ''}
         user = self.get_user()
         index = self.get_argument('index', '')
         index = int(index) if index else 1
@@ -1063,7 +1063,7 @@ class MobileShopCarHandler(MobileBaseHandler):
                     'quantity': item.quantity,
                     'is_sale': is_sale
                 })
-            result['flag'] = 1
+
         self.write(simplejson.dumps(result))
         self.finish()
 
