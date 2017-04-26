@@ -629,7 +629,7 @@ class MobileInsuranceOrderDetailHandler(MobileBaseHandler):
         self.write(simplejson.dumps(result))
 
 
-@route(r'/mobile/insurance_method', name='mobile_insurance_method')  # 保险订单历史方案
+@route(r'/mobile/insurance_method', name='mobile_insurance_method')  # 保险订单历史方案 列表
 class MobileInsuranceMethodHandler(MobileBaseHandler):
     """
     @apiGroup mine
@@ -658,9 +658,7 @@ class MobileInsuranceMethodHandler(MobileBaseHandler):
             return
 
         ops = InsuranceOrderPrice.select().where(InsuranceOrderPrice.insurance_order_id == io_id)
-        print ops.count()
         for iop in ops:
-
             force = ''
             main = []
             subjoin = []
@@ -683,6 +681,46 @@ class MobileInsuranceMethodHandler(MobileBaseHandler):
                 'score': iop.score,
                 'total_price': iop.total_price
             })
+
+        self.write(simplejson.dumps(result))
+
+
+@route(r'/mobile/change_insurance_method', name='mobile_change_insurance_method')  # 切换历史方案（保险订单）
+class MobileChangeInsuranceMethodHandler(MobileBaseHandler):
+    """
+    @apiGroup mine
+    @apiVersion 1.0.0
+    @api {get} /mobile/change_insurance_method 12. 切换历史方案（保险订单）
+    @apiDescription 切换历史方案（保险订单）
+
+    @apiHeader {String} token 用户登录凭证
+
+    @apiParam {Int} id 保险订单id
+    @apiParam {Int} iop_id 保险方案id
+
+    @apiSampleRequest /mobile/change_insurance_method
+    """
+
+    @require_auth
+    def get(self):
+        result = {'flag': 0, 'msg': '', "data": []}
+        io_id = self.get_argument('id', '')
+        iop_id = self.get_argument('iop_id', '')
+
+        if not (io_id and iop_id):
+            result['msg'] = u'传入参数异常'
+            self.write(simplejson.dumps(result))
+            return
+        try:
+            iop_io_id = InsuranceOrderPrice.get(id=iop_id).insurance_order_id
+            if iop_io_id == int(io_id):
+                io = InsuranceOrder.get(id=io_id)
+                io.current_order_price = iop_io_id
+                io.save()
+            else:
+                result['msg'] = u'方案与订单不匹配'
+        except Exception, e:
+            result['msg'] = u'方案或订单不存在'
 
         self.write(simplejson.dumps(result))
 
