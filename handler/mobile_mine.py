@@ -1589,7 +1589,7 @@ class MobileLubePolicyHandler(MobileBaseHandler):
                             [insurance, row.driverGiftNum, row.party2GiftNum])
         return result
 
-    @require_auth
+    #@require_auth
     def get(self):
         result = {
             'flag': 0,

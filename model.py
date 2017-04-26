@@ -964,7 +964,7 @@ class SSILubePolicy(db.Model):
     store = ForeignKeyField(Store, related_name='store_policy', db_column='store_id')  #门店
     insurance = ForeignKeyField(Insurance, related_name='insurance_policy', db_column='insurance_id')  # 保险公司
     dealer_store = ForeignKeyField(Store, related_name='dealer_store_policy', db_column='dealer_store_id')  # 经销商
-    score = CharField(max_length=4000)  # 返油政策的json串  # 返积分政策
+    cash = CharField(max_length=4000)  # 返油政策的json串  # 返积分政策
     lube = CharField(max_length=4000)  # 返油政策的json串  #　返油政策
 
     class Meta:
