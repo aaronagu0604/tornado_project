@@ -1612,6 +1612,21 @@ class MobilePayOrderHandler(MobileBaseHandler):
         self.write(simplejson.dumps(result))
         self.finish()
 
+# -----------------------------------------------------工具箱-------------------------------------------------------------
+@route(r'/mobile/tools', name='mobile_tools')  # 工具箱页
+class MobileToolsHandler(MobileBaseHandler):
+    """
+    @apiGroup app
+    @apiVersion 1.0.0
+    @api {get} /mobile/tools 05.1. 工具箱
+    @apiDescription 工具箱页,返回html代码
+
+    @apiSampleRequest /mobile/tools
+    """
+    def get(self):
+        result = {'flag': 0, 'msg': '', "data": {}}
+        self.render('mobile/tools.html')
+
 
 # -----------------------------------------------------其它-------------------------------------------------------------
 @route(r'/mobile/storepopularize/(\d+)', name='store_popularize')  # 推广大使
