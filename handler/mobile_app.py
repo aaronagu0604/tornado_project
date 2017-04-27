@@ -502,7 +502,7 @@ class MobileHomeHandler(MobileBaseHandler):
                 'name': name,
                 'price': score,
                 'link': 'czj://score_product_detail/%d'%id,
-                'is_score': True,
+                'is_score': 1,
                 'storeName': sname
             })
         return items[:6]
