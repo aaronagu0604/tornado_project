@@ -355,8 +355,8 @@ class MobileHomeHandler(MobileBaseHandler):
             tmp_code = tmp_code[0: -4]
             categories = self.get_category(tmp_code)
         if len(categories) == 0:
-            categories = self.get_category(self.get_default_area_code())[:4]
-        result['data']['category'].append({'title': u'热门分类', 'data': categories})
+            categories = self.get_category(self.get_default_area_code())
+        result['data']['category'].append({'title': u'热门分类', 'data': categories[:4]})
 
         # 热销品牌
         tmp_code = area_code
@@ -366,7 +366,7 @@ class MobileHomeHandler(MobileBaseHandler):
             brands = self.get_brand(tmp_code)
         if len(brands) == 0:
             brands = self.get_brand(self.get_default_area_code())
-        result['data']['category'].append({'title': u'热销品牌', 'data': brands})
+        result['data']['category'].append({'title': u'热销品牌', 'data': brands[:4]})
 
         # 推荐商品
         tmp_code = area_code
@@ -428,7 +428,7 @@ class MobileHomeHandler(MobileBaseHandler):
                     'price': 0,
                     'link': 'czj://category/%s'%item.id
                 })
-        return items[:3]
+        return items
 
     def get_brand(self, area_code):
         items = []
@@ -452,7 +452,7 @@ class MobileHomeHandler(MobileBaseHandler):
                     'link': 'czj://brand/%d'%item.id
                 })
 
-        return items[:3]
+        return items
 
     def get_recommend(self, area_code):
         items = []
@@ -579,27 +579,53 @@ class MobileDiscoverHandler(MobileBaseHandler):
     """
     def get(self):
         result = {'flag': 1, 'msg': '', 'data': []}
-        categories = Category.select().where(Category.active == 1)
-        for category in categories:
-            bcs = BlockItem.select(BlockItem.link, Brand.logo, Brand.name).\
-                join(Brand, on=(BlockItem.ext_id == Brand.id)).\
-                join(BrandCategory, on=(Brand.id == BrandCategory.brand)).\
-                where(BrandCategory.category == category).tuples()
+        area_code = self.get_store_area_code()
 
+        if isinstance(area_code, list):
+            ft = StoreProductPrice.area_code << area_code
+        else:
+            ft = StoreProductPrice.area_code == area_code
+        productlist = Product.select(Product.category.alias('cid'),
+                                     Product.brand.alias('bid')). \
+            join(ProductRelease, on=(ProductRelease.product == Product.id)). \
+            join(Store, on=(Store.id == ProductRelease.store)). \
+            join(StoreProductPrice, on=(StoreProductPrice.product_release == ProductRelease.id)). \
+            where(ft).tuples()
+        cbs = {}
+
+        cbs = {}
+        for cid,bid in productlist:
+            if cid not in cbs.keys():
+                cbs[cid]=[]
+            else:
+                if bid not in cbs[cid]:
+                    cbs[cid].append(bid)
+                else:
+                    pass
+
+        for cid in cbs.keys():
+            category = Category.get(id=cid)
             result['data'].append({
                 'name': category.name,
                 'cid': category.id,
                 'subs': [{
                     'name': u'热销品牌',
-                    'subs': [{'img': logo, 'name': name, 'price': 0, 'link': link} for link, logo, name in bcs]
+                    'subs': [{'img': brand.logo,
+                              'name': brand.name,
+                              'price': 0,
+                              'link': 'czj://category/%d/brand/%d'%(cid,brand.id)} for brand in Brand.select().where(Brand.id << cbs[cid]) if brand.hot == 1]
                 },
                 {
                     'name': u'不太热销的',
-                    'subs': [{'img': logo, 'name': name, 'price': 0, 'link': link} for link, logo, name in bcs]
+                    'subs': [{'img': brand.logo,
+                              'name': brand.name,
+                              'price': 0,
+                              'link': 'czj://category/%d/brand/%d'%(cid,brand.id)} for brand in Brand.select().where(Brand.id << cbs[cid]) if brand.hot != 1]
                 }
                 ],
                 'ads': {'img': '', 'link': ''}
             })
+
         # 保险商城
         area_code = self.get_store_area_code()
         result['data'].append({
@@ -607,10 +633,10 @@ class MobileDiscoverHandler(MobileBaseHandler):
             'cid': 0,
             'subs': [{
                 'name': u'热门保险',
-                'subs': InsuranceArea.get_insurances_link(area_code)
+                'subs': InsuranceArea.get_insurances_link(area_code)[:3]
             },{
                 'name': u'不太热门保险',
-                'subs': InsuranceArea.get_insurances_link(area_code)
+                'subs': InsuranceArea.get_insurances_link(area_code)[3:]
             }],
             'ads': {'img': '', 'link': ''}
         })
