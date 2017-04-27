@@ -179,6 +179,70 @@ class User(db.Model):
         db_table = 'tb_users'
 
 
+# 店铺收货地址
+class StoreAddress(db.Model):
+    id = PrimaryKeyField()
+    store = ForeignKeyField(Store, related_name='addresses', db_column='store_id')  # 店铺
+    province = CharField(max_length=16, default='陕西')  # 省份
+    city = CharField(max_length=16, default='西安')  # 城市
+    region = CharField(max_length=32, null='')  # 区域
+    address = CharField(max_length=128, null=True)  # 详细地址
+    name = CharField(max_length=16, null=True)  # 收件人姓名
+    mobile = CharField(max_length=11, null=True)  # 收件人电话
+    is_default = IntegerField(default=1)  # 是否默认 0否 1是
+    created = IntegerField(default=0)  # 创建时间
+    create_by = ForeignKeyField(User, db_column='user_id')  # 创建人
+
+    class Meta:
+        db_table = 'tb_store_address'
+
+
+# 经销商服务区域
+class StoreArea(db.Model):
+    id = PrimaryKeyField()
+    area = ForeignKeyField(Area, db_column='area_id')  # 地区
+    store = ForeignKeyField(Store, related_name='service_areas', db_column='store_id')  # 店铺
+
+    class Meta:
+        db_table = 'tb_store_area'
+
+
+# 门店银行、支付宝账户
+class StoreBankAccount(db.Model):
+    id = PrimaryKeyField()
+    store = ForeignKeyField(Store, related_name='store_bank_accounts', db_column='store_id')  # 店铺
+    account_type = IntegerField(default=0)  # 账户类型 0银联 1支付宝
+    alipay_truename = CharField(max_length=32, default='')  # 支付主人宝姓名
+    alipay_account = CharField(max_length=128, default='')  # 支付宝账号
+    bank_truename = CharField(max_length=32, default='')  # 银行卡主人姓名
+    bank_account = CharField(max_length=32, default='')  # 银行卡号
+    bank_name = CharField(max_length=64, default='')  # 银行名称
+    bank_branch_name = CharField(max_length=64, default='')  # 支行名称
+    is_default = IntegerField(default=0)  # 是否默认
+
+    @staticmethod
+    def check_bank(name, account):
+        if not (re.match('^[A-Za-z]+$', name) or re.match(u'^[\u4e00-\u9fa5]+$', name)):
+            return False
+        if re.match(r'^[0-9]{17,22}$', account) or re.match(r'^[0-9]{16}$', account):
+            return True
+        else:
+            return False
+
+    @staticmethod
+    def check_alipay(name, account):
+        if not (re.match('^[A-Za-z]+$', name) or re.match(u'^[\u4e00-\u9fa5]+$', name)):
+            return False
+        if re.match(r'^[0-9a-zA-Z_]{0,19}@[0-9a-zA-Z]{1,13}\.[com,cn,net,cc]{1,3}$', account) or re.match(
+                r'^[0-9]{11}$', account):
+            return True
+        else:
+            return False
+
+    class Meta:
+        db_table = 'tb_store_bank_accounts'
+
+
 # 手机验证码
 class VCode(db.Model):
     id = PrimaryKeyField()
@@ -205,24 +269,6 @@ class VCode(db.Model):
 
     class Meta:
         db_table = 'tb_user_vcodes'
-
-
-# 店铺收货地址
-class StoreAddress(db.Model):
-    id = PrimaryKeyField()
-    store = ForeignKeyField(Store, related_name='addresses', db_column='store_id')  # 店铺
-    province = CharField(max_length=16, default='陕西')  # 省份
-    city = CharField(max_length=16, default='西安')  # 城市
-    region = CharField(max_length=32, null='')  # 区域
-    address = CharField(max_length=128, null=True)  # 详细地址
-    name = CharField(max_length=16, null=True)  # 收件人姓名
-    mobile = CharField(max_length=11, null=True)  # 收件人电话
-    is_default = IntegerField(default=1)  # 是否默认 0否 1是
-    created = IntegerField(default=0)  # 创建时间
-    create_by = ForeignKeyField(User, db_column='user_id')  # 创建人
-
-    class Meta:
-        db_table = 'tb_store_address'
 
 
 # 提现表
@@ -300,51 +346,6 @@ class ScoreRecord(db.Model):
                                       score=score, created=now, status=1)
         except:
             return False
-
-
-# 门店银行、支付宝账户
-class StoreBankAccount(db.Model):
-    id = PrimaryKeyField()
-    store = ForeignKeyField(Store, related_name='store_bank_accounts', db_column='store_id')  # 店铺
-    account_type = IntegerField(default=0)  # 账户类型 0银联 1支付宝
-    alipay_truename = CharField(max_length=32, default='')  # 支付主人宝姓名
-    alipay_account = CharField(max_length=128, default='')  # 支付宝账号
-    bank_truename = CharField(max_length=32, default='')  # 银行卡主人姓名
-    bank_account = CharField(max_length=32, default='')  # 银行卡号
-    bank_name = CharField(max_length=64, default='')  # 银行名称
-    bank_branch_name = CharField(max_length=64, default='')  # 支行名称
-    is_default = IntegerField(default=0)  # 是否默认
-
-    @staticmethod
-    def check_bank(name, account):
-        if not (re.match('^[A-Za-z]+$', name) or re.match(u'^[\u4e00-\u9fa5]+$', name)):
-            return False
-        if re.match(r'^[0-9]{17,22}$', account) or re.match(r'^[0-9]{16}$', account):
-            return True
-        else:
-            return False
-
-    @staticmethod
-    def check_alipay(name, account):
-        if not (re.match('^[A-Za-z]+$', name) or re.match(u'^[\u4e00-\u9fa5]+$', name)):
-            return False
-        if re.match(r'^[0-9a-zA-Z_]{0,19}@[0-9a-zA-Z]{1,13}\.[com,cn,net,cc]{1,3}$', account) or re.match(r'^[0-9]{11}$', account):
-            return True
-        else:
-            return False
-
-    class Meta:
-        db_table = 'tb_store_bank_accounts'
-
-
-# 经销商服务区域
-class StoreArea(db.Model):
-    id = PrimaryKeyField()
-    area = ForeignKeyField(Area, db_column='area_id')  # 地区
-    store = ForeignKeyField(Store, related_name='service_areas', db_column='store_id')  # 店铺
-
-    class Meta:
-        db_table = 'tb_store_area'
 
 
 # 商品分类
@@ -512,6 +513,7 @@ class Settlement(db.Model):
 class Delivery(db.Model):
     id = PrimaryKeyField()
     name = CharField(max_length=50)  # 快递公司名称
+    img = CharField(max_length=150)  # 快递公司logo
 
     class Meta:
         db_table = 'tb_delivery'
@@ -524,11 +526,10 @@ class Order(db.Model):
     user = ForeignKeyField(User, related_name='orders', db_column='user_id')  # 买家
     buyer_store = ForeignKeyField(Store, related_name='orders', db_column='buyer_store_id')  # 买家所属店铺
     address = ForeignKeyField(StoreAddress, db_column='store_address_id')  # 收件信息
-    delivery = ForeignKeyField(Delivery, db_column='delivery_id', null=True)  # 物流公司
-    delivery_num = CharField(max_length=64, null=True)  # 物流单号
     order_type = IntegerField(default=1)  # 付款方式 1金钱订单 2积分订单
-    payment = IntegerField(default=0)  # 付款方式  1支付宝  2微信 3银联 4余额 5积分
+    payment = IntegerField(default=0)  # 支付方式  1支付宝  2微信 3银联 4余额 5积分
     total_price = FloatField(default=0.0)  # 价格，实际所有子订单商品价格之和
+    total_score = IntegerField(default=0)  # 积分
     pay_balance = FloatField(default=0.0)  # 余额支付金额
     pay_price = FloatField(default=0.0)  # 实际第三方支付价格
     ordered = IntegerField(default=0)  # 下单时间
@@ -589,6 +590,8 @@ class SubOrder(db.Model):
     price = FloatField(default=0)  # 购买时产品价格
     score = IntegerField(default=0)  # 积分
     status = IntegerField(default=0)  # 0待付款 1待发货 2待收货 3交易完成（待评价） 4已评价 5申请退款 6已退款 -1已取消
+    delivery = ForeignKeyField(Delivery, db_column='delivery_id', null=True)  # 物流公司
+    delivery_num = CharField(max_length=64, null=True)  # 物流单号
     fail_reason = CharField(default='', max_length=1024)  # 取消或退款原因
     fail_time = IntegerField(default=0)  # 取消或退款时间
     delivery_time = IntegerField(default=0)  # 发货时间
@@ -703,11 +706,12 @@ class InsuranceOrderPrice(db.Model):
     insurance = ForeignKeyField(Insurance, db_column='insurance_id')  # 所购保险公司ID
     created = IntegerField(default=0)  # 报价/修改 时间
     admin_user = ForeignKeyField(AdminUser, db_column='admin_user_id', null=True)  # 报价人员
-    gift_policy = IntegerField(default=0)  # 礼品策略 1反油， 2反积分
+    gift_policy = IntegerField(default=0)  # 礼品策略 1反油， 2反现金
     response = IntegerField(default=0)  # 0未报价 1已经报价 2不可再修改 -1关闭
     status = IntegerField(default=1)  # 状态 0已过期, 1有效
     read = IntegerField(default=0)  # 状态 0未读, 1已读
     score = IntegerField(default=0)  # 卖的这单保险可以获取多少积分
+    cash = FloatField(default=0.0)  # 返现金额
     total_price = FloatField(default=0.0)  # 保险订单总价格
     force_price = FloatField(default=0.0)  # 交强险 价格
     business_price = FloatField(default=0.0)  # 商业险价格
@@ -848,7 +852,7 @@ class InsuranceOrder(db.Model):
         db_table = 'tb_insurance_orders'
 
 
-# 卖保险兑积分，积分兑现
+# 卖保险兑现规则
 class InsuranceScoreExchange(db.Model):
     id = PrimaryKeyField()
     area_code = CharField(max_length=12)  # 地区code
@@ -901,6 +905,7 @@ class InsuranceScoreExchange(db.Model):
                     'id': i['i_id'],
                     'name': i['i_name'],
                     'is_score': i['is_score'],
+                    'is_cash': i['is_score'],
                     'is_lube': i['is_lube']
                 })
         return insurance_list
@@ -956,6 +961,19 @@ class LubePolicy(db.Model):
         db_table = "tb_lube_policy"
 
 
+# 店铺经销商返油反分积分映射表
+class SSILubePolicy(db.Model):
+    id = PrimaryKeyField()
+    store = ForeignKeyField(Store, related_name='store_policy', db_column='store_id')  # 门店
+    insurance = ForeignKeyField(Insurance, related_name='insurance_policy', db_column='insurance_id')  # 保险公司
+    dealer_store = ForeignKeyField(Store, related_name='dealer_store_policy', db_column='dealer_store_id')  # 经销商
+    cash = CharField(max_length=4000)  # 返油政策的json串  # 返现政策
+    lube = CharField(max_length=4000)  # 返油政策的json串  #　返油政策
+
+    class Meta:
+        db_table = "tb_store_gift_policy"
+
+
 # 手机端区块: 广告
 class Block(db.Model):
     id = PrimaryKeyField()
@@ -999,10 +1017,10 @@ class BlockItemArea(db.Model):
 # 热搜
 class HotSearch(db.Model):
     id = PrimaryKeyField()
-    keywords = CharField(max_length=32, default='') #搜索关键词
-    quantity = IntegerField(default=1)    #搜索次数
-    status = IntegerField(default=0)    #0未审核   1已审核
-    last_time = IntegerField(default=0)  #最后搜索时间
+    keywords = CharField(max_length=32, default='')    # 搜索关键词
+    quantity = IntegerField(default=1)    # 搜索次数
+    status = IntegerField(default=0)    # 0未审核   1已审核
+    last_time = IntegerField(default=0)    # 最后搜索时间
 
     class Meta:
         db_table = "tb_hot_search"
@@ -1043,6 +1061,17 @@ class BankCard(db.Model):
     bin_digits = IntegerField(null=True)
     card_digits = IntegerField(null=True)
     demo = CharField(max_length=50,null=True)
+
+    class Meta:
+        db_table = 'tb_bank_card_bin'
+
+
+# 推广底图
+class Popularize(db.Model):
+    id = PrimaryKeyField()
+    img = CharField(max_length=100, null=True)  # 图片名
+    sort = IntegerField(default=1)  # 排序
+    active = IntegerField(default=1)  # 状态 0删除 1有效
 
     class Meta:
         db_table = 'tb_bank_card_bin'
@@ -1133,6 +1162,8 @@ class CarItem(db.Model):
     catch_url = CharField(max_length=1000, null=True)  # 抓取详情页面路径
     stop_sale = IntegerField(default=0)  # 停产？ 0正常销售 1已停产
     sort = FloatField(default=0.0)  # 厂家或品牌下的排序
+    car_type = CharField(max_length=50, null=True)  # 车型：suv或紧凑型车……
+    price = FloatField(default=0.0)  # 指导价格
     car_sk_engine_1 = ForeignKeyField(CarSK, related_name='engine_items_1', db_column='car_sk_engine_id_1', null=True)  # SK产品发动机推荐1
     car_sk_engine_2 = ForeignKeyField(CarSK, related_name='engine_items_2', db_column='car_sk_engine_id_2', null=True)  # SK产品发动机推荐2
     car_sk_gearbox_1 = ForeignKeyField(CarSK, related_name='gearbox_items_1', db_column='car_sk_gearbox_id_1', null=True)  # SK产品变速箱推荐1
