@@ -804,6 +804,7 @@ def move_insuranceporderprice():
             response=1,  # 旧的没有
             status=1,  # 旧的没有
             score=0,  # 旧的没有
+            cash=0,
             total_price=item.price,  # 保险订单总价格
             force_price=item.forceIprc,  # 交强险 价格
             business_price=item.businessIprc,  # 商业险价格
