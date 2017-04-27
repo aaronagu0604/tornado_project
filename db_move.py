@@ -306,7 +306,7 @@ def move_store():
         except Exception:
             continue
         store = New_Store.create(
-            store_type=item.store_type,
+            store_type=user.grade,
             admin_code=None,  # 旧的没有
             admin_user=None,  # 旧的没有
             name=item.name,
