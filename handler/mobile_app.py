@@ -396,7 +396,7 @@ class MobileHomeHandler(MobileBaseHandler):
     def get_banner(self, area_code):
         items = []
         banners = BlockItem.select(BlockItem).join(Block, on=(Block.id == BlockItem.block)).\
-            where((Block.tag == 'banner') & (Block.active == 1) & (BlockItem.active == 1) & (BlockItem.area_code == area_code)).\
+            where((Block.tag == 'banner') & (Block.active == 1) & (BlockItem.active == 1) & (BlockItem.area_code << [area_code,'',None])).\
             order_by(BlockItem.sort.asc())
         for p in banners:
             items.append({
