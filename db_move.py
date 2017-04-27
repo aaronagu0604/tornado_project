@@ -112,7 +112,8 @@ def move_delivery():
     old_delivery = Old_Delivery.select()
     for item in old_delivery:
         delivery = New_Delivery.create(
-            name=item.name
+            name=item.name,
+            img=''
         )
 
         delivery_map[item.id] = delivery.id
