@@ -45,6 +45,7 @@ def get_insurance(area_code):
     @apiParam {String} insurance_order_detail 进入保险订单详情，后跟保险订单ID，例：czj://insurance_order_detail/1
     @apiParam {String} insurance_order_price 进入保险订单报价详情，后跟保险订单报价ID，例：czj://insurance_order_price/1
     @apiParam {String} score_product 进入积分商城，例：czj://score_product
+    @apiParam {String} score_product_detail 进入积分商品详情，例：czj://score_product_detail/1
     @apiParam {String} personal 进入个人信息维护，例：czj://personal
     @apiParam {String} product_order_detail 进入普通订单详情，后跟普通订单ID，例：czj://product_order_detail/1
     @apiParam {String} product_order_list 进入普通订单列表，后跟普通订单状态，例：czj://product_order_list/1，表示待发货
