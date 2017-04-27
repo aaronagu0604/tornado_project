@@ -405,7 +405,6 @@ class MobileHomeHandler(MobileBaseHandler):
                 'price': 0,
                 'link': p.link
             })
-        print area_code,banners.count()
         return items
 
     def get_category(self, area_code):

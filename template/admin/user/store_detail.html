@@ -10,13 +10,11 @@
         <div class="navbar-header">
             <a class="navbar-brand" href="#">
                 {% if s.store_type == 1 %}
-                                经销商
-                                {% elif s.store_type == 2 %}
-                                门店
-
-                                {% endif %}
-                
-详情
+                经销商
+                {% elif s.store_type == 2 %}
+                门店
+                {% endif %}
+                详情
             </a>
         </div>
     </nav>
@@ -38,7 +36,6 @@
                 {%endif%}
                 <form action="" method="post" enctype="multipart/form-data">
                     {{xsrf()}}
-
                     <div class="form-group has-success">
                         <label class="control-label">门店名称</label>
                         <input type="text" name="name" class="form-control" value="{{s.name or ''}}"  required placeholder="门店名称" />
@@ -46,172 +43,179 @@
                     <div class="form-group has-success">
                         <label class="control-label">经销商地址</label>
                         <div class="input-group">
-                            <select name="province" id="province" onchange="GetSubAreas(this.value, 'city', '')"
-                            style="width:160px;height:32px;border-radius: 4px;margin-right:15px;">
-                            <option value="">--所有省份--</option>
-                            {% for area in areas %}
-                            <option value="{{area.code}}" {{ 'selected' if area.code==s.area_code[:4] else ''}}>
-                                {{area.name}}</option>
+                            <select name="province" id="province" onchange="GetSubAreas(this.value, 'city', '')" style="width:160px;height:32px;border-radius: 4px;margin-right:15px;">
+                                <option value="">--所有省份--</option>
+                                {% for area in areas %}
+                                <option value="{{area.code}}" {{ 'selected' if area.code==s.area_code[:4] else ''}}>{{area.name}}</option>
                                 {% endfor %}
                             </select>
                             <select name="city" id="city" onchange="GetSubAreas(this.value, 'district', '')"
-                            style="width:160px;height:32px;border-radius: 4px;margin-right:15px;">
-                            <option value="">--所有城市--</option>
-                        </select>
-                        <select name="district" id="district"
-                        style="width:160px;height:32px;border-radius: 4px;margin-right:15px;">
-                        <option value="">--所有区县--</option>
+                                    style="width:160px;height:32px;border-radius: 4px;margin-right:15px;">
+                                <option value="">--所有城市--</option>
+                            </select>
+                            <select name="district" id="district"
+                                    style="width:160px;height:32px;border-radius: 4px;margin-right:15px;">
+                                <option value="">--所有区县--</option>
+                            </select>
+                        </div>
+                        <input style="margin-top:10px;" type="text" name="address" class="form-control" value="{{s.address or ''}}" required  placeholder="经销商地址" />
+                    </div>
+                    <div class="form-group has-success">
+                        <label class="control-label">审核状态</label>
+                        <label class="checkbox-inline">
+                            <input type="radio" name="active" value="1" {{ 'checked' if s.active ==1 else ''}}> 通过
+                        </label>
+                        <label class="checkbox-inline">
+                            <input type="radio" name="active" value="2" {{ 'checked' if s.active ==2 else ''}}> 拒绝
+                        </label>
+                    </div>
+                    <div class="form-group has-success">
+                        <label class="control-label">开通保险业务</label>
+                        <label class="checkbox-inline">
+                            <input type="radio" name="process_insurance" value="1" {{ 'checked' if s.process_insurance ==1 else ''}}> 通过
+                        </label>
+                        <label class="checkbox-inline">
+                            <input type="radio" name="process_insurance" value="0" {{ 'checked' if s.process_insurance ==0 else ''}}> 关闭
+                        </label>
+                    </div>
+                    <div class="aa"></div>
+                    <div class="mskelayBox">
+                        <div class="mske_html"></div>
+                        <div id="tool">
+                            <a href="###" id="arr_left" onclick="funrotateEvent('example','left')">向左</a>
+                            <a href="###" id="arr_right" onclick="funrotateEvent('example','right')">向右</a>
+                        </div>
+                        <img class="mskeClaose" src="/style/images/mke_close.png" width="27" height="27" />
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group has-success">
+                            <label class="control-label">门店图片</label>
+                            <img class="preview" src="{{s.store_image}}" width="80" height="80" style="display:block;">
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group has-success">
+                            <label class="control-label">营业执照</label>
+                            <img class="preview" src="{{s.license_image}}" width="80" height="80" style="display:block;">
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group has-success">
+                            <label class="control-label">法人</label>
+                            <input type="text" name="legal_person" class="form-control" value="{{s.legal_person or ''}}"  required placeholder="法人" />
+                        </div>
+                    </div>
+                    <div class="col-sm-8">
+                        <div class="form-group has-success">
+                            <label class="control-label">营业执照注册号</label>
+                            <input type="text" name="license_code" class="form-control" value="{{s.license_code or ''}}"  required placeholder="营业执照注册号" />
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group has-success">
+                            <label class="control-label">联系人</label>
+                            <input type="text" name="linkman" class="form-control" value="{{s.linkman or ''}}"  required placeholder="联系人" />
+                        </div>
+                    </div>
+                    <div class="col-sm-8">
+                        <div class="form-group has-success">
+                            <label class="control-label">联系人手机号</label>
+                            <input type="text" name="mobile" class="form-control" value="{{s.mobile or ''}}"  required placeholder="联系人手机号" />
+                        </div>
+                    </div>
+                    <div class="form-group has-success">
+                        <input style="width:90px;height:32px;border:1px solid #438bca;border-radius:4px;background:#438bca;color:#fff;margin-right:30px;font-size:16px;" type="submit" name="sub" value="保 存">
+                        <input type="reset" name="sub" value="重 置" style="width:90px;height:32px;border:1px solid #438bca;border-radius:4px;background:#fff;color:#438bca;font-size:16px;">
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group has-success">
+                            <label class="control-label">保险返佣</label>
+                            <img class="preview" src="{{s.license_image}}" width="80" height="80" style="display:block;">
+
+                    <select class="form-control" name="status" id="sel_type" style="width:100px;">
+                        <option value="-2" {{ status=='-2' and 'selected' or '' }}>全部</option>
+                        <option value="0" {{ status==0 and 'selected' or '' }}>待确认</option>
+                        <option value="1" {{ status==1 and 'selected' or '' }}>待付款</option>
+                        <option value="2" {{ status==2 and 'selected' or '' }}>已付款</option>
+                        <option value="3" {{ status==3 and 'selected' or '' }}>已办理</option>
+                        <option value="4" {{ status==4 and 'selected' or '' }}>已邮寄</option>
+                        <option value="-1" {{ status==-1 and 'selected' or '' }}>已取消</option>
                     </select>
-                </div>
-                <input style="margin-top:10px;" type="text" name="address" class="form-control" value="{{s.address or ''}}" required  placeholder="经销商地址" />
+                        </div>
+                    </div>
+                </form>
             </div>
-            <div class="form-group has-success">
-                <label class="control-label">审核状态</label>
-                <label class="checkbox-inline">
-                    <input type="radio" name="active" value="1" {{ 'checked' if s.active ==1 else ''}}> 通过
-                </label>
-                <label class="checkbox-inline">
-                    <input type="radio" name="active" value="2" {{ 'checked' if s.active ==2 else ''}}> 拒绝
-                </label>
-            </div>
-            <div class="form-group has-success">
-                <label class="control-label">开通保险业务</label>
-                <label class="checkbox-inline">
-                    <input type="radio" name="process_insurance" value="1" {{ 'checked' if s.process_insurance ==1 else ''}}> 通过
-                </label>
-                <label class="checkbox-inline">
-                    <input type="radio" name="process_insurance" value="0" {{ 'checked' if s.process_insurance ==0 else ''}}> 关闭
-                </label>
-            </div>
-            <div class="aa"></div>
-            <div class="mskelayBox">
-                <div class="mske_html">
-                </div>
-
-                <div id="tool">
-                    <a href="###" id="arr_left" onclick="funrotateEvent('example','left')">向左</a>
-                    <a href="###" id="arr_right" onclick="funrotateEvent('example','right')">向右</a>
-                </div>
-                <img class="mskeClaose" src="/style/images/mke_close.png" width="27" height="27" />
-            </div>
-            <div class="col-sm-6">
-                <div class="form-group has-success">
-                    <label class="control-label">门店图片</label>
-                    <img class="preview" src="{{s.store_image}}" width="80" height="80" style="display:block;">
-                </div>
-            </div>
-            <div class="col-sm-6">
-                <div class="form-group has-success">
-                    <label class="control-label">营业执照</label>
-                    <img class="preview" src="{{s.license_image}}" width="80" height="80" style="display:block;">
-                </div>
-            </div>
-            <span class="hidden" style="diplay:none">
-                <img id="example"/>
-            </span>
-            <div class="col-sm-4">
-                <div class="form-group has-success">
-                    <label class="control-label">法人</label>
-                    <input type="text" name="legal_person" class="form-control" value="{{s.legal_person or ''}}"  required placeholder="法人" />
-                </div>
-            </div>
-            <div class="col-sm-8">
-                <div class="form-group has-success">
-                    <label class="control-label">营业执照注册号</label>
-                    <input type="text" name="license_code" class="form-control" value="{{s.license_code or ''}}"  required placeholder="营业执照注册号" />
-                </div>
-            </div>
-            <div class="col-sm-4">
-                <div class="form-group has-success">
-                    <label class="control-label">联系人</label>
-                    <input type="text" name="linkman" class="form-control" value="{{s.linkman or ''}}"  required placeholder="联系人" />
-                </div>
-            </div>
-            <div class="col-sm-8">
-                <div class="form-group has-success">
-                    <label class="control-label">联系人手机号</label>
-                    <input type="text" name="mobile" class="form-control" value="{{s.mobile or ''}}"  required placeholder="联系人手机号" />
-                </div>
-            </div>
-            
-
-            <div class="form-group has-success">
-                <input style="width:90px;height:32px;border:1px solid #438bca;border-radius:4px;background:#438bca;color:#fff;margin-right:30px;font-size:16px;" type="submit" name="sub" value="保 存">
-                <input type="reset" name="sub" value="重 置" style="width:90px;height:32px;border:1px solid #438bca;border-radius:4px;background:#fff;color:#438bca;font-size:16px;">
-            </div>
-        </form>
+        </div>
     </div>
-</div>
-</div>
-<div class="col-sm-12 col-md-6">
-    <div class="panel panel-primary">
+    <div class="col-sm-12 col-md-6">
+        <div class="panel panel-primary">
             <div class="panel-body">
                 <h4>业务信息</h4>
                 <div class="row">
-            <div class="col-sm-6"><label>推广人员：{{s.admin_user.realname if s.admin_user else '无'}}</label></div>
-            <div class="col-sm-6"><label>创建时间：{{s.created | dateformat}}</label></div>
-        </div>
-        <div class="row">
-            <div class="col-sm-6"><label>积分：{{s.score}} (<a href='#' onclick="pop('积分变动记录','/admin/score_history?store_id={{s.id}}')">查看变动记录</a>)</label></div>
-            <div class="col-sm-6"><label>余额：￥{{s.price}}(<a href='#' onclick="pop('余额变动记录','/admin/money_history?store_id={{s.id}}')">查看变动记录</a>)</label></div>
-        </div>
-        <div class="row">
-            <div class="col-sm-6"><label>保险订单数：{{s.buyer_sub_orders.count()}} (<a href='#'>查看详情</a>)</label></div>
-            {% if s.store_type == 1 %}
-            <div class="col-sm-6"><label>商品销售订单：{{s.insurance_orders.count()}}(<a href='#'>查看详情</a>)</label></div>
-            {% elif s.store_type == 2 %}
-            <div class="col-sm-6"><label>商品购买订单：{{s.insurance_orders.count()}}(<a href='#'>查看详情</a>)</label></div>      
-            {% endif %}                
-        </div>
-        <br>
-        <div class="panel panel-success">
-    <div class="panel-heading">
-        <h3 class="panel-title">门店员工账户</h3>
-    </div>
-    <div class="panel-body">
-        <div class="table-responsive">
-            <table class="table table-hover" id="tb_user" cellpadding="0" cellspacing="0" border="0" style="text-align:center;">
-                <thead>
-                    <tr>
-                        <th style="width:10%;text-align:center;">姓名</th>
-                        <th style="width:10%;text-align:center;">电话</th>
-                        <th style="width:10%;text-align:center;">角色</th>
-                        <th style="width:15%;text-align:center;">最后登录时间</th>
-                        <th style="width:10%;text-align:center;">状态</th>
-                    </tr>
-                    {% for user in s.users %}
-                    <tr>
-                        <td><a href="/admin/user?id={{user.id}}" target="_blank">{{user.truename}}</a></td>
-                        <td>
-                            {{user.mobile}}
-                        </td>
-                        <td>
-                            {% if user.role=='A' %}
-                                <span style="">管理员</span><br>
-                                {% elif user.active=='G' %}
-                                <span style="">员工</span><br>
-                                {% endif %}
-                        </td>
-                        <td>{{user.lsignined|dateformat}}</td>
-                        
-                        <td>
-                            {% if user.active==0 %}
-                                <span style="">已禁用</span>
-                                {% elif user.active==1 %}
-                                <span style="">正常</span>
-                                {% endif %}
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </thead>
+                    <div class="col-sm-6"><label>推广人员：{{s.admin_user.realname if s.admin_user else '无'}}</label></div>
+                    <div class="col-sm-6"><label>创建时间：{{s.created | dateformat}}</label></div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6"><label>积分：{{s.score}} (<a href='#' onclick="pop('积分变动记录','/admin/score_history?store_id={{s.id}}')">查看变动记录</a>)</label></div>
+                    <div class="col-sm-6"><label>余额：￥{{s.price}}(<a href='#' onclick="pop('余额变动记录','/admin/money_history?store_id={{s.id}}')">查看变动记录</a>)</label></div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6"><label>保险订单数：{{s.buyer_sub_orders.count()}} (<a href='#'>查看详情</a>)</label></div>
+                    {% if s.store_type == 1 %}
+                    <div class="col-sm-6"><label>商品销售订单：{{s.insurance_orders.count()}}(<a href='#'>查看详情</a>)</label></div>
+                    {% elif s.store_type == 2 %}
+                    <div class="col-sm-6"><label>商品购买订单：{{s.insurance_orders.count()}}(<a href='#'>查看详情</a>)</label></div>
+                    {% endif %}
+                </div>
+                <br>
+                <div class="panel panel-success">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">门店员工账户</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover" id="tb_user" cellpadding="0" cellspacing="0" border="0" style="text-align:center;">
+                                <thead>
+                                <tr>
+                                    <th style="width:10%;text-align:center;">姓名</th>
+                                    <th style="width:10%;text-align:center;">电话</th>
+                                    <th style="width:10%;text-align:center;">角色</th>
+                                    <th style="width:15%;text-align:center;">最后登录时间</th>
+                                    <th style="width:10%;text-align:center;">状态</th>
+                                </tr>
+                                {% for user in s.users %}
+                                <tr>
+                                    <td><a href="/admin/user?id={{user.id}}" target="_blank">{{user.truename}}</a></td>
+                                    <td>
+                                        {{user.mobile}}
+                                    </td>
+                                    <td>
+                                        {% if user.role=='A' %}
+                                        <span style="">管理员</span><br>
+                                        {% elif user.active=='G' %}
+                                        <span style="">员工</span><br>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{user.lsignined|dateformat}}</td>
 
-            </table>
+                                    <td>
+                                        {% if user.active==0 %}
+                                        <span style="">已禁用</span>
+                                        {% elif user.active==1 %}
+                                        <span style="">正常</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                                </thead>
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-</div>
-    </div>
-    </div>
-</div>
 </div>
 {% endblock %}
 {% block js %}
@@ -230,26 +234,25 @@
 
     function pop(title, url) {
         layer.open({
-          type: 2,
-          title: title,
-          shadeClose: true,
-          shade: 0.8,
-          area: ['90%', '90%'],
-          content: url
-        }); 
+            type: 2,
+            title: title,
+            shadeClose: true,
+            shade: 0.8,
+            area: ['90%', '90%'],
+            content: url
+        });
     }
 
 
-    function GetSubAreas(parent_code,ddl_id, seleted_code) {
+    function GetSubAreas(parent_code, ddl_id, seleted_code) {
         if(parent_code.length == 0) {
             $("#city").html('');
             $("#city").append("<option value=''>--所有城市--</option>");
             $("#district").html('');
             $("#district").append("<option value=''>--所有区县--</option>");
-
             return;
         }
-        $.get("/ajax/GetSubAreas", { parent_code: parent_code,  t: Math.random() }, function (data) {
+        $.get("/ajax/GetSubAreas", { pcode: parent_code,  t: Math.random() }, function (data) {
             data = jQuery.parseJSON(data);
             if(data.flag==1){
                 $("#" + ddl_id).html('');

@@ -1175,7 +1175,6 @@ class MobileWithdrawCashHandler(MobileBaseHandler):
                 result['msg'] = '参数有误'
         except Exception,e:
             result['flag'] = 0
-            print e
         self.write(simplejson.dumps(result))
 
 
@@ -1500,15 +1499,15 @@ class MobileFilterMyProductsHandler(MobileBaseHandler):
         brand_list = []
         serve_area_list = []
         for p in store.products:
-            if p.brand.name not in brand_list:
+            if p.product.brand.name not in brand_list:
                 brand_list.append({
-                    'name': p.brand.name,
-                    'id': p.brand.id
+                    'name': p.product.brand.name,
+                    'id': p.product.brand.id
                 })
         for service_area in store.service_areas:
             serve_area_list.append({
                 'name': service_area.area.name,
-                'area_code': service_area.area_code
+                'area_code': service_area.area.code
             })
         result['data'] = {
             'brand': brand_list,
