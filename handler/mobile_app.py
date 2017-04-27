@@ -465,16 +465,18 @@ class MobileHomeHandler(MobileBaseHandler):
                               Product.name.alias('name'),
                               Product.cover.alias('cover'),
                               StoreProductPrice.price.alias('price'),
+                              StoreProductPrice.score.alias('score'),
                               Store.name.alias('sname')). \
             join(ProductRelease, on=(ProductRelease.product == Product.id)). \
             join(Store, on=(Store.id == ProductRelease.store)). \
             join(StoreProductPrice, on=(StoreProductPrice.product_release == ProductRelease.id)). \
             where(ft).tuples()
-        for id,name,cover,price,sname in spps:
+        for id,name,cover,price,score,sname in spps:
             items.append({
                 'img': cover,
                 'name': name,
                 'price': price,
+                'score': score,
                 'link': 'czj://product/%d'%id,
                 'is_score': 0,
                 'storeName': sname
@@ -490,17 +492,19 @@ class MobileHomeHandler(MobileBaseHandler):
         spps = Product.select(Product.id.alias('id'),
                               Product.name.alias('name'),
                               Product.cover.alias('cover'),
+                              StoreProductPrice.price.alias('price'),
                               StoreProductPrice.score.alias('score'),
                               Store.name.alias('sname')). \
             join(ProductRelease, on=(ProductRelease.product == Product.id)). \
             join(Store, on=(Store.id == ProductRelease.store)). \
             join(StoreProductPrice, on=(StoreProductPrice.product_release == ProductRelease.id)). \
             where(ft, ProductRelease.is_score == 1).tuples()
-        for id,name,cover,score,sname in spps:
+        for id,name,cover,price,score,sname in spps:
             items.append({
                 'img': cover,
                 'name': name,
-                'price': score,
+                'price': price,
+                'score': score,
                 'link': 'czj://score_product_detail/%d'%id,
                 'is_score': 1,
                 'storeName': sname
