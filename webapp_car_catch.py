@@ -186,22 +186,31 @@ def catch_car_item(browser, start):
 
 
 def catch_car_item_detail(browser):
-    items = CarItem.select().where(CarItem.car_type >> None).limit(1)
+    items = CarItem.select().where(CarItem.price >> None).limit(1)
     while items.count() == 1:
         item = items[0]
         browser.get(item.catch_url)
         # time.sleep(1)
-        d = browser.find_element_by_class_name("mid")
+        try:
+            d = browser.find_element_by_class_name("mid")
+        except:
+            item.price = 0.0
+            item.save()
+            items = CarItem.select().where(CarItem.price >> None).limit(1)
+            continue
         lilist = d.find_elements_by_xpath('./div/h5')
         if len(lilist) > 0:
-            item.price = float(lilist[0].text.replace(u'万元', ''))
+            try:
+                item.price = float(lilist[0].text.replace(u'万元', u''))
+            except:
+                item.price = 0.0
         d = browser.find_element_by_class_name("brand-rank")
         ll = d.find_elements_by_xpath('./h6/a')
         if len(ll) > 0:
             item.car_type = ll[0].text.replace(u'周关注排行', '')
 
         item.save()
-        items = CarItem.select().where(CarItem.car_type >> None).limit(1)
+        items = CarItem.select().where(CarItem.price >> None).limit(1)
         pass
 
 
