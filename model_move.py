@@ -1074,7 +1074,7 @@ class Popularize(db.Model):
     active = IntegerField(default=1)  # 状态 0删除 1有效
 
     class Meta:
-        db_table = 'tb_bank_card_bin'
+        db_table = 'tb_popularize'
 
 
 # 汽车品牌
@@ -1331,4 +1331,3 @@ if __name__ == '__main__':
     # CarItem.create_table()
     # CarSK.create_table()
     # CarItemSK.create_table()
-    pass
