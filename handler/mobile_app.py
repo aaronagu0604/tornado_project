@@ -500,7 +500,7 @@ class MobileHomeHandler(MobileBaseHandler):
                 'img': cover,
                 'name': name,
                 'price': score,
-                'link': 'czj://product/%d'%id,
+                'link': 'czj://score_product/%d'%id,
                 'is_score': True,
                 'storeName': sname
             })
