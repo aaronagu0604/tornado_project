@@ -945,23 +945,23 @@ def move_Order():
     old_order = Old_Order.select().where(Old_Order.user << user_map.keys())
 
     for item in old_order:
-        try:
-            if item.delivery:
-                delivery=delivery_map[item.delivery.id]
-                deliverynum = item.deliverynum
-            else:
-                delivery = None
-                deliverynum = None
-        except Exception:
-            pass
+        # try:
+        #     if item.delivery:
+        #         delivery=delivery_map[item.delivery.id]
+        #         deliverynum = item.deliverynum
+        #     else:
+        #         delivery = None
+        #         deliverynum = None
+        # except Exception:
+        #     pass
 
         order = New_Order.create(
             ordernum=item.ordernum,
             user=user_map[item.user.id],
             buyer_store=store_map[item.user.store.id],  # 旧的没有，暂时设置0
             address=store_addr_map[item.address.id],
-            delivery=delivery,
-            delivery_num=deliverynum,
+            # delivery=delivery,
+            # delivery_num=deliverynum,
             ordered=item.ordered,
             payment=item.payment,
             message=item.message,
@@ -995,12 +995,24 @@ def move_orderitem():
         except Exception:
             settlement = None
 
+        try:
+            if item.order.delivery:
+                delivery=delivery_map[item.order.delivery.id]
+                deliverynum = item.order.deliverynum
+            else:
+                delivery = None
+                deliverynum = None
+        except Exception:
+            pass
+
         suborder = New_SubOrder.get_or_create(
             order=order_map[order.id],
             saler_store=store_map[item.product_standard.store.id],
             buyer_store=store_map[order.user.store.id],
             price=item.price,
             status=order.status,
+            delivery=delivery,
+            delivery_num=deliverynum,
             fail_reason=order.cancelreason,
             fail_time=order.canceltime,
             delivery_time=order.delivery_time,
