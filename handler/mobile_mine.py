@@ -315,7 +315,9 @@ class MobileOrderDetailHandler(MobileBaseHandler):
                     'name': product.product.name,
                     'price': product.price,
                     'quantity': product.quantity,
-                    'attribute': attribute
+                    'attribute': attribute,
+                    'score':product.store_product_price.score,
+                    'is_score':product.store_product_price.product_release.is_score
                 })
             suborders.append({
                 'name': suborder.saler_store.name,
