@@ -939,7 +939,7 @@ class MobileScoreCashHandler(MobileBaseHandler):
     @apiSampleRequest /mobile/scorecash
     """
 
-    def post(self, uid):
+    def post(self):
         result = {'flag': 0, 'msg': '', 'data': {}}
         score = self.get_body_argument('score', None)
         money = self.get_body_argument('money', None)
@@ -953,7 +953,8 @@ class MobileScoreCashHandler(MobileBaseHandler):
             return
         store = self.get_user().store
         if store.score >= score and score >= setting.CASH_MIN_MONEY:
-            sysCalculateMoney = score * setting.CASH_MIN_MONEY
+            sysCalculateMoney = score*setting.CASH_RATE
+
             if money == sysCalculateMoney:
                 try:
                     old_score = store.score

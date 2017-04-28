@@ -18,7 +18,7 @@ def set_device_info(regist_id, tags=[], alias=None):
 
     if alias:
         entity['alias'] = alias
-    print entity
+    print entity,regist_id
     result = device.set_deviceinfo(reg_id, entity)
 
 
@@ -125,9 +125,10 @@ def getdeviceinfo(reg_id):
     print result.payload
 
 if __name__ == '__main__':
-    regist='101d85590977d2a2e49'
+    #regist='101d85590977d2a2e49'
+    regist = '18071adc033dfd900e4'
     tags = ['shanxi', 'xian']
-    alias = ['guoxiaohong']
+    alias = ['zhangsun']
     # aliasuser()
     # taglist()
     # getdeviceinfo(regist)
