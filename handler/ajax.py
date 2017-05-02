@@ -462,7 +462,7 @@ class WebAppCarItemListHandler(BaseHandler):
 
         self.write(simplejson.dumps(result))
 
-@route(r'/ajax/caculate_gift_oil', name='ajax_get_score_rate')  # 获取返佣比率
+@route(r'/ajax/caculate_gift_oil', name='ajax_get_gift_oil_rate')  # 获取返佣比率
 class GetGiftOilHandler(BaseHandler):
     def get(self):
         result = {'flag': 0, 'msg': '', "data": {}}
