@@ -977,7 +977,7 @@ class MobileInsuranceHandler(MobileBaseHandler):
     """
     @apiGroup app
     @apiVersion 1.0.0
-    @api {get} /mobile/product 08. 保险详情页
+    @api {get} /mobile/insurance 08. 保险详情页
     @apiDescription 保险详情页,返回html代码
 
     @apiHeader {String} token 用户登录凭证
