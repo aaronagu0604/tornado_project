@@ -12,21 +12,22 @@ from handler import MobileBaseHandler, require_auth
 from lib.mqhelper import create_msg
 import lib.payment.ali_app_pay as alipay
 from lib.payment.upay import Trade
-from lib.payment.wxPay import UnifiedOrder_pub,Qrcode_pub
+from lib.payment.wxPay import UnifiedOrder_pub, Qrcode_pub
 from lib.route import route
 from model import *
 from mqProcess.jpushhelper import set_device_info
 
+
 def get_insurance(area_code):
     items = []
-    insurances = InsuranceArea.select(InsuranceArea.insurance).\
+    insurances = InsuranceArea.select(InsuranceArea.insurance). \
         where((InsuranceArea.area_code == area_code) & (InsuranceArea.active == 1)).order_by(InsuranceArea.sort.asc())
     for insurance in insurances:
         items.append({
             'img': insurance.insurance.logo,
             'name': insurance.insurance.name,
             'price': 0,
-            'link': 'czj://insurance/%d'%insurance.insurance.id
+            'link': 'czj://insurance/%d' % insurance.insurance.id
         })
     return items
 
@@ -50,6 +51,7 @@ def get_insurance(area_code):
     @apiParam {String} product_order_detail 进入普通订单详情，后跟普通订单ID，例：czj://product_order_detail/1
     @apiParam {String} product_order_list 进入普通订单列表，后跟普通订单状态，例：czj://product_order_list/1，表示待发货
     """
+
 
 @route(r'/mobile', name='mobile_app')
 class MobileAppHandler(MobileBaseHandler):
@@ -75,6 +77,7 @@ class MobileGetVCodeAppHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/getvcode
     """
+
     def post(self):
         result = {'flag': 0, 'msg': '', "data": {}}
         mobile = self.get_body_argument("mobile", None)
@@ -138,6 +141,7 @@ class MobileCheckVCodeAppHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/checkvcode
     """
+
     def post(self):
         result = {'flag': 0, 'msg': '', "data": {}}
         mobile = self.get_body_argument('mobile', None)
@@ -174,6 +178,7 @@ class MobileRegHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/reg
     """
+
     def post(self):
         result = {'flag': 0, 'msg': '', "data": {}}
         mobile = self.get_body_argument("mobile", None)
@@ -242,6 +247,7 @@ class MobileLoginHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/login
     """
+
     def post(self):
         result = {'flag': 0, 'msg': '', "data": {}}
         mobile = self.get_body_argument("mobile", None)
@@ -268,7 +274,7 @@ class MobileLoginHandler(MobileBaseHandler):
                             result['data']['uid'] = user.id
                             user.updatesignin(token)
                             if jpushtag:
-                                set_device_info(jpushtag,[user.store.area_code],user.mobile)
+                                set_device_info(jpushtag, [user.store.area_code], user.mobile)
                         else:
                             result['msg'] = '登录失败'
                     else:
@@ -301,6 +307,7 @@ class MobileHomeHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/home
     """
+
     def get(self):
         result = {'flag': 0, 'msg': '', "data": {}}
         area_code = self.get_store_area_code()
@@ -316,9 +323,9 @@ class MobileHomeHandler(MobileBaseHandler):
         if user is not None:
             result['data']['login_flag'] = 1
             # 最新报价
-            price_list = InsuranceOrderPrice.select(InsuranceOrderPrice).\
-                join(InsuranceOrder, on=(InsuranceOrderPrice.insurance_order_id == InsuranceOrder.id)).\
-                where(InsuranceOrderPrice.read == 0, InsuranceOrderPrice.status == 1, InsuranceOrder.status == 0).\
+            price_list = InsuranceOrderPrice.select(InsuranceOrderPrice). \
+                join(InsuranceOrder, on=(InsuranceOrderPrice.insurance_order_id == InsuranceOrder.id)). \
+                where(InsuranceOrderPrice.read == 0, InsuranceOrderPrice.status == 1, InsuranceOrder.status == 0). \
                 order_by(InsuranceOrderPrice.created.desc())
             if price_list.count() > 0:
                 dt = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(price_list[0].created))
@@ -341,7 +348,7 @@ class MobileHomeHandler(MobileBaseHandler):
         result['data']['category'] = []
         # 保险
         tmp_code = area_code
-        #insurances = InsuranceArea.get_insurances_link(tmp_code)[:4]
+        # insurances = InsuranceArea.get_insurances_link(tmp_code)[:4]
         insurances = []
         while len(insurances) == 0 and len(tmp_code) > 4:
             tmp_code = tmp_code[0: -4]
@@ -395,8 +402,9 @@ class MobileHomeHandler(MobileBaseHandler):
 
     def get_banner(self, area_code):
         items = []
-        banners = BlockItem.select(BlockItem).join(Block, on=(Block.id == BlockItem.block)).\
-            where((Block.tag == 'banner') & (Block.active == 1) & (BlockItem.active == 1) & (BlockItem.area_code << [area_code,'',None])).\
+        banners = BlockItem.select(BlockItem).join(Block, on=(Block.id == BlockItem.block)). \
+            where((Block.tag == 'banner') & (Block.active == 1) & (BlockItem.active == 1) & (
+        BlockItem.area_code << [area_code, '', None])). \
             order_by(BlockItem.sort.asc())
         for p in banners:
             items.append({
@@ -426,13 +434,13 @@ class MobileHomeHandler(MobileBaseHandler):
                     'img': item.img_m,
                     'name': item.name,
                     'price': 0,
-                    'link': 'czj://category/%s'%item.id
+                    'link': 'czj://category/%s' % item.id
                 })
         return items
 
     def get_brand(self, area_code):
         items = []
-        if isinstance(area_code,list):
+        if isinstance(area_code, list):
             ft = StoreProductPrice.area_code << area_code
         else:
             ft = StoreProductPrice.area_code == area_code
@@ -449,14 +457,14 @@ class MobileHomeHandler(MobileBaseHandler):
                     'img': item.logo,
                     'name': item.name,
                     'price': 0,
-                    'link': 'czj://brand/%d'%item.id
+                    'link': 'czj://brand/%d' % item.id
                 })
 
         return items
 
     def get_recommend(self, area_code):
         items = []
-        if isinstance(area_code,list):
+        if isinstance(area_code, list):
             ft = StoreProductPrice.area_code << area_code
         else:
             ft = StoreProductPrice.area_code == area_code
@@ -470,13 +478,13 @@ class MobileHomeHandler(MobileBaseHandler):
             join(Store, on=(Store.id == ProductRelease.store)). \
             join(StoreProductPrice, on=(StoreProductPrice.product_release == ProductRelease.id)). \
             where(ft).tuples()
-        for id,name,cover,price,score,sname in spps:
+        for id, name, cover, price, score, sname in spps:
             items.append({
                 'img': cover,
                 'name': name,
                 'price': price,
                 'score': score,
-                'link': 'czj://product/%d'%id,
+                'link': 'czj://product/%d' % id,
                 'is_score': 0,
                 'storeName': sname
             })
@@ -484,7 +492,7 @@ class MobileHomeHandler(MobileBaseHandler):
 
     def get_score_product(self, area_code):
         items = []
-        if isinstance(area_code,list):
+        if isinstance(area_code, list):
             ft = StoreProductPrice.area_code << area_code
         else:
             ft = StoreProductPrice.area_code == area_code
@@ -498,13 +506,13 @@ class MobileHomeHandler(MobileBaseHandler):
             join(Store, on=(Store.id == ProductRelease.store)). \
             join(StoreProductPrice, on=(StoreProductPrice.product_release == ProductRelease.id)). \
             where(ft, ProductRelease.is_score == 1).tuples()
-        for id,name,cover,price,score,sname in spps:
+        for id, name, cover, price, score, sname in spps:
             items.append({
                 'img': cover,
                 'name': name,
                 'price': price,
                 'score': score,
-                'link': 'czj://score_product_detail/%d'%id,
+                'link': 'czj://score_product_detail/%d' % id,
                 'is_score': 1,
                 'storeName': sname
             })
@@ -525,6 +533,7 @@ class MobileGetBankNameHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/get_bank_name
     """
+
     def get(self):
         result = {'flag': 0, 'data': {'id': 0, 'bank_name': ''}, 'msg': ''}
         bank_number = self.get_argument('bank_number', None)
@@ -577,6 +586,7 @@ class MobileDiscoverHandler(MobileBaseHandler):
     @apiHeader {String} token 用户登录凭证
     @apiSampleRequest /mobile/discover
     """
+
     def get(self):
         result = {'flag': 1, 'msg': '', 'data': []}
         area_code = self.get_store_area_code()
@@ -594,9 +604,9 @@ class MobileDiscoverHandler(MobileBaseHandler):
         cbs = {}
 
         cbs = {}
-        for cid,bid in productlist:
+        for cid, bid in productlist:
             if cid not in cbs.keys():
-                cbs[cid]=[]
+                cbs[cid] = []
             else:
                 if bid not in cbs[cid]:
                     cbs[cid].append(bid)
@@ -613,15 +623,17 @@ class MobileDiscoverHandler(MobileBaseHandler):
                     'subs': [{'img': brand.logo,
                               'name': brand.name,
                               'price': 0,
-                              'link': 'czj://category/%d/brand/%d'%(cid,brand.id)} for brand in Brand.select().where(Brand.id << cbs[cid]) if brand.hot == 1]
+                              'link': 'czj://category/%d/brand/%d' % (cid, brand.id)} for brand in
+                             Brand.select().where(Brand.id << cbs[cid]) if brand.hot == 1]
                 },
-                {
-                    'name': u'不太热销的',
-                    'subs': [{'img': brand.logo,
-                              'name': brand.name,
-                              'price': 0,
-                              'link': 'czj://category/%d/brand/%d'%(cid,brand.id)} for brand in Brand.select().where(Brand.id << cbs[cid]) if brand.hot != 1]
-                }
+                    {
+                        'name': u'不太热销的',
+                        'subs': [{'img': brand.logo,
+                                  'name': brand.name,
+                                  'price': 0,
+                                  'link': 'czj://category/%d/brand/%d' % (cid, brand.id)} for brand in
+                                 Brand.select().where(Brand.id << cbs[cid]) if brand.hot != 1]
+                    }
                 ],
                 'ads': {'img': '', 'link': ''}
             })
@@ -634,7 +646,7 @@ class MobileDiscoverHandler(MobileBaseHandler):
             'subs': [{
                 'name': u'热门保险',
                 'subs': InsuranceArea.get_insurances_link(area_code)[:3]
-            },{
+            }, {
                 'name': u'不太热门保险',
                 'subs': InsuranceArea.get_insurances_link(area_code)[3:]
             }],
@@ -657,6 +669,7 @@ class MobileFilterHandler(MobileBaseHandler):
     @apiParam {Int} id 品牌或者分类ID
     @apiSampleRequest /mobile/filter
     """
+
     def getCategoryAttribute(self, bc, cid):
         '''
         attributeList = [{
@@ -702,7 +715,7 @@ class MobileFilterHandler(MobileBaseHandler):
             id = int(id)
 
         result['data']['filter_items'] = []
-        if flag == 2:    # 分类一定
+        if flag == 2:  # 分类一定
             brandCategorys = BrandCategory.select().where(BrandCategory.category == id)
             if brandCategorys.count() > 0:
                 result['data']['filter_items'].append({
@@ -712,7 +725,8 @@ class MobileFilterHandler(MobileBaseHandler):
                     'name': u'品牌',
                     'values': [{'id': bc.brand.id, 'name': bc.brand.name} for bc in brandCategorys]
                 })
-                result['data']['filter_items'] += self.getCategoryAttribute(brandCategorys[0], brandCategorys[0].category.id)
+                result['data']['filter_items'] += self.getCategoryAttribute(brandCategorys[0],
+                                                                            brandCategorys[0].category.id)
             else:
                 result['msg'] = u'未查到该分类'
                 self.write(simplejson.dumps(result))
@@ -762,6 +776,7 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/discoverproducts
     """
+
     def getProductList(self, keyword, sort, category, brand, attribute, index, area_code):
         productList = []
         ft = (Product.active == 1)
@@ -770,21 +785,23 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
             ft1 = ft2 = None
             c = Category.get(id=category)
             for i, a in enumerate(c.attributes):
-                cais = CategoryAttributeItems.select().where((CategoryAttributeItems.category_attribute == a.id) & (CategoryAttributeItems.id << attribute))
+                cais = CategoryAttributeItems.select().where(
+                    (CategoryAttributeItems.category_attribute == a.id) & (CategoryAttributeItems.id << attribute))
                 for cai in cais:
-                    ft2 = (ProductAttributeValue.value == cai.name) if not ft2 else ft2 | (ProductAttributeValue.value == cai.name)
+                    ft2 = (ProductAttributeValue.value == cai.name) if not ft2 else ft2 | (
+                    ProductAttributeValue.value == cai.name)
                 if ft2:
                     ft1 = ft2 if not ft1 else ft1 & ft2
             if ft1:
                 products = Product.select().join(ProductAttributeValue).where(ft1)
                 pids = [product.id for product in products]
                 ft = (Product.id << pids)
-            # for i, f in enumerate(fts):
-            #     if i == 0:
-            #         products = Product.select().join(ProductAttributeValue).where(f)
-            #     else:
-            #         products = Product.select().join(ProductAttributeValue).where(f & (Product.id << pids))
-            #     pids = [product.id for product in products]
+                # for i, f in enumerate(fts):
+                #     if i == 0:
+                #         products = Product.select().join(ProductAttributeValue).where(f)
+                #     else:
+                #         products = Product.select().join(ProductAttributeValue).where(f & (Product.id << pids))
+                #     pids = [product.id for product in products]
         elif category:
             ft &= (Product.category == category)
         ft &= ((StoreProductPrice.price > 0) & (StoreProductPrice.active == 1) & (ProductRelease.active == 1))
@@ -806,9 +823,9 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
             ProductRelease.id.alias('prid'), Product.id.alias('pid'), StoreProductPrice.id.alias('sppid'),
             Product.name.alias('name'), StoreProductPrice.price.alias('price'), Product.unit.alias('unit'),
             ProductRelease.buy_count.alias('buy_count'), Product.cover.alias('cover'),
-            Product.resume.alias('resume'), Store.name.alias('sName'), ProductRelease.is_score.alias('is_score')).\
-            join(Product, on=(Product.id == ProductRelease.product)).\
-            join(StoreProductPrice, on=(StoreProductPrice.product_release == ProductRelease.id)).\
+            Product.resume.alias('resume'), Store.name.alias('sName'), ProductRelease.is_score.alias('is_score')). \
+            join(Product, on=(Product.id == ProductRelease.product)). \
+            join(StoreProductPrice, on=(StoreProductPrice.product_release == ProductRelease.id)). \
             join(Store, on=(Store.id == ProductRelease.store)).where(ft).dicts()
         # 排序
         if sort == '1':
@@ -868,7 +885,8 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
         if len(categories) > 1:
             result['data']['products'] = []
         else:
-            result['data']['products'] = self.getProductList(keyword, sort, categories[0], brands, attributes, index, area_code)
+            result['data']['products'] = self.getProductList(keyword, sort, categories[0], brands, attributes, index,
+                                                             area_code)
 
         result['data']['category'] = ''
         result['data']['brand'] = ''
@@ -931,6 +949,7 @@ class MobileProductHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/product
     """
+
     def get(self):
         id = self.get_argument("id", None)
         spp = StoreProductPrice.get(id=id)
@@ -940,9 +959,9 @@ class MobileProductHandler(MobileBaseHandler):
         items = [i for i in spp.product_release.product.attributes if i.attribute.active == 1]
         attributes = sorted(items, key=lambda item: item.attribute.sort)
 
-        product={'name': spp.product_release.product.name, 'type': type, 'from': f, 'id': id,
-                 'price': spp.price, 'pics': pics, 'buy_count': spp.product_release.buy_count,
-                 'store': spp.store.name, 'mobile': spp.store.mobile, 'attributes': attributes}
+        product = {'name': spp.product_release.product.name, 'type': type, 'from': f, 'id': id,
+                   'price': spp.price, 'pics': pics, 'buy_count': spp.product_release.buy_count,
+                   'store': spp.store.name, 'mobile': spp.store.mobile, 'attributes': attributes}
         if str(type) == '2':
             product['price'] = spp.score
 
@@ -964,11 +983,12 @@ class MobileInsuranceHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/insurance
     """
+
     def get(self):
         result = {'flag': 0, 'msg': '', "data": {}}
         id = self.get_argument("id", None)
         type = self.get_argument("type", None)
-        insurance=Insurance.get(id=id)
+        insurance = Insurance.get(id=id)
         self.render('mobile/insurance.html', insurance=insurance)
 
 
@@ -995,7 +1015,8 @@ class MobileAddShopCarHandler(MobileBaseHandler):
         sppid = self.get_body_argument("sppid", None)
         quantity = self.get_body_argument("quantity", 1)
         if user and sppid:
-            has_product = ShopCart.select().where((ShopCart.store_product_price == sppid) & (ShopCart.store == user.store)).count()
+            has_product = ShopCart.select().where(
+                (ShopCart.store_product_price == sppid) & (ShopCart.store == user.store)).count()
             if has_product > 0:
                 result['msg'] = u'该商品已存在'
             else:
@@ -1056,6 +1077,7 @@ class MobileShopCarHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/shopcar
     """
+
     @require_auth
     def get(self):
         result = {'flag': 1, 'msg': '', "data": [], 'products_count': ''}
@@ -1132,6 +1154,7 @@ class MobileOrderBaseHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/orderbase
     """
+
     @require_auth
     def get(self):
         user = self.get_user()
@@ -1162,18 +1185,20 @@ class MobileOrderBaseHandler(MobileBaseHandler):
                 result['data']['last_pay_type'] = user.last_pay_type
 
                 stores = []
-                product_list = StoreProductPrice.select().\
-                    where((StoreProductPrice.active == 1) & (StoreProductPrice.id << sppids)).order_by(StoreProductPrice.store)
+                product_list = StoreProductPrice.select(). \
+                    where((StoreProductPrice.active == 1) & (StoreProductPrice.id << sppids)).order_by(
+                    StoreProductPrice.store)
                 for product_price in product_list:
                     products = {
-                            'sppid': product_price.id,
-                            'quantity': spp_dicts[product_price.id],
-                            'name': product_price.product_release.product.name,
-                            'price': product_price.price,
-                            'score': product_price.score,
-                            'img': product_price.product_release.product.cover,
-                            'attributes': [attribute.value for attribute in product_price.product_release.product.attributes]
-                        }
+                        'sppid': product_price.id,
+                        'quantity': spp_dicts[product_price.id],
+                        'name': product_price.product_release.product.name,
+                        'price': product_price.price,
+                        'score': product_price.score,
+                        'img': product_price.product_release.product.cover,
+                        'attributes': [attribute.value for attribute in
+                                       product_price.product_release.product.attributes]
+                    }
                     if product_price.store.id not in stores:
                         result['data']['store'].append({
                             'name': product_price.store.name,
@@ -1213,6 +1238,7 @@ class MobileNewOrderHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/neworder
     """
+
     # 检查商品是否存在and 支付方式and价格传输是否正确
     def check_products_price(self, order_type, total_price, items):
         try:
@@ -1228,7 +1254,7 @@ class MobileNewOrderHandler(MobileBaseHandler):
                     else:
                         return False, u'入参错误 order_type'
                 if db_store_price != float(item['price']):
-                        return False, u'store价格有误'
+                    return False, u'store价格有误'
                 db_total_price += db_store_price
             if total_price != db_total_price:
                 return False, u'总价有误'
@@ -1264,7 +1290,7 @@ class MobileNewOrderHandler(MobileBaseHandler):
                 self.write(simplejson.dumps(result))
                 return
             now = int(time.time())
-            order_now = int(time.time()*100)
+            order_now = int(time.time() * 100)
             order = Order()
             order.user = user
             order.buyer_store = user.store
@@ -1275,7 +1301,7 @@ class MobileNewOrderHandler(MobileBaseHandler):
             order.order_type = order_type
             order.total_price = total_price if order_type == 1 else 0
             order.total_score = total_price if order_type == 2 else 0
-            order.ordernum = 'U' + str(user.id) + 'S' + str(order_now-setting.ORDERBEGIN)
+            order.ordernum = 'U' + str(user.id) + 'S' + str(order_now - setting.ORDERBEGIN)
             if order_type == 2 and payment == 5:
                 if user.store.score < total_price:
                     result['msg'] = u"您的积分不足"
@@ -1362,6 +1388,7 @@ class MobilInsuranceOrderBaseHandler(MobileBaseHandler):
 
         @apiSampleRequest /mobile/insuranceorderbase
         """
+
     def get_insurance_message(self, area_code):
         result = {
             'force_insurance': {
@@ -1372,7 +1399,7 @@ class MobilInsuranceOrderBaseHandler(MobileBaseHandler):
                 'title': '商业险-主险',
                 'item': []
             },
-            'commerce_insurance_slave':{
+            'commerce_insurance_slave': {
                 'title': '商业险-附加险',
                 'item': []
             }
@@ -1514,8 +1541,8 @@ class MobilNewInsuranceOrderHandler(MobileBaseHandler):
 
         user = self.get_user()
         if user and gift_policy and delivery_address and delivery_city and delivery_province and delivery_district and \
-            delivery_tel and delivery_to and insurance and drive_card_back and drive_card_front and id_card_back and \
-            id_card_front:
+                delivery_tel and delivery_to and insurance and drive_card_back and drive_card_front and id_card_back and \
+                id_card_front:
             order = InsuranceOrder()
             order.user = user
             order.store = user.store
@@ -1584,6 +1611,7 @@ class MobilePayOrderHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/payorder
     """
+
     def after_pay_operation(self, order, total_price, user, order_type):
         now = int(time.time())
         user.store.price -= total_price
@@ -1661,12 +1689,7 @@ class MobileToolsHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/tools
     """
+
     def get(self):
         result = {'flag': 0, 'msg': '', "data": {}}
         self.render('mobile/tools.html')
-
-
-
-
-
-
