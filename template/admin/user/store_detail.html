@@ -127,22 +127,6 @@
                         <input style="width:90px;height:32px;border:1px solid #438bca;border-radius:4px;background:#438bca;color:#fff;margin-right:30px;font-size:16px;" type="submit" name="sub" value="保 存">
                         <input type="reset" name="sub" value="重 置" style="width:90px;height:32px;border:1px solid #438bca;border-radius:4px;background:#fff;color:#438bca;font-size:16px;">
                     </div>
-                    <div class="col-sm-6">
-                        <div class="form-group has-success">
-                            <label class="control-label">保险返佣</label>
-                            <img class="preview" src="{{s.license_image}}" width="80" height="80" style="display:block;">
-
-                    <select class="form-control" name="status" id="sel_type" style="width:100px;">
-                        <option value="-2" {{ status=='-2' and 'selected' or '' }}>全部</option>
-                        <option value="0" {{ status==0 and 'selected' or '' }}>待确认</option>
-                        <option value="1" {{ status==1 and 'selected' or '' }}>待付款</option>
-                        <option value="2" {{ status==2 and 'selected' or '' }}>已付款</option>
-                        <option value="3" {{ status==3 and 'selected' or '' }}>已办理</option>
-                        <option value="4" {{ status==4 and 'selected' or '' }}>已邮寄</option>
-                        <option value="-1" {{ status==-1 and 'selected' or '' }}>已取消</option>
-                    </select>
-                        </div>
-                    </div>
                 </form>
             </div>
         </div>
@@ -216,6 +200,46 @@
             </div>
         </div>
     </div>
+
+
+    <div class="col-sm-12 col-md-6">
+        <div class="panel panel-primary">
+            <div class="panel-body">
+                <h4>返佣配置</h4>
+                <div class="panel panel-success">
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover" id="tb_user_2" cellpadding="0" cellspacing="0" border="0" style="text-align:center;">
+                                <thead>
+                                <tr>
+                                    <th style="width:10%;text-align:center;">保险公司</th>
+                                    <th style="width:15%;text-align:center;">服务商</th>
+                                    <th style="width:10%;text-align:center;">返现率</th>
+                                    <th style="width:10%;text-align:center;">返油率</th>
+                                    <th style="width:10%;text-align:center;">操作</th>
+                                </tr>
+                                {% for policy in policies %}
+                                <tr>
+                                    <td>{{policy.insurance.name}}</td>
+                                    <td><a href="/admin/user?id={{policy.dealer_store.id}}" target="_blank">{{policy.dealer_store.name}}</a></td>
+                                    <td><a href="#" onclick="policy_pop('返现政策','{{policy.insurance.id}}','{{policy.store.id}}', 'score')">{{policy.cash}}</a></td>
+                                    <td><a href="#" onclick="policy_pop('返油政策','{{policy.insurance.id}}','{{policy.store.id}}', 'lube')">{{policy.lube}}</a></td>
+                                    <td>
+                                        <a href="/admin/delete_policy/{{policy.store.id}}?iid={{policy.insurance.id}}" onclick="return confirm('确定删除此政策?')" style="padding:4px 5px;border:1px solid #438bca;color:#438bca;border-radius:4px;font-size:12px;text-decoration:none;">删除</a>
+                                        <a href="/admin/delete_policy/{{policy.store.id}}?iid={{policy.insurance.id}}" onclick="return confirm('确定删除此政策?')" style="padding:4px 5px;border:1px solid #438bca;color:#438bca;border-radius:4px;font-size:12px;text-decoration:none;">修改</a>
+                                    </td>
+
+                                </tr>
+                                {% endfor %}
+                                </thead>
+                            </table>
+                        </div>
+                        <td><a href="/admin/delete_policy" onclick="return confirm('确定删除此政策?')" style="padding:4px 5px;border:1px solid #438bca;color:#438bca;border-radius:4px;font-size:12px;text-decoration:none;">新增</a></td>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
 {% block js %}
@@ -243,6 +267,17 @@
         });
     }
 
+    function policy_pop(title, iid, store_id, type) {
+        var url = '/admin/insurance/'+type+'?iid='+iid+'&sid='+store_id;
+        layer.open({
+            type: 2,
+            title: title,
+            shadeClose: true,
+            shade: 0.8,
+            area: ['90%', '90%'],
+            content: url
+        });
+    }
 
     function GetSubAreas(parent_code, ddl_id, seleted_code) {
         if(parent_code.length == 0) {

@@ -43,7 +43,7 @@
                         {% if ad.active == 0 %}
                         <a style="padding:4px 5px;border:1px solid #438bca;color:#438bca;border-radius:4px;font-size:12px;text-decoration:none;" href="/admin/delad/{{ad.id}}/1 " onclick="return confirm('确定启用此广告?')">启用</a>
                         {%else%}
-                        <a href="/admin/delad/{{ad.id}}/0 " onclick="return confirm('确定停用此广告?')" style="padding:4px 5px;border:1px solid #438bca;color:#438bca;border-radius:4px;font-size:12px;text-decoration:none;">停用</a>
+                        <a href="/admin/delad/{{ad.id}}/0" onclick="return confirm('确定停用此广告?')" style="padding:4px 5px;border:1px solid #438bca;color:#438bca;border-radius:4px;font-size:12px;text-decoration:none;">停用</a>
                         {%endif%}
                     </td>
                 </tr>

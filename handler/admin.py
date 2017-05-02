@@ -203,7 +203,8 @@ class StoreDetailHandler(AdminBaseHandler):
             active = 'saler'
         elif store.store_type == 2:
             active = 'store'
-        self.render('admin/user/store_detail.html', s=store, active=active, areas=areas)
+        policies = SSILubePolicy.select().where(SSILubePolicy.store == store)
+        self.render('admin/user/store_detail.html', s=store, active=active, areas=areas, policies=policies)
 
     def post(self, store_id):
         name = self.get_argument('name', '')
@@ -240,6 +241,14 @@ class StoreDetailHandler(AdminBaseHandler):
         self.flash(u"保存成功")
         self.redirect("/admin/store_detail/" + str(store_id))
 
+@route(r'/admin/delete_policy/(\d+)', name='admin_delete_policy')  # 删除政策
+class DeletePolicyHandler(AdminBaseHandler):
+    def get(self, store_id):
+        iid = self.get_argument('iid', None)
+        if iid:
+            SSILubePolicy.delete().where((SSILubePolicy.store == store_id) & (SSILubePolicy.insurance == iid)).execute()
+
+        self.redirect('/admin/store_detail/%s'%store_id)
 
 @route(r'/admin/score_history', name='admin_score_history')  # 积分消费历史
 class ScoreHistoryHandler(AdminBaseHandler):
@@ -1614,8 +1623,28 @@ class InsuranceScore(AdminBaseHandler):
     def get(self):
         iid = int(self.get_argument('iid', 0))
         area_code = self.get_argument('area_code', '0')
-        items = InsuranceScoreExchange.select().where((InsuranceScoreExchange.insurance==iid)
-                                                     & (InsuranceScoreExchange.area_code == area_code))
+        sid = self.get_argument('sid', '')
+        if sid:
+            items = SSILubePolicy.select().where((SSILubePolicy.store == sid) & (SSILubePolicy.insurance == iid))
+        else:
+            '''
+    business_exchange_rate = FloatField(default=0.0)  # 兑换率（商业险），仅商业险
+    business_exchange_rate2 = FloatField(default=0.0)  # 兑换率（商业险），商业险+交强险
+    business_tax_rate = FloatField(default=0.0)  # 商业险税率
+
+    force_exchange_rate = FloatField(default=0.0)  # 交强险兑换率, 仅交强险
+    force_exchange_rate2 = FloatField(default=0.0)  # 交强险兑换率, 商业险+交强险
+    force_tax_rate = FloatField(default=0.0)  # 交强险税率
+
+    ali_rate = FloatField(default=0.0)  # 银联支付宝微信转账 手续费率
+    profit_rate = FloatField(default=0.0)  # 利润率（车装甲）
+    base_money = FloatField(default=0.0)  # 多少元起兑
+
+            '''
+            items = InsuranceScoreExchange.select(InsuranceScoreExchange.business_exchange_rate.alias('ber'),
+                                                  InsuranceScoreExchange.business_exchange_rate2.alias('ber2'),
+                                                  InsuranceScoreExchange.business_tax_rate.alias()).\
+                where((InsuranceScoreExchange.insurance == iid) & (InsuranceScoreExchange.area_code == area_code)).dicts()
         if items.count() > 0:
             item = items[0]
         else:
@@ -1670,8 +1699,7 @@ class InsuranceLube(AdminBaseHandler):
     def get(self):
         iid = int(self.get_argument('iid', 0))
         area_code = self.get_argument('area_code', '0')
-        items = LubePolicy.select().where((LubePolicy.insurance==iid)
-                                                     & (LubePolicy.area_code == area_code))
+        items = LubePolicy.select().where((LubePolicy.insurance == iid) & (LubePolicy.area_code == area_code))
         if items.count() > 0:
             item = items[0]
         else:

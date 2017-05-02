@@ -1467,9 +1467,15 @@ class MobileMyProductsHandler(MobileBaseHandler):
         if brand:
             ft_brand = brand.strip(',').split(',')
             ft &= (Product.brand << ft_brand)
-        product_releases = ProductRelease.select().join(StoreProductPrice).where(ft)
+        product_releases = ProductRelease.select().\
+            join(StoreProductPrice, on=(StoreProductPrice.product_release == ProductRelease.id)).\
+            join(Product, on=(Product.id == ProductRelease.product)).where(ft)
+        product_brand_list = []
         for product_release in product_releases:
-            result['data']['brand'] = result['data']['brand'] + ',' + str(product_release.product.brand.id)
+            if product_release.product.brand.id not in product_brand_list:
+                product_brand_list.append(product_release.product.brand.id)
+                result['data']['brand'] = result['data']['brand'] + ',' + str(product_release.product.brand.id)
+        result['data']['brand'] = result['data']['brand'].strip(',')
         prs = product_releases.paginate(index, pagesize)
         for product_release in prs:
             result['data']['products'].append({
@@ -1488,7 +1494,7 @@ class MobileFilterMyProductsHandler(MobileBaseHandler):
     """
     @apiGroup mine
     @apiVersion 1.0.0
-    @api {get} /mobile/filtermyproducts 13.
+    @api {get} /mobile/filtermyproducts 13.我的商品筛选
     @apiDescription 我的商品筛选
 
     @apiHeader {String} token 用户登录凭证

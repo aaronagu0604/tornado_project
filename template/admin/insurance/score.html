@@ -7,89 +7,87 @@
     <link href="/style/css/bootstrap.min.css" rel="stylesheet">
     <script src="/style/js/jquery-1.11.1.min.js"></script>
     <script src="/style/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="/style/js/layer/layer.js"></script>
+    <script type="text/javascript" src="/style/js/layer/layer.js"></script>
 </head>
 <body>
 <div class="row" style="margin:5px 5px 0 5px;">
-   <div class="panel panel-primary">
-            <div class="panel-body">
-                <h4>保险返积分策略设置</h4>
-                {%set messages=handler.get_flashed_messages() %}
-                {%if messages%}
-                <div class="msg" style="color:red;">
-                    {% for type, msg in messages%}
-                    <span>{{msg}}</span>
-                    {% endfor %}
-                </div>
-                {%endif%}
+    <div class="panel panel-primary">
+        <div class="panel-body">
+            <h4>保险返积分策略</h4>
+            {%set messages=handler.get_flashed_messages() %}
+            {%if messages%}
+            <div class="msg" style="color:red;">
+                {% for type, msg in messages%}
+                <span>{{msg}}</span>
+                {% endfor %}
+            </div>
+            {%endif%}
             <form action="/admin/insurance/score" method="post">
                 <input type="hidden" name="exid" value="{{item.id or '0'}}">
                 <input type="hidden" name="iid" value="{{iid}}">
+                <input type="hidden" name="sid" value="{{sid}}">
                 <input type="hidden" name="area_code" value="{{area_code}}">
                 <div class="col-sm-12">
-                <input class="btn btn-primary" type="submit" value="保存"/>
-                    </div>
+                    <input class="btn btn-primary" type="submit" value="保存"/>
+                </div>
                 {{xsrf()}}
                 <input value="{{item.id}}" type="hidden" name="page">
-            <div class="col-xs-4">
-                <div class="form-group has-success">
-                    <label class="control-label">仅商业险兑换率</label>
-                    <input type="text" name="business_exchange_rate" class="form-control" value="{{item.business_exchange_rate or ''}}"  required placeholder="仅商业险兑换率" />
-                </div>
-            </div>
                 <div class="col-xs-4">
-                <div class="form-group has-success">
-                    <label class="control-label">商业险+交强险兑换率</label>
-                    <input type="text" name="business_exchange_rate2" class="form-control" value="{{item.business_exchange_rate2 or ''}}"  required placeholder="商业险+交强险兑换率" />
+                    <div class="form-group has-success">
+                        <label class="control-label">仅商业险兑换率</label>
+                        <input type="text" name="business_exchange_rate" class="form-control" value="{{item.business_exchange_rate or ''}}"  required placeholder="仅商业险兑换率" />
+                    </div>
                 </div>
-            </div>
                 <div class="col-xs-4">
-                <div class="form-group has-success">
-                    <label class="control-label">商业险税率</label>
-                    <input type="text" name="business_tax_rate" class="form-control" value="{{item.business_tax_rate or ''}}"  required placeholder="商业险税率" />
+                    <div class="form-group has-success">
+                        <label class="control-label">商业险+交强险兑换率</label>
+                        <input type="text" name="business_exchange_rate2" class="form-control" value="{{item.business_exchange_rate2 or ''}}"  required placeholder="商业险+交强险兑换率" />
+                    </div>
                 </div>
-            </div>
                 <div class="col-xs-4">
-                <div class="form-group has-success">
-                    <label class="control-label">仅交强险兑换率</label>
-                    <input type="text" name="force_exchange_rate" class="form-control" value="{{item.force_exchange_rate or ''}}"  required placeholder="仅交强险兑换率" />
+                    <div class="form-group has-success">
+                        <label class="control-label">商业险税率</label>
+                        <input type="text" name="business_tax_rate" class="form-control" value="{{item.business_tax_rate or ''}}"  required placeholder="商业险税率" />
+                    </div>
                 </div>
-            </div>
                 <div class="col-xs-4">
-                <div class="form-group has-success">
-                    <label class="control-label">商业险+交强险兑换率</label>
-                    <input type="text" name="force_exchange_rate2" class="form-control" value="{{item.force_exchange_rate2 or ''}}"  required placeholder="商业险+交强险兑换率" />
+                    <div class="form-group has-success">
+                        <label class="control-label">仅交强险兑换率</label>
+                        <input type="text" name="force_exchange_rate" class="form-control" value="{{item.force_exchange_rate or ''}}"  required placeholder="仅交强险兑换率" />
+                    </div>
                 </div>
-            </div>
                 <div class="col-xs-4">
-                <div class="form-group has-success">
-                    <label class="control-label">交强险税率</label>
-                    <input type="text" name="force_tax_rate" class="form-control" value="{{item.force_tax_rate or ''}}"  required placeholder="交强险税率" />
+                    <div class="form-group has-success">
+                        <label class="control-label">商业险+交强险兑换率</label>
+                        <input type="text" name="force_exchange_rate2" class="form-control" value="{{item.force_exchange_rate2 or ''}}"  required placeholder="商业险+交强险兑换率" />
+                    </div>
                 </div>
-            </div>
                 <div class="col-xs-4">
-                <div class="form-group has-success">
-                    <label class="control-label">银联支付宝微信转账手续费率</label>
-                    <input type="text" name="ali_rate" class="form-control" value="{{item.ali_rate or ''}}"  required placeholder="银联支付宝微信转账手续费率" />
+                    <div class="form-group has-success">
+                        <label class="control-label">交强险税率</label>
+                        <input type="text" name="force_tax_rate" class="form-control" value="{{item.force_tax_rate or ''}}"  required placeholder="交强险税率" />
+                    </div>
                 </div>
-            </div>
                 <div class="col-xs-4">
-                <div class="form-group has-success">
-                    <label class="control-label">利润率（车装甲）</label>
-                    <input type="text" name="profit_rate" class="form-control" value="{{item.profit_rate or ''}}"  required placeholder="利润率（车装甲）" />
+                    <div class="form-group has-success">
+                        <label class="control-label">银联支付宝微信转账手续费率</label>
+                        <input type="text" name="ali_rate" class="form-control" value="{{item.ali_rate or ''}}"  required placeholder="银联支付宝微信转账手续费率" />
+                    </div>
                 </div>
-            </div>
                 <div class="col-xs-4">
-                <div class="form-group has-success">
-                    <label class="control-label">起兑额</label>
-                    <input type="text" name="base_money" class="form-control" value="{{item.base_money or ''}}"  required placeholder="起兑额" />
+                    <div class="form-group has-success">
+                        <label class="control-label">利润率（车装甲）</label>
+                        <input type="text" name="profit_rate" class="form-control" value="{{item.profit_rate or ''}}"  required placeholder="利润率（车装甲）" />
+                    </div>
                 </div>
-            </div>
-
-         </form>
-
-
-</div>
+                <div class="col-xs-4">
+                    <div class="form-group has-success">
+                        <label class="control-label">起兑额</label>
+                        <input type="text" name="base_money" class="form-control" value="{{item.base_money or ''}}"  required placeholder="起兑额" />
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 </body>
@@ -97,5 +95,4 @@
 <script>
     $(document).ready(function() {
     });
-
 </script>
