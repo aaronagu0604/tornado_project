@@ -809,7 +809,7 @@ class InsuranceOrder(db.Model):
     deliver_company = CharField(max_length=255, null=True)  # 快递公司
     deliver_num = CharField(max_length=255, null=True)  # 保单邮寄快递号
 
-    status = IntegerField(default=0)  # 0待核价 1已核价/待支付 2已支付/待出单 3完成（已送积分/油） 4退款 5补款 -1已删除(取消)
+    status = IntegerField(default=0)  # 0待报价 1已核价/待支付 2已支付/待出单 3完成（已送积分/油） 4退款 5补款 -1已删除(取消)
     cancel_reason = CharField(default='', max_length=1024)  # 取消原因
     cancel_time = IntegerField(default=0)  # 取消时间
     sms_content = CharField(max_length=1024, null=True)  # 短信通知内容
