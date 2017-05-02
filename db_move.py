@@ -306,8 +306,14 @@ def move_store():
             user = Old_User.get(Old_User.store == item)
         except Exception:
             continue
+        if user.grade in [3, 5]:
+            grade = 1
+            process_insurance = 1
+        else:
+            grade = 2
+            process_insurance = 1
         store = New_Store.create(
-            store_type=user.grade,
+            store_type=grade,
             admin_code=None,  # 旧的没有
             admin_user=None,  # 旧的没有
             name=item.name,
@@ -324,7 +330,7 @@ def move_store():
             linkman=item.link_man,
             mobile=item.mobile,
             price=user.cashed_money,  # 由店铺对应用户转移而来
-            process_insurance=item.business_type,  # 旧的没有，暂时这样处理
+            process_insurance=process_insurance,  # 旧的没有，暂时这样处理
             score=user.score,  # 旧的没有，不知道这样处理对不对
             active=item.check_state,
             created=item.created
