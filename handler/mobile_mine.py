@@ -621,14 +621,15 @@ class MobileInsuranceOrderDetailHandler(MobileBaseHandler):
                 'drive_card_back': insuranceorder.drive_card_back
             },
             'delivery': {
-                'delivery_to': insuranceorder.delivery_to,
+                'name': insuranceorder.delivery_to,
                 'mobile': insuranceorder.delivery_tel,
-                'address': '%s%s%s%s' % (insuranceorder.delivery_province,
-                                    insuranceorder.delivery_city,
-                                    insuranceorder.delivery_region,
-                                    insuranceorder.delivery_address)
+                'province': insuranceorder.delivery_province,
+                'city': insuranceorder.delivery_city,
+                'district': insuranceorder.delivery_region,
+                'address': insuranceorder.delivery_address
             }
         }
+
         self.write(simplejson.dumps(result))
 
 
