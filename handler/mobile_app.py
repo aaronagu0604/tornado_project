@@ -282,6 +282,7 @@ class MobileLoginHandler(MobileBaseHandler):
                 else:
                     result['msg'] = "用户名或密码错误"
             except Exception, e:
+                print e
                 result['msg'] = "此用户不存在"
         else:
             result['msg'] = "请输入用户名或者密码"
@@ -1249,9 +1250,9 @@ class MobileNewOrderHandler(MobileBaseHandler):
                 for p in item['products']:
                     spp = StoreProductPrice.get(id=p['sppid'])
                     if order_type == 1:
-                        db_store_price += (spp.price * p['quantity'])
+                        db_store_price += (spp.price * int(p['quantity']))
                     elif order_type == 2:
-                        db_store_price += (spp.score * p['quantity'])
+                        db_store_price += (spp.score * int(p['quantity']))
                     else:
                         return False, u'入参错误 order_type'
                 if db_store_price != float(item['price']):
@@ -1260,7 +1261,7 @@ class MobileNewOrderHandler(MobileBaseHandler):
             if total_price != db_total_price:
                 return False, u'总价有误'
         except Exception, e:
-            return False, u'该商品未获取到'
+            return False, u'该商品未获取到%s'%e
         return True, '1'
 
     @require_auth
