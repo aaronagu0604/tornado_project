@@ -306,12 +306,15 @@ def move_store():
             user = Old_User.get(Old_User.store == item)
         except Exception:
             continue
-        if user.grade in [3, 5]:
+        if user.grade == 5:
             grade = 1
             process_insurance = 1
+        elif user.grade == 3:
+            grade = 1
+            process_insurance = 0
         else:
             grade = 2
-            process_insurance = 1
+            process_insurance = 0
         store = New_Store.create(
             store_type=grade,
             admin_code=None,  # 旧的没有
