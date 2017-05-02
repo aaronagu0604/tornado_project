@@ -42,10 +42,22 @@
                         <span>{{product['name']}}</span><br>
                         <div class="row no-gutter">
                         {% if product['type'] =='1' %}
-                    <div class="col-30 p_price">￥{{product['price']}}</div>
+                    <div class="col-30 p_price">
+                        {% if product['login'] %}
+                        ￥{{product['price']}}
+                        {% else %}
+                        未登陆
+                        {% endif %}
+                    </div>
                     <div class="col-70 p_sale">{{product['buy_count']}}人购买</div>
                             {% elif product['type'] =='2' %}
-                    <div class="col-30 p_score">{{product['price']}} 积分</div>
+                    <div class="col-30 p_score">
+                        {% if product['login'] %}
+                        {{product['price']}} 积分
+                        {% else %}
+                        未登陆
+                        {% endif %}
+                        </div>
                     <div class="col-70 p_sale">{{product['buy_count']}}人兑换</div>
                     {% endif %}</div>
                     </div>
@@ -62,7 +74,7 @@
                         <div class="item-media"><i class="icon icon-home"></i></div>
                         <div class="item-inner">
                           <div class="item-title p_font_title">{{product['store']}}</div>
-                            <div class="item-after"><a href="tel:{{product['mobile']}}" style="color:#3d4145;">
+                            <div class="item-after"><a id="tel" data="{{product['mobile']}}" href="tel:{{product['mobile']}}" style="color:#3d4145;">
                                 <span class="icon icon-phone"></span></a></div>
                         </div>
                       </div>
@@ -130,6 +142,9 @@ function showMain() {
     $('#tab1').attr('class', 'tab active');
 }
 
+function getBusinessTel() {
+    return $('#tel').attr('data');
+}
 </script>
 </body>
 </html>

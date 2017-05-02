@@ -958,10 +958,11 @@ class MobileProductHandler(MobileBaseHandler):
         pics = sorted(spp.product_release.product.pics, key=lambda pic: pic.sort)
         items = [i for i in spp.product_release.product.attributes if i.attribute.active == 1]
         attributes = sorted(items, key=lambda item: item.attribute.sort)
-
+        login = self.get_user() is not None
         product = {'name': spp.product_release.product.name, 'type': type, 'from': f, 'id': id,
                    'price': spp.price, 'pics': pics, 'buy_count': spp.product_release.buy_count,
-                   'store': spp.store.name, 'mobile': spp.store.mobile, 'attributes': attributes}
+                   'store': spp.store.name, 'mobile': spp.store.mobile, 'attributes': attributes,
+                   'login': login}
         if str(type) == '2':
             product['price'] = spp.score
 
