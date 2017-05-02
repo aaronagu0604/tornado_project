@@ -940,8 +940,7 @@ class MobileProductHandler(MobileBaseHandler):
     @apiGroup app
     @apiVersion 1.0.0
     @api {get} /mobile/product 07. 产品详情页
-    @apiDescription 产品详情页,返回html代码; showDetail(): 详情；showMain()：
-    商品；getBusinessTel()：返回商品咨询电话；callPhone()：拨打电话
+    @apiDescription 产品详情页,返回html代码; showDetail(): 详情；showMain()：商品；getBusinessTel()：返回商品咨询电话；callPhone()：拨打电话
 
     @apiHeader {String} token 用户登录凭证
 
