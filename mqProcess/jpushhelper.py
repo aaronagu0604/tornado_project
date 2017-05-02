@@ -14,7 +14,7 @@ def set_device_info(regist_id, tags=[], alias=None):
     _jpush = jpush.JPush(setting.jpush_key, setting.jpush_secret)
     device = _jpush.create_device()
     reg_id = regist_id
-    entity = jpush.device_tag(jpush.add("shanxi", "xian"))
+    entity = jpush.device_tag({'add':tags})
 
     if alias:
         entity['alias'] = alias

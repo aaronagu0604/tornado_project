@@ -902,10 +902,10 @@ def move_insuranceorder():
             'store': store_map[item.store.id],
             'current_order_price': insurance_order_price_map[item.id],
 
-            'id_card_front': item.idcard,
-            'id_card_back': item.idcardback,
-            'drive_card_front': item.drivercard,
-            'drive_card_back': item.drivercard2,
+            'id_card_front': imgurl+item.idcard,
+            'id_card_back': imgurl+item.idcardback,
+            'drive_card_front': imgurl+item.drivercard,
+            'drive_card_back': imgurl+item.drivercard2,
             'payment': item.payment,
             'ordered': item.ordered,
 
