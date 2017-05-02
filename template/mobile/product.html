@@ -74,9 +74,9 @@
                         <div class="item-media"><i class="icon icon-home"></i></div>
                         <div class="item-inner">
                           <div class="item-title p_font_title">{{product['store']}}</div>
-                            <div class="item-after"><a id="tel" data="{{product['mobile']}}"
-                            href="wtai://wp//mc;{{product['mobile']}}" style="color:#3d4145;">
-                                <span class="icon icon-phone"></span></a></div>
+                            <div class="item-after" id="tel" data="{{product['mobile']}}"
+                            onclick="callPhone()">
+                                <span class="icon icon-phone"></span></div>
                         </div>
                       </div>
                     </li>
@@ -145,6 +145,11 @@ function showMain() {
 
 function getBusinessTel() {
     return $('#tel').attr('data');
+}
+
+function callPhone() {
+    var phone = getBusinessTel();
+    alert(phone + '-' + '{{product["platform"]}}');
 }
 </script>
 </body>

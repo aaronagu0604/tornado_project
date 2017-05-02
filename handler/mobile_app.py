@@ -947,6 +947,7 @@ class MobileProductHandler(MobileBaseHandler):
     @apiParam {Int} id 产品或门店产品价格ID
     @apiParam {Int} from 当前打开的产品的来源；1从app 2从分享
     @apiParam {Int} price 销售商品；1普通销售商品 2积分商品
+    @apiParam {String} platform 平台来源：ios或者android
 
     @apiSampleRequest /mobile/product
     """
@@ -956,6 +957,7 @@ class MobileProductHandler(MobileBaseHandler):
         spp = StoreProductPrice.get(id=id)
         f = self.get_argument("from", 2)
         type = self.get_argument("price", 2)
+        platform = self.get_argument('platform', 'android')
         pics = sorted(spp.product_release.product.pics, key=lambda pic: pic.sort)
         items = [i for i in spp.product_release.product.attributes if i.attribute.active == 1]
         attributes = sorted(items, key=lambda item: item.attribute.sort)
@@ -963,7 +965,7 @@ class MobileProductHandler(MobileBaseHandler):
         product = {'name': spp.product_release.product.name, 'type': type, 'from': f, 'id': id,
                    'price': spp.price, 'pics': pics, 'buy_count': spp.product_release.buy_count,
                    'store': spp.store.name, 'mobile': spp.store.mobile, 'attributes': attributes,
-                   'login': login}
+                   'login': login, 'platform': platform}
         if str(type) == '2':
             product['price'] = spp.score
 
