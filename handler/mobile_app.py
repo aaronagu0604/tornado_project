@@ -936,9 +936,13 @@ class MobileProductHandler(MobileBaseHandler):
         spp = StoreProductPrice.get(id=id)
         f = self.get_argument("from", 2)
         type = self.get_argument("price", 2)
-        product={'name': spp.product_release.product.name, 'type': type, 'from': f, 'id':id, 'price':spp.price,
-                 'pics':spp.product_release.product.pics, 'buy_count':spp.product_release.buy_count,
-                 'store':spp.store.name, 'mobile':spp.store.mobile}
+        pics = sorted(spp.product_release.product.pics, key=lambda pic: pic.sort)
+        items = [i for i in spp.product_release.product.attributes if i.attribute.active==1]
+        attributes = sorted(items, key=lambda item: item.attribute.sort)
+
+        product={'name': spp.product_release.product.name, 'type': type, 'from': f, 'id': id,
+                 'price': spp.price, 'pics': pics, 'buy_count': spp.product_release.buy_count,
+                 'store': spp.store.name, 'mobile': spp.store.mobile, 'attributes': attributes}
         if str(type) == '2':
             product['price'] = spp.score
 
