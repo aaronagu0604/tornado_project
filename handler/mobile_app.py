@@ -937,7 +937,7 @@ class MobileProductHandler(MobileBaseHandler):
         f = self.get_argument("from", 2)
         type = self.get_argument("price", 2)
         pics = sorted(spp.product_release.product.pics, key=lambda pic: pic.sort)
-        items = [i for i in spp.product_release.product.attributes if i.attribute.active==1]
+        items = [i for i in spp.product_release.product.attributes if i.attribute.active == 1]
         attributes = sorted(items, key=lambda item: item.attribute.sort)
 
         product={'name': spp.product_release.product.name, 'type': type, 'from': f, 'id': id,
