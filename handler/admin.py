@@ -71,6 +71,7 @@ class LogoutHandler(AdminBaseHandler):
         self.render('admin/login.html')
 
 
+# -----------------------------------------------------------用户-------------------------------------------------------
 @route(r'/admin/saler', name='admin_saler')  # 后台经销商
 class SalerHandler(AdminBaseHandler):
     def get(self):
@@ -241,6 +242,89 @@ class StoreDetailHandler(AdminBaseHandler):
         self.flash(u"保存成功")
         self.redirect("/admin/store_detail/" + str(store_id))
 
+
+@route(r'/admin/change_policy/(\d+)', name='admin_change_policy')  # 修改用户的政策（保险公司、服务商）
+class ChangePolicyHandler(AdminBaseHandler):
+    def get(self, policy_id):
+        policy = SSILubePolicy.get(SSILubePolicy.id == policy_id)
+        insurances = Insurance.select().where(Insurance.active == 1)
+        stores = Store.select().where((Store.store_type == 1) & (Store.active == 1))
+        self.render("admin/user/change_policy.html", insurances=insurances, stores=stores, policy=policy)
+
+    def post(self, policy_id):
+        insurance = self.get_body_argument('insurance')
+        dealer_store = self.get_body_argument('dealer_store')
+        try:
+            policy = SSILubePolicy.get(SSILubePolicy.id == policy_id)
+            policy.insurance = insurance
+            policy.dealer_store = dealer_store
+            policy.save()
+            msg = u'修改成功，请刷新页面！'
+        except Exception, e:
+            msg = u'修改失败：%s' % e.message
+
+        self.write(msg)
+
+
+@route(r'/admin/clone_policy/(\d+)', name='admin_clone_policy')  # 克隆用户的政策（保险公司、服务商）
+class ClonePolicyHandler(AdminBaseHandler):
+    def get(self, policy_id):
+        try:
+            policy = SSILubePolicy.get(SSILubePolicy.id == policy_id)
+            SSILubePolicy.create(store=policy.store, insurance=policy.insurance, dealer_store=policy.dealer_store,
+                                 cash=policy.cash, lube=policy.lube)
+        except Exception, e:
+            pass
+
+        self.redirect("/admin/store_detail/" + str(policy.store.id))
+
+
+@route(r'/admin/add_policy/(\d+)', name='admin_add_policy')  # 新增用户的政策（保险公司、服务商）
+class ClonePolicyHandler(AdminBaseHandler):
+    def get(self, store_id):
+        cash_policies = []
+        for cash_policy in InsuranceScoreExchange.select():
+            cash_policies.append({
+                'cp_id': cash_policy.id,
+                'area': Area.get(code=cash_policy.area_code).name,
+                'insurance': cash_policy.insurance.name
+            })
+        lube_policies = []
+        for lube_policy in LubePolicy.select():
+            lube_policies.append({
+                'lp_id': lube_policy.id,
+                'area': Area.get(code=lube_policy.area_code).name,
+                'insurance': lube_policy.insurance.name
+            })
+        insurances = Insurance.select().where(Insurance.active == 1)
+        stores = Store.select().where((Store.store_type == 1) & (Store.active == 1))
+
+
+        self.render("admin/user/add_policy.html", cash_policies=cash_policies, lube_policies=lube_policies,
+                    insurances=insurances, stores=stores)
+
+    def post(self, store_id):
+        insurance = self.get_body_argument('insurance')
+        dealer_store = self.get_body_argument('dealer_store')
+        cash_policy = self.get_body_argument('cash_policy')
+        lube_policy = self.get_body_argument('lube_policy')
+        cash = InsuranceScoreExchange.get(id=cash_policy)
+        cash_policy = {'ber': cash.business_exchange_rate,
+                       'ber2': cash.business_exchange_rate2,
+                       'btr': cash.business_tax_rate,
+                       'fer': cash.force_exchange_rate,
+                       'fer2': cash.force_exchange_rate2,
+                       'ftr': cash.force_tax_rate,
+                       'ar': cash.ali_rate,
+                       'pr': cash.profit_rate,
+                       'bm': cash.base_money}
+
+        lube_policy = LubePolicy.get(id=lube_policy).policy
+        SSILubePolicy.create(store=store_id, insurance=insurance, dealer_store=dealer_store, cash=simplejson.dumps(cash_policy), lube=lube_policy)
+
+        self.redirect("/admin/store_detail/" + store_id)
+
+
 @route(r'/admin/delete_policy/(\d+)', name='admin_delete_policy')  # 删除政策
 class DeletePolicyHandler(AdminBaseHandler):
     def get(self, store_id):
@@ -249,6 +333,7 @@ class DeletePolicyHandler(AdminBaseHandler):
             SSILubePolicy.delete().where((SSILubePolicy.store == store_id) & (SSILubePolicy.insurance == iid)).execute()
 
         self.redirect('/admin/store_detail/%s'%store_id)
+
 
 @route(r'/admin/score_history', name='admin_score_history')  # 积分消费历史
 class ScoreHistoryHandler(AdminBaseHandler):
@@ -375,6 +460,7 @@ class ChangeReleaseAreaHandler(AdminBaseHandler):
         else:
             result['msg'] = u'传入参数异常'
         self.write(simplejson.dumps(result))
+
 
 @route(r'/admin/store_area_product', name='admin_store_area_product')  # 经销商产品地域价格信息
 class SalerProductAreaPriceHandler(AdminBaseHandler):
@@ -1625,31 +1711,25 @@ class InsuranceScore(AdminBaseHandler):
         area_code = self.get_argument('area_code', '0')
         sid = self.get_argument('sid', '')
         if sid:
-            items = SSILubePolicy.select().where((SSILubePolicy.store == sid) & (SSILubePolicy.insurance == iid))
+            item = simplejson.loads(SSILubePolicy.get((SSILubePolicy.store == sid) & (SSILubePolicy.insurance == iid)).cash)
         else:
-            '''
-    business_exchange_rate = FloatField(default=0.0)  # 兑换率（商业险），仅商业险
-    business_exchange_rate2 = FloatField(default=0.0)  # 兑换率（商业险），商业险+交强险
-    business_tax_rate = FloatField(default=0.0)  # 商业险税率
+            try:
+                ise = InsuranceScoreExchange.get((InsuranceScoreExchange.insurance == iid) & (InsuranceScoreExchange.area_code == area_code))
+                item = {
+                    'ber': ise.business_exchange_rate,
+                    'ber2': ise.business_exchange_rate2,
+                    'btr': ise.business_tax_rate,
+                    'fer': ise.force_exchange_rate,
+                    'fer2': ise.force_exchange_rate2,
+                    'ftr': ise.force_tax_rate,
+                    'ar': ise.ali_rate,
+                    'pr': ise.profit_rate,
+                    'bm': ise.base_money
+                }
+            except Exception, e:
+                item = {'ber': '', 'ber2': '', 'btr': '', 'fer': '', 'fer2': '', 'ftr': '', 'ar': '', 'pr': '', 'bm': ''}
 
-    force_exchange_rate = FloatField(default=0.0)  # 交强险兑换率, 仅交强险
-    force_exchange_rate2 = FloatField(default=0.0)  # 交强险兑换率, 商业险+交强险
-    force_tax_rate = FloatField(default=0.0)  # 交强险税率
-
-    ali_rate = FloatField(default=0.0)  # 银联支付宝微信转账 手续费率
-    profit_rate = FloatField(default=0.0)  # 利润率（车装甲）
-    base_money = FloatField(default=0.0)  # 多少元起兑
-
-            '''
-            items = InsuranceScoreExchange.select(InsuranceScoreExchange.business_exchange_rate.alias('ber'),
-                                                  InsuranceScoreExchange.business_exchange_rate2.alias('ber2'),
-                                                  InsuranceScoreExchange.business_tax_rate.alias()).\
-                where((InsuranceScoreExchange.insurance == iid) & (InsuranceScoreExchange.area_code == area_code)).dicts()
-        if items.count() > 0:
-            item = items[0]
-        else:
-            item = None
-        self.render("admin/insurance/score.html", item=item, active='insurance', iid=iid, area_code = area_code)
+        self.render("admin/insurance/score.html", item=item, active='insurance', iid=iid, area_code=area_code, sid=sid)
 
     def post(self):
         exid = int(self.get_body_argument('exid', '0'))
@@ -1666,32 +1746,50 @@ class InsuranceScore(AdminBaseHandler):
         profit_rate = float(self.get_body_argument('profit_rate', '0'))
         area_code = self.get_body_argument('area_code', '0')
         iid = int(self.get_argument('iid', 0))
+        sid = int(self.get_argument('sid', 0))
 
-        if exid > 0:
-            item = InsuranceScoreExchange.get(id=exid)
+        if sid:
+            cash_policy = SSILubePolicy.get((SSILubePolicy.store == sid) & (SSILubePolicy.insurance == iid))
+            cash = {
+                    'ber': business_exchange_rate,
+                    'ber2': business_exchange_rate2,
+                    'btr': business_tax_rate,
+                    'fer': force_exchange_rate,
+                    'fer2': force_exchange_rate2,
+                    'ftr': force_tax_rate,
+                    'ar': ali_rate,
+                    'pr': profit_rate,
+                    'bm': base_money
+                }
+            cash_policy.cash = simplejson.dumps(cash)
+            cash_policy.save()
+            self.write(u'修改成功')
         else:
-            item = InsuranceScoreExchange()
-            item.area_code = area_code
-            item.insurance = iid
-            item.created = int(time.time())
-        item.base_money = base_money
-        item.business_exchange_rate = business_exchange_rate
-        item.business_exchange_rate2 = business_exchange_rate2
-        item.business_tax_rate = business_tax_rate
-        item.force_exchange_rate = force_exchange_rate
-        item.force_exchange_rate2 = force_exchange_rate2
-        item.force_tax_rate = force_tax_rate
-        item.ali_rate = ali_rate
-        item.profit_rate = profit_rate
-        item.save()
-        self.flash('保存成功')
-        items = InsuranceScoreExchange.select().where((InsuranceScoreExchange.insurance == iid)
-                                                      & (InsuranceScoreExchange.area_code == area_code))
-        if items.count() > 0:
-            item = items[0]
-        else:
-            item = None
-        self.render("admin/insurance/score.html", item=item, active='insurance')
+            if exid > 0:
+                item = InsuranceScoreExchange.get(id=exid)
+            else:
+                item = InsuranceScoreExchange()
+                item.area_code = area_code
+                item.insurance = iid
+                item.created = int(time.time())
+            item.base_money = base_money
+            item.business_exchange_rate = business_exchange_rate
+            item.business_exchange_rate2 = business_exchange_rate2
+            item.business_tax_rate = business_tax_rate
+            item.force_exchange_rate = force_exchange_rate
+            item.force_exchange_rate2 = force_exchange_rate2
+            item.force_tax_rate = force_tax_rate
+            item.ali_rate = ali_rate
+            item.profit_rate = profit_rate
+            item.save()
+            self.flash('保存成功')
+            items = InsuranceScoreExchange.select().where((InsuranceScoreExchange.insurance == iid)
+                                                          & (InsuranceScoreExchange.area_code == area_code))
+            if items.count() > 0:
+                item = items[0]
+            else:
+                item = None
+            self.render("admin/insurance/score.html", item=item, active='insurance')
 
 
 @route(r'/admin/insurance/lube', name='admin_insurance_lube')  # 保险返油策略
@@ -1699,35 +1797,42 @@ class InsuranceLube(AdminBaseHandler):
     def get(self):
         iid = int(self.get_argument('iid', 0))
         area_code = self.get_argument('area_code', '0')
-        items = LubePolicy.select().where((LubePolicy.insurance == iid) & (LubePolicy.area_code == area_code))
-        if items.count() > 0:
-            item = items[0]
+        sid = self.get_argument('sid', '')
+        if sid:
+            lube_policy = SSILubePolicy.get((SSILubePolicy.store == sid) & (SSILubePolicy.insurance == iid)).lube
+            item = {'id': 0, 'policy': lube_policy}
         else:
-            item = None
-        self.render("admin/insurance/lube.html", item=item, iid=iid, area_code = area_code)
+            lube_policy = LubePolicy.get((LubePolicy.insurance == iid) & (LubePolicy.area_code == area_code))
+            item = {'id': lube_policy.id, 'policy': lube_policy.policy}
+        self.render("admin/insurance/lube.html", item=item, iid=iid, area_code = area_code, sid=sid)
 
     def post(self):
         exid = int(self.get_body_argument('exid', '0'))
         json = self.get_body_argument('json', '[]')
         area_code = self.get_body_argument('area_code', '0')
         iid = int(self.get_argument('iid', 0))
-
-        if exid > 0:
-            item = LubePolicy.get(id=exid)
+        sid = int(self.get_body_argument('sid', 0))
+        if sid:
+            lube_policy = SSILubePolicy.get((SSILubePolicy.store == sid) & (SSILubePolicy.insurance == iid))
+            lube_policy.lube = json
+            lube_policy.save()
+            self.write(u'修改成功，请刷新！')
         else:
-            item = LubePolicy()
-            item.area_code = area_code
-            item.insurance = iid
-        item.policy = json
-        item.save()
-        self.flash('保存成功')
-        items = LubePolicy.select().where((LubePolicy.insurance == iid)
-                                          & (LubePolicy.area_code == area_code))
-        if items.count() > 0:
-            item = items[0]
-        else:
-            item = None
-        self.render("admin/insurance/lube.html", item=item, iid=iid, area_code=area_code)
+            if exid > 0:
+                item = LubePolicy.get(id=exid)
+            else:
+                item = LubePolicy()
+                item.area_code = area_code
+                item.insurance = iid
+            item.policy = json
+            item.save()
+            self.flash('保存成功')
+            items = LubePolicy.select().where((LubePolicy.insurance == iid) & (LubePolicy.area_code == area_code))
+            if items.count() > 0:
+                item = items[0]
+            else:
+                item = None
+            self.render("admin/insurance/lube.html", item=item, iid=iid, area_code=area_code)
 
 
 # --------------------------------------------------------SK润滑油------------------------------------------------------

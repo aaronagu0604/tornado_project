@@ -35,55 +35,55 @@
                 <div class="col-xs-4">
                     <div class="form-group has-success">
                         <label class="control-label">仅商业险兑换率</label>
-                        <input type="text" name="business_exchange_rate" class="form-control" value="{{item.business_exchange_rate or ''}}"  required placeholder="仅商业险兑换率" />
+                        <input type="text" name="business_exchange_rate" class="form-control" value="{{item['ber'] or ''}}"  required placeholder="仅商业险兑换率" />
                     </div>
                 </div>
                 <div class="col-xs-4">
                     <div class="form-group has-success">
                         <label class="control-label">商业险+交强险兑换率</label>
-                        <input type="text" name="business_exchange_rate2" class="form-control" value="{{item.business_exchange_rate2 or ''}}"  required placeholder="商业险+交强险兑换率" />
+                        <input type="text" name="business_exchange_rate2" class="form-control" value="{{item['ber2'] or ''}}"  required placeholder="商业险+交强险兑换率" />
                     </div>
                 </div>
                 <div class="col-xs-4">
                     <div class="form-group has-success">
                         <label class="control-label">商业险税率</label>
-                        <input type="text" name="business_tax_rate" class="form-control" value="{{item.business_tax_rate or ''}}"  required placeholder="商业险税率" />
+                        <input type="text" name="business_tax_rate" class="form-control" value="{{item['btr'] or ''}}"  required placeholder="商业险税率" />
                     </div>
                 </div>
                 <div class="col-xs-4">
                     <div class="form-group has-success">
                         <label class="control-label">仅交强险兑换率</label>
-                        <input type="text" name="force_exchange_rate" class="form-control" value="{{item.force_exchange_rate or ''}}"  required placeholder="仅交强险兑换率" />
+                        <input type="text" name="force_exchange_rate" class="form-control" value="{{item['fer'] or ''}}"  required placeholder="仅交强险兑换率" />
                     </div>
                 </div>
                 <div class="col-xs-4">
                     <div class="form-group has-success">
                         <label class="control-label">商业险+交强险兑换率</label>
-                        <input type="text" name="force_exchange_rate2" class="form-control" value="{{item.force_exchange_rate2 or ''}}"  required placeholder="商业险+交强险兑换率" />
+                        <input type="text" name="force_exchange_rate2" class="form-control" value="{{item['fer2'] or ''}}"  required placeholder="商业险+交强险兑换率" />
                     </div>
                 </div>
                 <div class="col-xs-4">
                     <div class="form-group has-success">
                         <label class="control-label">交强险税率</label>
-                        <input type="text" name="force_tax_rate" class="form-control" value="{{item.force_tax_rate or ''}}"  required placeholder="交强险税率" />
+                        <input type="text" name="force_tax_rate" class="form-control" value="{{item['ftr'] or ''}}"  required placeholder="交强险税率" />
                     </div>
                 </div>
                 <div class="col-xs-4">
                     <div class="form-group has-success">
                         <label class="control-label">银联支付宝微信转账手续费率</label>
-                        <input type="text" name="ali_rate" class="form-control" value="{{item.ali_rate or ''}}"  required placeholder="银联支付宝微信转账手续费率" />
+                        <input type="text" name="ali_rate" class="form-control" value="{{item['ar'] or ''}}"  required placeholder="银联支付宝微信转账手续费率" />
                     </div>
                 </div>
                 <div class="col-xs-4">
                     <div class="form-group has-success">
                         <label class="control-label">利润率（车装甲）</label>
-                        <input type="text" name="profit_rate" class="form-control" value="{{item.profit_rate or ''}}"  required placeholder="利润率（车装甲）" />
+                        <input type="text" name="profit_rate" class="form-control" value="{{item['pr'] or ''}}"  required placeholder="利润率（车装甲）" />
                     </div>
                 </div>
                 <div class="col-xs-4">
                     <div class="form-group has-success">
                         <label class="control-label">起兑额</label>
-                        <input type="text" name="base_money" class="form-control" value="{{item.base_money or ''}}"  required placeholder="起兑额" />
+                        <input type="text" name="base_money" class="form-control" value="{{item['bm'] or ''}}"  required placeholder="起兑额" />
                     </div>
                 </div>
             </form>

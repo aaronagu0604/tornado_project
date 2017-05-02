@@ -4,22 +4,22 @@
 <link href="/style/css/select2.css" rel="stylesheet"/>
 {{xsrf()}}
 <style>
- #num{
-   width:130px;
-   height:30px;
-   border:1px solid #aaa;
-   -moz-border-radius: 4px;
-   -webkit-border-radius: 4px;
-   border-radius: 4px; 
-   transform:translateY(3px);
-   -webkit-transform:translateY(3px);
-   }
- #btn{
-   height:30px;
-   line-height:15px;
-   background:#528ACB;
-   color:#fff;
- }
+    #num{
+        width:130px;
+        height:30px;
+        border:1px solid #aaa;
+        -moz-border-radius: 4px;
+        -webkit-border-radius: 4px;
+        border-radius: 4px;
+        transform:translateY(3px);
+        -webkit-transform:translateY(3px);
+    }
+    #btn{
+        height:30px;
+        line-height:15px;
+        background:#528ACB;
+        color:#fff;
+    }
 
 </style>
 {% endblock %}
@@ -82,42 +82,42 @@
                     <td>{{ s.linkman }}</td>
                     <td>{{ s.mobile }}</td>
                     <td>{{ Area().get_detailed_address(s.area_code)}}<br>
-                    {{ s.address }}</td>
+                        {{ s.address }}</td>
                     <td>积分：{{s.score}}<br />
                         余额：{{s.price}}</td>
                     <td>
-                         {% if s.active==0 %}
-                                <span style="color: red;">待审核</span><br>
-                                {% elif s.active==1 %}
-                                <span style="color: #5cb85c;">已通过</span><br>
-                                {% elif s.active==2 %}
-                                <span style="color: #f0ad4e;">未通过</span><br>
-                                {% endif %}
+                        {% if s.active==0 %}
+                        <span style="color: red;">待审核</span><br>
+                        {% elif s.active==1 %}
+                        <span style="color: #5cb85c;">已通过</span><br>
+                        {% elif s.active==2 %}
+                        <span style="color: #f0ad4e;">未通过</span><br>
+                        {% endif %}
                     </td>
                     <td>
                         <a class="btn btn-xs btn-outline btn-primary" href="/admin/store_detail/{{s.id}}">详情</a>
                         <a class="btn btn-xs btn-outline btn-primary" href="/admin/saler_product/{{s.id}}">区域商品</a>
 
-                            <input type="hidden" id="hd_id_{{s.id}}" value="{{s.process_insurance}}"/>
-                {% if s.active==0 %}
-                    <button type="button" onclick="change_status({{s.id}}, 1)" id='bt_pass_{{s.id}}'
-                                    class="btn btn-xs btn-success" >
-                                通过
-                            </button>
-                            <button type="button" onclick="change_status({{s.id}}, 2)" id='bt_fail_{{s.id}}'
-                                    class="btn btn-xs btn-warning" >
-                                拒绝
-                            </button>
-                 {% else %}
-                            <button type="button" onclick="change_insurance_status({{s.id}})" id='bt_{{s.id}}'
-                                    class="btn btn-xs {{'btn-primary' if s.process_insurance == 0 else 'btn-success'}}" >
-                                {% if s.process_insurance == 0 %}
-                                开通保险业务
-                                {% else %}
-                                取消保险业务
-                                {% endif %}
-                            </button>
-                {% endif %}
+                        <input type="hidden" id="hd_id_{{s.id}}" value="{{s.process_insurance}}"/>
+                        {% if s.active==0 %}
+                        <button type="button" onclick="change_status({{s.id}}, 1)" id='bt_pass_{{s.id}}'
+                                class="btn btn-xs btn-success" >
+                            通过
+                        </button>
+                        <button type="button" onclick="change_status({{s.id}}, 2)" id='bt_fail_{{s.id}}'
+                                class="btn btn-xs btn-warning" >
+                            拒绝
+                        </button>
+                        {% else %}
+                        <button type="button" onclick="change_insurance_status({{s.id}})" id='bt_{{s.id}}'
+                                class="btn btn-xs {{'btn-primary' if s.process_insurance == 0 else 'btn-success'}}" >
+                            {% if s.process_insurance == 0 %}
+                            开通保险业务
+                            {% else %}
+                            取消保险业务
+                            {% endif %}
+                        </button>
+                        {% endif %}
                     </td>
                 </tr>
                 {% endfor %}
@@ -144,19 +144,19 @@
 
     var xsrf='{{handler.xsrf_token}}';
 
-	$(document).ready(function() {
+    $(document).ready(function() {
         $('#pageUl').twbsPagination({
             first:'首页',
             prev:'上一页',
             next:'下一页',
             last:'尾页',
             totalPages: {{totalpage}},
-            startPage: {{page}},
-            visiblePages: 8,
+        startPage: {{page}},
+        visiblePages: 8,
             onPageClick: function (event, page) {
-                self.location="/admin/saler?keyword={{keyword or ''}}&province={{province or ''}}&city={{city or ''}}&district={{district or ''}}&page="+page;
-            }
-        });
+            self.location="/admin/saler?keyword={{keyword or ''}}&province={{province or ''}}&city={{city or ''}}&district={{district or ''}}&page="+page;
+        }
+    });
 
         // 页面初始化时绑定地址信息：省、市、区
         if("{{province}}".length > 0) {
@@ -167,7 +167,7 @@
         }
     });
 
-function change_status(id, state_type){
+    function change_status(id, state_type){
         $.post("/ajax/store_update_state", { _xsrf:xsrf,id: id, state_type:state_type }, function (data) {
             data = jQuery.parseJSON(data);
             alert(data.msg);
@@ -200,8 +200,8 @@ function change_status(id, state_type){
                     $("#bt_"+id).removeClass("btn-success");
                     $("#bt_"+id).addClass("btn-primary");
                     $("#bt_"+id).html("开通保险业务");
-                } 
-            } 
+                }
+            }
             alert(data.msg);
         });
     };
@@ -213,7 +213,7 @@ function change_status(id, state_type){
             $("#city").append("<option value=''>--所有城市--</option>");
             $("#district").html('');
             $("#district").append("<option value=''>--所有区县--</option>");
-                
+
             return;
         }
         $.get("/ajax/GetSubAreas", { parent_code: parent_code,  t: Math.random() }, function (data) {

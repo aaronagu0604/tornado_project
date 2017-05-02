@@ -220,21 +220,20 @@
                                 </tr>
                                 {% for policy in policies %}
                                 <tr>
-                                    <td>{{policy.insurance.name}}</td>
+                                    <td><a href="#" onclick="pop('修改政策','/admin/change_policy/{{policy.id}}')">{{policy.insurance.name}}</a></td>
                                     <td><a href="/admin/user?id={{policy.dealer_store.id}}" target="_blank">{{policy.dealer_store.name}}</a></td>
-                                    <td><a href="#" onclick="policy_pop('返现政策','{{policy.insurance.id}}','{{policy.store.id}}', 'score')">{{policy.cash}}</a></td>
-                                    <td><a href="#" onclick="policy_pop('返油政策','{{policy.insurance.id}}','{{policy.store.id}}', 'lube')">{{policy.lube}}</a></td>
+                                    <td><a href="#" onclick="pop('返现政策','/admin/insurance/score?iid={{policy.insurance.id}}&sid={{policy.store.id}}')">查看/修改</a></td>
+                                    <td><a href="#" onclick="pop('返油政策','/admin/insurance/lube?iid={{policy.insurance.id}}&sid={{policy.store.id}}')">查看/修改</a></td>
                                     <td>
-                                        <a href="/admin/delete_policy/{{policy.store.id}}?iid={{policy.insurance.id}}" onclick="return confirm('确定删除此政策?')" style="padding:4px 5px;border:1px solid #438bca;color:#438bca;border-radius:4px;font-size:12px;text-decoration:none;">删除</a>
-                                        <a href="/admin/delete_policy/{{policy.store.id}}?iid={{policy.insurance.id}}" onclick="return confirm('确定删除此政策?')" style="padding:4px 5px;border:1px solid #438bca;color:#438bca;border-radius:4px;font-size:12px;text-decoration:none;">修改</a>
+                                        <a href="/admin/delete_policy/{{s.id}}?iid={{policy.insurance.id}}" onclick="return confirm('确定删除此政策?')" style="padding:4px 5px;border:1px solid #438bca;color:#438bca;border-radius:4px;font-size:12px;text-decoration:none;">删除</a>
+                                        <a href="/admin/clone_policy/{{policy.id}}" style="padding:4px 5px;border:1px solid #438bca;color:#438bca;border-radius:4px;font-size:12px;text-decoration:none;">克隆</a>
                                     </td>
-
                                 </tr>
                                 {% endfor %}
                                 </thead>
                             </table>
                         </div>
-                        <td><a href="/admin/delete_policy" onclick="return confirm('确定删除此政策?')" style="padding:4px 5px;border:1px solid #438bca;color:#438bca;border-radius:4px;font-size:12px;text-decoration:none;">新增</a></td>
+                        <td><a href="#" onclick="pop('返油政策','/admin/add_policy/{{s.id}}')" style="padding:4px 5px;border:1px solid #438bca;color:#438bca;border-radius:4px;font-size:12px;text-decoration:none;">新增</a></td>
                     </div>
                 </div>
             </div>
@@ -245,7 +244,6 @@
 {% block js %}
 
 <script>
-
     $(document).ready(function() {
         // 页面初始化时绑定地址信息：省、市、区
         if("{{s.area_code}}".length >= 8) {
@@ -257,18 +255,6 @@
     });
 
     function pop(title, url) {
-        layer.open({
-            type: 2,
-            title: title,
-            shadeClose: true,
-            shade: 0.8,
-            area: ['90%', '90%'],
-            content: url
-        });
-    }
-
-    function policy_pop(title, iid, store_id, type) {
-        var url = '/admin/insurance/'+type+'?iid='+iid+'&sid='+store_id;
         layer.open({
             type: 2,
             title: title,
