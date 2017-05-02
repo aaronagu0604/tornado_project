@@ -356,7 +356,7 @@ class Category(db.Model):
     category_type = IntegerField(default=0)  # 1配件商城 2汽车装潢
     img_m = CharField(max_length=256, null=True)  # 分类图片手机端
     img_pc = CharField(max_length=256, null=True)  # 分类图片PC端
-    hot = IntegerField(default=1)  # 热门分类
+    hot = IntegerField(default=0)  # 热门分类
     active = IntegerField(default=1)  # 状态 0删除 1有效
 
     class Meta:
@@ -396,7 +396,7 @@ class Brand(db.Model):
     pinyin = CharField(max_length=50, null=True)  # 中文拼音
     logo = CharField(max_length=100, null=True)  # 品牌logo
     intro = CharField(max_length=300, null=True)  # 品牌简介
-    hot = IntegerField(default=1)  # 热门品牌
+    hot = IntegerField(default=0)  # 热门品牌
     sort = IntegerField(default=1)  # 排序
     active = IntegerField(default=1)  # 状态 0删除 1有效
 
@@ -427,6 +427,8 @@ class Product(db.Model):
     is_score = IntegerField(default=0)  # 是否是积分商品
     created = IntegerField(default=0)  # 添加时间
     active = IntegerField(default=1)  # 0删除 1正常 2下架 在这下架表示用户再发布产品时候看不到这个产品了
+    hot = IntegerField(default=0)  # 热门品牌
+    sort = IntegerField(default=1)  # 显示顺序
 
     class Meta:
         db_table = 'tb_product'
@@ -624,6 +626,7 @@ class Insurance(db.Model):
     eName = CharField(max_length=32, default='')  # 拼音简写
     intro = CharField(max_length=128, default='')  # 简介
     logo = CharField(max_length=255, default='')  # logo
+    hot = IntegerField(default=0)  # 热门品牌
     sort = IntegerField(default=1)  # 显示顺序
     active = IntegerField(default=1)  # 状态 0删除 1有效
 
