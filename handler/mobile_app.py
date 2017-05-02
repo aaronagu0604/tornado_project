@@ -554,9 +554,9 @@ class MobileGetBankNameHandler(MobileBaseHandler):
 @route(r'/mobile/hot_search', name='mobile_hot_search')  # 热搜
 class MobileHotSearchHandler(MobileBaseHandler):
     """
-    @apiGroup auth
+    @apiGroup app
     @apiVersion 1.0.0
-    @api {get} /mobile/hot_search 热搜
+    @api {get} /mobile/hot_search 02. 热搜
     @apiDescription 热搜关键字获取
 
     @apiSampleRequest /mobile/hot_search
@@ -581,7 +581,7 @@ class MobileDiscoverHandler(MobileBaseHandler):
     """
     @apiGroup app
     @apiVersion 1.0.0
-    @api {get} /mobile/discover 02. 发现
+    @api {get} /mobile/discover 03. 发现
     @apiDescription 发现
 
     @apiHeader {String} token 用户登录凭证
@@ -663,7 +663,7 @@ class MobileFilterHandler(MobileBaseHandler):
     """
     @apiGroup app
     @apiVersion 1.0.0
-    @api {get} /mobile/filter 03. 普通商品筛选界面
+    @api {get} /mobile/filter 04. 普通商品筛选界面
     @apiDescription 普通商品筛选界面，未登陆使用西安code
     @apiHeader {String} token 用户登录凭证
     @apiParam {Int} flag 1品牌 2分类
@@ -763,7 +763,7 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
     """
     @apiGroup app
     @apiVersion 1.0.0
-    @api {get} /mobile/discoverproducts 04. 商品列表
+    @api {get} /mobile/discoverproducts 05. 商品列表
     @apiDescription 商品列表，未登陆使用西安code
 
     @apiHeader {String} token 用户登录凭证
@@ -911,7 +911,7 @@ class MobileInsuranceListHandler(MobileBaseHandler):
     """
     @apiGroup app
     @apiVersion 1.0.0
-    @api {get} /mobile/insurance_list 04.1. 保险列表
+    @api {get} /mobile/insurance_list 06. 保险列表
     @apiDescription 保险列表
 
     @apiHeader {String} token 用户登录凭证
@@ -939,7 +939,7 @@ class MobileProductHandler(MobileBaseHandler):
     """
     @apiGroup app
     @apiVersion 1.0.0
-    @api {get} /mobile/product 05. 产品详情页
+    @api {get} /mobile/product 07. 产品详情页
     @apiDescription 产品详情页,返回html代码; showDetail(): 详情；showMain()：
     商品；getBusinessTel()：返回商品咨询电话；callPhone()：拨打电话
 
@@ -978,7 +978,7 @@ class MobileInsuranceHandler(MobileBaseHandler):
     """
     @apiGroup app
     @apiVersion 1.0.0
-    @api {get} /mobile/product 05.1. 保险详情页
+    @api {get} /mobile/product 08. 保险详情页
     @apiDescription 保险详情页,返回html代码
 
     @apiHeader {String} token 用户登录凭证
@@ -1002,7 +1002,7 @@ class MobileAddShopCarHandler(MobileBaseHandler):
     """
     @apiGroup app
     @apiVersion 1.0.0
-    @api {post} /mobile/addshopcar 06. 添加购物车
+    @api {post} /mobile/addshopcar 09. 添加购物车
     @apiDescription 添加购物车
 
     @apiHeader {String} token 用户登录凭证
@@ -1044,7 +1044,7 @@ class MobileDeleteShopCarHandler(MobileBaseHandler):
     """
     @apiGroup app
     @apiVersion 1.0.0
-    @api {post} /mobile/deleteshopcar 06.1. 移出购物车
+    @api {post} /mobile/deleteshopcar 10. 移出购物车
     @apiDescription 移出购物车
 
     @apiHeader {String} token 用户登录凭证
@@ -1074,7 +1074,7 @@ class MobileShopCarHandler(MobileBaseHandler):
     """
     @apiGroup app
     @apiVersion 1.0.0
-    @api {get} /mobile/shopcar 07. 手机端购物车内容获取
+    @api {get} /mobile/shopcar 11. 手机端购物车内容获取
     @apiDescription app  手机端购物车内容获取
 
     @apiHeader {String} token 用户登录凭证
@@ -1689,7 +1689,7 @@ class MobileToolsHandler(MobileBaseHandler):
     """
     @apiGroup app
     @apiVersion 1.0.0
-    @api {get} /mobile/tools 05.1. 工具箱
+    @api {get} /mobile/tools 12. 工具箱
     @apiDescription 工具箱页,返回html代码
 
     @apiSampleRequest /mobile/tools
