@@ -676,20 +676,19 @@ class MobileInsuranceMethodHandler(MobileBaseHandler):
             subjoin = []
             insuranceitem = InsuranceItem.select().order_by(InsuranceItem.sort)
             for i in insuranceitem:
-                if iop.status == 1 and iop.response > 0:
-                    iValue = getattr(iop, i.eName)
-                    iPrice = getattr(iop, i.eName+'Price')
-                    if not iPrice:
-                        iPrice = 0
-                    if i.style == u'交强险':
-                        force = iValue if iValue else ''
-                        forceprice = iPrice
-                    elif i.style == u'商业险-主险' and iValue != 'false' and iValue:
-                        main.append({'eName': i.eName, 'name': i.name, 'style': i.style, 'value': iValue, 'price':iPrice})
-                        mainprice += iPrice
-                    elif i.style == u'商业险-附加险' and iValue != 'false' and iValue:
-                        subjoin.append({'eName': i.eName, 'name': i.name, 'style': i.style, 'value': iValue, 'price':iPrice})
-                        subjoinprice += iPrice
+                iValue = getattr(iop, i.eName)
+                iPrice = getattr(iop, i.eName+'Price')
+                if not iPrice:
+                    iPrice = 0
+                if i.style == u'交强险':
+                    force = iValue if iValue else ''
+                    forceprice = iPrice
+                elif i.style == u'商业险-主险' and iValue != 'false' and iValue:
+                    main.append({'eName': i.eName, 'name': i.name, 'style': i.style, 'value': iValue, 'price':iPrice})
+                    mainprice += iPrice
+                elif i.style == u'商业险-附加险' and iValue != 'false' and iValue:
+                    subjoin.append({'eName': i.eName, 'name': i.name, 'style': i.style, 'value': iValue, 'price':iPrice})
+                    subjoinprice += iPrice
             result['data'].append({
                 'iop_id': iop.id,
                 'force': force,
@@ -700,7 +699,10 @@ class MobileInsuranceMethodHandler(MobileBaseHandler):
                 'subjoinprice': subjoinprice,
                 'gift_policy': iop.gift_policy,
                 'score': iop.score,
-                'total_price': iop.total_price
+                'total_price': iop.total_price,
+                'default': 1 if iop.id == io_id else 0,
+                'status': iop.response,
+                'dead': iop.status
             })
 
         self.write(simplejson.dumps(result))
