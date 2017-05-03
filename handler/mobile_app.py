@@ -331,11 +331,9 @@ class MobileHomeHandler(MobileBaseHandler):
             # 消息通知
             message_list = Message.select().where(Message.store == user.store & Message.status == 0)
             if message_list.count() > 0:
-                dt = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
                 result['data']['last_unread_price']['show'] = 1
                 result['data']['last_unread_price']['msg'] = message_list[0].content
-                result['data']['last_unread_price']['insurance'] = message_list[0].type
-                result['data']['last_unread_price']['time'] = dt
+                result['data']['last_unread_price']['type'] = message_list[0].type
                 result['data']['last_unread_price']['link'] = message_list[0].link
 
         # 获取首页banner列表，没有数据时使用西安的数据
