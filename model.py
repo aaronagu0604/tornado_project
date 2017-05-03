@@ -1187,6 +1187,7 @@ class CarItem(db.Model):
 class Message(db.Model):
     id = PrimaryKeyField()
     other_id = FloatField(default=0.0)  # 关联表主键id
+    status = FloatField(default=0.0)  # 消息状态：0 未读，1已读
     type = CharField(max_length=30)  # 消息类型:'insuranceorder','order'等
     content = CharField(max_length=50, null=True)  # 消息内容
     link = CharField(max_length=50, null=True)  # 跳转链接
