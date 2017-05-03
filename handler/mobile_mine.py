@@ -697,7 +697,7 @@ class MobileInsuranceMethodHandler(MobileBaseHandler):
                 'main': main,
                 'mainprice': mainprice,
                 'subjoin': subjoin,
-                'subjoin': subjoinprice,
+                'subjoinprice': subjoinprice,
                 'gift_policy': iop.gift_policy,
                 'score': iop.score,
                 'total_price': iop.total_price
