@@ -794,9 +794,13 @@ class InsuranceOrder(db.Model):
     current_order_price = ForeignKeyField(InsuranceOrderPrice, db_column='current_order_price_id', null=True)  # 最终报价ID
 
     id_card_front = CharField(max_length=255, null=True)  # 身份证
+    icfstatus = IntegerField(default=0) # 是否需要重新上传：0不需要1需要
     id_card_back = CharField(max_length=255, null=True)  # 身份证背面
+    icbstatus = IntegerField(default=0)  # 是否需要重新上传：0不需要1需要
     drive_card_front = CharField(max_length=255, null=True)  # 行驶证
+    dcfstatus = IntegerField(default=0)  # 是否需要重新上传：0不需要1需要
     drive_card_back = CharField(max_length=255, null=True)  # 行驶证副本
+    dcbstatus = IntegerField(default=0)  # 是否需要重新上传：0不需要1需要
     payment = IntegerField(default=1)  # 付款方式  1支付宝  2微信 3银联 4余额
     ordered = IntegerField(default=0)  # 下单时间
 
