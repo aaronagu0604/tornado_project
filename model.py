@@ -1179,6 +1179,16 @@ class CarItem(db.Model):
         db_table = 'tb_car_item'
 
 
+# 消息
+class Message(db.Model):
+    id = PrimaryKeyField()
+    other_id = FloatField(default=0.0)  # 关联表主键id
+    type = CharField(max_length=30)  # 消息类型:'insuranceorder','order'等
+    content = CharField(max_length=50, null=True)  # 消息内容太
+
+    class Meta:
+        db_table = 'tb_message'
+
 def init_db():
     from lib.util import find_subclasses
 
