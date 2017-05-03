@@ -284,12 +284,12 @@ class MobileOrderDetailHandler(MobileBaseHandler):
         oid = int(self.get_argument("id"))
         order = Order.get(id=oid)
         result['data']['address'] = {
-            'name':order.address.mobile,
-            'mobile': order.address.mobile,
-            'province': order.address.province,
-            'city': order.address.city,
-            'district': order.address.region,
-            'address': order.address.address
+            'name':order.delivery_to,
+            'mobile': order.delivery_tel,
+            'province': order.delivery_province,
+            'city': order.delivery_city,
+            'district': order.delivery_region,
+            'address': order.delivery_address
         }
         result['data']['id'] = order.id
         result['data']['ordernum'] = order.ordernum
@@ -423,12 +423,12 @@ class MobileSubOrderDetailHandler(MobileBaseHandler):
         suborder = SubOrder.get(id=soid)
         order = suborder.order
         result['data']['address'] = {
-            'name': order.address.mobile,
-            'mobile': order.address.mobile,
-            'province': order.address.province,
-            'city': order.address.city,
-            'district': order.address.region,
-            'address': order.address.address
+            'name': order.delivery_to,
+            'mobile': order.delivery_tel,
+            'province': order.delivery_province,
+            'city': order.delivery_city,
+            'district': order.delivery_region,
+            'address': order.delivery_address
         }
 
         result['data']['totalprice'] = suborder.price

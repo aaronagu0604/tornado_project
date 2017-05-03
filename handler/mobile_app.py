@@ -1298,7 +1298,15 @@ class MobileNewOrderHandler(MobileBaseHandler):
             order = Order()
             order.user = user
             order.buyer_store = user.store
-            order.address = address
+
+            address = StoreAddress.get(id=address)
+            order.delivery_to = address.name
+            order.delivery_tel = address.mobile
+            order.delivery_province = address.province
+            order.delivery_city = address.city
+            order.delivery_region = address.region
+            order.delivery_address = address.address
+
             order.ordered = now
             order.payment = payment
             order.message = ''
