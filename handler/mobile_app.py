@@ -323,18 +323,15 @@ class MobileHomeHandler(MobileBaseHandler):
         result['data']['last_unread_price']['link'] = ''
         if user is not None:
             result['data']['login_flag'] = 1
-            # 最新报价
-            price_list = InsuranceOrderPrice.select(InsuranceOrderPrice). \
-                join(InsuranceOrder, on=(InsuranceOrderPrice.insurance_order_id == InsuranceOrder.id)). \
-                where(InsuranceOrderPrice.read == 0, InsuranceOrderPrice.status == 1, InsuranceOrder.status == 0). \
-                order_by(InsuranceOrderPrice.created.desc())
-            if price_list.count() > 0:
-                dt = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(price_list[0].created))
+            # 消息通知
+            message_list = Message.select().where(Message.store == user.store & Message.status == 0)
+            if message_list.count() > 0:
+                dt = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
                 result['data']['last_unread_price']['show'] = 1
-                result['data']['last_unread_price']['msg'] = u'您有新的保险报价'
-                result['data']['last_unread_price']['insurance'] = price_list[0].insurance.name
+                result['data']['last_unread_price']['msg'] = message_list[0].content
+                result['data']['last_unread_price']['insurance'] = message_list[0].type
                 result['data']['last_unread_price']['time'] = dt
-                result['data']['last_unread_price']['link'] = 'czj://insurance_order_price/' + str(price_list[0].id)
+                result['data']['last_unread_price']['link'] = message_list[0].link
 
         # 获取首页banner列表，没有数据时使用西安的数据
         tmp_code = area_code
