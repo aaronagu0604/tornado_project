@@ -602,14 +602,14 @@ class MobileInsuranceOrderDetailHandler(MobileBaseHandler):
         result['data'] = {
             'id': insuranceorder.id,
             'ordernum': insuranceorder.ordernum,
-            'ordereddate': insuranceorder.ordered,
+            'ordereddate': time.strftime('%Y-%m-%d %H:%M:%S',insuranceorder.ordered),
             'hotline': '13912345678',
             'paytype': insuranceorder.payment,
             'deadlinewarning': deadlineWarning,
             'insuranceorderprice': {
                 'status': insuranceorder.status,
                 'insurance': insuranceorder.current_order_price.insurance.name,
-                'created': insuranceorder.current_order_price.created,
+                'created': time.strftime('%Y-%m-%d %H:%M:%S',insuranceorder.current_order_price.created),
                 'iList': iList,
                 'price': insuranceorder.current_order_price.total_price,
                 'score': insuranceorder.current_order_price.score
