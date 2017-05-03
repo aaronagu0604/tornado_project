@@ -1187,6 +1187,7 @@ class CarItem(db.Model):
 class Message(db.Model):
     id = PrimaryKeyField()
     other_id = IntegerField(default=0)  # 关联表主键id
+    store = ForeignKeyField(Store, related_name='store_messages', db_column='store_id')  # 店铺
     status = IntegerField(default=0)  # 消息状态：0 未读，1已读
     type = CharField(max_length=30)  # 消息类型:'insuranceorder','order'等
     content = CharField(max_length=50, null=True)  # 消息内容
