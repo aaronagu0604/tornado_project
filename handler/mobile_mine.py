@@ -606,7 +606,7 @@ class MobileInsuranceOrderDetailHandler(MobileBaseHandler):
             'hotline': '13912345678',
             'paytype': insuranceorder.payment,
             'deadlinewarning': deadlineWarning,
-            'commission': insuranceorder.current_order_price.gift_policy,
+            'commission': commission,
             'insuranceorderprice': {
                 'status': insuranceorder.status,
                 'insurance': insuranceorder.current_order_price.insurance.name,
