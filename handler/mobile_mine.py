@@ -623,7 +623,7 @@ class MobileInsuranceOrderDetailHandler(MobileBaseHandler):
                 'drive_card_front': insuranceorder.drive_card_front,
                 'drive_card_front_status': insuranceorder.dcfstatus,
                 'drive_card_back': insuranceorder.drive_card_back,
-                'drive_card_back_status': insuranceorder.dcfstatus
+                'drive_card_back_status': insuranceorder.dcbstatus
             },
             'delivery': {
                 'name': insuranceorder.delivery_to,
