@@ -597,7 +597,7 @@ class MobileInsuranceOrderDetailHandler(MobileBaseHandler):
                 insuranceorder.cancelreason = u'超时未支付'
                 insuranceorder.save()
         if insuranceorder.status == 1 and now < (insuranceorder.ordered + setting.deadlineTime):
-            deadlineWarning = u'订单将于%s失效' % time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(setting.deadlineTime - now + insuranceorder.ordered))
+            deadlineWarning = u'订单将于%s失效' % time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(now + insuranceorder.ordered))
 
         result['data'] = {
             'id': insuranceorder.id,
@@ -669,23 +669,35 @@ class MobileInsuranceMethodHandler(MobileBaseHandler):
         ops = InsuranceOrderPrice.select().where(InsuranceOrderPrice.insurance_order_id == io_id)
         for iop in ops:
             force = ''
+            forceprice = 0
+            mainprice = 0
+            subjoinprice = 0
             main = []
             subjoin = []
             insuranceitem = InsuranceItem.select().order_by(InsuranceItem.sort)
             for i in insuranceitem:
                 if iop.status == 1 and iop.response > 0:
                     iValue = getattr(iop, i.eName)
+                    iPrice = getattr(iop, i.eName+'Price')
+                    if not iPrice:
+                        iPrice = 0
                     if i.style == u'交强险':
                         force = iValue if iValue else ''
+                        forceprice = iPrice
                     elif i.style == u'商业险-主险' and iValue != 'false' and iValue:
-                        main.append({'eName': i.eName, 'name': i.name, 'style': i.style, 'value': iValue})
+                        main.append({'eName': i.eName, 'name': i.name, 'style': i.style, 'value': iValue, 'price':iPrice})
+                        mainprice += iPrice
                     elif i.style == u'商业险-附加险' and iValue != 'false' and iValue:
-                        subjoin.append({'eName': i.eName, 'name': i.name, 'style': i.style, 'value': iValue})
+                        subjoin.append({'eName': i.eName, 'name': i.name, 'style': i.style, 'value': iValue, 'price':iPrice})
+                        subjoinprice += iPrice
             result['data'].append({
                 'iop_id': iop.id,
                 'force': force,
+                'forceprice':forceprice,
                 'main': main,
+                'mainprice': mainprice,
                 'subjoin': subjoin,
+                'subjoin': subjoinprice,
                 'gift_policy': iop.gift_policy,
                 'score': iop.score,
                 'total_price': iop.total_price
