@@ -617,9 +617,13 @@ class MobileInsuranceOrderDetailHandler(MobileBaseHandler):
             },
             'imgs': {
                 'id_card_front': insuranceorder.id_card_front,
+                'id_card_front_status':insuranceorder.icfstatus,
                 'id_card_back': insuranceorder.id_card_back,
+                'id_card_back_status': insuranceorder.icbstatus,
                 'drive_card_front': insuranceorder.drive_card_front,
-                'drive_card_back': insuranceorder.drive_card_back
+                'drive_card_front_status': insuranceorder.dcfstatus,
+                'drive_card_back': insuranceorder.drive_card_back,
+                'drive_card_back_status': insuranceorder.dcfstatus
             },
             'delivery': {
                 'name': insuranceorder.delivery_to,
