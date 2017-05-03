@@ -767,12 +767,16 @@ class MobileUpdateInsuranceOrderIMGHandler(MobileBaseHandler):
             result['flag'] = 1
             if imgtype == 'icf':
                 io.id_card_front = imgurl
+                io.icfstatus = 0
             elif imgtype == 'icb':
                 io.id_card_back = imgurl
+                io.icbstatus = 0
             elif imgtype == 'dcf':
                 io.drive_card_front = imgurl
+                io.dcfstatus = 0
             elif imgtype == 'dcb':
                 io.drive_card_back = imgurl
+                io.dcbstatus = 0
             else:
                 result['flag'] = 0
                 result['msg'] = u'图片类型不匹配'
