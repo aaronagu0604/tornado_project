@@ -739,7 +739,7 @@ class MobileUpdateInsuranceOrderIMGHandler(MobileBaseHandler):
     """
     @apiGroup mine
     @apiVersion 1.0.0
-    @api {get} /mobile/update_insurance_order_img 12. 修改保险订单证件图片（保险订单）
+    @api {post} /mobile/update_insurance_order_img 12. 修改保险订单证件图片（保险订单）
     @apiDescription 修改保险订单证件图片（保险订单）
 
     @apiHeader {String} token 用户登录凭证
