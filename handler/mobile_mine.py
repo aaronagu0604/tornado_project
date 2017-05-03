@@ -730,6 +730,55 @@ class MobileChangeInsuranceMethodHandler(MobileBaseHandler):
         self.write(simplejson.dumps(result))
 
 
+@route(r'/mobile/update_insurance_order_img', name='update_insurance_order_img')  # 修改保险订单证件图片（保险订单）
+class MobileUpdateInsuranceOrderIMGHandler(MobileBaseHandler):
+    """
+    @apiGroup mine
+    @apiVersion 1.0.0
+    @api {get} /mobile/update_insurance_order_img 12. 修改保险订单证件图片（保险订单）
+    @apiDescription 修改保险订单证件图片（保险订单）
+
+    @apiHeader {String} token 用户登录凭证
+
+    @apiParam {Int} id 保险订单id
+    @apiParam {String} imgurl 图片地址
+    @apiParam {String} imgtype 图片类型：icf:身份证前，icb：身份证后，dcf：行驶证前，dcb:行驶证后
+
+    @apiSampleRequest /mobile/update_insurance_order_img
+    """
+
+    @require_auth
+    def post(self):
+        result = {'flag': 0, 'msg': '', "data": []}
+        io_id = self.get_argument('id', '')
+        imgurl = self.get_argument('imgurl', '')
+        imgtype = self.get_argument('imgtype','')
+
+        if not (io_id and imgurl and imgtype):
+            result['msg'] = u'传入参数异常'
+            self.write(simplejson.dumps(result))
+            return
+        try:
+            io = InsuranceOrder.get(id=io_id)
+            result['flag'] = 1
+            if imgtype == 'icf':
+                io.id_card_front = imgurl
+            elif imgtype == 'icb':
+                io.id_card_back = imgurl
+            elif imgtype == 'dcf':
+                io.drive_card_front = imgurl
+            elif imgtype == 'dcb':
+                io.drive_card_back = imgurl
+            else:
+                result['flag'] = 0
+                result['msg'] = u'图片类型不匹配'
+            io.save()
+        except Exception, e:
+            result['msg'] = u'订单不存在'
+
+        self.write(simplejson.dumps(result))
+
+
 @route(r'/mobile/delete_insurance_order', name='mobile_delete_insurance_order')  # 删除保险订单
 class MobileInsuranceMethodHandler(MobileBaseHandler):
     """
