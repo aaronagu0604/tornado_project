@@ -527,7 +527,14 @@ class Order(db.Model):
     ordernum = CharField(max_length=64, null=True)  # 订单号
     user = ForeignKeyField(User, related_name='orders', db_column='user_id')  # 买家
     buyer_store = ForeignKeyField(Store, related_name='orders', db_column='buyer_store_id')  # 买家所属店铺
-    address = ForeignKeyField(StoreAddress, db_column='store_address_id')  # 收件信息
+    # 订单后货地址信息
+    delivery_to = CharField(max_length=255)  # 邮寄接收人名称
+    delivery_tel = CharField(max_length=255)  # 邮寄接收人电话
+    delivery_province = CharField(max_length=16, default='陕西')  # 邮寄接收省份
+    delivery_city = CharField(max_length=16, default='西安')  # 邮寄接收城市
+    delivery_region = CharField(max_length=32, null='')  # 邮寄接收区域
+    delivery_address = CharField(max_length=128, null=True)  # 邮寄接收详细地址
+
     order_type = IntegerField(default=1)  # 付款方式 1金钱订单 2积分订单
     payment = IntegerField(default=0)  # 支付方式  1支付宝  2微信 3银联 4余额 5积分
     total_price = FloatField(default=0.0)  # 价格，实际所有子订单商品价格之和
