@@ -274,7 +274,12 @@ class MobileLoginHandler(MobileBaseHandler):
                             result['data']['uid'] = user.id
                             user.updatesignin(token)
                             if jpushtag:
-                                set_device_info(jpushtag, [user.store.area_code], user.mobile)
+                                code = []
+                                area = user.store.area_code
+                                while len(area) >= 4:
+                                    code.append(area)
+                                    area = area[:-4]
+                                set_device_info(jpushtag, code, user.mobile)
                         else:
                             result['msg'] = '登录失败'
                     else:
