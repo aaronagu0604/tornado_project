@@ -1588,6 +1588,13 @@ class InsuranceOrderDetailHandler(AdminBaseHandler):
             for key in programs['i_items']:
                 iop.__dict__['_data'][key+'Price'] = programs['i_items'][key]
         iop.save()
+        msg = Message()
+        msg.store = InsuranceOrder.get(id=iop.insurance_order_id).store
+        msg.type = 'insuranceorderprice'
+        msg.link = 'czj://insuranceorderprice/%d'%iop.id
+        msg.other_id = iop.id
+        msg.content = '您有新的报价单'
+        msg.save()
         self.flash("保存成功")
 
         if programs['is_send_msg'] == '1':
@@ -1644,7 +1651,7 @@ class NewProgramHandler(AdminBaseHandler):
                 else:
                     iop.__dict__['_data'][i_item.eName] = '1'
         iop.save()
-        
+
         self.write(u'新建成功')
         # self.redirect('/admin/insurance_order/%s'%oid)
 
