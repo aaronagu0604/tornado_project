@@ -963,6 +963,7 @@ class ProductHandler(AdminBaseHandler):
         if keyword:
             keyw = '%' + keyword + '%'
             ft = ft & (Product.name % keyw)
+        print category
         if category:
             ft = ft & (Product.category == category)
         products = Product.select().where(ft)
@@ -976,7 +977,7 @@ class ProductHandler(AdminBaseHandler):
         product_type = 'product_s' if is_score else 'product_n'
 
         self.render('admin/product/product.html', active=product_type, products=products, total=total, page=page,
-                    c_id=category, pagesize=pagesize, totalpage=totalpage, keyword=keyword, status=active,
+                    c_id=int(category) if category else '', pagesize=pagesize, totalpage=totalpage, keyword=keyword, status=active,
                     categories=categories, is_score=is_score)
 
 
