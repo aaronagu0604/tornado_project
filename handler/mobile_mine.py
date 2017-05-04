@@ -689,16 +689,27 @@ class MobileInsuranceMethodHandler(MobileBaseHandler):
                 elif i.style == u'商业险-附加险' and iValue != 'false' and iValue:
                     subjoin.append({'eName': i.eName, 'name': i.name, 'style': i.style, 'value': iValue, 'price':iPrice})
                     subjoinprice += iPrice
+
+            if iop.gift_policy == 1:
+                commission = u'%桶'%str(iop.score)
+            elif iop.gift_policy == 2:
+                commission = u'¥%s'%str(iop.score)
+            else:
+                commission = u'待计算'
+
             result['data'].append({
                 'iop_id': iop.id,
+                'insurancename':iop.insurance.name,
+                'created':time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(iop.created)),
                 'force': force,
                 'forceprice':forceprice,
                 'main': main,
                 'mainprice': mainprice,
                 'subjoin': subjoin,
                 'subjoinprice': subjoinprice,
-                'gift_policy': iop.gift_policy,
+                'gift_policy': u'返油' if iop.gift_policy == 1 else u'返佣金',
                 'score': iop.score,
+                'commission': commission,
                 'total_price': iop.total_price,
                 'default': 1 if iop.id == io_id else 0,
                 'status': iop.response,
