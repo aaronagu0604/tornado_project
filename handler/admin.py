@@ -1394,10 +1394,14 @@ class ProductOrdersHandler(AdminBaseHandler):
         end_date = self.get_argument("end_date", '')
         order_type = int(self.get_argument("order_type", 1))
         pagesize = setting.ADMIN_PAGESIZE
-        if status == -2:
-            ft = (Order.status > -2)
+        if archive:
+            ft = (Order.status << [3,4,6,-1])
         else:
-            ft = (Order.status == status)
+            ft = (Order.status << [0,1,2,5])
+        if status == -2:
+            ft &= (Order.status > -2)
+        else:
+            ft &= (Order.status == status)
         if order_type:
             ft &= (Order.order_type == order_type)
         if keyword:
