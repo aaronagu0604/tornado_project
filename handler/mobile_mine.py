@@ -653,7 +653,7 @@ class MobileInsuranceMethodHandler(MobileBaseHandler):
     @apiSampleRequest /mobile/insurance_method
     """
 
-    #@require_auth
+    @require_auth
     def get(self):
         result = {'flag': 0, 'msg': '', "data": []}
         io_id = self.get_argument('id', '')
