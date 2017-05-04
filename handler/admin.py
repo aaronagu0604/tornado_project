@@ -1357,7 +1357,7 @@ class ExportTradeListHandler(AdminBaseHandler):
             s['ordernum'] = item.ordernum
             s['payment'] = payment[item.payment] if item.payment in payment.keys() else 'other'
             s['moneyitem'] = u'润滑油'
-            s['useraddress'] = item.address.address
+            s['useraddress'] = item.delivery_province+item.delivery_city+item.delivery_region+item.delivery_address
             s['totalprice'] = str(item.total_price)
             s['insurance'] = item.buyer_store.name
             s['user'] = item.user.truename
