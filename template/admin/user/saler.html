@@ -216,7 +216,7 @@
 
             return;
         }
-        $.get("/ajax/GetSubAreas", { parent_code: parent_code,  t: Math.random() }, function (data) {
+        $.get("/ajax/GetSubAreas", { pcode: parent_code,  t: Math.random() }, function (data) {
             data = jQuery.parseJSON(data);
             if(data.flag==1){
                 $("#" + ddl_id).html('');
