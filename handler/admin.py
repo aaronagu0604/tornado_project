@@ -238,7 +238,9 @@ class StoreDetailHandler(AdminBaseHandler):
         store.linkman = linkman
         store.mobile = mobile
         store.save()
-
+        AdminUserLog.create(admin_user=self.get_admin_user(),
+                            created=int(time.time()),
+                            content='编辑经销商: store_id:%d'%store.id)
         self.flash(u"保存成功")
         self.redirect("/admin/store_detail/" + str(store_id))
 
@@ -260,6 +262,9 @@ class ChangePolicyHandler(AdminBaseHandler):
             policy.dealer_store = dealer_store
             policy.save()
             msg = u'修改成功，请刷新页面！'
+            AdminUserLog.create(admin_user=self.get_admin_user(),
+                                created=int(time.time()),
+                                content='编辑用户所属经销商:ssipl_id:%d,dealer_store:%s'%(policy_id,dealer_store))
         except Exception, e:
             msg = u'修改失败：%s' % e.message
 
@@ -320,8 +325,10 @@ class ClonePolicyHandler(AdminBaseHandler):
                        'bm': cash.base_money}
 
         lube_policy = LubePolicy.get(id=lube_policy).policy
-        SSILubePolicy.create(store=store_id, insurance=insurance, dealer_store=dealer_store, cash=simplejson.dumps(cash_policy), lube=lube_policy)
-
+        ssilp = SSILubePolicy.create(store=store_id, insurance=insurance, dealer_store=dealer_store, cash=simplejson.dumps(cash_policy), lube=lube_policy)
+        AdminUserLog.create(admin_user=self.get_admin_user(),
+                            created=int(time.time()),
+                            content='添加保险公司返油返积分策略:ssilp_id:%d'%ssilp.id)
         self.redirect("/admin/store_detail/" + store_id)
 
 
@@ -331,6 +338,9 @@ class DeletePolicyHandler(AdminBaseHandler):
         iid = self.get_argument('iid', None)
         if iid:
             SSILubePolicy.delete().where((SSILubePolicy.store == store_id) & (SSILubePolicy.insurance == iid)).execute()
+            AdminUserLog.create(admin_user=self.get_admin_user(),
+                                created=int(time.time()),
+                                content='删除保险公司返油返积分策略: iid:%s,store_id:%d' %(iid,store_id))
 
         self.redirect('/admin/store_detail/%s'%store_id)
 
@@ -687,14 +697,16 @@ class CategoryEditHandler(AdminBaseHandler):
         sort = int(self.get_body_argument("sort", 1))
         hot = self.get_body_argument("hot", '')
         active = self.get_body_argument("active", '')
-        mobile_img = self.request.files.get('file_mobile')[0]['body']
-
+        mobile_img = self.request.files.get('file_mobile')[0]['body'] if self.request.files else None
+        content = ''
         if int(id) > 0:
+            content = '编辑分类：id:%s'%id
             show_msg = "修改"
             category = Category.get(id=id)
         else:
             show_msg = "添加"
             category = Category()
+            content = '添加分类：id:%s' % category.id
         category.name = name
         category.sort = sort
         category.hot = 1 if hot else 0
@@ -713,6 +725,8 @@ class CategoryEditHandler(AdminBaseHandler):
                     imgurl = ''
                 category.img_m = imgurl
             category.save()
+
+            AdminUserLog.create(admin_user=self.get_admin_user(), created=int(time.time()), content=content)
             self.flash(show_msg + u"成功")
         except Exception, ex:
             self.flash(str(ex))
@@ -750,12 +764,14 @@ class CategoryAttributeAddHandler(AdminBaseHandler):
         ename = self.get_body_argument('ename', None)
         sort = int(self.get_body_argument('sort', 1))
         active = 1 if self.get_body_argument('active', None) else 0
-
+        content = ''
         if ca_id != '0':
+            content = '编辑分类属性: caid:%s'%ca_id
             category_attribute = CategoryAttribute.get(id=ca_id)
         else:
             category_attribute = CategoryAttribute()
             category_attribute.category = category
+            content = '添加分类属性: caid:%d'%category_attribute.id
         if active:
             category_attribute.name = name
             category_attribute.ename = ename
@@ -765,7 +781,7 @@ class CategoryAttributeAddHandler(AdminBaseHandler):
         else:
             category_attribute.active = active
             category_attribute.save()
-
+        AdminUserLog.create(admin_user=self.get_admin_user(), created=int(time.time()), content=content)
         self.redirect('/admin/category_attribute/%s'%category)
 
 
@@ -793,17 +809,19 @@ class CategoryAttributeAddHandler(AdminBaseHandler):
         name = self.get_body_argument('name', None)
         intro = self.get_body_argument('intro', None)
         sort = int(self.get_body_argument('sort', 1))
-
+        content = ''
         if cai_id != '0':
             attribute_items = CategoryAttributeItems.get(id=cai_id)
+            content = '编辑分类属性参数: cai_id:%d'%cai_id
         else:
             attribute_items = CategoryAttributeItems()
+            content = '添加分类属性参数：cai_id:%d'%attribute_items.id
             attribute_items.category_attribute = int(category_attribute)
         attribute_items.name = name
         attribute_items.intro = intro
         attribute_items.sort = sort
         attribute_items.save()
-
+        AdminUserLog.create(admin_user=self.get_admin_user(), created=int(time.time()), content=content)
         self.redirect('/admin/category_attribute/%s'%category)
 
 
@@ -848,10 +866,13 @@ class EditBrandHandler(AdminBaseHandler):
         active = self.get_argument("active", None)
 
         try:
+            content = ''
             if id == 0:
                 ad = Brand()
+                content = '添加品牌: brand_id:%d'%ad.id
             else:
                 ad = Brand.get(id=id)
+                content = '编辑品牌: brand_id:%d'%id
             if self.request.files:
                 datetime = time.strftime('%Y%m%d%H%M%S', time.localtime(time.time()))  # 获取当前时间作为图片名称
                 filename = str(datetime) + ".jpg"
@@ -867,6 +888,7 @@ class EditBrandHandler(AdminBaseHandler):
             ad.active = 1 if active else 0
             ad.hot = 1 if hot else 0
             ad.save()
+            AdminUserLog.create(admin_user=self.get_admin_user(), created=int(time.time()), content=content)
         except Exception, e:
             logging.info('Error: %s'%e.message)
         self.redirect("/admin/brand")
@@ -878,6 +900,7 @@ class DeleteBrandHandler(AdminBaseHandler):
         p = Brand.get(id=id)
         p.active = 0
         p.save()
+        AdminUserLog.create(admin_user=self.get_admin_user(), created=int(time.time()), content='删除品牌：brand_id:%d'%id)
         self.redirect("/admin/brand")
 
 
@@ -900,7 +923,8 @@ class CategoryBrandHandler(AdminBaseHandler):
             if bc.count() > 0:
                 self.flash('已经存在')
             else:
-                BrandCategory.create(category=category, brand=brand)
+                bc = BrandCategory.create(category=category, brand=brand)
+                AdminUserLog.create(admin_user=self.get_admin_user(), created=int(time.time()), content='分类添加品牌：cb_id:%d,category:%d,brand:%d'%(bc.id,category,brand))
                 self.flash('添加成功')
         self.redirect('/admin/category_brand')
 
@@ -911,6 +935,9 @@ class CategoryBrandDelHandler(AdminBaseHandler):
         bc_id = self.get_argument('bc', None)
         try:
             BrandCategory.delete().where(BrandCategory.id == bc_id).execute()
+            AdminUserLog.create(admin_user=self.get_admin_user(),
+                                created=int(time.time()),
+                                content='删除品牌分类关联:bc_id:%s'%bc_id)
             self.flash('删除成功')
         except Exception, e:
             self.flash('删除失败：%s'% e.message)
@@ -988,13 +1015,15 @@ class EditProductHandler(AdminBaseHandler):
         is_score = self.get_body_argument('is_score', 0)
         category_attributes = simplejson.loads(self.get_body_argument('category_attributes', None))
         hd_pic = self.get_body_argument('hd_pic', None)
-
+        content = ''
         if pid == '0':
             product = Product()
             product.created = int(time.time())
             product.active = 1
+            content = '添加商品:p_id%d'%product.id
         else:
             product = Product.get(id=pid)
+            content = '编辑商品:p_id%d'%pid
         product.name = name
         product.brand = brand
         product.category = category
@@ -1020,6 +1049,7 @@ class EditProductHandler(AdminBaseHandler):
             product_attr.attribute_item = category['attribute_value_id']
             product_attr.value = CategoryAttributeItems.get(id=category['attribute_value_id']).name
             product_attr.save()
+        AdminUserLog.create(admin_user=self.get_admin_user(), created=int(time.time()), content=content)
         self.redirect('/admin/edit_product/%s'%pid)
 
 
@@ -1054,11 +1084,14 @@ class EditBlockHandler(AdminBaseHandler):
         remark = self.get_argument("remark", None)
         category = self.get_argument("ad_location_category", None)
         try:
+            content = ''
             if aid == 0:
                 block = Block()
+                content = '添加广告位: block_id:%d'%block.id
                 msg = u"广告位添加成功"
             else:
                 block = Block.get(id=aid)
+                content = '编辑广告位: block_id:%d'%aid
                 msg = u"广告位修改成功"
             if self.request.files:
                 datetime = time.strftime('%Y%m%d%H%M%S', time.localtime(time.time()))  # 获取当前时间作为图片名称
@@ -1073,6 +1106,7 @@ class EditBlockHandler(AdminBaseHandler):
             block.remark = remark
             block.category = category
             block.save()
+            AdminUserLog.create(admin_user=self.get_admin_user(), created=int(time.time()), content=content)
             self.flash(msg)
             self.redirect("/admin/block")
             return
@@ -1148,6 +1182,9 @@ class EditAdHandler(AdminBaseHandler):
                 ad.picurl = imgurl if not imgurl else ''
             ad.validate()
             ad.save()
+            AdminUserLog.create(admin_user=self.get_admin_user(),
+                                created=int(time.time()),
+                                content='编辑广告: ad_id:%d'%aid)
             self.flash(u"广告修改成功")
             self.redirect("/admin/ads")
             return
@@ -1645,7 +1682,9 @@ class NewProgramHandler(AdminBaseHandler):
                 else:
                     iop.__dict__['_data'][i_item.eName] = '1'
         iop.save()
-
+        AdminUserLog.create(admin_user=self.get_admin_user(),
+                            created=int(time.time()),
+                            content='添加报价单: iop_id:%d'%iop.id)
         self.write(u'新建成功')
         # self.redirect('/admin/insurance_order/%s'%oid)
 
@@ -1676,6 +1715,9 @@ class InsuranceOrderDelHandler(AdminBaseHandler):
                         self.flash(u'返油')
                     io.status = 3
                     io.save()
+                    AdminUserLog.create(admin_user=self.get_admin_user(),
+                                        created=int(time.time()),
+                                        content='编辑保险订单状态: io_id:%d,status:%d'%(io.id,status))
                 else:
                     self.flash(u'该订单不能完成状态为:%s'%(io.status))
         except Exception, e:
@@ -1764,6 +1806,9 @@ class InsuranceScore(AdminBaseHandler):
                 }
             cash_policy.cash = simplejson.dumps(cash)
             cash_policy.save()
+            AdminUserLog.create(admin_user=self.get_admin_user(),
+                                created=int(time.time()),
+                                content='编辑保险返油返积分策略:ssilp_id:%d'%cash_policy.id)
             self.write(u'修改成功')
         else:
             if exid > 0:
@@ -1783,6 +1828,9 @@ class InsuranceScore(AdminBaseHandler):
             item.ali_rate = ali_rate
             item.profit_rate = profit_rate
             item.save()
+            AdminUserLog.create(admin_user=self.get_admin_user(),
+                                created=int(time.time()),
+                                content='编辑返积分策略:ise_id:%d'%exid)
             self.flash('保存成功')
             items = InsuranceScoreExchange.select().where((InsuranceScoreExchange.insurance == iid)
                                                           & (InsuranceScoreExchange.area_code == area_code))
@@ -1817,6 +1865,9 @@ class InsuranceLube(AdminBaseHandler):
             lube_policy = SSILubePolicy.get((SSILubePolicy.store == sid) & (SSILubePolicy.insurance == iid))
             lube_policy.lube = json
             lube_policy.save()
+            AdminUserLog.create(admin_user=self.get_admin_user(),
+                                created=int(time.time()),
+                                content='编辑保险返油返积分策略:ssip_id:%d'%lube_policy.id)
             self.write(u'修改成功，请刷新！')
         else:
             if exid > 0:
@@ -1827,6 +1878,9 @@ class InsuranceLube(AdminBaseHandler):
                 item.insurance = iid
             item.policy = json
             item.save()
+            AdminUserLog.create(admin_user=self.get_admin_user(),
+                                created=int(time.time()),
+                                content='编辑保险返油策略:lp_id:%d' % item.id)
             self.flash('保存成功')
             items = LubePolicy.select().where((LubePolicy.insurance == iid) & (LubePolicy.area_code == area_code))
             if items.count() > 0:
@@ -1955,6 +2009,9 @@ class SendMsgHandler(AdminBaseHandler):
             if is_users == 'all_user':
                 content_log['content'] = u'为用户 所有用户 推送极光消息，消息内容：' + content
                 create_msg(simplejson.dumps({'body': content, 'jpushtype':'tags', 'tags':['all']}), 'jpush')
+                AdminUserLog.create(admin_user=self.get_admin_user(),
+                                    created=int(time.time()),
+                                    content= u'为用户 所有用户 推送极光消息，消息内容：' + content)
                 self.flash("推送成功")
             elif is_users == 'user':
                 if number:
@@ -1963,6 +2020,9 @@ class SendMsgHandler(AdminBaseHandler):
                     for n in num:
                         sms = {'apptype': 1, 'body': content, 'jpushtype':'alias', 'alias': n}
                         create_msg(simplejson.dumps(sms), 'jpush')
+                    AdminUserLog.create(admin_user=self.get_admin_user(),
+                                        created=int(time.time()),
+                                        content= u'为用户 ' + number + u' 推送极光消息，消息内容：' + content)
                     self.flash("推送成功")
                 else:
                     self.flash("请输入电话号码！")
@@ -1978,6 +2038,9 @@ class SendMsgHandler(AdminBaseHandler):
                 print user_type, tags
                 create_msg(simplejson.dumps({'body': content, 'jpushtype': 'tags', 'tags': tags}),
                            'jpush')
+                AdminUserLog.create(admin_user=self.get_admin_user(),
+                                    created=int(time.time()),
+                                    content=u'为用户组 ' + str(user_type) + u' 推送极光消息，消息内容：' + content)
                 self.flash("推送成功")
         # 短信
         elif sms_type == 1:
@@ -2002,11 +2065,17 @@ class SendMsgHandler(AdminBaseHandler):
                         #删除已发送的手机号码
                         mobiles = mobiles[(j+1)*7200:]
                         j += 1
+                    AdminUserLog.create(admin_user=self.get_admin_user(),
+                                        created=int(time.time()),
+                                        content=u'为所有用户发送短信'+content)
                     self.flash("发送成功")
                 elif is_users == 'user':
                     if number:
                         sms = {'mobile': number, 'body': content, 'signtype': '1', 'isyzm': ''}
                         # create_msg(simplejson.dumps(sms), 'sms')
+                        AdminUserLog.create(admin_user=self.get_admin_user(),
+                                            created=int(time.time()),
+                                            content=u'为用户:'+number + u'发送短信' + content)
                         self.flash("发送成功")
                     else:
                         self.flash("请输入电话号码！")
@@ -2039,6 +2108,9 @@ class SendMsgHandler(AdminBaseHandler):
                             #删除已发送的手机号码
                             mobiles = mobiles[(j+1)*7200:]
                             j += 1
+                        AdminUserLog.create(admin_user=self.get_admin_user(),
+                                            created=int(time.time()),
+                                            content=u'为用户组 ' + str(user_type) + u' 推送短信，消息内容：' + content)
                         self.flash("发送成功")
                     else:
                         self.flash("请选择地区")
@@ -2135,6 +2207,9 @@ class AdminScoreAreaDelHandler(AdminBaseHandler):
                 for a in areas:
                     a.is_scorearea = status
                     a.save()
+            AdminUserLog.create(admin_user=self.get_admin_user(),
+                                created=int(time.time()),
+                                content=u'修改区域是否参与积分：a_id:%d,status:%d'%(id,status))
             self.flash(u"修改成功！")
         except Exception, e:
             logging.info('Error: %s'%e.message)
