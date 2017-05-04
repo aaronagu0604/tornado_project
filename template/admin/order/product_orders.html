@@ -46,21 +46,24 @@
                 <input type="hidden" name="page" value="{{page}}">
                 <input type="hidden" name="archive" value="{{archive}}">
                 <div class="btn-group btn-group-xs">
-                    <a type="button" class="btn btn-default {% if order_type==1 %} active {% endif %}" href="/admin/product_orders?order_type=1&begin_date={{begin_date}}&end_date={{end_date}}&status={{status}}" style="padding:8px 4px;border:1px solid #ccc;border-bottom-left-radius:4px;border-top-left-radius:4px;">货币</a>
-                    <a type="button" class="btn btn-default {% if order_type==2 %} active {% endif %}" href="/admin/product_orders?order_type=2&begin_date={{begin_date}}&end_date={{end_date}}&status={{status}}" style="padding:8px 4px;border:1px solid #ccc;border-left:none;">积分</a>
-                    <a type="button" class="btn btn-default {% if order_type==0 %} active {% endif %}" href="/admin/product_orders?order_type=0&begin_date={{begin_date}}&end_date={{end_date}}&status={{status}}" style="padding:8px 4px;border:1px solid #ccc;border-left:none;">全部</a>
+                    <a type="button" class="btn btn-default {% if order_type==1 %} active {% endif %}" href="/admin/product_orders?order_type=1&begin_date={{begin_date}}&end_date={{end_date}}&status={{status}}&archive={{archive}}" style="padding:8px 4px;border:1px solid #ccc;border-bottom-left-radius:4px;border-top-left-radius:4px;">货币</a>
+                    <a type="button" class="btn btn-default {% if order_type==2 %} active {% endif %}" href="/admin/product_orders?order_type=2&begin_date={{begin_date}}&end_date={{end_date}}&status={{status}}&archive={{archive}}" style="padding:8px 4px;border:1px solid #ccc;border-left:none;">积分</a>
+                    <a type="button" class="btn btn-default {% if order_type==0 %} active {% endif %}" href="/admin/product_orders?order_type=0&begin_date={{begin_date}}&end_date={{end_date}}&status={{status}}&archive={{archive}}" style="padding:8px 4px;border:1px solid #ccc;border-left:none;">全部</a>
                 </div>
                 <div class="btn-group btn-group-xs">
                     <select class="form-control" name="status" id="sel_type" style="width:100px;">
                         <option value="-2" {{ status==-2 and 'selected' or '' }}>全部</option>
+                        {% if archive %}
+                        <option value="3" {{ status==3 and 'selected' or '' }}>已完成</option>
+                        <option value="4" {{ status==4 and 'selected' or '' }}>已评价</option>
+                        <option value="6" {{ status==6 and 'selected' or '' }}>已退款</option>
+                        <option value="-1" {{ status==-1 and 'selected' or '' }}>已取消</option>
+                        {% else %}
                         <option value="0" {{ status==0 and 'selected' or '' }}>待付款</option>
                         <option value="1" {{ status==1 and 'selected' or '' }}>待发货</option>
                         <option value="2" {{ status==2 and 'selected' or '' }}>待收货</option>
-                        <option value="3" {{ status==3 and 'selected' or '' }}>已完成</option>
-                        <option value="4" {{ status==4 and 'selected' or '' }}>已评价</option>
                         <option value="5" {{ status==5 and 'selected' or '' }}>申请退款</option>
-                        <option value="6" {{ status==6 and 'selected' or '' }}>已退款</option>
-                        <option value="-1" {{ status==-1 and 'selected' or '' }}>已取消</option>
+                        {% endif %}
                     </select>
                 </div>
 

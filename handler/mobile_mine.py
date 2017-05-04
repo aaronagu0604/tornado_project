@@ -653,7 +653,7 @@ class MobileInsuranceMethodHandler(MobileBaseHandler):
     @apiSampleRequest /mobile/insurance_method
     """
 
-    @require_auth
+    #@require_auth
     def get(self):
         result = {'flag': 0, 'msg': '', "data": []}
         io_id = self.get_argument('id', '')
@@ -691,7 +691,7 @@ class MobileInsuranceMethodHandler(MobileBaseHandler):
                     subjoinprice += iPrice
 
             if iop.gift_policy == 1:
-                commission = u'%桶'%str(iop.score)
+                commission = u'%s桶'%str(iop.score)
             elif iop.gift_policy == 2:
                 commission = u'¥%s'%str(iop.score)
             else:
