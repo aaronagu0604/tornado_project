@@ -426,7 +426,6 @@ class WebAppCarItemListHandler(BaseHandler):
         try:
             iop = InsuranceOrderPrice.get(id=pid)
             io = InsuranceOrder.get(id=iop.insurance_order_id)
-            print io.store.area_code, iop.insurance.id
             # rates = InsuranceScoreExchange.get_score_policy(io.store.area_code, iop.insurance.id)
             rates = self.get_return_cash(io.store.id, iop.insurance.id)
             if rates:
