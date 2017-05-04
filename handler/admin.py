@@ -736,7 +736,7 @@ class CategoryEditHandler(AdminBaseHandler):
 @route(r'/admin/category_attribute/(\d+)', name='admin_category_attribute')  # 添加/修改分类的规格参数
 class CategoryAttributeHandler(AdminBaseHandler):
     def get(self, cid):
-        category_attributes = Category.get(id=cid).attributes
+        category_attributes = CategoryAttribute.select().where(CategoryAttribute.category == cid).order_by(CategoryAttribute.sort.desc())
         self.render('admin/product/category_attribute.html', active='category', category_attributes=category_attributes, cid=cid)
 
 
