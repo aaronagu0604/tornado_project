@@ -712,8 +712,8 @@ class MobileInsuranceMethodHandler(MobileBaseHandler):
                 'commission': commission,
                 'total_price': iop.total_price,
                 'default': 1 if iop.id == io_id else 0,
-                'status': iop.response,
-                'dead': iop.status
+                'status': iop.status,
+                'response': iop.response
             })
 
         self.write(simplejson.dumps(result))
