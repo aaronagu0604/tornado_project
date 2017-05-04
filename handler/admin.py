@@ -1124,7 +1124,11 @@ class EditBlockHandler(AdminBaseHandler):
 @route(r'/admin/advertisement', name='admin_ad')
 class AdvertisementHandler(AdminBaseHandler):
     def get(self):
-        ads = BlockItem.select().order_by(BlockItem.block)
+        b_id = int(self.get_argument('block',0))
+        if b_id:
+            ads = BlockItem.select().where(BlockItem.block == b_id).order_by(BlockItem.block)
+        else:
+            ads = BlockItem.select().order_by(BlockItem.block)
         items = Area.select().where(Area.pid >> None).order_by(Area.spell, Area.sort)
         self.render('admin/App/ads.html', ads=ads, active='ads', items=items)
 

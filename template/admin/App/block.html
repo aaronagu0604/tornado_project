@@ -35,7 +35,7 @@
                 <tbody>
                 {% for block in blocks %}
                 <tr>
-                    <td>{{block.id}}</td>
+                    <td><a href="/admin/advertisement?block={{block.id}}" style="color:#438bca;font-size:14px;">{{block.id}}</a></td>
                     <td>{{block.name }}</td>
                     <td>{{block.tag}}</td>
                     <td>{{block.remark}}</td>
