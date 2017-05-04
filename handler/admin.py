@@ -907,8 +907,14 @@ class DeleteBrandHandler(AdminBaseHandler):
 @route(r'/admin/category_brand', name='admin_category_brand')  # 分类&品牌关联
 class CategoryBrandHandler(AdminBaseHandler):
     def get(self):
-        brand_categories = BrandCategory.select().order_by(BrandCategory.category.asc())
-        categories = Category.select()
+        cid = int(self.get_argument('category', 0))
+        if cid:
+            ft = (BrandCategory.category == cid)
+            brand_categories = BrandCategory.select().where(ft).order_by(BrandCategory.category.asc())
+            categories = Category.select().where(Category.id == cid)
+        else:
+            brand_categories = BrandCategory.select().order_by(BrandCategory.category.asc())
+            categories = Category.select()
         brands = Brand.select()
         self.render('admin/product/category_brand.html',active='c_b', brand_categories=brand_categories,
                     categories=categories, brands=brands)

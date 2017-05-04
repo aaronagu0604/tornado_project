@@ -34,7 +34,7 @@
                 {% for item in categories %}
                 <tr id="tr{{item.code}}">
                     <td onclick="GetSubCategory('{{item.code}}',{{item.has_sub}})" style="cursor:{{item.has_sub==1 and 'pointer' or 'normal'}}">
-                        <span id="span{{item.code}}" data-blank="" data-ex="0" data-code="{{item.code}}">{{item.has_sub==1 and '+' or '-'}}</span>{{item.name}}
+                        <a href="/admin/category_brand?category={{item.id}}"><span id="span{{item.code}}" data-blank="" data-ex="0" data-code="{{item.code}}">{{item.has_sub==1 and '+' or '-'}}</span>{{item.name}}</a>
                     </td>
                     <td>{{item.code}}</td>
                     <td>{{item.slug}}</td>
