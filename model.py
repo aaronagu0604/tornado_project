@@ -355,7 +355,6 @@ class Category(db.Model):
     sort = CharField(max_length=20)  # 显示顺序
     category_type = IntegerField(default=0)  # 1配件商城 2汽车装潢
     img_m = CharField(max_length=256, null=True)  # 分类图片手机端
-    img_pc = CharField(max_length=256, null=True)  # 分类图片PC端
     hot = IntegerField(default=0)  # 热门分类
     active = IntegerField(default=1)  # 状态 0删除 1有效
 

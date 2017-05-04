@@ -688,7 +688,6 @@ class CategoryEditHandler(AdminBaseHandler):
         hot = self.get_body_argument("hot", '')
         active = self.get_body_argument("active", '')
         mobile_img = self.request.files.get('file_mobile')[0]['body']
-        pc_img = self.request.files.get('file_pc')[0]['body']
 
         if int(id) > 0:
             show_msg = "修改"
@@ -713,15 +712,6 @@ class CategoryEditHandler(AdminBaseHandler):
                 if not imgurl:
                     imgurl = ''
                 category.img_m = imgurl
-            if pc_img:
-                filename = message_path + str(datetime) + "_pc.jpg"
-                with open(filename, "wb") as f:
-                    f.write(pc_img)
-                imgurl = postRequest(open(filename, 'rb'))
-                if not imgurl:
-                    imgurl = ''
-                category.img_m = imgurl
-                category.img_pc = imgurl
             category.save()
             self.flash(show_msg + u"成功")
         except Exception, ex:
