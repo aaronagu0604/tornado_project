@@ -229,19 +229,24 @@ class AjaxGetAllAreas(BaseHandler):
     @asynchronous
     @coroutine
     def get(self):
-        a = yield self.get_all_area()
+        type = self.get_argument('type',None)
+        bi_id = int(self.get_argument('bi_id',0))
+        a = yield self.get_all_area(type,bi_id)
 
     @run_on_executor
-    def get_all_area(self):
+    def get_all_area(self,type,bi_id):
         items = Area.select(Area.id.alias('id'), Area.pid.alias('pid'), Area.name.alias('name'), Area.code.alias('code')).dicts()
+        bitems = [item.area_code for item in BlockItemArea.select().where(BlockItemArea.block_item == bi_id)]
+        print bitems
         nodes = [{
                 'id': item['id'],
                 'pId': item['pid'] if item['pid'] else 0,
                 'name': item['name'],
                 'data': item['code'],
                 'target': '_top',
-                'click': "pop('" + item['name'] + '-产品信息' + "', '"+'/admin/store_area_product?sid=' + str(1) + '&code=' + item['code']+"');",
-                 'open': 'false'
+                'click': '' if type == 'blockitem' else "pop('" + item['name'] + '-产品信息' + "', '"+'/admin/store_area_product?sid=' + str(1) + '&code=' + item['code']+"');",
+                'open': 'false',
+                'checked': 'true' if item['code'] in bitems else 'false'
         } for item in items]
         url = '/admin/store_area_product?sid=1'
         nodes.insert(0, {

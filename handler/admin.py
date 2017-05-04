@@ -1205,6 +1205,28 @@ class EditAdHandler(AdminBaseHandler):
         self.render('admin/ad/editad.html', ad=ad, active='ads')
 
 
+@route(r'/admin/block_item_publish', name='admin_block_item_publish')  # 经销商发布商品到地区
+class BlockItemPublishHandler(AdminBaseHandler):
+    def post(self):
+        result = {'flag': 0, 'msg': '发布成功', "data": []}
+        blockitem_id = int(self.get_argument('ad_id', 0))
+        codes = self.get_argument('codes',None)
+        if codes:
+            codes = codes.split(',')
+
+        if not (codes and blockitem_id):
+            result['msg'] = u'参数不匹配'
+            self.write(simplejson.dumps(result))
+            return
+        BlockItemArea.delete().where(BlockItemArea.block_item == blockitem_id).execute()
+        BlockItemArea.insert_many([{
+            'area_code': item,
+            'block_item': blockitem_id
+        } for item in codes]).execute()
+        result['flag'] = 1
+        self.write(simplejson.dumps(result))
+
+
 @route(r'/admin/hot_search', name='admin_hot_search')
 class HotSearchHandler(AdminBaseHandler):
     def get(self):

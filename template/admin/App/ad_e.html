@@ -18,6 +18,8 @@
         <div class="panel panel-primary">
             <div class="panel-body">
                 <div>
+                    <span>广告发布范围</span>
+                    <a href="#" class="btn btn-xs btn-success" onclick="publish()">发布产品</a>
                     <ul id="treeDemo" class="ztree"></ul>
                 </div>
             </div>
@@ -165,7 +167,24 @@
             }
         }
         if(codes.length > 0) {
-            var url = '/admin/product_publish/{{ad.id}}?codes=' + codes.toString();
+             $.ajax({
+             url : "/admin/block_item_publish",
+             type : "post",
+             data : {'ad_id':{{ad.id}},
+                     'codes':codes.toString(),
+                     '_xsrf':xsrf},
+             dataType : "text",
+             success : function(result) {
+               if (result.falg=1) {
+                 layer.alert('发布成功');
+               } else {
+                 layer.alert('发布失败'+result);
+               }
+             },
+             error:function(result){
+               layer.alert('Error:'+result['msg']);
+             }
+            })
         }
         else {
             layer.alert('请选择要发布的地区');
@@ -177,7 +196,7 @@
                 enable: true,
                 type:"get",
                 contentType: "application/json",
-                url:"/ajax/area_tree",
+                url:"/ajax/area_tree?type=blockitem&bi_id={{ad.id}}",
                 dataFilter: filter
             },
             data: {
