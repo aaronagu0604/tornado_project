@@ -166,6 +166,24 @@
                                 </ul>
                             </div>
                             {% endif %}
+                            {% if car.car_sk_gearbox_1 == None and car.car_sk_gearbox_2 == None %}
+                            <div style="height: 40px; background: #ffffff; line-height:40px; text-align: center;">
+                                <span class="icon icon-star"></span>
+                                <span class="icon icon-star"></span>
+                                推荐
+                                <span class="icon icon-star"></span>
+                                <span class="icon icon-star"></span>
+                            </div>
+                            <div class="list-block media-list" style="margin: 0">
+                                <ul>
+                                    <li>
+                                        <div style="padding: 10px;text-align: center;">
+                                            请使用原厂变速箱油
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>

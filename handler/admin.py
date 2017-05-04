@@ -1917,7 +1917,7 @@ class SKHandler(AdminBaseHandler):
             totalpage = total / pagesize + 1
         else:
             totalpage = total / pagesize if (total / pagesize) > 0 else 1
-        products = s.paginate(page, pagesize)
+        products = s.order_by(CarSK.category).paginate(page, pagesize)
         self.render("admin/sk/product.html", products=products, total=total, totalpage=totalpage,
                     page=page, pagesize=pagesize, category=category, active='sk_product')
 
