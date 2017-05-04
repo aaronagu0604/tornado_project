@@ -751,6 +751,8 @@ class MobileChangeInsuranceMethodHandler(MobileBaseHandler):
                 io = InsuranceOrder.get(id=io_id)
                 io.current_order_price = iop_io_id
                 io.save()
+                result['flag'] = 1
+                result['msg'] = u'修改成功！'
             else:
                 result['msg'] = u'方案与订单不匹配'
         except Exception, e:
