@@ -118,7 +118,7 @@
             <div class="panel-body" id="pic-box">
                 {% for c in p.pics -%}
                 <div class="col-lg-2 .col-xs-10">
-                    {% if p.cover==c.path %}
+                    {% if p.cover==c.pic %}
                     <div class="panel panel-primary">
                         {% else %}
                         <div class="panel panel-default">
@@ -129,7 +129,7 @@
                             <div class="panel-footer">
                                 <div class="btn-group btn-group-xs">
                                     <a type="button" class="btn btn-default" href="/admin/delpic/{{c.id}}">删除</a>
-                                    {% if not p.cover==c.path %}
+                                    {% if not p.cover==c.pic %}
                                     <a type="button" class="btn btn-default" href="/admin/primarypic/{{c.id}}">设为主图</a>
                                     {% endif %}
                                 </div>
@@ -145,13 +145,13 @@
         </div>
         {% endif %}
         <div>
-            <th aria-label="Checkbox for following text input"><input type="checkbox" name="is_score" {% if p.is_score==1 %} checked='true' {%endif%}>是否积分</th>
+            <th><input id="checkboxFive" style="visibility:visible;" type="checkbox" name="is_score" {% if p.is_score==1 %} checked='true' {%endif%}>是否积分</th>
         </div>
         <div>
-            <th aria-label="Checkbox for following text input"><input type="checkbox" name="active" {% if p.active==1 %} checked='true' {%endif%}>是否启用</th>
+            <th><input id="checkbox2" style="visibility:visible;" type="checkbox" name="active" {% if p.active==1 %} checked='true' {%endif%}>是否启用</th>
         </div>
         <div>
-            <th aria-label="Checkbox for following text input"><input type="checkbox" name="hot" {% if p.hot==1 %} checked='true' {%endif%} >是否热门</th>
+            <th><input id="checkbox3" style="visibility:visible;" type="checkbox" name="hot" {% if p.hot==1 %} checked='true' {%endif%} >是否热门</th>
         </div>
 
         <input type="hidden" id="hd_category" name="category_attributes" value="" />

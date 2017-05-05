@@ -960,10 +960,13 @@ class ProductHandler(AdminBaseHandler):
         page = int(self.get_argument("page", '1'))
         category = self.get_argument('category', None)
         keyword = self.get_argument("keyword", None)
-        active = int(self.get_argument("status", 1))
+        active = int(self.get_argument("status", -1))
         pagesize = setting.ADMIN_PAGESIZE
         is_score = int(is_score)
-        ft = (Product.active == active) & (Product.is_score == is_score)
+        if active == -1:
+            ft = (Product.is_score == is_score)
+        else:
+            ft = (Product.active == active) & (Product.is_score == is_score)
         if keyword:
             keyw = '%' + keyword + '%'
             ft = ft & (Product.name % keyw)
@@ -998,7 +1001,7 @@ class EditProductHandler(AdminBaseHandler):
             p = None
 
         category_attributes = []
-        for category in Category.select():
+        for category in Category.select().where(Category.active == 1):
             attributes = []
             for attribute in category.attributes:
                 attributes.append({
@@ -1024,6 +1027,8 @@ class EditProductHandler(AdminBaseHandler):
         category = self.get_body_argument('category', None)
         unit = self.get_body_argument('unit', None)
         is_score = self.get_body_argument('is_score', '')
+        hot = self.get_body_argument('hot', '')
+        active = self.get_body_argument('active', '')
         category_attributes = simplejson.loads(self.get_body_argument('category_attributes', None))
         hd_pic = self.get_body_argument('hd_pic', None)
         content = ''
@@ -1040,6 +1045,8 @@ class EditProductHandler(AdminBaseHandler):
         product.unit = unit
         product.intro = 'intro'
         product.is_score = 1 if is_score else 0
+        product.hot = 1 if hot else 0
+        product.active = 1 if active else 0
         product.save()
         print category_attributes
         for category in category_attributes:
@@ -1064,7 +1071,7 @@ class EditProductHandler(AdminBaseHandler):
         if pid == '0':
             content = '添加商品:p_id%d' % product.id
         else:
-            content = '编辑商品:p_id%d' % pid
+            content = '编辑商品:p_id%s' % pid
         AdminUserLog.create(admin_user=self.get_admin_user(), created=int(time.time()), content=content)
         self.redirect('/admin/edit_product/%s'%pid)
 
@@ -1076,7 +1083,7 @@ class DelPicHandler(AdminBaseHandler):
         pid = p.product.id
         p.delete_instance()
         AdminUserLog.create(admin_user=self.get_admin_user(), created=int(time.time()), content=content)
-        self.redirect('/admin/product/' + str(pid))
+        self.redirect('/admin/edit_product/' + str(pid))
 
 @route(r'/admin/primarypic/(\d+)', name='admin_primarypic')  # 设置产品图片
 class DelPicHandler(AdminBaseHandler):
@@ -1088,7 +1095,7 @@ class DelPicHandler(AdminBaseHandler):
         p.product.updatedby = self.get_admin_user()
         p.product.save()
         AdminUserLog.create(admin_user=self.get_admin_user(), created=int(time.time()), content=content)
-        self.redirect('/admin/product/' + str(p.product.id))
+        self.redirect('/admin/edit_product/' + str(p.product.id))
 
 
 # --------------------------------------------------------App管理-------------------------------------------------------
