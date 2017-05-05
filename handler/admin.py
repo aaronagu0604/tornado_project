@@ -1345,7 +1345,7 @@ class ExportInsuranceSuccessHandler(AdminBaseHandler):
         order_type = int(self.get_argument("order_type", 1))
         pagesize = setting.ADMIN_PAGESIZE
 
-        ft = (InsuranceOrder.status >0)
+        ft = (InsuranceOrder.status == 3)
 
         if begin_date and end_date:
             begin = time.strptime(begin_date, "%Y-%m-%d")

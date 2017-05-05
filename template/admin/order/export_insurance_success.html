@@ -117,7 +117,7 @@
                     <td>
                         <span style="color:#ff5231;">{{o.id}}</span>
                     </td>
-                    <td>{{o.deal_time | dateformat}}</td>
+                    <td>{{o.deal_time|datetimeformat}}</td>
                     <td>{{o.delivery_tel}}</td>
                     <td>{{o.delivery_region}}</td>
                     <td>{{o.store.name}}</td>
@@ -142,8 +142,12 @@
                     <td>{{o.current_order_price.vehicle_tax_price}}</td>
                     <td>{{o.current_order_price.business_price}}</td>
                     <td>
+                        {% if o.deliver_company %}
                         <span>{{o.deliver_company}}</span>
                         <br><span>({{o.deliver_num}})</span>
+                        {% else %}
+                        <span>/</span>
+                        {% endif %}
                     </td>
                     <td>型号</td>
                     <td>
