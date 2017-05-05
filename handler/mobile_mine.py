@@ -890,7 +890,7 @@ class MobileChangeInsuranceMethodHandler(MobileBaseHandler):
             iop_io_id = InsuranceOrderPrice.get(id=iop_id).insurance_order_id
             if iop_io_id == int(io_id):
                 io = InsuranceOrder.get(id=io_id)
-                io.current_order_price = iop_io_id
+                io.current_order_price = int(iop_id)
                 io.save()
                 result['flag'] = 1
                 result['msg'] = u'修改成功！'
