@@ -1307,7 +1307,7 @@ class WithdrawHandler(AdminBaseHandler):
         key = self.get_argument("keyword", None)
         begindate = self.get_argument("begindate", '')
         enddate = self.get_argument("enddate", '')
-        status = self.get_argument("status", '')
+        status = int(self.get_argument("status", 0))
 
         ft = (Withdraw.id > 0)
         if begindate and enddate:
@@ -1315,12 +1315,15 @@ class WithdrawHandler(AdminBaseHandler):
             end = time.strptime((enddate + " 23:59:59"), "%Y-%m-%d %H:%M:%S")
             ft = ft & (Withdraw.apply_time > time.mktime(begin)) & (Withdraw.apply_time < time.mktime(end))
 
-        if status:
+        if status == -1:
+            ft =ft
+        else:
             ft = ft & (Withdraw.status == status)
+
         if key:
             keyword = '%' + key + '%'
-            ft = ft & ((User.username % keyword) | ((User.mobile % keyword)))
-            uq = Withdraw.select().join(User, on=(Withdraw.user == User.id)).where(ft)
+            ft = ft & ((Store.name.contains(keyword)) | ((User.mobile.contains(keyword))))
+            uq = Withdraw.select().join(Store, on=(Withdraw.store == Store.id)).join(User, on=(Store.id == User.store)).where(ft)
         else:
             uq = Withdraw.select().where(ft)
         total = uq.count()
