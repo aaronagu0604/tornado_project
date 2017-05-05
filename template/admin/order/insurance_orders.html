@@ -2,17 +2,17 @@
 {% block css %}
 <link href="/style/css/plugins/dataTables.bootstrap.css" rel="stylesheet">
 <style>
-#province_code,#city_code{
-   height:34px;
-   margin-left: 0px;
-   transform:translateY(2px);
-   -webkit-transform:translateY(2px);
-   border-radius:4px;
-   border-color:#ccc;
-}
-.table th{ 
-	text-align:center;
-}
+    #province_code,#city_code{
+        height:34px;
+        margin-left: 0px;
+        transform:translateY(2px);
+        -webkit-transform:translateY(2px);
+        border-radius:4px;
+        border-color:#ccc;
+    }
+    .table th{
+        text-align:center;
+    }
 </style>
 {% endblock %}
 
@@ -71,18 +71,18 @@
             <table class="table table-hover" id="tb_users" cellpadding="0" cellspacing="0" border="0" style="text-align:center;">
                 <thead>
                 <tr style="background:#528acb;color:#fff;text-align:center;height:38px;line-height:38px;">
-                    <th style="width:8%;text-align:center;">订单号</th>
+                    <th style="width:7%;text-align:center;">订单号</th>
                     <th style="width:8%;text-align:center;">店铺</th>
-                    <th style="width:15%;text-align:center;">地址</th>
+                    <th style="width:14%;text-align:center;">地址</th>
                     <th style="width:10%;text-align:center;">下单时间</th>
                     <th style="width:10%;text-align:center;">支付时间</th>
                     <th style="width:7%;text-align:center;">保险名称</th>
                     <th style="width:5%;text-align:center;">价格</th>
-                    <th style="width:6%;text-align:center;">状态</th>
+                    <th style="width:5%;text-align:center;">状态</th>
                     <th style="width:4%;text-align:center;">优惠</th>
-                    <th style="width:8%;text-align:center;">支付方式</th>
+                    <th style="width:6%;text-align:center;">支付</th>
                     <th style="width:12%;text-align:center;">本地备注</th>
-                    <th style="width:5%;text-align:center;">操作</th>
+                    <th style="width:10%;text-align:center;">操作</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -105,38 +105,40 @@
                     <td>{{o.current_order_price.total_price}}</td>
                     <td>
                         {% if o.status==0 %}
-                        待确认
+                        <div style="color:#FF0800;">待报价</div>
                         {% elif o.status==1  %}
-                        待付款
+                        <div style="color:#990033;">待付款</div>
                         {% elif o.status==2 %}
-                        付款完成
+                        <div style="color:#00CC00;">已付款</div>
                         {% elif o.status==3 %}
-                        已办理
+                        <div style="color:#487;">已办理</div>
                         {% elif o.status==5 %}
-                        已取消
+                        <div style="color:#000800;">已取消</div>
                         {% endif %}
                     </td>
                     <td>
                         {% if o.current_order_price.gift_policy == 2 %}
-                        返现
+                        <div style="color:#990033;">返现</div>
                         {% elif o.current_order_price.gift_policy == 1 %}
-                        返油
+                        <div style="color:#00CC00;">返油</div>
                         {% else %}
-                        无
+                        <div style="color:#000800;">无</div>
                         {% endif %}
                     </td>
                     <td>
-						{% if o.status==2 or o.status==3 %}
+                        {% if o.status==2 or o.status==3 %}
                         {% if o.payment==1 %}
-                        <div>支付宝支付</div>
+                        <div style="color:#487;">支付宝</div>
                         {% elif o.payment==5 %}
-                        <div>积分支付</div>
+                        <div style="color:#0000ff;">积分</div>
                         {% elif o.payment==6 %}
-                        <div>微信支付</div>
+                        <div style="color:#006600;">微信</div>
                         {% elif o.payment==7 %}
-                        <div>银联支付</div>
+                        <div style="color:#004400;">银联</div>
+                        {% else %}
+                        --
                         {%endif%}
-						{% endif %}
+                        {% endif %}
                     </td>
                     <td>
                         {{o.cancel_reason or ''}}
@@ -145,6 +147,7 @@
                         {%endif%}
                     </td>
                     <td>
+                        <a href="/admin/insurance_order/{{o.id}}?state={{state}}&status={{status}}&page={{page}}" class="btn btn-outline btn-primary btn-xs">详情</a>
                         {% if o.status==1 or o.status==0 %}
                         <a href="/admin/delinsurance/{{o.id}}?status={{status}}&page={{page}}" onclick="return confirm('确定关闭？');"
                            class="btn btn-outline btn-primary btn-xs">关闭</a>
@@ -197,46 +200,46 @@
             startPage: {{page}},
             visiblePages: 8,
             onPageClick: function (event, page) {
-                self.location="/admin/insurances/{{state}}?status={{status}}&begin_date={{begin_date or ''}}&end_date={{end_date or ''}}&keyword={{keyword or ''}}&province_code={{default_province or ''}}&city_code={{default_city or ''}}&page="+page;
-            }
+            self.location="/admin/insurance_orders?status={{status}}&begin_date={{begin_date or ''}}&end_date={{end_date or ''}}&keyword={{keyword or ''}}&province_code={{default_province or ''}}&city_code={{default_city or ''}}&page="+page;
+        }
+    });
+
+        $('#checkall').bind('click',function () {
+            $('#tb_users :checkbox').prop('checked',this.checked);
         });
-
-    $('#checkall').bind('click',function () {
-        $('#tb_users :checkbox').prop('checked',this.checked);
-    });
-    var xsrf='{{handler.xsrf_token}}';
+        var xsrf='{{handler.xsrf_token}}';
     });
 
-function province_change(id, default_id){
-    $("#city_code > option").remove();
-    $("#city_code").append("<option value=\"0\">--请选择城市--</option>");
-    if(id > 0){
-        GetSubAreas(id, "city_code", default_id);
+    function province_change(id, default_id){
+        $("#city_code > option").remove();
+        $("#city_code").append("<option value=\"0\">--请选择城市--</option>");
+        if(id > 0){
+            GetSubAreas(id, "city_code", default_id);
+        }
     }
-}
-function GetSubAreas(id, ddl_id, default_id) {
-    $.get("/ajax/GetSubAreas", { parent_code: id,  t: Math.random() }, function (data) {
-        data = jQuery.parseJSON(data);
-        if(data.flag==1){
-            for(var i=0; i< data.data.length; i++){
-                if(default_id.length>0){
-                    if(data.data[i]["code"]==default_id){
-                        $("#" + ddl_id).append("<option value=\"" + data.data[i]["code"] + "\" selected>" + data.data[i]["name"] + "</option>");
+    function GetSubAreas(id, ddl_id, default_id) {
+        $.get("/ajax/GetSubAreas", { pcode: id,  t: Math.random() }, function (data) {
+            data = jQuery.parseJSON(data);
+            if(data.flag==1){
+                for(var i=0; i< data.data.length; i++){
+                    if(default_id.length>0){
+                        if(data.data[i]["code"]==default_id){
+                            $("#" + ddl_id).append("<option value=\"" + data.data[i]["code"] + "\" selected>" + data.data[i]["name"] + "</option>");
+                        }
+                        else{
+                            $("#" + ddl_id).append("<option value=\"" + data.data[i]["code"] + "\">" + data.data[i]["name"] + "</option>");
+                        }
                     }
-                    else{
+                    else {
                         $("#" + ddl_id).append("<option value=\"" + data.data[i]["code"] + "\">" + data.data[i]["name"] + "</option>");
                     }
                 }
-                else {
-                    $("#" + ddl_id).append("<option value=\"" + data.data[i]["code"] + "\">" + data.data[i]["name"] + "</option>");
-                }
             }
-        }
-        else{
-            alert(data.msg)
-        }
-    });
-}
+            else{
+                alert(data.msg)
+            }
+        });
+    }
 
     function request(paras){
         var url = location.href;

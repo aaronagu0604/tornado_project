@@ -1508,7 +1508,7 @@ class InsuranceOrderHandler(AdminBaseHandler):
     def get(self):
         archive = self.get_argument("archive", '')
         page = self.get_argument("page", 1)
-        page = 1 if page else int(page)
+        page = int(page) if page else 1
         status = self.get_argument("status", '')
         status = int(status) if status else -2
         keyword = self.get_argument("keyword", '')
@@ -1528,11 +1528,11 @@ class InsuranceOrderHandler(AdminBaseHandler):
             ft = (InsuranceOrder.status > -2)
         if keyword:
             keyw = '%' + keyword + '%'
-            ft &= ((InsuranceOrder.ordernum % keyw)|(InsuranceOrder.mobile % keyw))
+            ft &= (InsuranceOrder.ordernum % keyw)
         if begin_date and end_date:
             begin = time.strptime(begin_date, "%Y-%m-%d")
             end = time.strptime((end_date + " 23:59:59"), "%Y-%m-%d %H:%M:%S")
-            ft = ft & (InsuranceOrder.paytime > time.mktime(begin)) & (InsuranceOrder.paytime < time.mktime(end))
+            ft = ft & (InsuranceOrder.pay_time > time.mktime(begin)) & (InsuranceOrder.pay_time < time.mktime(end))
 
         if district and district != '0':
             ft &= (Store.area_code == district)
@@ -1601,6 +1601,7 @@ class InsuranceOrderDetailHandler(AdminBaseHandler):
                 'business_price': program.business_price,
                 'vehicle_tax_price': program.vehicle_tax_price,
                 'program': i_item_list,
+                'program_len': range(0, len(i_item_list), 2),
                 'msg': program.sms_content if program.sms_content else '',
                 'rates': rates
             })

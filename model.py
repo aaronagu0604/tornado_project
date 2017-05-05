@@ -715,17 +715,25 @@ class InsuranceOrderPrice(db.Model):
     insurance = ForeignKeyField(Insurance, db_column='insurance_id')  # 所购保险公司ID
     created = IntegerField(default=0)  # 报价/修改 时间
     admin_user = ForeignKeyField(AdminUser, db_column='admin_user_id', null=True)  # 报价人员
-    gift_policy = IntegerField(default=0)  # 礼品策略 1反油， 2反现金
     response = IntegerField(default=0)  # 0未报价 1已经报价 2不可再修改 -1关闭
     status = IntegerField(default=1)  # 状态 0已过期, 1有效
     read = IntegerField(default=0)  # 状态 0未读, 1已读
+    gift_policy = IntegerField(default=0)  # 礼品策略 1反油， 2反现金
     score = IntegerField(default=0)  # 卖的这单保险可以获取多少积分
+    driver_lube_type = CharField(default='')    # 返车主油品型号
+    driver_lube_num = IntegerField(default=0)  # 返车主油品数量
+    store_lube_type = CharField(default='')    # 返修理厂油品型号
+    store_lube_num = IntegerField(default=0)  # 返修理厂油品数量
     cash = FloatField(default=0.0)  # 返现金额
     total_price = FloatField(default=0.0)  # 保险订单总价格
     force_price = FloatField(default=0.0)  # 交强险 价格
     business_price = FloatField(default=0.0)  # 商业险价格
     vehicle_tax_price = FloatField(default=0.0)  # 车船税价格
     sms_content = CharField(max_length=1024, null=True)  # 短信通知内容
+
+    append_refund_time = IntegerField(default=0)    # 补退款时间
+    append_refund_reason = CharField(max_length=128, default='')    # 补退款原因
+    append_refund_num = FloatField(default=0.0)    # 补退款金额
 
     # 交强险
     forceI = CharField(max_length=32, default='')  # 是否包含交强险

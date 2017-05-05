@@ -141,9 +141,7 @@
 {% block js %}
 <script src="/style/js/jquery.twbsPagination.min.js"></script>
 <script type="text/javascript">
-
     var xsrf='{{handler.xsrf_token}}';
-
     $(document).ready(function() {
         $('#pageUl').twbsPagination({
             first:'首页',
@@ -151,12 +149,12 @@
             next:'下一页',
             last:'尾页',
             totalPages: {{totalpage}},
-        startPage: {{page}},
-        visiblePages: 8,
+            startPage: {{page}},
+            visiblePages: 8,
             onPageClick: function (event, page) {
-            self.location="/admin/saler?keyword={{keyword or ''}}&province={{province or ''}}&city={{city or ''}}&district={{district or ''}}&page="+page;
-        }
-    });
+                self.location="/admin/saler?keyword={{keyword or ''}}&province={{province or ''}}&city={{city or ''}}&district={{district or ''}}&page="+page;
+            }
+        });
 
         // 页面初始化时绑定地址信息：省、市、区
         if("{{province}}".length > 0) {
