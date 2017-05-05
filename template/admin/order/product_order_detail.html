@@ -56,7 +56,7 @@
                         <td>{{o.buyer_store.name}}</td>
                     </tr>
                     {% if o.status > 0 %}
-                    <tr>
+                   <tr>
                         <td>支付时间：</td>
                         <td>{{o.ordered|datetimeformat}}</td>
                         <td>支付方式：</td>
@@ -73,6 +73,21 @@
                         </td>
                     </tr>
                     {% endif %}
+
+                     <tr>
+                        <td>总金额：</td>
+                        <td>
+                            {% if o.total_price>0 %}
+                            {{o.total_price}}元
+                            {% else %}
+                            {{o.total_score}}积分
+                            {% endif %}
+                        </td>
+                        <td></td>
+                        <td>
+
+                        </td>
+                    </tr>
                     <tr>
                         <td>取消订单：</td>
                         <td><input class="form-control" id="cancel_cause" name="cancel_cause" type="text" value="{{o.message}}" placeholder="订单取消原因..." style="width:480px;">
