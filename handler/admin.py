@@ -1023,7 +1023,7 @@ class EditProductHandler(AdminBaseHandler):
         brand = self.get_body_argument('brand', None)
         category = self.get_body_argument('category', None)
         unit = self.get_body_argument('unit', None)
-        is_score = self.get_body_argument('is_score', 0)
+        is_score = self.get_body_argument('is_score', '')
         category_attributes = simplejson.loads(self.get_body_argument('category_attributes', None))
         hd_pic = self.get_body_argument('hd_pic', None)
         content = ''
@@ -1031,26 +1031,27 @@ class EditProductHandler(AdminBaseHandler):
             product = Product()
             product.created = int(time.time())
             product.active = 1
-            content = '添加商品:p_id%d'%product.id
         else:
             product = Product.get(id=pid)
-            content = '编辑商品:p_id%d'%pid
         product.name = name
         product.brand = brand
         product.category = category
         product.resume = resume
         product.unit = unit
         product.intro = 'intro'
-        product.is_score = is_score
+        product.is_score = 1 if is_score else 0
         product.save()
+        print category_attributes
         for category in category_attributes:
+            if not (category['attribute_id'] and category['attribute_value_id']):
+                continue
             if pid == '0':
                 product_attr = ProductAttributeValue()
                 product_attr.product = product.id
-                product_attr.attribute = category['attribute_id']
+                product_attr.attribute = int(category['attribute_id'])
             else:
-                product_attrs = ProductAttributeValue.select().where((ProductAttributeValue.product == pid) &
-                                (ProductAttributeValue.attribute == category['attribute_id']))
+                product_attrs = ProductAttributeValue.select().where((ProductAttributeValue.product == int(pid)) &
+                                (ProductAttributeValue.attribute == int(category['attribute_id'])))
                 if product_attrs.count() > 0:
                     product_attr = product_attrs[0]
                 else:
@@ -1058,10 +1059,36 @@ class EditProductHandler(AdminBaseHandler):
                     product_attr.product = product.id
                     product_attr.attribute = category['attribute_id']
             product_attr.attribute_item = category['attribute_value_id']
-            product_attr.value = CategoryAttributeItems.get(id=category['attribute_value_id']).name
+            product_attr.value = CategoryAttributeItems.get(id=int(category['attribute_value_id'])).name
             product_attr.save()
+        if pid == '0':
+            content = '添加商品:p_id%d' % product.id
+        else:
+            content = '编辑商品:p_id%d' % pid
         AdminUserLog.create(admin_user=self.get_admin_user(), created=int(time.time()), content=content)
         self.redirect('/admin/edit_product/%s'%pid)
+
+@route(r'/admin/delpic/(\d+)', name='admin_delpic')  # 删除产品图片
+class DelPicHandler(AdminBaseHandler):
+    def get(self, pcid):
+        p = ProductPic.get(ProductPic.id == int(pcid))
+        content = '删除产品图片: pic_id:%s,path:%s'%(pcid,p.pic)
+        pid = p.product.id
+        p.delete_instance()
+        AdminUserLog.create(admin_user=self.get_admin_user(), created=int(time.time()), content=content)
+        self.redirect('/admin/product/' + str(pid))
+
+@route(r'/admin/primarypic/(\d+)', name='admin_primarypic')  # 设置产品图片
+class DelPicHandler(AdminBaseHandler):
+    def get(self, pcid):
+        p = ProductPic.get(ProductPic.id == int(pcid))
+        content = '设置主图:pcid:%s,old_path:%s,new_path:%s'%(pcid,p.product.cover,p.pic)
+        p.product.cover = p.pic
+        p.product.updatedtime = int(time.time())
+        p.product.updatedby = self.get_admin_user()
+        p.product.save()
+        AdminUserLog.create(admin_user=self.get_admin_user(), created=int(time.time()), content=content)
+        self.redirect('/admin/product/' + str(p.product.id))
 
 
 # --------------------------------------------------------App管理-------------------------------------------------------

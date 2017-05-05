@@ -13,6 +13,9 @@ from tornado.web import asynchronous
 from tornado.concurrent import run_on_executor
 from concurrent.futures import ThreadPoolExecutor
 import logging
+import os
+import random
+from payqrcode import postRequest
 
 @route(r'/ajax/GetSubAreas', name='ajax_GetSubAreas')  # 获取下级区域
 class AjaxGetSubAreas(BaseHandler):
@@ -759,6 +762,100 @@ class InsuranceExportHandler(BaseHandler):
             result['msg'] = e.message
         self.write(simplejson.dumps(result))
 
+@route(r'/ajax/upload', name='ajax_upload')  # 上传文件，用于产品内容
+class UploadHandler(BaseHandler):
+    def check_xsrf_cookie(self):
+        pass
+
+    def post(self):
+        if self.request.files:
+            ext = self.request.files["filedata"][0]["filename"].rsplit('.')[-1].lower()
+
+            if ext in ['jpg', 'gif', 'png']:
+                # p = Product.get(id=pid)
+                filename = '%d%d.%s' % (int(time.time()), random.randint(1000, 9999), ext)
+                size = len(self.request.files["filedata"][0]["body"])
+                if size<=2*1024*1024:
+                    try:
+                        user = self.get_current_user()
+                        user_id = 0
+                        if user:
+                            user_id = user.id
+                            path_dir = 'upload/'  + str(user_id/10000) + '/' + str(user_id)
+                            if not os.path.exists('upload/' + str(user_id/10000)):
+                                os.mkdir('upload/' + str(user_id/10000))
+                            if not os.path.exists(path_dir):
+                                os.mkdir(path_dir)
+                        else:
+                            year = time.strftime("%Y",time.localtime())
+                            mon = time.strftime("%m",time.localtime())
+                            day = time.strftime("%d",time.localtime())
+                            path_dir = 'upload/' + str(user_id/10000) + '/' + year + mon + '/' + day
+                            if not os.path.exists('upload/' + str(user_id/10000)):
+                                os.mkdir('upload/' + str(user_id/10000))
+                            if not os.path.exists('upload/' + str(user_id/10000)+ '/' + year + mon ):
+                                os.mkdir('upload/' + str(user_id/10000)+ '/' + year + mon )
+                            if not os.path.exists(path_dir):
+                                os.mkdir(path_dir)
+                        imgurl = ''
+                        with open(path_dir + '/' + filename, "wb") as f:
+                            f.write(self.request.files["filedata"][0]["body"])
+                        imgurl = postRequest(open(path_dir + '/' + filename,'rb'))
+                        print imgurl
+                        msg = '{"err":"","msg":"' + imgurl + '"}'
 
 
+                    except Exception, e:
+                        import traceback
+                        traceback.print_exc()
+                        msg = '{"err":0,"msg":"上传失败"}'
+                else:
+                    msg = '{"err":0,"msg":"上传图片大小不能超过2M！"}'
+            else:
+                msg = '{"err":0,"msg":"请上传.jpg,.gif,.png格式图片！"}'
+            self.write(msg)
+
+@route(r'/ajax/product/pic/(\d+)', name='ajax_product_pic')  # 上传产品图片文件
+class UploadHandler(BaseHandler):
+    def check_xsrf_cookie(self):
+        pass
+
+    def post(self, pid):
+        if self.request.files:
+            ext = self.request.files["filedata"][0]["filename"].rsplit('.')[-1].lower()
+
+            if ext in ['jpg', 'gif', 'png']:
+                p = Product.get(id=pid)
+                filename = '%d%d.%s' % (int(time.time()), random.randint(1000, 9999), ext)
+                try:
+                    user = self.current_user
+                    user_id = 0
+                    if user:
+                        user_id = user.id
+                        path_dir = 'upload/'  + str(user_id/10000) + '/' + str(user_id)
+                        if not os.path.exists('upload/' + str(user_id/10000)):
+                            os.mkdir('upload/' + str(user_id/10000))
+                        if not os.path.exists(path_dir):
+                            os.mkdir(path_dir)
+                    else:
+                        year = time.strftime("%Y",time.localtime())
+                        mon = time.strftime("%m",time.localtime())
+                        day = time.strftime("%d",time.localtime())
+                        path_dir = 'upload/' + str(user_id/10000) + '/' + year + mon + '/' + day
+                        if not os.path.exists('upload/' + str(user_id/10000)):
+                            os.mkdir('upload/' + str(user_id/10000))
+                        if not os.path.exists('upload/' + str(user_id/10000)+ '/' + year + mon ):
+                            os.mkdir('upload/' + str(user_id/10000)+ '/' + year + mon )
+                        if not os.path.exists(path_dir):
+                            os.mkdir(path_dir)
+                    with open(path_dir + '/' + filename, "wb") as f:
+                        f.write(self.request.files["filedata"][0]["body"])
+                    imgurl = postRequest(open(path_dir + '/' + filename, 'rb'))
+                    print imgurl
+                    pic = ProductPic.create(product=p, pic=imgurl, isactive=1)
+                    msg = '{"id":' + str(pic.id) + ',"path":"'+ imgurl +'"}'
+                except Exception, e:
+                    logging.error(e)
+                    msg = '{"id":0,"path":"上传失败"}'
+            self.write(msg)
 

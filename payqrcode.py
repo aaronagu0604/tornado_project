@@ -29,6 +29,8 @@ def postRequest(data):
         else:
             return None
     except Exception:
+        import traceback
+        traceback.print_exc()
         return None
 
 def createqrcode(content='default content'):
