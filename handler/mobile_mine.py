@@ -543,7 +543,7 @@ class MobileInsuranceOrderHandler(MobileBaseHandler):
                 'recipientsTel': io.delivery_tel,
                 'recipientsAddr': io.delivery_province+io.delivery_city+io.delivery_region+io.delivery_address,
                 'price': io.current_order_price.total_price,
-                'commission': io.current_order_price.gift_policy,
+                'commission': u'返油' if io.current_order_price.gift_policy == 1 else u'返佣金',
                 'ordered': time.strftime('%Y-%m-%d %H:%M%S', time.localtime(io.ordered)),
                 'deadline': time.strftime('%Y-%m-%d %H-%M-%S', time.localtime(io.ordered + setting.INSURANCE_ORDER_TIME_OUT))
             })
