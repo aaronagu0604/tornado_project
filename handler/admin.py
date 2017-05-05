@@ -828,10 +828,14 @@ class CategoryAttributeAddHandler(AdminBaseHandler):
 @route(r'/admin/brand', name='admin_brand')  # 品牌管理
 class BrandHandler(AdminBaseHandler):
     def get(self):
+        status = int(self.get_argument('status',-1))
         page = int(self.get_argument("page", '1'))
         pagesize = setting.ADMIN_PAGESIZE
+        if status == -1:
+            brands = Brand.select()
+        else:
+            brands = Brand.select().where(Brand.active == status)
 
-        brands = Brand.select()
         total = brands.count()
         if total % pagesize > 0:
             totalpage = total / pagesize + 1
@@ -839,7 +843,7 @@ class BrandHandler(AdminBaseHandler):
             totalpage = total / pagesize
         bs = brands.paginate(page, pagesize)
 
-        self.render('admin/product/brand.html', bs=bs, total=total, page=page, pagesize=pagesize,totalpage=totalpage, active='brand')
+        self.render('admin/product/brand.html', bs=bs, total=total, page=page, pagesize=pagesize,totalpage=totalpage, active='brand', status = status)
 
 
 @route(r'/admin/edit_brand/(\d+)', name='admin_edit_brand')  # 编辑品牌
