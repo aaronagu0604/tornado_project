@@ -566,7 +566,7 @@ class MobileInsuranceOrderDetailHandler(MobileBaseHandler):
     @apiSampleRequest /mobile/insuranceorderdetail
     """
 
-    @require_auth
+    #@require_auth
     def get(self):
         result = {'flag': 0, 'msg': '', "data": []}
         iList = {'subjoin': [], 'main': [], 'force': 'false'}
@@ -578,6 +578,8 @@ class MobileInsuranceOrderDetailHandler(MobileBaseHandler):
         for i in insuranceitem:
             iValue = getattr(insuranceorder.current_order_price, i.eName)
             iPrice = getattr(insuranceorder.current_order_price, i.eName+'Price')
+            if not iPrice:
+                iPrice = 0
             if i.style == u'交强险':
                 iList['force'] = iValue if iValue else ''
                 iList['forceprice'] = iPrice
