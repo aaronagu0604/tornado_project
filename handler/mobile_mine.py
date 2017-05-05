@@ -573,17 +573,23 @@ class MobileInsuranceOrderDetailHandler(MobileBaseHandler):
         ioid = int(self.get_argument('id', 1))
         insuranceorder = InsuranceOrder.get(id=ioid)
         insuranceitem = InsuranceItem.select().order_by(InsuranceItem.sort)
+        iList['mainprice'] = 0
+        iList['subjoinprice'] = 0
         for i in insuranceitem:
             iValue = getattr(insuranceorder.current_order_price, i.eName)
+            iPrice = getattr(insuranceorder.current_order_price, i.eName+'Price')
             if i.style == u'交强险':
                 iList['force'] = iValue if iValue else ''
+                iList['forceprice'] = iPrice
             elif i.style == u'商业险-主险' and iValue != 'false' and iValue:
-                iList['main'].append({'eName': i.eName, 'name': i.name, 'style': i.style, 'value': iValue})
+                iList['main'].append({'eName': i.eName, 'name': i.name, 'style': i.style, 'value': iValue, 'price':iPrice})
+                iList['mainprice'] += iPrice
             elif i.style == u'商业险-附加险' and iValue != 'false' and iValue:
-                iList['subjoin'].append({'eName': i.eName, 'name': i.name, 'style': i.style, 'value': iValue})
+                iList['subjoin'].append({'eName': i.eName, 'name': i.name, 'style': i.style, 'value': iValue, 'price':iPrice})
+                iList['subjoinprice'] += iPrice
 
         if insuranceorder.current_order_price.gift_policy == 1:
-            commission = u'返佣返油（三个工作日内送达）'
+            commission = str(insuranceorder.current_order_price.score) + u'桶'
         elif insuranceorder.current_order_price.gift_policy == 2:
             commission = str(insuranceorder.current_order_price.score) + u'积分'
         else:
@@ -607,6 +613,7 @@ class MobileInsuranceOrderDetailHandler(MobileBaseHandler):
             'paytype': insuranceorder.payment,
             'deadlinewarning': deadlineWarning,
             'commission': commission,
+            'gift_policy': u'返油' if insuranceorder.current_order_price.gift_policy == 1 else u'返佣金',
             'insuranceorderprice': {
                 'status': insuranceorder.status,
                 'insurance': insuranceorder.current_order_price.insurance.name,
