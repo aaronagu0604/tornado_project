@@ -566,7 +566,7 @@ class MobileInsuranceOrderDetailHandler(MobileBaseHandler):
     @apiSampleRequest /mobile/insuranceorderdetail
     """
 
-    #@require_auth
+    @require_auth
     def get(self):
         result = {'flag': 0, 'msg': '', "data": []}
         iList = {'subjoin': [], 'main': [], 'force': 'false'}
