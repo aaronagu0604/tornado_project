@@ -738,6 +738,52 @@ class MobileInsuranceOrderDetailHandler(MobileBaseHandler):
         self.write(simplejson.dumps(result))
         self.finish()
 
+@route(r'/mobile/update_insuranceorderd_address', name='mobile_update_insuranceorderd_address')  # 保险订单详情
+class MobileInsuranceOrderDetailHandler(MobileBaseHandler):
+    """
+    @apiGroup mine
+    @apiVersion 1.0.0
+    @api {get} /mobile/update_insuranceorderd_address 10. 保险订单详情
+    @apiDescription 保险订单详情
+
+    @apiHeader {String} token 用户登录凭证
+
+    @apiParam {Int} io_id 保险订单id
+
+    @apiSampleRequest /mobile/update_insuranceorderd_address
+    """
+
+    @require_auth
+    def post(self):
+        result = {'flag': 0, 'msg': '', "data": {}}
+        io_id = int(self.geget_body_argument('io_id', 0))
+
+        delivery_to = self.get_body_argument('delivery_to', None)
+        delivery_tel = self.get_body_argument('delivery_tel', None)
+        delivery_province = self.get_body_argument('delivery_province', None)
+        delivery_city = self.get_body_argument('delivery_city', None)
+        delivery_district = self.get_body_argument('delivery_district', None)
+        delivery_address = self.get_body_argument('delivery_address', None)
+
+        user = self.get_user()
+        if user and delivery_address and delivery_city and delivery_province and delivery_district and \
+                delivery_tel and delivery_to and io_id:
+            order = InsuranceOrder.get(id = io_id)
+            order.delivery_to = delivery_to
+            order.delivery_tel = delivery_tel
+            order.delivery_province = delivery_province
+            order.delivery_city = delivery_city
+            order.delivery_region = delivery_district
+            order.delivery_address = delivery_address
+            order.save()
+
+            result['flag'] = 1
+            result['msg'] = '修改成功'
+        else:
+            result['msg'] = '输入参数异常'
+        self.write(simplejson.dumps(result))
+        self.finish()
+
 @route(r'/mobile/insurance_method', name='mobile_insurance_method')  # 保险订单历史方案 列表
 class MobileInsuranceMethodHandler(MobileBaseHandler):
     """
