@@ -646,6 +646,97 @@ class MobileInsuranceOrderDetailHandler(MobileBaseHandler):
 
         self.write(simplejson.dumps(result))
 
+    @require_auth
+    def post(self):
+        result = {'flag': 0, 'msg': '', "data": {}}
+        io_id  = int(self.geget_body_argument('io_id', 0))
+        # id_card_front = self.get_body_argument('id_card_front', None)
+        # id_card_back = self.get_body_argument('id_card_back', None)
+        # drive_card_front = self.get_body_argument('drive_card_front', None)
+        # drive_card_back = self.get_body_argument('drive_card_back', None)
+        insurance = self.get_body_argument('insurance', None)
+        # delivery_to = self.get_body_argument('delivery_to', None)
+        # delivery_tel = self.get_body_argument('delivery_tel', None)
+        # delivery_province = self.get_body_argument('delivery_province', None)
+        # delivery_city = self.get_body_argument('delivery_city', None)
+        # delivery_district = self.get_body_argument('delivery_district', None)
+        # delivery_address = self.get_body_argument('delivery_address', None)
+        gift_policy = self.get_body_argument('gift_policy', None)
+
+        forceI = self.get_body_argument('forceI', '')
+        damageI = self.get_body_argument('damageI', '')
+        damageIPlus = self.get_body_argument('damageIPlus', '')
+        thirdDutyI = self.get_body_argument('thirdDutyI', '')
+        thirdDutyIPlus = self.get_body_argument('thirdDutyIPlus', '')
+        robbingI = self.get_body_argument('robbingI', '')
+        robbingIPlus = self.get_body_argument('robbingIPlus', '')
+        driverDutyI = self.get_body_argument('driverDutyI', '')
+        driverDutyIPlus = self.get_body_argument('driverDutyIPlus', '')
+        passengerDutyI = self.get_body_argument('passengerDutyI', '')
+        passengerDutyIPlus = self.get_body_argument('passengerDutyIPlus', '')
+        glassI = self.get_body_argument('glassI', '')
+        scratchI = self.get_body_argument('scratchI', '')
+        scratchIPlus = self.get_body_argument('scratchIPlus', '')
+        fireDamageI = self.get_body_argument('fireDamageI', '')
+        fireDamageIPlus = self.get_body_argument('fireDamageIPlus', '')
+        wadeI = self.get_body_argument('wadeI', '')
+        wadeIPlus = self.get_body_argument('wadeIPlus', '')
+        thirdSpecialI = self.get_body_argument('thirdSpecialI', '')
+
+        user = self.get_user()
+        if user and gift_policy and insurance and io_id:
+            order = InsuranceOrder.get(id = io_id)
+            order.user = user
+            order.store = user.store
+            # order.id_card_front = id_card_front
+            # order.id_card_back = id_card_back
+            # order.drive_card_front = drive_card_front
+            # order.drive_card_back = drive_card_back
+            # order.ordered = int(time.time())
+            # order.delivery_to = delivery_to
+            # order.delivery_tel = delivery_tel
+            # order.delivery_province = delivery_province
+            # order.delivery_city = delivery_city
+            # order.delivery_region = delivery_district
+            # order.delivery_address = delivery_address
+            order.status = 0
+            order.save()
+            order_price = InsuranceOrderPrice()
+            order_price.insurance_order_id = order.id
+            order_price.insurance = insurance
+            order_price.created = int(time.time())
+            order_price.gift_policy = gift_policy
+            order_price.forceI = forceI
+            order_price.damageI = damageI
+            order_price.damageIPlus = damageIPlus
+            order_price.thirdDutyI = thirdDutyI
+            order_price.thirdDutyIPlus = thirdDutyIPlus
+            order_price.robbingI = robbingI
+            order_price.robbingIPlus = robbingIPlus
+            order_price.driverDutyI = driverDutyI
+            order_price.driverDutyIPlus = driverDutyIPlus
+            order_price.passengerDutyI = passengerDutyI
+            order_price.passengerDutyIPlus = passengerDutyIPlus
+            order_price.glassI = glassI
+            order_price.scratchI = scratchI
+            order_price.scratchIPlus = scratchIPlus
+            order_price.fireDamageI = fireDamageI
+            order_price.fireDamageIPlus = fireDamageIPlus
+            order_price.wadeI = wadeI
+            order_price.wadeIPlus = wadeIPlus
+            order_price.thirdSpecialI = thirdSpecialI
+            order_price.save()
+            # order.ordernum = 'U' + str(user.id) + 'I' + str(order.id)
+            order.current_order_price = order_price.id
+            order.save()
+            result['flag'] = 1
+            result['msg'] = '修改成功'
+            result['data']['order_id'] = order.id
+            result['data']['order_price_id'] = order_price.id
+        else:
+            result['msg'] = '输入参数异常'
+        self.write(simplejson.dumps(result))
+        self.finish()
 
 @route(r'/mobile/insurance_method', name='mobile_insurance_method')  # 保险订单历史方案 列表
 class MobileInsuranceMethodHandler(MobileBaseHandler):
