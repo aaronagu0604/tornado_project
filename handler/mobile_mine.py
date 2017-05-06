@@ -628,6 +628,7 @@ class MobileInsuranceOrderDetailHandler(MobileBaseHandler):
             'store_name': insuranceorder.store.name,
             'store_addr': Area.get_detailed_address(insuranceorder.store.area_code) + insuranceorder.store.address,
             'mobile': insuranceorder.store.mobile,
+            'total_price': insuranceorder.current_order_price.total_price,
             'insuranceorderprice': {
                 'status': insuranceorder.status,
                 'insurance': insuranceorder.current_order_price.insurance.name,
@@ -1966,12 +1967,15 @@ class MobileChangeLoginPasswordHandler(MobileBaseHandler):
         new_password = self.get_body_argument('new_password', None)
 
         if user.check_password(old_password):
-            user.password = user.create_password(new_password)
-            user.save()
-            result['flag'] = 1
-            result['msg'] = '修改成功'
+            if old_password == new_password:
+                result['msg'] = u'新旧密码不能相同'
+            else:
+                user.password = user.create_password(new_password)
+                user.save()
+                result['flag'] = 1
+                result['msg'] = u'修改成功'
         else:
-            result['msg'] = '原始密码不正确'
+            result['msg'] = u'原始密码不正确'
         self.write(simplejson.dumps(result))
 
 
