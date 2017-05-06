@@ -419,11 +419,12 @@ class WebAppCarItemListHandler(BaseHandler):
         self.write(simplejson.dumps(result))
 
 
-@route(r'/ajax/get_score_rate', name='ajax_get_score_rate')  # 获取返佣比率
+@route(r'/ajax/get_score_rate', name='ajax_get_score_rate')  # 获取返现比率
 class WebAppCarItemListHandler(BaseHandler):
     def get_return_cash(self, sid, iid):
         try:
-            cash_policy = simplejson.loads(SSILubePolicy.get((SSILubePolicy.store == sid) & (SSILubePolicy.insurance == iid)).cash)
+            cash = SSILubePolicy.get((SSILubePolicy.store == sid) & (SSILubePolicy.insurance == iid)).cash
+            cash_policy = simplejson.loads(cash)
         except Exception, e:
             cash_policy = None
         return cash_policy
@@ -431,28 +432,29 @@ class WebAppCarItemListHandler(BaseHandler):
     def get(self):
         result = {'flag': 0, 'msg': '', "data": {}}
         pid = self.get_argument('pid', None)
+        iid = self.get_argument('iid', None)
         try:
             iop = InsuranceOrderPrice.get(id=pid)
             io = InsuranceOrder.get(id=iop.insurance_order_id)
             # rates = InsuranceScoreExchange.get_score_policy(io.store.area_code, iop.insurance.id)
-            rates = self.get_return_cash(io.store.id, iop.insurance.id)
+            rates = self.get_return_cash(io.store.id, iid)
             if rates:
                 iis = InsuranceItem.select().where(InsuranceItem.style_id > 1)
-                result['data']['force_tax'] = rates['force_tax_rate']
-                result['data']['business_tax'] = rates['business_tax_rate']
-                result['data']['ali_rate'] = rates['ali_rate']
-                result['data']['profit_rate'] = rates['profit_rate']
-                result['data']['base_money'] = rates['base_money']
+                result['data']['force_tax'] = rates['ftr']
+                result['data']['business_tax'] = rates['btr']
+                result['data']['ali_rate'] = rates['ar']
+                result['data']['profit_rate'] = rates['pr']
+                result['data']['base_money'] = rates['bm']
                 for ii in iis:
                     if iop.__dict__['_data'][ii.eName]:
                         business = True
                         break
                 if iop.forceI and business:
-                    result['data']['business_s'] = rates['business_exchange_rate2']
-                    result['data']['force_s'] = rates['force_exchange_rate2']
+                    result['data']['business_s'] = rates['ber2']
+                    result['data']['force_s'] = rates['fer2']
                 else:
-                    result['data']['business_s'] = rates['business_exchange_rate']
-                    result['data']['force_s'] = rates['force_exchange_rate']
+                    result['data']['business_s'] = rates['ber']
+                    result['data']['force_s'] = rates['fer']
             else:
                 result['data']['force_tax'] = 0
                 result['data']['business_tax'] = 0
@@ -469,6 +471,7 @@ class WebAppCarItemListHandler(BaseHandler):
 
         self.write(simplejson.dumps(result))
 
+
 @route(r'/ajax/caculate_gift_oil', name='ajax_get_gift_oil_rate')  # 获取返佣比率
 class GetGiftOilHandler(BaseHandler):
     def get(self):
@@ -477,10 +480,6 @@ class GetGiftOilHandler(BaseHandler):
         iopid = int(self.get_argument('iopid', 0))
         forcetotal = int(self.get_argument('force', 0))
         businesstotal = int(self.get_argument('business', 0))
-        iopid = self.get_argument('iopid', None)
-        flag = 0
-        policy = None
-        print iopid,iid,forcetotal,businesstotal
         try:
             iop = InsuranceOrderPrice.get(id=iopid)
             insurance = InsuranceOrder.get(id=iop.insurance_order_id)
@@ -520,6 +519,7 @@ class GetGiftOilHandler(BaseHandler):
 
         self.write(simplejson.dumps(result))
 
+
 @route(r'/ajax/save_iop_data', name='ajax_save_iop')  # 保存报价后的方案
 class SaveIOPHandler(BaseHandler):
     def post(self):
@@ -532,7 +532,6 @@ class SaveIOPHandler(BaseHandler):
             self.write(simplejson.dumps(result))
             return
         groups = simplejson.loads(groups)
-        logging.info('---%s----'%str(groups))
         i_items = simplejson.loads(i_items)
         pid = InsuranceOrderPrice.get(id=groups['pid'])
         now = int(time.time())
@@ -543,9 +542,9 @@ class SaveIOPHandler(BaseHandler):
             pid.response = 1
             pid.status = 1
             if groups['gift_policy'] == '2':
-                pid.score = groups['score']
+                pid.cash = groups['cash']
             else:
-                pid.score = 0
+                pid.cash = 0
             pid.total_price = groups['total_price']
             pid.force_price = groups['force_price']
             pid.business_price = groups['business_price']
@@ -555,11 +554,63 @@ class SaveIOPHandler(BaseHandler):
                 pid.__dict__['_data'][item+'Price'] = i_items[item]
             pid.save()
             if send_msg == '1':
-                create_msg()
+                io = InsuranceOrder.get(id=pid.insurance_order_id)
+                sms = {'mobile': io.store.mobile, 'signtype': '1', 'isyzm': 'changePrice',
+                       'body': [io.ordernum, pid.insurance.name, groups['total_price'], groups['psummary']]}
+                create_msg(simplejson.dumps(sms), 'sms')  # 变更价格
             result['flag'] = 1
         else:
             result['msg'] = u'该方案已不可再更改'
 
+        self.write(simplejson.dumps(result))
+
+
+@route(r'/ajax/append_refund_money', name='ajax_append_refund_money')  # 补退款
+class AppendRefundMoneyHandler(BaseHandler):
+    def post(self):
+        result = {'flag': 0, 'msg': '', 'data': ''}
+        ar_num = self.get_body_argument('ar_num', None)
+        ar_reason = self.get_body_argument('ar_reason', None)
+        pid = self.get_body_argument('pid', None)
+        ar_status = self.get_body_argument('ar_status', None)
+        admin_user = self.get_admin_user()
+        now = int(time.time())
+        if not (ar_num and ar_reason and pid and ar_status):
+            result['msg'] = u'参数不全'
+            self.write(simplejson.dumps(result))
+            return
+        try:
+            ar_num = float(ar_num)
+            io = InsuranceOrder.get(current_order_price=pid)
+            iop = InsuranceOrderPrice.get(id=pid)
+            if iop.append_refund_status != int(ar_status):
+                result['msg'] = u'该补退款已有别人发起，刷新页面确认后重试！'
+            else:
+                if ar_num > 0:    # 让客户补款
+                    io.status = 5
+                    iop.append_refund_status = 1
+                elif ar_num < 0:    # 给客户退款
+                    io.status = 4
+                    io.store.price += ar_num
+                    io.store.save()
+                    iop.append_refund_status = 2
+                    iop.total_price += ar_num
+                    process_log = u'订单：%s退款' % (io.ordernum)
+                    MoneyRecord.create(user=io.user, store=io.store,process_type=1, process_message=u'退款',
+                                       process_log=process_log, money=ar_num, status=1, apply_time=now,
+                                       processing_time=now, processing_by=admin_user)
+                io.save()
+                iop.append_refund_time = now
+                iop.append_refund_reason = ar_reason
+                iop.append_refund_num = ar_num
+                iop.admin_user = admin_user
+                iop.save()
+                result['flag'] = 1
+        except Exception, e:
+            result['msg'] = u'申请补款失败：%s' % e.message
+        content = u'申请补退款：客户:%s，订单:%s，金额:%s元，原因:%s，操作人:%s，' % \
+                  (io.store.name, io.id, ar_num, admin_user.username, ar_reason.name)
+        AdminUserLog.create(admin_user=admin_user, created=now, content=content)
         self.write(simplejson.dumps(result))
 
 
@@ -590,6 +641,7 @@ class WithdrawChangeStatusHandler(BaseHandler):
         except Exception, e:
             result = -1
         self.write(simplejson.dumps(result))
+
 
 @route(r'/ajax/export_trade_list', name='ajax_trade_export')  # 生成网站交易明细的csv
 class TradeExportHandler(BaseHandler):
@@ -681,6 +733,7 @@ class TradeExportHandler(BaseHandler):
         except Exception, e:
             result['msg'] = e.message
         self.write(simplejson.dumps(result))
+
 
 @route(r'/ajax/export_insurance_list', name='ajax_insurance_export')  # 生成出单明细的csv
 class InsuranceExportHandler(BaseHandler):

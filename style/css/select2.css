@@ -80,7 +80,7 @@ html[dir="rtl"] .select2-container .select2-choice > .select2-chosen {
     font-size: 1px;
     text-decoration: none;
     border: 0;
-    background: url('/style2/images/select.png') right top no-repeat;
+    background: url('/style/images/select.png') right top no-repeat;
     cursor: pointer;
     outline: 0;
 }

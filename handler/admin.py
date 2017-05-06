@@ -1635,12 +1635,12 @@ class InsuranceOrderDetailHandler(AdminBaseHandler):
                         'price': program.__dict__['_data'][i_item.eName+'Price'] if program.__dict__['_data'][i_item.eName+'Price'] else 0
                     })
             rates = InsuranceScoreExchange.get_score_policy(o.store.area_code, program.insurance)
-            lubepolicy = LubePolicy.select().where(LubePolicy.area_code == o.store.area_code)
+            # lubepolicy = LubePolicy.select().where(LubePolicy.area_code == o.store.area_code)
             programs.append({
                 'pid': program.id,
                 'insurance': program.insurance,
                 'gift_policy': program.gift_policy,
-                'score': program.score,
+                'cash': program.cash,
                 'total_price': program.total_price,
                 'force_price': program.force_price,
                 'business_price': program.business_price,
@@ -1648,7 +1648,12 @@ class InsuranceOrderDetailHandler(AdminBaseHandler):
                 'program': i_item_list,
                 'program_len': range(0, len(i_item_list), 2),
                 'msg': program.sms_content if program.sms_content else '',
-                'rates': rates
+                'rates': rates,
+                'response': program.response,
+                'append_refund_status': program.append_refund_status,
+                'append_refund_num': program.append_refund_num,
+                'append_refund_reason': program.append_refund_reason,
+                'is_default': 1 if program == o.current_order_price else 0
             })
         if archive:
             active = 'i_order_a'
@@ -1736,8 +1741,7 @@ class NewProgramHandler(AdminBaseHandler):
                 'insurance_prices': [i_price.coverage for i_price in i_item.insurance_prices]
             })
 
-        self.render('admin/order/insurance_order_new_program.html', oid=oid, i_item_list=i_item_list,
-                    insurance_list=insurance_list)
+        self.render('admin/order/insurance_order_new_program.html', oid=oid, i_item_list=i_item_list, insurance_list=insurance_list)
 
     def post(self, oid):
         insurance = self.get_body_argument('insurance', None)

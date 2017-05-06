@@ -714,7 +714,7 @@ class InsuranceOrderPrice(db.Model):
     insurance_order_id = IntegerField()  # 所属保险订单ID
     insurance = ForeignKeyField(Insurance, db_column='insurance_id')  # 所购保险公司ID
     created = IntegerField(default=0)  # 报价/修改 时间
-    admin_user = ForeignKeyField(AdminUser, db_column='admin_user_id', null=True)  # 报价人员
+    admin_user = ForeignKeyField(AdminUser, db_column='admin_user_id', null=True)  # 操作人员
     response = IntegerField(default=0)  # 0未报价 1已经报价 2不可再修改 -1关闭
     status = IntegerField(default=1)  # 状态 0已过期, 1有效
     read = IntegerField(default=0)  # 状态 0未读, 1已读
@@ -731,6 +731,7 @@ class InsuranceOrderPrice(db.Model):
     vehicle_tax_price = FloatField(default=0.0)  # 车船税价格
     sms_content = CharField(max_length=1024, null=True)  # 短信通知内容
 
+    append_refund_status = IntegerField(default=0)    # 补退款状态 0无需补退款 1待补款/退款 2已补款/退款
     append_refund_time = IntegerField(default=0)    # 补退款时间
     append_refund_reason = CharField(max_length=128, default='')    # 补退款原因
     append_refund_num = FloatField(default=0.0)    # 补退款金额

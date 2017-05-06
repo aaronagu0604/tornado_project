@@ -596,8 +596,7 @@ class MobileDiscoverHandler(MobileBaseHandler):
             ft = StoreProductPrice.area_code << area_code
         else:
             ft = StoreProductPrice.area_code == area_code
-        productlist = Product.select(Product.category.alias('cid'),
-                                     Product.brand.alias('bid')). \
+        productlist = Product.select(Product.category.alias('cid'), Product.brand.alias('bid')). \
             join(ProductRelease, on=(ProductRelease.product == Product.id)). \
             join(Store, on=(Store.id == ProductRelease.store)). \
             join(StoreProductPrice, on=(StoreProductPrice.product_release == ProductRelease.id)). \
@@ -613,12 +612,18 @@ class MobileDiscoverHandler(MobileBaseHandler):
                     cbs[cid].append(bid)
                 else:
                     pass
-
+        tmp_num = 0
         for cid in cbs.keys():
+            if tmp_num == 0:
+                tmp_ad = {'img': 'http://img.520czj.com/image/2017/02/15/server1_20170215111526VDJrFZYbKUeiLjuGkcsxTIhW.png', 'link': ''}
+            elif tmp_num == 1:
+                tmp_ad = {'img': 'http://img.520czj.com/image/2017/02/22/server1_20170222162422ShymVuXKNglbcJCrIvLFAoEO.png', 'link': ''}
+            tmp_num += 1
             category = Category.get(id=cid)
             result['data'].append({
                 'name': category.name,
                 'cid': category.id,
+                'ads': tmp_ad,
                 'subs': [{
                     'name': u'热销品牌',
                     'subs': [{'img': brand.logo,
@@ -635,8 +640,7 @@ class MobileDiscoverHandler(MobileBaseHandler):
                                   'link': 'czj://category/%d/brand/%d' % (cid, brand.id)} for brand in
                                  Brand.select().where(Brand.id << cbs[cid]) if brand.hot != 1]
                     }
-                ],
-                'ads': {'img': '', 'link': ''}
+                ]
             })
 
         # 保险商城
@@ -651,7 +655,7 @@ class MobileDiscoverHandler(MobileBaseHandler):
                 'name': u'不太热门保险',
                 'subs': InsuranceArea.get_insurances_link(area_code)[3:]
             }],
-            'ads': {'img': '', 'link': ''}
+            'ads': {'img': 'http://img.520czj.com/image/category/20170104184002.jpg', 'link': ''}
         })
 
         self.write(simplejson.dumps(result))
@@ -1636,7 +1640,7 @@ class MobilePayOrderHandler(MobileBaseHandler):
             money_record.user = user
             money_record.store = user.store
             money_record.process_type = 2
-            money_record.process_log = '购买产品使用余额支付, 订单号：' + order.ordernum
+            money_record.process_log = u'购买产品使用余额支付, 订单号：' + order.ordernum
             money_record.status = 1
             money_record.money = total_price
             money_record.apply_time = now
@@ -1652,6 +1656,7 @@ class MobilePayOrderHandler(MobileBaseHandler):
         if order_number and payment:
             if 'S' in order_number:  # 普通商品订单
                 order = Order.get(ordernum=order_number)
+                ordernum = order.ordernum
                 if order.status != 0:
                     result['msg'] = u'该订单不可支付'
                     return self.write(simplejson.dumps(result))
@@ -1661,13 +1666,18 @@ class MobilePayOrderHandler(MobileBaseHandler):
                     log = u'车装甲普通订单'
             elif 'I' in order_number:  # 保险订单
                 order = InsuranceOrder.get(ordernum=order_number)
-                if order.status != 1:
-                    result['msg'] = u'该订单不可支付'
-                    return self.write(simplejson.dumps(result))
-                else:
+                ordernum = order.ordernum
+                if order.status == 1:
                     total_price = order.current_order_price.total_price
                     order_type = 1
+                elif order.status == 5 and order.current_order_price.append_refund_status == 1:
+                    total_price = order.current_order_price.append_refund_num
+                    order_type = 1
+                    ordernum += '_A'
+                else:
                     log = u'车装甲保单'
+                    result['msg'] = u'该订单不可支付'
+                    return self.write(simplejson.dumps(result))
             else:
                 result['msg'] = u'订单类型不可知'
                 return self.write(simplejson.dumps(result))
@@ -1676,16 +1686,16 @@ class MobilePayOrderHandler(MobileBaseHandler):
                     result['msg'] = u"您的余额不足"
                 else:
                     self.after_pay_operation(order, total_price, user, order_type)
-            result['data']['pay_info'] = pay_order(payment, total_price, order.ordernum, log)
+            result['data']['pay_info'] = pay_order(payment, total_price, ordernum, log)
 
             result['flag'] = 1
             if payment in [6, 7] and not result['data']['pay_info']:
                 result['flag'] = 0
-                result['msg'] = '获取二维码失败'
+                result['msg'] = u'获取二维码失败'
             else:
                 result['data']['payment'] = payment
         else:
-            result['msg'] = "传入参数异常"
+            result['msg'] = u"传入参数异常"
         self.write(simplejson.dumps(result))
         self.finish()
 
