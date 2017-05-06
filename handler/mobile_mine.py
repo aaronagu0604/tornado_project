@@ -491,7 +491,7 @@ class MobileDeleteOrderHandler(MobileBaseHandler):
         self.write(simplejson.dumps(result))
 
 
-@route(r'/mobile/insuranceorder', name='mobile_insurance_order')  # 保险订单
+@route(r'/mobile/insuranceorder', name='mobile_insurance_order')  # 保险订单列表
 class MobileInsuranceOrderHandler(MobileBaseHandler):
     """
     @apiGroup mine
@@ -548,7 +548,10 @@ class MobileInsuranceOrderHandler(MobileBaseHandler):
                 'price': io.current_order_price.total_price,
                 'commission': u'返油' if io.current_order_price.gift_policy == 1 else u'返佣金',
                 'ordered': time.strftime('%Y-%m-%d %H:%M%S', time.localtime(io.ordered)),
-                'deadline': time.strftime('%Y-%m-%d %H-%M-%S', time.localtime(io.ordered + setting.INSURANCE_ORDER_TIME_OUT))
+                'deadline': time.strftime('%Y-%m-%d %H-%M-%S', time.localtime(io.ordered + setting.INSURANCE_ORDER_TIME_OUT)),
+                'store_name': io.store.name,
+                'store_addr': Area.get_detailed_address(io.store.area_code) + io.store.address,
+                'mobile': io.store.mobile
             })
         result['flag'] = 1
         self.write(simplejson.dumps(result))
@@ -622,6 +625,9 @@ class MobileInsuranceOrderDetailHandler(MobileBaseHandler):
             'append_num':  insuranceorder.current_order_price.append_refund_num,
             'append_reason': insuranceorder.current_order_price.append_refund_reason,
             'gift_policy': u'返油' if insuranceorder.current_order_price.gift_policy == 1 else u'返佣金',
+            'store_name': insuranceorder.store.name,
+            'store_addr': Area.get_detailed_address(insuranceorder.store.area_code) + insuranceorder.store.address,
+            'mobile': insuranceorder.store.mobile,
             'insuranceorderprice': {
                 'status': insuranceorder.status,
                 'insurance': insuranceorder.current_order_price.insurance.name,
@@ -744,7 +750,8 @@ class MobileInsuranceOrderDetailHandler(MobileBaseHandler):
         self.write(simplejson.dumps(result))
         self.finish()
 
-@route(r'/mobile/update_insuranceorderd_address', name='mobile_update_insuranceorderd_address')  # 保险订单详情
+
+@route(r'/mobile/update_insuranceorderd_address', name='mobile_update_insuranceorderd_address')  #
 class MobileInsuranceOrderDetailHandler(MobileBaseHandler):
     """
     @apiGroup mine

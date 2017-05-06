@@ -20,18 +20,34 @@ from model import *
 def change_order_status(ordernum, trade_no):
     is_insurance_order = False
     try:
-        if 'I' in ordernum:
-            order = InsuranceOrder.get(ordernum=ordernum)
-            order.change_status(2)
-        else:
-            order = Order.get(ordernum=ordernum)
+        ordernum_list = ordernum.split('_A')
+        if len(ordernum_list) == 1:
+            if 'I' in ordernum:
+                order = InsuranceOrder.get(ordernum=ordernum)
+                order.change_status(2)
+            else:
+                order = Order.get(ordernum=ordernum)
+            is_insurance_order = True
+            order.trade_no = trade_no
+            order.pay_time = int(time.time())  # 支付时间
+            order.save()
+            logging.info('order_id=%s order_num=%s trade_no=%s\n' % (order.id, order.ordernum, trade_no))
+            return order, is_insurance_order
+        elif len(ordernum_list) == 2:
+            ordernum_originally = ordernum_list[0]
+            order = InsuranceOrder.get(ordernum=ordernum_originally)
+            order.current_order_price.append_refund_status = 2
+            order.current_order_price.save()
+            money_record = MoneyRecord()
+            money_record.user = order.user
+            money_record.store = order.store
+            money_record.process_type = 2
+            money_record.process_log = u'余额补款保单, 订单号：%s, 补单号：%s' % (ordernum_originally, ordernum)
+            money_record.status = 1
+            money_record.money = order.current_order_price.append_refund_num
+            money_record.apply_time = int(time.time())
+            money_record.save()
 
-        is_insurance_order = True
-        order.trade_no = trade_no
-        order.pay_time = int(time.time())  # 支付时间
-        order.save()
-        logging.info('order_id=%s order_num=%s trade_no=%s\n' % (order.id, order.ordernum, trade_no))
-        return order, is_insurance_order
     except Exception, e:
         logging.info(
             'Error: change order status error; ordernum %s,trade_no %s,log: %s' % (ordernum, trade_no, e.message))
