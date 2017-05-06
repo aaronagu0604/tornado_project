@@ -1653,6 +1653,7 @@ class MobilePayOrderHandler(MobileBaseHandler):
         payment = self.get_body_argument("payment", None)
         payment = int(payment) if payment else None
         user = self.get_user()
+        now = int(time.time())
         if order_number and payment:
             if 'S' in order_number:  # 普通商品订单
                 order = Order.get(ordernum=order_number)
@@ -1667,25 +1668,46 @@ class MobilePayOrderHandler(MobileBaseHandler):
             elif 'I' in order_number:  # 保险订单
                 order = InsuranceOrder.get(ordernum=order_number)
                 ordernum = order.ordernum
+                log = u'车装甲保单'
                 if order.status == 1:
                     total_price = order.current_order_price.total_price
                     order_type = 1
-                elif order.status == 5 and order.current_order_price.append_refund_status == 1:
+                    log += u'支付'
+                elif order.status in [2, 3] and order.current_order_price.append_refund_status == 1:
                     total_price = order.current_order_price.append_refund_num
                     order_type = 1
-                    ordernum += '_A'
+                    ordernum = ordernum + '_A' + str(now)[5:10]
+                    log += u'补款'
                 else:
-                    log = u'车装甲保单'
                     result['msg'] = u'该订单不可支付'
                     return self.write(simplejson.dumps(result))
             else:
                 result['msg'] = u'订单类型不可知'
                 return self.write(simplejson.dumps(result))
             if payment == 4:  # 余额支付
-                if user.store.price < total_price:
-                    result['msg'] = u"您的余额不足"
+                if 'I' in order_number and order.status in [2, 3] and order.current_order_price.append_refund_status == 1:
+                    if user.store.price < order.current_order_price.append_refund_num:
+                        result['msg'] = u"您的余额不足"
+                    else:
+                        order.current_order_price.append_refund_status = 2
+                        order.current_order_price.save()
+                        user.store.price -= order.current_order_price.append_refund_num
+                        user.store.save()
+                        money_record = MoneyRecord()
+                        money_record.user = user
+                        money_record.store = user.store
+                        money_record.process_type = 2
+                        money_record.process_log = u'余额补款保单, 订单号：%s, 补单号：%s' % (order.ordernum, ordernum)
+                        money_record.status = 1
+                        money_record.money = order.current_order_price.append_refund_num
+                        money_record.apply_time = now
+                        money_record.save()
                 else:
-                    self.after_pay_operation(order, total_price, user, order_type)
+                    if user.store.price < total_price:
+                        result['msg'] = u"您的余额不足"
+                    else:
+                        self.after_pay_operation(order, total_price, user, order_type)
+
             result['data']['pay_info'] = pay_order(payment, total_price, ordernum, log)
 
             result['flag'] = 1

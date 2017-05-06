@@ -587,10 +587,8 @@ class AppendRefundMoneyHandler(BaseHandler):
                 result['msg'] = u'该补退款已有别人发起，刷新页面确认后重试！'
             else:
                 if ar_num > 0:    # 让客户补款
-                    io.status = 5
                     iop.append_refund_status = 1
                 elif ar_num < 0:    # 给客户退款
-                    io.status = 4
                     io.store.price += ar_num
                     io.store.save()
                     iop.append_refund_status = 2
