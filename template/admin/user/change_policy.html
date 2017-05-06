@@ -17,11 +17,13 @@
                 {{xsrf()}}
                 <div class="form-group has-success">
                     <div class="input-group">
+                        <label class="num">保险公司：&nbsp;</label>
                         <select name="insurance" style="width:160px;height:32px;border-radius: 4px;margin-right:15px;">
                             {% for insurance in insurances %}
                             <option value="{{insurance.id}}" {{ 'selected' if policy.insurance==insurance.id else ''}}>{{insurance.name}}</option>
                             {% endfor %}
                         </select>
+                        <label class="num">送油商：&nbsp;</label>
                         <select name="dealer_store" style="width:160px;height:32px;border-radius: 4px;margin-right:15px;">
                             {% for store in stores %}
                             <option value="{{store.id}}" {{ 'selected' if policy.dealer_store==store.id else ''}}>{{store.name}}</option>

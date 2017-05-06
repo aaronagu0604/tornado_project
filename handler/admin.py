@@ -261,10 +261,10 @@ class ChangePolicyHandler(AdminBaseHandler):
             policy.insurance = insurance
             policy.dealer_store = dealer_store
             policy.save()
-            msg = u'修改成功，请刷新页面！'
+            msg = u'修改成功，请关闭页面！'
             AdminUserLog.create(admin_user=self.get_admin_user(),
                                 created=int(time.time()),
-                                content='编辑用户所属经销商:ssipl_id:%d,dealer_store:%s'%(policy_id,dealer_store))
+                                content='编辑用户所属经销商:ssipl_id:%s,dealer_store:%s'%(policy_id,dealer_store))
         except Exception, e:
             msg = u'修改失败：%s' % e.message
 
@@ -304,7 +304,6 @@ class ClonePolicyHandler(AdminBaseHandler):
         insurances = Insurance.select().where(Insurance.active == 1)
         stores = Store.select().where((Store.store_type == 1) & (Store.active == 1))
 
-
         self.render("admin/user/add_policy.html", cash_policies=cash_policies, lube_policies=lube_policies,
                     insurances=insurances, stores=stores)
 
@@ -323,13 +322,18 @@ class ClonePolicyHandler(AdminBaseHandler):
                        'ar': cash.ali_rate,
                        'pr': cash.profit_rate,
                        'bm': cash.base_money}
-
-        lube_policy = LubePolicy.get(id=lube_policy).policy
-        ssilp = SSILubePolicy.create(store=store_id, insurance=insurance, dealer_store=dealer_store, cash=simplejson.dumps(cash_policy), lube=lube_policy)
-        AdminUserLog.create(admin_user=self.get_admin_user(),
-                            created=int(time.time()),
-                            content='添加保险公司返油返积分策略:ssilp_id:%d'%ssilp.id)
-        self.redirect("/admin/store_detail/" + store_id)
+        icount = SSILubePolicy.select().where((SSILubePolicy.store == store_id) & (SSILubePolicy.insurance == insurance)).count()
+        if icount > 0:
+            pass
+            msg = u'您已经添加过该保险公司，请关闭本窗口'
+        else:
+            lube_policy = LubePolicy.get(id=lube_policy).policy
+            ssilp = SSILubePolicy.create(store=store_id, insurance=insurance, dealer_store=dealer_store, cash=simplejson.dumps(cash_policy), lube=lube_policy)
+            AdminUserLog.create(admin_user=self.get_admin_user(),
+                                created=int(time.time()),
+                                content='添加保险公司返油返积分策略:ssilp_id:%d'%ssilp.id)
+            msg = u'添加成功，请关闭本窗口'
+        self.write(msg)
 
 
 @route(r'/admin/delete_policy/(\d+)', name='admin_delete_policy')  # 删除政策
@@ -340,7 +344,7 @@ class DeletePolicyHandler(AdminBaseHandler):
             SSILubePolicy.delete().where((SSILubePolicy.store == store_id) & (SSILubePolicy.insurance == iid)).execute()
             AdminUserLog.create(admin_user=self.get_admin_user(),
                                 created=int(time.time()),
-                                content='删除保险公司返油返积分策略: iid:%s,store_id:%d' %(iid,store_id))
+                                content='删除保险公司返油返积分策略: iid:%s,store_id:%s' %(iid,store_id))
 
         self.redirect('/admin/store_detail/%s'%store_id)
 
