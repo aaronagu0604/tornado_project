@@ -867,7 +867,7 @@ class UploadHandler(BaseHandler):
             self.write(msg)
 
 @route(r'/ajax/product/pic/(\d+)', name='ajax_product_pic')  # 上传产品图片文件
-class UploadHandler(BaseHandler):
+class UploadPicHandler(BaseHandler):
     def check_xsrf_cookie(self):
         pass
 
