@@ -12,28 +12,28 @@
     </nav>
 </div>
 
-<div class="row">
+<div class="row10">
     <div class="panel panel-primary">
-        <div class="table-responsive">
-            <table class="table table-hover" id="tb_users" cellpadding="0" cellspacing="0" border="0" style="text-align:center;width:100%;">
+        <div class="table" style="word-wrap: break-word;word-break: keep-all;">
+            <table class="table" id="tb_users" cellpadding="0" cellspacing="0" border="0" style="text-align:center;width:100%;">
                 <thead>
                 <tr style="background:#528acb;color:#fff;text-align:center;height:38px;line-height:38px;">
                     <th style="width:5%;text-align:center;">用户</th>
-                    <th style="width:5%;text-align:center;">时间</th>
-                    <th style="width:5%;text-align:center;">内容</th>
+                    <th style="width:10%;text-align:center;">时间</th>
+                    <th style="width:65%;text-align:center;">内容</th>
                 </tr>
                 </thead>
                 <tbody>
                 {% for log in logs %}
                 <tr>
-                    <td>
-                        <span style="color:#ff5231;">{{log.admin_user.realname}}</span>
+                    <td style="width:5%;text-align:left;">
+                        <span>{{log.admin_user.realname}}</span>
                     </td>
-                    <td>
-                        <span style="color:#ff5231;">{{log.created|datetimeformat}}</span>
+                    <td style="width:10%;text-align:left;">
+                        <span>{{log.created|datetimeformat}}</span>
                     </td>
-                    <td>
-                        <span style="color:#ff5231;">{{log.content}}</span>
+                    <td style="width:65%;text-align:left;">
+                        <div style="width:600px;">{{log.content}}</div>
                     </td>
                 </tr>
                 {% endfor %}

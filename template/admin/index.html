@@ -98,22 +98,26 @@
             </div>
             <div class="panel-body">
 
-                <div class="table-responsive">
-                    <table class="table table-hover" id="tb_users" >
+                <div style="word-wrap: break-word;word-break: keep-all;">
+                    <table class="table" id="tb_users" >
                         <tbody>
                         <tr>
-                            <th style="width:80px;">用户名</th>
-                            <th style="width:180px;">时间</th>
-                            <th>内容</th>
+                            <th style="width:10px">用户名</th>
+                            <th style="width:180px">时间</th>
+                            <th style="width:600px">内容</th>
                         </tr>
                         {% for o in logs -%}
                         <tr>
-                            <td>
+                            <td width="10%">
                                  {{o.admin_user.realname}}
                             </td>
-                            <td>{{o.created | datetimeformat}}</td>
-                            <td>
+                            <td width="20%">
+                                {{o.created | datetimeformat}}
+                            </td>
+                            <td width="70%">
+                                <div style="width:600px;">
                                  {{o.content}}
+                                </div>
                             </td>
                         </tr>
                         {%- endfor %}
