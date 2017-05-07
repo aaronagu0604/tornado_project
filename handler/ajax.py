@@ -21,6 +21,7 @@ import StringIO
 from PIL import Image
 from pytesseract import image_to_string
 
+
 @route(r'/ajax/GetSubAreas', name='ajax_GetSubAreas')  # 获取下级区域
 class AjaxGetSubAreas(BaseHandler):
     def get(self):
@@ -91,7 +92,6 @@ class StoreUpdateGradeHandler(BaseHandler):
 
 @route(r'/ajax/exportStore', name='ajax_store_export')  # 生成store的csv
 class StoreExportHandler(BaseHandler):
-
     # 导出Store的数据
     def export_stores(self, stores, file_name):
         f = open('upload/' + file_name, 'w')

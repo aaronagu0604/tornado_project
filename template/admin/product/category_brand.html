@@ -33,7 +33,7 @@
                     <tbody>
                     <tr>
                         <td style="color:#438bca;">
-                            <select class="form-control" name="category" id="sel_type">
+                            <select class="form-control" name="category" id="sel_type" style="width:130px; margin:0 auto;">
                                 <option value="" >--请选择--</option>
                                 {% for c in categories %}
                                 <option value="{{c.id}}">{{c.name}}</option>
@@ -41,7 +41,7 @@
                             </select>
                         </td>
                         <td>
-                            <select class="form-control" name="brand">
+                            <select class="form-control" name="brand"  style="width:130px; margin:0 auto;">
                                 <option value="" >--请选择--</option>
                                 {% for b in brands %}
                                 <option value="{{b.id}}">{{b.name}}</option>
