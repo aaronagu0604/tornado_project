@@ -78,7 +78,7 @@
                 <tbody>
                 {% for s in stores %}
                 <tr>
-                    <td>{{ s.name }}</td>
+                    <td><a href="/admin/store_detail/{{s.id}}">{{ s.name }}</a></td>
                     <td>{{ s.linkman }}</td>
                     <td>{{ s.mobile }}</td>
                     <td>{{ Area().get_detailed_address(s.area_code)}}<br>
@@ -95,7 +95,6 @@
                         {% endif %}
                     </td>
                     <td>
-                        <a class="btn btn-xs btn-outline btn-primary" href="/admin/store_detail/{{s.id}}">详情</a>
                         <a class="btn btn-xs btn-outline btn-primary" href="/admin/saler_product/{{s.id}}">区域商品</a>
 
                         <input type="hidden" id="hd_id_{{s.id}}" value="{{s.process_insurance}}"/>

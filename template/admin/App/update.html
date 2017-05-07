@@ -1,0 +1,108 @@
+{% extends "layout/admin.html" %}
+{% block css %}
+<link href="/style/css/plugins/dataTables.bootstrap.css" rel="stylesheet">
+<style>
+    .hz{color:#129a00; font-weight: bold;}
+</style>
+{% endblock %}
+{% block content %}
+<div class="row">
+    <nav>
+        <div>
+            <a class="navbar-brand" href="#">更新管理</a>
+        </div>
+        <div class="navbar-header" style="float: right;margin-top:15px;">
+            <a href="/admin/update/0" style="padding:5px 8px;border:1px solid #438bca;border-radius:4px;color:#438bca;font-size:16px;">发布更新</a>
+        </div>
+    </nav>
+</div>
+<div style="color: red; font-size: 0.6em; margin-bottom: 25px;">
+    {% set messages=handler.get_flashed_messages() %}
+    {% if messages %}
+    <div id="err_div">
+        {% for type, msg in messages%}
+        {{msg}}
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+<div class="row">
+    <div class="panel panel-primary">
+        <div class="table-responsive">
+            <table class="table table-hover" id="tb_vendor" cellpadding="0" cellspacing="0" border="0" style="text-align:center;width:100%;">
+                <thead>
+                <tr style="background:#528acb;color:#fff;text-align:center;height:38px;line-height:38px;">
+                    <th style="width:10%;text-align:center;">版本名称</th>
+                    <th style="width:10%;text-align:center;">版本号</th>
+                    <th style="width:14%;text-align:center;">文件路径</th>
+                    <th style="width:9%;text-align:center;">强制更新</th>
+                    <th style="width:10%;text-align:center;">客户端</th>
+                    <th style="width:10%;text-align:center;">是否可用</th>
+                    <th style="width:18%;text-align:center;">发布时间</th>
+                    <th style="width:10%;text-align:center;">发布人</th>
+                    <th style="width:10%;text-align:center;">操作</th>
+                </tr>
+                {% for p in lists %}
+                <tr>
+                    <td>{{p.name}}</td>
+                    <td>{{p.version}}</td>
+                    <td>{{p.path}}</td>
+                    <td>{{p.isForce}}</td>
+                    <td>{{p.client}}</td>
+                    <td>
+                        {% if p.state==1 %}
+                        <span style="color: green;">可用</span>
+                        {% elif p.state==0 %}
+                        <span style="color: red;">不可用</span>
+                        {% else %}
+                        {{p.state}}
+                        {% endif %}
+                    </td>
+                    <td>{{p.updatedtime | datetimeformat}}</td>
+                    <td>{{p.updatedby.username}}</td>
+                    <td>
+                        <a href="/admin/update/{{p.id}}"style="padding:4px 5px;border:1px solid #438bca;color:#438bca;border-radius:4px;font-size:12px;text-decoration:none;">修改</a>
+                        <a href="/admin/update_del/{{p.id}}" onclick="return confirm('删除后将不可恢复，确定删除？');" style="padding:4px 5px;border:1px solid #438bca;color:#438bca;border-radius:4px;font-size:12px;text-decoration:none;">删除</a>
+                    </td>
+                </tr>
+                {% endfor %}
+                </thead>
+            </table>
+            <div>
+                <div class="col-sm-4">
+                    <div class="dataTables_info" role="alert" aria-live="polite" aria-relevant="all">
+                        当前：第{{page}}页 / {{totalpage}}页，合计{{total}}条
+                    </div>
+                </div>
+                <div class="col-sm-8">
+                    <div class="dataTables_paginate paging_simple_numbers">
+                        <ul class="pagination  pagination-sm" id="pageUl" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<script src="/style/js/jquery.twbsPagination.min.js"></script>
+<script src="/style/js/layer-v1.9/layer.js" type="text/javascript"></script>
+<script language="javascript" type="text/javascript" src="/style/js/My97DatePicker/WdatePicker.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#pageUl').twbsPagination({
+            first:'首页',
+            prev:'上一页',
+            next:'下一页',
+            last:'尾页',
+            totalPages: {{totalpage}},
+            startPage: {{page}},
+            visiblePages: 8,
+            onPageClick: function (event, page) {
+                self.location="/admin/update?page="+page + "";
+            }
+        });
+    });
+    var xsrf='{{handler.xsrf_token}}';
+</script>
+{% endblock %}

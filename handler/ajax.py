@@ -616,6 +616,29 @@ class AppendRefundMoneyHandler(BaseHandler):
         self.write(simplejson.dumps(result))
 
 
+@route(r'/ajax/cancel_insurance_order', name='ajax_cancel_insurance_order')  # 保险订单完成（保单返佣）
+class CancelInsuranceOrderHandler(BaseHandler):
+    def post(self):
+        result = {'flag': 0, 'msg': ''}
+        oid = self.get_body_argument('oid', '')
+        cause = self.get_body_argument('cause', '')
+        try:
+            io = InsuranceOrder.get(id=oid)
+            now = int(time.time())
+            if io.status < 2:
+                io.status = -1
+                io.cancel_reason = cause
+                io.save()
+                AdminUserLog.create(admin_user=self.get_admin_user(), created=now, content=u'删除保险订单：%s' % io.id)
+                result['flag'] = 1
+            else:
+                result['msg'] = u'取消失败：该订单不可取消！'
+        except Exception, e:
+            result['msg'] = u'取消失败：%s' % e.message
+        print('-----')
+        self.write(simplejson.dumps(result))
+
+
 @route(r'/ajax/withdraw_change_status', name='ajax_withdraw_change_status')  # 更新提现状态
 class WithdrawChangeStatusHandler(BaseHandler):
     def post(self):

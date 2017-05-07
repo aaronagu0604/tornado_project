@@ -20,8 +20,8 @@
                     <input value="" type="hidden" name="sid">
 
                     <div class="btn-group btn-group-xs">
-                        <a type="button" class="btn btn-default" href="/admin/store_liquidity/{{sid}}?type=1" style="padding:8px 4px;border:1px solid #ccc;border-bottom-left-radius:4px;border-top-left-radius:4px;">积分</a>
-                        <a type="button" class="btn btn-default" href="/admin/store_liquidity/{{sid}}?type=2" style="padding:8px 4px;border:1px solid #ccc;border-left:none;">资金</a>
+                        <a type="button" class="btn btn-default {% if type=='2' %} active {% endif %}"  href="/admin/store_liquidity/{{sid}}?type=2" style="padding:8px 4px;border:1px solid #ccc;border-bottom-left-radius:4px;border-top-left-radius:4px;">资金</a>
+                        <a type="button" class="btn btn-default {% if type=='1' %} active {% endif %}" href="/admin/store_liquidity/{{sid}}?type=1" style="padding:8px 4px;border:1px solid #ccc;border-left:none;">积分</a>
                     </div>
                     <div class="input-group custom-search-form">
                         <input type="text" name="begindate" id="begindate" value="{{begindate}}" class="Wdate form-control"  onClick="WdatePicker()" placeholder="开始日期" style="width:110px;height:34px;margin-right:5px;border:1px solid #ccc;border-radius:4px;"/>

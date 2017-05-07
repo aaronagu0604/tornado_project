@@ -1302,6 +1302,73 @@ class SearchChangeStatusHandler(AdminBaseHandler):
         self.redirect('/admin/hot_search?status=' + str(s) + '&page=' + str(page))
 
 
+@route(r'/admin/update', name='admin_update')  # 更新管理
+class AdminMobileUpdateHandler(AdminBaseHandler):
+    def get(self):
+        page = int(self.get_argument("page", '1') if len(self.get_argument("page", '1')) > 0 else '1')
+        pagesize = self.settings['admin_pagesize']
+
+        order_str = MobileUpdate.updatedtime.desc()
+        q = MobileUpdate.select()
+        total = q.count()
+        if total % pagesize > 0:
+            totalpage = total / pagesize + 1
+        else:
+            totalpage = total / pagesize
+        lists = q.order_by(order_str).paginate(page, pagesize)
+
+        self.render('/admin/App/update.html', lists=lists, total=total, page=page, pagesize=pagesize,
+                    totalpage=totalpage, active='update')
+
+
+# 版本更新
+@route(r'/admin/update/(\d+)', name='admin_update_show')
+class MobileUpdateShowHandler(AdminBaseHandler):
+    def get(self, pid):
+        if pid == '0':
+            t = None
+        else:
+            t = MobileUpdate.get(MobileUpdate.id == pid)
+        self.render('admin/App/update_edit.html', t=t, active='update')
+
+    def post(self, pid):
+        if pid == '0':
+            p = MobileUpdate()
+        else:
+            p = MobileUpdate.get(MobileUpdate.id == pid)
+        user = self.get_admin_user()
+        name = self.get_argument("name", '')
+        version = self.get_argument("version", '')
+        path = self.get_argument("path", '')
+        isForce = self.get_argument("isForce", 'false')
+        instructions = self.get_argument("instructions", '')
+        client = self.get_argument("client", '')
+        state = int(self.get_argument("state", '0'))
+        p.name = name
+        p.version = version
+        p.path = path
+        p.client = client
+        p.instructions = instructions
+        if state == 1:
+            p.state = 1
+        else:
+            p.state = 0
+        p.updatedby = user.id
+        p.isForce = isForce
+        p.updatedtime = int(time.time())
+        p.save()
+        self.flash("保存成功")
+        self.redirect('/admin/update')
+
+
+@route(r'/admin/update_del/(\d+)', name='admin_update_del')  # 删除问答
+class MobileUpdateDelHandler(AdminBaseHandler):
+    def get(self, id):
+        MobileUpdate.delete().where(MobileUpdate.id == id).execute()
+        self.flash(u"删除成功！")
+        self.redirect('/admin/update')
+
+
 # -------------------------------------------------------财务对账-------------------------------------------------------
 @route(r'/admin/withdraw', name='admin_withdraw')  # 提现管理列表
 class WithdrawHandler(AdminBaseHandler):
@@ -1374,6 +1441,7 @@ class ExportInsuranceSuccessHandler(AdminBaseHandler):
                     totalpage=totalpage, active=active, begin_date=begin_date, end_date=end_date,
                     archive=archive)
 
+
 @route(r'/admin/export_trade_list', name='admin_export_trade_list')  # 导出出单明细
 class ExportTradeListHandler(AdminBaseHandler):
     def get(self):
@@ -1443,48 +1511,49 @@ class ExportTradeListHandler(AdminBaseHandler):
                     totalpage=totalpage, status=status, active=active, begin_date=begin_date, end_date=end_date,
                     archive=archive)
 
-    @route(r'/admin/store_liquidity/(\d+)', name='admin_store_liquidit')  #
-    class StoreLiquiditHandler(AdminBaseHandler):
-        def get(self, sid):
-            page = int(self.get_argument("page", '1'))
-            pagesize = self.settings['admin_pagesize']
-            keyword = self.get_argument("keyword", '')
-            begindate = self.get_argument("begindate", '')
-            enddate = self.get_argument("enddate", '')
-            type = self.get_argument("type", '1')
-            if type == '1':
-                ft = (ScoreRecord.status == 1) & (ScoreRecord.store == sid)
-                if begindate and enddate:
-                    begin = time.strptime(begindate, "%Y-%m-%d")
-                    end = time.strptime((enddate + " 23:59:59"), "%Y-%m-%d %H:%M:%S")
-                    ft = ft & (ScoreRecord.created > time.mktime(begin)) & (ScoreRecord.created < time.mktime(end))
-                if keyword:
-                    key = '%' + keyword + '%'
-                    ft = ft & (ScoreRecord.ordernum % key)
-                srs = ScoreRecord.select().where(ft)
-            else:
-                ft = (MoneyRecord.status == 1) & (MoneyRecord.store == sid)
-                if begindate and enddate:
-                    begin = time.strptime(begindate, "%Y-%m-%d")
-                    end = time.strptime((enddate + " 23:59:59"), "%Y-%m-%d %H:%M:%S")
-                    ft = ft & (MoneyRecord.apply_time > time.mktime(begin)) & (
-                    MoneyRecord.apply_time < time.mktime(end))
-                if keyword:
-                    key = '%' + keyword + '%'
-                    ft = ft & (MoneyRecord.in_num % key)
-                srs = MoneyRecord.select().where(ft)
-            total = srs.count()
-            if total % pagesize > 0:
-                totalpage = total / pagesize + 1
-            else:
-                totalpage = total / pagesize
-            if type == '1':
-                lists = srs.order_by(ScoreRecord.created.desc()).paginate(page, pagesize)
-            else:
-                lists = srs.order_by(MoneyRecord.apply_time.desc()).paginate(page, pagesize)
-            self.render('/admin/finance/liquidity.html', lists=lists, total=total, page=page, pagesize=pagesize,
-                        totalpage=totalpage, active='withdraw', keyword=keyword, begindate=begindate, enddate=enddate,
-                        sid=sid, type=type)
+
+@route(r'/admin/store_liquidity/(\d+)', name='admin_store_liquidit')  #
+class StoreLiquiditHandler(AdminBaseHandler):
+    def get(self, sid):
+        page = int(self.get_argument("page", '1'))
+        pagesize = self.settings['admin_pagesize']
+        keyword = self.get_argument("keyword", '')
+        begindate = self.get_argument("begindate", '')
+        enddate = self.get_argument("enddate", '')
+        type = self.get_argument("type", '2')
+        if type == '1':
+            ft = (ScoreRecord.status == 1) & (ScoreRecord.store == sid)
+            if begindate and enddate:
+                begin = time.strptime(begindate, "%Y-%m-%d")
+                end = time.strptime((enddate + " 23:59:59"), "%Y-%m-%d %H:%M:%S")
+                ft = ft & (ScoreRecord.created > time.mktime(begin)) & (ScoreRecord.created < time.mktime(end))
+            if keyword:
+                key = '%' + keyword + '%'
+                ft = ft & (ScoreRecord.ordernum % key)
+            srs = ScoreRecord.select().where(ft)
+        else:
+            ft = (MoneyRecord.status == 1) & (MoneyRecord.store == sid)
+            if begindate and enddate:
+                begin = time.strptime(begindate, "%Y-%m-%d")
+                end = time.strptime((enddate + " 23:59:59"), "%Y-%m-%d %H:%M:%S")
+                ft = ft & (MoneyRecord.apply_time > time.mktime(begin)) & (
+                MoneyRecord.apply_time < time.mktime(end))
+            if keyword:
+                key = '%' + keyword + '%'
+                ft = ft & (MoneyRecord.in_num % key)
+            srs = MoneyRecord.select().where(ft)
+        total = srs.count()
+        if total % pagesize > 0:
+            totalpage = total / pagesize + 1
+        else:
+            totalpage = total / pagesize
+        if type == '1':
+            lists = srs.order_by(ScoreRecord.created.desc()).paginate(page, pagesize)
+        else:
+            lists = srs.order_by(MoneyRecord.apply_time.desc()).paginate(page, pagesize)
+        self.render('/admin/finance/liquidity.html', lists=lists, total=total, page=page, pagesize=pagesize,
+                    totalpage=totalpage, active='withdraw', keyword=keyword, begindate=begindate, enddate=enddate,
+                    sid=sid, type=type)
 
 
 # --------------------------------------------------------订单管理------------------------------------------------------
@@ -1787,40 +1856,40 @@ class NewProgramHandler(AdminBaseHandler):
         # self.redirect('/admin/insurance_order/%s'%oid)
 
 
-@route(r'/admin/delinsurance/(\d+)', name='admin_delete_insurance')  # 保险订单 删除或完成
+@route(r'/admin/insurance_dispose/(\d+)', name='admin_insurance_dispose')  # 保险订单完成（保单返佣）
 class InsuranceOrderDelHandler(AdminBaseHandler):
     def get(self, oid):
         status = self.get_argument('status', '')
-        status = int(status) if status else 1
+        o_status = self.get_argument('o_status', '')
+        o_status = int(o_status) if o_status else 1
         page = self.get_argument('page', 1)
+        dispose = self.get_argument('dispose', '')
         try:
             io = InsuranceOrder.get(id=oid)
-            if status < 2:
-                io.status = -1
-                io.save()
-            elif status == 2:  # 赠送积分，创建积分记录
+            now = int(time.time())
+            if o_status == 2 and dispose == 'finish':  # 返现并创建记录
                 if io.status == 2:
-                    # ReScore().rewardScore_insurance(io.user.id, io.LubeOrScore, io.scoreNum, io.ordernum)
                     iop = io.current_order_price
                     if iop.gift_policy == 2:    # 返现
-                        now = int(time.time())
                         money = iop.cash
                         admin_user = self.get_admin_user()
                         MoneyRecord.create(user=io.user, store=io.store, process_type=1, process_message=u'保险',
                                            process_log=u'卖保险返现所得', money=money, status=1, apply_time=now,
                                            processing_time=now, processing_by=admin_user)
-                    else:    # 返油
-                        self.flash(u'返油')
                     io.status = 3
                     io.save()
-                    AdminUserLog.create(admin_user=self.get_admin_user(),
-                                        created=int(time.time()),
-                                        content='编辑保险订单状态: io_id:%d,status:%d'%(io.id,status))
+                    AdminUserLog.create(admin_user=self.get_admin_user(), created=now,
+                                        content=u'编辑保险订单状态: io_id:%d,status:%d' % (io.id, o_status))
                 else:
-                    self.flash(u'该订单不能完成状态为:%s'%(io.status))
+                    self.flash(u'该订单不是已支付状态，不能返佣！')
+            elif o_status < 2 and dispose == 'del':
+                io.status = -1
+                io.save()
+                AdminUserLog.create(admin_user=self.get_admin_user(), created=now, content=u'删除保险订单：%s' % io.id)
+
         except Exception, e:
             logging.info('Error: /admin/delinsurance/%s, %s'%(oid, e.message))
-        self.redirect('/admin/insurances/processing?status=%s&page=%s'%(status,page))
+        self.redirect('/admin/insurance_orders?status=%s&page=%s' % (status, page))
 
 
 # --------------------------------------------------------保险业务------------------------------------------------------

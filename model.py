@@ -1072,6 +1072,22 @@ class Feedback(db.Model):
         db_table = "tb_feedback"
 
 
+class MobileUpdate(db.Model):
+    id = PrimaryKeyField()
+    name = CharField(max_length=64, default='')  # 版本名称
+    version = CharField(max_length=64, default='')  # 版本号
+    path = CharField(max_length=64, default='')  # 版本文件路径
+    client = CharField(max_length=64, default='')  # 客户端类型 android ios
+    state = IntegerField(default=0)  # 版本是否可用0不可以用，1可以
+    updatedtime = IntegerField(default=0)  # 更新时间
+    updatedby = ForeignKeyField(AdminUser, db_column='updated_by')  # 最后更新人
+    isForce = CharField(max_length=8, default='false')  # 强制更新
+    instruction = CharField(max_length=256)  # 强制更新
+
+    class Meta:
+        db_table = 'tb_mobile_update'
+
+
 # 银行卡数据库
 class BankCard(db.Model):
     id = PrimaryKeyField()
@@ -1210,6 +1226,7 @@ class Message(db.Model):
 
     class Meta:
         db_table = 'tb_message'
+
 
 def init_db():
     from lib.util import find_subclasses

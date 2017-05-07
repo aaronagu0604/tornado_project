@@ -2157,6 +2157,27 @@ class MobileFeedbackHandler(MobileBaseHandler):
         self.write(simplejson.dumps(result))
 
 
+@route(r'/mobile/update/(\S+)', name='mobile_verison')    # 手机端程序更新
+class MobileVersionHandler(MobileBaseHandler):
+    def get(self, client):
+        order_str = MobileUpdate.updatedtime.desc()
+        ft = (MobileUpdate.state == 1) & (MobileUpdate.client == client)
+        q = MobileUpdate.select().where(ft)
+        lists = q.order_by(order_str).limit(1)
+        result = {'version': '', 'baseUrl': '', 'isForce': 'false', 'flag':0, 'releaseNotes':''}
+        try:
+            if lists.count()>0:
+                update = lists[0]
+                result['version'] = update.version
+                result['isForce'] = update.isForce
+                result['releaseNotes'] = update.instructions
+                if update.client == 'android_b' or update.client == 'android_c':
+                    result['baseUrl'] = "http://www.520czj.com" + update.path +'?r=' + str(time.time())
+                result['flag'] = 1
+        except Exception, e:
+            logging.info('Error: mobile/update/%s %s'%(client, e.message))
+        self.write(simplejson.dumps(result))
+
 
 
 
