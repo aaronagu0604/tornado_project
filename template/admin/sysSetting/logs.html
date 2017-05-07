@@ -70,7 +70,7 @@
         startPage: {{page}},
         visiblePages: 8,
             onPageClick: function (event, page) {
-            self.location="/admin/product_orders?status={{status}}&begin_date={{begin_date or ''}}&end_date={{end_date or ''}}&keyword={{keyword or ''}}&order_type={{order_type}}&page="+page;
+            self.location="/admin/log?page="+page;
         }
     });
 })
