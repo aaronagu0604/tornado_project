@@ -42,7 +42,7 @@
         </div>
         <div class="pull-right">
             <form class="navbar-form navbar-left" action="" method="get" role="search">
-                <!--<input type="hidden" name="status" value="{{status}}">-->
+                <input type="hidden" name="status" value="{{status}}">
                 <input type="hidden" name="page" value="{{page}}">
                 <input type="hidden" name="archive" value="{{archive}}">
                 <!--<div class="btn-group btn-group-xs">-->
@@ -84,61 +84,61 @@
         <div class="table-responsive">
             <table class="table table-hover" id="tb_users" cellpadding="0" cellspacing="0" border="0" style="text-align:center;width:100%;">
                 <thead>
-                <tr style="background:#528acb;color:#fff;text-align:center;height:38px;line-height:38px;">
-                    <th style="width:5%;text-align:center;">序号</th>
-                    <th style="width:5%;text-align:center;">日期</th>
-                    <th style="width:5%;text-align:center;">订单号</th>
-                    <th style="width:5%;text-align:center;">资金来源</th>
-                    <th style="width:5%;text-align:center;">资金项目</th>
-                    <th style="width:10%;text-align:center;">客户地址</th>
-                    <th style="width:5%;text-align:center;">金额</th>
-                    <th style="width:5%;text-align:center;">保险公司</th>
-                    <th style="width:5%;text-align:center;">车主/承包人</th>
-                    <th style="width:5%;text-align:center;">入账手续费</th>
-                    <th style="width:5%;text-align:center;">转出金额</th>
-                    <th style="width:5%;text-align:center;">转出手续费</th>
-                    <th  style="width:5%;text-align:center;">备注</th>
-                </tr>
+                    <tr style="background:#528acb;color:#fff;text-align:center;height:38px;line-height:38px;">
+                        <th style="width:5%;text-align:center;">序号</th>
+                        <th style="width:5%;text-align:center;">日期</th>
+                        <th style="width:5%;text-align:center;">订单号</th>
+                        <th style="width:5%;text-align:center;">资金来源</th>
+                        <th style="width:5%;text-align:center;">资金项目</th>
+                        <th style="width:10%;text-align:center;">客户地址</th>
+                        <th style="width:5%;text-align:center;">金额</th>
+                        <th style="width:5%;text-align:center;">保险公司</th>
+                        <th style="width:5%;text-align:center;">车主/承包人</th>
+                        <th style="width:5%;text-align:center;">入账手续费</th>
+                        <th style="width:5%;text-align:center;">转出金额</th>
+                        <th style="width:5%;text-align:center;">转出手续费</th>
+                        <th  style="width:5%;text-align:center;">备注</th>
+                    </tr>
                 </thead>
                 <tbody>
                 {% for o in orders %}
-                <tr>
-                    <td>
-                        <span style="color:#ff5231;">{{o['id']}}</span>
-                    </td>
-                    <td>
-                        <span>{{o['ordered']}}</span>
-                    </td>
-                    <td>
-                        <span>{{o['ordernum']}}</span>
-                    </td>
-                    <td>
-                        <span">{{o['payment']}}</span>
-                    </td>
-                    <td>
-                        <span>{{o['moneyitem']}}</span>
-                    </td>
-                    <td>
-                        <span>{{o['useraddress']}}</span>
-                    </td>
-                    <td">
-                        {{o['totalprice']}}
-                    </td>
-                    <td>{{o['insurance']}}</td>
-                    <td>{{o['user']}}</td>
-                    <td>
-                        <span>{{o['incommission']}}</span>
-                    </td>
-                    <td>
-                        <span>{{o['outprice']}}</span>
-                    </td>
-                    <td>
-                        <span>{{o['outcommission']}}</span>
-                    </td>
-                    <td>
-                        <span>{{o['summary']}}</span>
-                    </td>
-                </tr>
+                    <tr>
+                        <td>
+                            <span style="color:#ff5231;">{{o['id']}}</span>
+                        </td>
+                        <td>
+                            <span>{{o['ordered']}}</span>
+                        </td>
+                        <td>
+                            <span>{{o['ordernum']}}</span>
+                        </td>
+                        <td>
+                            <span">{{o['payment']}}</span>
+                        </td>
+                        <td>
+                            <span>{{o['moneyitem']}}</span>
+                        </td>
+                        <td>
+                            <span>{{o['useraddress']}}</span>
+                        </td>
+                        <td>
+                            {{o['totalprice']}}
+                        </td>
+                        <td>{{o['insurance']}}</td>
+                        <td>{{o['user']}}</td>
+                        <td>
+                            <span>{{o['incommission']}}</span>
+                        </td>
+                        <td>
+                            <span>{{o['outprice']}}</span>
+                        </td>
+                        <td>
+                            <span>{{o['outcommission']}}</span>
+                        </td>
+                        <td>
+                            <span>{{o['summary']}}</span>
+                        </td>
+                    </tr>
                 {% endfor %}
                 </tbody>
             </table>
@@ -173,7 +173,7 @@
         startPage: {{page}},
         visiblePages: 8,
             onPageClick: function (event, page) {
-            self.location="/admin/product_orders?begin_date={{begin_date or ''}}&end_date={{end_date or ''}}&page="+page;
+            self.location="/admin/export_trade_list?begin_date={{begin_date or ''}}&end_date={{end_date or ''}}&page="+page;
         }
     });
 })
