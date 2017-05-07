@@ -40,7 +40,7 @@
                 <div class="btn-group btn-group-xs">
                     <select class="form-control" name="status" id="sel_type" style="width:100px;">
                         <option value="-2" {{ status=='-2' and 'selected' or '' }}>全部</option>
-                        <option value="0" {{ status==0 and 'selected' or '' }}>待确认</option>
+                        <option value="0" {{ status==0 and 'selected' or '' }}>待报价</option>
                         <option value="1" {{ status==1 and 'selected' or '' }}>待付款</option>
                         <option value="2" {{ status==2 and 'selected' or '' }}>已付款</option>
                         <option value="3" {{ status==3 and 'selected' or '' }}>已办理</option>
@@ -80,8 +80,8 @@
                     <th style="width:5%;text-align:center;">价格</th>
                     <th style="width:5%;text-align:center;">状态</th>
                     <th style="width:4%;text-align:center;">优惠</th>
-                    <th style="width:6%;text-align:center;">支付</th>
-                    <th style="width:12%;text-align:center;">本地备注</th>
+                    <th style="width:6%;text-align:center;">支付方式</th>
+                    <th style="width:12%;text-align:center;">备注</th>
                     <th style="width:10%;text-align:center;">操作</th>
                 </tr>
                 </thead>
@@ -148,10 +148,8 @@
                     </td>
                     <td>
                         <a href="/admin/insurance_order/{{o.id}}?state={{state}}&status={{status}}&page={{page}}" class="btn btn-outline btn-primary btn-xs">详情</a>
-                        {% if o.status==1 or o.status==0 %}
-                        <a href="/admin/delinsurance/{{o.id}}?status={{status}}&page={{page}}" onclick="return confirm('确定关闭？');"
-                           class="btn btn-outline btn-primary btn-xs">关闭</a>
-                        {% elif o.status==2 %}
+
+                        {% if o.status==2 %}
                         <a href="/admin/delinsurance/{{o.id}}?status={{status}}&page={{page}}" onclick="return confirm('确定完成？');"
                            class="btn btn-outline btn-primary btn-xs"  style="color:#00FF00">完成</a>
                         {% endif %}

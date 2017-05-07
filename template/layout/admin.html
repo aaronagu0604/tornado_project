@@ -180,13 +180,13 @@
                             <li>
                                 <a {% if active=='insurance' %}class="active"{% endif %} href="/admin/insurance">保险公司</a>
                             </li>
-                            <li>
+                            <li style="display: none;">
                                 <a {% if active=='insurance_area' %}class="active"{% endif %} href="/admin/insurance_area">开通地域</a>
                             </li>
                         </ul>
                     </li>
 
-                    <li {% if active=='sk_product' or active=='sk_car'
+                    <li style="display: none;" {% if active=='sk_product' or active=='sk_car'
                          %}class="active"{% endif %}>
                         <a href="#"><i class="fa fa-tint fa-fw"></i>&nbsp;&nbsp;&nbsp;SK润滑油
                             <span class="fa arrow"></span>

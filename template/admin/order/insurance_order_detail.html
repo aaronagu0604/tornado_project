@@ -6,6 +6,17 @@
 <script type="text/javascript" src="/style/js/jquery-1.11.1.min.js"></script>
 <script type="text/javascript" src="/style/js/bigimg.js"></script>
 <style>
+    .rightTxt {
+        padding:0 10px 0 0;
+        color:#4c4c4c;
+    }
+    .leftLine {
+        margin-top:10px;
+    }
+    .leftTxt{
+        text-align: right;
+        padding:0 5px 0 0;
+    }
     .middle-img {
         position: absolute;
         left: 259px;
@@ -113,101 +124,623 @@
         <div class="panel panel-primary">
             <div class="panel-body">
                 <h4>订单基本信息</h4>
-                <div class="row">
-                    <div class="col-sm-6">订单号：{{o.ordernum}}</div>
-                    <div class="col-sm-6">状态：
+                <div class="row leftLine">
+                    <div class="col-xs-3">订单号：</div>
+                    <div class="col-xs-3 rightTxt">{{o.ordernum}}</div>
+                    <div class="col-xs-3">状态：</div>
+                    <div class="col-xs-3 rightTxt">
                         {% if o.status==0 %}
-                        <div style="color:#FF0800;">待报价</div>
+                        <span style="color:#FF0800;">待报价</span>
                         {% elif o.status==1  %}
-                        <div style="color:#990033;">待付款</div>
+                        <span style="color:#990033;">待付款</span>
                         {% elif o.status==2 %}
-                        <div style="color:#00CC00;">已付款</div>
+                        <span style="color:#00CC00;">已付款</span>
                         {% elif o.status==3 %}
-                        <div style="color:#487;">已办理</div>
+                        <span style="color:#487;">已办理</span>
                         {% elif o.status==5 %}
-                        <div style="color:#000800;">已取消</div>
+                        <span style="color:#000800;">已取消</span>
                         {% endif %}
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-sm-6">下单门店：{{o.store.name}}</div>
-                    <div class="col-sm-6">下单时间：{{o.ordered|datetimeformat}}</div>
+                <div class="row leftLine">
+                    <div class="col-xs-3">订单金额：</div>
+                    <div class="col-xs-3 rightTxt">--</div>
+                    <div class="col-xs-3">支付方式：</div>
+                    <div class="col-xs-3 rightTxt">--</div>
                 </div>
-                <div class="row">
-                    <div class="col-sm-6">下单用户：{{o.user.username}}</div>
-                    <div class="col-sm-6">联系电话：{{o.user.mobile}}</div>
+                <div class="row leftLine">
+                    <div class="col-xs-3">下单门店：</div>
+                    <div class="col-xs-3 rightTxt">{{o.store.name}}</div>
+                    <div class="col-xs-3">下单用户：</div>
+                    <div class="col-xs-3 rightTxt">{{o.user.truename}}</div>
+
                 </div>
-                <ul data-am-widget="gallery" class="am-gallery am-avg-sm-2am-avg-md-3 am-avg-lg-4 am-gallery-overlay" data-am-gallery="{ pureview: true }" >
-                    <li>
-                        <div class="am-gallery-item">
-                            <a href="{{o.id_card_front}}" class="">
-                                <img style="width:197px;height:197px" src="{{o.id_card_front}}"/>
-                            </a>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="am-gallery-item">
-                            <a href="{{o.id_card_back}}" class="">
-                                <img style="width:197px;height:197px" src="{{o.id_card_back}}"/>
-                            </a>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="am-gallery-item">
-                            <a href="{{o.drive_card_front}}" class="">
-                                <img style="width:197px;height:197px" src="{{o.drive_card_front}}"/>
-                            </a>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="am-gallery-item">
-                            <a href="{{o.drive_card_back}}" class="">
-                                <img style="width:197px;height:197px" src="{{o.drive_card_back}}"/>
-                            </a>
-                        </div>
-                    </li>
+                <div class="row leftLine">
+                    <div class="col-xs-3">下单时间：</div>
+                    <div class="col-xs-3 rightTxt">{{o.ordered|datetimeformat}}</div>
+                    <div class="col-xs-3">联系电话：</div>
+                    <div class="col-xs-3 rightTxt">{{o.user.mobile}}</div>
+                </div>
+                <div class="row leftLine">
+                    <div class="col-xs-3">收件人：</div>
+                    <div class="col-xs-3 rightTxt">{{o.delivery_to}}</div>
+                    <div class="col-xs-3">收件电话：</div>
+                    <div class="col-xs-3 rightTxt">{{o.delivery_tel}}</div>
+                </div>
+                <div class="row leftLine">
+                    <div class="col-xs-3">收件省市：</div>
+                    <div class="col-xs-9 rightTxt">--</div>
+                </div>
+                <div class="row leftLine">
+                    <div class="col-xs-3">详细地址：</div>
+                    <div class="col-xs-9 rightTxt">--</div>
+                </div>
+                <div class="row leftLine">
+                    <div class="col-xs-3">分享保单：<Br>含地址</div>
+                    <div class="col-xs-6 rightTxt">
+                        <textarea id="contents" class="form-control">www.520czj.com/user/showInsurance/{{poid}}</textarea>
+
+                    </div>
+                    <div class="col-xs-3"><input type="button" onClick="jsCopy2();" class="btn btn-outline btn-primary btn-xs" value="复制"/></div>
+                </div>
+                <div class="row leftLine">
+                    <div class="col-xs-3">分享保单：<Br>无地址</div>
+                    <div class="col-xs-6 rightTxt">
+                        <textarea id="contents_without_add" class="form-control">www.520czj.com/user/showInsurance/{{poid2}}?addr=1</textarea>
+
+                    </div>
+                    <div class="col-xs-3"><input type="button" onClick="jsCopy();" class="btn btn-outline btn-primary btn-xs" value="复制"/></div>
+                </div>
+                <div class="row leftLine">
+                    <div class="col-xs-3">取消订单：</div>
+                    <div class="col-xs-6 rightTxt">
+                        <textarea class="form-control" id="cancel_cause" placeholder="订单取消原因...">{{o.cancelreason}}</textarea>
+                    </div>
+                    <div class="col-xs-3"><input type="button" data-id="{{o.id}}" id="btnCancel" class="btn btn-outline btn-primary btn-xs" value="取消订单"></div>
+                </div>
+                <div class="row leftLine">
+                    <div class="col-xs-3">本地备注：</div>
+                    <div class="col-xs-6 rightTxt">
+                        <textarea class="form-control" id="summary" placeholder="添加本地备注...">{{o.cancelreason}}</textarea>
+                    </div>
+                    <div class="col-xs-3"><input type="button" data-id="{{o.id}}" class="btn btn-outline btn-primary btn-xs" value="本地备注" ></div>
+                </div>
                 </ul>
             </div>
         </div>
     </div>
     <div class="col-sm-12 col-md-6">
         <div class="panel panel-primary">
-            <div class="panel-body">
-                <h4>业务信息</h4>
+            <div class="panel-body" data-am-widget="gallery"  data-am-gallery="{ pureview: true }">
+                <h4>图片信息</h4>
                 <div class="row">
-                    <div class="col-sm-6">收件人：{{o.delivery_to}}</div>
-                    <div class="col-sm-6">电话：{{o.delivery_tel}}</div>
+                    <div class="col-xs-6" style="text-align: center">
+                        <a href="{{o.id_card_front}}" class="">
+                                <img style="width:160px; height:110px;" src="{{o.id_card_front}}"/>
+                            </a>
+                        <div>
+                            <input type="button" class="btn btn-outline btn-primary btn-xs" value="重新上传"/>
+                        </div>
+                    </div>
+                    <div class="col-xs-6" style="text-align: center">
+                        <a href="{{o.id_card_back}}" class="">
+                                <img style="width:160px; height:110px;" src="{{o.id_card_back}}"/>
+                            </a>
+                        <div>
+                            <input type="button" class="btn btn-outline btn-primary btn-xs" value="重新上传"/>
+                        </div>
+                    </div>
                 </div>
-                <div class="row">
-                    <div class="col-sm-6">收件省市：</div>
-                    <div class="col-sm-6">详细地址：</div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-12">分享保单（含地址）：
-                        <textarea id="contents" style="width:50%;height: 30px;">www.520czj.com/user/showInsurance/{{poid}}</textarea>
-                        <input type="button" onClick="jsCopy();" value="复制"/>
+                <div class="row" style="margin-top: 5px;">
+                    <div class="col-xs-6" style="text-align: center">
+                        <a href="{{o.drive_card_front}}" class="">
+                                <img style="width:160px; height:110px;" src="{{o.drive_card_front}}"/>
+                            </a>
+                        <div>
+                            <input type="button" class="btn btn-outline btn-primary btn-xs" value="重新上传"/>
+                        </div>
+                    </div>
+                    <div class="col-xs-6" style="text-align: center">
+                        <a href="{{o.drive_card_back}}" class="">
+                                <img style="width:160px; height:110px;" src="{{o.drive_card_back}}"/>
+                            </a>
+                        <div>
+                            <input type="button" class="btn btn-outline btn-warning btn-xs" value="取消重新上传"/>
+                        </div>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-sm-12">分享保单（无地址）：
-                        <textarea id="contents_without_add" style="width:50%;height: 30px;">www.520czj.com/user/showInsurance/{{poid2}}?addr=1</textarea>
-                        <input type="button" onClick="jsCopy2();" value="复制"/>
+                    <div class="col-xs-12">
+                        <input type="button" class="btn btn-outline btn-primary btn-xs" value="OCR"/>
+                        <input type="button" class="btn btn-outline btn-primary btn-xs" value="保存"/>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-sm-6">取消订单：<input class="form-control" id="cancel_cause" name="cancel_cause" type="text" value="{{o.cancelreason}}" placeholder="订单取消原因..." style="width:480px;height:60px;">
-                        <input type="button" data-id="{{o.id}}" id="btnCancel" class="btn btn-outline btn-primary btn-xs" value="取消订单" style="width:90px;height:32px;background:#528ACB;color:#fff;border:none;border-radius:4px;margin-top:10px;">
+                    <div class="col-xs-3">
+                        姓名
+                    </div>
+                    <div class="col-xs-3 rightTxt">
+                        <input class="form-control" type="text" />
+                    </div>
+                    <div class="col-xs-3">
+                        到期时间
+                    </div>
+                    <div class="col-xs-3 rightTxt">
+                        <input class="form-control" type="text" />
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-sm-6">本地备注：
-                        <input class="form-control" name="cancel_cause" type="text" value="{{o.cancelreason}}" style="width:480px;height:86px;">
-                        <input type="button" data-id="{{o.id}}" class="btn btn-outline btn-primary btn-xs" value="本地备注" style="width:90px;height:32px;background:#528ACB;color:#fff;border:none;border-radius:4px;margin-top:10px;">
+                    <div class="col-xs-3">
+                        身份证号
+                    </div>
+                    <div class="col-xs-9 rightTxt">
+                        <input class="form-control" type="text" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-3">
+                        地址
+                    </div>
+                    <div class="col-xs-9 rightTxt">
+                        <input class="form-control" type="text" />
+                    </div>
+                </div>
+                <div class="row">
+
+                </div>
+                <div class="row">
+                    <div class="col-xs-3">
+                        车牌号
+                    </div>
+                    <div class="col-xs-3 rightTxt">
+                        <input class="form-control" type="text" />
+                    </div>
+                    <div class="col-xs-3">
+                        发动机号
+                    </div>
+                    <div class="col-xs-3 rightTxt">
+                        <input class="form-control" type="text" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-3">
+                        车架号
+                    </div>
+                    <div class="col-xs-9 rightTxt">
+                        <input class="form-control" type="text" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-3">
+                        车型
+                    </div>
+                    <div class="col-xs-9 rightTxt">
+                        <input class="form-control" type="text" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-3">
+                        座位数
+                    </div>
+                    <div class="col-xs-3 rightTxt">
+                        <input class="form-control" type="text" />
+                    </div>
+                    <div class="col-xs-3">
+                        整备质量
+                    </div>
+                    <div class="col-xs-3 rightTxt">
+                        <input class="form-control" type="text" />
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <div class="col-sm-12 col-md-12">
+        <div class="panel panel-primary">
+            <div class="panel-body">
+                <h4>报价信息</h4>
+                <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>提交人</th>
+                            <th>提交时间</th>
+                            <th>保险公司</th>
+                            <th>交强险</th>
+                            <th>商业险</th>
+                            <th>返佣情况</th>
+                            <th>状态</th>
+                            <th>处理人+用时</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>张三</td>
+                            <td>2017-4-5 12:23:32</td>
+                            <td>平安车险</td>
+                            <td>--</td>
+                            <td>--</td>
+                            <td>--</td>
+                            <td>待报价</td>
+                            <td>--</td>
+                            <td><a href="#" style="font-size: 22px; color:black;">+</a></td>
+                        </tr>
+                        <tr>
+                            <td colspan="9">
+                                <div class="col-sm-12 col-md-12">
+                        <div class="panel panel-success">
+                        <div class="panel-heading">
+                            <div class="panel-title">
+                                <div class="row">
+                                    <div class="col-xs-6" style="line-height: 34px;">购买险种</div>
+                                    <div class="col-xs-6">
+                                        <div class="row">
+                                            <div class="col-xs-4" style="line-height: 34px; text-align: right;">
+                                                保险公司:</div>
+                                            <div class="col-xs-8 rightTxt">
+                                            <select name="insurance" class="form-control">
+
+                                        <option>人保车险</option>
+
+                                    </select></div>
+                                        </div>
+
+                                    </div>
+                                    </div>
+                            </div>
+                        </div>
+                        <div class="panel-body" style="padding: 0;">
+                            <table class="table table-bordered" style="width:100%;">
+                                <tbody>
+                        <tr>
+                            <td>
+                                <div class="row">
+                                <div class="checkbox col-xs-8 leftTxt">
+                                        <label>
+                                          <input type="checkbox" style="visibility: visible;">交强险
+                                        </label>
+                                      </div>
+                                <div class="col-xs-4 rightTxt">
+                                  <input type="text" class="form-control" >
+                                </div>
+                                    </div>
+                                <div class="row">
+                                <div class="checkbox col-xs-8 leftTxt">
+                                        <label>
+                                          <input type="checkbox" style="visibility: visible;">商业险
+                                        </label>
+                                      </div>
+                                <div class="col-xs-4 rightTxt">
+                                  <input type="text" class="form-control" >
+                                </div>
+                                    </div>
+                            </td>
+                            <td>
+                                <div class="row">
+                                <div class="checkbox col-xs-8 leftTxt">
+                                        <label>
+                                          <input type="checkbox" style="visibility: visible;">车损线（主）
+                                        </label>
+                                      </div>
+                                <div class="col-xs-4 rightTxt">
+                                  <input type="text" class="form-control" >
+                                </div>
+                                        </div>
+                                        <div class="row">
+                                <div class="checkbox col-xs-8 leftTxt">
+                                        <label>
+                                          <input type="checkbox" style="visibility: visible;">不计免赔
+                                        </label>
+                                      </div>
+                                <div class="col-xs-4 rightTxt">
+                                  <input type="text" class="form-control" >
+                                </div>
+                                        </div>
+                            </td>
+                            <td>
+                                <div class="row">
+                                <div class="checkbox col-xs-8 leftTxt">
+                                        <label>
+                                          <input type="checkbox" style="visibility: visible;">三责线（主）
+                                        </label>
+                                      </div>
+                                <div class="col-xs-4 rightTxt">
+                                  <input type="text" class="form-control" >
+                                </div>
+                                        </div>
+                                        <div class="row">
+                                <div class="checkbox col-xs-8 leftTxt">
+                                        <label>
+                                          <input type="checkbox" style="visibility: visible;">不计免赔
+                                        </label>
+                                      </div>
+                                <div class="col-xs-4 rightTxt">
+                                  <input type="text" class="form-control" >
+                                </div>
+                                        </div>
+                            </td>
+                        </tr>
+                                <tr>
+                            <td>
+                                <div class="row">
+                                <div class="checkbox col-xs-8 leftTxt">
+                                        <label>
+                                          <input type="checkbox" style="visibility: visible;">车上人司机（主）
+                                        </label>
+                                      </div>
+                                <div class="col-xs-4 rightTxt">
+                                  <input type="text" class="form-control" >
+                                </div>
+                                        </div>
+                                        <div class="row">
+                                <div class="checkbox col-xs-8 leftTxt">
+                                        <label>
+                                          <input type="checkbox" style="visibility: visible;">不计免赔
+                                        </label>
+                                      </div>
+                                <div class="col-xs-4 rightTxt">
+                                  <input type="text" class="form-control" >
+                                </div>
+                                        </div>
+                            </td>
+                            <td>
+                                <div class="row">
+                                <div class="checkbox col-xs-8 leftTxt">
+                                        <label>
+                                          <input type="checkbox" style="visibility: visible;">车上人乘客（主）
+                                        </label>
+                                      </div>
+                                <div class="col-xs-4 rightTxt">
+                                  <input type="text" class="form-control" >
+                                </div>
+                                        </div>
+                                        <div class="row">
+                                <div class="checkbox col-xs-8 leftTxt">
+                                        <label>
+                                          <input type="checkbox" style="visibility: visible;">不计免赔
+                                        </label>
+                                      </div>
+                                <div class="col-xs-4 rightTxt">
+                                  <input type="text" class="form-control" >
+                                </div>
+                                        </div>
+                            </td>
+                            <td>
+                                <div class="row">
+                                <div class="checkbox col-xs-8 leftTxt">
+                                        <label>
+                                          <input type="checkbox" style="visibility: visible;">全车盗抢险（主）
+                                        </label>
+                                      </div>
+                                <div class="col-xs-4 rightTxt">
+                                  <input type="text" class="form-control" >
+                                </div>
+                                        </div>
+                                        <div class="row">
+                                <div class="checkbox col-xs-8 leftTxt">
+                                        <label>
+                                          <input type="checkbox" style="visibility: visible;">不计免赔
+                                        </label>
+                                      </div>
+                                <div class="col-xs-4 rightTxt">
+                                  <input type="text" class="form-control" >
+                                </div>
+                                        </div>
+                            </td>
+                        </tr>
+                                 <tr>
+                            <td>
+                                <div class="row">
+                                <div class="checkbox col-xs-8 leftTxt">
+                                        <label>
+                                          <input type="checkbox" style="visibility: visible;">单独玻璃破碎险
+                                        </label>
+                                      </div>
+                                <div class="col-xs-4 rightTxt">
+                                  <input type="text" class="form-control" >
+                                </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="row">
+                                <div class="checkbox col-xs-8 leftTxt">
+                                        <label>
+                                          <input type="checkbox" style="visibility: visible;">车身划痕险【1万】
+                                        </label>
+                                      </div>
+                                <div class="col-xs-4 rightTxt">
+                                  <input type="text" class="form-control" >
+                                </div>
+                                        </div>
+                                        <div class="row">
+                                <div class="checkbox col-xs-8 leftTxt">
+                                        <label>
+                                          <input type="checkbox" style="visibility: visible;">不计免赔
+                                        </label>
+                                      </div>
+                                <div class="col-xs-4 rightTxt">
+                                  <input type="text" class="form-control" >
+                                </div>
+                                        </div>
+                            </td>
+                            <td>
+                                <div class="row">
+                                <div class="checkbox col-xs-8 leftTxt">
+                                        <label>
+                                          <input type="checkbox" style="visibility: visible;">自燃损失险
+                                        </label>
+                                      </div>
+                                <div class="col-xs-4 rightTxt">
+                                  <input type="text" class="form-control" >
+                                </div>
+                                        </div>
+                                        <div class="row">
+                                <div class="checkbox col-xs-8 leftTxt">
+                                        <label>
+                                          <input type="checkbox" style="visibility: visible;">不计免赔
+                                        </label>
+                                      </div>
+                                <div class="col-xs-4 rightTxt">
+                                  <input type="text" class="form-control" >
+                                </div>
+                                        </div>
+                            </td>
+                        </tr>
+                                <tr>
+                            <td>
+                                <div class="row">
+                                <div class="checkbox col-xs-8 leftTxt">
+                                        <label>
+                                          <input type="checkbox" style="visibility: visible;">无法找到第三方险
+                                        </label>
+                                      </div>
+                                <div class="col-xs-4 rightTxt">
+                                  <input type="text" class="form-control" >
+                                </div>
+                                </div>
+                                <div class="row">
+                                <div class="checkbox col-xs-8 leftTxt">
+                                        <label>
+                                          <input type="checkbox" style="visibility: visible;">车船税
+                                        </label>
+                                      </div>
+                                <div class="col-xs-4 rightTxt">
+                                  <input type="text" class="form-control" >
+                                </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="row">
+                                <div class="checkbox col-xs-8 leftTxt">
+                                        <label>
+                                          <input type="checkbox" style="visibility: visible;">发动机涉水险
+                                        </label>
+                                      </div>
+                                <div class="col-xs-4 rightTxt">
+                                  <input type="text" class="form-control" >
+                                </div>
+                                        </div>
+                                        <div class="row">
+                                <div class="checkbox col-xs-8 leftTxt">
+                                        <label>
+                                          <input type="checkbox" style="visibility: visible;">不计免赔
+                                        </label>
+                                      </div>
+                                <div class="col-xs-4 rightTxt">
+                                  <input type="text" class="form-control" >
+                                </div>
+                                        </div>
+                            </td>
+                            <td>
+                                <div class="row">
+                            <div class="checkbox col-xs-8 leftTxt">
+
+                                        <label>
+                                          <input type="checkbox" style="visibility: visible;">交强险折扣
+                                        </label>
+                                      </div>
+                                <div class="col-xs-4 rightTxt">
+                                  <input type="text" class="form-control" >
+                                </div>
+                                </div>
+                                <div class="row">
+                                <div class="checkbox col-xs-8 leftTxt">
+                                        <label>
+                                          <input type="checkbox" style="visibility: visible;">商业险折扣
+                                        </label>
+                                      </div>
+                                <div class="col-xs-4 rightTxt">
+                                  <input type="text" class="form-control" >
+                                </div>
+                                </div>
+                            </td>
+                        </tr>
+                                <tr>
+                                    <td colspan="2" style="text-align: right;">
+                                        保险总额：<span style="font-size: 25px; color:red;">1345.9</span>元
+                                    </td>
+                                    <td>
+                                        <input type="button" class="btn btn-outline btn-primary btn-xs" value="输入验证"/>
+                        <input type="button" class="btn btn-outline btn-primary btn-xs" value="保险接口调用"/>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div></div>
+                                <div class="col-sm-6 col-md-6">
+                    <div class="panel panel-success">
+                        <div class="panel-heading">
+
+                            <div class="panel-title">
+                                <div class="row">
+                                    <div class="col-xs-5" style="line-height: 34px;">返佣信息</div>
+                                    <div class="col-xs-7">
+                                        <div class="row">
+                                            <div class="col-xs-5" style="line-height: 34px; text-align: right;">
+                                                返佣类型:</div>
+                                            <div class="col-xs-7 rightTxt">
+                                            <select name="insurance" class="form-control">
+
+                                        <option>返现</option>
+                                                <option>返油</option>
+                                                <option>无</option>
+
+                                    </select></div>
+                                        </div>
+
+                                    </div>
+                                    </div>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                        </div>
+                    </div></div>
+<div class="col-sm-6 col-md-6">
+                    <div class="panel panel-success">
+                        <div class="panel-heading">
+                            <div class="panel-title">
+                                <div class="row">
+                                    <div class="col-xs-5" style="line-height: 34px;">操作</div>
+<div class="col-xs-7" style="line-height: 34px; text-align: right;">
+    <input type="button" class="btn btn-outline btn-primary btn-xs" value="自动生成返佣与短信"/>
+</div>
+                                    </div>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <textarea class="form-control" name="psummary" cols=50%; rows="10" placeholder="短信内容"></textarea>
+                                </div>
+                                <div class="col-xs-12" style="margin-top: 6px;">
+                                    <span onclick="saveData(1, 0)" style="padding:5px 10px;background:#438bca;color:#fff;border-radius:4px;font-size:14px;cursor:pointer;">保存</span>
+                                            <span onclick="saveData(1, 1)" style="padding:5px 10px;margin-top:3px;background:#438bca;color:#fff;border-radius:4px;font-size:14px;cursor:pointer;">保存并发短信</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div></div>
+
+                                <div class="col-sm-12 col-md-12">
+                    <div class="panel panel-success">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">补退款</h3>
+                        </div>
+                        <div class="panel-body">
+                        </div>
+                    </div></div>
+
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="col-sm-12 col-md-12">
         <div class="panel panel-primary">
             <div class="panel-body">
