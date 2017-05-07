@@ -16,6 +16,10 @@ import logging
 import os
 import random
 from payqrcode import postRequest
+import urllib2
+import StringIO
+from PIL import Image
+from pytesseract import image_to_string
 
 @route(r'/ajax/GetSubAreas', name='ajax_GetSubAreas')  # 获取下级区域
 class AjaxGetSubAreas(BaseHandler):
@@ -909,4 +913,45 @@ class UploadPicHandler(BaseHandler):
                     logging.error(e)
                     msg = '{"id":0,"path":"上传失败"}'
             self.write(msg)
+
+@route(r'/ajax/ocr', name='ajax_ocr')  # 自动识别图片信息
+class OCRHandler(BaseHandler):
+    def check_xsrf_cookie(self):
+        pass
+
+    def post(self):
+        io_id = self.get_argument('io_id', None)
+        if not io_id:
+            self.write('该订单不存在')
+        io = InsuranceOrder.get(id=io_id)
+        result = {}
+        if io.id_card_front:
+            request = urllib2.Request(io.id_card_front)
+            img_data = urllib2.urlopen(request).read()
+            img_buffer = StringIO.StringIO(img_data)
+            img = Image.open(img_buffer)
+            ocrresult = image_to_string(iamge=img,lang='fra+chi_sim')
+            result['id_card_front'] = ocrresult
+        if io.id_card_back:
+            request = urllib2.Request(io.id_card_back)
+            img_data = urllib2.urlopen(request).read()
+            img_buffer = StringIO.StringIO(img_data)
+            img = Image.open(img_buffer)
+            ocrresult = image_to_string(iamge=img,lang='fra+chi_sim')
+            result['id_card_back'] = ocrresult
+        if io.drive_card_front:
+            request = urllib2.Request(io.drive_card_front)
+            img_data = urllib2.urlopen(request).read()
+            img_buffer = StringIO.StringIO(img_data)
+            img = Image.open(img_buffer)
+            ocrresult = image_to_string(iamge=img,lang='fra+chi_sim')
+            result['id_card_front'] = ocrresult
+        if io.drive_card_back:
+            request = urllib2.Request(io.drive_card_back)
+            img_data = urllib2.urlopen(request).read()
+            img_buffer = StringIO.StringIO(img_data)
+            img = Image.open(img_buffer)
+            ocrresult = image_to_string(iamge=img,lang='fra+chi_sim')
+            result['id_card_front'] = ocrresult
+        self.write(simplejson.dumps(result))
 
