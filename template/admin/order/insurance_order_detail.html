@@ -338,7 +338,9 @@
     <div class="col-sm-12 col-md-12">
         <div class="panel panel-primary">
             <div class="panel-body">
-                <h4>报价信息</h4>
+                <h4>报价信息
+                <input type="button" class="btn btn-outline btn-primary btn-xs" value="新报价"/>
+                </h4>
                 <div class="table-responsive">
                 <table class="table table-bordered">
                     <thead>
@@ -728,6 +730,23 @@
                             <h3 class="panel-title">补退款</h3>
                         </div>
                         <div class="panel-body">
+                            <div class="row" style="padding: 0 5px;">
+                                <div class="col-xs-6" style="padding: 0 20px;">
+                                    <div class="row">
+                                        <textarea class="form-control" cols=50%; rows="4" placeholder="原因"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6" style="padding: 0 20px;">
+                                    <div class="row">
+                                        <div class="col-xs-6 leftTxt" style="text-align: right; line-height: 32px; ">补/退款金额：</div>
+                                        <div class="col-xs-6"><input type="text" class="form-control"></div>
+                                    </div>
+                                    <div class="row" style="color:#567656; font-size:13px; padding-right: 13px; padding-bottom: 10px; text-align: right;">用户补款为正，给用户退款为负；退款进入用户余额</div>
+                                    <div class="row" style="text-align: right;padding-right: 13px; ">
+                                        <input type="button" class="btn btn-primary btn-sm" value="保存"/>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div></div>
 
