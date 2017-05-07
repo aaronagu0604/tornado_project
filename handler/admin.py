@@ -1498,11 +1498,20 @@ class ProductOrdersHandler(AdminBaseHandler):
         begin_date = self.get_argument("begin_date", '')
         end_date = self.get_argument("end_date", '')
         order_type = int(self.get_argument("order_type", 1))
+        store_id = self.get_argument('store_id',None)
+        store_type = self.get_argument('store_type',None)
         pagesize = setting.ADMIN_PAGESIZE
-        if archive:
+        if archive == '1':
             ft = (Order.status << [3,4,6,-1])
+        elif archive == '2':
+            ft = (Order.status >= -2)
         else:
             ft = (Order.status << [0,1,2,5])
+
+        if store_id and store_type == '2':
+            ft &= (Order.buyer_store == int(store_id))
+        if store_id and store_type == '1':
+            ft &= (SubOrder.saler_store == int(store_id))
         if status == -2:
             ft &= (Order.status > -2)
         else:
@@ -1517,7 +1526,8 @@ class ProductOrdersHandler(AdminBaseHandler):
             end = time.strptime((end_date + " 23:59:59"), "%Y-%m-%d %H:%M:%S")
             ft &= (Order.ordered > time.mktime(begin)) & (Order.ordered < time.mktime(end))
 
-        q = Order.select().join(Store).where(ft).order_by(Order.ordered.desc())
+        q = Order.select().join(Store, on=(Store.id == Order.buyer_store)).join(SubOrder, on=(SubOrder.order == Order.id)).where(ft).order_by(Order.ordered.desc())
+        print q,dir(q)
         total = q.count()
         if total % pagesize > 0:
             totalpage = total / pagesize + 1
@@ -1563,6 +1573,7 @@ class InsuranceOrderHandler(AdminBaseHandler):
         city = self.get_argument('city_code', '')
         district = self.get_argument("district_code", '')
         pagesize = self.settings['admin_pagesize']
+        store_id = self.get_argument('store_id',None)
         default_city = city
         default_province = province
         # 0待确认 1待付款 2付款完成 3已办理 4已邮寄 -1已删除(取消)
@@ -1571,6 +1582,10 @@ class InsuranceOrderHandler(AdminBaseHandler):
             ft = (InsuranceOrder.status == status)
         else:
             ft = (InsuranceOrder.status > -2)
+
+        if store_id:
+            ft = ft & (InsuranceOrder.store == int(store_id))
+
         if keyword:
             keyw = '%' + keyword + '%'
             ft &= (InsuranceOrder.ordernum % keyw)
