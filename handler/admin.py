@@ -1572,7 +1572,7 @@ class InsuranceOrderHandler(AdminBaseHandler):
         province = self.get_argument('province_code', '')
         city = self.get_argument('city_code', '')
         district = self.get_argument("district_code", '')
-        pagesize = self.settings['admin_pagesize']
+        pagesize = 10
         store_id = self.get_argument('store_id',None)
         default_city = city
         default_province = province
@@ -1621,7 +1621,7 @@ class InsuranceOrderHandler(AdminBaseHandler):
             active = 'i_order'
 
         self.render('admin/order/insurance_orders.html', orders=orders, total=total, page=page, pagesize=pagesize,
-                    totalpage=totalpage, status=status, active=active,begin_date=begin_date,end_date=end_date,
+                    totalpage=totalpage, status=status, active=active, begin_date=begin_date, end_date=end_date,
                     keyword=keyword, items=items, default_province=default_province, default_city=default_city,
                     default_status=status, Area=Area)
 
