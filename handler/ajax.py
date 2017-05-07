@@ -930,28 +930,28 @@ class OCRHandler(BaseHandler):
             img_data = urllib2.urlopen(request).read()
             img_buffer = StringIO.StringIO(img_data)
             img = Image.open(img_buffer)
-            ocrresult = image_to_string(iamge=img,lang='fra+chi_sim')
+            ocrresult = image_to_string(image=img,lang='fra+chi_sim')
             result['id_card_front'] = ocrresult
         if io.id_card_back:
             request = urllib2.Request(io.id_card_back)
             img_data = urllib2.urlopen(request).read()
             img_buffer = StringIO.StringIO(img_data)
             img = Image.open(img_buffer)
-            ocrresult = image_to_string(iamge=img,lang='fra+chi_sim')
+            ocrresult = image_to_string(image=img,lang='fra+chi_sim')
             result['id_card_back'] = ocrresult
         if io.drive_card_front:
             request = urllib2.Request(io.drive_card_front)
             img_data = urllib2.urlopen(request).read()
             img_buffer = StringIO.StringIO(img_data)
             img = Image.open(img_buffer)
-            ocrresult = image_to_string(iamge=img,lang='fra+chi_sim')
+            ocrresult = image_to_string(image=img,lang='fra+chi_sim')
             result['id_card_front'] = ocrresult
         if io.drive_card_back:
             request = urllib2.Request(io.drive_card_back)
             img_data = urllib2.urlopen(request).read()
             img_buffer = StringIO.StringIO(img_data)
             img = Image.open(img_buffer)
-            ocrresult = image_to_string(iamge=img,lang='fra+chi_sim')
+            ocrresult = image_to_string(image=img,lang='fra+chi_sim')
             result['id_card_front'] = ocrresult
         self.write(simplejson.dumps(result))
 
