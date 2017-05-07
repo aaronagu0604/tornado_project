@@ -919,7 +919,7 @@ class OCRHandler(BaseHandler):
     def check_xsrf_cookie(self):
         pass
 
-    def post(self):
+    def get(self):
         io_id = self.get_argument('io_id', None)
         if not io_id:
             self.write('该订单不存在')
