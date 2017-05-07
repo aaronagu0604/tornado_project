@@ -949,11 +949,13 @@ class OCRHandler(BaseHandler):
         io = InsuranceOrder.get(id=io_id)
         result = {}
         if io.id_card_front:
+            print io.id_card_back
             request = urllib2.Request(io.id_card_front)
             img_data = urllib2.urlopen(request).read()
             img_buffer = StringIO.StringIO(img_data)
             img = Image.open(img_buffer)
-            ocrresult = image_to_string(image=img,lang='eng+chi_sim')
+            ocrresult = image_to_string(image=img,lang='chi_sim')
+            print ocrresult
             result['id_card_front'] = ocrresult
         if io.id_card_back:
             request = urllib2.Request(io.id_card_back)
