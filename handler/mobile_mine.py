@@ -2012,7 +2012,6 @@ class MobileChangePayPasswordHandler(MobileBaseHandler):
             return
 
         user = User.get(User.mobile == mobile)
-
         flag = 1
         if v_code and new_password:
             VCode.delete().where(VCode.created < (int(time.time()) - 30 * 60)).execute()
