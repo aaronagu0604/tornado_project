@@ -184,8 +184,6 @@ class Trade(object):
         params = self.createAutoFormHtml(orderId, total_fee)
         r = urllib2.urlopen(setting['SDK_App_Request_Url'], data=urllib.urlencode(params), timeout=10).read()
         params = self.smart_str_decode(r)
-        import logging
-        logging.info('--%s--'%str(params))
         try:
             if params['respCode'] == '00':
                 return params['tn']
@@ -194,7 +192,7 @@ class Trade(object):
 
 if __name__ == '__main__':
     tn = Trade().trade('u110s111', 0.1)
-    print('-------------------%s---'%tn)
+    print('---%s---' % tn)
     result={}
     if tn:
         result['tn'] = tn

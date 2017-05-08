@@ -20,7 +20,7 @@ from model import *
 def change_order_status(ordernum, trade_no):
     is_insurance_order = False
     try:
-        ordernum_list = ordernum.split('_A')
+        ordernum_list = ordernum.split('A')
         if len(ordernum_list) == 1:
             if 'I' in ordernum:
                 order = InsuranceOrder.get(ordernum=ordernum)
