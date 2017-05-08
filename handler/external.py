@@ -12,17 +12,17 @@ class showInsurance(BaseHandler):
     def get(self, oid):
         addr = self.get_argument('addr', "False")
         if not int(oid):
-            return self.render('502.html')
+            return self.render('404.html')
 
         if addr == 'True':
             if (int(oid)-97)%91:
                 print 'False',(int(oid)-97)%91
-                return self.render('502.html')
+                return self.render('404.html')
             oid = (int(oid)-97)/91
         else:
             if (int(oid)-997)%73:
                 print 'True',(int(oid)-997)%73
-                return self.render('502.html')
+                return self.render('404.html')
             oid = (int(oid)-997)/73
 
         o = InsuranceOrder.get(id=oid)
