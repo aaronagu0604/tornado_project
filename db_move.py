@@ -179,7 +179,6 @@ def move_category():
             name=item.name,
             sort=1,  # 旧的没有
             img_m=None,  # 旧的没有
-            img_pc=None,  # 旧的没有
             hot=1,  # 旧的没有,设置默认值：0
             active=item.flag
         )
@@ -969,7 +968,13 @@ def move_Order():
             ordernum=item.ordernum,
             user=user_map[item.user.id],
             buyer_store=store_map[item.user.store.id],  # 旧的没有，暂时设置0
-            address=store_addr_map[item.address.id],
+            delivery_to=item.address.name,
+            delivery_tel=item.address.mobile,
+            delivery_province=item.address.province,
+            delivery_city=item.address.city,
+            delivery_region=item.address.region,
+            delivery_address=item.address.address,
+            # address=store_addr_map[item.address.id],
             # delivery=delivery,
             # delivery_num=deliverynum,
             ordered=item.ordered,

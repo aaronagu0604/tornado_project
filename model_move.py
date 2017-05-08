@@ -355,7 +355,6 @@ class Category(db.Model):
     sort = CharField(max_length=20)  # 显示顺序
     category_type = IntegerField(default=0)  # 1配件商城 2汽车装潢
     img_m = CharField(max_length=256, null=True)  # 分类图片手机端
-    img_pc = CharField(max_length=256, null=True)  # 分类图片PC端
     hot = IntegerField(default=1)  # 热门分类
     active = IntegerField(default=1)  # 状态 0删除 1有效
 
@@ -427,6 +426,8 @@ class Product(db.Model):
     is_score = IntegerField(default=0)  # 是否是积分商品
     created = IntegerField(default=0)  # 添加时间
     active = IntegerField(default=1)  # 0删除 1正常 2下架 在这下架表示用户再发布产品时候看不到这个产品了
+    hot = IntegerField(default=0)  # 热门品牌
+    sort = IntegerField(default=1)  # 显示顺序
 
     class Meta:
         db_table = 'tb_product'
@@ -525,7 +526,14 @@ class Order(db.Model):
     ordernum = CharField(max_length=64, null=True)  # 订单号
     user = ForeignKeyField(User, related_name='orders', db_column='user_id')  # 买家
     buyer_store = ForeignKeyField(Store, related_name='orders', db_column='buyer_store_id')  # 买家所属店铺
-    address = ForeignKeyField(StoreAddress, db_column='store_address_id')  # 收件信息
+    # 订单后货地址信息
+    delivery_to = CharField(max_length=255)  # 邮寄接收人名称
+    delivery_tel = CharField(max_length=255)  # 邮寄接收人电话
+    delivery_province = CharField(max_length=16, default='陕西')  # 邮寄接收省份
+    delivery_city = CharField(max_length=16, default='西安')  # 邮寄接收城市
+    delivery_region = CharField(max_length=32, null='')  # 邮寄接收区域
+    delivery_address = CharField(max_length=128, null=True)  # 邮寄接收详细地址
+
     order_type = IntegerField(default=1)  # 付款方式 1金钱订单 2积分订单
     payment = IntegerField(default=0)  # 支付方式  1支付宝  2微信 3银联 4余额 5积分
     total_price = FloatField(default=0.0)  # 价格，实际所有子订单商品价格之和
@@ -624,6 +632,7 @@ class Insurance(db.Model):
     eName = CharField(max_length=32, default='')  # 拼音简写
     intro = CharField(max_length=128, default='')  # 简介
     logo = CharField(max_length=255, default='')  # logo
+    hot = IntegerField(default=0)  # 热门品牌
     sort = IntegerField(default=1)  # 显示顺序
     active = IntegerField(default=1)  # 状态 0删除 1有效
 
@@ -705,18 +714,27 @@ class InsuranceOrderPrice(db.Model):
     insurance_order_id = IntegerField()  # 所属保险订单ID
     insurance = ForeignKeyField(Insurance, db_column='insurance_id')  # 所购保险公司ID
     created = IntegerField(default=0)  # 报价/修改 时间
-    admin_user = ForeignKeyField(AdminUser, db_column='admin_user_id', null=True)  # 报价人员
-    gift_policy = IntegerField(default=0)  # 礼品策略 1反油， 2反现金
+    admin_user = ForeignKeyField(AdminUser, db_column='admin_user_id', null=True)  # 操作人员
     response = IntegerField(default=0)  # 0未报价 1已经报价 2不可再修改 -1关闭
     status = IntegerField(default=1)  # 状态 0已过期, 1有效
     read = IntegerField(default=0)  # 状态 0未读, 1已读
+    gift_policy = IntegerField(default=0)  # 礼品策略 1反油， 2反现金
     score = IntegerField(default=0)  # 卖的这单保险可以获取多少积分
+    driver_lube_type = CharField(default='')    # 返车主油品型号
+    driver_lube_num = IntegerField(default=0)  # 返车主油品数量
+    store_lube_type = CharField(default='')    # 返修理厂油品型号
+    store_lube_num = IntegerField(default=0)  # 返修理厂油品数量
     cash = FloatField(default=0.0)  # 返现金额
     total_price = FloatField(default=0.0)  # 保险订单总价格
     force_price = FloatField(default=0.0)  # 交强险 价格
     business_price = FloatField(default=0.0)  # 商业险价格
     vehicle_tax_price = FloatField(default=0.0)  # 车船税价格
     sms_content = CharField(max_length=1024, null=True)  # 短信通知内容
+
+    append_refund_status = IntegerField(default=0)    # 补退款状态 0无需补退款 1待补款/退款 2已补款/退款
+    append_refund_time = IntegerField(default=0)    # 补退款时间
+    append_refund_reason = CharField(max_length=128, default='')    # 补退款原因
+    append_refund_num = FloatField(default=0.0)    # 补退款金额
 
     # 交强险
     forceI = CharField(max_length=32, default='')  # 是否包含交强险
@@ -791,9 +809,13 @@ class InsuranceOrder(db.Model):
     current_order_price = ForeignKeyField(InsuranceOrderPrice, db_column='current_order_price_id', null=True)  # 最终报价ID
 
     id_card_front = CharField(max_length=255, null=True)  # 身份证
+    icfstatus = IntegerField(default=0) # 是否需要重新上传：0不需要1需要
     id_card_back = CharField(max_length=255, null=True)  # 身份证背面
+    icbstatus = IntegerField(default=0)  # 是否需要重新上传：0不需要1需要
     drive_card_front = CharField(max_length=255, null=True)  # 行驶证
+    dcfstatus = IntegerField(default=0)  # 是否需要重新上传：0不需要1需要
     drive_card_back = CharField(max_length=255, null=True)  # 行驶证副本
+    dcbstatus = IntegerField(default=0)  # 是否需要重新上传：0不需要1需要
     payment = IntegerField(default=1)  # 付款方式  1支付宝  2微信 3银联 4余额
     ordered = IntegerField(default=0)  # 下单时间
 
@@ -806,7 +828,7 @@ class InsuranceOrder(db.Model):
     deliver_company = CharField(max_length=255, null=True)  # 快递公司
     deliver_num = CharField(max_length=255, null=True)  # 保单邮寄快递号
 
-    status = IntegerField(default=0)  # 0待核价 1已核价/待支付 2已支付/待出单 3完成（已送积分/油） 4退款 5补款 -1已删除(取消)
+    status = IntegerField(default=0)  # 0待报价 1已核价/待支付 2已支付/待出单 3完成（已送积分/油） -1已删除(取消)
     cancel_reason = CharField(default='', max_length=1024)  # 取消原因
     cancel_time = IntegerField(default=0)  # 取消时间
     sms_content = CharField(max_length=1024, null=True)  # 短信通知内容
@@ -852,7 +874,7 @@ class InsuranceOrder(db.Model):
         db_table = 'tb_insurance_orders'
 
 
-# 卖保险兑现规则
+# 卖保险兑现规则 返现政策
 class InsuranceScoreExchange(db.Model):
     id = PrimaryKeyField()
     area_code = CharField(max_length=12)  # 地区code
@@ -1050,6 +1072,22 @@ class Feedback(db.Model):
         db_table = "tb_feedback"
 
 
+class MobileUpdate(db.Model):
+    id = PrimaryKeyField()
+    name = CharField(max_length=64, default='')  # 版本名称
+    version = CharField(max_length=64, default='')  # 版本号
+    path = CharField(max_length=64, default='')  # 版本文件路径
+    client = CharField(max_length=64, default='')  # 客户端类型 android ios
+    state = IntegerField(default=0)  # 版本是否可用0不可以用，1可以
+    updatedtime = IntegerField(default=0)  # 更新时间
+    updatedby = ForeignKeyField(AdminUser, db_column='updated_by')  # 最后更新人
+    isForce = CharField(max_length=8, default='false')  # 强制更新
+    instruction = CharField(max_length=256)  # 强制更新
+
+    class Meta:
+        db_table = 'tb_mobile_update'
+
+
 # 银行卡数据库
 class BankCard(db.Model):
     id = PrimaryKeyField()
@@ -1174,6 +1212,20 @@ class CarItem(db.Model):
 
     class Meta:
         db_table = 'tb_car_item'
+
+
+# 消息
+class Message(db.Model):
+    id = PrimaryKeyField()
+    other_id = IntegerField(default=0)  # 关联表主键id
+    store = ForeignKeyField(Store, related_name='store_messages', db_column='store_id')  # 店铺
+    status = IntegerField(default=0)  # 消息状态：0 未读，1已读
+    type = CharField(max_length=30)  # 消息类型:'insuranceorder','order'等
+    content = CharField(max_length=50, null=True)  # 消息内容
+    link = CharField(max_length=50, null=True)  # 跳转链接
+
+    class Meta:
+        db_table = 'tb_message'
 
 
 def init_db():
