@@ -1997,15 +1997,22 @@ class MobileChangePayPasswordHandler(MobileBaseHandler):
 
     @apiParam {String} v_code  验证码
     @apiParam {String} new_password  新密码
+     @apiParam {String} mobile  用户手机号
 
     @apiSampleRequest /mobile/changepaypassword
     """
     @require_auth
     def post(self):
         result = {'flag': 0, 'msg': '', "data": {}}
-        user = self.get_user()
         new_password = self.get_body_argument('new_password', None)
         v_code = self.get_body_argument('v_code', None)
+        mobile = self.get_argument('mobile','')
+        if not (new_password and v_code and mobile):
+            self.write(simplejson.dumps(result))
+            return
+
+        user = User.get(User.mobile == mobile)
+
         flag = 1
         if v_code and new_password:
             VCode.delete().where(VCode.created < (int(time.time()) - 30 * 60)).execute()
