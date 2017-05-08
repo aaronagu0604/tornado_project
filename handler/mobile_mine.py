@@ -2003,15 +2003,15 @@ class MobileChangePayPasswordHandler(MobileBaseHandler):
     @require_auth
     def post(self):
         result = {'flag': 0, 'msg': '', "data": {}}
-        store = self.get_user().store
+        user = self.get_user()
         new_password = self.get_body_argument('new_password', None)
         v_code = self.get_body_argument('v_code', None)
         flag = 1
         if v_code and new_password:
             VCode.delete().where(VCode.created < (int(time.time()) - 30 * 60)).execute()
-            if VCode.select().where((VCode.mobile == store.mobile) & (VCode.v_code == v_code) & (VCode.flag == flag)).count() > 0:
-                store.pay_password = User.create_password(new_password)
-                store.save()
+            if VCode.select().where((VCode.mobile == user.mobile) & (VCode.v_code == v_code) & (VCode.flag == flag)).count() > 0:
+                user.password = User.create_password(new_password)
+                user.save()
                 result['flag'] = 1
                 result['msg'] = "修改成功"
             else:
