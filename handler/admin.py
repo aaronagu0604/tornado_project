@@ -1645,7 +1645,7 @@ class InsuranceOrderHandler(AdminBaseHandler):
         store_id = self.get_argument('store_id',None)
         default_city = city
         default_province = province
-        # 0待确认 1待付款 2付款完成 3已办理 4已邮寄 -1已删除(取消)
+        # 0待确认 1待付款 2付款完成 3已办理 -1已删除(取消)
 
         if status != -2:
             ft = (InsuranceOrder.status == status)

@@ -47,13 +47,15 @@
                 </select>
                 <div class="btn-group btn-group-xs">
                     <select class="form-control" name="status" id="sel_type" style="width:100px;">
-                        <option value="-2" {{ status=='-2' and 'selected' or '' }}>全部</option>
+                        {% if active == 'i_order' %}
                         <option value="0" {{ status==0 and 'selected' or '' }}>待报价</option>
                         <option value="1" {{ status==1 and 'selected' or '' }}>待付款</option>
                         <option value="2" {{ status==2 and 'selected' or '' }}>已付款</option>
+                        {% else %}
+                        <option value="-2" {{ status=='-2' and 'selected' or '' }}>全部</option>
                         <option value="3" {{ status==3 and 'selected' or '' }}>已办理</option>
-                        <option value="4" {{ status==4 and 'selected' or '' }}>已邮寄</option>
                         <option value="-1" {{ status==-1 and 'selected' or '' }}>已取消</option>
+                        {% endif %}
                     </select>
                 </div>
 
@@ -125,30 +127,26 @@
                     </td>
                     <td>
                         {% if o.current_order_price.gift_policy == 2 %}
-                        <div style="color:#990033;">
-                            <a href="/admin/insurance_dispose/{{o.id}}?o_status={{o.status}}&status={{status}}&page={{page}}&dispose=finish" onclick="return confirm('完成之后将返现或送油，确定？');">{% if o.status == 2 %}* {% endif %}返现</a>
-                        </div>
+                        <a href="/admin/insurance_dispose/{{o.id}}?o_status={{o.status}}&status={{status}}&page={{page}}&dispose=finish" onclick="return confirm('完成之后将返现或送油，确定？');" style="color:#990033;">{% if o.status == 2 %}* {% endif %}返现</a>
                         {% elif o.current_order_price.gift_policy == 1 %}
-                        <div style="color:#00CC00;">
-                            <a href="/admin/insurance_dispose/{{o.id}}?o_status={{o.status}}&status={{status}}&page={{page}}&dispose=finish" onclick="return confirm('完成之后将返现或送油，确定？');">{% if o.status == 2 %}* {% endif %}返油</a>
-                        </div>
+                        <a href="/admin/insurance_dispose/{{o.id}}?o_status={{o.status}}&status={{status}}&page={{page}}&dispose=finish" onclick="return confirm('完成之后将返现或送油，确定？');" style="color:#00CC00;">{% if o.status == 2 %}* {% endif %}返油</a>
                         {% else %}
                         <div style="color:#000800;">无</div>
                         {% endif %}
                     </td>
                     <td>
                         {% if o.status==2 or o.status==3 %}
-                        {% if o.payment==1 %}
-                        <div style="color:#487;">支付宝</div>
-                        {% elif o.payment==5 %}
-                        <div style="color:#0000ff;">积分</div>
-                        {% elif o.payment==6 %}
-                        <div style="color:#006600;">微信</div>
-                        {% elif o.payment==7 %}
-                        <div style="color:#004400;">银联</div>
+                            {% if o.payment==1 %}
+                            <div style="color:#487;">支付宝</div>
+                            {% elif o.payment==5 %}
+                            <div style="color:#0000ff;">积分</div>
+                            {% elif o.payment==6 %}
+                            <div style="color:#006600;">微信</div>
+                            {% elif o.payment==7 %}
+                            <div style="color:#004400;">银联</div>
+                            {%endif%}
                         {% else %}
                         --
-                        {%endif%}
                         {% endif %}
                     </td>
                     <td>
