@@ -1993,8 +1993,6 @@ class MobileChangePayPasswordHandler(MobileBaseHandler):
     @api {post} /mobile/changepaypassword 19. 忘记密码
     @apiDescription 修改支付密码
 
-    @apiHeader {String} token 用户登录凭证
-
     @apiParam {String} v_code  验证码
     @apiParam {String} new_password  新密码
      @apiParam {String} mobile  用户手机号
