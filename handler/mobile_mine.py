@@ -1954,7 +1954,7 @@ class MobileChangeLoginPasswordHandler(MobileBaseHandler):
     """
     @apiGroup mine
     @apiVersion 1.0.0
-    @api {post} /mobile/changeloginpassword 18. 修改登录密码
+    @api {post} /mobile/changeloginpassword 18. 修改密码
     @apiDescription 修改登录密码
 
     @apiHeader {String} token 用户登录凭证
@@ -1990,7 +1990,7 @@ class MobileChangePayPasswordHandler(MobileBaseHandler):
     """
     @apiGroup mine
     @apiVersion 1.0.0
-    @api {post} /mobile/changepaypassword 19. 修改支付密码
+    @api {post} /mobile/changepaypassword 19. 忘记密码
     @apiDescription 修改支付密码
 
     @apiHeader {String} token 用户登录凭证
