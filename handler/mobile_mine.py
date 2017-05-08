@@ -1949,7 +1949,7 @@ class MobileMySettingHandler(MobileBaseHandler):
         self.write(simplejson.dumps(result))
 
 
-@route(r'/mobile/changeloginpassword', name='mobile_change_login_password')  # 修改登录密码
+@route(r'/mobile/changeloginpassword', name='mobile_change_login_password')  # 修改密码
 class MobileChangeLoginPasswordHandler(MobileBaseHandler):
     """
     @apiGroup mine
@@ -1985,7 +1985,7 @@ class MobileChangeLoginPasswordHandler(MobileBaseHandler):
         self.write(simplejson.dumps(result))
 
 
-@route(r'/mobile/changepaypassword', name='mobile_change_pay_password')  # 修改支付密码
+@route(r'/mobile/changepaypassword', name='mobile_change_pay_password')  # 忘记密码
 class MobileChangePayPasswordHandler(MobileBaseHandler):
     """
     @apiGroup mine
