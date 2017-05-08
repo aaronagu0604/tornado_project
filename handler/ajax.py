@@ -1009,22 +1009,18 @@ class OCRHandler(BaseHandler):
         io = InsuranceOrder.get(id=io_id)
         result = {'flag':1}
         if io.id_card_front:
-            print io.id_card_front
             request = urllib2.Request(io.id_card_front)
             img_data = urllib2.urlopen(request).read()
             ocrresult = self.ali_idcard_ocr(img_data)
 
             result['id_card_front'] = simplejson.loads(ocrresult)
-        # if io.id_card_back:
-        #     print io.id_card_back
-        #     request = urllib2.Request(io.id_card_back)
-        #     img_data = urllib2.urlopen(request).read()
-        #     img_buffer = StringIO.StringIO(img_data)
-        #     img = Image.open(img_buffer)
-        #     ocrresult = image_to_string(image=img,lang='chi_sim')
-        #     result['id_card_back'] = ocrresult
+        if io.id_card_back:
+            request = urllib2.Request(io.id_card_back)
+            img_data = urllib2.urlopen(request).read()
+            ocrresult = self.ali_idcard_ocr(img_data,False)
+            print ocrresult
+            result['id_card_back'] = simplejson.loads(ocrresult)
         if io.drive_card_front:
-            print io.drive_card_front
             request = urllib2.Request(io.drive_card_front)
             img_data = urllib2.urlopen(request).read()
             ocrresult = self.ali_drive_ocr(img_data)

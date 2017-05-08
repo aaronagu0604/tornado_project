@@ -266,7 +266,7 @@
                         到期时间
                     </div>
                     <div class="col-xs-3 rightTxt">
-                        <input class="form-control" type="text" />
+                        <input id="ocr_end_date" class="form-control" type="text" />
                     </div>
                 </div>
                 <div class="row">
@@ -967,6 +967,7 @@
                 document.getElementById('ocr_name').value=obj.id_card_front.name;
                 document.getElementById('ocr_address').value=obj.id_card_front.address;
                 document.getElementById('ocr_num').value=obj.id_card_front.num;
+                document.getElementById('ocr_end_date').value=obj.id_card_back.end_date;
 
                 document.getElementById('ocr_plate_num').value=obj.drive_card_front.plate_num;
                 document.getElementById('ocr_engine_num').value=obj.drive_card_front.engine_num;
