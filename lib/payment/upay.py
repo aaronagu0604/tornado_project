@@ -164,7 +164,7 @@ class Trade(object):
     # 银联返回验证
     def union_validate(self, params):
         # 公钥
-        public_key = self.getPulbicKeyByCertId(params['certId']);
+        public_key = self.getPulbicKeyByCertId(params['certId'])
         # 签名串
         signature_str = params['signature']
         del params['signature']
@@ -184,6 +184,8 @@ class Trade(object):
         params = self.createAutoFormHtml(orderId, total_fee)
         r = urllib2.urlopen(setting['SDK_App_Request_Url'], data=urllib.urlencode(params), timeout=10).read()
         params = self.smart_str_decode(r)
+        import logging
+        logging.info('--%s--'%str(params))
         try:
             if params['respCode'] == '00':
                 return params['tn']

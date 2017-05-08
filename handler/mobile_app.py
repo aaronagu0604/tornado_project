@@ -1676,7 +1676,7 @@ class MobilePayOrderHandler(MobileBaseHandler):
                 elif order.status in [2, 3] and order.current_order_price.append_refund_status == 1:
                     total_price = order.current_order_price.append_refund_num
                     order_type = 1
-                    ordernum = ordernum + '_A' + str(now)[5:10]
+                    ordernum = ordernum + 'A' + str(now)[5:10]
                     log += u'补款'
                 else:
                     result['msg'] = u'该订单不可支付'
