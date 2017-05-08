@@ -251,7 +251,7 @@
                 </div>
                 <div class="row">
                     <div class="col-xs-12">
-                        <input type="button" class="btn btn-outline btn-primary btn-xs" value="OCR"/>
+                        <input type="button" class="btn btn-outline btn-primary btn-xs" onclick="imgocr({{ o.id }})" value="OCR"/>
                         <input type="button" class="btn btn-outline btn-primary btn-xs" value="保存"/>
                     </div>
                 </div>
@@ -260,7 +260,7 @@
                         姓名
                     </div>
                     <div class="col-xs-3 rightTxt">
-                        <input class="form-control" type="text" />
+                        <input id="ocr_name" class="form-control" type="text" />
                     </div>
                     <div class="col-xs-3">
                         到期时间
@@ -274,7 +274,7 @@
                         身份证号
                     </div>
                     <div class="col-xs-9 rightTxt">
-                        <input class="form-control" type="text" />
+                        <input id="ocr_num" class="form-control" type="text" />
                     </div>
                 </div>
                 <div class="row">
@@ -282,7 +282,7 @@
                         地址
                     </div>
                     <div class="col-xs-9 rightTxt">
-                        <input class="form-control" type="text" />
+                        <input id="ocr_address" class="form-control" type="text" />
                     </div>
                 </div>
                 <div class="row">
@@ -293,13 +293,13 @@
                         车牌号
                     </div>
                     <div class="col-xs-3 rightTxt">
-                        <input class="form-control" type="text" />
+                        <input id="ocr_plate_num" class="form-control" type="text" />
                     </div>
                     <div class="col-xs-3">
                         发动机号
                     </div>
                     <div class="col-xs-3 rightTxt">
-                        <input class="form-control" type="text" />
+                        <input id="ocr_engine_num" class="form-control" type="text" />
                     </div>
                 </div>
                 <div class="row">
@@ -307,7 +307,7 @@
                         车架号
                     </div>
                     <div class="col-xs-9 rightTxt">
-                        <input class="form-control" type="text" />
+                        <input id="ocr_vin" class="form-control" type="text" />
                     </div>
                 </div>
                 <div class="row">
@@ -315,7 +315,7 @@
                         车型
                     </div>
                     <div class="col-xs-9 rightTxt">
-                        <input class="form-control" type="text" />
+                        <input id="ocr_vehicle_type" class="form-control" type="text" />
                     </div>
                 </div>
                 <div class="row">
@@ -958,6 +958,26 @@
 <script src="/style/js/layer-v1.9/layer.js" type="text/javascript"></script>
 <script>
     var xsrf='{{handler.xsrf_token}}';
+    // OCR function 调用ajax并回填识别信息
+    function imgocr(id) {
+        $.get('/ajax/ocr', {_xsrf:xsrf, io_id:id}, function (data) {
+            var obj = jQuery.parseJSON(data);
+            alert(obj);
+            if (obj.flag == 1) {
+                document.getElementById('ocr_name').value=obj.id_card_front.name;
+                document.getElementById('ocr_address').value=obj.id_card_front.address;
+                document.getElementById('ocr_num').value=obj.id_card_front.num;
+
+                document.getElementById('ocr_plate_num').value=obj.drive_card_front.plate_num;
+                document.getElementById('ocr_engine_num').value=obj.drive_card_front.engine_num;
+                document.getElementById('ocr_vin').value=obj.drive_card_front.vin;
+                document.getElementById('ocr_vehicle_type').value=obj.drive_card_front.vehicle_type;
+
+            } else {
+                alert(obj.msg);
+            }
+        });
+    }
     // 选择返佣方式
     function change_gift_policy(pid, gift) {
         if(gift == 1){

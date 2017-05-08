@@ -20,7 +20,9 @@ import urllib2
 import StringIO
 from PIL import Image
 from pytesseract import image_to_string
-
+import urllib, sys
+import ssl
+import base64
 
 @route(r'/ajax/GetSubAreas', name='ajax_GetSubAreas')  # 获取下级区域
 class AjaxGetSubAreas(BaseHandler):
@@ -942,78 +944,100 @@ class OCRHandler(BaseHandler):
     def check_xsrf_cookie(self):
         pass
 
+    def ali_idcard_ocr(self,imgdata,isfront=True):
+        content = base64.b64encode(buffer(imgdata))
+        host = 'https://dm-51.data.aliyun.com'
+        path = '/rest/160601/ocr/ocr_idcard.json'
+        appcode = '09e511b3e4bd4aaca8a704ad91c582f4'
+
+        url = host + path
+        post_data = {
+            'inputs': [
+                {
+                    'image': {
+                        'dataType': 50,
+                        'dataValue': content
+                    },
+                    'configure': {
+                        'dataType': 50,
+                        'dataValue': simplejson.dumps({
+                            'side': 'face' if isfront else 'back'
+                        })
+                    }
+                }
+            ]
+        }
+        #print 'parameters',post_data
+        request = urllib2.Request(url, simplejson.dumps(post_data))
+        request.add_header('Authorization', 'APPCODE ' + appcode)
+        # 根据API的要求，定义相对应的Content - Type
+        request.add_header('Content-Type', 'application/json; charset=UTF-8')
+        response = urllib2.urlopen(request)
+        ocrresult = response.read()
+        return simplejson.loads(ocrresult)['outputs'][0]['outputValue']['dataValue']
+
+    def ali_drive_ocr(self,imgdata):
+        content = base64.b64encode(buffer(imgdata))
+        host = 'https://dm-53.data.aliyun.com'
+        path = '/rest/160601/ocr/ocr_vehicle.json'
+        appcode = '09e511b3e4bd4aaca8a704ad91c582f4'
+
+        url = host + path
+        post_data = {
+            'inputs': [
+                {
+                    'image': {
+                        'dataType': 50,
+                        'dataValue': content
+                    }
+                }
+            ]
+        }
+
+        request = urllib2.Request(url, simplejson.dumps(post_data))
+        request.add_header('Authorization', 'APPCODE ' + appcode)
+        # 根据API的要求，定义相对应的Content - Type
+        request.add_header('Content-Type', 'application/json; charset=UTF-8')
+        response = urllib2.urlopen(request)
+        ocrresult = response.read()
+        return simplejson.loads(ocrresult)['outputs'][0]['outputValue']['dataValue']
+
     def get(self):
         io_id = self.get_argument('io_id', None)
         if not io_id:
             self.write('该订单不存在')
         io = InsuranceOrder.get(id=io_id)
-        result = {}
+        result = {'flag':1}
         if io.id_card_front:
             print io.id_card_front
             request = urllib2.Request(io.id_card_front)
             img_data = urllib2.urlopen(request).read()
-            img_buffer = StringIO.StringIO(img_data)
-            img = Image.open(img_buffer)
-            ocrresult = image_to_string(image=img,lang='chi_sim')
-            print ocrresult
-            result['id_card_front'] = ocrresult
-        if io.id_card_back:
-            print io.id_card_back
-            request = urllib2.Request(io.id_card_back)
-            img_data = urllib2.urlopen(request).read()
-            img_buffer = StringIO.StringIO(img_data)
-            img = Image.open(img_buffer)
-            ocrresult = image_to_string(image=img,lang='chi_sim')
-            result['id_card_back'] = ocrresult
+            ocrresult = self.ali_idcard_ocr(img_data)
+
+            result['id_card_front'] = simplejson.loads(ocrresult)
+        # if io.id_card_back:
+        #     print io.id_card_back
+        #     request = urllib2.Request(io.id_card_back)
+        #     img_data = urllib2.urlopen(request).read()
+        #     img_buffer = StringIO.StringIO(img_data)
+        #     img = Image.open(img_buffer)
+        #     ocrresult = image_to_string(image=img,lang='chi_sim')
+        #     result['id_card_back'] = ocrresult
         if io.drive_card_front:
             print io.drive_card_front
             request = urllib2.Request(io.drive_card_front)
             img_data = urllib2.urlopen(request).read()
-            # img_buffer = StringIO.StringIO(img_data)
+            ocrresult = self.ali_drive_ocr(img_data)
 
-            import urllib, sys
-            import ssl
-            import base64
-            content = base64.b64encode(buffer(img_data))
-            host = 'https://dm-53.data.aliyun.com'
-            path = '/rest/160601/ocr/ocr_vehicle.json'
-            method = 'POST'
-            appcode = '8f310bcd89c04bf682765d472d4f6939'
-            querys = ''
-            bodys = {}
-            url = host + path
-
-            #bodys[''] = "{\"inputs\":[{\"image\":{\"dataType\":50,\"dataValue\":\"Base64编码的字符\"}}]}"
-            post_data = {
-                'inputs':[
-                    {
-                        'image':{
-                            'dataType':50,
-                            'dataValue':content
-                        }
-                    }
-                ]
-            }
-            request = urllib2.Request(url, post_data)
-            request.add_header('Authorization', 'APPCODE ' + appcode)
-            # 根据API的要求，定义相对应的Content - Type
-            request.add_header('Content-Type', 'application/json; charset=UTF-8')
-            ctx = ssl.create_default_context()
-            ctx.check_hostname = False
-            ctx.verify_mode = ssl.CERT_NONE
-            response = urllib2.urlopen(request, context=ctx)
-            ocrresult = response.read()
-            # img = Image.open(img_buffer)
-            # ocrresult = image_to_string(image=img,lang='chi_sim')
-
-            result['drive_card_front'] = ocrresult
-        if io.drive_card_back:
-            print io.drive_card_back
-            request = urllib2.Request(io.drive_card_back)
-            img_data = urllib2.urlopen(request).read()
-            img_buffer = StringIO.StringIO(img_data)
-            img = Image.open(img_buffer)
-            ocrresult = image_to_string(image=img,lang='chi_sim')
-            result['drive_card_back'] = ocrresult
+            result['drive_card_front'] = simplejson.loads(ocrresult)
+        # if io.drive_card_back:
+        #     print io.drive_card_back
+        #     request = urllib2.Request(io.drive_card_back)
+        #     img_data = urllib2.urlopen(request).read()
+        #     img_buffer = StringIO.StringIO(img_data)
+        #     img = Image.open(img_buffer)
+        #     ocrresult = image_to_string(image=img,lang='chi_sim')
+        #     result['drive_card_back'] = ocrresult
+        print result
         self.write(simplejson.dumps(result))
 
