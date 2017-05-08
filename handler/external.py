@@ -1,20 +1,20 @@
 #!/usr/bin/env python
 # coding=utf8
 
-from handler import AdminBaseHandler
+from handler import BaseHandler
 from lib.route import route
 from model import *
 import time
 
 
 @route(r'/user/showInsurance/(\d+)')  # 保单展示
-class showInsurance(AdminBaseHandler):
+class showInsurance(BaseHandler):
     def get(self, oid):
         addr = self.get_argument('addr', "False")
         if not int(oid):
             return self.render('502.html')
 
-        if addr == 'False':
+        if addr == 'True':
             if (int(oid)-97)%91:
                 print 'False',(int(oid)-97)%91
                 return self.render('502.html')
