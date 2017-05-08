@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>保险信息</title>
+    <link rel="stylesheet" type="text/css" href="/style/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="/style/css/basic.css" />
+    <link rel="stylesheet" type="text/css" href="/style/css/bxxx.css" />
+    <script type="text/javascript" src="/style/js/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="/style/js/pic.js"></script>
+
+</head>
+<body>
+<div class="mskeLayBg"></div>
+<div class="container-fluid">
+    <h2>保单详情</h2>
+    <div class="row content">
+        <div class="row order" style="margin-top:30px;">
+            <div class="col-xs-12 col-sm-6 col-md-6">业务单编号：<span>{{ o.ordernum }}</span></div>
+            <div class="col-xs-12 col-sm-6 col-md-6">下单时间：<span>{{o.ordered|datetimeformat}}&nbsp;&nbsp;16:48</span>
+            </div>
+        </div>
+        {% if addr == "True" %}
+        <div class="row order">
+            <div class="col-xs-12 col-sm-12 col-md-12">业务单类型：<span>保险</span></div>
+            <div class="col-xs-12 col-sm-12 col-md-12">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-4 col-md-4">企业名称：<span>{{o.store.name}}</span></div>
+                    <div class="col-xs-12 col-sm-4 col-md-4">联系电话：<span>{{o.user.mobile}}</span></div>
+                    <div class="col-xs-12 col-sm-4 col-md-4">联系人：<span>{{o.user.truename}}</span></div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="row species" style="margin-top:30px;">
+            <p>保险险种</p>
+            {% for key in dictI %}
+            <tr>
+                <div class="col-xs-12 col-sm-12 col-md-12">{{key}}</div>
+            </tr>
+            {% endfor %}
+        </div>
+        {% if addr == "True" %}
+        <div class="row species">
+            <p>寄送地址</p>
+            <div class="col-xs-12 col-sm-12 col-md-12">联系人：<span>{{o.delivery_to}}</span></div>
+            <div class="col-xs-12 col-sm-12 col-md-12">联系电话：<span>{{o.delivery_tel}}</span></div>
+            <div class="col-xs-12 col-sm-12 col-md-12">所属省市：<span>{{ o.delivery_province + o.delivery_city}}</span></div>
+            <div class="col-xs-12 col-sm-12 col-md-12">详细地址：<span> {{o.delivery_region+o.delivery_address}}</span></div>
+        </div>
+        {% endif %}
+        <div class="row species">
+            <p>保险信息</p>
+            <div class="col-xs-12 col-sm-6 col-md-6">品牌：<img src="{{o.current_order_price.insurance.logo}}" /><span>{{o.current_order_price.insurance.name}}</span></div>
+            <div class="col-xs-12 col-sm-6 col-md-6 price">保险价格：<span>{{o.current_order_price.total_price}}</span>元</div>
+            <div class="col-xs-12 col-sm-12 col-md-12">备注：{{o.local_summary}}</div>
+            <div class="aa"></div>
+            <div class="mskelayBox">
+                <div class="mske_html"></div>
+                <div id="tool">
+                    <a href="###" id="arr_left" onclick="funrotateEvent('example','left')">向左</a>
+                    <a href="###" id="arr_right" onclick="funrotateEvent('example','right')">向右</a>
+                </div>
+                <img class="mskeClaose" src="/style2/insuranceDetails/images/mke_close.png" width="27" height="27" />
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-12">
+                <h4>证件信息：</h4>
+                <div class="row certificate">
+                    <dl class="col-xs-6 col-sm-6 col-md-3">
+                        <dt><img class="preview" src="{{o.id_card_front}}" /></dt>
+                        <dd>身份证(正面)</dd>
+                    </dl>
+                    <dl class="col-xs-6 col-sm-6 col-md-3">
+                        <dt><img class="preview" src="{{o.id_card_back}}" /></dt>
+                        <dd>身份证(背面)</dd>
+                    </dl>
+                    <dl class="col-xs-6 col-sm-6 col-md-3">
+                        <dt><img class="preview" src="{{o.drive_card_front}}" /></dt>
+                        <dd>行驶证</dd>
+                    </dl>
+                    <dl class="col-xs-6 col-sm-6 col-md-3">
+                        <dt><img class="preview" src="{{o.drive_card_back}}" /></dt>
+                        <dd>行驶证副本</dd>
+                    </dl>
+                    <span class="hidden" style="diplay:none">
+					<img id="example"/>
+				</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

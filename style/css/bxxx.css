@@ -1,0 +1,134 @@
+
+.container-fluid h2{
+    font-size:2.1rem;
+    width:200px;
+    height:45px;
+    margin:10px 0 0 10px;
+    line-height:45px;
+    text-align:center;
+    border-bottom:4px solid #00a73b;
+}
+.content{
+    margin-left:10px;
+	margin-right:10px;
+    border-top:2px solid #aaa;
+	padding:0 15px;
+	font-size: 1.5rem;
+}
+.order{
+	height: auto;
+	line-height: 32px;
+	background: #EEFDF3;
+	padding-top:15px;
+	padding-bottom:15px;
+	margin-bottom: 2px;
+}
+.species{
+	height: auto;
+	line-height: 32px;
+	padding-bottom:15px;
+	border:1px solid #eee;
+	margin-bottom:30px;
+}
+.species p{
+	height:45px;
+	line-height:45px;
+	padding-left:15px;
+	font-size:1.8rem;
+	background:#EEFDF3;
+}
+.price span{
+	color:#ff5231;
+}
+h4{
+	border-top:1px solid #eee;
+	padding-top:15px;
+	font-size:1.6rem;
+}
+.certificate dl img{
+     width:25%;
+     height:200px;
+}
+.certificate dl dd{
+	text-align: center;
+}
+.certificate img.preview{
+	width: 100%;
+	margin: 20px 10px;
+	float: left;
+	display: block;
+	border: none;
+}
+.mskeLayBg { 
+    background: #000; 
+	width: 100%;
+	position: absolute; 
+	left: 0px; 
+	top: 0px; 
+	z-index: 10; 
+	opacity: 0.5; 
+	filter: alpha(opacity=50);
+	display: none; 
+	_display:none!important; 
+}
+.mskelayBox {
+   width: 550px;
+   height:480px;
+   margin-top: -280px; 
+   margin-left: -275px; 
+   position: fixed; 
+   left: 50%; 
+   top: 50%; 
+   z-index: 20; 
+   display: none; 
+   _display:none!important; 
+}
+.mskeClaose{ 
+   position: absolute; 
+   top: -17px; 
+   right: -17px; 
+   cursor: pointer;
+}
+#example{
+    width: 550px;
+    height:480px;
+}
+#tool{	
+        height:35px;
+	position:absolute;
+	top:0px;
+}
+#tool a{
+	float:left; 
+	width:30px;
+	height:35px; 
+	font-size:14px; 
+	text-indent:-9999px;
+}
+#tool a#arr_left{
+	background:url(../images/left.png) no-repeat; 
+}
+#tool a#arr_right{
+	background:url(../images/right.png) no-repeat; 
+}
+
+@media only screen and (max-width: 780px){
+	.certificate dl img{
+	width:25%;
+	height:80px;
+}
+}
+
+@media only screen and (max-width: 780px){
+    #tool { 
+   display:none;
+}	
+}
+
+
+
+
+
+
+
+
