@@ -1954,7 +1954,7 @@ class MobileChangePasswordHandler(MobileBaseHandler):
     """
     @apiGroup mine
     @apiVersion 1.0.0
-    @api {post} /mobile/changeloginpassword 18. 修改密码
+    @api {post} /mobile/changepassword 18. 修改密码
     @apiDescription 修改密码
 
     @apiHeader {String} token 用户登录凭证
@@ -1962,7 +1962,7 @@ class MobileChangePasswordHandler(MobileBaseHandler):
     @apiParam {String} old_password  旧密码
     @apiParam {String} new_password  新密码
 
-    @apiSampleRequest /mobile/changeloginpassword
+    @apiSampleRequest /mobile/changepassword
     """
     @require_auth
     def post(self):
@@ -1985,19 +1985,19 @@ class MobileChangePasswordHandler(MobileBaseHandler):
         self.write(simplejson.dumps(result))
 
 
-@route(r'/mobile/forgetpassword', name='mobile_forget_password')  # 忘记密码
-class MobileForgetPasswordHandler(MobileBaseHandler):
+@route(r'/mobile/forgotpassword', name='mobile_forgot_password')  # 忘记密码
+class MobileForgotPasswordHandler(MobileBaseHandler):
     """
     @apiGroup mine
     @apiVersion 1.0.0
-    @api {post} /mobile/changepaypassword 19. 忘记密码
+    @api {post} /mobile/forgotpassword 19. 忘记密码
     @apiDescription 忘记密码
 
     @apiParam {String} v_code  验证码
     @apiParam {String} new_password  新密码
      @apiParam {String} mobile  用户手机号
 
-    @apiSampleRequest /mobile/changepaypassword
+    @apiSampleRequest /mobile/fogotpassword
     """
     def post(self):
         result = {'flag': 0, 'msg': '', "data": {}}
