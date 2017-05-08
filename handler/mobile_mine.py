@@ -2001,7 +2001,6 @@ class MobileChangePayPasswordHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/changepaypassword
     """
-    @require_auth
     def post(self):
         result = {'flag': 0, 'msg': '', "data": {}}
         new_password = self.get_body_argument('new_password', None)
