@@ -1725,7 +1725,13 @@ class MobileMyProductsHandler(MobileBaseHandler):
                 'name': product_release.product.name,
                 'cover': product_release.product.cover,
                 'attributes': [attributes.value for attributes in product_release.product.attributes],
-                'area_price': [{'sppid': spp.id, 'area': spp.area_code, 'price': spp.price, 'active': spp.active} for spp in product_release.area_prices]
+                'area_price': [{
+                                   'sppid': spp.id,
+                                   'area': spp.area_code,
+                                   'area_name': Area.get_detailed_address(spp.area_code),
+                                   'price': spp.price,
+                                   'active': spp.active
+                               } for spp in product_release.area_prices]
             })
         self.write(simplejson.dumps(result))
 

@@ -1634,7 +1634,6 @@ class InsuranceOrderHandler(AdminBaseHandler):
         page = self.get_argument("page", 1)
         page = int(page) if page else 1
         status = self.get_argument("status", '')
-        status = int(status) if status else -2
         keyword = self.get_argument("keyword", '')
         begin_date = self.get_argument("begin_date", '')
         end_date = self.get_argument("end_date", '')
@@ -1642,22 +1641,29 @@ class InsuranceOrderHandler(AdminBaseHandler):
         city = self.get_argument('city_code', '')
         district = self.get_argument("district_code", '')
         pagesize = 10
-        store_id = self.get_argument('store_id',None)
         default_city = city
         default_province = province
         # 0待确认 1待付款 2付款完成 3已办理 -1已删除(取消)
 
-        if status != -2:
-            ft = (InsuranceOrder.status == status)
+        if archive:    # 归档
+            status = int(status) if status else -2
+            if status == -2:
+                ft = (InsuranceOrder.status > -2)
+            else:
+                ft = (InsuranceOrder.status == status)
+            if keyword:
+                keyw = '%' + keyword + '%'
+                ft = (InsuranceOrder.ordernum % keyw)
         else:
-            ft = (InsuranceOrder.status > -2)
-
-        if store_id:
-            ft = ft & (InsuranceOrder.store == int(store_id))
-
-        if keyword:
-            keyw = '%' + keyword + '%'
-            ft &= (InsuranceOrder.ordernum % keyw)
+            status = int(status) if status else 0
+            if status == -2:
+                ft = (InsuranceOrder.status << [0, 1, 2])
+            else:
+                ft = (InsuranceOrder.status == status)
+            if keyword:
+                keyw = '%' + keyword + '%'
+                ft = (InsuranceOrder.ordernum % keyw) & (InsuranceOrder.status << [0, 1, 2])
+                status = -2
         if begin_date and end_date:
             begin = time.strptime(begin_date, "%Y-%m-%d")
             end = time.strptime((end_date + " 23:59:59"), "%Y-%m-%d %H:%M:%S")
@@ -1691,8 +1697,7 @@ class InsuranceOrderHandler(AdminBaseHandler):
 
         self.render('admin/order/insurance_orders.html', orders=orders, total=total, page=page, pagesize=pagesize,
                     totalpage=totalpage, status=status, active=active, begin_date=begin_date, end_date=end_date,
-                    keyword=keyword, items=items, default_province=default_province, default_city=default_city,
-                    default_status=status, Area=Area)
+                    keyword=keyword, items=items, default_province=default_province, default_city=default_city, Area=Area)
 
 
 @route(r'/admin/insurance_order/(\d+)', name='admin_insurance_order_detail')  # 保险订单详情
