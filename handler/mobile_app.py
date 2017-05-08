@@ -94,9 +94,14 @@ class MobileGetVCodeAppHandler(MobileBaseHandler):
                 result['msg'] = u'您已经是车装甲会员'
                 self.write(simplejson.dumps(result))
                 return
-        elif flag == 1 or flag == 3 or flag == 4:
+        elif flag == 3 or flag == 4:
             if not user:
                 result['msg'] = u'您还不是车装甲会员'
+                self.write(simplejson.dumps(result))
+                return
+        elif flag == 1:
+            if user:
+                result['msg'] = u'您已经登录，可以修改密码'
                 self.write(simplejson.dumps(result))
                 return
             mobile = user.mobile

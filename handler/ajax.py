@@ -969,9 +969,43 @@ class OCRHandler(BaseHandler):
             print io.drive_card_front
             request = urllib2.Request(io.drive_card_front)
             img_data = urllib2.urlopen(request).read()
-            img_buffer = StringIO.StringIO(img_data)
-            img = Image.open(img_buffer)
-            ocrresult = image_to_string(image=img,lang='chi_sim')
+            # img_buffer = StringIO.StringIO(img_data)
+
+            import urllib, sys
+            import ssl
+            import base64
+            content = base64.b64encode(buffer(img_data))
+            host = 'https://dm-53.data.aliyun.com'
+            path = '/rest/160601/ocr/ocr_vehicle.json'
+            method = 'POST'
+            appcode = '8f310bcd89c04bf682765d472d4f6939'
+            querys = ''
+            bodys = {}
+            url = host + path
+
+            #bodys[''] = "{\"inputs\":[{\"image\":{\"dataType\":50,\"dataValue\":\"Base64编码的字符\"}}]}"
+            post_data = {
+                'inputs':[
+                    {
+                        'image':{
+                            'dataType':50,
+                            'dataValue':content
+                        }
+                    }
+                ]
+            }
+            request = urllib2.Request(url, post_data)
+            request.add_header('Authorization', 'APPCODE ' + appcode)
+            # 根据API的要求，定义相对应的Content - Type
+            request.add_header('Content-Type', 'application/json; charset=UTF-8')
+            ctx = ssl.create_default_context()
+            ctx.check_hostname = False
+            ctx.verify_mode = ssl.CERT_NONE
+            response = urllib2.urlopen(request, context=ctx)
+            ocrresult = response.read()
+            # img = Image.open(img_buffer)
+            # ocrresult = image_to_string(image=img,lang='chi_sim')
+
             result['drive_card_front'] = ocrresult
         if io.drive_card_back:
             print io.drive_card_back

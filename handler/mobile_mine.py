@@ -2009,7 +2009,7 @@ class MobileForgotPasswordHandler(MobileBaseHandler):
             return
 
         user = User.get(User.mobile == mobile)
-        flag = 1
+        flag = 0
         if v_code and new_password:
             VCode.delete().where(VCode.created < (int(time.time()) - 30 * 60)).execute()
             if VCode.select().where((VCode.mobile == user.mobile) & (VCode.v_code == v_code) & (VCode.flag == flag)).count() > 0:
