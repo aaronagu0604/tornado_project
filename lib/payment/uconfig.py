@@ -2,7 +2,7 @@
 setting = {
     # 银联相关
     # 签名证书路径
-    'SDK_SIGN_CERT_PATH': '/home/www/workspace/eofan/src/lib/payment/upayfile/czj.pfx',
+    'SDK_SIGN_CERT_PATH': '/var/lib/jenkins/jobs/czj/workspace/lib/payment/upayfile/czj.pfx',
     # 签名证书密码
     'SDK_SIGN_CERT_PWD': '890604',
     # 验签证书路径

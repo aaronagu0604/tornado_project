@@ -2,8 +2,8 @@
 # coding=utf8
 import os, sys
 from PIL import Image
-import cookielib;
-import urllib2;
+import cookielib
+import urllib2
 import os
 
 def GenerateMobileImg(imgPath):
