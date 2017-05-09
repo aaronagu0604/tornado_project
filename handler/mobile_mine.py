@@ -1232,14 +1232,18 @@ class MobileScoreRecordHandler(MobileBaseHandler):
     @apiDescription 积分明细
 
     @apiHeader {String} token 用户登录凭证
+    @apiParam {String} index 分页
 
     @apiSampleRequest /mobile/scorerecord
     """
     @require_auth
     def get(self):
         result = {'flag': 0, 'msg': '', "data": []}
+        index = int(self.get_argument('index', 1))
         store = self.get_user().store
-        for sr in store.score_records:
+        srs = ScoreRecord.select().where(ScoreRecord.store == store).\
+            order_by(ScoreRecord.created.desc()).paginate(index, setting.MOBILE_PAGESIZE)
+        for sr in srs:
             if sr.status == 1:
                 result['data'].append({
                     'orderNum': sr.ordernum,
@@ -1339,8 +1343,7 @@ class MobileWithdrawCashHandler(MobileBaseHandler):
 
         result = {'flag': 0, 'msg': '', "data": {}}
         store = self.get_user().store
-        store_bank_accounts = StoreBankAccount.select().where(StoreBankAccount.store==store,
-                                  ).order_by(StoreBankAccount.is_default.desc())
+        store_bank_accounts = StoreBankAccount.select().where(StoreBankAccount.store==store).order_by(StoreBankAccount.is_default.desc())
         result['data']['totalprice'] = store.price
         result['data']['withdrawline'] = 100
         result['data']['items'] = []
@@ -1614,7 +1617,7 @@ class MobileMoneyRecordHandler(MobileBaseHandler):
     @apiDescription 绑定/修改支付宝
     @apiHeader {String} token 用户登录凭证
     @apiParam {String} process_type 1入账 2出账 不传则全部
-    @apiParam {String} index 分页页数：从1开始
+    @apiParam {String} index 分页页数
     @apiSampleRequest /mobile/moneyrecord
     """
     @require_auth
