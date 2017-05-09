@@ -977,7 +977,6 @@
     function imgocr(id) {
         $.get('/ajax/ocr', {_xsrf:xsrf, io_id:id}, function (data) {
             var obj = jQuery.parseJSON(data);
-            alert(obj);
             if (obj.flag == 1) {
                 document.getElementById('ocr_name').value=obj.id_card_front.name;
                 document.getElementById('ocr_address').value=obj.id_card_front.address;

@@ -1018,7 +1018,6 @@ class OCRHandler(BaseHandler):
             request = urllib2.Request(io.id_card_back)
             img_data = urllib2.urlopen(request).read()
             ocrresult = self.ali_idcard_ocr(img_data,False)
-            print ocrresult
             result['id_card_back'] = simplejson.loads(ocrresult)
         if io.drive_card_front:
             request = urllib2.Request(io.drive_card_front)
@@ -1032,6 +1031,5 @@ class OCRHandler(BaseHandler):
         #     ocrresult = self.ali_drive_ocr(img_data)
 
         #     result['drive_card_front'] = simplejson.loads(ocrresult)
-        print result
         self.write(simplejson.dumps(result))
 
