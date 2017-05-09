@@ -1029,11 +1029,9 @@ class OCRHandler(BaseHandler):
         # if io.drive_card_back:
         #     print io.drive_card_back
         #     request = urllib2.Request(io.drive_card_back)
-        #     img_data = urllib2.urlopen(request).read()
-        #     img_buffer = StringIO.StringIO(img_data)
-        #     img = Image.open(img_buffer)
-        #     ocrresult = image_to_string(image=img,lang='chi_sim')
-        #     result['drive_card_back'] = ocrresult
+        #     ocrresult = self.ali_drive_ocr(img_data)
+
+        #     result['drive_card_front'] = simplejson.loads(ocrresult)
         print result
         self.write(simplejson.dumps(result))
 
