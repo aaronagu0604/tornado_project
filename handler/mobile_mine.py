@@ -2009,10 +2009,10 @@ class MobileForgotPasswordHandler(MobileBaseHandler):
             return
 
         user = User.get(User.mobile == mobile)
-        flag = 0
+        flag = 1
         if v_code and new_password:
             VCode.delete().where(VCode.created < (int(time.time()) - 30 * 60)).execute()
-            if VCode.select().where((VCode.mobile == user.mobile) & (VCode.v_code == v_code) & (VCode.flag == flag)).count() > 0:
+            if VCode.select().where((VCode.mobile == user.mobile) & (VCode.vcode == v_code) & (VCode.flag == flag)).count() > 0:
                 user.password = User.create_password(new_password)
                 user.save()
                 result['flag'] = 1
