@@ -1715,16 +1715,15 @@ class InsuranceOrderDetailHandler(AdminBaseHandler):
         for program in insurance_order_prices:
             i_item_list = []
             for i_item in i_items:
-                if program.__dict__['_data'][i_item.eName]:
-                    i_item_list.append({
-                        'name': i_item.name,
-                        'e_name': i_item.eName,
-                        'style_id': i_item.style_id,
-                        'value': program.__dict__['_data'][i_item.eName],
-                        'price': program.__dict__['_data'][i_item.eName+'Price'] if program.__dict__['_data'][i_item.eName+'Price'] else 0
-                    })
+                i_item_list.append({
+                    'name': i_item.name,
+                    'e_name': i_item.eName,
+                    'style_id': i_item.style_id,
+                    'value': program.__dict__['_data'][i_item.eName],
+                    'price': program.__dict__['_data'][i_item.eName+'Price'] if program.__dict__['_data'][i_item.eName+'Price'] else 0
+                })
+
             rates = InsuranceScoreExchange.get_score_policy(o.store.area_code, program.insurance)
-            # lubepolicy = LubePolicy.select().where(LubePolicy.area_code == o.store.area_code)
             programs.append({
                 'pid': program.id,
                 'insurance': program.insurance,
@@ -1742,7 +1741,9 @@ class InsuranceOrderDetailHandler(AdminBaseHandler):
                 'append_refund_status': program.append_refund_status,
                 'append_refund_num': program.append_refund_num,
                 'append_refund_reason': program.append_refund_reason,
-                'is_default': 1 if program == o.current_order_price else 0
+                'is_default': 1 if program == o.current_order_price else 0,
+                'created': program.created,
+                'admin_user': program.admin_user.name if program.admin_user else u'匿名'
             })
         if archive:
             active = 'i_order_a'

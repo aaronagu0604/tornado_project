@@ -341,34 +341,46 @@
                 <h4>报价信息
                     <input type="button" class="btn btn-outline btn-primary btn-xs" value="新报价"/>
                 </h4>
+                {% for program in programs %}
                 <div class="table-responsive">
                     <table class="table table-bordered">
                         <thead>
                         <tr>
-                            <th>提交人</th>
+                            <!--<th>提交人</th>-->
                             <th>提交时间</th>
                             <th>保险公司</th>
                             <th>交强险</th>
                             <th>商业险</th>
                             <th>返佣情况</th>
                             <th>状态</th>
-                            <th>处理人+用时</th>
+                            <th>处理人</th>
                             <th></th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr>
-                            <td>张三</td>
-                            <td>2017-4-5 12:23:32</td>
-                            <td>平安车险</td>
-                            <td>--</td>
-                            <td>--</td>
-                            <td>--</td>
-                            <td>待报价</td>
-                            <td>--</td>
-                            <td><a href="#" style="font-size: 22px; color:black;">+</a></td>
+                            <!--<td>张三</td>-->
+                            <td>{{ program['created'] | datetimeformat }}</td>
+                            <td>{{program['insurance'].name}}</td>
+                            <td>{{program['force_price']}}</td>
+                            <td>{{program['business_price']}}</td>
+                            <td>{% if 1 == program['gift_policy'] %} 返油
+                                {% elif 2 == program['gift_policy'] %} 返现
+                                {% else %} 其它 {% endif %}
+                            </td>
+                            <td>
+                                {% if program['response'] == 0 %}
+                                待报价
+                                {% elif program['response'] == 1 %}
+                                已报价
+                                {% else %}
+                                支付完成
+                                {% endif %}
+                            </td>
+                            <td>{{program['admin_user']}}</td>
+                            <td><a href="#" onclick="openShutManager(this, {{program['pid']}})" style="font-size: 22px; color:black;">+</a></td>
                         </tr>
-                        <tr>
+                        <tr id="{{program['pid']}}">
                             <td colspan="9">
                                 <div class="col-sm-12 col-md-12">
                                     <div class="panel panel-success">
@@ -378,16 +390,15 @@
                                                     <div class="col-xs-6" style="line-height: 34px;">购买险种</div>
                                                     <div class="col-xs-6">
                                                         <div class="row">
-                                                            <div class="col-xs-4" style="line-height: 34px; text-align: right;">
-                                                                保险公司:</div>
+                                                            <div class="col-xs-4" style="line-height: 34px; text-align: right;">保险公司:</div>
                                                             <div class="col-xs-8 rightTxt">
                                                                 <select name="insurance" class="form-control">
-
-                                                                    <option>人保车险</option>
-
-                                                                </select></div>
+                                                                    {% for p in insurances %}
+                                                                    <option value="{{p.id}}" {{p.name == program['insurance'].name and "selected" or ''}}>{{p.name}}</option>
+                                                                    {% endfor %}
+                                                                </select>
+                                                            </div>
                                                         </div>
-
                                                     </div>
                                                 </div>
                                             </div>
@@ -400,43 +411,23 @@
                                                         <div class="row">
                                                             <div class="checkbox col-xs-8 leftTxt">
                                                                 <label>
-                                                                    <input type="checkbox" style="visibility: visible;">交强险
+                                                                    <input type="checkbox" {% if program['program'][0]['value'] %} checked="checked" {% endif %} style="visibility: visible;">交强险/{{program['program'][0]['name']}}
                                                                 </label>
+                                                                <span style="color:#438bca;cursor:pointer;">--</span>
                                                             </div>
                                                             <div class="col-xs-4 rightTxt">
-                                                                <input type="text" class="form-control" >
+                                                                <input type="text" class="form-control" name="forceIPrice" value="{{program['program'][0]['price']}}">
                                                             </div>
                                                         </div>
                                                         <div class="row">
                                                             <div class="checkbox col-xs-8 leftTxt">
                                                                 <label>
-                                                                    <input type="checkbox" style="visibility: visible;">商业险
+                                                                    <input type="checkbox" {% if program['program'][0]['value'] %} checked="checked" {% endif %} style="visibility: visible;">车船税
                                                                 </label>
+                                                                <span style="color:#438bca;cursor:pointer;">--</span>
                                                             </div>
                                                             <div class="col-xs-4 rightTxt">
-                                                                <input type="text" class="form-control" >
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="row">
-                                                            <div class="checkbox col-xs-8 leftTxt">
-                                                                <label>
-                                                                    <input type="checkbox" style="visibility: visible;">车损线（主）
-                                                                </label>
-                                                            </div>
-                                                            <div class="col-xs-4 rightTxt">
-                                                                <input type="text" class="form-control" >
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="checkbox col-xs-8 leftTxt">
-                                                                <label>
-                                                                    <input type="checkbox" style="visibility: visible;">不计免赔
-                                                                </label>
-                                                            </div>
-                                                            <div class="col-xs-4 rightTxt">
-                                                                <input type="text" class="form-control" >
+                                                                <input type="text" class="form-control" name="vehicle_tax_price" value="{{program['vehicle_tax_price']}}">
                                                             </div>
                                                         </div>
                                                     </td>
@@ -444,45 +435,23 @@
                                                         <div class="row">
                                                             <div class="checkbox col-xs-8 leftTxt">
                                                                 <label>
-                                                                    <input type="checkbox" style="visibility: visible;">三责线（主）
+                                                                    <input type="checkbox" {% if program['program'][1]['value'] %} checked="checked" {% endif %} style="visibility: visible;">车损险/{{program['program'][1]['name']}}
                                                                 </label>
+                                                                <span style="color:#438bca;cursor:pointer;">--</span>
                                                             </div>
                                                             <div class="col-xs-4 rightTxt">
-                                                                <input type="text" class="form-control" >
+                                                                <input type="text" class="form-control" name="damageIPrice" value="{{program['program'][1]['price']}}" >
                                                             </div>
                                                         </div>
                                                         <div class="row">
                                                             <div class="checkbox col-xs-8 leftTxt">
                                                                 <label>
-                                                                    <input type="checkbox" style="visibility: visible;">不计免赔
+                                                                    <input type="checkbox" {% if program['program'][2]['value'] %} checked="checked" {% endif %} style="visibility: visible;">不计免赔/{{program['program'][2]['name']}}
                                                                 </label>
+                                                                <span style="color:#438bca;cursor:pointer;">--</span>
                                                             </div>
                                                             <div class="col-xs-4 rightTxt">
-                                                                <input type="text" class="form-control" >
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <div class="row">
-                                                            <div class="checkbox col-xs-8 leftTxt">
-                                                                <label>
-                                                                    <input type="checkbox" style="visibility: visible;">车上人司机（主）
-                                                                </label>
-                                                            </div>
-                                                            <div class="col-xs-4 rightTxt">
-                                                                <input type="text" class="form-control" >
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="checkbox col-xs-8 leftTxt">
-                                                                <label>
-                                                                    <input type="checkbox" style="visibility: visible;">不计免赔
-                                                                </label>
-                                                            </div>
-                                                            <div class="col-xs-4 rightTxt">
-                                                                <input type="text" class="form-control" >
+                                                                <input type="text" class="form-control" name="damageIPlusPrice" value="{{program['program'][2]['price']}}">
                                                             </div>
                                                         </div>
                                                     </td>
@@ -490,43 +459,23 @@
                                                         <div class="row">
                                                             <div class="checkbox col-xs-8 leftTxt">
                                                                 <label>
-                                                                    <input type="checkbox" style="visibility: visible;">车上人乘客（主）
+                                                                    <input type="checkbox" {% if program['program'][3]['value'] %} checked="checked" {% endif %} style="visibility: visible;">三责险/{{program['program'][3]['name']}}
                                                                 </label>
+                                                                <span onclick="new_program('{{o.id}}')" style="color:#438bca;cursor:pointer;">险额</span>
                                                             </div>
                                                             <div class="col-xs-4 rightTxt">
-                                                                <input type="text" class="form-control" >
+                                                                <input type="text" class="form-control" name="thirdDutyIPrice" value="{{program['program'][3]['price']}}">
                                                             </div>
                                                         </div>
                                                         <div class="row">
                                                             <div class="checkbox col-xs-8 leftTxt">
                                                                 <label>
-                                                                    <input type="checkbox" style="visibility: visible;">不计免赔
+                                                                    <input type="checkbox" {% if program['program'][4]['value'] %} checked="checked" {% endif %} style="visibility: visible;">不计免赔/{{program['program'][4]['name']}}
                                                                 </label>
+                                                                <span style="color:#438bca;cursor:pointer;">--</span>
                                                             </div>
                                                             <div class="col-xs-4 rightTxt">
-                                                                <input type="text" class="form-control" >
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="row">
-                                                            <div class="checkbox col-xs-8 leftTxt">
-                                                                <label>
-                                                                    <input type="checkbox" style="visibility: visible;">全车盗抢险（主）
-                                                                </label>
-                                                            </div>
-                                                            <div class="col-xs-4 rightTxt">
-                                                                <input type="text" class="form-control" >
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="checkbox col-xs-8 leftTxt">
-                                                                <label>
-                                                                    <input type="checkbox" style="visibility: visible;">不计免赔
-                                                                </label>
-                                                            </div>
-                                                            <div class="col-xs-4 rightTxt">
-                                                                <input type="text" class="form-control" >
+                                                                <input type="text" class="form-control" name="thirdDutyIPlusPrice" value="{{program['program'][4]['price']}}">
                                                             </div>
                                                         </div>
                                                     </td>
@@ -536,11 +485,23 @@
                                                         <div class="row">
                                                             <div class="checkbox col-xs-8 leftTxt">
                                                                 <label>
-                                                                    <input type="checkbox" style="visibility: visible;">单独玻璃破碎险
+                                                                    <input type="checkbox" {% if program['program'][5]['value'] %} checked="checked" {% endif %} style="visibility: visible;">全车盗抢险/{{program['program'][5]['name']}}
                                                                 </label>
+                                                                <span style="color:#438bca;cursor:pointer;">--</span>
+                                                            </div>
+                                                            <div class="col-xs-3 rightTxt">
+                                                                <input type="text" class="form-control" name="robbingIPrice" value="{{program['program'][5]['price']}}">
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="checkbox col-xs-8 leftTxt">
+                                                                <label>
+                                                                    <input type="checkbox" {% if program['program'][6]['value'] %} checked="checked" {% endif %} style="visibility: visible;">不计免赔/{{program['program'][6]['name']}}
+                                                                </label>
+                                                                <span style="color:#438bca;cursor:pointer;">--</span>
                                                             </div>
                                                             <div class="col-xs-4 rightTxt">
-                                                                <input type="text" class="form-control" >
+                                                                <input type="text" class="form-control" name="robbingIPlusPrice" value="{{program['program'][6]['price']}}">
                                                             </div>
                                                         </div>
                                                     </td>
@@ -548,21 +509,23 @@
                                                         <div class="row">
                                                             <div class="checkbox col-xs-8 leftTxt">
                                                                 <label>
-                                                                    <input type="checkbox" style="visibility: visible;">车身划痕险【1万】
+                                                                    <input type="checkbox" {% if program['program'][7]['value'] %} checked="checked" {% endif %} style="visibility: visible;">车上人司机/{{program['program'][7]['name']}}
                                                                 </label>
+                                                                <span onclick="new_program('{{o.id}}')" style="color:#438bca;cursor:pointer;">险额</span>
                                                             </div>
                                                             <div class="col-xs-4 rightTxt">
-                                                                <input type="text" class="form-control" >
+                                                                <input type="text" class="form-control" name="driverDutyIPrice" value="{{program['program'][7]['price']}}">
                                                             </div>
                                                         </div>
                                                         <div class="row">
                                                             <div class="checkbox col-xs-8 leftTxt">
                                                                 <label>
-                                                                    <input type="checkbox" style="visibility: visible;">不计免赔
+                                                                    <input type="checkbox" {% if program['program'][8]['value'] %} checked="checked" {% endif %} style="visibility: visible;">不计免赔/{{program['program'][8]['name']}}
                                                                 </label>
+                                                                <span style="color:#438bca;cursor:pointer;">--</span>
                                                             </div>
                                                             <div class="col-xs-4 rightTxt">
-                                                                <input type="text" class="form-control" >
+                                                                <input type="text" class="form-control" name="driverDutyIPlusPrice" value="{{program['program'][8]['price']}}">
                                                             </div>
                                                         </div>
                                                     </td>
@@ -570,21 +533,23 @@
                                                         <div class="row">
                                                             <div class="checkbox col-xs-8 leftTxt">
                                                                 <label>
-                                                                    <input type="checkbox" style="visibility: visible;">自燃损失险
+                                                                    <input type="checkbox" {% if program['program'][9]['value'] %} checked="checked" {% endif %} style="visibility: visible;">车上人乘客/{{program['program'][9]['name']}}
                                                                 </label>
+                                                                <span onclick="new_program('{{o.id}}')" style="color:#438bca;cursor:pointer;">险额</span>
                                                             </div>
                                                             <div class="col-xs-4 rightTxt">
-                                                                <input type="text" class="form-control" >
+                                                                <input type="text" class="form-control" name="passengerDutyIPrice" value="{{program['program'][9]['price']}}">
                                                             </div>
                                                         </div>
                                                         <div class="row">
                                                             <div class="checkbox col-xs-8 leftTxt">
                                                                 <label>
-                                                                    <input type="checkbox" style="visibility: visible;">不计免赔
+                                                                    <input type="checkbox" {% if program['program'][10]['value'] %} checked="checked" {% endif %} style="visibility: visible;">不计免赔/{{program['program'][10]['name']}}
                                                                 </label>
+                                                                <span style="color:#438bca;cursor:pointer;">--</span>
                                                             </div>
                                                             <div class="col-xs-4 rightTxt">
-                                                                <input type="text" class="form-control" >
+                                                                <input type="text" class="form-control" name="passengerDutyIPlusPrice" value="{{program['program'][10]['price']}}">
                                                             </div>
                                                         </div>
                                                     </td>
@@ -594,21 +559,12 @@
                                                         <div class="row">
                                                             <div class="checkbox col-xs-8 leftTxt">
                                                                 <label>
-                                                                    <input type="checkbox" style="visibility: visible;">无法找到第三方险
+                                                                    <input type="checkbox" {% if program['program'][11]['value'] %} checked="checked" {% endif %} style="visibility: visible;">单独玻璃破碎险/{{program['program'][11]['name']}}
                                                                 </label>
+                                                                <span style="color:#438bca;cursor:pointer;">--</span>
                                                             </div>
                                                             <div class="col-xs-4 rightTxt">
-                                                                <input type="text" class="form-control" >
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="checkbox col-xs-8 leftTxt">
-                                                                <label>
-                                                                    <input type="checkbox" style="visibility: visible;">车船税
-                                                                </label>
-                                                            </div>
-                                                            <div class="col-xs-4 rightTxt">
-                                                                <input type="text" class="form-control" >
+                                                                <input type="text" class="form-control" name="glassIPrice" value="{{program['program'][11]['price']}}">
                                                             </div>
                                                         </div>
                                                     </td>
@@ -616,54 +572,118 @@
                                                         <div class="row">
                                                             <div class="checkbox col-xs-8 leftTxt">
                                                                 <label>
-                                                                    <input type="checkbox" style="visibility: visible;">发动机涉水险
+                                                                    <input type="checkbox" {% if program['program'][12]['value'] %} checked="checked" {% endif %} style="visibility: visible;">车身划痕险/{{program['program'][12]['name']}}
                                                                 </label>
+                                                                <span onclick="new_program('{{o.id}}')" style="color:#438bca;cursor:pointer;">{{program['program'][12]['value']}}</span>
                                                             </div>
                                                             <div class="col-xs-4 rightTxt">
-                                                                <input type="text" class="form-control" >
+                                                                <input type="text" class="form-control" name="scratchIPrice" value="{{program['program'][12]['price']}}">
                                                             </div>
                                                         </div>
                                                         <div class="row">
                                                             <div class="checkbox col-xs-8 leftTxt">
                                                                 <label>
-                                                                    <input type="checkbox" style="visibility: visible;">不计免赔
+                                                                    <input type="checkbox" {% if program['program'][13]['value'] %} checked="checked" {% endif %} style="visibility: visible;">不计免赔/{{program['program'][13]['name']}}
                                                                 </label>
+                                                                <span style="color:#438bca;cursor:pointer;">--</span>
                                                             </div>
                                                             <div class="col-xs-4 rightTxt">
-                                                                <input type="text" class="form-control" >
+                                                                <input type="text" class="form-control" name="scratchIPlusPrice" value="{{program['program'][13]['price']}}">
                                                             </div>
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="row">
                                                             <div class="checkbox col-xs-8 leftTxt">
-
                                                                 <label>
-                                                                    <input type="checkbox" style="visibility: visible;">交强险折扣
+                                                                    <input type="checkbox" {% if program['program'][14]['value'] %} checked="checked" {% endif %} style="visibility: visible;">自燃损失险/{{program['program'][14]['name']}}
                                                                 </label>
+                                                                <span style="color:#438bca;cursor:pointer;">--</span>
                                                             </div>
                                                             <div class="col-xs-4 rightTxt">
-                                                                <input type="text" class="form-control" >
+                                                                <input type="text" class="form-control" name="fireDamageIPrice" value="{{program['program'][14]['price']}}">
                                                             </div>
                                                         </div>
                                                         <div class="row">
                                                             <div class="checkbox col-xs-8 leftTxt">
                                                                 <label>
-                                                                    <input type="checkbox" style="visibility: visible;">商业险折扣
+                                                                    <input type="checkbox" {% if program['program'][15]['value'] %} checked="checked" {% endif %} style="visibility: visible;">不计免赔/{{program['program'][15]['name']}}
                                                                 </label>
+                                                                <span style="color:#438bca;cursor:pointer;">--</span>
                                                             </div>
                                                             <div class="col-xs-4 rightTxt">
-                                                                <input type="text" class="form-control" >
+                                                                <input type="text" class="form-control" name="fireDamageIPlusPrice" value="{{program['program'][15]['price']}}">
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <div class="row">
+                                                            <div class="checkbox col-xs-8 leftTxt">
+                                                                <label>
+                                                                    <input type="checkbox" {% if program['program'][16]['value'] %} checked="checked" {% endif %} style="visibility: visible;">发动机涉水险/{{program['program'][16]['name']}}
+                                                                </label>
+                                                                <span style="color:#438bca;cursor:pointer;">--</span>
+                                                            </div>
+                                                            <div class="col-xs-4 rightTxt">
+                                                                <input type="text" class="form-control" name="wadeIPrice" value="{{program['program'][16]['price']}}">
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="checkbox col-xs-8 leftTxt">
+                                                                <label>
+                                                                    <input type="checkbox" {% if program['program'][17]['value'] %} checked="checked" {% endif %} style="visibility: visible;">不计免赔/{{program['program'][17]['name']}}
+                                                                </label>
+                                                                <span style="color:#438bca;cursor:pointer;">--</span>
+                                                            </div>
+                                                            <div class="col-xs-4 rightTxt">
+                                                                <input type="text" class="form-control" name="wadeIPlusPrice" value="{{program['program'][17]['price']}}">
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="row">
+                                                            <div class="checkbox col-xs-8 leftTxt">
+                                                                <label>
+                                                                    <input type="checkbox" {% if program['program'][18]['value'] %} checked="checked" {% endif %} style="visibility: visible;">无法找到第三方险/{{program['program'][18]['name']}}
+                                                                </label>
+                                                                <span style="color:#438bca;cursor:pointer;">--</span>
+                                                            </div>
+                                                            <div class="col-xs-4 rightTxt">
+                                                                <input type="text" class="form-control" name="thirdSpecialIPrice" value="{{program['program'][18]['price']}}">
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="row">
+                                                            <div class="checkbox col-xs-8 leftTxt">
+                                                                <label>交强险折扣</label>
+                                                            </div>
+                                                            <div class="col-xs-4 rightTxt">
+                                                                <input type="text" class="form-control" name="forceR" value="">
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="checkbox col-xs-8 leftTxt">
+                                                                <label>商业险折扣</label>
+                                                            </div>
+                                                            <div class="col-xs-4 rightTxt">
+                                                                <input type="text" class="form-control" name="businessR" value="">
                                                             </div>
                                                         </div>
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td colspan="2" style="text-align: right;">
-                                                        保险总额：<span style="font-size: 25px; color:red;">1345.9</span>元
+                                                        商业：<span style="font-size: 25px; color:green;">1345.9</span>元
+                                                        交强：<span style="font-size: 25px; color:green;">1345.9</span>元
+                                                        车船：<span style="font-size: 25px; color:green;">1345.9</span>元
+                                                        总额：<span style="font-size: 25px; color:red;">1345.9</span>元
                                                     </td>
                                                     <td>
                                                         <input type="button" class="btn btn-outline btn-primary btn-xs" value="输入验证"/>
+                                                        <span onclick="auto_calculation({{ program['pid'] }})" style="padding:5px 10px;background:#438bca;color:#fff;border-radius:4px;font-size:14px;cursor:pointer;">自动计算</span>
                                                         <input type="button" class="btn btn-outline btn-primary btn-xs" value="保险接口调用"/>
                                                     </td>
                                                 </tr>
@@ -674,7 +694,6 @@
                                 <div class="col-sm-6 col-md-6">
                                     <div class="panel panel-success">
                                         <div class="panel-heading">
-
                                             <div class="panel-title">
                                                 <div class="row">
                                                     <div class="col-xs-5" style="line-height: 34px;">返佣信息</div>
@@ -684,14 +703,11 @@
                                                                 返佣类型:</div>
                                                             <div class="col-xs-7 rightTxt">
                                                                 <select name="insurance" class="form-control">
-
                                                                     <option>返现</option>
                                                                     <option>返油</option>
                                                                     <option>无</option>
-
                                                                 </select></div>
                                                         </div>
-
                                                     </div>
                                                 </div>
                                             </div>
@@ -723,7 +739,6 @@
                                             </div>
                                         </div>
                                     </div></div>
-
                                 <div class="col-sm-12 col-md-12">
                                     <div class="panel panel-success">
                                         <div class="panel-heading">
@@ -755,6 +770,7 @@
                         </tbody>
                     </table>
                 </div>
+                {% endfor %}
             </div>
         </div>
     </div>
@@ -790,8 +806,7 @@
                     </tr>
                     </thead>
                 </table>
-
-                <div id="{{program['pid']}}" style="display:none">
+                <div>
                     <div class="panel panel-success">
                         <div class="panel-heading">
                             <h3 class="panel-title">购买险种</h3>
@@ -1166,6 +1181,60 @@
         });
     }
 
+    // 输入验证
+    function auto_calculation(program_id){
+        // 根据获取 ID 获取元素
+        var program = document.getElementById(program_id);
+        // 获取数据
+        var vehicle_tax_price = $(program).find('input[name="vehicle_tax_price"]').val();    // 车船税价格
+        var vehicle_tax_price = $(program).find('input[name="vehicle_tax_price"]').val();    // 车船税价格
+        var vehicle_tax_price = $(program).find('input[name="vehicle_tax_price"]').val();    // 车船税价格
+        var vehicle_tax_price = $(program).find('input[name="vehicle_tax_price"]').val();    // 车船税价格
+        var vehicle_tax_price = $(program).find('input[name="vehicle_tax_price"]').val();    // 车船税价格
+        var vehicle_tax_price = $(program).find('input[name="vehicle_tax_price"]').val();    // 车船税价格
+        var vehicle_tax_price = $(program).find('input[name="vehicle_tax_price"]').val();    // 车船税价格
+        var vehicle_tax_price = $(program).find('input[name="vehicle_tax_price"]').val();    // 车船税价格
+        var vehicle_tax_price = $(program).find('input[name="vehicle_tax_price"]').val();    // 车船税价格
+        var vehicle_tax_price = $(program).find('input[name="vehicle_tax_price"]').val();    // 车船税价格
+        var vehicle_tax_price = $(program).find('input[name="vehicle_tax_price"]').val();    // 车船税价格
+        var vehicle_tax_price = $(program).find('input[name="vehicle_tax_price"]').val();    // 车船税价格
+        var vehicle_tax_price = $(program).find('input[name="vehicle_tax_price"]').val();    // 车船税价格
+        var vehicle_tax_price = $(program).find('input[name="vehicle_tax_price"]').val();    // 车船税价格
+        var vehicle_tax_price = $(program).find('input[name="vehicle_tax_price"]').val();    // 车船税价格
+        var vehicle_tax_price = $(program).find('input[name="vehicle_tax_price"]').val();    // 车船税价格
+        var vehicle_tax_price = $(program).find('input[name="vehicle_tax_price"]').val();    // 车船税价格
+        var vehicle_tax_price = $(program).find('input[name="vehicle_tax_price"]').val();    // 车船税价格
+        var total_force = 0;
+        var total_business = 0;
+        var insurance_details = '';
+        // 计算总额
+        total_business = (total_business*business_rate/10);
+        var total_price = total_force + total_business + vehicle_tax_price*1;
+        var cash = total_business*(1-business_tax/100)*business_s/100 + total_force*(1-force_tax/100)*force_s/100 - total_price*(ali_rate/100+profit/100);
+        if(gift_policy == '2'){
+            $(program).find('input[name="cash"]').val(cash.toFixed(2));
+        } else {
+            $(program).find('input[name="cash"]').val(0);
+        }
+        // 回填
+        $(program).find('input[name="business_price"]').val(total_business.toFixed(2));
+        $(program).find('input[name="force_price"]').val(total_force.toFixed(2));
+        $(program).find('input[name="total_price"]').val(total_price.toFixed(2));
+        var msg = '';
+        if(business_rate == '10'){
+            msg = '商业险'+total_business+'元\n'
+        } else{
+            msg = '商业险'+business_rate+'折'+total_business+'元\n'
+        }
+        if(force_rate == '10'){
+            msg = msg+'交强险'+total_force+'元\n'
+        } else {
+            msg = msg+'交强险'+force_rate+'折'+total_force+'元\n'
+        }
+        msg = msg+'车船税'+vehicle_tax_price+'元\n' + '合计'+total_price+'元；\n'+'其中:'+insurance_details;
+        $(program).find('textarea[name="psummary"]').val(msg);
+    }
+
     // 自动计算
     function auto_calculation(program_id){
         // 根据获取 ID 获取元素
@@ -1303,19 +1372,10 @@
     function openShutManager(oSourceObj, oTargetObj, shutAble, oOpenTip, oShutTip){
         var sourceObj = document.getElementById(oSourceObj);
         var targetObj = document.getElementById(oTargetObj);
-        var openTip = oOpenTip || "";
-        var shutTip = oShutTip || "";
         if(targetObj.style.display!="none"){
-            if(shutAble) return;
             targetObj.style.display="none";
-            if(openTip  &&  shutTip){
-                sourceObj.innerHTML = shutTip;
-            }
         } else {
-            targetObj.style.display="block";
-            if(openTip  &&  shutTip){
-                sourceObj.innerHTML = openTip;
-            }
+            targetObj.style.display="";
         }
     }
 </script>
