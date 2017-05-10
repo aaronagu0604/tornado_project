@@ -1501,6 +1501,9 @@ class MobilNewInsuranceOrderHandler(MobileBaseHandler):
     @apiParam {String} id_card_back 身份证反面
     @apiParam {String} drive_card_front 行驶证正面
     @apiParam {String} drive_card_back 行驶证反面
+    @apiParam {Int} is_same_person 被保人与车主是否是同一人 是1 否0
+    @apiParam {String} id_card_front_owner 车主身份证正面
+    @apiParam {String} id_card_back_owner 车主身份证反面
     @apiParam {Int} insurance 保险公司ID
     @apiParam {String} forceI 交强险，字符串格式：1购买 ''未购买
     @apiParam {String} damageI 商业险-主险-车辆损失险，字符串格式：1购买 ‘’未购买
@@ -1538,6 +1541,10 @@ class MobilNewInsuranceOrderHandler(MobileBaseHandler):
         id_card_back = self.get_body_argument('id_card_back', None)
         drive_card_front = self.get_body_argument('drive_card_front', None)
         drive_card_back = self.get_body_argument('drive_card_back', None)
+        is_same_person = int(self.get_body_argument('is_same_person', 1))
+        id_card_front_owner = self.get_body_argument('id_card_front_owner', '')
+        id_card_back_owner = self.get_body_argument('id_card_back_owner', '')
+
         insurance = self.get_body_argument('insurance', None)
         delivery_to = self.get_body_argument('delivery_to', None)
         delivery_tel = self.get_body_argument('delivery_tel', None)
@@ -1576,6 +1583,9 @@ class MobilNewInsuranceOrderHandler(MobileBaseHandler):
             order.store = user.store
             order.id_card_front = id_card_front
             order.id_card_back = id_card_back
+            order.is_same_person = is_same_person
+            order.id_card_front_owner = id_card_front_owner
+            order.id_card_back_owner = id_card_back_owner
             order.drive_card_front = drive_card_front
             order.drive_card_back = drive_card_back
             order.ordered = int(time.time())

@@ -1743,6 +1743,8 @@ class InsuranceOrderDetailHandler(AdminBaseHandler):
                 'append_refund_reason': program.append_refund_reason,
                 'is_default': 1 if program == o.current_order_price else 0,
                 'created': program.created,
+                'force_rate': program.force_rate,
+                'business_rate': program.business_rate,
                 'admin_user': program.admin_user.username if program.admin_user else u'匿名'
             })
         if archive:

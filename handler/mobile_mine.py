@@ -628,6 +628,7 @@ class MobileInsuranceOrderDetailHandler(MobileBaseHandler):
             'store_addr': Area.get_detailed_address(insuranceorder.store.area_code) + insuranceorder.store.address,
             'mobile': insuranceorder.store.mobile,
             'total_price': insuranceorder.current_order_price.total_price,
+            'is_same_person': insuranceorder.is_same_person,
             'insuranceorderprice': {
                 'status': insuranceorder.status,
                 'insurance': insuranceorder.current_order_price.insurance.name,
@@ -644,7 +645,11 @@ class MobileInsuranceOrderDetailHandler(MobileBaseHandler):
                 'drive_card_front': insuranceorder.drive_card_front,
                 'drive_card_front_status': insuranceorder.dcfstatus,
                 'drive_card_back': insuranceorder.drive_card_back,
-                'drive_card_back_status': insuranceorder.dcbstatus
+                'drive_card_back_status': insuranceorder.dcbstatus,
+                'id_card_front_owner': insuranceorder.id_card_front_owner,
+                'icfo_status': insuranceorder.icfostatus,
+                'id_card_back_owner': insuranceorder.id_card_back_owner,
+                'icbo_status': insuranceorder.icbostatus,
             },
             'delivery': {
                 'name': insuranceorder.delivery_to,

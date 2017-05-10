@@ -727,7 +727,9 @@ class InsuranceOrderPrice(db.Model):
     cash = FloatField(default=0.0)  # 返现金额
     total_price = FloatField(default=0.0)  # 保险订单总价格
     force_price = FloatField(default=0.0)  # 交强险 价格
+    force_rate = FloatField(null=True)    # 交强险折扣
     business_price = FloatField(default=0.0)  # 商业险价格
+    business_rate = FloatField(null=True)    # 商业险折扣
     vehicle_tax_price = FloatField(default=0.0)  # 车船税价格
     sms_content = CharField(max_length=1024, null=True)  # 短信通知内容
 

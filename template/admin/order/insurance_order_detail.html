@@ -687,7 +687,7 @@
                                                                 <label>交强险折扣</label>
                                                             </div>
                                                             <div class="col-xs-4 rightTxt">
-                                                                <input type="text" class="form-control" name="force_rate" value="">
+                                                                <input type="text" class="form-control" name="force_rate" value="{{program['force_rate']}}">
                                                             </div>
                                                         </div>
                                                         <div class="row">
@@ -695,7 +695,7 @@
                                                                 <label>商业险折扣</label>
                                                             </div>
                                                             <div class="col-xs-4 rightTxt">
-                                                                <input type="text" class="form-control" name="business_rate" value="">
+                                                                <input type="text" class="form-control" name="business_rate" value="{{program['business_rate']}}">
                                                             </div>
                                                         </div>
                                                     </td>
@@ -1352,6 +1352,8 @@
         var cash = $(program).find('input[name="cash"]').val();    // 积分
         var psummary = $(program).find('textarea[name="psummary"]').val();    // 短信
         var last_program = $(program).find('input[name="last_program"]').val();    // 是否最终方案
+        var force_rate = $(program).find('input[name="force_rate"]').val();    // 短信
+        var business_rate = $(program).find('input[name="business_rate"]').val();    // 是否最终方案
         var groups = {};
         groups['pid'] = program_id;
         groups['insurance'] = insurance;
@@ -1360,6 +1362,8 @@
         groups['business_price'] = business_price;
         groups['force_price'] = force_price;
         groups['total_price'] = total_price;
+        groups['force_rate'] = force_rate;
+        groups['business_rate'] = business_rate;
         groups['cash'] = cash;
         groups['psummary'] = psummary;
         groups['last_program'] = last_program;
