@@ -808,10 +808,17 @@ class InsuranceOrder(db.Model):
     store = ForeignKeyField(Store, related_name='insurance_orders', db_column='store_id')  # 店铺
     current_order_price = ForeignKeyField(InsuranceOrderPrice, db_column='current_order_price_id', null=True)  # 最终报价ID
 
-    id_card_front = CharField(max_length=255, null=True)  # 身份证
+    id_card_front = CharField(max_length=255, null=True)  # 身份证 投保人
     icfstatus = IntegerField(default=0) # 是否需要重新上传：0不需要1需要
-    id_card_back = CharField(max_length=255, null=True)  # 身份证背面
+    id_card_back = CharField(max_length=255, null=True)  # 身份证背面 投保人
     icbstatus = IntegerField(default=0)  # 是否需要重新上传：0不需要1需要
+
+    is_same_person = IntegerField(default=1)  # 投保人与车主是否是同一人 默认是
+    id_card_front_owner = CharField(max_length=255, null=True)  # 身份证 车主
+    icfostatus = IntegerField(default=0)  # 是否需要重新上传：0不需要1需要
+    id_card_back_owner = CharField(max_length=255, null=True)  # 身份证背面 车主
+    icbostatus = IntegerField(default=0)  # 是否需要重新上传：0不需要1需要
+
     drive_card_front = CharField(max_length=255, null=True)  # 行驶证
     dcfstatus = IntegerField(default=0)  # 是否需要重新上传：0不需要1需要
     drive_card_back = CharField(max_length=255, null=True)  # 行驶证副本

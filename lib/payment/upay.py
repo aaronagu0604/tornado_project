@@ -188,7 +188,7 @@ class Trade(object):
             if params['respCode'] == '00':
                 return params['tn']
         except:
-            return None
+            return ''
 
 if __name__ == '__main__':
     tn = Trade().trade('u110s111', 0.1)

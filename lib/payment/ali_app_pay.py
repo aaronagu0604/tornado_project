@@ -94,11 +94,14 @@ def check_sign(message, sign):
 
 # 获取最终签名后的字符串
 def get_alipay_string(total_price, subject, body, ordernum):
-    after_join_string = join_string(total_price, subject, body, ordernum)
-    sign_string = alipay_sign(after_join_string)
-    url_string = switch_to_urlencode(after_join_string)
-    sorted_string = sort_string(url_string)
-    result_string = (sorted_string + '&' + switch_to_urlencode('sign='+sign_string)).replace('+', '%20')
+    try:
+        after_join_string = join_string(total_price, subject, body, ordernum)
+        sign_string = alipay_sign(after_join_string)
+        url_string = switch_to_urlencode(after_join_string)
+        sorted_string = sort_string(url_string)
+        result_string = (sorted_string + '&' + switch_to_urlencode('sign='+sign_string)).replace('+', '%20')
+    except Exception, e:
+        result_string = ''
     return result_string
 
 # 获取最终签名后的字符串

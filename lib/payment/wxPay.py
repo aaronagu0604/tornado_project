@@ -330,11 +330,11 @@ class UnifiedOrder_pub(Wxpay_client_pub):
                     sign_again_params['sign'] = self.getSign(sign_again_params)
                     sign_again_params['result'] = 'SUCCESS'
                 else:
-                    sign_again_params['result'] = self.result['err_code']
+                    sign_again_params = ''
             else:
-                sign_again_params['result'] = 'error: prepayid is null.'
+                sign_again_params = ''
         except Exception, err:
-            sign_again_params['result'] = 'error: get prepayid error.'
+            sign_again_params = ''
         return sign_again_params
 
 """二维码支付接口类"""
@@ -399,7 +399,7 @@ class Qrcode_pub(Wxpay_client_pub):
             else:
                 return None
         except Exception,e:
-            return str(e)
+            return None
 
 """订单查询接口"""
 class OrderQuery_pub(Wxpay_client_pub):

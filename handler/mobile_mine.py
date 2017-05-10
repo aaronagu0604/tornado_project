@@ -449,7 +449,6 @@ class MobileSubOrderDetailHandler(MobileBaseHandler):
                 'img': pic,
                 'name': product.product.name,
                 'price': product.price,
-                'score': product.score,
                 'quantity': product.quantity,
                 'attribute': attribute
             })

@@ -1245,6 +1245,7 @@ class MobileNewOrderHandler(MobileBaseHandler):
 
     @apiParam {Int} address 地址ID
     @apiParam {Int} order_type 订单类型  1金钱订单  2积分订单
+    @apiParam {Int} is_shop_cart  是否是从购物车购买
     @apiParam {Int} payment 付款方式  1支付宝  2微信 3银联 4余额 5积分
     @apiParam {Float} total_price 订单总价（金钱/积分）
     @apiParam {String} products 产品数据集合，如：[{sid:1, price:119, products:[{sppid:1, quantity:1}]}, ……]；
@@ -1284,6 +1285,7 @@ class MobileNewOrderHandler(MobileBaseHandler):
         payment = self.get_body_argument("payment", None)
         total_price = self.get_body_argument("total_price", None)
         products = self.get_body_argument("products", None)
+        is_shop_cart = self.get_body_argument("is_shop_cart", '')
         user = self.get_user()
 
         if address and payment and total_price and products and user and order_type:
@@ -1369,6 +1371,7 @@ class MobileNewOrderHandler(MobileBaseHandler):
             else:
                 order.status = 0
                 order.save()
+            sppids = []
             for item in items:
                 sub_order = SubOrder()
                 sub_order.order = order
@@ -1379,6 +1382,7 @@ class MobileNewOrderHandler(MobileBaseHandler):
                 sub_order.status = order.status
                 sub_order.save()
                 for product in item['products']:
+                    sppids.append(product['sppid'])
                     spp = StoreProductPrice.get(id=product['sppid'])
                     order_item = OrderItem()
                     order_item.order = order
@@ -1392,6 +1396,8 @@ class MobileNewOrderHandler(MobileBaseHandler):
             result['data']['order_id'] = order.id
             result['data']['payment'] = payment
             result['data']['pay_info'] = pay_order(payment, total_price, order.ordernum, u'车装甲普通商品')
+            if result['data']['pay_info'] and is_shop_cart == '1':
+                ShopCart.delete().where(ShopCart.store == user.store, ShopCart.store_product_price << sppids).execute()
         else:
             result['msg'] = u"传入参数异常"
         self.write(simplejson.dumps(result))
@@ -1715,12 +1721,12 @@ class MobilePayOrderHandler(MobileBaseHandler):
                         self.after_pay_operation(order, total_price, user, order_type)
 
             result['data']['pay_info'] = pay_order(payment, total_price, ordernum, log)
-
-            result['flag'] = 1
+            if result['data']['pay_info']:
+                result['flag'] = 1
             if payment in [6, 7] and not result['data']['pay_info']:
-                result['flag'] = 0
                 result['msg'] = u'获取二维码失败'
             else:
+                result['flag'] = 1
                 result['data']['payment'] = payment
         else:
             result['msg'] = u"传入参数异常"
