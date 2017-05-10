@@ -1002,12 +1002,12 @@ class OCRHandler(BaseHandler):
         ocrresult = response.read()
         return simplejson.loads(ocrresult)['outputs'][0]['outputValue']['dataValue']
 
-    def get(self):
-        io_id = self.get_argument('io_id', None)
+    @run_on_executor
+    def insuranceorderocr(self,io_id):
         if not io_id:
             self.write('该订单不存在')
         io = InsuranceOrder.get(id=io_id)
-        result = {'flag':1}
+        result = {'flag': 1}
         if io.id_card_front:
             request = urllib2.Request(io.id_card_front)
             img_data = urllib2.urlopen(request).read()
@@ -1017,7 +1017,7 @@ class OCRHandler(BaseHandler):
         if io.id_card_back:
             request = urllib2.Request(io.id_card_back)
             img_data = urllib2.urlopen(request).read()
-            ocrresult = self.ali_idcard_ocr(img_data,False)
+            ocrresult = self.ali_idcard_ocr(img_data, False)
             result['id_card_back'] = simplejson.loads(ocrresult)
         if io.drive_card_front:
             request = urllib2.Request(io.drive_card_front)
@@ -1031,5 +1031,15 @@ class OCRHandler(BaseHandler):
         #     ocrresult = self.ali_drive_ocr(img_data)
 
         #     result['drive_card_front'] = simplejson.loads(ocrresult)
+        print result
         self.write(simplejson.dumps(result))
+
+    executor = ThreadPoolExecutor(20)
+    @asynchronous
+    @coroutine
+    def get(self):
+
+        io_id = self.get_argument('io_id', None)
+        a = yield self.insuranceorderocr(io_id)
+
 
