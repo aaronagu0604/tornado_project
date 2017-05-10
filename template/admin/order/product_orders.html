@@ -95,14 +95,13 @@
                     <th style="width:5%;text-align:center;">金额/积分</th>
                     <th style="width:5%;text-align:center;">下单时间</th>
                     <th style="width:5%;text-align:center;">支付时间</th>
-                    <th  style="width:5%;text-align:center;">操作</th>
                 </tr>
                 </thead>
                 <tbody>
                 {% for o in orders %}
                 <tr>
                     <td>
-                        <span style="color:#ff5231;">{{o.ordernum}}</span>
+                        <span style="color:#ff5231;"><a href="/admin/product_order/{{o.id}}?archive={{archive}}">{{o.ordernum}}</a></span>
                         <br><span style="color: red;">({{o.buyer_store.name}})</span>
                     </td>
                     <td>
@@ -144,9 +143,6 @@
                     </td>
                     <td>{{o.ordered | dateformat}}</td>
                     <td>{{o.pay_time | dateformat}}</td>
-                    <td>
-                        <a href="/admin/product_order/{{o.id}}?archive={{archive}}" class="btn btn-outline btn-primary btn-xs">详情</a>
-                    </td>
                 </tr>
                 {% endfor %}
                 </tbody>

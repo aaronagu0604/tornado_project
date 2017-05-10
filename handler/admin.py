@@ -1745,7 +1745,7 @@ class InsuranceOrderDetailHandler(AdminBaseHandler):
                 'created': program.created,
                 'force_rate': program.force_rate,
                 'business_rate': program.business_rate,
-                'admin_user': program.admin_user.username if program.admin_user else u'匿名'
+                'admin_user': program.admin_user.username if program.admin_user else u'--'
             })
         if archive:
             active = 'i_order_a'
