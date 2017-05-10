@@ -941,6 +941,8 @@ class UploadPicHandler(BaseHandler):
 
 @route(r'/ajax/ocr', name='ajax_ocr')  # 自动识别图片信息
 class OCRHandler(BaseHandler):
+    executor = ThreadPoolExecutor(20)
+
     def check_xsrf_cookie(self):
         pass
 
@@ -1034,7 +1036,7 @@ class OCRHandler(BaseHandler):
         print result
         self.write(simplejson.dumps(result))
 
-    executor = ThreadPoolExecutor(20)
+
     @asynchronous
     @coroutine
     def get(self):
