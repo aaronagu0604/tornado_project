@@ -1044,4 +1044,203 @@ class OCRHandler(BaseHandler):
         io_id = self.get_argument('io_id', None)
         a = yield self.insuranceorderocr(io_id)
 
+@route(r'/ajax/auto_caculate_price', name='ajax_auto_caculate_price')  # 自动报价
+class AutoCaculateInsuranceOrderPriceHandler(BaseHandler):
+    executor = ThreadPoolExecutor(20)
+
+    def check_xsrf_cookie(self):
+        pass
+
+    def sear_chcar_info(self, insurance='zhlh'):
+        url = 'http://apitest.baodaibao.com.cn/index.php?g=Api&m=SearchCarInfoApi&a=SearchCarInfo'
+
+        post_data = {}
+        post_data['changpai_model'] = "北京现代BH7203AY"
+        post_data['user_id'] = "142"
+        if insurance == 'taiping':
+            post_data['taiping_data'] = {
+                "customerid": "3"
+            }
+        if insurance == 'zhlh_data':
+            post_data['zhlh_data'] = {
+                "customerid": "17",
+                "first_register_data": "2015-01-01"
+            }
+        print simplejson.dumps(post_data)
+        request = urllib2.Request(url, 'data=%s' % simplejson.dumps(post_data))
+        response = urllib2.urlopen(request)
+        ocrresult = response.read()
+        print ocrresult
+
+        return simplejson.loads(ocrresult)
+
+    def quote_iop(self,post_id=2017,insurance='huaan'):
+        notify_url = 'http:///api.dev.test.520czj.com/ajax/baodaibao_notify'
+
+        url = 'http://apitest.baodaibao.com.cn/index.php?g=Api&m=QuoteApi&a=Quote'
+
+        post_data = {}
+        post_data['car'] = {
+            "car_price": "139900.00",
+            "model_code": "LDD1004SHD",
+            "displacement": "1.40"
+        }
+        post_data['orderArr'] = {
+            # BaseInfo
+            "order_id": 2817,  # 订单号
+            "created": "2017-04-27 14:34:53",  # 当前时间
+            "city_code": "610100",  # 城市代码
+            # 车辆信息
+            "province": "陕",  # 车牌汉字
+            "car_number": "AB5X86",  # 车牌数字
+            "car_category": "car",  # 车辆类型:小客车car
+            "car_nengyuan_type": "ranyou",  # 能源类型:燃油ranyou，混合hunhe(中华必填)
+            "use_cat": "non_operation",  # 使用类型:非运营non_operation(中华必填)
+            "assigned": "0",  # 是否过户: 0否1是
+            "guohudate": "",  # 过户日期
+            "passenger_number": "5",  # 座位数(中华必填)
+            "changpai_model": "大众汽车SVW71416BL",  # 厂牌型号
+            "frame_number": "LSVCB2BM0FN049565",  # 车架号
+            "engine_number": "201491",  # 发动机号
+            "standard_quality": "1325",  # 整备质量(中华必填)
+            "first_register_date": "2015-06-18",  # 初登日期(中华必填)
+            "car_owner_type": "private",  # 车主类型: 个人private(中华必填)
+            # 车主信息
+            "car_owner_uname": "樊博璇",  # 车主姓名
+            "car_owner_idcard": "610111198708052047",  # 车主身份证号
+            "car_owner_idcard_address": "陕西西安高新区",  # 车主地址
+            # 被保险人信息
+            "uname": "樊博璇",  # 被保险人姓名(华安，中华必填)
+            "idcard": "610111198708052047",  # 被保险人身份证号(华安，中华必填)
+            # 机构信息
+            "seller_id": "142",  # 机构ID
+            "belong": "142",  # 所属机构ID
+            "branch_id": "0",  # 分支机构ID:没有则为0
+            "buyer_id": "682",  # 代理人ID
+            # 保险信息
+            "start_date_enforce": "2017-06-28",  # 交强险起保日期
+            "start_date_trade": "2017-06-28",  # 商业险起保日期
+            "insurance_id": "3",  # 保险类型:1 交强 2商业3商加交
+            "insurance_name": "商业+交强",  # 保险类型名称:险种名称 交强+商业或者交强、商业
+            # others
+            "remark": "",
+            "come_from": "wx",
+        }
+        insuranceinfo = [
+            {
+                "deductible": "1",
+                "ip_name": "车辆损失险(主)",
+                "value": ""
+            },
+            {
+                "deductible": "1",
+                "ip_name": "全车盗抢险(主)",
+                "value": ""
+            }
+        ]
+        if insurance == 'taiping':
+            post_data['taiping_data'] = {
+                "customerid": "3",
+                "return_url": notify_url,
+                "insuranceinfo": insuranceinfo,
+                "taiping_config": {
+                    "GROUP_NO": "snzhongyue001",
+                    "SOLUTION_CODE": "0370010601002000250008"
+                },
+                "cityinfo": [
+                    {
+                        "city_code": "220000",
+                        "city_id": "2302",
+                        "city_name": "陕西",
+                        "uname": "管理员123"
+                    }
+                ],
+            }
+        if insurance == 'huaan':
+            post_data['huaan_data'] = {
+                "order_id": post_id,
+                "return_url": notify_url,
+                "city_name": "陕西",
+                "customerid": 14,
+                "insuranceinfo": insuranceinfo,
+                "huaan_config": {
+                    "EXTENTERPCODE": "CMBC0601037064",
+                    "PASSWORD": "baodaibao",
+                    "SLS_CDE": "2701065374",
+                    "USER": "baodaibao"
+                }
+            }
+        if insurance == 'zhlh':
+            post_data['zhlh_data'] = {
+                "order_id": post_id,
+                "customerid": "17",
+                "return_url": notify_url,
+                "insuranceinfo": insuranceinfo,
+                "zhlh_config": {
+                    "Salesman_number": "61000184",
+                    "agency_code": "61970400",
+                    "agent": "u4e0au6d77u4e1cu5927u4fddu9669u7ecfu7eaau6709u9650u8d23u4efbu516cu53f8u9655u897fu5206u516cu53f8",
+                    "agent_name": "u4e0au6d77u4e1cu5927u4fddu9669u7ecfu7eaau6709u9650u8d23u4efbu516cu53f8u9655u897fu5206u516cu53f8",
+                    "intermediary_agency_code": "2015000045",
+                    "operator": "maxiaoping001",
+                    "proxy_protocol_number": "B201761000040",
+                    "salesman_name": "u5eb7u8000u6587",
+                    "service_code": "6197J2004003"
+                }
+            }
+        print simplejson.dumps(post_data)
+        request = urllib2.Request(url, 'data=%s' % simplejson.dumps(post_data))
+        response = urllib2.urlopen(request)
+        response.read()
+        step = 5
+        while(step < 0):
+            bdbquotes = BaoDaiBaoQuote.select().where(BaoDaiBaoQuote.quotenum == post_id &
+                                          BaoDaiBaoQuote.status == 0 )
+            if bdbquotes.count():
+                bdb = bdbquotes[0]
+                bdb.status = 1
+                bdb.save()
+                self.write(bdb.content)
+            else:
+                time.sleep(3)
+            step -= 1
+
+    @run_on_executor
+    def caculate_iop_price(self,io_id):
+        if not io_id:
+            self.write('该订单不存在')
+        io = InsuranceOrder.get(id=io_id)
+        result = {'flag': 1}
+        self.quote_iop()
+
+
+    @asynchronous
+    @coroutine
+    def get(self):
+        io_id = self.get_argument('io_id', None)
+        a = yield self.caculate_iop_price(io_id)
+
+@route(r'/ajax/baodaibao_notify', name='ajax_baodaibao_notify')  # 报价回调函数
+class BaoDaiBaoNotifyHandler(BaseHandler):
+    def check_xsrf_cookie(self):
+        pass
+
+    def post(self):
+        result = {'flag': 0, 'msg': ''}
+        data = self.get_argument('data',None)
+        if data:
+            # dosomething for baodaibao notify
+            data = simplejson.loads(data)
+            if data['status'] == '200':
+                # 报价成功
+                order_id = data['data']['order_id']
+                items = data['data']['quotation_price']
+
+                bdb = BaoDaiBaoQuote()
+                bdb.insurance = order_id
+                bdb.content = simplejson.dumps(items)
+                result['flag'] = 1
+                result['msg'] = u'解析报价成功'
+
+        return simplejson.dumps(result)
 

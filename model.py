@@ -882,6 +882,16 @@ class InsuranceOrder(db.Model):
     class Meta:
         db_table = 'tb_insurance_orders'
 
+# 包代宝报价回调记录表
+class BaoDaiBaoQuote(db.Model):
+    id = PrimaryKeyField()
+    insurance = ForeignKeyField(Insurance, db_column='insurance_id')  # 保险公司ID
+    content = CharField(max_length=400, null=True)  # 消息内容
+    quotenum = CharField(max_length=50, null=True)  # 报价单号
+    status = IntegerField(default=0)  # 0新报价 1已读报价
+
+    class Meta:
+        db_table = 'tb_baodaibao_quote'
 
 # 卖保险兑现规则 返现政策
 class InsuranceScoreExchange(db.Model):
