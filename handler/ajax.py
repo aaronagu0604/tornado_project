@@ -1033,7 +1033,7 @@ class OCRHandler(BaseHandler):
         #     ocrresult = self.ali_drive_ocr(img_data)
 
         #     result['drive_card_front'] = simplejson.loads(ocrresult)
-        print result
+
         self.write(simplejson.dumps(result))
 
 
