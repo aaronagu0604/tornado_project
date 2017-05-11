@@ -1238,8 +1238,8 @@ class AutoCaculateInsuranceOrderPriceHandler(BaseHandler):
         print simplejson.dumps(post_data)
         request = urllib2.Request(url, 'data=%s' % simplejson.dumps(post_data))
         response = urllib2.urlopen(request)
-        response.read()
-        print response
+        s=response.read()
+        print s
         step = 15
         id_insuranceitem_nomarl_map = {
             1: 'damageI',  # '车辆损失险',
