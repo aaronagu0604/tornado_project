@@ -1239,6 +1239,7 @@ class AutoCaculateInsuranceOrderPriceHandler(BaseHandler):
         request = urllib2.Request(url, 'data=%s' % simplejson.dumps(post_data))
         response = urllib2.urlopen(request)
         response.read()
+        print response
         step = 15
         id_insuranceitem_nomarl_map = {
             1: 'damageI',  # '车辆损失险',
@@ -1313,6 +1314,7 @@ class BaoDaiBaoNotifyHandler(BaseHandler):
     def post(self):
         result = {'flag': 0, 'msg': ''}
         data = self.get_argument('data',None)
+        print data
         if data:
             # dosomething for baodaibao notify
             data = simplejson.loads(data)
