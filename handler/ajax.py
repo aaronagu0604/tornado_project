@@ -1170,6 +1170,7 @@ class AutoCaculateInsuranceOrderPriceHandler(BaseHandler):
             # others
             "remark": "",
             "come_from": "wx",
+            # "rta_type": "K33",
             "car_detail_type": "11",  # 细化车型：怎么获取
             "car_number_type": "02",  # 车牌类型：怎么获取
         }
