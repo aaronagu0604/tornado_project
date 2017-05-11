@@ -1120,10 +1120,9 @@ class AutoCaculateInsuranceOrderPriceHandler(BaseHandler):
         return simplejson.loads(ocrresult)
 
     def quote_iop(self,post_id=2017,insurance='zhlh'):
-        notify_url = 'http:///admin.dev.test.520czj.com/ajax/baodaibao_notify'
+        notify_url = 'http:///api.dev.test.520czj.com/mobile/baodaibao_notify'
 
         url = 'http://apitest.baodaibao.com.cn/index.php?g=Api&m=QuoteApi&a=Quote'
-
         post_data = {}
         post_data['car'] = {
             "car_price": "139900.00",
@@ -1170,9 +1169,10 @@ class AutoCaculateInsuranceOrderPriceHandler(BaseHandler):
             # others
             "remark": "",
             "come_from": "wx",
-            # "rta_type": "K33",
+            "rta_type": "K33",
             "car_detail_type": "11",  # 细化车型：怎么获取
             "car_number_type": "02",  # 车牌类型：怎么获取
+            "license_type": "398003",
         }
         insuranceinfo = [
             {
@@ -1239,58 +1239,59 @@ class AutoCaculateInsuranceOrderPriceHandler(BaseHandler):
         print simplejson.dumps(post_data)
         request = urllib2.Request(url, 'data=%s' % simplejson.dumps(post_data))
         response = urllib2.urlopen(request)
-        s=response.read()
+        s = response.read()
         print s
-        step = 15
-        id_insuranceitem_nomarl_map = {
-            1: 'damageI',  # '车辆损失险',
-            2: 'thirdDutyI',  # ''第三者责任险',
-            3: 'robbingI',  # '全车盗抢险',
-            4: 'driveDutyI',  # '驾驶人员责任险',
-            5: 'passengerDutyI',  # '乘客责任险',
-            6: 'glassI',  # '玻璃单独破碎险',
-            7: 'scatchI',  # '车身划痕险',
-            8: 'fireDamageI',  # '自燃损失险',
-            9: 'wadeI',  # '车辆涉水险',
-            10: '倒车镜、车灯单独损失险',
-            11: '',
-            12: 'thirdSpecialI',  # '无法找到第三方特约险',
-            13: '指定修理厂险'
-        }
-        id_insuranceitem_plus_map = {
-            1: 'damageIPlus',  # '车辆损失险',
-            2: 'thirdDutyIPlus',  # ''第三者责任险',
-            3: 'robbingIPlus',  # '全车盗抢险',
-            4: 'driveDutyIPlus',  # '驾驶人员责任险',
-            5: 'passengerDutyIPlus',  # '乘客责任险',
-            6: '玻璃单独破碎险',
-            7: 'scatchIPlus',  # '车身划痕险',
-            8: 'fireDamageIPlus',  # '自燃损失险',
-            9: 'wadeIPlus',  # '车辆涉水险',
-            10: '倒车镜、车灯单独损失险',
-            11: '',
-            12: '无法找到第三方特约险',
-            13: '指定修理厂险'
-        }
-        while(step < 0):
-            bdbquotes = BaoDaiBaoQuote.select().where(BaoDaiBaoQuote.quotenum == post_id &
-                                          BaoDaiBaoQuote.status == 0 )
-            if bdbquotes.count():
-                bdb = bdbquotes[0]
-                bdb.status = 1
-                bdb.save()
-                bdb_json = simplejson.loads(bdb.content)
-                nomarl = [{id_insuranceitem_nomarl_map[k]:v} for k,v in bdb_json['trade_price_detail'].items()]
-                plus = [{id_insuranceitem_plus_map[k]:v} for k,v in bdb_json['trade_deductible_price_detail'].items()]
-                result = nomarl + plus
-                if bdb_json.has_key('enforce_price') and int(bdb_json['enforce_price']):
-                    result['forceI'] = int(bdb_json['enforce_price'])
-                if bdb_json.has_key('vehicle_price') and int(bdb_json['vehicle_price']):
-                    result['vehicle_tax_price'] = int(bdb_json['vehicle_price'])
-                self.write(simplejson.dumps(result))
-            else:
-                time.sleep(1)
-            step -= 1
+        self.write(s)
+        # step = 15
+        # id_insuranceitem_nomarl_map = {
+        #     1: 'damageI',  # '车辆损失险',
+        #     2: 'thirdDutyI',  # ''第三者责任险',
+        #     3: 'robbingI',  # '全车盗抢险',
+        #     4: 'driveDutyI',  # '驾驶人员责任险',
+        #     5: 'passengerDutyI',  # '乘客责任险',
+        #     6: 'glassI',  # '玻璃单独破碎险',
+        #     7: 'scatchI',  # '车身划痕险',
+        #     8: 'fireDamageI',  # '自燃损失险',
+        #     9: 'wadeI',  # '车辆涉水险',
+        #     10: '倒车镜、车灯单独损失险',
+        #     11: '',
+        #     12: 'thirdSpecialI',  # '无法找到第三方特约险',
+        #     13: '指定修理厂险'
+        # }
+        # id_insuranceitem_plus_map = {
+        #     1: 'damageIPlus',  # '车辆损失险',
+        #     2: 'thirdDutyIPlus',  # ''第三者责任险',
+        #     3: 'robbingIPlus',  # '全车盗抢险',
+        #     4: 'driveDutyIPlus',  # '驾驶人员责任险',
+        #     5: 'passengerDutyIPlus',  # '乘客责任险',
+        #     6: '玻璃单独破碎险',
+        #     7: 'scatchIPlus',  # '车身划痕险',
+        #     8: 'fireDamageIPlus',  # '自燃损失险',
+        #     9: 'wadeIPlus',  # '车辆涉水险',
+        #     10: '倒车镜、车灯单独损失险',
+        #     11: '',
+        #     12: '无法找到第三方特约险',
+        #     13: '指定修理厂险'
+        # }
+        # while(step < 0):
+        #     bdbquotes = BaoDaiBaoQuote.select().where(BaoDaiBaoQuote.quotenum == post_id &
+        #                                   BaoDaiBaoQuote.status == 0 )
+        #     if bdbquotes.count():
+        #         bdb = bdbquotes[0]
+        #         bdb.status = 1
+        #         bdb.save()
+        #         bdb_json = simplejson.loads(bdb.content)
+        #         nomarl = [{id_insuranceitem_nomarl_map[k]:v} for k,v in bdb_json['trade_price_detail'].items()]
+        #         plus = [{id_insuranceitem_plus_map[k]:v} for k,v in bdb_json['trade_deductible_price_detail'].items()]
+        #         result = nomarl + plus
+        #         if bdb_json.has_key('enforce_price') and int(bdb_json['enforce_price']):
+        #             result['forceI'] = int(bdb_json['enforce_price'])
+        #         if bdb_json.has_key('vehicle_price') and int(bdb_json['vehicle_price']):
+        #             result['vehicle_tax_price'] = int(bdb_json['vehicle_price'])
+        #         self.write(simplejson.dumps(result))
+        #     else:
+        #         time.sleep(1)
+        #     step -= 1
 
     @run_on_executor
     def caculate_iop_price(self,io_id):

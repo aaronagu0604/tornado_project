@@ -44,12 +44,10 @@ def get_insurance(area_code):
     @apiParam {String} category 进入某分类、某品牌列表，后跟分类、品牌ID，ID为0标识所有；例：czj://category/1/brand/1
     @apiParam {String} insurance_order_list 进入保险订单列表，后跟状态，例：czj://insurance_order_list/0，表示报价列表
     @apiParam {String} insurance_order_detail 进入保险订单详情，后跟保险订单ID，例：czj://insurance_order_detail/1
-    @apiParam {String} insurance_order_price 进入保险订单报价详情，后跟保险订单报价ID，例：czj://insurance_order_price/1
     @apiParam {String} score_product 进入积分商城，例：czj://score_product
     @apiParam {String} score_product_detail 进入积分商品详情，例：czj://score_product_detail/1
-    @apiParam {String} personal 进入个人信息维护，例：czj://personal
-    @apiParam {String} product_order_detail 进入普通订单详情，后跟普通订单ID，例：czj://product_order_detail/1
-    @apiParam {String} product_order_list 进入普通订单列表，后跟普通订单状态，例：czj://product_order_list/1，表示待发货
+    @apiParam {String} buyer_product_order_detail 进入采购订单详情，后跟普通订单ID，例：czj://buyer_product_order_detail/1
+    @apiParam {String} saler_product_order_detail 进入销售订单详情，后跟普通订单ID，例：czj://saler_product_order_detail/1
     """
 
 
