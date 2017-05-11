@@ -1120,7 +1120,7 @@ class AutoCaculateInsuranceOrderPriceHandler(BaseHandler):
         return simplejson.loads(ocrresult)
 
     def quote_iop(self,post_id=2017,insurance='zhlh'):
-        notify_url = 'http:///api.dev.test.520czj.com/ajax/baodaibao_notify'
+        notify_url = 'http:///admin.dev.test.520czj.com/ajax/baodaibao_notify'
 
         url = 'http://apitest.baodaibao.com.cn/index.php?g=Api&m=QuoteApi&a=Quote'
 
