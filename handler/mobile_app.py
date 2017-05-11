@@ -451,20 +451,20 @@ class MobileHomeHandler(MobileBaseHandler):
             ft = StoreProductPrice.area_code << area_code
         else:
             ft = StoreProductPrice.area_code == area_code
-        spps = Brand.select(). \
+        spps = Brand.select(Brand.id.alias('id'),Brand.logo.alias('logo'),Brand.name.alias('name'),Product.category.alias('cid')). \
             join(Product, on=Product.brand == Brand.id). \
             join(ProductRelease, on=ProductRelease.product == Product.id). \
             join(StoreProductPrice, on=StoreProductPrice.product_release == ProductRelease.id). \
-            where(ft)
+            where(ft).tuples()
         blist = []
-        for item in spps:
-            if item.id not in blist:
-                blist.append(item.id)
+        for id,logo,name,cid in spps:
+            if id not in blist:
+                blist.append(id)
                 items.append({
-                    'img': item.logo,
-                    'name': item.name,
+                    'img': logo,
+                    'name': name,
                     'price': 0,
-                    'link': 'czj://brand/%d' % item.id
+                    'link': 'czj://category/%d/brand/%d' %(cid, id)
                 })
 
         return items
