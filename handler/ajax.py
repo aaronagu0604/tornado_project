@@ -1044,6 +1044,33 @@ class OCRHandler(BaseHandler):
         io_id = self.get_argument('io_id', None)
         a = yield self.insuranceorderocr(io_id)
 
+@route(r'/ajax/ocr_save', name='ajax_ocr_save')  # 自动识别图片信息
+class OCRSaveHandler(BaseHandler):
+    executor = ThreadPoolExecutor(20)
+
+    def check_xsrf_cookie(self):
+        pass
+
+    def post(self):
+        result = {'flag': 1, 'msg': '保存成功', 'data': ''}
+        io_id = self.get_argument('io_id',None)
+        car_owner_name = self.get_body_argument('car_owner_name', None)
+        car_owner_idcard = self.get_body_argument('car_owner_idcard', None)
+
+        io = InsuranceOrder.get(id=int(io_id))
+
+        if not io:
+            result['msg'] = u'参数不全'
+            self.write(simplejson.dumps(result))
+            return
+
+        ucinfo = UserCarInfo()
+        ucinfo.car_owner_name = car_owner_name
+        ucinfo.car_owner_idcard = car_owner_idcard
+
+        ucinfo.save()
+        self.write(simplejson.dumps(result))
+
 @route(r'/ajax/auto_caculate_price', name='ajax_auto_caculate_price')  # 自动报价
 class AutoCaculateInsuranceOrderPriceHandler(BaseHandler):
     executor = ThreadPoolExecutor(20)

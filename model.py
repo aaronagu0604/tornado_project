@@ -882,10 +882,30 @@ class InsuranceOrder(db.Model):
     class Meta:
         db_table = 'tb_insurance_orders'
 
+# 车主信息表
+class UserCarInfo(db.Model):
+    id = PrimaryKeyField()
+    insuranceorder = ForeignKeyField(InsuranceOrder, db_column='insurance_order_id')  # 保险订单ID
+    car_owner_name = CharField(max_length=50, null=True) # 车主姓名
+    car_owner_idcard = CharField(max_length=50, null=True) # 车主身份证号
+    car_owner_date = CharField(max_length=50, null=True) # 车主身份证有效期
+    car_owner_address = CharField(max_length=50, null=True) # 车主身份证地址
+    car_num = CharField(max_length=50, null=True) # 车牌号
+    car_frame_num = CharField(max_length=50, null=True) # 车架号
+    car_engine_num = CharField(max_length=50, null=True) # 发动机号
+    car_type = CharField(max_length=50, null=True) # 车型
+    car_passenger_number = CharField(max_length=50, null=True) # 车座位数
+    car_quality = CharField(max_length=50, null=True) # 整车质量
+
+    status = IntegerField(default=0)  # 0新报价 1已读报价
+
+    class Meta:
+        db_table = 'tb_user_car_info'
+
 # 包代宝报价回调记录表
 class BaoDaiBaoQuote(db.Model):
     id = PrimaryKeyField()
-    insurance = ForeignKeyField(Insurance, db_column='insurance_id')  # 保险公司ID
+    insuranceorder = ForeignKeyField(InsuranceOrder, db_column='insurance_order_id')  # 保险订单ID
     content = CharField(max_length=400, null=True)  # 消息内容
     quotenum = CharField(max_length=50, null=True)  # 报价单号
     status = IntegerField(default=0)  # 0新报价 1已读报价
