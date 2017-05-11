@@ -212,7 +212,12 @@
     <div class="col-sm-12 col-md-6">
         <div class="panel panel-primary">
             <div class="panel-body" data-am-widget="gallery"  data-am-gallery="{ pureview: true }">
-                <h4>图片信息</h4>
+
+                    <h4>图片信息
+                    <input type="button" class="btn btn-outline btn-primary btn-xs" onclick="imgocr({{ o.id }})" value="OCR"/>
+                        <input type="button" class="btn btn-outline btn-primary btn-xs" value="保存"/>
+                    </h4>
+
                 <div class="row">
                     <div class="col-xs-6" style="text-align: center">
                         <a href="{{o.id_card_front}}" class="">
@@ -254,7 +259,7 @@
                     </div>
                 </div>
                 <input type="checkbox" {% if o.is_same_person==1 %} checked="checked" {% endif %}
-                       onchange="check_one_people()" style="visibility: visible;">保车同人
+                       onchange="check_one_people()" style="visibility: visible;">车主同被保险人
                 <div class="row" style="margin-top: 5px; {% if o.is_same_person==1 %} display: none {% endif %}" id="is_same_person">
                     <div class="col-xs-6" style="text-align: center">
                         <a href="{{o.id_card_front_owner}}" class="">
@@ -275,12 +280,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-xs-12">
-                        <input type="button" class="btn btn-outline btn-primary btn-xs" onclick="imgocr({{ o.id }})" value="OCR"/>
-                        <input type="button" class="btn btn-outline btn-primary btn-xs" value="保存"/>
-                    </div>
-                </div>
+
                 <div class="row">
                     <div class="col-xs-3">
                         姓名
@@ -372,7 +372,7 @@
                     <table class="table table-bordered">
                         <thead>
                         <tr>
-                            <!--<th>提交人</th>-->
+                            <th>ID</th>
                             <th>提交时间</th>
                             <th>保险公司</th>
                             <th>交强险</th>
@@ -385,7 +385,7 @@
                         </thead>
                         <tbody>
                         <tr>
-                            <!--<td>张三</td>-->
+                            <td>{{program['pid']}}</td>
                             <td>{{ program['created'] | datetimeformat }}</td>
                             <td>{{program['insurance'].name}}</td>
                             <td>{{program['force_price']}}</td>
@@ -521,7 +521,7 @@
                                                                 </label>
                                                                 <span style="color:#438bca;cursor:pointer;">--</span>
                                                             </div>
-                                                            <div class="col-xs-3 rightTxt">
+                                                            <div class="col-xs-4 rightTxt">
                                                                 <input type="text" id="05_{{program['pid']}}" {% if not program['program'][5]['value'] %} disabled="disabled" {% endif %} class="form-control" name="robbingIPrice" value="{{program['program'][5]['price']}}">
                                                             </div>
                                                         </div>
@@ -657,7 +657,7 @@
                                                         <div class="row">
                                                             <div class="checkbox col-xs-8 leftTxt">
                                                                 <label>
-                                                                    <input type="checkbox" {% if program['program'][15]['value'] %} checked="checked" {% endif %} sonclick="ck_box('15_', {{program['pid']}})" tyle="visibility: visible;">不计免赔
+                                                                    <input type="checkbox" {% if program['program'][15]['value'] %} checked="checked" {% endif %} sonclick="ck_box('15_', {{program['pid']}})" style="visibility: visible;">不计免赔
                                                                 </label>
                                                                 <span style="color:#438bca;cursor:pointer;">--</span>
                                                             </div>
@@ -872,6 +872,16 @@
         </div>
     </div>
 </div>
+<div id="json_pop" style="display: none; padding: 10px;">
+    <div>
+        <textarea class="form-control" id="json_txt" rows="10" placeholder="请输入报价结果json..."></textarea>
+    </div>
+    <input type="hidden" id="hdpid">
+    <div style="text-align: right; padding: 10px;">
+    <input type="button" class="btn  btn-primary btn-sm"  value="保存" onclick="fastPrice()">
+        <input type="button" class="btn btn-primary btn-sm"  value="取消" onclick="javascript:layer.closeAll();">
+    </div>
+</div>
 {% endblock %}
 
 
@@ -893,8 +903,21 @@
     }
 
     function get_json(program_id) {
-        result_json = prompt("请输入报价结果数据:","");
-        str = JSON.parse(result_json);
+        $('#hdpid').val(program_id);
+        $('#json_txt').val('');
+        layer.open({
+            type: 1,
+            shadeClose: true,
+            shade: 0.8,
+            area: ['60%', '60%'],
+            title: '报价快速录入', //不显示标题
+            content: $('#json_pop')
+        });
+    }
+    function fastPrice() {
+        var program_id = $('#hdpid').val();
+        var result_json = $('#json_txt').val();
+        var str = JSON.parse(result_json);
         if (result_json != null && str != null ){
             var program = document.getElementById(program_id);
             $(program).find('input[name="business_price"]').val(str["businessI"]);  // 商业险总额
@@ -921,9 +944,8 @@
             $(program).find('input[name="thirdSpecialIPrice"]').val(str["thirdSpecialI"]);    // 跑路
             $(program).find('input[name="vehicle_tax_price"]').val(str["vehicle_tax_price"]);    // 车船税价格
             $(program).find('input[name="insurance_price"]').val(str["totalI"]);    // 保险总额
-        }else{
-            alert("你按了[取消]按钮");
         }
+        layer.closeAll();
     }
 
     function ck_box(i_item_p, id){
