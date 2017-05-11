@@ -1716,10 +1716,11 @@ class InsuranceOrderDetailHandler(AdminBaseHandler):
             i_item_list = []
             for i_item in i_items:
                 i_item_list.append({
-                    'name': i_item.name,
-                    'e_name': i_item.eName,
-                    'style_id': i_item.style_id,
+                    # 'name': i_item.name,
+                    # 'e_name': i_item.eName,
+                    # 'style_id': i_item.style_id,
                     'value': program.__dict__['_data'][i_item.eName],
+                    'i_item_price': [{'id': iip.id, 'coverage': iip.coverage} for iip in i_item.insurance_prices],
                     'price': program.__dict__['_data'][i_item.eName+'Price'] if program.__dict__['_data'][i_item.eName+'Price'] else 0
                 })
 
@@ -1811,57 +1812,57 @@ class InsuranceOrderDetailHandler(AdminBaseHandler):
 
         self.redirect('admin/insurance_order/%s'%oid)
 
-
-@route(r'/admin/new_program/(\d+)', name='admin_new_program')  # 保险订单详情
-class NewProgramHandler(AdminBaseHandler):
-    def get(self, oid):
-        i_items = InsuranceItem.select().order_by(InsuranceItem.sort)
-        insurances = Insurance.select().order_by(Insurance.sort)
-        insurance_list = []
-        for insurance in insurances:
-            insurance_list.append({
-                'id': insurance.id,
-                'name': insurance.name
-            })
-        i_item_list = []
-        for i_item in i_items:
-            i_item_list.append({
-                'eName': i_item.eName,
-                'name': i_item.name,
-                'style': i_item.style,
-                'style_id': i_item.style_id,
-                'insurance_prices': [i_price.coverage for i_price in i_item.insurance_prices]
-            })
-
-        self.render('admin/order/insurance_order_new_program.html', oid=oid, i_item_list=i_item_list, insurance_list=insurance_list)
-
-    def post(self, oid):
-        insurance = self.get_body_argument('insurance', None)
-        gift_policy = self.get_body_argument('gift_policy', None)
-        datas = {}
-        for data in self.request.body.split('&'):
-            key, value = data.split('=', 1)
-            if value:
-                datas[key] = value
-        iop = InsuranceOrderPrice()
-        iop.insurance_order_id = oid
-        iop.insurance = insurance
-        iop.gift_policy = gift_policy if gift_policy else 1
-        iop.admin_user = self.get_admin_user()
-        iop.created = time.time()
-        i_items = InsuranceItem.select().order_by(InsuranceItem.sort)
-        for i_item in i_items:
-            if i_item.eName in datas:
-                if i_item.eName+'_p' in datas:
-                    iop.__dict__['_data'][i_item.eName] = self.get_body_argument(i_item.eName+'_p', None)
-                else:
-                    iop.__dict__['_data'][i_item.eName] = '1'
-        iop.save()
-        AdminUserLog.create(admin_user=self.get_admin_user(),
-                            created=int(time.time()),
-                            content='添加报价单: iop_id:%d'%iop.id)
-        self.write(u'新建成功')
-        # self.redirect('/admin/insurance_order/%s'%oid)
+#
+# @route(r'/admin/new_program/(\d+)', name='admin_new_program')  # 新增保险方案
+# class NewProgramHandler(AdminBaseHandler):
+#     def get(self, oid):
+#         i_items = InsuranceItem.select().order_by(InsuranceItem.sort)
+#         insurances = Insurance.select().order_by(Insurance.sort)
+#         insurance_list = []
+#         for insurance in insurances:
+#             insurance_list.append({
+#                 'id': insurance.id,
+#                 'name': insurance.name
+#             })
+#         i_item_list = []
+#         for i_item in i_items:
+#             i_item_list.append({
+#                 'eName': i_item.eName,
+#                 'name': i_item.name,
+#                 'style': i_item.style,
+#                 'style_id': i_item.style_id,
+#                 'insurance_prices': [i_price.coverage for i_price in i_item.insurance_prices]
+#             })
+#
+#         self.render('admin/order/insurance_order_new_program.html', oid=oid, i_item_list=i_item_list, insurance_list=insurance_list)
+#
+#     def post(self, oid):
+#         insurance = self.get_body_argument('insurance', None)
+#         gift_policy = self.get_body_argument('gift_policy', None)
+#         datas = {}
+#         for data in self.request.body.split('&'):
+#             key, value = data.split('=', 1)
+#             if value:
+#                 datas[key] = value
+#         iop = InsuranceOrderPrice()
+#         iop.insurance_order_id = oid
+#         iop.insurance = insurance
+#         iop.gift_policy = gift_policy if gift_policy else 1
+#         iop.admin_user = self.get_admin_user()
+#         iop.created = time.time()
+#         i_items = InsuranceItem.select().order_by(InsuranceItem.sort)
+#         for i_item in i_items:
+#             if i_item.eName in datas:
+#                 if i_item.eName+'_p' in datas:
+#                     iop.__dict__['_data'][i_item.eName] = self.get_body_argument(i_item.eName+'_p', None)
+#                 else:
+#                     iop.__dict__['_data'][i_item.eName] = '1'
+#         iop.save()
+#         AdminUserLog.create(admin_user=self.get_admin_user(),
+#                             created=int(time.time()),
+#                             content='添加报价单: iop_id:%d'%iop.id)
+#         self.write(u'新建成功')
+#         # self.redirect('/admin/insurance_order/%s'%oid)
 
 
 @route(r'/admin/insurance_dispose/(\d+)', name='admin_insurance_dispose')  # 保险订单完成（保单返佣）

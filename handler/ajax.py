@@ -637,7 +637,25 @@ class CancelInsuranceOrderHandler(BaseHandler):
                 result['msg'] = u'取消失败：该订单不可取消！'
         except Exception, e:
             result['msg'] = u'取消失败：%s' % e.message
-        print('-----')
+        self.write(simplejson.dumps(result))
+
+
+@route(r'/ajax/new_program/(\d+)', name='ajax_new_program')  # 新建保险方案
+class NewProgram(BaseHandler):
+    def post(self, oid):
+        result = {'flag': 0, 'msg': ''}
+        try:
+            iop = InsuranceOrderPrice()
+            iop.insurance_order_id = oid
+            iop.insurance = 1
+            iop.gift_policy = 1
+            iop.admin_user = self.get_admin_user()
+            iop.created = time.time()
+            iop.save()
+            AdminUserLog.create(admin_user=self.get_admin_user(), created=int(time.time()), content='新增报价单: iop_id:%d'%iop.id)
+            result['flag'] = 1
+        except Exception, e:
+            result['msg'] = u'新增保险方案失败：%s' % e.message
         self.write(simplejson.dumps(result))
 
 

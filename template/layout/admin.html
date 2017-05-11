@@ -129,7 +129,7 @@
                             </li>
                         </ul>
                     </li>
-                    <li {% if active=='payback' or active == 'withdraw' or active == 'statement' or active == 'tradelist' or active == 'insurancesuccess'%}class="active"{% endif %}>
+                    <li {% if active=='payback' or active == 'withdraw' or active == 'statement'%}class="active"{% endif %}>
                     <a  href="#"><i class="fa fa-qrcode fa-fw"></i>&nbsp;&nbsp;&nbsp;财务对账
                         <span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level">
@@ -142,12 +142,6 @@
                         <!--<li>-->
                             <!--<a {% if active=='statement' %}class="active"{% endif %} href="/admin/statement">对账单</a>-->
                         <!--</li>-->
-                        <li>
-                            <a {% if active=='tradelist' %}class="tradelist"{% endif %} href="/admin/export_trade_list">网站交易明细</a>
-                        </li>
-                        <li>
-                            <a {% if active=='insurancesuccess' %}class="insurancesuccess"{% endif %} href="/admin/export_insurance_success">出单明细</a>
-                        </li>
                     </ul>
                     </li>
                     <li {% if active=='p_order' or active=='p_order_a' or active=='i_order' or active=='i_order_a'
@@ -203,9 +197,17 @@
 
                     <li {% if active=='r_user' or active=='r_summary' or active=='r_sale' or active=='r_product'
                             or active=='r_log' or active=='r_order' or active=='r_user_order' or active=='r_invoice'
-                            or active=='refereeReport' or active=='insuranceReport' or active=='areaReport' %}class="active"{% endif %}>
+                            or active=='refereeReport' or active=='insuranceReport' or active=='areaReport'
+                            or active=='tradelist' or active=='insurancesuccess' %}class="active"{% endif %}>
                         <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i>&nbsp;&nbsp;&nbsp;统计报表<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
+
+                            <li>
+                                <a {% if active=='tradelist' %}class="tradelist"{% endif %} href="/admin/export_trade_list">网站交易明细</a>
+                            </li>
+                            <li>
+                                <a {% if active=='insurancesuccess' %}class="insurancesuccess"{% endif %} href="/admin/export_insurance_success">出单明细</a>
+                            </li>
                             <li>
                                 <a {% if active=='refereeReport' %} class="active"{% endif %} href="/admin/report/referee">推广人员出单统计</a>
                             </li>

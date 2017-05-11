@@ -365,7 +365,7 @@
         <div class="panel panel-primary">
             <div class="panel-body">
                 <h4>报价信息
-                    <input type="button" class="btn btn-outline btn-primary btn-xs" value="新报价"/>
+                    <input onclick="new_program({{o.id}})" type="button" class="btn btn-outline btn-primary btn-xs" value="新报价"/>
                 </h4>
                 {% for program in programs %}
                 <div class="table-responsive">
@@ -406,7 +406,7 @@
                             <td>{{program['admin_user']}}</td>
                             <td><a href="#" onclick="openShutManager(this, {{program['pid']}})" style="font-size: 22px; color:black;">+</a></td>
                         </tr>
-                        <tr id="{{program['pid']}}">
+                        <tr id="{{program['pid']}}" style="display: none">
                             <td colspan="9">
                                 <div class="col-sm-12 col-md-12">
                                     <div class="panel panel-success">
@@ -437,47 +437,23 @@
                                                         <div class="row">
                                                             <div class="checkbox col-xs-8 leftTxt">
                                                                 <label>
-                                                                    <input type="checkbox" {% if program['program'][0]['value'] %} checked="checked" {% endif %} style="visibility: visible;">交强险
+                                                                    <input type="checkbox" {% if program['program'][0]['value'] %} checked="checked" {% endif %} onclick="ck_box('00_', {{program['pid']}})" style="visibility: visible;">交强险
                                                                 </label>
                                                                 <span style="color:#438bca;cursor:pointer;">--</span>
                                                             </div>
                                                             <div class="col-xs-4 rightTxt">
-                                                                <input type="text" class="form-control" name="forceIPrice" value="{{program['program'][0]['price']}}">
+                                                                <input type="text" id="00_{{program['pid']}}" {% if not program['program'][0]['value'] %} disabled="disabled" {% endif %} class="form-control" name="forceIPrice" value="{{program['program'][0]['price']}}">
                                                             </div>
                                                         </div>
                                                         <div class="row">
                                                             <div class="checkbox col-xs-8 leftTxt">
                                                                 <label>
-                                                                    <input type="checkbox" {% if program['program'][0]['value'] %} checked="checked" {% endif %} style="visibility: visible;">车船税
+                                                                    <input type="checkbox" {% if program['program'][0]['value'] %} checked="checked" {% endif %} onclick="ck_box('000_', {{program['pid']}})" style="visibility: visible;">车船税
                                                                 </label>
                                                                 <span style="color:#438bca;cursor:pointer;">--</span>
                                                             </div>
                                                             <div class="col-xs-4 rightTxt">
-                                                                <input type="text" class="form-control" name="vehicle_tax_price" value="{{program['vehicle_tax_price']}}">
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="row">
-                                                            <div class="checkbox col-xs-8 leftTxt">
-                                                                <label>
-                                                                    <input type="checkbox" {% if program['program'][1]['value'] %} checked="checked" {% endif %} style="visibility: visible;">车损险
-                                                                </label>
-                                                                <span style="color:#438bca;cursor:pointer;">--</span>
-                                                            </div>
-                                                            <div class="col-xs-4 rightTxt">
-                                                                <input type="text" class="form-control" name="damageIPrice" value="{{program['program'][1]['price']}}" >
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="checkbox col-xs-8 leftTxt">
-                                                                <label>
-                                                                    <input type="checkbox" {% if program['program'][2]['value'] %} checked="checked" {% endif %} style="visibility: visible;">不计免赔
-                                                                </label>
-                                                                <span style="color:#438bca;cursor:pointer;">--</span>
-                                                            </div>
-                                                            <div class="col-xs-4 rightTxt">
-                                                                <input type="text" class="form-control" name="damageIPlusPrice" value="{{program['program'][2]['price']}}">
+                                                                <input type="text" id="000_{{program['pid']}}" {% if not program['program'][0]['value'] %} disabled="disabled"{% endif %} class="form-control" name="vehicle_tax_price" value="{{program['vehicle_tax_price']}}">
                                                             </div>
                                                         </div>
                                                     </td>
@@ -485,23 +461,53 @@
                                                         <div class="row">
                                                             <div class="checkbox col-xs-8 leftTxt">
                                                                 <label>
-                                                                    <input type="checkbox" {% if program['program'][3]['value'] %} checked="checked" {% endif %} style="visibility: visible;">三责险
+                                                                    <input type="checkbox" {% if program['program'][1]['value'] %} checked="checked" {% endif %} onclick="ck_box('01_', {{program['pid']}})" style="visibility: visible;">车损险
                                                                 </label>
-                                                                <span onclick="new_program('{{o.id}}')" style="color:#438bca;cursor:pointer;">险额</span>
+                                                                <span style="color:#438bca;cursor:pointer;">--</span>
                                                             </div>
                                                             <div class="col-xs-4 rightTxt">
-                                                                <input type="text" class="form-control" name="thirdDutyIPrice" value="{{program['program'][3]['price']}}">
+                                                                <input type="text" id="01_{{program['pid']}}" {% if not program['program'][1]['value'] %} disabled="disabled" {% endif %} class="form-control" name="damageIPrice" value="{{program['program'][1]['price']}}" >
                                                             </div>
                                                         </div>
                                                         <div class="row">
                                                             <div class="checkbox col-xs-8 leftTxt">
                                                                 <label>
-                                                                    <input type="checkbox" {% if program['program'][4]['value'] %} checked="checked" {% endif %} style="visibility: visible;">不计免赔
+                                                                    <input type="checkbox" {% if program['program'][2]['value'] %} checked="checked" {% endif %} onclick="ck_box('02_', {{program['pid']}})" style="visibility: visible;">不计免赔
                                                                 </label>
                                                                 <span style="color:#438bca;cursor:pointer;">--</span>
                                                             </div>
                                                             <div class="col-xs-4 rightTxt">
-                                                                <input type="text" class="form-control" name="thirdDutyIPlusPrice" value="{{program['program'][4]['price']}}">
+                                                                <input type="text" id="02_{{program['pid']}}" {% if not program['program'][2]['value'] %} disabled="disabled" {% endif %} class="form-control" name="damageIPlusPrice" value="{{program['program'][2]['price']}}">
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="row">
+                                                            <div class="checkbox col-xs-8 leftTxt">
+                                                                <label>
+                                                                    <input type="checkbox" {% if program['program'][3]['value'] %} checked="checked" {% endif %} onclick="ck_box('03_', {{program['pid']}})" style="visibility: visible;">三责险
+                                                                </label>
+                                                                <span style="color:#438bca;cursor:pointer;">
+                                                                <select name="insurance">
+                                                                    {% for iip in program['program'][3]['i_item_price'] %}
+                                                                    <option value="{{iip.id}}" {% if not program['program'][3]['value'] %} disabled="disabled" {% endif %} {{ iip['coverage'] == program['program'][3]['value'] and "selected" or '' }}>{{iip['coverage']}}</option>
+                                                                    {% endfor %}
+                                                                </select>
+                                                                </span>
+                                                            </div>
+                                                            <div class="col-xs-4 rightTxt">
+                                                                <input type="text" id="03_{{program['pid']}}" class="form-control" name="thirdDutyIPrice" value="{{program['program'][3]['price']}}">
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="checkbox col-xs-8 leftTxt">
+                                                                <label>
+                                                                    <input type="checkbox" {% if program['program'][4]['value'] %} checked="checked" {% endif %} onclick="ck_box('04_', {{program['pid']}})" style="visibility: visible;">不计免赔
+                                                                </label>
+                                                                <span style="color:#438bca;cursor:pointer;">--</span>
+                                                            </div>
+                                                            <div class="col-xs-4 rightTxt">
+                                                                <input type="text" id="04_{{program['pid']}}" {% if not program['program'][4]['value'] %} disabled="disabled" {% endif %} class="form-control" name="thirdDutyIPlusPrice" value="{{program['program'][4]['price']}}">
                                                             </div>
                                                         </div>
                                                     </td>
@@ -511,23 +517,23 @@
                                                         <div class="row">
                                                             <div class="checkbox col-xs-8 leftTxt">
                                                                 <label>
-                                                                    <input type="checkbox" {% if program['program'][5]['value'] %} checked="checked" {% endif %} style="visibility: visible;">全车盗抢险
+                                                                    <input type="checkbox" {% if program['program'][5]['value'] %} checked="checked" {% endif %} onclick="ck_box('05_', {{program['pid']}})" style="visibility: visible;">全车盗抢险
                                                                 </label>
                                                                 <span style="color:#438bca;cursor:pointer;">--</span>
                                                             </div>
                                                             <div class="col-xs-3 rightTxt">
-                                                                <input type="text" class="form-control" name="robbingIPrice" value="{{program['program'][5]['price']}}">
+                                                                <input type="text" id="05_{{program['pid']}}" {% if not program['program'][5]['value'] %} disabled="disabled" {% endif %} class="form-control" name="robbingIPrice" value="{{program['program'][5]['price']}}">
                                                             </div>
                                                         </div>
                                                         <div class="row">
                                                             <div class="checkbox col-xs-8 leftTxt">
                                                                 <label>
-                                                                    <input type="checkbox" {% if program['program'][6]['value'] %} checked="checked" {% endif %} style="visibility: visible;">不计免赔
+                                                                    <input type="checkbox" {% if program['program'][6]['value'] %} checked="checked" {% endif %} onclick="ck_box('06_', {{program['pid']}})" style="visibility: visible;">不计免赔
                                                                 </label>
                                                                 <span style="color:#438bca;cursor:pointer;">--</span>
                                                             </div>
                                                             <div class="col-xs-4 rightTxt">
-                                                                <input type="text" class="form-control" name="robbingIPlusPrice" value="{{program['program'][6]['price']}}">
+                                                                <input type="text" id="06_{{program['pid']}}" {% if not program['program'][6]['value'] %} disabled="disabled" {% endif %} class="form-control" name="robbingIPlusPrice" value="{{program['program'][6]['price']}}">
                                                             </div>
                                                         </div>
                                                     </td>
@@ -535,23 +541,29 @@
                                                         <div class="row">
                                                             <div class="checkbox col-xs-8 leftTxt">
                                                                 <label>
-                                                                    <input type="checkbox" {% if program['program'][7]['value'] %} checked="checked" {% endif %} style="visibility: visible;">车上人司机
+                                                                    <input type="checkbox" {% if program['program'][7]['value'] %} checked="checked" {% endif %} onclick="ck_box('07_', {{program['pid']}})" style="visibility: visible;">车上人司机
                                                                 </label>
-                                                                <span onclick="new_program('{{o.id}}')" style="color:#438bca;cursor:pointer;">险额</span>
+                                                                <span style="color:#438bca;cursor:pointer;">
+                                                                <select name="insurance">
+                                                                    {% for iip in program['program'][7]['i_item_price'] %}
+                                                                    <option value="{{iip.id}}" {{ iip['coverage'] == program['program'][7]['value'] and "selected" or '' }}>{{iip['coverage']}}</option>
+                                                                    {% endfor %}
+                                                                </select>
+                                                                </span>
                                                             </div>
                                                             <div class="col-xs-4 rightTxt">
-                                                                <input type="text" class="form-control" name="driverDutyIPrice" value="{{program['program'][7]['price']}}">
+                                                                <input type="text" id="07_{{program['pid']}}" class="form-control" name="driverDutyIPrice" {% if not program['program'][7]['value'] %} disabled="disabled" {% endif %} value="{{program['program'][7]['price']}}">
                                                             </div>
                                                         </div>
                                                         <div class="row">
                                                             <div class="checkbox col-xs-8 leftTxt">
                                                                 <label>
-                                                                    <input type="checkbox" {% if program['program'][8]['value'] %} checked="checked" {% endif %} style="visibility: visible;">不计免赔
+                                                                    <input type="checkbox" {% if program['program'][8]['value'] %} checked="checked" {% endif %} onclick="ck_box('08_', {{program['pid']}})" style="visibility: visible;">不计免赔
                                                                 </label>
                                                                 <span style="color:#438bca;cursor:pointer;">--</span>
                                                             </div>
                                                             <div class="col-xs-4 rightTxt">
-                                                                <input type="text" class="form-control" name="driverDutyIPlusPrice" value="{{program['program'][8]['price']}}">
+                                                                <input type="text" id="08_{{program['pid']}}" {% if not program['program'][8]['value'] %} disabled="disabled" {% endif %} class="form-control" name="driverDutyIPlusPrice" value="{{program['program'][8]['price']}}">
                                                             </div>
                                                         </div>
                                                     </td>
@@ -559,86 +571,29 @@
                                                         <div class="row">
                                                             <div class="checkbox col-xs-8 leftTxt">
                                                                 <label>
-                                                                    <input type="checkbox" {% if program['program'][9]['value'] %} checked="checked" {% endif %} style="visibility: visible;">车上人乘客
+                                                                    <input type="checkbox" {% if program['program'][9]['value'] %} checked="checked" {% endif %} onclick="ck_box('09_', {{program['pid']}})" style="visibility: visible;">车上人乘客
                                                                 </label>
-                                                                <span onclick="new_program('{{o.id}}')" style="color:#438bca;cursor:pointer;">险额</span>
+                                                                <span style="color:#438bca;cursor:pointer;">
+                                                                <select name="insurance">
+                                                                    {% for iip in program['program'][9]['i_item_price'] %}
+                                                                    <option value="{{iip.id}}" {{ iip['coverage'] == program['program'][9]['value'] and "selected" or '' }}>{{iip['coverage']}}</option>
+                                                                    {% endfor %}
+                                                                </select>
+                                                                </span>
                                                             </div>
                                                             <div class="col-xs-4 rightTxt">
-                                                                <input type="text" class="form-control" name="passengerDutyIPrice" value="{{program['program'][9]['price']}}">
+                                                                <input type="text" id="09_{{program['pid']}}" class="form-control" {% if not program['program'][9]['value'] %} disabled="disabled" {% endif %} name="passengerDutyIPrice" value="{{program['program'][9]['price']}}">
                                                             </div>
                                                         </div>
                                                         <div class="row">
                                                             <div class="checkbox col-xs-8 leftTxt">
                                                                 <label>
-                                                                    <input type="checkbox" {% if program['program'][10]['value'] %} checked="checked" {% endif %} style="visibility: visible;">不计免赔
+                                                                    <input type="checkbox" {% if program['program'][10]['value'] %} checked="checked" {% endif %} onclick="ck_box('10_', {{program['pid']}})" style="visibility: visible;">不计免赔
                                                                 </label>
                                                                 <span style="color:#438bca;cursor:pointer;">--</span>
                                                             </div>
                                                             <div class="col-xs-4 rightTxt">
-                                                                <input type="text" class="form-control" name="passengerDutyIPlusPrice" value="{{program['program'][10]['price']}}">
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <div class="row">
-                                                            <div class="checkbox col-xs-8 leftTxt">
-                                                                <label>
-                                                                    <input type="checkbox" {% if program['program'][11]['value'] %} checked="checked" {% endif %} style="visibility: visible;">单独玻璃破碎险
-                                                                </label>
-                                                                <span style="color:#438bca;cursor:pointer;">--</span>
-                                                            </div>
-                                                            <div class="col-xs-4 rightTxt">
-                                                                <input type="text" class="form-control" name="glassIPrice" value="{{program['program'][11]['price']}}">
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="row">
-                                                            <div class="checkbox col-xs-8 leftTxt">
-                                                                <label>
-                                                                    <input type="checkbox" {% if program['program'][12]['value'] %} checked="checked" {% endif %} style="visibility: visible;">车身划痕险
-                                                                </label>
-                                                                <span onclick="new_program('{{o.id}}')" style="color:#438bca;cursor:pointer;">{{program['program'][12]['value']}}</span>
-                                                            </div>
-                                                            <div class="col-xs-4 rightTxt">
-                                                                <input type="text" class="form-control" name="scratchIPrice" value="{{program['program'][12]['price']}}">
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="checkbox col-xs-8 leftTxt">
-                                                                <label>
-                                                                    <input type="checkbox" {% if program['program'][13]['value'] %} checked="checked" {% endif %} style="visibility: visible;">不计免赔
-                                                                </label>
-                                                                <span style="color:#438bca;cursor:pointer;">--</span>
-                                                            </div>
-                                                            <div class="col-xs-4 rightTxt">
-                                                                <input type="text" class="form-control" name="scratchIPlusPrice" value="{{program['program'][13]['price']}}">
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="row">
-                                                            <div class="checkbox col-xs-8 leftTxt">
-                                                                <label>
-                                                                    <input type="checkbox" {% if program['program'][14]['value'] %} checked="checked" {% endif %} style="visibility: visible;">自燃损失险
-                                                                </label>
-                                                                <span style="color:#438bca;cursor:pointer;">--</span>
-                                                            </div>
-                                                            <div class="col-xs-4 rightTxt">
-                                                                <input type="text" class="form-control" name="fireDamageIPrice" value="{{program['program'][14]['price']}}">
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="checkbox col-xs-8 leftTxt">
-                                                                <label>
-                                                                    <input type="checkbox" {% if program['program'][15]['value'] %} checked="checked" {% endif %} style="visibility: visible;">不计免赔
-                                                                </label>
-                                                                <span style="color:#438bca;cursor:pointer;">--</span>
-                                                            </div>
-                                                            <div class="col-xs-4 rightTxt">
-                                                                <input type="text" class="form-control" name="fireDamageIPlusPrice" value="{{program['program'][15]['price']}}">
+                                                                <input type="text" id="10_{{program['pid']}}" {% if not program['program'][10]['value'] %} disabled="disabled" {% endif %} class="form-control" name="passengerDutyIPlusPrice" value="{{program['program'][10]['price']}}">
                                                             </div>
                                                         </div>
                                                     </td>
@@ -648,23 +603,12 @@
                                                         <div class="row">
                                                             <div class="checkbox col-xs-8 leftTxt">
                                                                 <label>
-                                                                    <input type="checkbox" {% if program['program'][16]['value'] %} checked="checked" {% endif %} style="visibility: visible;">发动机涉水险
+                                                                    <input type="checkbox" {% if program['program'][11]['value'] %} checked="checked" {% endif %} onclick="ck_box('11_', {{program['pid']}})" style="visibility: visible;">单独玻璃破碎险
                                                                 </label>
                                                                 <span style="color:#438bca;cursor:pointer;">--</span>
                                                             </div>
                                                             <div class="col-xs-4 rightTxt">
-                                                                <input type="text" class="form-control" name="wadeIPrice" value="{{program['program'][16]['price']}}">
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="checkbox col-xs-8 leftTxt">
-                                                                <label>
-                                                                    <input type="checkbox" {% if program['program'][17]['value'] %} checked="checked" {% endif %} style="visibility: visible;">不计免赔
-                                                                </label>
-                                                                <span style="color:#438bca;cursor:pointer;">--</span>
-                                                            </div>
-                                                            <div class="col-xs-4 rightTxt">
-                                                                <input type="text" class="form-control" name="wadeIPlusPrice" value="{{program['program'][17]['price']}}">
+                                                                <input type="text" id="11_{{program['pid']}}" {% if not program['program'][11]['value'] %} disabled="disabled" {% endif %} class="form-control" name="glassIPrice" value="{{program['program'][11]['price']}}">
                                                             </div>
                                                         </div>
                                                     </td>
@@ -672,12 +616,92 @@
                                                         <div class="row">
                                                             <div class="checkbox col-xs-8 leftTxt">
                                                                 <label>
-                                                                    <input type="checkbox" {% if program['program'][18]['value'] %} checked="checked" {% endif %} style="visibility: visible;">无法找到第三方险
+                                                                    <input type="checkbox" {% if program['program'][12]['value'] %} checked="checked" {% endif %} onclick="ck_box('12_', {{program['pid']}})" style="visibility: visible;">车身划痕险
+                                                                </label>
+                                                                <span style="color:#438bca;cursor:pointer;">
+                                                                <select name="insurance">
+                                                                    {% for iip in program['program'][12]['i_item_price'] %}
+                                                                    <option value="{{iip.id}}" {{ iip['coverage'] == program['program'][12]['value'] and "selected" or '' }}>{{iip['coverage']}}</option>
+                                                                    {% endfor %}
+                                                                </select>
+                                                                </span>
+                                                            </div>
+                                                            <div class="col-xs-4 rightTxt">
+                                                                <input type="text" id="12_{{program['pid']}}" {% if not program['program'][12]['value'] %} disabled="disabled" {% endif %} class="form-control" name="scratchIPrice" value="{{program['program'][12]['price']}}">
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="checkbox col-xs-8 leftTxt">
+                                                                <label>
+                                                                    <input type="checkbox" {% if program['program'][13]['value'] %} checked="checked" {% endif %} onclick="ck_box('13_', {{program['pid']}})" style="visibility: visible;">不计免赔
                                                                 </label>
                                                                 <span style="color:#438bca;cursor:pointer;">--</span>
                                                             </div>
                                                             <div class="col-xs-4 rightTxt">
-                                                                <input type="text" class="form-control" name="thirdSpecialIPrice" value="{{program['program'][18]['price']}}">
+                                                                <input type="text" id="13_{{program['pid']}}" {% if not program['program'][13]['value'] %} disabled="disabled" {% endif %} class="form-control" name="scratchIPlusPrice" value="{{program['program'][13]['price']}}">
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="row">
+                                                            <div class="checkbox col-xs-8 leftTxt">
+                                                                <label>
+                                                                    <input type="checkbox" {% if program['program'][14]['value'] %} checked="checked" {% endif %} onclick="ck_box('14_', {{program['pid']}})" style="visibility: visible;">自燃损失险
+                                                                </label>
+                                                                <span style="color:#438bca;cursor:pointer;">--</span>
+                                                            </div>
+                                                            <div class="col-xs-4 rightTxt">
+                                                                <input type="text" id="14_{{program['pid']}}" {% if not program['program'][14]['value'] %} disabled="disabled" {% endif %} class="form-control" name="fireDamageIPrice" value="{{program['program'][14]['price']}}">
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="checkbox col-xs-8 leftTxt">
+                                                                <label>
+                                                                    <input type="checkbox" {% if program['program'][15]['value'] %} checked="checked" {% endif %} sonclick="ck_box('15_', {{program['pid']}})" tyle="visibility: visible;">不计免赔
+                                                                </label>
+                                                                <span style="color:#438bca;cursor:pointer;">--</span>
+                                                            </div>
+                                                            <div class="col-xs-4 rightTxt">
+                                                                <input type="text" id="15_{{program['pid']}}" {% if not program['program'][15]['value'] %} disabled="disabled" {% endif %} class="form-control" name="fireDamageIPlusPrice" value="{{program['program'][15]['price']}}">
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <div class="row">
+                                                            <div class="checkbox col-xs-8 leftTxt">
+                                                                <label>
+                                                                    <input type="checkbox" {% if program['program'][16]['value'] %} checked="checked" {% endif %} onclick="ck_box('16_', {{program['pid']}})" style="visibility: visible;">发动机涉水险
+                                                                </label>
+                                                                <span style="color:#438bca;cursor:pointer;">--</span>
+                                                            </div>
+                                                            <div class="col-xs-4 rightTxt">
+                                                                <input type="text" id="16_{{program['pid']}}" {% if not program['program'][16]['value'] %} disabled="disabled" {% endif %} class="form-control" name="wadeIPrice" value="{{program['program'][16]['price']}}">
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="checkbox col-xs-8 leftTxt">
+                                                                <label>
+                                                                    <input type="checkbox" {% if program['program'][17]['value'] %} checked="checked" {% endif %} onclick="ck_box('17_', {{program['pid']}})" style="visibility: visible;">不计免赔
+                                                                </label>
+                                                                <span style="color:#438bca;cursor:pointer;">--</span>
+                                                            </div>
+                                                            <div class="col-xs-4 rightTxt">
+                                                                <input type="text" id="17_{{program['pid']}}" {% if not program['program'][17]['value'] %} disabled="disabled" {% endif %} class="form-control" name="wadeIPlusPrice" value="{{program['program'][17]['price']}}">
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="row">
+                                                            <div class="checkbox col-xs-8 leftTxt">
+                                                                <label>
+                                                                    <input type="checkbox" {% if program['program'][18]['value'] %} checked="checked" {% endif %} onclick="ck_box('18_', {{program['pid']}})" style="visibility: visible;">无法找到第三方险
+                                                                </label>
+                                                                <span style="color:#438bca;cursor:pointer;">--</span>
+                                                            </div>
+                                                            <div class="col-xs-4 rightTxt">
+                                                                <input type="text" id="18_{{program['pid']}}" {% if not program['program'][18]['value'] %} disabled="disabled" {% endif %} class="form-control" name="thirdSpecialIPrice" value="{{program['program'][18]['price']}}">
                                                             </div>
                                                         </div>
                                                     </td>
@@ -722,6 +746,7 @@
                                                     <td>
                                                         <input type="button" class="btn btn-outline btn-primary btn-xs" onclick="input_check({{ program['pid'] }}, 'check')" value="输入验证"/>
                                                         <input type="button" class="btn btn-outline btn-primary btn-xs" value="保险接口调用"/>
+                                                        <input type="button" class="btn btn-outline btn-primary btn-xs" onclick="get_json({{program['pid']}})" value="快速录入"/>
                                                     </td>
                                                     <td>
                                                         <span name="check_result" style="font-size: 25px; color:red;"></span>
@@ -866,6 +891,49 @@
             targetObj.style.display="";
         }
     }
+
+    function get_json(program_id) {
+        result_json = prompt("请输入报价结果数据:","");
+        str = JSON.parse(result_json);
+        if (result_json != null && str != null ){
+            var program = document.getElementById(program_id);
+            $(program).find('input[name="business_price"]').val(str["businessI"]);  // 商业险总额
+            $(program).find('input[name="business_rate"]').val(str["businessZK"]);    // 商业险折扣
+            $(program).find('input[name="forceIPrice"]').val(str["forceI"]);    // 交强
+            $(program).find('input[name="force_rate"]').val(str["forceZK"]);    // 交强险折扣
+            $(program).find('input[name="damageIPrice"]').val(str["damageI"]);    // 车辆损失
+            $(program).find('input[name="damageIPlusPrice"]').val(str["damageIPlus"]);    // 车损不计免赔
+            $(program).find('input[name="thirdDutyIPrice"]').val(str["thirdDutyI"]);    // 三责
+            $(program).find('input[name="thirdDutyIPlusPrice"]').val(str["thirdDutyIPlus"]);    // 三责不计免赔
+            $(program).find('input[name="robbingIPrice"]').val(str["robbingI"]);    // 盗抢
+            $(program).find('input[name="robbingIPlusPrice"]').val(str["robbingIPlus"]);    // 盗抢免责
+            $(program).find('input[name="driverDutyIPrice"]').val(str["driverDutyI"]);    // 车上司机
+            $(program).find('input[name="driverDutyIPlusPrice"]').val(str["driverDutyIPlus"]);    // 车上司机免责
+            $(program).find('input[name="passengerDutyIPrice"]').val(str["passengerDutyI"]);    // 车上乘客
+            $(program).find('input[name="passengerDutyIPlusPrice"]').val(str["passengerDutyIPlus"]);    // 车上乘客免责
+            $(program).find('input[name="glassIPrice"]').val(str["glassI"]);    // 玻璃
+            $(program).find('input[name="scratchIPrice"]').val(str["scratchI"]);    // 划痕
+            $(program).find('input[name="scratchIPlusPrice"]').val(str["scratchIPlus"]);    // 划痕免责
+            $(program).find('input[name="fireDamageIPrice"]').val(str["fireDamageI"]);    // 自燃
+            $(program).find('input[name="fireDamageIPlusPrice"]').val(str["fireDamageIPlus"]);    // 自燃免责
+            $(program).find('input[name="wadeIPrice"]').val(str["wadeI"]);    // 涉水
+            $(program).find('input[name="wadeIPlusPrice"]').val(str["wadeIPlus"]);    // 涉水免责
+            $(program).find('input[name="thirdSpecialIPrice"]').val(str["thirdSpecialI"]);    // 跑路
+            $(program).find('input[name="vehicle_tax_price"]').val(str["vehicle_tax_price"]);    // 车船税价格
+            $(program).find('input[name="insurance_price"]').val(str["totalI"]);    // 保险总额
+        }else{
+            alert("你按了[取消]按钮");
+        }
+    }
+
+    function ck_box(i_item_p, id){
+        var targetObj = document.getElementById(i_item_p+id);
+        if(targetObj.disabled != true){
+            targetObj.disabled = true;
+        } else {
+            targetObj.disabled = false;
+        }
+}
 
     // OCR function 调用ajax并回填识别信息
     function imgocr(id) {
@@ -1253,13 +1321,6 @@
         }
     }
 
-    // 新方案
-    function change_i_item(oid) {
-        var title = '新建方案';
-        var url = '/admin/new_program/' + oid;
-        pop(title, url);
-    }
-
     // 自动计算
     function auto_calculation(program_id){
         // 根据获取 ID 获取元素
@@ -1379,9 +1440,18 @@
 
     // 新方案
     function new_program(oid) {
-        var title = '新建方案';
-        var url = '/admin/new_program/' + oid;
-        pop(title, url);
+//        var title = '新建方案';
+//        var url = '/admin/new_program/' + oid;
+//        pop(title, url);
+        $.post('/ajax/new_program/'+oid, {_xsrf:xsrf}, function (data) {
+            var obj = jQuery.parseJSON(data);
+            if (obj.flag == 1) {
+                alert('创建新方案成功!');
+                window.location.reload();
+            } else {
+                alert(obj.msg);
+            }
+        });
     }
 
     //补退款
