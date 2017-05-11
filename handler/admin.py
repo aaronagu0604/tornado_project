@@ -2206,12 +2206,12 @@ class SendMsgHandler(AdminBaseHandler):
                 content_log['content'] = u'为用户组 ' + str(user_type) + u' 推送极光消息，消息内容：' + content
                 tags = []
                 if province != '0':
-                    tags.append(province)
+                    tags = [province]
                 if city != '0':
-                    tags.append(city)
+                    tags = [city]
                 if district != '0':
-                    tags.append(district)
-                print user_type, tags
+                    tags = [district]
+
                 create_msg(simplejson.dumps({'body': content, 'jpushtype': 'tags', 'tags': tags}),
                            'jpush')
                 AdminUserLog.create(admin_user=self.get_admin_user(),

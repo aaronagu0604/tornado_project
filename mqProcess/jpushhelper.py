@@ -3,7 +3,7 @@
 
 import jpush
 import setting
-
+import simplejson
 '''
 # 设置设备信息（标签与别名）
 @ apiParam {String} regist_id jpush标识符
@@ -20,6 +20,7 @@ def set_device_info(regist_id, tags=[], alias=None):
         entity['alias'] = alias
     print entity,regist_id
     result = device.set_deviceinfo(reg_id, entity)
+    print result.payload
 
 
 '''
@@ -27,7 +28,7 @@ def set_device_info(regist_id, tags=[], alias=None):
 @ apiParam {list} tags 推送标记列表
 @ apiParam {String} body 消息文本
 '''
-def send_users_base_tags(tags, body, extras = None):
+def send_users_base_tags(tags, body, extras = {'link':''}):
     _jpush = jpush.JPush(setting.jpush_key, setting.jpush_secret)
     push = _jpush.create_push()
     push.audience = jpush.audience()
@@ -41,10 +42,10 @@ def send_users_base_tags(tags, body, extras = None):
         ios_msg = jpush.ios(alert=body, badge="+1", sound="a.caf")
         android_msg = jpush.android(alert=body)
     push.notification = jpush.notification(alert=body, android=android_msg, ios=ios_msg)
-    push.payload['options'] = {
+    push.options = {
         "apns_production": False
     }
-    print push.payload
+
     result = push.send()
     print result.payload
 
@@ -54,10 +55,10 @@ def send_users_base_tags(tags, body, extras = None):
 @ apiParam {String} alias 用户别名
 @ apiParam {String} body 消息文本
 '''
-def send_users_base_alias(alias, body, extras = None):
+def send_users_base_alias(alias, body, extras = {'link':''}):
     _jpush = jpush.JPush(setting.jpush_key, setting.jpush_secret)
     push = _jpush.create_push()
-    alias1 = {"alias": alias}
+    alias1 = {"alias": [alias]}
     push.audience = jpush.audience(
         alias1
     )
@@ -71,7 +72,7 @@ def send_users_base_alias(alias, body, extras = None):
     push.notification = jpush.notification(alert=body, android=android_msg, ios=ios_msg)
 
     push.platform = jpush.all_
-    push.payload['options'] = {
+    push.options = {
         "apns_production": False
     }
     result = push.send()
@@ -126,13 +127,13 @@ def getdeviceinfo(reg_id):
 
 if __name__ == '__main__':
     #regist='101d85590977d2a2e49'
-    regist = '18071adc033dfd900e4'
+    regist = '1517bfd3f7f726d86ba'
     tags = ['shanxi', 'xian']
     alias = ['zhangsun']
     # aliasuser()
     # taglist()
-    # getdeviceinfo(regist)
+    getdeviceinfo(regist)
     # set_device_info(regist, tags, alias)
-    send_users_base_regid(regist,'ceshi for jpush base registid',{'jumpto':'active', 'value':1})
+    #send_users_base_regid(regist,'ceshi for jpush base registid',{'jumpto':'active'})
     # send_users_base_alias(alias, 'ceshi for jpush base alias')
     # send_users_base_tags(tags,'ceshi for jpush base tags')

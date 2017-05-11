@@ -35,11 +35,7 @@ with rabbitpy.Connection(url) as conn:
                     elif message.properties['message_type'] == 'jpush':
                         pushcontent = simplejson.loads(message.body)
                         try:
-                            logging.error(pushcontent['apptype'])
-                            logging.error(pushcontent['body'])
-                            logging.error(pushcontent['receiver'])
-                            logging.errror(pushcontent['pushtype'])
-                            if pushcontent['pushtype'] == 'alias':
+                            if pushcontent['jpushtype'] == 'alias':
                                 send_users_base_alias(pushcontent['alias'],pushcontent['body'])
                             else:
                                 send_users_base_tags(pushcontent['tags'],pushcontent['body'])
