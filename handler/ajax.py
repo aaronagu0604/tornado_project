@@ -1119,7 +1119,7 @@ class AutoCaculateInsuranceOrderPriceHandler(BaseHandler):
 
         return simplejson.loads(ocrresult)
 
-    def quote_iop(self,post_id=2017,insurance='huaan'):
+    def quote_iop(self,post_id=2017,insurance='zhlh'):
         notify_url = 'http:///api.dev.test.520czj.com/ajax/baodaibao_notify'
 
         url = 'http://apitest.baodaibao.com.cn/index.php?g=Api&m=QuoteApi&a=Quote'
@@ -1132,7 +1132,7 @@ class AutoCaculateInsuranceOrderPriceHandler(BaseHandler):
         }
         post_data['orderArr'] = {
             # BaseInfo
-            "order_id": 2817,  # 订单号
+            "order_id": post_id,  # 订单号
             "created": "2017-04-27 14:34:53",  # 当前时间
             "city_code": "610100",  # 城市代码
             # 车辆信息
@@ -1170,6 +1170,8 @@ class AutoCaculateInsuranceOrderPriceHandler(BaseHandler):
             # others
             "remark": "",
             "come_from": "wx",
+            "car_detail_type": "11",  # 细化车型：怎么获取
+            "car_number_type": "02",  # 车牌类型：怎么获取
         }
         insuranceinfo = [
             {
@@ -1320,10 +1322,16 @@ class BaoDaiBaoNotifyHandler(BaseHandler):
                 items = data['data']['quotation_price']
 
                 bdb = BaoDaiBaoQuote()
-                bdb.insurance = order_id
+                bdb.insuranceorder = order_id
                 bdb.content = simplejson.dumps(items)
+                bdb.save()
                 result['flag'] = 1
                 result['msg'] = u'解析报价成功'
+            else:
+                bdb = BaoDaiBaoQuote()
+                bdb.insuranceorder = 27
+                bdb.content = simplejson.dumps(items)
+                bdb.save()
 
         return simplejson.dumps(result)
 
