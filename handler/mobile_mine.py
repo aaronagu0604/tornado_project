@@ -1798,7 +1798,7 @@ class MobileProductReleaseHandler(MobileBaseHandler):
         result = {'flag': 0, 'msg': '', "data": []}
         args = simplejson.loads(self.get_body_argument('area_price'))
         try:
-            for area_price in args['area_price']:
+            for area_price in args:
                 spp = StoreProductPrice.get(id=area_price['sppid'])
                 spp.price = area_price['price']
                 spp.active = area_price['active']
