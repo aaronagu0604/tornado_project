@@ -130,10 +130,12 @@ if __name__ == '__main__':
     regist = '1517bfd3f7f726d86ba'
     tags = ['shanxi', 'xian']
     alias = ['zhangsun']
+    zs = '13289269257'
+    gxh ='17629260130'
     # aliasuser()
     # taglist()
     getdeviceinfo(regist)
     # set_device_info(regist, tags, alias)
-    #send_users_base_regid(regist,'ceshi for jpush base registid',{'jumpto':'active'})
-    # send_users_base_alias(alias, 'ceshi for jpush base alias')
+    #send_users_base_regid(regist,'ceshi for jpush base registid',{'link':'czj://insurance_order_detail/27'})
+    send_users_base_alias('17629260130', 'ceshi for jpush base alias', {'link': 'czj://insurance_order_detail/27'})
     # send_users_base_tags(tags,'ceshi for jpush base tags')

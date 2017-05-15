@@ -886,17 +886,41 @@ class InsuranceOrder(db.Model):
 class UserCarInfo(db.Model):
     id = PrimaryKeyField()
     insuranceorder = ForeignKeyField(InsuranceOrder, db_column='insurance_order_id')  # 保险订单ID
-    car_owner_name = CharField(max_length=50, null=True) # 车主姓名
-    car_owner_idcard = CharField(max_length=50, null=True) # 车主身份证号
-    car_owner_date = CharField(max_length=50, null=True) # 车主身份证有效期
-    car_owner_address = CharField(max_length=50, null=True) # 车主身份证地址
-    car_num = CharField(max_length=50, null=True) # 车牌号
-    car_frame_num = CharField(max_length=50, null=True) # 车架号
-    car_engine_num = CharField(max_length=50, null=True) # 发动机号
-    car_type = CharField(max_length=50, null=True) # 车型
-    car_passenger_number = CharField(max_length=50, null=True) # 车座位数
-    car_quality = CharField(max_length=50, null=True) # 整车质量
-
+    # 车主信息
+    car_owner_name = CharField(max_length=50, null=True)  # 车主姓名
+    car_owner_idcard = CharField(max_length=50, null=True)  # 车主身份证号
+    car_owner_date = CharField(max_length=50, null=True)  # 车主身份证有效期
+    car_owner_address = CharField(max_length=50, null=True)  # 车主身份证地址
+    car_owner_type = CharField(max_length=50, null=True)  # 车主类型:小客车car
+    car_use_type = CharField(max_length=50, null=True)  # 车辆使用类型：非运营non_operation,运营operation
+    car_nengyuan_type = CharField(max_length=50, null=True)  # 车主能源情况：燃油ranyou，混合hunhe
+    # 机构信息
+    car_owner_num = CharField(max_length=50, null=True) # 车辆所属组织机构代码
+    # 被保险人信息
+    owner_buyer_isone = IntegerField(default=0)  # 0不是 1是
+    buy_name = CharField(max_length=50, null=True)  # 姓名
+    buy_idcard = CharField(max_length=50, null=True)  # 身份证号
+    buy_date = CharField(max_length=50, null=True)  # 身份证有效期
+    buy_address = CharField(max_length=50, null=True)  # 身份证地址
+    # 车辆信息
+    car_num = CharField(max_length=50, null=True)  # 车牌号
+    car_frame_num = CharField(max_length=50, null=True)  # 车架号
+    car_engine_num = CharField(max_length=50, null=True)  # 发动机号
+    car_type = CharField(max_length=50, null=True)  # 车型
+    car_model_type = CharField(max_length=50, null=True)  # 品牌厂型
+    car_passenger_number = CharField(max_length=50, null=True)  # 车座位数
+    car_quality = CharField(max_length=50, null=True)  # 整车质量
+    first_register_date = IntegerField(default=1) # 初次等级日期
+    assigned = IntegerField(default=1) # 是否过户：0没有1有
+    assigned_date = IntegerField(default=1) # 过户日期
+    # 保险信息
+    start_date_enforce = CharField(max_length=50, null=True) # 交强险起保日期
+    start_date_trade = CharField(max_length=50, null=True)  # 商业险起保日期
+    # 中华联合额外字段
+    rta_type = CharField(max_length=50, null=True)  # 交管所车辆类型
+    car_detail_type = CharField(max_length=50, null=True)  # 细化车型
+    car_num_type = CharField(max_length=50, null=True)  # 车牌类型
+    license_type = CharField(max_length=50, null=True)  # 行驶证车辆类型
     status = IntegerField(default=0)  # 0新报价 1已读报价
 
     class Meta:
@@ -962,12 +986,25 @@ class InsuranceScoreExchange(db.Model):
         for i in insurances:
             if i['i_id'] not in temp_insurance_id:
                 temp_insurance_id.append(i['i_id'])
+                rake_back = []
+                if i['is_score']:
+                    rake_back.append({
+                        'name': "返现",
+                        'type': 2,
+                        'link': "czj://lube_policy",
+                        'link_str': "查看返油政策>>"
+                    })
+                if i['is_lube']:
+                    rake_back.append({
+                        'name': "返油",
+                        'type': 1,
+                        'link': "",
+                        'link_str': "积分可在积分商城兑换商品或提现"
+                    })
                 insurance_list.append({
                     'id': i['i_id'],
                     'name': i['i_name'],
-                    'is_score': i['is_score'],
-                    'is_cash': i['is_score'],
-                    'is_lube': i['is_lube']
+                    'rake_back': rake_back
                 })
         return insurance_list
 
