@@ -330,6 +330,22 @@
                 </div>
                 <div class="row">
                     <div class="col-xs-3">
+                        品牌型号
+                    </div>
+                    <div class="col-xs-3 rightTxt">
+                        <input id="pinpai_model" class="form-control" type="text" />
+                    </div>
+                    <div class="col-xs-3">
+                        细化型号
+                    </div>
+                    <div class="col-xs-3 rightTxt">
+                        <select name="detail_type" class="form-control">
+
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-3">
                         车架号
                     </div>
                     <div class="col-xs-9 rightTxt">
@@ -356,6 +372,65 @@
                     </div>
                     <div class="col-xs-3 rightTxt">
                         <input class="form-control" type="text" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-3">
+                        抢险起保日期
+                    </div>
+                    <div class="col-xs-3 rightTxt">
+                        <input class="form-control" type="text" />
+                    </div>
+                    <div class="col-xs-3">
+                        商业险起保日期
+                    </div>
+                    <div class="col-xs-3 rightTxt">
+                        <input class="form-control" type="text" />
+                    </div>
+                </div>
+                <!-- 中华联合补充材料 -->
+                <div class="row">
+                    <div class="col-xs-3">
+                        交管所车辆类型
+                    </div>
+                    <div class="col-xs-3 rightTxt">
+                        <select name="rta_type" class="form-control">
+                            {% for k,v in rta_type.items() %}
+                            <option value="{{k}}">{{v}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-xs-3">
+                        细化车辆类型
+                    </div>
+                    <div class="col-xs-3 rightTxt">
+                        <select name="car_detail_type" class="form-control">
+                            {% for k,v in car_detail_type.items() %}
+                            <option value="{{k}}">{{v}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-3">
+                        车牌类型
+                    </div>
+                    <div class="col-xs-3 rightTxt">
+                        <select name="car_number_type" class="form-control">
+                            {% for k,v in car_number_type.items() %}
+                            <option value="{{k}}">{{v}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-xs-3">
+                        行驶证类型
+                    </div>
+                    <div class="col-xs-3 rightTxt">
+                        <select name="license_type" class="form-control">
+                            {% for k,v in license_type.items() %}
+                            <option value="{{k}}">{{v}}</option>
+                            {% endfor %}
+                        </select>
                     </div>
                 </div>
             </div>
