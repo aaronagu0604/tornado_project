@@ -1089,6 +1089,55 @@ class OCRSaveHandler(BaseHandler):
         ucinfo.save()
         self.write(simplejson.dumps(result))
 
+@route(r'/ajax/search_car_info', name='ajax_search_car_info')  # 查询车辆信息
+class SearchCarInfoHandler(BaseHandler):
+    def check_xsrf_cookie(self):
+        pass
+
+    def sear_chcar_info(self, insurance='zhlh'):
+        url = 'http://apitest.baodaibao.com.cn/index.php?g=Api&m=SearchCarInfoApi&a=SearchCarInfo'
+        msg = {'flag':0 , 'msg':'', 'data':''}
+        post_data = {}
+        post_data['changpai_model'] = "北京现代BH7203AY"
+        post_data['user_id'] = "142"
+        if insurance == 'taiping':
+            post_data['taiping_data'] = {
+                "customerid": "3"
+            }
+        if insurance == 'zhlh':
+            post_data['zhlh_data'] = {
+                "customerid": "17",
+                "first_register_data": "2015-01-01"
+            }
+        if insurance == 'huaan':
+            post_data['huaan_data'] = {
+                "customerid": "14",
+                # "city_code":"610000"
+            }
+        #print simplejson.dumps(post_data)
+        request = urllib2.Request(url, 'data=%s' % simplejson.dumps(post_data))
+        response = urllib2.urlopen(request)
+        result = response.read()
+        #print result
+        jsondata = simplejson.loads(result)
+        data = []
+        print jsondata['data']['detail']
+        if jsondata['status'] == '200':
+            msg['flag'] = 1
+            for i,v in enumerate(jsondata['data']['values']):
+                display = jsondata['data']['displayValues'][i]
+                value = simplejson.dumps(jsondata['data']['detail'][v])
+                data.append({'display':display, 'value':value})
+            msg['data'] = data
+
+        self.write(simplejson.dumps(msg))
+
+
+    def get(self):
+        io_id = self.get_argument('io_id', None)
+        insurance = self.get_argument('insurance', 'zhlh')
+        self.sear_chcar_info(insurance)
+
 @route(r'/ajax/auto_caculate_price', name='ajax_auto_caculate_price')  # 自动报价
 class AutoCaculateInsuranceOrderPriceHandler(BaseHandler):
     executor = ThreadPoolExecutor(20)
@@ -1121,8 +1170,27 @@ class AutoCaculateInsuranceOrderPriceHandler(BaseHandler):
 
     def quote_iop(self,post_id=2017,insurance='zhlh'):
         notify_url = 'http:///api.dev.test.520czj.com/mobile/baodaibao_notify'
-
         url = 'http://apitest.baodaibao.com.cn/index.php?g=Api&m=QuoteApi&a=Quote'
+        fuel_type = {
+            'ranyou': '燃油',
+            'chundiandong': '纯电动',
+            'ranliaodianchi': '燃料电池',
+            'chadainhunhe': '插电式混合动力',
+            'qitahunhe': '其他混合动力'}
+
+        insurance_items = {
+            'damageI':'车辆损失险(主)',
+            'thirdDutyI': '第三者责任险(主)',
+            'robbingI': '全车盗抢险(主)',
+            'driverDutyI': '车上人员险(主)(司机)',
+            'passengerDutyI': '车上人员险(主)(乘客)',
+            'glassI': '玻璃单独破碎险(附)', #玻璃险value传进口或者国产,
+            'scratchI': '车身划痕险(附)',
+            'fireDamageI': '自燃损失险(附)',
+            'wadeI': '发动机涉水险(附)',
+            'thirdSpecialI': '无法找到第三方险(附)',
+            '11': '指定修理厂险(附)',
+        }
         post_data = {}
         post_data['car'] = {
             "car_price": "139900.00",
