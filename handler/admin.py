@@ -1951,9 +1951,21 @@ class InsuranceOrderDetailHandler(AdminBaseHandler):
             "11": "非跑车",
             "12": "跑车"
         }
+
+        fuel_type = {
+            'ranyou': '燃油',
+            'chundiandong': '纯电动',
+            'ranliaodianchi': '燃料电池',
+            'chadainhunhe': '插电式混合动力',
+            'qitahunhe': '其他混合动力'
+        }
+        owner_type = {
+            'private': '个人'
+        }
         self.render('admin/order/insurance_order_detail.html', active=active, o=o, insurances=insurances,
                     poid=poid, poid2=poid2, programs=programs, rta_type=rta_type, license_type=license_type,
-                    car_number_type=car_number_type,car_detail_type=car_detail_type)
+                    car_number_type=car_number_type,car_detail_type=car_detail_type, fuel_type=fuel_type,
+                    owner_type=owner_type)
 
     def post(self, oid):
         '''

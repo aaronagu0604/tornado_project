@@ -389,7 +389,7 @@ class MobileHomeHandler(MobileBaseHandler):
             recommends = self.get_recommend(tmp_code)
         if len(recommends) == 0:
             recommends = self.get_recommend(self.get_default_area_code())
-        result['data']['category'].append({'title': u'为您推荐', 'data': recommends})
+        result['data']['category'].append({'title': u'为您推荐', 'data': []})
 
         # 积分商品
         tmp_code = area_code

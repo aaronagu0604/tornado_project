@@ -330,6 +330,28 @@
                 </div>
                 <div class="row">
                     <div class="col-xs-3">
+                        能源类型
+                    </div>
+                    <div class="col-xs-3 rightTxt">
+                        <select name="fuel_type" class="form-control">
+                            {% for k,v in fuel_type.items() %}
+                            <option value="{{k}}">{{v}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-xs-3">
+                        拥有人类型
+                    </div>
+                    <div class="col-xs-3 rightTxt">
+                        <select name="owner_type" class="form-control">
+                            {% for k,v in owner_type.items() %}
+                            <option value="{{k}}">{{v}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-3">
                         品牌型号
                     </div>
                     <div class="col-xs-3 rightTxt">
