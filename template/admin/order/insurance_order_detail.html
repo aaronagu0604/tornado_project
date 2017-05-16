@@ -240,7 +240,7 @@
                             <img style="width:160px; height:110px;" src="{{o.id_card_front}}"/>
                         </a>
                         <div>
-                            <input type="button" {% if o.icfstatus==1 %} class="btn btn-outline btn-warning btn-xs" value="取消重新上传"
+                            <input type="button" onclick="updateimgstatus(this,{{o.id}},'icfstatus')" {% if o.icfstatus==1 %} class="btn btn-outline btn-warning btn-xs" value="取消重新上传"
                                    {% else %} class="btn btn-outline btn-primary btn-xs" value="重新上传" {% endif %}/>
                         </div>
                     </div>
@@ -249,7 +249,7 @@
                             <img style="width:160px; height:110px;" src="{{o.id_card_back}}"/>
                         </a>
                         <div>
-                            <input type="button" {% if o.icbstatus==1 %} class="btn btn-outline btn-warning btn-xs" value="取消重新上传"
+                            <input type="button" onclick="updateimgstatus(this,{{o.id}},'icbstatus')" {% if o.icbstatus==1 %} class="btn btn-outline btn-warning btn-xs" value="取消重新上传"
                                    {% else %} class="btn btn-outline btn-primary btn-xs" value="重新上传" {% endif %}/>
                         </div>
                     </div>
@@ -260,7 +260,7 @@
                             <img style="width:160px; height:110px;" src="{{o.drive_card_front}}"/>
                         </a>
                         <div>
-                            <input type="button" {% if o.dcfstatus==1 %} class="btn btn-outline btn-warning btn-xs" value="取消重新上传"
+                            <input type="button" onclick="updateimgstatus(this,{{o.id}},'dcfstatus')" {% if o.dcfstatus==1 %} class="btn btn-outline btn-warning btn-xs" value="取消重新上传"
                                    {% else %} class="btn btn-outline btn-primary btn-xs" value="重新上传" {% endif %}/>
                         </div>
                     </div>
@@ -269,7 +269,7 @@
                             <img style="width:160px; height:110px;" src="{{o.drive_card_back}}"/>
                         </a>
                         <div>
-                            <input type="button" {% if o.dcbstatus==1 %} class="btn btn-outline btn-warning btn-xs" value="取消重新上传"
+                            <input type="button" onclick="updateimgstatus(this,{{o.id}},'dcbstatus')" {% if o.dcbstatus==1 %} class="btn btn-outline btn-warning btn-xs" value="取消重新上传"
                                    {% else %} class="btn btn-outline btn-primary btn-xs" value="重新上传" {% endif %}/>
                         </div>
                     </div>
@@ -282,7 +282,7 @@
                             <img style="width:160px; height:110px;" src="{{o.id_card_front_owner}}"/>
                         </a>
                         <div>
-                            <input type="button" {% if o.icfostatus==1 %} class="btn btn-outline btn-warning btn-xs" value="取消重新上传"
+                            <input type="button" onclick="updateimgstatus(this,{{o.id}},'icfostatus')" {% if o.icfostatus==1 %} class="btn btn-outline btn-warning btn-xs" value="取消重新上传"
                                    {% else %} class="btn btn-outline btn-primary btn-xs" value="重新上传" {% endif %}/>
                         </div>
                     </div>
@@ -291,7 +291,7 @@
                             <img style="width:160px; height:110px;" src="{{o.id_card_back_owner}}"/>
                         </a>
                         <div>
-                            <input type="button" {% if o.icbostatus==1 %} class="btn btn-outline btn-warning btn-xs" value="取消重新上传"
+                            <input type="button" onclick="updateimgstatus(this,{{o.id}},'icbostatus')" {% if o.icbostatus==1 %} class="btn btn-outline btn-warning btn-xs" value="取消重新上传"
                                    {% else %} class="btn btn-outline btn-primary btn-xs" value="重新上传" {% endif %}/>
                         </div>
                     </div>
@@ -1128,7 +1128,41 @@
             }
         }
     }
+    //更改图片是否重新传状态
+    function updateimgstatus(input, io_id, img_type){
 
+        var btn_str =input.value;
+        var img_status = -1;
+
+        if (btn_str == "重新上传") {
+            img_status = 1;
+            }
+        else {
+            img_status = 0;
+        }
+        $.post('/ajax/update_io_card_status', {
+                _xsrf: xsrf,
+                io_id: io_id,
+                img_type: img_type,
+                img_status: img_status
+            }, function (data) {
+                var obj = jQuery.parseJSON(data);
+                input.blur();
+                if (obj.flag == 1) {
+                    alert('更改状态成功!');
+                    if (img_status == 1) {
+                        input.className ='btn btn-outline btn-warning btn-xs';
+                        input.value = '取消重新上传';
+                    }
+                    else {
+                        input.className ='btn btn-outline btn-primary btn-xs';
+                        input.value = '重新上传';
+                    }
+                } else {
+                    alert(obj.msg);
+                }
+            });
+    }
     // OCR function 调用ajax并回填识别信息
     function imgocr(id) {
          ShowLoading();

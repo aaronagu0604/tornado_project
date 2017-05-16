@@ -959,6 +959,32 @@ class UploadPicHandler(BaseHandler):
                     msg = '{"id":0,"path":"上传失败"}'
             self.write(msg)
 
+@route(r'/ajax/update_io_card_status', name='ajax_update_io_card_status')  # 保单图片重新上传
+class UpdateIOCardStatusHandler(BaseHandler):
+
+    def check_xsrf_cookie(self):
+        pass
+
+    def post(self):
+        result = {'flag': 1, 'msg': '保存成功', 'data': ''}
+        io_id = self.get_body_argument('io_id',None)
+        img_type = self.get_body_argument('img_type', None)
+        img_status = self.get_body_argument('img_status', 1)  # 0不需要 1需要
+        if not (io_id and img_type and img_status):
+            result['flag'] = 0
+            result['msg'] = u'参数不全'
+            self.write(simplejson.dumps(result))
+            return
+        try:
+            io = InsuranceOrder.get(id=int(io_id))
+
+            setattr(io, img_type, img_status)
+            io.save()
+        except Exception,e:
+            result['flag'] = 0
+            result['msg'] = '更新状态失败：%s'%e
+        self.write(simplejson.dumps(result))
+
 @route(r'/ajax/ocr', name='ajax_ocr')  # 自动识别图片信息
 class OCRHandler(BaseHandler):
     executor = ThreadPoolExecutor(20)
@@ -1064,7 +1090,7 @@ class OCRHandler(BaseHandler):
         io_id = self.get_argument('io_id', None)
         a = yield self.insuranceorderocr(io_id)
 
-@route(r'/ajax/ocr_save', name='ajax_ocr_save')  # 自动识别图片信息
+@route(r'/ajax/ocr_save', name='ajax_ocr_save')  # 保存图片识别信息
 class OCRSaveHandler(BaseHandler):
     executor = ThreadPoolExecutor(20)
 

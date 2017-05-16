@@ -137,5 +137,5 @@ if __name__ == '__main__':
     #getdeviceinfo(regist)
     # set_device_info(regist, tags, alias)
     #send_users_base_regid(regist,'003',{'link':'czj://insurance_order_detail/27'})
-    #send_users_base_alias('17629260130', 'ceshi for jpush base alias', {'link': 'czj://insurance_order_detail/27'})
-    send_users_base_tags(tags,'ceshi for jpush base tags003',{'link': 'czj://insurance_order_detail/27'})
+    send_users_base_alias('13289269257', 'ceshi for jpush base alias', {'link': 'czj://insurance_order_detail/27'})
+    #send_users_base_tags(tags,'008',{'link': 'czj://insurance_order_detail/27'})
