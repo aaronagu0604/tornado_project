@@ -442,7 +442,6 @@ class WebAppCarItemListHandler(BaseHandler):
         try:
             iop = InsuranceOrderPrice.get(id=pid)
             io = InsuranceOrder.get(id=iop.insurance_order_id)
-            # rates = InsuranceScoreExchange.get_score_policy(io.store.area_code, iop.insurance.id)
             rates = self.get_return_cash(io.store.id, iid)
             if rates:
                 iis = InsuranceItem.select().where(InsuranceItem.style_id > 1)
@@ -451,6 +450,7 @@ class WebAppCarItemListHandler(BaseHandler):
                 result['data']['ali_rate'] = rates['ar']
                 result['data']['profit_rate'] = rates['pr']
                 result['data']['base_money'] = rates['bm']
+                business = False
                 for ii in iis:
                     if iop.__dict__['_data'][ii.eName]:
                         business = True
@@ -470,10 +470,8 @@ class WebAppCarItemListHandler(BaseHandler):
                 result['data']['business_s'] = 0
                 result['data']['force_s'] = 0
             result['flag'] = 1
-            print result['data']
         except Exception, e:
             result['msg'] = u'系统错误%s'%str(e)
-            print e.message
 
         self.write(simplejson.dumps(result))
 
@@ -482,10 +480,12 @@ class WebAppCarItemListHandler(BaseHandler):
 class GetGiftOilHandler(BaseHandler):
     def get(self):
         result = {'flag': 0, 'msg': '', "data": {}}
-        iid = int(self.get_argument('insurance', 0))
-        iopid = int(self.get_argument('iopid', 0))
-        forcetotal = int(self.get_argument('force', 0))
-        businesstotal = int(self.get_argument('business', 0))
+        iid = int(self.get_argument('insurance'))
+        iopid = int(self.get_argument('iopid'))
+        forcetotal = self.get_argument('force', '')
+        forcetotal = int(forcetotal) if forcetotal else 0
+        businesstotal = self.get_argument('business', 0)
+        businesstotal = int(businesstotal) if businesstotal else 0
         try:
             iop = InsuranceOrderPrice.get(id=iopid)
             insurance = InsuranceOrder.get(id=iop.insurance_order_id)
@@ -510,7 +510,6 @@ class GetGiftOilHandler(BaseHandler):
                     if (int(p['minprice']) <= totalprice) and (totalprice <= int(p['maxprice'])) and (flag == int(p['flag'])):
                         role = p
                         role['oiltype'] = item['gift']
-
             if role:
                 result['data']['driveroiltype'] = role['oiltype']
                 result['data']['driveroilnum'] = role['driver']
@@ -520,8 +519,7 @@ class GetGiftOilHandler(BaseHandler):
             else:
                 result['msg'] = u'无可用规则'
         except Exception, e:
-            result['msg'] = u'系统错误%s'%str(e)
-            print e.message
+            result['msg'] = u'本店铺该保险公司没有配置返佣规则！'
 
         self.write(simplejson.dumps(result))
 
@@ -555,9 +553,14 @@ class SaveIOPHandler(BaseHandler):
             pid.force_price = groups['force_price']
             pid.business_price = groups['business_price']
             pid.vehicle_tax_price = groups['vehicle_tax_price']
+
+            pid.force_rate = groups['force_rate']
+            pid.business_rate = groups['business_rate']
+
             pid.sms_content = groups['psummary']
+            print groups['psummary']
             for item in i_items:
-                pid.__dict__['_data'][item+'Price'] = i_items[item]
+                pid.__dict__['_data'][item] = i_items[item]
             pid.save()
             if send_msg == '1':
                 io = InsuranceOrder.get(id=pid.insurance_order_id)
@@ -716,7 +719,6 @@ class TradeExportHandler(BaseHandler):
                 f.write(line.encode('gb18030'))
 
         except Exception, e:
-            print e
             pass
         finally:
             f.close()

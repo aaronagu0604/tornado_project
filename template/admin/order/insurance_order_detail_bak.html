@@ -330,44 +330,6 @@
                 </div>
                 <div class="row">
                     <div class="col-xs-3">
-                        能源类型
-                    </div>
-                    <div class="col-xs-3 rightTxt">
-                        <select name="fuel_type" class="form-control">
-                            {% for k,v in fuel_type.items() %}
-                            <option value="{{k}}">{{v}}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="col-xs-3">
-                        拥有人类型
-                    </div>
-                    <div class="col-xs-3 rightTxt">
-                        <select name="owner_type" class="form-control">
-                            {% for k,v in owner_type.items() %}
-                            <option value="{{k}}">{{v}}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-xs-3">
-                        品牌型号
-                    </div>
-                    <div class="col-xs-3 rightTxt">
-                        <input id="pinpai_model" class="form-control" type="text" />
-                    </div>
-                    <div class="col-xs-3">
-                        细化型号
-                    </div>
-                    <div class="col-xs-3 rightTxt">
-                        <select name="detail_type" class="form-control">
-
-                        </select>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-xs-3">
                         车架号
                     </div>
                     <div class="col-xs-9 rightTxt">
@@ -394,65 +356,6 @@
                     </div>
                     <div class="col-xs-3 rightTxt">
                         <input class="form-control" type="text" />
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-xs-3">
-                        抢险起保日期
-                    </div>
-                    <div class="col-xs-3 rightTxt">
-                        <input class="form-control" type="text" />
-                    </div>
-                    <div class="col-xs-3">
-                        商业险起保日期
-                    </div>
-                    <div class="col-xs-3 rightTxt">
-                        <input class="form-control" type="text" />
-                    </div>
-                </div>
-                <!-- 中华联合补充材料 -->
-                <div class="row">
-                    <div class="col-xs-3">
-                        交管所车辆类型
-                    </div>
-                    <div class="col-xs-3 rightTxt">
-                        <select name="rta_type" class="form-control">
-                            {% for k,v in rta_type.items() %}
-                            <option value="{{k}}">{{v}}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="col-xs-3">
-                        细化车辆类型
-                    </div>
-                    <div class="col-xs-3 rightTxt">
-                        <select name="car_detail_type" class="form-control">
-                            {% for k,v in car_detail_type.items() %}
-                            <option value="{{k}}">{{v}}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-xs-3">
-                        车牌类型
-                    </div>
-                    <div class="col-xs-3 rightTxt">
-                        <select name="car_number_type" class="form-control">
-                            {% for k,v in car_number_type.items() %}
-                            <option value="{{k}}">{{v}}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="col-xs-3">
-                        行驶证类型
-                    </div>
-                    <div class="col-xs-3 rightTxt">
-                        <select name="license_type" class="form-control">
-                            {% for k,v in license_type.items() %}
-                            <option value="{{k}}">{{v}}</option>
-                            {% endfor %}
-                        </select>
                     </div>
                 </div>
             </div>
@@ -534,7 +437,7 @@
                                                         <div class="row">
                                                             <div class="checkbox col-xs-8 leftTxt">
                                                                 <label>
-                                                                    <input type="checkbox" name="forceICB" {% if program['program'][0]['value'] %} checked="checked" {% endif %} onclick="ck_box('00_', {{program['pid']}}, '000_')" style="visibility: visible;">交强险
+                                                                    <input type="checkbox" {% if program['program'][0]['value'] %} checked="checked" {% endif %} onclick="ck_box('00_', {{program['pid']}})" style="visibility: visible;">交强险
                                                                 </label>
                                                             </div>
                                                             <div class="col-xs-4 rightTxt">
@@ -544,7 +447,7 @@
                                                         <div class="row">
                                                             <div class="checkbox col-xs-8 leftTxt">
                                                                 <label>
-                                                                    <input id="000_{{program['pid']}}_i" name="vehicleTaxCB" type="checkbox" {% if program['program'][0]['value'] %} checked="checked" {% endif %} onclick="ck_box('000_', {{program['pid']}})" style="visibility: visible;">车船税
+                                                                    <input type="checkbox" {% if program['program'][0]['value'] %} checked="checked" {% endif %} onclick="ck_box('000_', {{program['pid']}})" style="visibility: visible;">车船税
                                                                 </label>
                                                             </div>
                                                             <div class="col-xs-4 rightTxt">
@@ -556,7 +459,7 @@
                                                         <div class="row">
                                                             <div class="checkbox col-xs-8 leftTxt">
                                                                 <label>
-                                                                    <input type="checkbox" name="damageICB" {% if program['program'][1]['value'] %} checked="checked" {% endif %} onclick="ck_box('01_', {{program['pid']}}, '02_')" style="visibility: visible;">车损险
+                                                                    <input type="checkbox" {% if program['program'][1]['value'] %} checked="checked" {% endif %} onclick="ck_box('01_', {{program['pid']}})" style="visibility: visible;">车损险
                                                                 </label>
                                                             </div>
                                                             <div class="col-xs-4 rightTxt">
@@ -566,7 +469,7 @@
                                                         <div class="row">
                                                             <div class="checkbox col-xs-8 leftTxt">
                                                                 <label>
-                                                                    <input id="02_{{program['pid']}}_i" type="checkbox" name="damageIPlusCB" {% if program['program'][2]['value'] %} checked="checked" {% endif %} onclick="ck_box('02_', {{program['pid']}})" style="visibility: visible;">不计免赔
+                                                                    <input type="checkbox" {% if program['program'][2]['value'] %} checked="checked" {% endif %} onclick="ck_box('02_', {{program['pid']}})" style="visibility: visible;">不计免赔
                                                                 </label>
                                                             </div>
                                                             <div class="col-xs-4 rightTxt">
@@ -576,28 +479,26 @@
                                                     </td>
                                                     <td>
                                                         <div class="row">
-                                                            <div class="checkbox col-xs-4 leftTxt">
+                                                            <div class="checkbox col-xs-8 leftTxt">
                                                                 <label>
-                                                                    <input type="checkbox" name="thirdDutyICB" {% if program['program'][3]['value'] %} checked="checked" {% endif %} onclick="ck_box('03_', {{program['pid']}}, '04_')" style="visibility: visible;">三责险
+                                                                    <input type="checkbox" {% if program['program'][3]['value'] %} checked="checked" {% endif %} onclick="ck_box('03_', {{program['pid']}})" style="visibility: visible;">三责险
                                                                 </label>
-                                                            </div>
-                                                            <div class="col-xs-4">
-                                                                <span>
-                                                                <select name="thirdDutyIP" class="form-control">
+                                                                <span style="color:#438bca;cursor:pointer;">
+                                                                <select name="insurance" class="form-control col-xs-4">
                                                                     {% for iip in program['program'][3]['i_item_price'] %}
-                                                                    <option value="{{iip.id}}" {{ iip['coverage'] == program['program'][3]['value'] and "selected" or '' }}>{{iip['coverage']}}</option>
+                                                                    <option value="{{iip.id}}" {% if not program['program'][3]['value'] %} disabled="disabled" {% endif %} {{ iip['coverage'] == program['program'][3]['value'] and "selected" or '' }}>{{iip['coverage']}}</option>
                                                                     {% endfor %}
                                                                 </select>
                                                                 </span>
                                                             </div>
                                                             <div class="col-xs-4 rightTxt">
-                                                                <input type="text" id="03_{{program['pid']}}" class="form-control" name="thirdDutyIPrice" value="{{program['program'][3]['price']}}" {% if not program['program'][3]['value'] %} disabled="disabled" {% endif %}>
+                                                                <input type="text" id="03_{{program['pid']}}" class="form-control" name="thirdDutyIPrice" value="{{program['program'][3]['price']}}">
                                                             </div>
                                                         </div>
                                                         <div class="row">
                                                             <div class="checkbox col-xs-8 leftTxt">
                                                                 <label>
-                                                                    <input id="04_{{program['pid']}}_i" type="checkbox" name="thirdDutyIPlusCB" {% if program['program'][4]['value'] %} checked="checked" {% endif %} onclick="ck_box('04_', {{program['pid']}})" style="visibility: visible;">不计免赔
+                                                                    <input type="checkbox" {% if program['program'][4]['value'] %} checked="checked" {% endif %} onclick="ck_box('04_', {{program['pid']}})" style="visibility: visible;">不计免赔
                                                                 </label>
                                                             </div>
                                                             <div class="col-xs-4 rightTxt">
@@ -611,7 +512,7 @@
                                                         <div class="row">
                                                             <div class="checkbox col-xs-8 leftTxt">
                                                                 <label>
-                                                                    <input type="checkbox" name="robbingICB" {% if program['program'][5]['value'] %} checked="checked" {% endif %} onclick="ck_box('05_', {{program['pid']}}, '06_')" style="visibility: visible;">全车盗抢险
+                                                                    <input type="checkbox" {% if program['program'][5]['value'] %} checked="checked" {% endif %} onclick="ck_box('05_', {{program['pid']}})" style="visibility: visible;">全车盗抢险
                                                                 </label>
                                                             </div>
                                                             <div class="col-xs-4 rightTxt">
@@ -621,7 +522,7 @@
                                                         <div class="row">
                                                             <div class="checkbox col-xs-8 leftTxt">
                                                                 <label>
-                                                                    <input id="06_{{program['pid']}}_i" type="checkbox" name="robbingIPlusCB" {% if program['program'][6]['value'] %} checked="checked" {% endif %} onclick="ck_box('06_', {{program['pid']}})" style="visibility: visible;">不计免赔
+                                                                    <input type="checkbox" {% if program['program'][6]['value'] %} checked="checked" {% endif %} onclick="ck_box('06_', {{program['pid']}})" style="visibility: visible;">不计免赔
                                                                 </label>
                                                             </div>
                                                             <div class="col-xs-4 rightTxt">
@@ -631,14 +532,12 @@
                                                     </td>
                                                     <td>
                                                         <div class="row">
-                                                            <div class="checkbox col-xs-4 leftTxt">
+                                                            <div class="checkbox col-xs-8 leftTxt">
                                                                 <label>
-                                                                    <input type="checkbox" name="driverDutyICB" {% if program['program'][7]['value'] %} checked="checked" {% endif %} onclick="ck_box('07_', {{program['pid']}}, '08_')" style="visibility: visible;">车上人司机
+                                                                    <input type="checkbox" {% if program['program'][7]['value'] %} checked="checked" {% endif %} onclick="ck_box('07_', {{program['pid']}})" style="visibility: visible;">车上人司机
                                                                 </label>
-                                                            </div>
-                                                            <div class="col-xs-4">
                                                                 <span style="color:#438bca;cursor:pointer;">
-                                                                <select name="driverDutyIS" class="form-control">
+                                                                <select name="insurance" class="form-control">
                                                                     {% for iip in program['program'][7]['i_item_price'] %}
                                                                     <option value="{{iip.id}}" {{ iip['coverage'] == program['program'][7]['value'] and "selected" or '' }}>{{iip['coverage']}}</option>
                                                                     {% endfor %}
@@ -652,7 +551,7 @@
                                                         <div class="row">
                                                             <div class="checkbox col-xs-8 leftTxt">
                                                                 <label>
-                                                                    <input id="08_{{program['pid']}}_i" type="checkbox" name="driverDutyIPlusCB" {% if program['program'][8]['value'] %} checked="checked" {% endif %} onclick="ck_box('08_', {{program['pid']}})" style="visibility: visible;">不计免赔
+                                                                    <input type="checkbox" {% if program['program'][8]['value'] %} checked="checked" {% endif %} onclick="ck_box('08_', {{program['pid']}})" style="visibility: visible;">不计免赔
                                                                 </label>
                                                             </div>
                                                             <div class="col-xs-4 rightTxt">
@@ -662,14 +561,12 @@
                                                     </td>
                                                     <td>
                                                         <div class="row">
-                                                            <div class="checkbox col-xs-4 leftTxt">
+                                                            <div class="checkbox col-xs-8 leftTxt">
                                                                 <label>
-                                                                    <input type="checkbox" name="passengerDutyICB" {% if program['program'][9]['value'] %} checked="checked" {% endif %} onclick="ck_box('09_', {{program['pid']}}, '10_')" style="visibility: visible;">车上人乘客
+                                                                    <input type="checkbox" {% if program['program'][9]['value'] %} checked="checked" {% endif %} onclick="ck_box('09_', {{program['pid']}})" style="visibility: visible;">车上人乘客
                                                                 </label>
-                                                            </div>
-                                                            <div class="col-xs-4">
                                                                 <span style="color:#438bca;cursor:pointer;">
-                                                                <select name="passengerDutyIS" class="form-control">
+                                                                <select name="insurance" class="form-control">
                                                                     {% for iip in program['program'][9]['i_item_price'] %}
                                                                     <option value="{{iip.id}}" {{ iip['coverage'] == program['program'][9]['value'] and "selected" or '' }}>{{iip['coverage']}}</option>
                                                                     {% endfor %}
@@ -683,7 +580,7 @@
                                                         <div class="row">
                                                             <div class="checkbox col-xs-8 leftTxt">
                                                                 <label>
-                                                                    <input id="10_{{program['pid']}}_i" type="checkbox" name="passengerDutyIPlusCB" {% if program['program'][10]['value'] %} checked="checked" {% endif %} onclick="ck_box('10_', {{program['pid']}})" style="visibility: visible;">不计免赔
+                                                                    <input type="checkbox" {% if program['program'][10]['value'] %} checked="checked" {% endif %} onclick="ck_box('10_', {{program['pid']}})" style="visibility: visible;">不计免赔
                                                                 </label>
                                                             </div>
                                                             <div class="col-xs-4 rightTxt">
@@ -697,7 +594,7 @@
                                                         <div class="row">
                                                             <div class="checkbox col-xs-8 leftTxt">
                                                                 <label>
-                                                                    <input type="checkbox" name="glassICB" {% if program['program'][11]['value'] %} checked="checked" {% endif %} onclick="ck_box('11_', {{program['pid']}})" style="visibility: visible;">单独玻璃破碎险
+                                                                    <input type="checkbox" {% if program['program'][11]['value'] %} checked="checked" {% endif %} onclick="ck_box('11_', {{program['pid']}})" style="visibility: visible;">单独玻璃破碎险
                                                                 </label>
                                                             </div>
                                                             <div class="col-xs-4 rightTxt">
@@ -707,14 +604,12 @@
                                                     </td>
                                                     <td>
                                                         <div class="row">
-                                                            <div class="checkbox col-xs-4 leftTxt">
+                                                            <div class="checkbox col-xs-8 leftTxt">
                                                                 <label>
-                                                                    <input type="checkbox" name="scratchICB" {% if program['program'][12]['value'] %} checked="checked" {% endif %} onclick="ck_box('12_', {{program['pid']}}, '13_')" style="visibility: visible;">车身划痕险
+                                                                    <input type="checkbox" {% if program['program'][12]['value'] %} checked="checked" {% endif %} onclick="ck_box('12_', {{program['pid']}})" style="visibility: visible;">车身划痕险
                                                                 </label>
-                                                            </div>
-                                                            <div class="col-xs-4">
                                                                 <span style="color:#438bca;cursor:pointer;">
-                                                                <select name="scratchIS" class="form-control">
+                                                                <select name="insurance" class="form-control">
                                                                     {% for iip in program['program'][12]['i_item_price'] %}
                                                                     <option value="{{iip.id}}" {{ iip['coverage'] == program['program'][12]['value'] and "selected" or '' }}>{{iip['coverage']}}</option>
                                                                     {% endfor %}
@@ -728,7 +623,7 @@
                                                         <div class="row">
                                                             <div class="checkbox col-xs-8 leftTxt">
                                                                 <label>
-                                                                    <input id="13_{{program['pid']}}_i" type="checkbox" name="scratchIPlusCB" {% if program['program'][13]['value'] %} checked="checked" {% endif %} onclick="ck_box('13_', {{program['pid']}})" style="visibility: visible;">不计免赔
+                                                                    <input type="checkbox" {% if program['program'][13]['value'] %} checked="checked" {% endif %} onclick="ck_box('13_', {{program['pid']}})" style="visibility: visible;">不计免赔
                                                                 </label>
                                                             </div>
                                                             <div class="col-xs-4 rightTxt">
@@ -740,7 +635,7 @@
                                                         <div class="row">
                                                             <div class="checkbox col-xs-8 leftTxt">
                                                                 <label>
-                                                                    <input type="checkbox" name="fireDamageICB" {% if program['program'][14]['value'] %} checked="checked" {% endif %} onclick="ck_box('14_', {{program['pid']}}, '15_')" style="visibility: visible;">自燃损失险
+                                                                    <input type="checkbox" {% if program['program'][14]['value'] %} checked="checked" {% endif %} onclick="ck_box('14_', {{program['pid']}})" style="visibility: visible;">自燃损失险
                                                                 </label>
                                                             </div>
                                                             <div class="col-xs-4 rightTxt">
@@ -750,7 +645,7 @@
                                                         <div class="row">
                                                             <div class="checkbox col-xs-8 leftTxt">
                                                                 <label>
-                                                                    <input id="15_{{program['pid']}}_i" type="checkbox" name="fireDamageIPlusCB" {% if program['program'][15]['value'] %} checked="checked" {% endif %} onclick="ck_box('15_', {{program['pid']}})" style="visibility: visible;">不计免赔
+                                                                    <input type="checkbox" {% if program['program'][15]['value'] %} checked="checked" {% endif %} onclick="ck_box('15_', {{program['pid']}})" style="visibility: visible;">不计免赔
                                                                 </label>
                                                             </div>
                                                             <div class="col-xs-4 rightTxt">
@@ -764,7 +659,7 @@
                                                         <div class="row">
                                                             <div class="checkbox col-xs-8 leftTxt">
                                                                 <label>
-                                                                    <input type="checkbox" name="wadeICB" {% if program['program'][16]['value'] %} checked="checked" {% endif %} onclick="ck_box('16_', {{program['pid']}}, '17_')" style="visibility: visible;">发动机涉水险
+                                                                    <input type="checkbox" {% if program['program'][16]['value'] %} checked="checked" {% endif %} onclick="ck_box('16_', {{program['pid']}})" style="visibility: visible;">发动机涉水险
                                                                 </label>
                                                             </div>
                                                             <div class="col-xs-4 rightTxt">
@@ -774,7 +669,7 @@
                                                         <div class="row">
                                                             <div class="checkbox col-xs-8 leftTxt">
                                                                 <label>
-                                                                    <input id="17_{{program['pid']}}_i" type="checkbox" name="wadeIPlusCB" {% if program['program'][17]['value'] %} checked="checked" {% endif %} onclick="ck_box('17_', {{program['pid']}})" style="visibility: visible;">不计免赔
+                                                                    <input type="checkbox" {% if program['program'][17]['value'] %} checked="checked" {% endif %} onclick="ck_box('17_', {{program['pid']}})" style="visibility: visible;">不计免赔
                                                                 </label>
                                                             </div>
                                                             <div class="col-xs-4 rightTxt">
@@ -786,7 +681,7 @@
                                                         <div class="row">
                                                             <div class="checkbox col-xs-8 leftTxt">
                                                                 <label>
-                                                                    <input type="checkbox" name="thirdSpecialICB" {% if program['program'][18]['value'] %} checked="checked" {% endif %} onclick="ck_box('18_', {{program['pid']}})" style="visibility: visible;">无法找到第三方险
+                                                                    <input type="checkbox" {% if program['program'][18]['value'] %} checked="checked" {% endif %} onclick="ck_box('18_', {{program['pid']}})" style="visibility: visible;">无法找到第三方险
                                                                 </label>
                                                             </div>
                                                             <div class="col-xs-4 rightTxt">
@@ -820,7 +715,7 @@
                                                                 <label>商业总额</label>
                                                             </div>
                                                             <div class="col-xs-4 rightTxt">
-                                                                <input type="text" class="form-control" name="business_price" value="{{program['business_price']}}">
+                                                                <input type="text" class="form-control" name="business_price" value="">
                                                             </div>
                                                         </div>
                                                         <div class="row">
@@ -828,7 +723,7 @@
                                                                 <label>保单总额</label>
                                                             </div>
                                                             <div class="col-xs-4 rightTxt">
-                                                                <input type="text" class="form-control" name="insurance_price" value="{{program['total_price']}}">
+                                                                <input type="text" class="form-control" name="insurance_price" value="">
                                                             </div>
                                                         </div>
                                                     </td>
@@ -868,67 +763,49 @@
                                         </div>
 
                                         <div class="panel-body">
-                                            <div class="row" id="{{program['pid']}}2" {% if 2 != program['gift_policy'] %}  style="display: none" {% endif %}>
-                                                <div class="col-xs-12">
-                                                    <div class="col-xs-3 leftTxt"><label>商返率：</label></div>
-                                                    <div class="col-xs-3 rightTxt"><input name="business_s" value="" class="form-control"/></div>
-                                                    <div class="col-xs-3 leftTxt"><label>交返率：</label></div>
-                                                    <div class="col-xs-3 rightTxt"><input name="force_s" value="" class="form-control"/></div>
-                                                </div>
-                                                <div class="col-xs-12">
-                                                    <div class="col-xs-3 leftTxt"><label>商税率：</label></div>
-                                                    <div class="col-xs-3 rightTxt"><input name="business_tax" value="" class="form-control"/></div>
-                                                    <div class="col-xs-3 leftTxt"><label>交税率：</label></div>
-                                                    <div class="col-xs-3 rightTxt"><input name="force_tax" value="" class="form-control"/></div>
-                                                </div>
-                                                <div class="col-xs-12">
-                                                    <div class="col-xs-3 leftTxt"><label>转账率：</label></div>
-                                                    <div class="col-xs-3 rightTxt"><input name="ali_rate" value="" class="form-control"/></div>
-                                                    <div class="col-xs-3 leftTxt"><label>起兑金：</label></div>
-                                                    <div class="col-xs-3 rightTxt"><input name="base_money" value="" class="form-control"/></div>
-                                                </div>
-                                                <div class="col-xs-12">
-                                                    <div class="col-xs-3 leftTxt"><label>获利率：</label></div>
-                                                    <div class="col-xs-3 rightTxt"><input name="profit" value="" class="form-control"/></div>
-                                                    <div style="color:#B94FFF;" class="col-xs-3 leftTxt"><label>返现：</label></div>
-                                                    <div class="col-xs-3 rightTxt"><input name="cash" value="{{program['cash']}}" class="form-control"/></div>
-                                                </div>
-                                            </div>
+                                            <table class="col-xs-12">
+                                                <tbody id="{{program['pid']}}2" {% if 2 != program['gift_policy'] %}  style="display: none" {% endif %}>
+                                                <tr class="col-xs-12">
+                                                    <td class="col-xs-6">商业返佣率：<input name="business_s" value="" style="width: 100px;" class="form-control"/></td>
+                                                    <td class="col-xs-6">交强返佣率：<input name="force_s" value="" style="width: 100px;" class="form-control"/></td>
+                                                </tr>
+                                                <tr class="col-xs-12">
+                                                    <td class="col-xs-6">商业税率：<input name="business_tax" value="" style="width: 100px;" class="form-control"/></td>
+                                                    <td class="col-xs-6">交强税率：<input name="force_tax" value="" style="width: 100px;" class="form-control"/></td>
+                                                </tr>
+                                                <tr class="col-xs-12">
+                                                    <td class="col-xs-6">转账费率：<input name="ali_rate" value="" style="width: 80px;" class="form-control"/></td>
+                                                    <td class="col-xs-6">起兑金额：<input name="base_money" value="" style="width: 100px;" class="form-control"/></td>
+                                                </tr>
+                                                <tr class="col-xs-12">
+                                                    <td class="col-xs-6">获利率：<input name="profit" value="" style="width: 100px;" class="form-control"/></td>
+                                                    <td style="color:#B94FFF;" class="col-xs-6">返点：<input name="cash" value="{{program['cash']}}" style="width: 80px;" class="form-control"/></td>
+                                                </tr>
+                                                </tbody>
 
-                                            <div class="row">
-                                                <div class="col-xs-12" id="{{program['pid']}}1" {% if 1 != program['gift_policy'] %}  style="display: none" {% endif %}>
-                                                    <div class="col-xs-12">
-                                                        <div style="color:#008866;" class="col-xs-6">
-                                                            <div class="col-xs-6 leftTxt"><span>车主油品：</span></div>
-                                                            <div class="col-xs-6 rightTxt"><input name="driveroiltype" value="" class="form-control"/></div>
-                                                        </div>
-                                                        <div style="color:#008866;" class="col-xs-6">
-                                                            <div class="col-xs-6 leftTxt"><span>车主数量：</span></div>
-                                                            <div class="col-xs-6 rightTxt"><input name="driveroilnum" value="" class="form-control"/></div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-xs-12">
-                                                        <div style="color:#008866;" class="col-xs-6">
-                                                            <div class="col-xs-6 leftTxt"><span>门店油品：</span></div>
-                                                            <div class="col-xs-6 rightTxt"><input name="storeoiltype" value="" class="form-control"/></div>
-                                                        </div>
-                                                        <div style="color:#008866;" class="col-xs-6">
-                                                            <div class="col-xs-6 leftTxt"><span>门店数量：</span></div>
-                                                            <div class="col-xs-6 rightTxt"><input name="storeoilnum" value="" class="form-control"/></div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-xs-12">
-                                                        <div class="col-xs-6"></div>
-                                                        <div class="col-xs-6">
-                                                            <div class="col-xs-6"></div>
-                                                             <!---->
-                                                        <div class="col-xs-6">
-                                                            <a href="##" class="btn btn-outline btn-primary btn-xs" style="float:right" onclick="pop('返积分政策', '/admin/insurance/lube?iid='+{{program['insurance'].id}}+'&sid={{o.store.id}}')">查看政策</a>
-                                                        </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                                <tbody class="col-xs-12" id="{{program['pid']}}1" {% if 1 != program['gift_policy'] %}  style="display: none" {% endif %}>
+                                                <tr class="col-xs-12">
+                                                    <td style="color:#008866;" class="col-xs-6">
+                                                        <span class="col-xs-2">车主油品：</span>
+                                                        <input name="driveroiltype" value="" class="form-control col-xs-2"/>
+                                                    </td>
+                                                    <td style="color:#008866;" class="col-xs-6">
+                                                        <span class="col-xs-3">车主数量：</span>
+                                                        <input name="driveroilnum" value="" class="form-control col-xs-2"/>
+                                                    </td>
+                                                </tr>
+                                                <tr class="col-xs-12">
+                                                    <td style="color:#008866;" class="col-xs-6">
+                                                        <span class="col-xs-3">门店油品：</span>
+                                                        <input name="storeoiltype" value="" class="form-control col-xs-2"/>
+                                                    </td>
+                                                    <td style="color:#008866;" class="col-xs-6">
+                                                        <span class="col-xs-3">门店数量：</span>
+                                                        <input name="storeoilnum" value="" class="form-control col-xs-2"/>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
                                 </div>
@@ -947,11 +824,11 @@
                                         <div class="panel-body">
                                             <div class="row">
                                                 <div class="col-xs-12">
-                                                    <textarea class="form-control" name="psummary" cols=50%; rows="10" placeholder="短信内容">{{program['msg']}}</textarea>
+                                                    <textarea class="form-control" name="psummary" cols=50%; rows="10" placeholder="短信内容"></textarea>
                                                 </div>
                                                 <div class="col-xs-12" style="margin-top: 6px;">
-                                                    <span onclick="saveData({{program['pid']}}, 0)" style="padding:5px 10px;background:#438bca;color:#fff;border-radius:4px;font-size:14px;cursor:pointer;">保存</span>
-                                                    <span onclick="saveData({{program['pid']}}, 1)" style="padding:5px 10px;margin-top:3px;background:#438bca;color:#fff;border-radius:4px;font-size:14px;cursor:pointer;">保存并发短信</span>
+                                                    <span onclick="saveData(1, 0)" style="padding:5px 10px;background:#438bca;color:#fff;border-radius:4px;font-size:14px;cursor:pointer;">保存</span>
+                                                    <span onclick="saveData(1, 1)" style="padding:5px 10px;margin-top:3px;background:#438bca;color:#fff;border-radius:4px;font-size:14px;cursor:pointer;">保存并发短信</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -1034,7 +911,6 @@
             content: $('#json_pop')
         });
     }
-
     function fastPrice() {
         var program_id = $('#hdpid').val();
         var result_json = $('#json_txt').val();
@@ -1069,29 +945,12 @@
         layer.closeAll();
     }
 
-    // checkbox联动
-    function ck_box(i_item_p, id, i_item_p2){
+    function ck_box(i_item_p, id){
         var targetObj = document.getElementById(i_item_p+id);
         if(targetObj.disabled != true){
             targetObj.disabled = true;
-            targetObj.value = 0;
-            if(i_item_p2){
-                var targetObj = document.getElementById(i_item_p2+id);
-                var chkBoxObj = document.getElementById(i_item_p2+id+'_i');
-                targetObj.disabled = true;
-                targetObj.value = 0;
-                chkBoxObj.checked = "";
-                chkBoxObj.disabled = true;
-            }
         } else {
             targetObj.disabled = false;
-            if(i_item_p2){
-                var targetObj = document.getElementById(i_item_p2+id);
-                var chkBoxObj = document.getElementById(i_item_p2+id+'_i');
-                targetObj.disabled = false;
-                chkBoxObj.checked = "checked";
-                chkBoxObj.disabled = false;
-            }
         }
     }
 
@@ -1242,6 +1101,35 @@
             shade: 0.8,
             area: ['90%', '90%'],
             content: url
+        });
+    }
+
+    function GetSubAreas(parent_code, ddl_id, seleted_code) {
+        if(parent_code.length == 0) {
+            $("#city").html('');
+            $("#city").append("<option value=''>--所有城市--</option>");
+            $("#district").html('');
+            $("#district").append("<option value=''>--所有区县--</option>");
+            return;
+        }
+        $.get("/ajax/GetSubAreas", { pcode: parent_code,  t: Math.random() }, function (data) {
+            data = jQuery.parseJSON(data);
+            if(data.flag==1){
+                $("#" + ddl_id).html('');
+                if(parent_code.length == 4) {
+                    $("#" + ddl_id).append("<option value=''>--所有城市--</option>");
+                }
+                else if (parent_code.length == 8) {
+                    $("#" + ddl_id).append("<option value=''>--所有区县--</option>");
+                }
+                for(var i=0; i< data.data.length; i++){
+                    if(data.data[i]["code"]==seleted_code){
+                        $("#" + ddl_id).append("<option value=\"" + data.data[i]["code"] + "\" selected>" + data.data[i]["name"] + "</option>");
+                    } else{
+                        $("#" + ddl_id).append("<option value=\"" + data.data[i]["code"] + "\">" + data.data[i]["name"] + "</option>");
+                    }
+                }
+            }
         });
     }
 
@@ -1526,421 +1414,39 @@
         var program = document.getElementById(program_id);
         // 获取数据
         var i_items = {};
-
-        // 获取数据
-        var forceIPrice = $(program).find('input[name="forceIPrice"]').val();    // 交强险
-        var forceICB = $(program).find('input[name="forceICB"]').is(':checked');    // 交强险 checkbox
-        if(forceICB){
-            if(forceIPrice*1<=0) {
-                alert('提交失败：交强险报价不能小于或等于0');
-                return
-            } else {
-                i_items['forceI'] = 1;
-                i_items['forceIPrice'] = forceIPrice;
+        $(program).find('table tr td').each(function (index, element) {
+            var i_item = $(this).find('input[name="i_item"]').attr('e_name');
+            var i_type = $(this).find('input[name="i_item"]').attr('i_type');
+            var i_item_value = $(this).find('input[name="i_item"]').val();
+            if(i_type == 1 | i_type == 2 | i_type == 3){
+                i_items[i_item] = i_item_value;
             }
-        } else {
-            if(forceIPrice*1>0) {
-                alert('提交失败：交强险没有选中但是报价大于0');
-                return
-            } else {
-                i_items['forceI'] = '';
-                i_items['forceIPrice'] = 0;
-            }
-        }
-        var vehicle_tax_price = $(program).find('input[name="vehicle_tax_price"]').val();    // 车船税价格
-        var vehicleTaxCB = $(program).find('input[name="vehicleTaxCB"]').is(':checked');    // 交强险 checkbox
-        if(vehicleTaxCB && vehicle_tax_price*1<=0){
-            alert('提交失败：车船税报价不能小于或等于0');
-            return
-        }
-        if(vehicleTaxCB == false && vehicle_tax_price*1>0){
-            alert('提交失败：车船税没有选中但是报价大于0');
-            return
-        }
-        var damageIPrice = $(program).find('input[name="damageIPrice"]').val();    // 车辆损失
-        var damageICB = $(program).find('input[name="damageICB"]').is(':checked');    // checkbox
-        if(damageICB){
-            if(damageIPrice*1<=0){
-                alert('提交失败：车损险报价不能小于或等于0');
-                return
-            } else {
-                i_items['damageI'] = 1;
-                i_items['damageIPrice'] = damageIPrice;
-            }
-        }else {
-            if(damageIPrice*1>0) {
-                alert('提交失败：车损险没有选中但是报价大于0');
-                return
-            } else {
-                i_items['damageI'] = '';
-                i_items['damageIPrice'] = 0;
-            }
-        }
-        var damageIPlusPrice = $(program).find('input[name="damageIPlusPrice"]').val();    // 车损不计免赔
-        var damageIPlusCB = $(program).find('input[name="damageIPlusCB"]').is(':checked');    // checkbox
-        if(damageIPlusCB){
-            if(damageIPlusPrice*1<=0) {
-                alert('提交失败：车损不计免赔险报价不能小于或等于0');
-                return
-            } else {
-                i_items['damageIPlus'] = 1;
-                i_items['damageIPlusPrice'] = damageIPlusPrice;
-            }
-        } else {
-            if(damageIPlusPrice*1>0) {
-                alert('提交失败：车损不计免赔险没有选中但是报价大于0');
-                return
-            } else {
-                i_items['damageIPlus'] = '';
-                i_items['damageIPlusPrice'] = 0;
-            }
-        }
-        var thirdDutyIPrice = $(program).find('input[name="thirdDutyIPrice"]').val();    // 三责价格
-        var thirdDutyICB = $(program).find('input[name="thirdDutyICB"]').is(':checked');    // 三责 checkbox
-        var thirdDutyIP = $(program).find('select[name="thirdDutyIP"]').find("option:selected").text();    // 三责 险额
-        if(thirdDutyICB){
-            if(thirdDutyIPrice*1<=0){
-                alert('提交失败：三责险报价不能小于或等于0');
-                return
-            } else {
-                i_items['thirdDutyI'] = thirdDutyIP;
-                i_items['thirdDutyIPrice'] = thirdDutyIPrice;
-            }
-        } else {
-            if(thirdDutyIPrice*1>0) {
-                alert('提交失败：三责险没有选中但是报价大于0' + thirdDutyIPrice);
-                return
-            } else {
-                i_items['thirdDutyI'] = '';
-                i_items['thirdDutyIPrice'] = 0;
-            }
-        }
-
-        var thirdDutyIPlusPrice = $(program).find('input[name="thirdDutyIPlusPrice"]').val();    // 三责不计免赔
-        var thirdDutyIPlusCB = $(program).find('input[name="thirdDutyIPlusCB"]').is(':checked');    // checkbox
-        if(thirdDutyIPlusCB){
-            if(thirdDutyIPlusPrice*1<=0){
-                alert('提交失败：三责不计免赔险报价不能小于或等于0');
-                return
-            } else {
-                i_items['thirdDutyIPlus'] = 1;
-                i_items['thirdDutyIPlusPrice'] = thirdDutyIPlusPrice;
-            }
-        } else {
-            if(thirdDutyIPlusPrice*1>0) {
-                alert('提交失败：三责不计免赔险没有选中但是报价大于0');
-                return
-            } else {
-                i_items['thirdDutyIPlus'] = '';
-                i_items['thirdDutyIPlusPrice'] = 0;
-            }
-        }
-
-        var robbingIPrice = $(program).find('input[name="robbingIPrice"]').val();    // 盗抢
-        var robbingICB = $(program).find('input[name="robbingICB"]').is(':checked');    // checkbox
-        if(robbingICB){
-            if(robbingIPrice*1<=0) {
-                alert('提交失败：盗抢险报价不能小于或等于0');
-                return
-            } else {
-                i_items['robbingI'] = 1;
-                i_items['robbingIPrice'] = robbingIPrice;
-            }
-        } else {
-            if(robbingIPrice*1>0) {
-                alert('提交失败：盗抢险没有选中但是报价大于0');
-                return
-            } else {
-                i_items['robbingI'] = '';
-                i_items['robbingIPrice'] = 0;
-            }
-        }
-
-        var robbingIPlusPrice = $(program).find('input[name="robbingIPlusPrice"]').val();    // 盗抢免责
-        var robbingIPlusCB = $(program).find('input[name="robbingIPlusCB"]').is(':checked');    // checkbox
-        if(robbingIPlusCB){
-            if(robbingIPlusPrice*1<=0) {
-                alert('提交失败：盗抢不计免赔险报价不能小于或等于0');
-                return
-            } else {
-                i_items['robbingIPlus'] = 1;
-                i_items['robbingIPlusPrice'] = robbingIPlusPrice;
-            }
-        } else {
-            if(robbingIPlusPrice*1>0) {
-                alert('提交失败：盗抢不计免赔险没有选中但是报价大于0');
-                return
-            } else {
-                i_items['robbingIPlus'] = '';
-                i_items['robbingIPlusPrice'] = 0;
-            }
-        }
-
-        var driverDutyIPrice = $(program).find('input[name="driverDutyIPrice"]').val();    // 车上司机
-        var driverDutyICB = $(program).find('input[name="driverDutyICB"]').is(':checked');    // checkbox
-        var driverDutyIS = $(program).find('select[name="driverDutyIS"]').find("option:selected").text();    // 司机 险额
-        if(driverDutyICB){
-            if(driverDutyIPrice*1<=0) {
-                alert('提交失败：车上司机险报价不能小于或等于0');
-                return
-            } else {
-                i_items['driverDutyI'] = driverDutyIS;
-                i_items['driverDutyIPrice'] = driverDutyIPrice;
-            }
-        } else {
-            if(driverDutyIPrice*1>0){
-                alert('提交失败：车上司机险没有选中但是报价大于0');
-                return
-            } else {
-                i_items['driverDutyI'] = '';
-                i_items['driverDutyIPrice'] = 0;
-            }
-        }
-
-        var driverDutyIPlusPrice = $(program).find('input[name="driverDutyIPlusPrice"]').val();    // 车上司机免责
-        var driverDutyIPlusCB = $(program).find('input[name="driverDutyIPlusCB"]').is(':checked');    // checkbox
-        if(driverDutyIPlusCB){
-            if(driverDutyIPlusPrice*1<=0) {
-                alert('提交失败：车上司机不计免赔险报价不能小于或等于0');
-                return
-            } else {
-                i_items['driverDutyIPlus'] = 1;
-                i_items['driverDutyIPlusPrice'] = driverDutyIPlusPrice;
-            }
-        } else {
-            if(driverDutyIPlusPrice*1>0) {
-                alert('提交失败：车上司机不计免赔险没有选中但是报价大于0');
-                return
-            } else {
-                i_items['driverDutyIPlus'] = '';
-                i_items['driverDutyIPlusPrice'] = 0;
-            }
-        }
-
-        var passengerDutyIPrice = $(program).find('input[name="passengerDutyIPrice"]').val();    // 车上乘客
-        var passengerDutyICB = $(program).find('input[name="passengerDutyICB"]').is(':checked');    // checkbox
-        var passengerDutyIS = $(program).find('select[name="passengerDutyIS"]').find("option:selected").text();    // 乘客 险额
-        if(passengerDutyICB){
-            if(passengerDutyIPrice*1<=0) {
-                alert('提交失败：车上乘客险报价不能小于或等于0');
-                return
-            } else {
-                i_items['passengerDutyI'] = passengerDutyIS;
-                i_items['passengerDutyIPrice'] = passengerDutyIPrice;
-            }
-        } else {
-            if(passengerDutyIPrice*1>0) {
-                alert('提交失败：车上乘客险没有选中但是报价大于0');
-                return
-            } else {
-                i_items['passengerDutyI'] = '';
-                i_items['passengerDutyIPrice'] = 0;
-            }
-        }
-
-        var passengerDutyIPlusPrice = $(program).find('input[name="passengerDutyIPlusPrice"]').val();    // 车上乘客免责
-        var passengerDutyIPlusCB = $(program).find('input[name="passengerDutyIPlusCB"]').is(':checked');    // checkbox
-        if(passengerDutyIPlusCB){
-            if(passengerDutyIPlusPrice*1<=0) {
-                alert('提交失败：车上乘客不计免赔险报价不能小于或等于0');
-                return
-            } else {
-                i_items['passengerDutyIPlus'] = 1;
-                i_items['passengerDutyIPlusPrice'] = passengerDutyIPlusPrice;
-            }
-        } else {
-            if(passengerDutyIPlusPrice*1>0) {
-                alert('提交失败：车上乘客不计免赔险没有选中但是报价大于0');
-                return
-            } else {
-                i_items['passengerDutyIPlus'] = '';
-                i_items['passengerDutyIPlusPrice'] = 0;
-            }
-        }
-
-        var glassIPrice = $(program).find('input[name="glassIPrice"]').val();    // 玻璃
-        var glassICB = $(program).find('input[name="glassICB"]').is(':checked');    // checkbox
-        if(glassICB){
-            if(glassIPrice*1<=0) {
-                alert('提交失败：玻璃险报价不能小于或等于0');
-                return
-            } else {
-                i_items['glassI'] = 1;
-                i_items['glassIPrice'] = glassIPrice;
-            }
-        } else {
-            if(glassIPrice*1>0) {
-                alert('提交失败：玻璃险没有选中但是报价大于0');
-                return
-            } else {
-                i_items['glassI'] = '';
-                i_items['glassIPrice'] = 0;
-            }
-        }
-
-        var scratchIPrice = $(program).find('input[name="scratchIPrice"]').val();    // 划痕
-        var scratchICB = $(program).find('input[name="scratchICB"]').is(':checked');    // checkbox
-        var scratchIS = $(program).find('select[name="scratchIS"]').find("option:selected").text();    // 划痕 险额
-        if(scratchICB){
-            if(scratchIPrice*1<=0) {
-                alert('提交失败：划痕险报价不能小于或等于0');
-                return
-            } else {
-                i_items['scratchI'] = scratchIS;
-                i_items['scratchIPrice'] = scratchIPrice;
-            }
-        } else {
-            if(scratchIPrice*1>0) {
-                alert('提交失败：划痕险没有选中但是报价大于0');
-                return
-            } else {
-                i_items['scratchI'] = '';
-                i_items['scratchIPrice'] = 0;
-            }
-        }
-
-        var scratchIPlusPrice = $(program).find('input[name="scratchIPlusPrice"]').val();    // 划痕免责
-        var scratchIPlusCB = $(program).find('input[name="scratchIPlusCB"]').is(':checked');    // checkbox
-        if(scratchIPlusCB){
-            if(scratchIPlusPrice*1<=0) {
-                alert('提交失败：划痕不计免赔险报价不能小于或等于0');
-                return
-            } else {
-                i_items['scratchIPlus'] = 1;
-                i_items['scratchIPlusPrice'] = scratchIPlusPrice;
-            }
-        } else {
-            if(scratchIPlusPrice*1>0) {
-                alert('提交失败：划痕不计免赔险没有选中但是报价大于0');
-                return
-            } else {
-                i_items['scratchIPlus'] = '';
-                i_items['scratchIPlusPrice'] = 0;
-            }
-        }
-
-        var fireDamageIPrice = $(program).find('input[name="fireDamageIPrice"]').val();    // 自燃
-        var fireDamageICB = $(program).find('input[name="fireDamageICB"]').is(':checked');    // checkbox
-        if(fireDamageICB){
-            if(fireDamageIPrice*1<=0) {
-                alert('提交失败：自燃险报价不能小于或等于0');
-                return
-            } else {
-                i_items['fireDamageI'] = 1;
-                i_items['fireDamageIPrice'] = fireDamageIPrice;
-            }
-        } else {
-            if(fireDamageIPrice*1>0) {
-                alert('提交失败：自燃险没有选中但是报价大于0');
-                return
-            } else {
-                i_items['fireDamageI'] = '';
-                i_items['fireDamageIPrice'] = 0;
-            }
-        }
-
-        var fireDamageIPlusPrice = $(program).find('input[name="fireDamageIPlusPrice"]').val();    // 自燃免责
-        var fireDamageIPlusCB = $(program).find('input[name="fireDamageIPlusCB"]').is(':checked');    // checkbox
-        if(fireDamageIPlusCB){
-            if(fireDamageIPlusPrice*1<=0) {
-                alert('提交失败：自燃不计免赔险报价不能小于或等于0');
-                return
-            } else {
-                i_items['fireDamageIPlus'] = 1;
-                i_items['fireDamageIPlusPrice'] = fireDamageIPlusPrice;
-            }
-        } else {
-            if(fireDamageIPlusPrice*1>0) {
-                alert('提交失败：自燃险不计免赔没有选中但是报价大于0');
-                return
-            } else {
-                i_items['fireDamageIPlus'] = '';
-                i_items['fireDamageIPlusPrice'] = 0;
-            }
-        }
-
-        var wadeIPrice = $(program).find('input[name="wadeIPrice"]').val();    // 涉水
-        var wadeICB = $(program).find('input[name="wadeICB"]').is(':checked');    // checkbox
-        if(wadeICB){
-            if(wadeIPrice*1<=0) {
-                alert('提交失败：涉水险报价不能小于或等于0');
-                return
-            } else {
-                i_items['wadeI'] = 1;
-                i_items['wadeIPrice'] = wadeIPrice;
-            }
-        } else {
-            if(wadeIPrice*1>0) {
-                alert('提交失败：涉水险没有选中但是报价大于0');
-                return
-            } else {
-                i_items['wadeI'] = '';
-                i_items['wadeIPrice'] = 0;
-            }
-        }
-
-        var wadeIPlusPrice = $(program).find('input[name="wadeIPlusPrice"]').val();    // 涉水免责
-        var wadeIPlusCB = $(program).find('input[name="wadeIPlusCB"]').is(':checked');    // checkbox
-        if(wadeIPlusCB){
-            if(wadeIPlusPrice*1<=0) {
-                alert('提交失败：涉水不计免赔险报价不能小于或等于0');
-                return
-            } else {
-                i_items['wadeIPlus'] = 1;
-                i_items['wadeIPlusPrice'] = wadeIPlusPrice;
-            }
-        } else {
-            if(wadeIPlusPrice*1>0) {
-                alert('提交失败：涉水不计免赔险没有选中但是报价大于0');
-                return
-            } else {
-                i_items['wadeIPlus'] = '';
-                i_items['wadeIPlusPrice'] = 0;
-            }
-        }
-
-        var thirdSpecialIPrice = $(program).find('input[name="thirdSpecialIPrice"]').val();    // 跑路
-        var thirdSpecialICB = $(program).find('input[name="thirdSpecialICB"]').is(':checked');    // checkbox
-        if(thirdSpecialICB){
-            if(thirdSpecialIPrice*1<=0){
-                alert('提交失败：无法找到第三方险报价不能小于或等于0');
-                return
-            } else {
-                i_items['thirdSpecialI'] = 1;
-                i_items['thirdSpecialIPrice'] = thirdSpecialIPrice;
-            }
-        } else {
-            if(thirdSpecialIPrice*1>0) {
-                alert('提交失败：无法找到第三方险没有选中但是报价大于0');
-                return
-            } else {
-                i_items['thirdSpecialI'] = '';
-                i_items['thirdSpecialIPrice'] = 0;
-            }
-        }
-
+        });
 
         var insurance = $(program).find('select[name="insurance"]').val();   // 保险 ID
-        var business_price = $(program).find('input[name="business_price"]').val();    // 商业险总额
-        var insurance_price = $(program).find('input[name="insurance_price"]').val();    // 保险总额
         var gift_policy = $(program).find('select[name="gift_policy"]').val();   // 返佣方式
+        var vehicle_tax_price = $(program).find('input[name="vehicle_tax_price"]').val();    // 车船税价格
+        var business_price = $(program).find('input[name="business_price"]').val();    // 商业险价格
+        var force_price = $(program).find('input[name="force_price"]').val();    // 交强险价格
+        var total_price = $(program).find('input[name="total_price"]').val();    // 总价
         var cash = $(program).find('input[name="cash"]').val();    // 积分
         var psummary = $(program).find('textarea[name="psummary"]').val();    // 短信
-        var force_rate = $(program).find('input[name="force_rate"]').val();    // 交强险折扣
-        var business_rate = $(program).find('input[name="business_rate"]').val();    // 商业险折扣
-
+        var last_program = $(program).find('input[name="last_program"]').val();    // 是否最终方案
+        var force_rate = $(program).find('input[name="force_rate"]').val();    // 短信
+        var business_rate = $(program).find('input[name="business_rate"]').val();    // 是否最终方案
         var groups = {};
         groups['pid'] = program_id;
         groups['insurance'] = insurance;
         groups['gift_policy'] = gift_policy;
         groups['vehicle_tax_price'] = vehicle_tax_price;
         groups['business_price'] = business_price;
-        groups['force_price'] = forceIPrice;
-        groups['total_price'] = insurance_price;
+        groups['force_price'] = force_price;
+        groups['total_price'] = total_price;
         groups['force_rate'] = force_rate;
         groups['business_rate'] = business_rate;
         groups['cash'] = cash;
         groups['psummary'] = psummary;
+        groups['last_program'] = last_program;
         $.post('/ajax/save_iop_data', {_xsrf:xsrf, i_items:JSON.stringify(i_items), groups:JSON.stringify(groups), send_msg:send_msg}, function (data) {
             var obj = jQuery.parseJSON(data);
             if (obj.flag == 1) {
@@ -1969,26 +1475,16 @@
 
     //补退款
     function append_refund_money(pid, ar_status){
-        if(ar_status==1) {
-            var ar_num = document.getElementById("ar_num").value;//对象是contents
-            var ar_reason = document.getElementById("ar_reason").value;//对象是contents
-            $.post('/ajax/append_refund_money', {
-                _xsrf: xsrf,
-                ar_num: ar_num,
-                ar_reason: ar_reason,
-                pid: pid,
-                ar_status: ar_status
-            }, function (data) {
-                var obj = jQuery.parseJSON(data);
-                if (obj.flag == 1) {
-                    alert('申请补款成功!');
-                } else {
-                    alert(obj.msg);
-                }
-            });
-        } else {
-            alert('该订单状态下不可以补款，只有已支付或已完成的可以！')
-        }
+        var ar_num = document.getElementById("ar_num").value;//对象是contents
+        var ar_reason = document.getElementById("ar_reason").value;//对象是contents
+        $.post('/ajax/append_refund_money', {_xsrf:xsrf, ar_num:ar_num, ar_reason:ar_reason, pid:pid, ar_status:ar_status}, function (data) {
+            var obj = jQuery.parseJSON(data);
+            if (obj.flag == 1) {
+                alert('申请补款成功!');
+            } else {
+                alert(obj.msg);
+            }
+        });
     }
     //===========================点击展开关闭效果====================================
     function openShutManager(thisObj, oTargetObj){

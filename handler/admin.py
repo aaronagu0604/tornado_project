@@ -1716,14 +1716,13 @@ class InsuranceOrderDetailHandler(AdminBaseHandler):
             i_item_list = []
             for i_item in i_items:
                 i_item_list.append({
-                    # 'name': i_item.name,
+                    'name': i_item.name,
                     # 'e_name': i_item.eName,
                     # 'style_id': i_item.style_id,
                     'value': program.__dict__['_data'][i_item.eName],
                     'i_item_price': [{'id': iip.id, 'coverage': iip.coverage} for iip in i_item.insurance_prices],
                     'price': program.__dict__['_data'][i_item.eName+'Price'] if program.__dict__['_data'][i_item.eName+'Price'] else 0
                 })
-
             rates = InsuranceScoreExchange.get_score_policy(o.store.area_code, program.insurance)
             programs.append({
                 'pid': program.id,
@@ -1739,7 +1738,7 @@ class InsuranceOrderDetailHandler(AdminBaseHandler):
                 'msg': program.sms_content if program.sms_content else '',
                 'rates': rates,
                 'response': program.response,
-                'append_refund_status': program.append_refund_status,
+                'append_refund_status': 1 if (program.append_refund_status==0 and (o.status==2 or o.status==3)) else 0,
                 'append_refund_num': program.append_refund_num,
                 'append_refund_reason': program.append_refund_reason,
                 'is_default': 1 if program == o.current_order_price else 0,
@@ -1752,7 +1751,6 @@ class InsuranceOrderDetailHandler(AdminBaseHandler):
             active = 'i_order_a'
         else:
             active = 'i_order'
-
         rta_type = {
             "B11": "重型普通半挂式",
             "B12": "重型厢式半挂车",
@@ -2235,7 +2233,10 @@ class InsuranceLube(AdminBaseHandler):
         area_code = self.get_argument('area_code', '0')
         sid = self.get_argument('sid', '')
         if sid:
-            lube_policy = SSILubePolicy.get((SSILubePolicy.store == sid) & (SSILubePolicy.insurance == iid)).lube
+            try:
+                lube_policy = SSILubePolicy.get((SSILubePolicy.store == sid) & (SSILubePolicy.insurance == iid)).lube
+            except Exception, e:
+                lube_policy = None
             item = {'id': 0, 'policy': lube_policy}
         else:
             lube_policy = LubePolicy.get((LubePolicy.insurance == iid) & (LubePolicy.area_code == area_code))

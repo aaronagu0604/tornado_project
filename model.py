@@ -733,7 +733,7 @@ class InsuranceOrderPrice(db.Model):
     vehicle_tax_price = FloatField(default=0.0)  # 车船税价格
     sms_content = CharField(max_length=1024, null=True)  # 短信通知内容
 
-    append_refund_status = IntegerField(default=0)    # 补退款状态 0无需补退款 1待补款/退款 2已补款/退款
+    append_refund_status = IntegerField(default=0)    # 补退款状态 0无需补退款 1待补款/退款
     append_refund_time = IntegerField(default=0)    # 补退款时间
     append_refund_reason = CharField(max_length=128, default='')    # 补退款原因
     append_refund_num = FloatField(default=0.0)    # 补退款金额
