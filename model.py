@@ -887,31 +887,37 @@ class UserCarInfo(db.Model):
     id = PrimaryKeyField()
     insuranceorder = ForeignKeyField(InsuranceOrder, db_column='insurance_order_id')  # 保险订单ID
     # 车主信息
+    car_owner_type = CharField(max_length=50, null=True)  # 车主类型:个人private(中华必填)
+    ## 车主机构信息
+    car_owner_num = CharField(max_length=50, null=True)  # 车辆所属组织机构代码
+    ## 车主人信息
     car_owner_name = CharField(max_length=50, null=True)  # 车主姓名
     car_owner_idcard = CharField(max_length=50, null=True)  # 车主身份证号
-    car_owner_date = CharField(max_length=50, null=True)  # 车主身份证有效期
     car_owner_address = CharField(max_length=50, null=True)  # 车主身份证地址
-    car_owner_type = CharField(max_length=50, null=True)  # 车主类型:小客车car
-    car_use_type = CharField(max_length=50, null=True)  # 车辆使用类型：非运营non_operation,运营operation
-    car_nengyuan_type = CharField(max_length=50, null=True)  # 车主能源情况：燃油ranyou，混合hunhe
-    # 机构信息
-    car_owner_num = CharField(max_length=50, null=True) # 车辆所属组织机构代码
+
     # 被保险人信息
     owner_buyer_isone = IntegerField(default=0)  # 0不是 1是
     buy_name = CharField(max_length=50, null=True)  # 姓名
     buy_idcard = CharField(max_length=50, null=True)  # 身份证号
-    buy_date = CharField(max_length=50, null=True)  # 身份证有效期
-    buy_address = CharField(max_length=50, null=True)  # 身份证地址
+
     # 车辆信息
     car_num = CharField(max_length=50, null=True)  # 车牌号
     car_frame_num = CharField(max_length=50, null=True)  # 车架号
     car_engine_num = CharField(max_length=50, null=True)  # 发动机号
-    car_type = CharField(max_length=50, null=True)  # 车型
-    car_model_type = CharField(max_length=50, null=True)  # 品牌厂型
     car_passenger_number = CharField(max_length=50, null=True)  # 车座位数
     car_quality = CharField(max_length=50, null=True)  # 整车质量
+
+    car_type = CharField(max_length=50, null=True)  # 车型：小客车car
+    car_use_type = CharField(max_length=50, null=True)  # 车辆使用类型：非运营non_operation,运营operation
+    car_nengyuan_type = CharField(max_length=50, null=True)  # 车主能源情况：燃油ranyou，混合hunhe
+
+    car_model_type = CharField(max_length=50, null=True)  # 品牌厂型
+    car_model_code = CharField(max_length=50, null=True)  # 车辆精友码
+    car_displacement = CharField(max_length=50, null=True)  # 车排量
+    car_price = CharField(max_length=50, null=True)  # 车价格
+
+    assigned = IntegerField(default=1)  # 是否过户：0没有1有
     first_register_date = IntegerField(default=1) # 初次等级日期
-    assigned = IntegerField(default=1) # 是否过户：0没有1有
     assigned_date = IntegerField(default=1) # 过户日期
     # 保险信息
     start_date_enforce = CharField(max_length=50, null=True) # 交强险起保日期

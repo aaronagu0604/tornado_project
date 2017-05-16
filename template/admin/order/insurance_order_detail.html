@@ -231,7 +231,7 @@
 
                 <h4>图片信息
                     <input type="button" class="btn btn-outline btn-primary btn-xs" onclick="imgocr({{ o.id }})" value="OCR"/>
-                    <input type="button" class="btn btn-outline btn-primary btn-xs" value="保存"/>
+                    <input type="button" class="btn btn-outline btn-primary btn-xs" onclick="ocr_save({{ o.id }})" value="保存"/>
                 </h4>
 
                 <div class="row">
@@ -274,9 +274,9 @@
                         </div>
                     </div>
                 </div>
-                <input type="checkbox" {% if o.is_same_person==1 %} checked="checked" {% endif %}
+                <input id="owner_buyer_isone" type="checkbox" {% if o.is_same_person==1 %} checked="checked" {% endif %}
                        onchange="check_one_people()" style="visibility: visible;">车主同被保险人
-                <div class="row" style="margin-top: 5px; {% if o.is_same_person==1 %} display: none {% endif %}" id="is_same_person">
+                <div class="row" style="margin-top: 5px; {% if o.is_same_person==1 %} display: none {% endif %}" id="owner_buyer_info" >
                     <div class="col-xs-6" style="text-align: center">
                         <a href="{{o.id_card_front_owner}}" class="">
                             <img style="width:160px; height:110px;" src="{{o.id_card_front_owner}}"/>
@@ -296,52 +296,73 @@
                         </div>
                     </div>
                 </div>
-
-                <div class="row">
+                <!--被保险人身份证信息-->
+                <div class="row" id="buyer_idcard_info1" style="margin-top: 5px; {% if o.is_same_person==1 %} display: none {% endif %}">
                     <div class="col-xs-3">
-                        姓名
+                        被保险人姓名
                     </div>
                     <div class="col-xs-3 rightTxt">
-                        <input id="ocr_name" class="form-control" type="text" />
+                        <input id="buy_name" class="form-control" type="text" />
                     </div>
                     <div class="col-xs-3">
-                        到期时间
+                        被保险人身份证号
                     </div>
                     <div class="col-xs-3 rightTxt">
-                        <input id="ocr_end_date" class="form-control" type="text" />
+                        <input id="buy_idcard" class="form-control" type="text" />
+                    </div>
+                </div>
+                <!--车主身份证信息-->
+                <div class="row">
+                    <div class="col-xs-3">
+                        车主姓名
+                    </div>
+                    <div class="col-xs-3 rightTxt">
+                        <input id="car_owner_name" class="form-control" type="text" />
+                    </div>
+                   <div class="col-xs-3">
+                        车主身份证号
+                    </div>
+                    <div class="col-xs-3 rightTxt">
+                        <input id="car_owner_idcard" class="form-control" type="text" />
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-xs-3">
-                        身份证号
+                        车主住址
                     </div>
                     <div class="col-xs-9 rightTxt">
-                        <input id="ocr_num" class="form-control" type="text" />
+                        <input id="car_owner_address" class="form-control" type="text" />
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-xs-3">
-                        地址
+                        所属机构组织代码
                     </div>
                     <div class="col-xs-9 rightTxt">
-                        <input id="ocr_address" class="form-control" type="text" />
+                        <input id="car_owner_num" class="form-control" type="text" />
                     </div>
                 </div>
-                <div class="row">
-
-                </div>
+                <!--行驶证信息-->
                 <div class="row">
                     <div class="col-xs-3">
                         车牌号
                     </div>
                     <div class="col-xs-3 rightTxt">
-                        <input id="ocr_plate_num" class="form-control" type="text" />
+                        <input id="car_num" class="form-control" type="text" />
                     </div>
                     <div class="col-xs-3">
                         发动机号
                     </div>
                     <div class="col-xs-3 rightTxt">
-                        <input id="ocr_engine_num" class="form-control" type="text" />
+                        <input id="car_engine_num" class="form-control" type="text" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-3">
+                        车架号
+                    </div>
+                    <div class="col-xs-9 rightTxt">
+                        <input id="car_frame_num" class="form-control" type="text" />
                     </div>
                 </div>
                 <div class="row">
@@ -349,8 +370,30 @@
                         能源类型
                     </div>
                     <div class="col-xs-3 rightTxt">
-                        <select name="fuel_type" class="form-control">
+                        <select id="car_nengyuan_type" name="fuel_type" class="form-control">
                             {% for k,v in fuel_type.items() %}
+                            <option value="{{k}}">{{v}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-xs-3">
+                        车辆类型
+                    </div>
+                    <div class="col-xs-3 rightTxt">
+                        <select id="car_type" name="car_type" class="form-control">
+                            {% for k,v in car_type.items() %}
+                            <option value="{{k}}">{{v}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-3">
+                        车辆用途类型
+                    </div>
+                    <div class="col-xs-3 rightTxt">
+                        <select id="car_use_type" name="car_use_type" class="form-control">
+                            {% for k,v in car_use_type.items() %}
                             <option value="{{k}}">{{v}}</option>
                             {% endfor %}
                         </select>
@@ -370,46 +413,70 @@
                     <div class="col-xs-3">
                         品牌型号
                     </div>
-                    <div class="col-xs-3 rightTxt">
-                        <input id="pinpai_model" class="form-control" type="text" />
+                    <div class="col-xs-6 rightTxt">
+                        <input id="car_model_type" class="form-control" type="text" />
                     </div>
+                    <div class="col-xs-3">
+                        <input type="button" class="btn btn-outline btn-primary btn-xs" onclick="searchcarinfo()" value="查询车辆细化型号"/>
+                    </div>
+                </div>
+                <div class="row">
                     <div class="col-xs-3">
                         细化型号
                     </div>
-                    <div class="col-xs-3 rightTxt">
-                        <select name="detail_type" class="form-control">
-
+                    <div class="col-xs-9 rightTxt">
+                        <select id="detail_type"  onchange="detail_type_select(this.value)" name="detail_type" class="form-control">
+                            {% for k,v in detail_type.items() %}
+                            <option value="{{k}}">{{v}}</option>
+                            {% endfor %}
                         </select>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-xs-3">
-                        车架号
+                 <div class="row">
+                     <div class="col-xs-3">
+                        精友码
+                     </div>
+                     <div class="col-xs-3 rightTxt">
+                         <input id="car_model_code" class="form-control" type="text" />
+                     </div>
+                    <div class="col-xs-1">
+                        价格
                     </div>
-                    <div class="col-xs-9 rightTxt">
-                        <input id="ocr_vin" class="form-control" type="text" />
+                    <div class="col-xs-2 rightTxt">
+                        <input id="car_price" class="form-control" type="text" />
+                    </div>
+                    <div class="col-xs-1">
+                        排量
+                    </div>
+                    <div class="col-xs-2 rightTxt">
+                        <input id="car_displacement" class="form-control" type="text" />
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-xs-3">
-                        车型
-                    </div>
-                    <div class="col-xs-9 rightTxt">
-                        <input id="ocr_vehicle_type" class="form-control" type="text" />
-                    </div>
-                </div>
+                <!-- 行驶证副本信息 -->
                 <div class="row">
                     <div class="col-xs-3">
                         座位数
                     </div>
                     <div class="col-xs-3 rightTxt">
-                        <input class="form-control" type="text" />
+                        <input id="car_passenger_number" class="form-control" type="text" />
                     </div>
                     <div class="col-xs-3">
                         整备质量
                     </div>
                     <div class="col-xs-3 rightTxt">
-                        <input class="form-control" type="text" />
+                        <input id="car_quality" class="form-control" type="text" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-3">
+                        初次登记日期/过户日期
+                    </div>
+                    <div class="col-xs-3 rightTxt">
+                        <input id="first_register_date" class="form-control" type="text" />
+                    </div>
+                    <div class="col-xs-6">
+                        <input id="assigned" type="checkbox" {% if o.is_same_person==1 %} checked="checked" {% endif %}
+                       style="visibility: visible;">是否过户
                     </div>
                 </div>
                 <div class="row">
@@ -417,13 +484,13 @@
                         抢险起保日期
                     </div>
                     <div class="col-xs-3 rightTxt">
-                        <input class="form-control" type="text" />
+                        <input id="start_date_enforce" class="form-control" type="text" />
                     </div>
                     <div class="col-xs-3">
                         商业险起保日期
                     </div>
                     <div class="col-xs-3 rightTxt">
-                        <input class="form-control" type="text" />
+                        <input id="start_date_trade" class="form-control" type="text" />
                     </div>
                 </div>
                 <!-- 中华联合补充材料 -->
@@ -432,7 +499,7 @@
                         交管所车辆类型
                     </div>
                     <div class="col-xs-3 rightTxt">
-                        <select name="rta_type" class="form-control">
+                        <select id="rta_type" class="form-control">
                             {% for k,v in rta_type.items() %}
                             <option value="{{k}}">{{v}}</option>
                             {% endfor %}
@@ -442,7 +509,7 @@
                         细化车辆类型
                     </div>
                     <div class="col-xs-3 rightTxt">
-                        <select name="car_detail_type" class="form-control">
+                        <select id="car_detail_type" class="form-control">
                             {% for k,v in car_detail_type.items() %}
                             <option value="{{k}}">{{v}}</option>
                             {% endfor %}
@@ -454,7 +521,7 @@
                         车牌类型
                     </div>
                     <div class="col-xs-3 rightTxt">
-                        <select name="car_number_type" class="form-control">
+                        <select id="car_number_type" class="form-control">
                             {% for k,v in car_number_type.items() %}
                             <option value="{{k}}">{{v}}</option>
                             {% endfor %}
@@ -464,7 +531,7 @@
                         行驶证类型
                     </div>
                     <div class="col-xs-3 rightTxt">
-                        <select name="license_type" class="form-control">
+                        <select id="license_type" class="form-control">
                             {% for k,v in license_type.items() %}
                             <option value="{{k}}">{{v}}</option>
                             {% endfor %}
@@ -1048,7 +1115,25 @@
     var xsrf='{{handler.xsrf_token}}';
 
     function check_one_people(){
-        var targetObj = document.getElementById('is_same_person');
+        var targetObj = document.getElementById('owner_buyer_info');
+        if(targetObj.style.display!="none"){
+            targetObj.style.display="none";
+        } else {
+            targetObj.style.display="";
+        }
+        targetObj = document.getElementById('buyer_idcard_info1');
+        if(targetObj.style.display!="none"){
+            targetObj.style.display="none";
+        } else {
+            targetObj.style.display="";
+        }
+        targetObj = document.getElementById('buyer_idcard_info2');
+        if(targetObj.style.display!="none"){
+            targetObj.style.display="none";
+        } else {
+            targetObj.style.display="";
+        }
+        targetObj = document.getElementById('buyer_idcard_info3');
         if(targetObj.style.display!="none"){
             targetObj.style.display="none";
         } else {
@@ -1163,30 +1248,144 @@
                 }
             });
     }
+    function detail_type_select(value) {
+        var obj = jQuery.parseJSON(value);
+        document.getElementById('car_model_code').value = obj.mode_code;
+        document.getElementById('car_displacement').value = obj.DISPLACEMENT;
+        document.getElementById('car_price').value = obj.CAR_PRICE;
+        document.getElementById('car_quality').value = obj.QUALITY;
+    }
+    // searchcarinfo function 调用ajax并回填识别信息
+    function searchcarinfo() {
+        ShowLoading();
+        var car_model_type  = document.getElementById('car_model_type').value;
+        var register_date  = document.getElementById('first_register_date').value;
+        $.get('/ajax/search_car_info', {_xsrf:xsrf,
+            car_model_type:car_model_type,
+            register_date:register_date,
+            }, function (data) {
+            HiddenLoading();
+            var obj = jQuery.parseJSON(data);
+            if (obj.flag == 1) {
+                var detail_type = document.getElementById('detail_type')
+                for (var i=0,len=obj.data.length; i<len; i++)
+                {
+                    detail_type.options.add(new Option(obj.data[i].display,obj.data[i].value));
+                }
+
+            } else {
+                alert(obj.msg);
+            }
+        });
+    }
     // OCR function 调用ajax并回填识别信息
     function imgocr(id) {
          ShowLoading();
         $.get('/ajax/ocr', {_xsrf:xsrf, io_id:id}, function (data) {
+            HiddenLoading();
             var obj = jQuery.parseJSON(data);
             if (obj.flag == 1) {
-                HiddenLoading();
-                document.getElementById('ocr_name').value=obj.id_card_front.name;
-                document.getElementById('ocr_address').value=obj.id_card_front.address;
-                document.getElementById('ocr_num').value=obj.id_card_front.num;
-                document.getElementById('ocr_end_date').value=obj.id_card_back.end_date;
 
-                document.getElementById('ocr_plate_num').value=obj.drive_card_front.plate_num;
-                document.getElementById('ocr_engine_num').value=obj.drive_card_front.engine_num;
-                document.getElementById('ocr_vin').value=obj.drive_card_front.vin;
-                document.getElementById('ocr_vehicle_type').value=obj.drive_card_front.vehicle_type;
+                document.getElementById('car_owner_name').value=obj.id_card_front.name;
+                document.getElementById('car_owner_address').value=obj.id_card_front.address;
+                document.getElementById('car_owner_idcard').value=obj.id_card_front.num;
 
+                document.getElementById('car_num').value=obj.drive_card_front.plate_num;
+                document.getElementById('car_engine_num').value=obj.drive_card_front.engine_num;
+                document.getElementById('car_frame_num').value=obj.drive_card_front.vin;
+                var timestr = obj.drive_card_front.register_date
+                timestr = timestr.substring(0,4)+'-'+timestr.substring(4,6)+'-'+timestr.substring(6);
+                document.getElementById('first_register_date').value=timestr;
+                document.getElementById('car_model_type').value=obj.drive_card_front.model;
+                document.getElementById('start_date_enforce').value=timestr;
+                document.getElementById('start_date_trade').value=timestr;
             } else {
                 alert(obj.msg);
-                HiddenLoading();
             }
         });
     }
 
+    function ocr_save(io_id) {
+        var car_owner_name = document.getElementById('car_owner_name').value;
+        var car_owner_idcard = document.getElementById('car_owner_idcard').value;
+
+        var car_owner_address = document.getElementById('car_owner_address').value;
+        var car_owner_type = document.getElementById('car_owner_type').options[document.getElementById('car_owner_type').selectedIndex].value;;
+        var car_use_type = document.getElementById('car_use_type').options[document.getElementById('car_use_type').selectedIndex].value;;
+        var car_nengyuan_type = document.getElementById('car_nengyuan_type').options[document.getElementById('car_nengyuan_type').selectedIndex].value;;
+        // 机构信息
+        var car_owner_num = document.getElementById('car_owner_num').value;
+        // 被保险人信息
+        var owner_buyer_isone = document.getElementById('owner_buyer_isone').checked;
+        var buy_name = document.getElementById('buy_name').value;
+        var buy_idcard = document.getElementById('buy_idcard').value;
+
+        // 车辆信息
+        var car_num = document.getElementById('car_num').value;
+        var car_frame_num = document.getElementById('car_frame_num').value;
+        var car_engine_num = document.getElementById('car_engine_num').value;
+        var car_type = document.getElementById('car_type').options[document.getElementById('car_type').selectedIndex].value;
+        var car_model_type = document.getElementById('car_model_type').value;
+        var car_passenger_number = document.getElementById('car_passenger_number').value;
+        var car_quality = document.getElementById('car_quality').value;
+        var first_register_date = document.getElementById('first_register_date').value;
+        var assigned = document.getElementById('assigned').checked;
+        var assigned_date = document.getElementById('assigned_date').value;
+        // 保险信息
+        var start_date_enforce = document.getElementById('start_date_enforce').value;
+        var start_date_trade = document.getElementById('start_date_trade').value;
+        //中华联合补充信息
+        var rta_type = document.getElementById('rta_type').options[document.getElementById('rta_type').selectedIndex].value;
+        var car_detail_type = document.getElementById('car_detail_type').options[document.getElementById('car_detail_type').selectedIndex].value;
+        var car_num_type = document.getElementById('car_num_type').options[document.getElementById('car_num_type').selectedIndex].value;
+        var license_type = document.getElementById('license_type').options[document.getElementById('license_type').selectedIndex].value;
+
+        $.post('/ajax/ocr_save',
+            {   _xsrf:xsrf,
+                io_id:id,
+                car_owner_name : car_owner_name,
+                car_owner_idcard : car_owner_idcard,
+
+                car_owner_address : car_owner_address,
+                car_owner_type : car_owner_type,
+                car_use_type : car_use_type,
+                car_nengyuan_type : car_nengyuan_type,
+                // 机构信息
+                car_owner_num : car_owner_num,
+                // 被保险人信息
+                owner_buyer_isone : owner_buyer_isone,
+                buy_name : buy_name,
+                buy_idcard : buy_idcard,
+
+                // 车辆信息
+                car_num : car_num,
+                car_frame_num : car_frame_num,
+                car_engine_num : car_engine_num,
+                car_type : car_type,
+                car_model_type : car_model_type,
+                car_passenger_number : car_passenger_number,
+                car_quality : car_quality,
+                first_register_date : first_register_date,
+                assigned : assigned,
+                assigned_date : assigned_date,
+                // 保险信息
+                start_date_enforce : start_date_enforce,
+                start_date_trade : start_date_trade,
+                //中华联合补充信息
+                rta_type : rta_type,
+                car_detail_type : car_detail_type,
+                car_num_type : car_num_type,
+                license_type : license_type,
+                },
+            function (data) {
+            var obj = jQuery.parseJSON(data);
+            if (obj.flag == 1) {
+                alert("OCR信息保存成功");
+            } else {
+                alert(obj.msg);
+            }
+        });
+    }
     // 选择返佣方式
     function change_gift_policy(pid, gift) {
         if(gift == 1){

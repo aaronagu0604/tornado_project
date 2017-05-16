@@ -1022,6 +1022,7 @@ class OCRHandler(BaseHandler):
         request.add_header('Content-Type', 'application/json; charset=UTF-8')
         response = urllib2.urlopen(request)
         ocrresult = response.read()
+        print 'idcard:',ocrresult
         return simplejson.loads(ocrresult)['outputs'][0]['outputValue']['dataValue']
 
     def ali_drive_ocr(self,imgdata):
@@ -1048,8 +1049,11 @@ class OCRHandler(BaseHandler):
         request.add_header('Content-Type', 'application/json; charset=UTF-8')
         response = urllib2.urlopen(request)
         ocrresult = response.read()
-        return simplejson.loads(ocrresult)['outputs'][0]['outputValue']['dataValue']
-
+        print 'drivecard:',ocrresult
+        try:
+            return simplejson.loads(ocrresult)['outputs'][0]['outputValue']['dataValue']
+        except:
+            return simplejson.loads([])
     @run_on_executor
     def insuranceorderocr(self,io_id):
         if not io_id:
@@ -1099,20 +1103,87 @@ class OCRSaveHandler(BaseHandler):
 
     def post(self):
         result = {'flag': 1, 'msg': '保存成功', 'data': ''}
-        io_id = self.get_argument('io_id',None)
+        io_id = self.get_body_argument('io_id', None)
+        # 车主信息
         car_owner_name = self.get_body_argument('car_owner_name', None)
         car_owner_idcard = self.get_body_argument('car_owner_idcard', None)
+        car_owner_date = self.get_body_argument('car_owner_date', None)
+        car_owner_address = self.get_body_argument('car_owner_address', None)
+        car_owner_type = self.get_body_argument('car_owner_type', None)
+        car_use_type = self.get_body_argument('car_use_type', None)
+        car_nengyuan_type = self.get_body_argument('car_nengyuan_type', None)
+        # 机构信息
+        car_owner_num = self.get_body_argument('car_owner_num', None)
+        # 被保险人信息
+        owner_buyer_isone = self.get_body_argument('owner_buyer_isone', None)
+        buy_name = self.get_body_argument('buy_name', None)
+        buy_idcard = self.get_body_argument('buy_idcard', None)
+        buy_date = self.get_body_argument('buy_date', None)
+        buy_address = self.get_body_argument('buy_address', None)
+        # 车辆信息
+        car_num = self.get_body_argument('car_num', None)
+        car_frame_num = self.get_body_argument('car_frame_num', None)
+        car_engine_num = self.get_body_argument('car_engine_num', None)
+        car_type = self.get_body_argument('car_type', None)
+        car_model_type = self.get_body_argument('car_model_type', None)
+        car_passenger_number = self.get_body_argument('car_passenger_number', None)
+        car_quality = self.get_body_argument('car_quality', None)
+        first_register_date = self.get_body_argument('first_register_date', None)
+        assigned = self.get_body_argument('assigned', None)
+        assigned_date = self.get_body_argument('assigned_date', None)
+        # 保险信息
+        start_date_enforce = self.get_body_argument('start_date_enforce', None)
+        start_date_trade = self.get_body_argument('start_date_trade', None)
+        # 中华联合额外字段
+        rta_type = self.get_body_argument('rta_type', None)
+        car_detail_type = self.get_body_argument('car_detail_type', None)
+        car_num_type = self.get_body_argument('car_num_type', None)
+        license_type = self.get_body_argument('license_type', None)
 
-        io = InsuranceOrder.get(id=int(io_id))
-
-        if not io:
+        if not io_id:
             result['msg'] = u'参数不全'
             self.write(simplejson.dumps(result))
             return
 
+        io = InsuranceOrder.get(id=int(io_id))
+
         ucinfo = UserCarInfo()
-        ucinfo.car_owner_name = car_owner_name
-        ucinfo.car_owner_idcard = car_owner_idcard
+        ucinfo.insuranceorder = io
+        # 车主信息
+        ucinfo.car_owner_name = car_owner_name  # 车主姓名
+        ucinfo.car_owner_idcard = car_owner_idcard  # 车主身份证号
+        ucinfo.car_owner_date = car_owner_date  # 车主身份证有效期
+        ucinfo.car_owner_address = car_owner_address  # 车主身份证地址
+        ucinfo.car_owner_type = car_owner_type  # 车主类型:小客车car
+        ucinfo.car_use_type = car_use_type  # 车辆使用类型：非运营non_operation,运营operation
+        ucinfo.car_nengyuan_type = car_nengyuan_type  # 车主能源情况：燃油ranyou，混合hunhe
+        # 机构信息
+        ucinfo.car_owner_num = car_owner_num  # 车辆所属组织机构代码
+        # 被保险人信息
+        ucinfo.owner_buyer_isone = owner_buyer_isone  # 0不是 1是
+        ucinfo.buy_name = buy_name  # 姓名
+        ucinfo.buy_idcard = buy_idcard  # 身份证号
+        ucinfo.buy_date = buy_date  # 身份证有效期
+        ucinfo.buy_address = buy_address  # 身份证地址
+        # 车辆信息
+        ucinfo.car_num = car_num  # 车牌号
+        ucinfo.car_frame_num = car_frame_num  # 车架号
+        ucinfo.car_engine_num = car_engine_num  # 发动机号
+        ucinfo.car_type = car_type  # 车型
+        ucinfo.car_model_type = car_model_type  # 品牌厂型
+        ucinfo.car_passenger_number = car_passenger_number  # 车座位数
+        ucinfo.car_quality = car_quality  # 整车质量
+        ucinfo.first_register_date = first_register_date  # 初次等级日期
+        ucinfo.assigned = assigned  # 是否过户：0没有1有
+        ucinfo.assigned_date = assigned_date  # 过户日期
+        # 保险信息
+        ucinfo.start_date_enforce = start_date_enforce  # 交强险起保日期
+        ucinfo.start_date_trade = start_date_trade  # 商业险起保日期
+        # 中华联合额外字段
+        ucinfo.rta_type = rta_type  # 交管所车辆类型
+        ucinfo.car_detail_type = car_detail_type  # 细化车型
+        ucinfo.car_num_type = car_num_type  # 车牌类型
+        ucinfo.license_type = license_type  # 行驶证车辆类型
 
         ucinfo.save()
         self.write(simplejson.dumps(result))
@@ -1122,11 +1193,11 @@ class SearchCarInfoHandler(BaseHandler):
     def check_xsrf_cookie(self):
         pass
 
-    def sear_chcar_info(self, insurance='zhlh'):
+    def sear_chcar_info(self, insurance='zhlh',car_model_type=None,register_date=None):
         url = 'http://apitest.baodaibao.com.cn/index.php?g=Api&m=SearchCarInfoApi&a=SearchCarInfo'
         msg = {'flag':0 , 'msg':'', 'data':''}
         post_data = {}
-        post_data['changpai_model'] = "北京现代BH7203AY"
+        post_data['changpai_model'] = car_model_type  # "北京现代BH7203AY"
         post_data['user_id'] = "142"
         if insurance == 'taiping':
             post_data['taiping_data'] = {
@@ -1135,26 +1206,28 @@ class SearchCarInfoHandler(BaseHandler):
         if insurance == 'zhlh':
             post_data['zhlh_data'] = {
                 "customerid": "17",
-                "first_register_data": "2015-01-01"
+                "first_register_data": register_date
             }
         if insurance == 'huaan':
             post_data['huaan_data'] = {
                 "customerid": "14",
                 # "city_code":"610000"
             }
-        #print simplejson.dumps(post_data)
+        print simplejson.dumps(post_data)
         request = urllib2.Request(url, 'data=%s' % simplejson.dumps(post_data))
         response = urllib2.urlopen(request)
         result = response.read()
-        #print result
+        print result
         jsondata = simplejson.loads(result)
         data = []
-        print jsondata['data']['detail']
+
         if jsondata['status'] == '200':
             msg['flag'] = 1
             for i,v in enumerate(jsondata['data']['values']):
                 display = jsondata['data']['displayValues'][i]
-                value = simplejson.dumps(jsondata['data']['detail'][v])
+                vdic = jsondata['data']['detail'][v]
+                vdic['mode_code'] = v
+                value = simplejson.dumps(vdic)
                 data.append({'display':display, 'value':value})
             msg['data'] = data
 
@@ -1164,7 +1237,9 @@ class SearchCarInfoHandler(BaseHandler):
     def get(self):
         io_id = self.get_argument('io_id', None)
         insurance = self.get_argument('insurance', 'zhlh')
-        self.sear_chcar_info(insurance)
+        car_model_type = self.get_argument('car_model_type',None)
+        register_date = self.get_argument('register_date', None)
+        self.sear_chcar_info(insurance,car_model_type,register_date)
 
 @route(r'/ajax/auto_caculate_price', name='ajax_auto_caculate_price')  # 自动报价
 class AutoCaculateInsuranceOrderPriceHandler(BaseHandler):
