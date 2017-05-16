@@ -1796,7 +1796,12 @@ class MobileProductReleaseHandler(MobileBaseHandler):
     @require_auth
     def post(self):
         result = {'flag': 0, 'msg': '', "data": []}
-        args = simplejson.loads(self.get_body_argument('area_price'))
+
+        area_price = self.get_body_argument('area_price',None)
+        if not area_price:
+            result['msg'] = 'area_price 参数校验失败'
+            self.write(result)
+        args = simplejson.loads(area_price)
         try:
             for area_price in args:
                 spp = StoreProductPrice.get(id=area_price['sppid'])

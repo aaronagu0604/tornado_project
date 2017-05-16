@@ -102,7 +102,7 @@ def send_users_base_regid(reg_id, body, extras = None):
     push.options = {
         "apns_production": False
     }
-    print type(push.payload), push.payload
+
     result = push.send()
     # result = push.send_validate()
     print result.payload
@@ -127,15 +127,15 @@ def getdeviceinfo(reg_id):
 
 if __name__ == '__main__':
     #regist='101d85590977d2a2e49'
-    regist = '1517bfd3f7f726d86ba'
-    tags = ['shanxi', 'xian']
+    regist = '101d85590976d1bb53b'
+    tags = ['0027']
     alias = ['zhangsun']
     zs = '13289269257'
     gxh ='17629260130'
     # aliasuser()
     # taglist()
-    getdeviceinfo(regist)
+    #getdeviceinfo(regist)
     # set_device_info(regist, tags, alias)
-    #send_users_base_regid(regist,'ceshi for jpush base registid',{'link':'czj://insurance_order_detail/27'})
-    send_users_base_alias('17629260130', 'ceshi for jpush base alias', {'link': 'czj://insurance_order_detail/27'})
-    # send_users_base_tags(tags,'ceshi for jpush base tags')
+    #send_users_base_regid(regist,'003',{'link':'czj://insurance_order_detail/27'})
+    #send_users_base_alias('17629260130', 'ceshi for jpush base alias', {'link': 'czj://insurance_order_detail/27'})
+    send_users_base_tags(tags,'ceshi for jpush base tags003',{'link': 'czj://insurance_order_detail/27'})
