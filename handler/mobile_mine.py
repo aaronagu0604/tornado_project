@@ -510,28 +510,34 @@ class MobileInsuranceOrderHandler(MobileBaseHandler):
         store = self.get_user().store
         ft = ((InsuranceOrder.store == store) & (InsuranceOrder.user_del == 0))
         # 0待确认 1待付款 2付款完成 3已办理 4已邮寄 -1已删除(取消)
+        iop = False
         if type == 'all':  # 全部
             ft &= (InsuranceOrder.status > -1) & (InsuranceOrder.user_del == 0)
         elif type == 'unverify':  # 待确认
             ft &= (InsuranceOrder.status == 0) & (InsuranceOrder.user_del == 0)
         elif type == 'unpay':  # 待付款
             ft &= ((InsuranceOrder.status == 1) | (InsuranceOrderPrice.append_refund_status == 1)) & (InsuranceOrder.user_del == 0)
-            ios = InsuranceOrder.select().\
-                join(InsuranceOrderPrice, on=(InsuranceOrderPrice.id == InsuranceOrder.current_order_price)).\
-                where(ft).order_by(InsuranceOrder.ordered.desc()).paginate(index, setting.MOBILE_PAGESIZE)
+            iop = True
         elif type == 'paid':  # 付款完成
-            ft &= (InsuranceOrder.status == 2) & (InsuranceOrder.user_del == 0)
+            ft &= ((InsuranceOrder.status == 2) | (InsuranceOrderPrice.append_refund_status == 0)) & (InsuranceOrder.user_del == 0)
+            iop = True
         elif type == 'success':  # 已办理
-            ft &= (InsuranceOrder.status == 3) & (InsuranceOrder.user_del == 0)
-        elif type == 'post':  # 已邮寄
-            ft &= (InsuranceOrder.status == 4) & (InsuranceOrder.user_del == 0)
+            ft &= ((InsuranceOrder.status == 3) | (InsuranceOrderPrice.append_refund_status == 0)) & (InsuranceOrder.user_del == 0)
+            iop = True
         elif type == 'delete':  # 删除
             ft &= ((InsuranceOrder.status == -1) | (InsuranceOrder.user_del == 1))
+        elif type == 'post':  # 已邮寄
+            ft &= (InsuranceOrder.status == 4) & (InsuranceOrder.user_del == 0)
         else:
             result['msg'] = u'输入参数有误'
             return
-        if not type == 'unpay':
+        if iop:
+            ios = InsuranceOrder.select().\
+                join(InsuranceOrderPrice, on=(InsuranceOrderPrice.id == InsuranceOrder.current_order_price)).\
+                where(ft).order_by(InsuranceOrder.ordered.desc()).paginate(index, setting.MOBILE_PAGESIZE)
+        else:
             ios = InsuranceOrder.select().where(ft).order_by(InsuranceOrder.ordered.desc()).paginate(index, setting.MOBILE_PAGESIZE)
+
         for io in ios:
             result['data'].append({
                 'id': io.id,
