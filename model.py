@@ -882,6 +882,7 @@ class InsuranceOrder(db.Model):
     class Meta:
         db_table = 'tb_insurance_orders'
 
+
 # 车主信息表
 class UserCarInfo(db.Model):
     id = PrimaryKeyField()
@@ -932,7 +933,8 @@ class UserCarInfo(db.Model):
     class Meta:
         db_table = 'tb_insurance_order_car_info'
 
-# 包代宝报价回调记录表
+
+# 保代宝报价回调记录表
 class BaoDaiBaoQuote(db.Model):
     id = PrimaryKeyField()
     insuranceorder = ForeignKeyField(InsuranceOrder, db_column='insurance_order_id')  # 保险订单ID
@@ -942,6 +944,7 @@ class BaoDaiBaoQuote(db.Model):
 
     class Meta:
         db_table = 'tb_baodaibao_quote'
+
 
 # 卖保险兑现规则 返现政策
 class InsuranceScoreExchange(db.Model):
@@ -1066,7 +1069,7 @@ class LubePolicy(db.Model):
         db_table = "tb_lube_policy"
 
 
-# 店铺经销商返油反分积分映射表
+# 店铺经销商返油反分现映射表
 class SSILubePolicy(db.Model):
     id = PrimaryKeyField()
     store = ForeignKeyField(Store, related_name='store_policy', db_column='store_id')  # 门店

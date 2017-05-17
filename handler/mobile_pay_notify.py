@@ -127,6 +127,7 @@ class MobileAlipayNotifyHandler(RequestHandler):
         if ps:
             if ps['trade_status'].upper().strip() == 'TRADE_FINISHED' or ps['trade_status'].upper().strip() == 'TRADE_SUCCESS':
                 order, is_insurance_order = change_order_status(ps['out_trade_no'], ps['trade_no'])
+                create_msg(simplejson.dumps({'payment': 1, 'order_id': ps['out_trade_no']}), 'pay_success')
                 if is_insurance_order and order:
                     send_new_insurance_order_msg(order.delivery_tel, order.store.name, order.store.area_code,
                                                  order.ordernum, order.insurance.name, order.payment,
@@ -159,6 +160,7 @@ class MobileWeiXinPayCallbackHandler(RequestHandler):
         if notify_data.checkSign():
             if ps['return_code'] == 'SUCCESS' and ps['result_code'] == 'SUCCESS':
                 order, is_insurance_order = change_order_status(ps['out_trade_no'], ps['transaction_id'])
+                create_msg(simplejson.dumps({'payment': 2, 'order_id': ps['out_trade_no']}), 'pay_success')
                 if is_insurance_order and order:
                     send_new_insurance_order_msg(order.delivery_tel, order.store.name, order.store.area_code,
                                                  order.ordernum, order.insurance.name, order.payment,
@@ -188,6 +190,7 @@ class MobileUPayCallbackHandler(RequestHandler):
             if Trade().union_validate(ps):
                 if ps['respMsg'] == 'Success!':
                     order, is_insurance_order = change_order_status(ps['out_trade_no'], ps['transaction_id'])
+                    create_msg(simplejson.dumps({'payment': 3, 'order_id': ps['out_trade_no']}), 'pay_success')
                     if is_insurance_order and order:
                         send_new_insurance_order_msg(order.delivery_tel, order.store.name, order.store.area_code,
                                                      order.ordernum, order.insurance.name, order.payment,
@@ -238,6 +241,7 @@ class MobileAlipayCZNotifyHandler(RequestHandler):
         ps = notify_verify(params)
         if ps:
             if ps['trade_status'].upper().strip() == 'TRADE_FINISHED' or ps['trade_status'].upper().strip() == 'TRADE_SUCCESS':
+                create_msg(simplejson.dumps({'payment': 1, 'order_id': ps['out_trade_no']}), 'recharge')
                 recharge(ps['out_trade_no'], ps['trade_no'], ps['total_fee'])
                 msg = "success"
         self.write(msg)
@@ -265,6 +269,7 @@ class MobileWeiXinPayCZNotifyHandler(RequestHandler):
         ps = notify_data.getData()
         if notify_data.checkSign():
             if ps['return_code'] == 'SUCCESS' and ps['result_code'] == 'SUCCESS':
+                create_msg(simplejson.dumps({'payment': 2, 'order_id': ps['out_trade_no']}), 'recharge')
                 recharge(ps['out_trade_no'], ps['transaction_id'], int(ps['total_fee'])/100)
                 notify_data.setReturnParameter('return_code', 'SUCCESS')
             else:
@@ -289,6 +294,7 @@ class MobileUPayCZNotifyHandler(RequestHandler):
             ps = Trade().smart_str_decode(self.request.body)
             if Trade().union_validate(ps):
                 if ps['respMsg'] == 'Success!':
+                    create_msg(simplejson.dumps({'payment': 3, 'order_id': ps['out_trade_no']}), 'recharge')
                     recharge(ps['out_trade_no'], ps['transaction_id'], ps['total_fee'])
                     result['return_code'] = 'SUCCESS'
                 else:

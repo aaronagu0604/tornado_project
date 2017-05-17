@@ -23,16 +23,16 @@ with rabbitpy.Connection(url) as conn:
         try:
             for message in queue.consume_messages():
                 try:
-                    if message.properties['message_type'] == 'sms':
+                    if message.properties['message_type'] == 'sms':    # 发短信
                         sms = simplejson.loads(message.body)
                         try:
                             sendmsg(sms['mobile'], sms['body'], sms['isyzm'])
                         except Exception, e:
                             logging.error(e.message)
-                    elif message.properties['message_type'] == 'email':
+                    elif message.properties['message_type'] == 'email':    # 发邮件
                         email = simplejson.loads(message.body)
                         sendemail(email['receiver'], email['subject'], email['body'])
-                    elif message.properties['message_type'] == 'jpush':
+                    elif message.properties['message_type'] == 'jpush':    # 极光推送
                         pushcontent = simplejson.loads(message.body)
                         try:
                             if pushcontent['jpushtype'] == 'alias':
@@ -41,6 +41,14 @@ with rabbitpy.Connection(url) as conn:
                                 send_users_base_tags(pushcontent['tags'],pushcontent['body'])
                         except Exception, e:
                             logging.error(e.message)
+                    elif message.properties['message_type'] == 'pay_success':    # 支付成功
+                        pass
+                    elif message.properties['message_type'] == 'recharge':    # 充值
+                        pass
+                    elif message.properties['message_type'] == 'append_refund_money':    # 补退款
+                        pass
+                    elif message.properties['message_type'] == 'audit_store':    # 审核门店、经销商，需要配返佣方案
+                        pass
                     else:
                         logging.error('unknown msg type: ' + message.properties['message_type'] + ' body:' + message.body)
                     message.ack()

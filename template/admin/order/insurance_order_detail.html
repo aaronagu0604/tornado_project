@@ -613,7 +613,7 @@
                                             <table class="table table-bordered" style="width:100%;">
                                                 <tbody>
                                                 <tr>
-                                                    <td>
+                                                    <td id="td00_{{program['pid']}}" {% if not program['program'][0]['value'] %} style="background-color: aliceblue" {% endif %}>
                                                         <div class="row">
                                                             <div class="checkbox col-xs-8 leftTxt">
                                                                 <label>
@@ -635,7 +635,7 @@
                                                             </div>
                                                         </div>
                                                     </td>
-                                                    <td>
+                                                    <td id="td01_{{program['pid']}}" {% if not program['program'][1]['value'] %} style="background-color: aliceblue" {% endif %}>
                                                         <div class="row">
                                                             <div class="checkbox col-xs-8 leftTxt">
                                                                 <label>
@@ -657,7 +657,7 @@
                                                             </div>
                                                         </div>
                                                     </td>
-                                                    <td>
+                                                    <td id="td03_{{program['pid']}}" {% if not program['program'][3]['value'] %} style="background-color: aliceblue" {% endif %}>
                                                         <div class="row">
                                                             <div class="checkbox col-xs-4 leftTxt">
                                                                 <label>
@@ -690,7 +690,7 @@
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <td>
+                                                    <td id="td05_{{program['pid']}}" {% if not program['program'][5]['value'] %} style="background-color: aliceblue" {% endif %}>
                                                         <div class="row">
                                                             <div class="checkbox col-xs-8 leftTxt">
                                                                 <label>
@@ -712,7 +712,7 @@
                                                             </div>
                                                         </div>
                                                     </td>
-                                                    <td>
+                                                    <td id="td07_{{program['pid']}}" {% if not program['program'][7]['value'] %} style="background-color: aliceblue" {% endif %}>
                                                         <div class="row">
                                                             <div class="checkbox col-xs-4 leftTxt">
                                                                 <label>
@@ -743,7 +743,7 @@
                                                             </div>
                                                         </div>
                                                     </td>
-                                                    <td>
+                                                    <td id="td09_{{program['pid']}}" {% if not program['program'][9]['value'] %} style="background-color: aliceblue" {% endif %}>
                                                         <div class="row">
                                                             <div class="checkbox col-xs-4 leftTxt">
                                                                 <label>
@@ -776,7 +776,7 @@
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <td>
+                                                    <td id="td11_{{program['pid']}}" {% if not program['program'][11]['value'] %} style="background-color: aliceblue" {% endif %}>
                                                         <div class="row">
                                                             <div class="checkbox col-xs-8 leftTxt">
                                                                 <label>
@@ -788,7 +788,7 @@
                                                             </div>
                                                         </div>
                                                     </td>
-                                                    <td>
+                                                    <td id="td12_{{program['pid']}}" {% if not program['program'][12]['value'] %} style="background-color: aliceblue" {% endif %}>
                                                         <div class="row">
                                                             <div class="checkbox col-xs-4 leftTxt">
                                                                 <label>
@@ -819,7 +819,7 @@
                                                             </div>
                                                         </div>
                                                     </td>
-                                                    <td>
+                                                    <td id="td14_{{program['pid']}}" {% if not program['program'][14]['value'] %} style="background-color: aliceblue" {% endif %}>
                                                         <div class="row">
                                                             <div class="checkbox col-xs-8 leftTxt">
                                                                 <label>
@@ -843,7 +843,7 @@
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <td>
+                                                    <td id="td16_{{program['pid']}}" {% if not program['program'][16]['value'] %} style="background-color: aliceblue" {% endif %}>
                                                         <div class="row">
                                                             <div class="checkbox col-xs-8 leftTxt">
                                                                 <label>
@@ -865,7 +865,7 @@
                                                             </div>
                                                         </div>
                                                     </td>
-                                                    <td>
+                                                    <td id="td18_{{program['pid']}}" {% if not program['program'][18]['value'] %} style="background-color: aliceblue" {% endif %}>
                                                         <div class="row">
                                                             <div class="checkbox col-xs-8 leftTxt">
                                                                 <label>
@@ -952,62 +952,50 @@
 
                                         <div class="panel-body">
                                             <div class="row" id="{{program['pid']}}2" {% if 2 != program['gift_policy'] %}  style="display: none" {% endif %}>
-                                                <div class="col-xs-12">
-                                                    <div class="col-xs-3 leftTxt"><label>商返率：</label></div>
-                                                    <div class="col-xs-3 rightTxt"><input name="business_s" value="" class="form-control"/></div>
-                                                    <div class="col-xs-3 leftTxt"><label>交返率：</label></div>
-                                                    <div class="col-xs-3 rightTxt"><input name="force_s" value="" class="form-control"/></div>
-                                                </div>
-                                                <div class="col-xs-12">
-                                                    <div class="col-xs-3 leftTxt"><label>商税率：</label></div>
-                                                    <div class="col-xs-3 rightTxt"><input name="business_tax" value="" class="form-control"/></div>
-                                                    <div class="col-xs-3 leftTxt"><label>交税率：</label></div>
-                                                    <div class="col-xs-3 rightTxt"><input name="force_tax" value="" class="form-control"/></div>
-                                                </div>
-                                                <div class="col-xs-12">
-                                                    <div class="col-xs-3 leftTxt"><label>转账率：</label></div>
-                                                    <div class="col-xs-3 rightTxt"><input name="ali_rate" value="" class="form-control"/></div>
-                                                    <div class="col-xs-3 leftTxt"><label>起兑金：</label></div>
-                                                    <div class="col-xs-3 rightTxt"><input name="base_money" value="" class="form-control"/></div>
-                                                </div>
-                                                <div class="col-xs-12">
-                                                    <div class="col-xs-3 leftTxt"><label>获利率：</label></div>
-                                                    <div class="col-xs-3 rightTxt"><input name="profit" value="" class="form-control"/></div>
-                                                    <div style="color:#B94FFF;" class="col-xs-3 leftTxt"><label>返现：</label></div>
-                                                    <div class="col-xs-3 rightTxt"><input name="cash" value="{{program['cash']}}" class="form-control"/></div>
-                                                </div>
+                                                <div class="col-xs-3 leftTxt"><span>商返率：</span></div>
+                                                <div class="col-xs-3 rightTxt"><input name="business_s" value="" class="form-control"/></div>
+                                                <div class="col-xs-3 leftTxt"><span>交返率：</span></div>
+                                                <div class="col-xs-3 rightTxt"><input name="force_s" value="" class="form-control"/></div>
+
+                                                <div class="col-xs-3 leftTxt"><span>商税率：</span></div>
+                                                <div class="col-xs-3 rightTxt"><input name="business_tax" value="" class="form-control"/></div>
+                                                <div class="col-xs-3 leftTxt"><span>交税率：</span></div>
+                                                <div class="col-xs-3 rightTxt"><input name="force_tax" value="" class="form-control"/></div>
+
+                                                <div class="col-xs-3 leftTxt"><span>转账率：</span></div>
+                                                <div class="col-xs-3 rightTxt"><input name="ali_rate" value="" class="form-control"/></div>
+                                                <div class="col-xs-3 leftTxt"><span>起兑金：</span></div>
+                                                <div class="col-xs-3 rightTxt"><input name="base_money" value="" class="form-control"/></div>
+
+                                                <div class="col-xs-3 leftTxt"><span>获利率：</span></div>
+                                                <div class="col-xs-3 rightTxt"><input name="profit" value="" class="form-control"/></div>
+                                                <div style="color:#B94FFF;" class="col-xs-3 leftTxt"><span>返现：</span></div>
+                                                <div class="col-xs-3 rightTxt"><input name="cash" value="{{program['cash']}}" class="form-control"/></div>
                                             </div>
 
-                                            <div class="row">
-                                                <div class="col-xs-12" id="{{program['pid']}}1" {% if 1 != program['gift_policy'] %}  style="display: none" {% endif %}>
-                                                    <div class="col-xs-12">
-                                                        <div style="color:#008866;" class="col-xs-6">
-                                                            <div class="col-xs-6 leftTxt"><span>车主油品：</span></div>
-                                                            <div class="col-xs-6 rightTxt"><input name="driveroiltype" value="" class="form-control"/></div>
-                                                        </div>
-                                                        <div style="color:#008866;" class="col-xs-6">
-                                                            <div class="col-xs-6 leftTxt"><span>车主数量：</span></div>
-                                                            <div class="col-xs-6 rightTxt"><input name="driveroilnum" value="" class="form-control"/></div>
-                                                        </div>
+                                            <div>
+                                                <div class="row" id="{{program['pid']}}1" {% if 1 != program['gift_policy'] %}  style="display: none" {% endif %}>
+                                                    <div class="col-xs-6">
+                                                        <div class="col-xs-6 leftTxt"><span>车主油品：</span></div>
+                                                        <div class="col-xs-6 rightTxt"><input name="driveroiltype" value="" class="form-control"/></div>
                                                     </div>
-                                                    <div class="col-xs-12">
-                                                        <div style="color:#008866;" class="col-xs-6">
-                                                            <div class="col-xs-6 leftTxt"><span>门店油品：</span></div>
-                                                            <div class="col-xs-6 rightTxt"><input name="storeoiltype" value="" class="form-control"/></div>
-                                                        </div>
-                                                        <div style="color:#008866;" class="col-xs-6">
-                                                            <div class="col-xs-6 leftTxt"><span>门店数量：</span></div>
-                                                            <div class="col-xs-6 rightTxt"><input name="storeoilnum" value="" class="form-control"/></div>
-                                                        </div>
+                                                    <div class="col-xs-6">
+                                                        <div class="col-xs-6 leftTxt"><span>车主数量：</span></div>
+                                                        <div class="col-xs-6 rightTxt"><input name="driveroilnum" value="" class="form-control"/></div>
                                                     </div>
-                                                    <div class="col-xs-12">
+                                                    <div class="col-xs-6">
+                                                        <div class="col-xs-6 leftTxt"><span>门店油品：</span></div>
+                                                        <div class="col-xs-6 rightTxt"><input name="storeoiltype" value="" class="form-control"/></div>
+                                                    </div>
+                                                    <div class="col-xs-6">
+                                                        <div class="col-xs-6 leftTxt"><span>门店数量：</span></div>
+                                                        <div class="col-xs-6 rightTxt"><input name="storeoilnum" value="" class="form-control"/></div>
+                                                    </div>
+                                                    <div class="col-xs-6"></div>
+                                                    <div class="col-xs-6">
                                                         <div class="col-xs-6"></div>
                                                         <div class="col-xs-6">
-                                                            <div class="col-xs-6"></div>
-                                                             <!---->
-                                                        <div class="col-xs-6">
-                                                            <a href="##" class="btn btn-outline btn-primary btn-xs" style="float:right" onclick="pop('返积分政策', '/admin/insurance/lube?iid='+{{program['insurance'].id}}+'&sid={{o.store.id}}')">查看政策</a>
-                                                        </div>
+                                                            <a href="##" class="btn btn-outline btn-primary btn-xs" style="float:right" onclick="pop('返现政策', '/admin/insurance/lube?iid='+{{program['insurance'].id}}+'&sid={{o.store.id}}')">查看政策</a>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1191,6 +1179,8 @@
     // checkbox联动
     function ck_box(i_item_p, id, i_item_p2){
         var targetObj = document.getElementById(i_item_p+id);
+        var targetObj_P = document.getElementById('td'+i_item_p+id);
+
         if(targetObj.disabled != true){
             targetObj.disabled = true;
             targetObj.value = 0;
@@ -1201,6 +1191,7 @@
                 targetObj.value = 0;
                 chkBoxObj.checked = "";
                 chkBoxObj.disabled = true;
+                targetObj_P.style="background-color: aliceblue";
             }
         } else {
             targetObj.disabled = false;
@@ -1210,6 +1201,7 @@
                 targetObj.disabled = false;
                 chkBoxObj.checked = "checked";
                 chkBoxObj.disabled = false;
+                targetObj_P.style="";
             }
         }
     }

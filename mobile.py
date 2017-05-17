@@ -4,12 +4,12 @@
 import logging
 import tornado.web
 from tornado.httpserver import HTTPServer
-from tornado.options import  parse_command_line
+from tornado.options import parse_command_line
 import sys
 from bootloader import settings, jinja_environment, memcachedb
 from lib.filter import register_filters
 from lib.route import Route
-from handler import MobilePageNotFoundHandler, mobile_app, mobile_mine, mobile_pay_notify
+from handler import MobilePageNotFoundHandler
 
 
 class Application(tornado.web.Application):
@@ -23,10 +23,8 @@ class Application(tornado.web.Application):
         self.jinja_env.globals['settings'] = settings
         self.memcachedb = memcachedb
 
-        handlers = [
-                       tornado.web.url(r"/style/(.+)", tornado.web.StaticFileHandler,
-                                       dict(path=settings['static_path']), name='static_path')
-                   ] + Route.routes() + [(r".*", MobilePageNotFoundHandler)]
+        handlers = [tornado.web.url(r"/style/(.+)", tornado.web.StaticFileHandler, dict(path=settings['static_path']), name='static_path')]\
+                   + Route.routes() + [(r".*", MobilePageNotFoundHandler)]
         tornado.web.Application.__init__(self, handlers, **settings)
 
 
