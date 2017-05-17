@@ -60,10 +60,7 @@ class MobileMineHandler(MobileBaseHandler):
             result['data']['store_price'] = user.store.price
             result['data']['store_score'] = user.store.score
             result['data']['store_type'] = user.store.store_type
-            if user.store.active == 1:
-                result['data']['active'] = '未审核'
-            elif user.store.active == 2:
-                result['data']['active'] = '审核被拒绝'
+            result['data']['active'] = user.store.active
 
             if user.store.store_type == 1:
                 # 查询子订单数据
