@@ -1413,7 +1413,7 @@
                 }
             });
             // 回填
-            $.get("/ajax/caculate_gift_oil", { _xsrf:xsrf, iopid:pid, insurance:insurance, business:total_business, force:total_force}, function (data) {
+            $.get("/ajax/calculate_gift_oil", { _xsrf:xsrf, iopid:pid, insurance:insurance, business:total_business, force:total_force}, function (data) {
                 var obj = jQuery.parseJSON(data);
                 if (obj.flag == 1) {
                     $(program).find('input[name="driveroiltype"]').val(obj.data.driveroiltype);
@@ -1472,7 +1472,7 @@
             document.getElementById(pid+'2').style.display="none";
             console.debug(forceIPrice*1, business_price*1, iid);
             // 获取数据
-            $.get("/ajax/caculate_gift_oil", { _xsrf:xsrf, iopid:pid, insurance:iid, business:business_price, force:forceIPrice}, function (data) {
+            $.get("/ajax/calculate_gift_oil", { _xsrf:xsrf, iopid:pid, insurance:iid, business:business_price, force:forceIPrice}, function (data) {
                 var obj = jQuery.parseJSON(data);
                 if (obj.flag == 1) {
                     $(program).find('input[name="driveroiltype"]').val(obj.data.driveroiltype);

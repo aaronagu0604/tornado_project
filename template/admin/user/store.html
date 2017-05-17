@@ -158,7 +158,6 @@
 <script src="/style/js/jquery.twbsPagination.min.js"></script>
 <script type="text/javascript" src="/style/js/jQueryRotate.js"></script>
 <script>
-
     $(document).ready(function() {
         $('#bt_export').bind('click', function () {
             var xsrf='{{handler.xsrf_token}}';
@@ -169,7 +168,7 @@
                 province: $("#province").val(),
                 city: $("#city").val(),
                 district: $("#district").val(),
-                status: $("#status").val(),
+                status: $("#status").val()
             },
             function (data) {
                 var obj = jQuery.parseJSON(data);
@@ -221,7 +220,6 @@
             $("#city").append("<option value=''>--所有城市--</option>");
             $("#district").html('');
             $("#district").append("<option value=''>--所有区县--</option>");
-                
             return;
         }
         $.get("/ajax/GetSubAreas", { pcode: parent_code,  t: Math.random() }, function (data) {

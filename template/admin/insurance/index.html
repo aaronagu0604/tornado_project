@@ -5,21 +5,12 @@
 {% endblock %}
 {% block content %}
 
-
 <div class="row">
 	<div class="col-xs-4">
 		<div class="row">
 			<nav>
 				<div>
 					<a class="navbar-brand" href="#">保险公司</a>
-				</div>
-				<div class="pull-right">
-					<form id="cx" action="" method="get" style="margin-top:10px;">
-						<p>
-							<!--<a class="btn btn-info" style="margin-top:8px;" href="/admin/refereeadd/0">新加推广人</a>-->
-							<!--<input id="bt_export" class="btn btn-info" type="button" value="导出EXCEL" style="margin-top:8px;" />-->
-						</p>
-					</form>
 				</div>
 			</nav>
 		</div>
@@ -51,8 +42,7 @@
 				<div>
 					<a class="navbar-brand" href="#">发布地域</a>
 				</div>
-				<div class="pull-right">
-				</div>
+				<div class="pull-right"></div>
 			</nav>
 		</div>
 		<div class="panel panel-primary">
@@ -79,9 +69,9 @@
 							{% endif %}
 						</td>
 						<td>
-							{% if r.score_ok==0 %}
+							{% if r.cash_ok==0 %}
 							<span style="color: red;">未开通</span><br>
-							{% elif r.score_ok==1 %}
+							{% elif r.cash_ok==1 %}
 							<span style="color: #5cb85c;">已开通</span> (<a href="#" onclick="pop('返积分政策-{{r.insurance.name}}-{{ Area().get_detailed_address(r.area_code)}}','{{r.insurance.id}}','{{r.area_code}}', 'score')">政策</a>)<br>
 							{% endif %}
 						</td>
@@ -100,7 +90,7 @@
 <script type="text/javascript">
 
     function pop(title, iid, area_code, type) {
-        var url = '/admin/insurance/'+type+'?iid='+iid+'&area_code=' +area_code;
+        var url = '/admin/insurance/'+type+'?iid='+iid+'&area_code='+area_code;
         layer.open({
             type: 2,
             title: title,

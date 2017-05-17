@@ -1453,10 +1453,36 @@ class MobilInsuranceOrderBaseHandler(MobileBaseHandler):
                 })
         return result
 
+    # 获取该门店所有保险的返佣政策
+    def get_store_policies(self, store):
+        insurance_list = []
+        store_policies = SSILubePolicy.select().where(SSILubePolicy.store == store)
+        for sp in store_policies:
+            rake_back = []
+            if sp.lube:
+                rake_back.append({
+                    'name': "返油",
+                    'type': 1,
+                    'link': "czj://lube_policy",
+                    'link_str': "查看返油政策>>"
+                })
+            if sp.cash:
+                rake_back.append({
+                    'name': "返现",
+                    'type': 2,
+                    'link': "",
+                    'link_str': "奖励现金将存入个人余额"
+                })
+            insurance_list.append({
+                'id': sp.insurance.id,
+                'name': sp.insurance.name,
+                'rake_back': rake_back
+            })
+        return insurance_list
+
     @require_auth
     def get(self):
         result = {'flag': 0, 'msg': '', "data": {}}
-        area_code = self.get_store_area_code()
         user = self.get_user()
         try:
             address = StoreAddress.get((StoreAddress.store == user.store) & (StoreAddress.is_default == 1))
@@ -1466,7 +1492,7 @@ class MobilInsuranceOrderBaseHandler(MobileBaseHandler):
             result['data']['delivery_city'] = address.city
             result['data']['delivery_district'] = address.region
             result['data']['delivery_address'] = address.address
-            result['data']['insurance_message'] = InsuranceScoreExchange.get_insurances(area_code)
+            result['data']['insurance_message'] = self.get_store_policies(user.store)
             for i_item in InsuranceItem.select():
                 if i_item.insurance_prices:
                     result['data'][i_item.eName] = [i_price.coverage for i_price in i_item.insurance_prices]

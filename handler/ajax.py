@@ -85,6 +85,15 @@ class StoreUpdateGradeHandler(BaseHandler):
                 store.save()
                 result['flag'] = 1
                 result['msg'] = u'审核成功'
+                if SSILubePolicy.select().where(SSILubePolicy.store == store).count() > 0:
+                    result['msg'] = u'该店铺已经有返佣政策，请到该店铺详情里查看'
+                else:
+                    policies = InsuranceArea.get_area_insurance(store.area_code)
+                    for policy in policies:
+                        SSILubePolicy.create(store=store, insurance=policy['insurance'], lube=policy['lube'],
+                                             dealer_store=policy['dealer_store'], cash=policy['cash'])
+
+                create_msg(simplejson.dumps({'store': store.id, 'state': state}), 'audit_store')
             else:
                 result['msg'] = u'参数传入错误'
         except Exception, e:
@@ -476,7 +485,7 @@ class WebAppCarItemListHandler(BaseHandler):
         self.write(simplejson.dumps(result))
 
 
-@route(r'/ajax/caculate_gift_oil', name='ajax_get_gift_oil_rate')  # 获取返佣比率
+@route(r'/ajax/calculate_gift_oil', name='ajax_get_gift_oil_rate')  # 获取返佣比率
 class GetGiftOilHandler(BaseHandler):
     def get(self):
         result = {'flag': 0, 'msg': '', "data": {}}
@@ -489,8 +498,8 @@ class GetGiftOilHandler(BaseHandler):
         try:
             iop = InsuranceOrderPrice.get(id=iopid)
             insurance = InsuranceOrder.get(id=iop.insurance_order_id)
-            policy = LubePolicy.get_oil_policy(insurance.store.area_code, iid)
-            policylist = simplejson.loads(policy.policy)
+            policy = SSILubePolicy.get((SSILubePolicy.store==insurance.store) & (SSILubePolicy.insurance == insurance))
+            policylist = simplejson.loads(policy.lube)
 
             if forcetotal and businesstotal:
                 flag = 3
@@ -613,6 +622,7 @@ class AppendRefundMoneyHandler(BaseHandler):
                 iop.admin_user = admin_user
                 iop.save()
                 result['flag'] = 1
+                create_msg(simplejson.dumps({'order_id': io.id, 'operation': iop.append_refund_status}), 'append_refund_money')
         except Exception, e:
             result['msg'] = u'申请补款失败：%s' % e.message
         content = u'申请补退款：客户:%s，订单:%s，金额:%s元，原因:%s，操作人:%s，' % \

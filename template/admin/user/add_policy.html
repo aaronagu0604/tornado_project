@@ -29,16 +29,10 @@
                             <option value="{{store.id}}">{{store.name}}</option>
                             {% endfor %}
                         </select>
-                        <label class="num">返现规则：&nbsp;</label>
-                        <select name="cash_policy" style="width:160px;height:32px;border-radius: 4px;margin-right:15px;">
-                            {% for cash_policy in cash_policies %}
-                            <option value="{{cash_policy['cp_id']}}">{{cash_policy['id']}}--{{cash_policy['area']}}-{{cash_policy['insurance']}}</option>
-                            {% endfor %}
-                        </select>
-                        <label class="num">返油规则：&nbsp;</label>
-                        <select name="lube_policy" style="width:160px;height:32px;border-radius: 4px;margin-right:15px;">
-                            {% for lube_policy in lube_policies %}
-                            <option value="{{lube_policy['lp_id']}}">{{lube_policy['id']}}--{{lube_policy['area']}}-{{lube_policy['insurance']}}</option>
+                        <label class="num">返佣规则：&nbsp;</label>
+                        <select name="area_policy" style="width:160px;height:32px;border-radius: 4px;margin-right:15px;">
+                            {% for area_policy in area_policies %}
+                            <option value="{{area_policy['id']}}">{{area_policy['area']}}-{{area_policy['insurance']}}</option>
                             {% endfor %}
                         </select>
                     </div>

@@ -644,9 +644,12 @@ class Insurance(db.Model):
 class InsuranceArea(db.Model):
     id = PrimaryKeyField()
     area_code = CharField(max_length=32, default='')
-    insurance = ForeignKeyField(Insurance, related_name='areas', db_column='insurance_id')
+    insurance = ForeignKeyField(Insurance, db_column='insurance_id')
     lube_ok = IntegerField(default=1)  # 开通反油
-    score_ok = IntegerField(default=1)  # 开通反积分
+    dealer_store = ForeignKeyField(Store, db_column='dealer_store_id')  # 经销商
+    lube_policy = CharField(max_length=4000)  # 返油政策的json串
+    cash_ok = IntegerField(default=1)  # 开通反现
+    cash_policy = CharField(max_length=4000)  # 返现政策的json串
     sort = IntegerField(default=1)  # 显示顺序
     active = IntegerField(default=1)  # 状态 0删除 1有效
 
@@ -667,6 +670,20 @@ class InsuranceArea(db.Model):
             codes.append(area_code)
         return codes
 
+    # 获取该地区下的所有返油返现
+    @classmethod
+    def get_area_insurance(cls, area_code):
+        codes = cls.append_areas(area_code)
+        result = []
+        for i in InsuranceArea.select().where((InsuranceArea.area_code << codes) & (InsuranceArea.active == 1)):
+            result.append({
+                'insurance': i.insurance,
+                'lube': i.lube_policy,
+                'cash': i.cash_policy,
+                'dealer_store': i.dealer_store
+            })
+        return result
+
     @classmethod
     def get_insurances_link(cls, area_code):  # 获取该地区所有保险公司及链接
         temp_insurance_id = []
@@ -683,6 +700,29 @@ class InsuranceArea(db.Model):
                     'link': setting.baseUrl + 'insurance/' + str(i.insurance.id)
                 })
         return insurance_list
+
+    @classmethod
+    def get_oil_policy(cls, area_code, insurance_id):  # 根据保险公司和地区获取返佣比率
+        codes = cls.append_areas(area_code)
+        configs = InsuranceArea.select().join(Area, on=(Area.code == InsuranceArea.area_code)). \
+            where((InsuranceArea.area_code << codes) & (InsuranceArea.insurance == insurance_id)).\
+            order_by(db.fn.LENGTH(InsuranceArea.area_code).desc())
+        if configs.count() > 0:
+            return configs[0]
+        else:
+            return None
+
+    @classmethod
+    def get_score_policy(cls, area_code, insurance_id):  # 根据保险公司和地区获取返佣比率
+        codes = cls.append_areas(area_code)
+        configs = InsuranceArea.select(InsuranceArea). \
+            join(Area, on=(Area.code == InsuranceArea.area_code)). \
+            where((InsuranceArea.area_code << codes) & (InsuranceArea.insurance == insurance_id) &
+                  (Area.is_scorearea == 1)).order_by(db.fn.LENGTH(InsuranceArea.area_code).desc())
+        if configs.count() > 0:
+            return configs[0]
+        else:
+            return None
 
 
 # 保险子险种
@@ -733,7 +773,7 @@ class InsuranceOrderPrice(db.Model):
     vehicle_tax_price = FloatField(default=0.0)  # 车船税价格
     sms_content = CharField(max_length=1024, null=True)  # 短信通知内容
 
-    append_refund_status = IntegerField(default=0)    # 补退款状态 0无需补退款 1待补款/退款
+    append_refund_status = IntegerField(default=0)    # 补退款状态 0无需补退款 1待补款
     append_refund_time = IntegerField(default=0)    # 补退款时间
     append_refund_reason = CharField(max_length=128, default='')    # 补退款原因
     append_refund_num = FloatField(default=0.0)    # 补退款金额
@@ -946,127 +986,38 @@ class BaoDaiBaoQuote(db.Model):
         db_table = 'tb_baodaibao_quote'
 
 
-# 卖保险兑现规则 返现政策
-class InsuranceScoreExchange(db.Model):
-    id = PrimaryKeyField()
-    area_code = CharField(max_length=12)  # 地区code
-    insurance = ForeignKeyField(Insurance, db_column='insurance_id')  # 保险公司ID
-    created = IntegerField()  # 创建时间
-
-    business_exchange_rate = FloatField(default=0.0)  # 兑换率（商业险），仅商业险
-    business_exchange_rate2 = FloatField(default=0.0)  # 兑换率（商业险），商业险+交强险
-    business_tax_rate = FloatField(default=0.0)  # 商业险税率
-
-    force_exchange_rate = FloatField(default=0.0)  # 交强险兑换率, 仅交强险
-    force_exchange_rate2 = FloatField(default=0.0)  # 交强险兑换率, 商业险+交强险
-    force_tax_rate = FloatField(default=0.0)  # 交强险税率
-
-    ali_rate = FloatField(default=0.0)  # 银联支付宝微信转账 手续费率
-    profit_rate = FloatField(default=0.0)  # 利润率（车装甲）
-    base_money = FloatField(default=0.0)  # 多少元起兑
-
-    class Meta:
-        db_table = "tb_insurance_score_exchange"
-
-    @classmethod
-    def append_areas(cls, area_code):
-        codes = []
-        if len(area_code) == 12:
-            codes.append(area_code)
-            codes.append(area_code[:8])
-            codes.append(area_code[:4])
-        elif len(area_code) == 8:
-            codes.append(area_code)
-            codes.append(area_code[:4])
-        elif len(area_code) == 4:
-            codes.append(area_code)
-        return codes
-
-    @classmethod
-    def get_insurances(cls, area_code):  # 获取该地区所有保险公司及返佣方式
-        temp_insurance_id = []
-        insurance_list = []
-        codes = cls.append_areas(area_code)
-        insurances = InsuranceScoreExchange.select(Insurance.id.alias('i_id'), Insurance.name.alias('i_name'), Area.is_scorearea.alias('is_score'), Area.is_lubearea.alias('is_lube')).\
-            join(Insurance, on=(Insurance.id == InsuranceScoreExchange.insurance)).\
-            join(Area, on=(Area.code == InsuranceScoreExchange.area_code)).\
-            where(InsuranceScoreExchange.area_code << codes).\
-            order_by(db.fn.LENGTH(InsuranceScoreExchange.area_code).desc()).dicts()
-        for i in insurances:
-            if i['i_id'] not in temp_insurance_id:
-                temp_insurance_id.append(i['i_id'])
-                rake_back = []
-                if i['is_lube']:
-                    rake_back.append({
-                        'name': "返油",
-                        'type': 1,
-                        'link': "czj://lube_policy",
-                        'link_str': "查看返油政策>>"
-                    })
-                if i['is_score']:
-                    rake_back.append({
-                        'name': "返现",
-                        'type': 2,
-                        'link': "",
-                        'link_str': "积分可在积分商城兑换商品或提现"
-                    })
-
-                insurance_list.append({
-                    'id': i['i_id'],
-                    'name': i['i_name'],
-                    'rake_back': rake_back
-                })
-        return insurance_list
-
-    @classmethod
-    def get_score_policy(cls, area_code, insurance_id):  # 根据保险公司和地区获取返佣比率
-        codes = cls.append_areas(area_code)
-        configs = InsuranceScoreExchange.select(InsuranceScoreExchange).\
-            join(Area, on=(Area.code == InsuranceScoreExchange.area_code)).\
-            where((InsuranceScoreExchange.area_code << codes) & (InsuranceScoreExchange.insurance == insurance_id) &
-                  (Area.is_scorearea == 1)).order_by(db.fn.LENGTH(InsuranceScoreExchange.area_code).desc())
-        if configs.count() > 0:
-            return configs[0]
-        else:
-            return None
-
+# # 卖保险兑现规则 返现政策
+# class InsuranceScoreExchange(db.Model):
+#     id = PrimaryKeyField()
+#     area_code = CharField(max_length=12)  # 地区code
+#     insurance = ForeignKeyField(Insurance, db_column='insurance_id')  # 保险公司ID
+#     created = IntegerField()  # 创建时间
+#
+#     business_exchange_rate = FloatField(default=0.0)  # 兑换率（商业险），仅商业险
+#     business_exchange_rate2 = FloatField(default=0.0)  # 兑换率（商业险），商业险+交强险
+#     business_tax_rate = FloatField(default=0.0)  # 商业险税率
+#
+#     force_exchange_rate = FloatField(default=0.0)  # 交强险兑换率, 仅交强险
+#     force_exchange_rate2 = FloatField(default=0.0)  # 交强险兑换率, 商业险+交强险
+#     force_tax_rate = FloatField(default=0.0)  # 交强险税率
+#
+#     ali_rate = FloatField(default=0.0)  # 银联支付宝微信转账 手续费率
+#     profit_rate = FloatField(default=0.0)  # 利润率（车装甲）
+#     base_money = FloatField(default=0.0)  # 多少元起兑
+#
+#     class Meta:
+#         db_table = "tb_insurance_score_exchange"
+#
 
 # 帮助中心 返油政策
-class LubePolicy(db.Model):
-    id = PrimaryKeyField()
-    area_code = CharField(max_length=12)  # 地区code
-    insurance = ForeignKeyField(Insurance, related_name='lube_policy', db_column='insurance_id')
-    policy = CharField(max_length=4000)  # 返油政策的json串
-
-    @classmethod
-    def append_areas(cls, area_code):
-        codes = []
-        if len(area_code) == 12:
-            codes.append(area_code)
-            codes.append(area_code[:8])
-            codes.append(area_code[:4])
-        elif len(area_code) == 8:
-            codes.append(area_code)
-            codes.append(area_code[:4])
-        elif len(area_code) == 4:
-            codes.append(area_code)
-        return codes
-
-    @classmethod
-    def get_oil_policy(cls, area_code, insurance_id):  # 根据保险公司和地区获取返佣比率
-        codes = cls.append_areas(area_code)
-        print codes
-        configs = LubePolicy.select(). \
-            join(Area, on=(Area.code == LubePolicy.area_code)). \
-            where((LubePolicy.area_code << codes) & (LubePolicy.insurance == insurance_id) &
-                  (Area.is_lubearea == 1)).order_by(db.fn.LENGTH(LubePolicy.area_code).desc())
-        if configs.count() > 0:
-            return configs[0]
-        else:
-            return None
-
-    class Meta:
-        db_table = "tb_lube_policy"
+# class LubePolicy(db.Model):
+#     id = PrimaryKeyField()
+#     area_code = CharField(max_length=12)  # 地区code
+#     insurance = ForeignKeyField(Insurance, related_name='lube_policy', db_column='insurance_id')
+#     policy = CharField(max_length=4000)  # 返油政策的json串
+#
+#     class Meta:
+#         db_table = "tb_lube_policy"
 
 
 # 店铺经销商返油反分现映射表
@@ -1075,8 +1026,8 @@ class SSILubePolicy(db.Model):
     store = ForeignKeyField(Store, related_name='store_policy', db_column='store_id')  # 门店
     insurance = ForeignKeyField(Insurance, related_name='insurance_policy', db_column='insurance_id')  # 保险公司
     dealer_store = ForeignKeyField(Store, related_name='dealer_store_policy', db_column='dealer_store_id')  # 经销商
-    cash = CharField(max_length=4000)  # 返油政策的json串  # 返现政策
-    lube = CharField(max_length=4000)  # 返油政策的json串  #　返油政策
+    cash = CharField(max_length=4000, default='')  # 返油政策的json串  # 返现政策
+    lube = CharField(max_length=4000, default='')  # 返油政策的json串  #　返油政策
 
     class Meta:
         db_table = "tb_store_gift_policy"

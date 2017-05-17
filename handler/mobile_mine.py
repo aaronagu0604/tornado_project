@@ -518,7 +518,10 @@ class MobileInsuranceOrderHandler(MobileBaseHandler):
         elif type == 'unverify':  # 待确认
             ft &= (InsuranceOrder.status == 0) & (InsuranceOrder.user_del == 0)
         elif type == 'unpay':  # 待付款
-            ft &= (InsuranceOrder.status == 1) & (InsuranceOrder.user_del == 0)
+            ft &= ((InsuranceOrder.status == 1) | (InsuranceOrderPrice.append_refund_status == 1)) & (InsuranceOrder.user_del == 0)
+            ios = InsuranceOrder.select().\
+                join(InsuranceOrderPrice, on=(InsuranceOrderPrice.id == InsuranceOrder.current_order_price)).\
+                where(ft).order_by(InsuranceOrder.ordered.desc()).paginate(index, setting.MOBILE_PAGESIZE)
         elif type == 'paid':  # 付款完成
             ft &= (InsuranceOrder.status == 2) & (InsuranceOrder.user_del == 0)
         elif type == 'success':  # 已办理
@@ -530,7 +533,8 @@ class MobileInsuranceOrderHandler(MobileBaseHandler):
         else:
             result['msg'] = u'输入参数有误'
             return
-        ios = InsuranceOrder.select().where(ft).order_by(InsuranceOrder.ordered).paginate(index, setting.MOBILE_PAGESIZE)
+        if not type == 'unpay':
+            ios = InsuranceOrder.select().where(ft).order_by(InsuranceOrder.ordered.desc()).paginate(index, setting.MOBILE_PAGESIZE)
         for io in ios:
             result['data'].append({
                 'id': io.id,
@@ -1896,7 +1900,7 @@ class MobileLubePolicyHandler(MobileBaseHandler):
                             [insurance, row.driverGiftNum, row.party2GiftNum])
         return result
 
-    #@require_auth
+    @require_auth
     def get(self):
         result = {
             'flag': 0,
@@ -1911,24 +1915,19 @@ class MobileLubePolicyHandler(MobileBaseHandler):
         }
         area_code = self.get_store_area_code()
         result['data']['remark'] = setting.get_help_center_remark(area_code)
-        area_code_lenth = len(area_code)
-        if area_code_lenth == 12:
-            rows = LubePolicy.select().where(LubePolicy.area_code==area_code).order_by(LubePolicy.id)
-        if area_code_lenth == 8 or (area_code_lenth == 12 and rows.count() <= 0):
-            rows = LubePolicy.select().where(LubePolicy.area_code == area_code[:8]).order_by(LubePolicy.id)
-        if area_code_lenth == 4 or (area_code_lenth > 4 and rows.count() <= 0):
-            rows = LubePolicy.select().where(LubePolicy.area_code == area_code[:12]).order_by(LubePolicy.id)
+        store = self.get_user().store
+        rows = SSILubePolicy.select().where(SSILubePolicy.store == store)
         policylist = []
         if rows.count() > 0:
             for item in rows:
                 policylist.append({
                     'name': item.insurance.name,
-                    'lube': simplejson.loads(item.policy)
+                    'lube': simplejson.loads(item.lube)
                 })
             result['flag'] = 1
         else:
             result['msg'] = u'该地区的具体优惠政策请联系车装甲客服'
-        self.render('mobile/lube_protocol.html',policylist=policylist)
+        self.render('mobile/lube_protocol.html', policylist=policylist)
 
 
 # -----------------------------------------------------设置-------------------------------------------------------------
