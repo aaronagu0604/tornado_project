@@ -893,7 +893,7 @@ class UserCarInfo(db.Model):
     ## 车主人信息
     car_owner_name = CharField(max_length=50, null=True)  # 车主姓名
     car_owner_idcard = CharField(max_length=50, null=True)  # 车主身份证号
-    car_owner_address = CharField(max_length=50, null=True)  # 车主身份证地址
+    car_owner_address = CharField(max_length=150, null=True)  # 车主身份证地址
 
     # 被保险人信息
     owner_buyer_isone = IntegerField(default=0)  # 0不是 1是
@@ -917,8 +917,8 @@ class UserCarInfo(db.Model):
     car_price = CharField(max_length=50, null=True)  # 车价格
 
     assigned = IntegerField(default=1)  # 是否过户：0没有1有
-    first_register_date = IntegerField(default=1) # 初次等级日期
-    assigned_date = IntegerField(default=1) # 过户日期
+    first_register_date = CharField(max_length=50, null=True) # 初次等级日期
+    assigned_date = CharField(max_length=50, null=True) # 过户日期
     # 保险信息
     start_date_enforce = CharField(max_length=50, null=True) # 交强险起保日期
     start_date_trade = CharField(max_length=50, null=True)  # 商业险起保日期
@@ -930,7 +930,7 @@ class UserCarInfo(db.Model):
     status = IntegerField(default=0)  # 0新报价 1已读报价
 
     class Meta:
-        db_table = 'tb_user_car_info'
+        db_table = 'tb_insurance_order_car_info'
 
 # 包代宝报价回调记录表
 class BaoDaiBaoQuote(db.Model):
@@ -993,20 +993,21 @@ class InsuranceScoreExchange(db.Model):
             if i['i_id'] not in temp_insurance_id:
                 temp_insurance_id.append(i['i_id'])
                 rake_back = []
-                if i['is_score']:
-                    rake_back.append({
-                        'name': "返现",
-                        'type': 2,
-                        'link': "czj://lube_policy",
-                        'link_str': "查看返油政策>>"
-                    })
                 if i['is_lube']:
                     rake_back.append({
                         'name': "返油",
                         'type': 1,
+                        'link': "czj://lube_policy",
+                        'link_str': "查看返油政策>>"
+                    })
+                if i['is_score']:
+                    rake_back.append({
+                        'name': "返现",
+                        'type': 2,
                         'link': "",
                         'link_str': "积分可在积分商城兑换商品或提现"
                     })
+
                 insurance_list.append({
                     'id': i['i_id'],
                     'name': i['i_name'],

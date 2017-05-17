@@ -402,7 +402,7 @@
                         拥有人类型
                     </div>
                     <div class="col-xs-3 rightTxt">
-                        <select name="owner_type" class="form-control">
+                        <select id="car_owner_type" name="car_owner_type" class="form-control">
                             {% for k,v in owner_type.items() %}
                             <option value="{{k}}">{{v}}</option>
                             {% endfor %}
@@ -1317,6 +1317,11 @@
         var car_owner_num = document.getElementById('car_owner_num').value;
         // 被保险人信息
         var owner_buyer_isone = document.getElementById('owner_buyer_isone').checked;
+        if (owner_buyer_isone) {
+            owner_buyer_isone = 1;
+        } else {
+            owner_buyer_isone = 0;
+        }
         var buy_name = document.getElementById('buy_name').value;
         var buy_idcard = document.getElementById('buy_idcard').value;
 
@@ -1330,7 +1335,12 @@
         var car_quality = document.getElementById('car_quality').value;
         var first_register_date = document.getElementById('first_register_date').value;
         var assigned = document.getElementById('assigned').checked;
-        var assigned_date = document.getElementById('assigned_date').value;
+        if (assigned) {
+            assigned = 1;
+        } else {
+            assigned = 0;
+        }
+        //var assigned_date = document.getElementById('assigned_date').value;
         // 保险信息
         var start_date_enforce = document.getElementById('start_date_enforce').value;
         var start_date_trade = document.getElementById('start_date_trade').value;
