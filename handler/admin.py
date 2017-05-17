@@ -1696,7 +1696,7 @@ class InsuranceOrderDetailHandler(AdminBaseHandler):
                 i_item_list.append({
                     'name': i_item.name,
                     'value': program.__dict__['_data'][i_item.eName],
-                    'i_item_price': [{'id': iip.id, 'coverage': iip.coverage} for iip in i_item.insurance_prices],
+                    'i_item_price': [{'id': iip.id, 'coverage': iip.coverage, 'coveragenum':iip.coveragenum} for iip in i_item.insurance_prices],
                     'price': program.__dict__['_data'][i_item.eName+'Price'] if program.__dict__['_data'][i_item.eName+'Price'] else 0
                 })
             # store_policy = SSILubePolicy.get((SSILubePolicy.store == o.store) & (SSILubePolicy.insurance == program.insurance))
@@ -1759,8 +1759,8 @@ class InsuranceOrderDetailHandler(AdminBaseHandler):
             "B37": "小型旅居半挂车",
             "B38": "小型专项作业半挂车",
             "B39": "小型低平板半挂车",
-            "D11": "无轨电车",
-            "D12": "有轨电车",
+            # "D11": "无轨电车",
+            # "D12": "有轨电车",
             "G11": "重型普通全挂车",
             "G12": "重型厢式全挂车",
             "G13": "重型罐式全挂车",
@@ -1825,9 +1825,9 @@ class InsuranceOrderDetailHandler(AdminBaseHandler):
             "H53": "罐式低速货车",
             "H54": "低速自卸货车",
             "H55": "仓栅式低速货车",
-            "J11": "轮式装载机械",
-            "J12": "轮式挖掘机械",
-            "J13": "轮式平地机械",
+            # "J11": "轮式装载机械",
+            # "J12": "轮式挖掘机械",
+            # "J13": "轮式平地机械",
             "K11": "大型普通客车",
             "K12": "大型双层客车",
             "K13": "大型卧铺客车",
@@ -1849,31 +1849,31 @@ class InsuranceOrderDetailHandler(AdminBaseHandler):
             "K41": "微型普通客车",
             "K42": "微型越野客车",
             "K43": "微型轿车",
-            "M11": "普通正三轮摩托车",
-            "M12": "轻便正三轮摩托车",
-            "M13": "正三轮载客摩托车",
-            "M14": "正三轮载货摩托车",
-            "M15": "侧三轮摩托车",
-            "M21": "普通二轮摩托车",
-            "M22": "轻便二轮摩托车",
-            "N11": "三轮农用运输车",
+            # "M11": "普通正三轮摩托车",
+            # "M12": "轻便正三轮摩托车",
+            # "M13": "正三轮载客摩托车",
+            # "M14": "正三轮载货摩托车",
+            # "M15": "侧三轮摩托车",
+            # "M21": "普通二轮摩托车",
+            # "M22": "轻便二轮摩托车",
+            # "N11": "三轮农用运输车",
             "Q11": "重型半挂牵引车",
             "Q12": "重型全挂牵引车",
             "Q21": "中型半挂牵引车",
             "Q22": "中型全挂牵引车",
             "Q31": "轻型半挂牵引车",
             "Q32": "轻型全挂牵引车",
-            "T11": "大型轮式拖拉机",
-            "T21": "中型轮式拖拉机",
-            "T22": "手扶拖拉机",
-            "T23": "手扶变形运输机",
+            # "T11": "大型轮式拖拉机",
+            # "T21": "中型轮式拖拉机",
+            # "T22": "手扶拖拉机",
+            # "T23": "手扶变形运输机",
             "X99": "其它",
-            "Z11": "大型专项作业车",
-            "Z21": "中型专项作业车",
-            "Z31": "小型专项作业车",
-            "Z41": "微型专项作业车",
-            "Z51": "重型专项作业车",
-            "Z71": "轻型专项作业车"
+            # "Z11": "大型专项作业车",
+            # "Z21": "中型专项作业车",
+            # "Z31": "小型专项作业车",
+            # "Z41": "微型专项作业车",
+            # "Z51": "重型专项作业车",
+            # "Z71": "轻型专项作业车"
         }
 
         license_type = {
@@ -1881,46 +1881,46 @@ class InsuranceOrderDetailHandler(AdminBaseHandler):
             "398003": "小型客车",
             "398002": "中型客车",
             "398001": "大型客车",
-            "398012": "减免征税车",
-            "398011": "轻便摩托车",
-            "398010": "两轮、三轮摩托车",
-            "398009": "轮式专用机构车",
-            "398008": "专项作业车",
+            #"398012": "减免征税车",
+            #"398011": "轻便摩托车",
+            #"398010": "两轮、三轮摩托车",
+            #"398009": "轮式专用机构车",
+            #"398008": "专项作业车",
             "398007": "低速货车",
-            "398006": "三轮汽车",
+            #"398006": "三轮汽车",
             "398005": "载货汽车",
             "398004": "微型客车"
         }
 
-        car_number_type = {
+        car_num_type = {
             '': '---未选择---',
             "02": "小型汽车号牌",
             "01": "大型汽车号牌",
-            "03": "使馆汽车号牌",
-            "04": "领馆汽车号牌",
-            "05": "境外汽车号牌",
-            "06": "外籍汽车号牌",
-            "07": "两、三轮摩托车号牌",
-            "08": "轻便摩托车号牌",
-            "09": "使馆摩托车号牌",
-            "10": "领馆摩托车号牌",
-            "11": "境外摩托车号牌",
-            "12": "外籍摩托车号牌",
-            "13": "农用运输车号牌",
-            "14": "拖拉机号牌",
+            #"03": "使馆汽车号牌",
+            #"04": "领馆汽车号牌",
+            #"05": "境外汽车号牌",
+            #"06": "外籍汽车号牌",
+            #"07": "两、三轮摩托车号牌",
+            #"08": "轻便摩托车号牌",
+            #"09": "使馆摩托车号牌",
+            #"10": "领馆摩托车号牌",
+            #"11": "境外摩托车号牌",
+            #"12": "外籍摩托车号牌",
+            #"13": "农用运输车号牌",
+            #"14": "拖拉机号牌",
             "15": "挂车号牌",
             "16": "教练汽车号牌",
-            "17": "教练摩托车号牌",
-            "18": "试验汽车号牌",
-            "19": "试验摩托车号牌",
-            "20": "临时入境汽车号牌",
-            "21": "临时入境摩托车号牌",
-            "22": "临时行驶车号牌",
-            "23": "公安警车号牌",
-            "24": "公安民用号牌",
+            #"17": "教练摩托车号牌",
+            #"18": "试验汽车号牌",
+            #"19": "试验摩托车号牌",
+            #"20": "临时入境汽车号牌",
+            #"21": "临时入境摩托车号牌",
+            #"22": "临时行驶车号牌",
+            #"23": "公安警车号牌",
+            #"24": "公安民用号牌",
             "25": "其它",
-            "31": "武警号牌",
-            "32": "军队号牌"
+            #"31": "武警号牌",
+            #"32": "军队号牌"
         }
 
         car_detail_type = {
@@ -1932,10 +1932,10 @@ class InsuranceOrderDetailHandler(AdminBaseHandler):
         fuel_type = {
             '': '---未选择---',
             'ranyou': '燃油',
-            'chundiandong': '纯电动',
-            'ranliaodianchi': '燃料电池',
-            'chadainhunhe': '插电式混合动力',
-            'qitahunhe': '其他混合动力'
+            #'chundiandong': '纯电动',
+            #'ranliaodianchi': '燃料电池',
+            #'chadainhunhe': '插电式混合动力',
+            'hunhe': '混合动力'
         }
         owner_type = {
             '': '---未选择---',
@@ -1958,11 +1958,15 @@ class InsuranceOrderDetailHandler(AdminBaseHandler):
         detail_type = {
             '"[]"':'---未选择---'
         }
+        if o.insurance_orders_car_infos.count() > 0:
+            ioci = o.insurance_orders_car_infos[0]
+        else:
+            ioci = None
         self.render('admin/order/insurance_order_detail.html', active=active, o=o, insurances=insurances,
                     poid=poid, poid2=poid2, programs=programs, rta_type=rta_type, license_type=license_type,
-                    car_number_type=car_number_type,car_detail_type=car_detail_type, fuel_type=fuel_type,
+                    car_num_type=car_num_type,car_detail_type=car_detail_type, fuel_type=fuel_type,
                     owner_type=owner_type, car_use_type=car_use_type, car_type=car_type,
-                    detail_type=detail_type)
+                    detail_type=detail_type, ioci=ioci)
 
     def post(self, oid):
         '''

@@ -743,6 +743,7 @@ class InsurancePrice(db.Model):
     id = PrimaryKeyField()
     insurance_item = ForeignKeyField(InsuranceItem, related_name='insurance_prices', db_column='insurance_item_id', null=True)  # 子险种
     coverage = CharField()  # 保险额度
+    coveragenum = IntegerField()  # 保险额度数字
 
     class Meta:
         db_table = 'tb_insurance_price'
@@ -926,7 +927,7 @@ class InsuranceOrder(db.Model):
 # 车主信息表
 class UserCarInfo(db.Model):
     id = PrimaryKeyField()
-    insuranceorder = ForeignKeyField(InsuranceOrder, db_column='insurance_order_id')  # 保险订单ID
+    insuranceorder = ForeignKeyField(InsuranceOrder, related_name='insurance_orders_car_infos', db_column='insurance_order_id')  # 保险订单ID
     # 车主信息
     car_owner_type = CharField(max_length=50, null=True)  # 车主类型:个人private(中华必填)
     ## 车主机构信息

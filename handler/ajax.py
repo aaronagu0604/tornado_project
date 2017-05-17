@@ -1114,6 +1114,11 @@ class OCRSaveHandler(BaseHandler):
     def post(self):
         result = {'flag': 1, 'msg': '保存成功', 'data': ''}
         io_id = self.get_body_argument('io_id', None)
+        ioci_id = int(self.get_body_argument('ioci_id',0))
+        try:
+            ioci = UserCarInfo.get(id=ioci_id)
+        except Exception,e:
+            ioci = None
         # 车主信息
         car_owner_name = self.get_body_argument('car_owner_name', None)
         car_owner_idcard = self.get_body_argument('car_owner_idcard', None)
@@ -1138,6 +1143,9 @@ class OCRSaveHandler(BaseHandler):
         car_model_type = self.get_body_argument('car_model_type', None)
         car_passenger_number = self.get_body_argument('car_passenger_number', None)
         car_quality = self.get_body_argument('car_quality', None)
+        car_price = self.get_body_argument('car_price', None)
+        car_displacement = self.get_body_argument('car_displacement', None)
+        car_model_code = self.get_body_argument('car_model_code', None)
         first_register_date = self.get_body_argument('first_register_date', None)
         assigned = self.get_body_argument('assigned', None)
         assigned_date = self.get_body_argument('assigned_date', None)
@@ -1156,9 +1164,11 @@ class OCRSaveHandler(BaseHandler):
             return
 
         io = InsuranceOrder.get(id=int(io_id))
-
-        ucinfo = UserCarInfo()
-        ucinfo.insuranceorder = io
+        if ioci:
+            ucinfo = ioci
+        else:
+            ucinfo = UserCarInfo()
+            ucinfo.insuranceorder = io
         # 车主信息
         ucinfo.car_owner_name = car_owner_name  # 车主姓名
         ucinfo.car_owner_idcard = car_owner_idcard  # 车主身份证号
@@ -1181,6 +1191,9 @@ class OCRSaveHandler(BaseHandler):
         ucinfo.car_engine_num = car_engine_num  # 发动机号
         ucinfo.car_type = car_type  # 车型
         ucinfo.car_model_type = car_model_type  # 品牌厂型
+        ucinfo.car_model_code = car_model_code
+        ucinfo.car_price =car_price
+        ucinfo.car_displacement = car_displacement
         ucinfo.car_passenger_number = car_passenger_number  # 车座位数
         ucinfo.car_quality = car_quality  # 整车质量
         ucinfo.first_register_date = first_register_date  # 初次等级日期
@@ -1258,40 +1271,12 @@ class AutoCaculateInsuranceOrderPriceHandler(BaseHandler):
     def check_xsrf_cookie(self):
         pass
 
-    def sear_chcar_info(self, insurance='zhlh'):
-        url = 'http://apitest.baodaibao.com.cn/index.php?g=Api&m=SearchCarInfoApi&a=SearchCarInfo'
-
-        post_data = {}
-        post_data['changpai_model'] = "北京现代BH7203AY"
-        post_data['user_id'] = "142"
-        if insurance == 'taiping':
-            post_data['taiping_data'] = {
-                "customerid": "3"
-            }
-        if insurance == 'zhlh_data':
-            post_data['zhlh_data'] = {
-                "customerid": "17",
-                "first_register_data": "2015-01-01"
-            }
-        print simplejson.dumps(post_data)
-        request = urllib2.Request(url, 'data=%s' % simplejson.dumps(post_data))
-        response = urllib2.urlopen(request)
-        ocrresult = response.read()
-        print ocrresult
-
-        return simplejson.loads(ocrresult)
-
-    def quote_iop(self,post_id=2017,insurance='zhlh'):
+    def quote_iop(self,insurance,io,items={},insurance_id='0'):
+        result = {'flag': 0, 'msg': '', 'data': ''}
+        insurance = insurance.eName
         notify_url = 'http:///api.dev.test.520czj.com/mobile/baodaibao_notify'
         url = 'http://apitest.baodaibao.com.cn/index.php?g=Api&m=QuoteApi&a=Quote'
-        fuel_type = {
-            'ranyou': '燃油',
-            'chundiandong': '纯电动',
-            'ranliaodianchi': '燃料电池',
-            'chadainhunhe': '插电式混合动力',
-            'qitahunhe': '其他混合动力'
-        }
-
+        post_id = io.ordernum + str(time.time())[:10]
         insurance_items = {
             'damageI':'车辆损失险(主)',
             'thirdDutyI': '第三者责任险(主)',
@@ -1305,69 +1290,74 @@ class AutoCaculateInsuranceOrderPriceHandler(BaseHandler):
             'thirdSpecialI': '无法找到第三方险(附)',
             '11': '指定修理厂险(附)',
         }
+        insurance_name = {
+            '1': '商业',
+            '2':'交强',
+            '3':'商业+交强'
+        }
+        insuranceinfo = []
+        for k,v in items.items():
+            if k in ['forceI','vehicleTax']:
+                continue
+            deductible,value = v.split(',')
+            insuranceinfo.append({
+                "deductible": deductible,
+                "ip_name": insurance_items[k],
+                "value": value
+            })
         post_data = {}
+        car_infos = io.insurance_orders_car_infos[0]
         post_data['car'] = {
-            "car_price": "139900.00",
-            "model_code": "LDD1004SHD",
-            "displacement": "1.40"
+            "car_price": car_infos.car_price,
+            "model_code": car_infos.car_model_code,
+            "displacement": car_infos.car_displacement
         }
         post_data['orderArr'] = {
             # BaseInfo
             "order_id": post_id,  # 订单号
-            "created": "2017-04-27 14:34:53",  # 当前时间
+            "created": time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(time.time())),  # 当前时间
             "city_code": "610100",  # 城市代码
             # 车辆信息
-            "province": "陕",  # 车牌汉字
-            "car_number": "AB5X86",  # 车牌数字
-            "car_category": "car",  # 车辆类型:小客车car
-            "car_nengyuan_type": "ranyou",  # 能源类型:燃油ranyou，混合hunhe(中华必填)
-            "use_cat": "non_operation",  # 使用类型:非运营non_operation(中华必填)
-            "assigned": "0",  # 是否过户: 0否1是
-            "guohudate": "",  # 过户日期
-            "passenger_number": "5",  # 座位数(中华必填)
-            "changpai_model": "大众汽车SVW71416BL",  # 厂牌型号
-            "frame_number": "LSVCB2BM0FN049565",  # 车架号
-            "engine_number": "201491",  # 发动机号
-            "standard_quality": "1325",  # 整备质量(中华必填)
-            "first_register_date": "2015-06-18",  # 初登日期(中华必填)
-            "car_owner_type": "private",  # 车主类型: 个人private(中华必填)
+            "province": car_infos.car_num.decode('utf8')[0],  # 车牌汉字
+            "car_number": car_infos.car_num.decode('utf8')[1:],  # 车牌数字
+            "car_category": car_infos.car_type,  # 车辆类型:小客车car
+            "car_nengyuan_type": car_infos.car_nengyuan_type,  # 能源类型:燃油ranyou，混合hunhe(中华必填)
+            "use_cat": car_infos.car_use_type,  # 使用类型:非运营non_operation(中华必填)
+            "assigned": car_infos.assigned,  # 是否过户: 0否1是
+            "guohudate": car_infos.assigned_date,  # 过户日期
+            "passenger_number": car_infos.car_passenger_number,  # 座位数(中华必填)
+            "changpai_model": car_infos.car_model_type,  # 厂牌型号
+            "frame_number": car_infos.car_frame_num,  # 车架号
+            "engine_number": car_infos.car_engine_num,  # 发动机号
+            "standard_quality": car_infos.car_quality,  # 整备质量(中华必填)
+            "first_register_date": car_infos.first_register_date,  # 初登日期(中华必填)
+            "car_owner_type": car_infos.car_owner_type,  # 车主类型: 个人private(中华必填)
             # 车主信息
-            "car_owner_uname": "樊博璇",  # 车主姓名
-            "car_owner_idcard": "610111198708052047",  # 车主身份证号
-            "car_owner_idcard_address": "陕西西安高新区",  # 车主地址
+            "car_owner_uname": car_infos.car_owner_name,  # 车主姓名
+            "car_owner_idcard":car_infos.car_owner_idcard,  # 车主身份证号
+            "car_owner_idcard_address": car_infos.car_owner_address,  # 车主地址
             # 被保险人信息(购买人)
-            "uname": "樊博璇",  # 被保险人姓名(华安，中华必填)
-            "idcard": "610111198708052047",  # 被保险人身份证号(华安，中华必填)
+            "uname": car_infos.buy_name if not car_infos.owner_buyer_isone else car_infos.car_owner_name,  # 被保险人姓名(华安，中华必填)
+            "idcard": car_infos.buy_idcard if not car_infos.owner_buyer_isone else car_infos.car_owner_idcard,  # 被保险人身份证号(华安，中华必填)
             # 机构信息
             "seller_id": "142",  # 机构ID
             "belong": "142",  # 所属机构ID
             "branch_id": "0",  # 分支机构ID:没有则为0
             "buyer_id": "682",  # 代理人ID
             # 保险信息
-            "start_date_enforce": "2017-06-28",  # 交强险起保日期
-            "start_date_trade": "2017-06-28",  # 商业险起保日期
-            "insurance_id": "3",  # 保险类型:1 交强 2商业3商加交
-            "insurance_name": "商业+交强",  # 保险类型名称:险种名称 交强+商业或者交强、商业
+            "start_date_enforce": car_infos.start_date_enforce,  # 交强险起保日期
+            "start_date_trade": car_infos.start_date_trade,  # 商业险起保日期
+            "insurance_id": insurance_id,  # 保险类型:1 交强 2商业3商加交
+            "insurance_name": insurance_name[insurance_id],  # 保险类型名称:险种名称 交强+商业或者交强、商业
             # others
             "remark": "",
             "come_from": "wx",
-            "rta_type": "K33",
-            "car_detail_type": "11",  # 细化车型：怎么获取
-            "car_number_type": "02",  # 车牌类型：怎么获取
-            "license_type": "398003",
+            "rta_type": car_infos.rta_type,
+            "car_detail_type": car_infos.car_detail_type,  # 细化车型：怎么获取
+            "car_number_type": car_infos.car_num_type,  # 车牌类型：怎么获取
+            "license_type": car_infos.license_type,
         }
-        insuranceinfo = [
-            {
-                "deductible": "1",
-                "ip_name": "车辆损失险(主)",
-                "value": ""
-            },
-            {
-                "deductible": "1",
-                "ip_name": "全车盗抢险(主)",
-                "value": ""
-            }
-        ]
+
         if insurance == 'taiping':
             post_data['taiping_data'] = {
                 "customerid": "3",
@@ -1418,12 +1408,106 @@ class AutoCaculateInsuranceOrderPriceHandler(BaseHandler):
                     "service_code": "6197J2004003"
                 }
             }
-        print simplejson.dumps(post_data)
-        request = urllib2.Request(url, 'data=%s' % simplejson.dumps(post_data))
-        response = urllib2.urlopen(request)
-        s = response.read()
-        print s
-        self.write(s)
+        print 'post_data:',simplejson.dumps(post_data)
+        try:
+            request = urllib2.Request(url, 'data=%s' % simplejson.dumps(post_data))
+            response = urllib2.urlopen(request)
+            s = response.read()
+            print 'baodaibao result:',s
+            id_insuranceitem_nomarl_map = {
+                1: 'damageI',  # '车辆损失险',
+                2: 'thirdDutyI',  # ''第三者责任险',
+                3: 'robbingI',  # '全车盗抢险',
+                4: 'driverDutyI',  # '驾驶人员责任险',
+                5: 'passengerDutyI',  # '乘客责任险',
+                6: 'glassI',  # '玻璃单独破碎险',
+                7: 'scratchI',  # '车身划痕险',
+                8: 'fireDamageI',  # '自燃损失险',
+                9: 'wadeI',  # '车辆涉水险',
+                10: '倒车镜、车灯单独损失险',
+                11: '',
+                12: 'thirdSpecialI',  # '无法找到第三方特约险',
+                13: '指定修理厂险'
+            }
+            id_insuranceitem_plus_map = {
+                1: 'damageIPlus',  # '车辆损失险',
+                2: 'thirdDutyIPlus',  # ''第三者责任险',
+                3: 'robbingIPlus',  # '全车盗抢险',
+                4: 'driverDutyIPlus',  # '驾驶人员责任险',
+                5: 'passengerDutyIPlus',  # '乘客责任险',
+                6: '玻璃单独破碎险',
+                7: 'scratchIPlus',  # '车身划痕险',
+                8: 'fireDamageIPlus',  # '自燃损失险',
+                9: 'wadeIPlus',  # '车辆涉水险',
+                10: '倒车镜、车灯单独损失险',
+                11: '',
+                12: '无法找到第三方特约险',
+                13: '指定修理厂险'
+            }
+
+            bdb_json = simplejson.loads(s)
+            if int(bdb_json['status']) == 200:
+                result['flag'] = 1
+                nomarl = [{id_insuranceitem_nomarl_map[int(k)]:v} for k,v in bdb_json['data']['quotation_price']['trade_price_detail'].items()]
+                plus = [{id_insuranceitem_plus_map[int(k)]:v} for k,v in bdb_json['data']['quotation_price']['trade_deductible_price_detail'].items()]
+                data = nomarl + plus
+                dic = {
+                    'businessI': 0,  # 商业险总额
+                    'businessZK': 0,  # 商业险折扣
+                    'forceI': 0,  # 交强
+                    'forceZK': 0,  # 交强险折扣
+                    'damageI': 0,  # 车辆损失
+                    'damageIPlus': 0,  # 车损不计免赔
+                    'thirdDutyI': 0,  # 三责
+                    'thirdDutyIPlus': 0,  # 三责不计免赔
+                    'robbingI': 0,  # 盗抢
+                    'robbingIPlus': 0,  # 盗抢免责
+                    'driverDutyI': 0,  # 车上司机
+                    'driverDutyIPlus': 0,  # 车上司机免责
+                    'passengerDutyI': 0,  # 车上乘客
+                    'passengerDutyIPlus': 0,  # 车上乘客免责
+                    'glassI': 0,  # 玻璃
+                    'scratchI': 0,  # 划痕
+                    'scratchIPlus': 0,  # 划痕免责
+                    'fireDamageI': 0,  # 自燃
+                    'fireDamageIPlus': 0,  # 自燃免责
+                    'wadeI': 0,  # 涉水
+                    'wadeIPlus': 0,  # 涉水免责
+                    'thirdSpecialI': 0,  # 跑路
+                    'vehicle_tax_price': 0,  # 车船税价格
+                    'totalI': 0  # 保险总额
+                }
+                for item in data:
+                    for k, v in item.items():
+                        dic[k] = v
+                total_price = 0.0
+                if bdb_json['data']['quotation_price'].has_key('trade_price') and float(bdb_json['data']['quotation_price']['trade_price']):
+                    price = float(bdb_json['data']['quotation_price']['trade_price'])
+                    dic['businessI'] = price
+                    total_price += price
+                if bdb_json['data']['quotation_price'].has_key('enforce_price') and int(bdb_json['data']['quotation_price']['enforce_price']):
+                    price = float(bdb_json['data']['quotation_price']['enforce_price'])
+                    dic['forceI'] = price
+                    total_price += price
+                if bdb_json['data']['quotation_price'].has_key('vehicle_price') and int(bdb_json['data']['quotation_price']['vehicle_price']):
+                    price = float(bdb_json['data']['quotation_price']['vehicle_price'])
+                    dic['vehicle_tax_price'] = price
+                    total_price += price
+                if bdb_json['data']['quotation_price'].has_key('trade_price_discount') and float(bdb_json['data']['quotation_price']['trade_price_discount']):
+                    dic['businessZK'] = float(bdb_json['data']['quotation_price']['trade_price_discount'])
+
+                dic['totalI'] = total_price
+                result['data'] = dic
+            else:
+                result['msg'] = bdb_json['data']['HEAD']['RESPONSE_MESSAGE']
+        except Exception,e:
+            import traceback
+            traceback.print_exc()
+            result['flag']=0
+            result['msg']='报价失败'
+        print 'return result:',simplejson.dumps(result)
+        self.write(simplejson.dumps(result))
+
         # step = 15
         # id_insuranceitem_nomarl_map = {
         #     1: 'damageI',  # '车辆损失险',
@@ -1476,19 +1560,26 @@ class AutoCaculateInsuranceOrderPriceHandler(BaseHandler):
         #     step -= 1
 
     @run_on_executor
-    def caculate_iop_price(self,io_id):
-        if not io_id:
+    def caculate_iop_price(self,io_id,i_id,items,insurance_id):
+        if not (io_id and i_id and items):
             self.write('该订单不存在')
+
+        i = Insurance.get(id=i_id)
         io = InsuranceOrder.get(id=io_id)
-        result = {'flag': 1}
-        self.quote_iop()
+        items = simplejson.loads(items)
+
+        self.quote_iop(i,io,items,insurance_id)
 
 
     @asynchronous
     @coroutine
-    def get(self):
-        io_id = self.get_argument('io_id', None)
-        a = yield self.caculate_iop_price(io_id)
+    def post(self):
+        io_id = self.get_body_argument('io_id', 0)
+        i_id = self.get_body_argument('i_id', 0)
+        items = self.get_body_argument('i_items', '')
+        insurance_id =self.get_body_argument('insurance_type','0')
+        print io_id,i_id,items,insurance_id
+        a = yield self.caculate_iop_price(io_id,i_id,items,insurance_id)
 
 @route(r'/ajax/baodaibao_notify', name='ajax_baodaibao_notify')  # 报价回调函数
 class BaoDaiBaoNotifyHandler(BaseHandler):
