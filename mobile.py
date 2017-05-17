@@ -9,7 +9,7 @@ import sys
 from bootloader import settings, jinja_environment, memcachedb
 from lib.filter import register_filters
 from lib.route import Route
-from handler import MobilePageNotFoundHandler
+from handler import MobilePageNotFoundHandler,mobile_app, mobile_mine, mobile_pay_notify
 
 
 class Application(tornado.web.Application):
