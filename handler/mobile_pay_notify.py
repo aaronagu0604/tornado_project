@@ -22,12 +22,13 @@ def change_order_status(ordernum, trade_no):
     try:
         ordernum_list = ordernum.split('A')
         if len(ordernum_list) == 1:    # 正常订单回调
-            if 'I' in ordernum:
+            if 'I' in ordernum:    # 保单
                 order = InsuranceOrder.get(ordernum=ordernum)
                 order.change_status(2)
-            else:
+                is_insurance_order = True
+            else:    # 普通商品订单
                 order = Order.get(ordernum=ordernum)
-            is_insurance_order = True
+                order.status = 1
             order.trade_no = trade_no
             order.pay_time = int(time.time())  # 支付时间
             order.save()
@@ -48,7 +49,6 @@ def change_order_status(ordernum, trade_no):
             money_record.money = order.current_order_price.append_refund_num
             money_record.apply_time = int(time.time())
             money_record.save()
-
     except Exception, e:
         logging.info(
             'Error: change order status error; ordernum %s,trade_no %s,log: %s' % (ordernum, trade_no, e.message))

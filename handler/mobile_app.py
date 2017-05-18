@@ -1325,7 +1325,7 @@ class MobileNewOrderHandler(MobileBaseHandler):
             order.total_price = total_price if order_type == 1 else 0
             order.total_score = total_price if order_type == 2 else 0
             order.ordernum = 'U' + str(user.id) + 'S' + str(order_now - setting.ORDERBEGIN)
-            if order_type == 2 and payment == 5:
+            if order_type == 2 and payment == 5:    # 积分支付
                 if user.store.score < total_price:
                     result['msg'] = u"您的积分不足"
                     self.write(simplejson.dumps(result))

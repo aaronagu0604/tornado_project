@@ -219,7 +219,7 @@ def productOrderSearch(ft, type, index):
     return result
 
 
-@route(r'/mobile/purchaseorder', name='mobile_purchase_order')  # 普通商品订单（采购）
+@route(r'/mobile/purchaseorder', name='mobile_purchase_order')  # 普通商品订单列表（采购）
 class MobilPurchaseOrderHandler(MobileBaseHandler):
     """
     @apiGroup mine
@@ -803,6 +803,7 @@ class MobileInsuranceOrderDetailHandler(MobileBaseHandler):
             result['msg'] = '输入参数异常'
         self.write(simplejson.dumps(result))
         self.finish()
+
 
 @route(r'/mobile/insurance_method', name='mobile_insurance_method')  # 保险订单历史方案 列表
 class MobileInsuranceMethodHandler(MobileBaseHandler):
