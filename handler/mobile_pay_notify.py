@@ -21,7 +21,7 @@ def change_order_status(ordernum, trade_no):
     is_insurance_order = False
     try:
         ordernum_list = ordernum.split('A')
-        if len(ordernum_list) == 1:
+        if len(ordernum_list) == 1:    # 正常订单回调
             if 'I' in ordernum:
                 order = InsuranceOrder.get(ordernum=ordernum)
                 order.change_status(2)
@@ -33,10 +33,11 @@ def change_order_status(ordernum, trade_no):
             order.save()
             logging.info('order_id=%s order_num=%s trade_no=%s\n' % (order.id, order.ordernum, trade_no))
             return order, is_insurance_order
-        elif len(ordernum_list) == 2:
+        elif len(ordernum_list) == 2:    # 补款回调
             ordernum_originally = ordernum_list[0]
             order = InsuranceOrder.get(ordernum=ordernum_originally)
-            order.current_order_price.append_refund_status = 2
+            order.current_order_price.append_refund_status = 0
+            order.current_order_price.total_price += order.current_order_price.append_refund_num
             order.current_order_price.save()
             money_record = MoneyRecord()
             money_record.user = order.user

@@ -622,11 +622,12 @@ class AppendRefundMoneyHandler(BaseHandler):
                 iop.admin_user = admin_user
                 iop.save()
                 result['flag'] = 1
+                content = u'申请补退款：客户:%s，订单:%s，金额:%s元，原因:%s，操作人:%s，' % \
+                          (io.store.name, io.ordernum, ar_num, ar_reason, admin_user.username)
                 create_msg(simplejson.dumps({'order_id': io.id, 'operation': iop.append_refund_status}), 'append_refund_money')
         except Exception, e:
             result['msg'] = u'申请补款失败：%s' % e.message
-        content = u'申请补退款：客户:%s，订单:%s，金额:%s元，原因:%s，操作人:%s，' % \
-                  (io.store.name, io.ordernum, ar_num, ar_reason, admin_user.username)
+            content = u'申请补退款失败：订单:%s，操作人:%s，原因:%s' % (pid, admin_user.username, str(e))
         AdminUserLog.create(admin_user=admin_user, created=now, content=content)
         self.write(simplejson.dumps(result))
 
