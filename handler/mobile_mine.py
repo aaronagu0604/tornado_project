@@ -1680,8 +1680,8 @@ class MobileMoneyRecordHandler(MobileBaseHandler):
                 'in_num': record.in_num,
                 'money': record.money,
                 'status': record.status,
-                'apply_time': time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(record.apply_time)),
-                'processing_time': time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(record.processing_time))
+                'apply_time': time.strftime('%Y-%m-%d %H:%M', time.localtime(record.apply_time)),
+                'processing_time': time.strftime('%Y-%m-%d %H:%M', time.localtime(record.processing_time))
             })
         self.write(simplejson.dumps(result))
 
