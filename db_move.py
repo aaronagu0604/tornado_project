@@ -140,10 +140,10 @@ def move_bankcard():
 area_map = {}
 
 def move_area():
-    old_area = Old_Area.select()
+    old_area = Old_Area.select().order_by(Old_Area.id.asc)
     for item in old_area:
         area = New_Area.create(
-            pid=area_map[item.pid] if area_map.has_key(item.pid) else None,
+            pid=item.pid,
             code=item.code,
             has_sub=item.has_sub,
             name=item.name,
@@ -524,7 +524,7 @@ def move_product():
             category=category_map[item.pinpai.ptype.id],
             resume=item.resume,
             unit='单位',  # 旧的没有，暂时设置，后期人工处理
-            intro=item.intro,
+            intro=item.intro.replace('src="','src="%s'%imgurl),
             cover=imgurl+item.cover if item.cover else '',
             is_score=item.is_score,
             created=item.created,
