@@ -873,11 +873,16 @@ class MobileInsuranceMethodHandler(MobileBaseHandler):
                     force = iValue if iValue else ''
                     forceprice = iPrice
                 elif i.style == u'商业险-主险' and iValue != 'false' and iValue:
-                    main.append({'eName': i.eName, 'name': i.name, 'style': i.style, 'value': iValue, 'price':iPrice})
+                    main.append({'eName': i.eName, 'name': i.name, 'style': i.style, 'value': iValue, 'price':str(iPrice)})
                     mainprice += iPrice
                 elif i.style == u'商业险-附加险' and iValue != 'false' and iValue:
-                    subjoin.append({'eName': i.eName, 'name': i.name, 'style': i.style, 'value': iValue, 'price':iPrice})
+                    subjoin.append({'eName': i.eName, 'name': i.name, 'style': i.style, 'value': iValue, 'price':str(iPrice)})
                     subjoinprice += iPrice
+            if mainprice:
+                mainprice =str(mainprice)
+
+            if subjoinprice:
+                subjoinprice = str(subjoinprice)
 
             if iop.gift_policy == 1:
                 commission = u'%s桶'%str(iop.score)
