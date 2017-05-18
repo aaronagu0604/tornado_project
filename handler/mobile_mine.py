@@ -1309,7 +1309,7 @@ class MobileFundRechargeHandler(MobileBaseHandler):
         result = {'flag': 0, 'msg': '', "data": {}}
         user = self.get_user()
         payment = int(self.get_argument('payment', 0))
-        price = int(self.get_argument('price', 0))
+        price = float(self.get_argument('price', 0.0))
         order_num = ('U%sR%s'%(user.id, str(time.time())[1:10])).encode('utf-8')
 
         result['data']['payment'] = payment
