@@ -678,7 +678,8 @@ def move_insuranceprice():
     old_price = Old_InsurancePrice.select()
     old_data = [{
         'insurance_item': insurance_item_map[item.pid.id],
-        'coverage': item.name
+        'coverage': item.name,
+        'coveragenum': 0
     } for item in old_price]
     print 'move insuranceprice', len(old_data)
     New_InsurancePrice.insert_many(old_data).execute()
