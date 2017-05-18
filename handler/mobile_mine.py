@@ -519,10 +519,10 @@ class MobileInsuranceOrderHandler(MobileBaseHandler):
             ft &= ((InsuranceOrder.status == 1) | (InsuranceOrderPrice.append_refund_status == 1)) & (InsuranceOrder.user_del == 0)
             iop = True
         elif type == 'paid':  # 付款完成
-            ft &= ((InsuranceOrder.status == 2) | (InsuranceOrderPrice.append_refund_status == 0)) & (InsuranceOrder.user_del == 0)
+            ft &= (InsuranceOrder.status == 2) & (InsuranceOrderPrice.append_refund_status == 0) & (InsuranceOrder.user_del == 0)
             iop = True
         elif type == 'success':  # 已办理
-            ft &= ((InsuranceOrder.status == 3) | (InsuranceOrderPrice.append_refund_status == 0)) & (InsuranceOrder.user_del == 0)
+            ft &= (InsuranceOrder.status == 3) & (InsuranceOrderPrice.append_refund_status == 0) & (InsuranceOrder.user_del == 0)
             iop = True
         elif type == 'delete':  # 删除
             ft &= ((InsuranceOrder.status == -1) | (InsuranceOrder.user_del == 1))
