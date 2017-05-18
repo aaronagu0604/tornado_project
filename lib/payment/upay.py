@@ -154,7 +154,7 @@ class Trade(object):
         params['txnTime'] = time.strftime("%Y%m%d%H%M%S",time.localtime())  # 订单发送时间，格式为YYYYMMDDhhmmss，取北京时间，此处默认取demo演示页面传递的参数
         params['txnAmt'] = int(total_fee * 100)  # 交易金额，单位分，此处默认取demo演示页面传递的参数
         # 获取证书序列号
-        params['certId'] = self.getSignCertId(setting['SDK_SIGN_CERT_PATH'], setting['SDK_SIGN_CERT_PWD']);
+        params['certId'] = self.getSignCertId(setting['SDK_SIGN_CERT_PATH'], setting['SDK_SIGN_CERT_PWD'])
         # 签名函数
         params['signature'] = self.union_pay_sign(params, setting['SDK_SIGN_CERT_PATH'], setting['SDK_SIGN_CERT_PWD'])
 

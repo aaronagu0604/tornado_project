@@ -49,7 +49,7 @@ class Area(db.Model):
     def get_detailed_address(cls, area_code):
         area_code_len = len(area_code)
         try:
-            area = Area.get(code = area_code)
+            area = Area.get(code=area_code)
             if area_code_len == 12:
                 address = area.pid.pid.name + area.pid.name + area.name
             elif area_code_len == 8:

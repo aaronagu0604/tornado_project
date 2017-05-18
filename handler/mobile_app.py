@@ -1195,7 +1195,7 @@ class MobileOrderBaseHandler(MobileBaseHandler):
                         result['data']['address']['is_default'] = address.is_default
                         break
                 else:
-                    result['data']['address'] = None
+                    result['data']['address'] = 'null'
                 result['data']['last_pay_type'] = user.last_pay_type
 
                 stores = []
