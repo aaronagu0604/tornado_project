@@ -2135,7 +2135,10 @@ class InsuranceScore(AdminBaseHandler):
         area_code = self.get_argument('area_code', '0')
         sid = self.get_argument('sid', '')
         if sid:
-            item = simplejson.loads(SSILubePolicy.get((SSILubePolicy.store == sid) & (SSILubePolicy.insurance == iid)).cash)
+            try:
+                item = simplejson.loads(SSILubePolicy.get((SSILubePolicy.store == sid) & (SSILubePolicy.insurance == iid)).cash)
+            except Exception, e:
+                item = {'ber': '', 'ber2': '', 'btr': '', 'fer': '', 'fer2': '', 'ftr': '', 'ar': '', 'pr': '', 'bm': ''}
         else:
             try:
                 item = simplejson.loads(InsuranceArea.get((InsuranceArea.insurance == iid) & (InsuranceArea.area_code == area_code)).cash_policy)

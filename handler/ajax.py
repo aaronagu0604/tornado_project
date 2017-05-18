@@ -492,9 +492,9 @@ class GetGiftOilHandler(BaseHandler):
         iid = int(self.get_argument('insurance'))
         iopid = int(self.get_argument('iopid'))
         forcetotal = self.get_argument('force', '')
-        forcetotal = int(forcetotal) if forcetotal else 0
+        forcetotal = float(forcetotal) if forcetotal else 0
         businesstotal = self.get_argument('business', 0)
-        businesstotal = int(businesstotal) if businesstotal else 0
+        businesstotal = float(businesstotal) if businesstotal else 0
         try:
             iop = InsuranceOrderPrice.get(id=iopid)
             insurance = InsuranceOrder.get(id=iop.insurance_order_id)
