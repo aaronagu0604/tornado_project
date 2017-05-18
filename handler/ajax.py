@@ -1254,11 +1254,9 @@ class SearchCarInfoHandler(BaseHandler):
 
         if jsondata['status'] == '200':
             msg['flag'] = 1
-            for i,v in enumerate(jsondata['data']['values']):
-                display = jsondata['data']['displayValues'][i]
-                vdic = jsondata['data']['detail'][v]
-                vdic['mode_code'] = v
-                value = simplejson.dumps(vdic)
+            for item in jsondata['data']:
+                display = item['car_remark']
+                value = simplejson.dumps(item)
                 data.append({'display':display, 'value':value})
             msg['data'] = data
 

@@ -1262,10 +1262,10 @@
     }
     function detail_type_select(value) {
         var obj = jQuery.parseJSON(value);
-        document.getElementById('car_model_code').value = obj.mode_code;
-        document.getElementById('car_displacement').value = obj.DISPLACEMENT;
-        document.getElementById('car_price').value = obj.CAR_PRICE;
-        document.getElementById('car_quality').value = obj.QUALITY;
+        document.getElementById('car_model_code').value = obj.model_code;
+        document.getElementById('car_displacement').value = obj.displacement;
+        document.getElementById('car_price').value = obj.car_price;
+        document.getElementById('car_quality').value = obj.qulity;
     }
     // searchcarinfo function 调用ajax并回填识别信息
     function searchcarinfo() {
