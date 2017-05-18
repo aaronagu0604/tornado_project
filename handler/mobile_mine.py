@@ -283,14 +283,14 @@ class MobileOrderDetailHandler(MobileBaseHandler):
                 pic = None
                 if pics:
                     pic = pics[0]
-                productattibute = ProductAttributeValue.get(ProductAttributeValue.product == product.product)
-                attribute = "%s %s"%(productattibute.attribute.name, productattibute.value)
+                #productattibute = ProductAttributeValue.get(ProductAttributeValue.product == product.product)
+                #attribute = "%s %s"%(productattibute.attribute.name, productattibute.value)
                 products.append({
                     'img': pic,
                     'name': product.product.name,
                     'price': product.price,
                     'quantity': product.quantity,
-                    'attribute': attribute,
+                    #'attribute': attribute,
                     'score':product.store_product_price.score,
                     'is_score':product.store_product_price.product_release.is_score
                 })
