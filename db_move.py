@@ -77,7 +77,7 @@ from model_move import OrderItem as New_OrderItem
 from model_move import Insurance as New_Insurance
 from model_move import InsuranceArea as New_InsuranceArea
 from model_move import InsuranceItem as New_InsuranceItem
-from model_move import InsuranceScoreExchange as New_InsuranceScoreExchange
+#from model_move import InsuranceScoreExchange as New_InsuranceScoreExchange
 from model_move import InsurancePrice as New_InsurancePrice
 from model_move import InsuranceOrderPrice as New_InsuranceOrderPrice
 from model_move import InsuranceOrder as New_InsuranceOrder
@@ -86,7 +86,7 @@ from model_move import BlockItem as New_BlockItem
 from model_move import BlockItemArea as New_BlockItemArea
 from model_move import Feedback as New_Feedback
 from model_move import BankCard as New_BankCard
-from model_move import LubePolicy as New_LubePolicy
+#from model_move import LubePolicy as New_LubePolicy
 from model_move import HotSearch as New_HotSearch
 
 imgurl = 'http://img.520czj.com'
@@ -684,34 +684,34 @@ def move_insuranceprice():
     New_InsurancePrice.insert_many(old_data).execute()
 
 # insurancescoreexchange:保险积分兑换规则
-def move_insuranceexchange():
-    old_exchange = Old_CurrencyExchangeList.select()
-    old_data = []
-    for item in old_exchange:
-        try:
-            if item.iid.id == 0:
-                continue
-        except Exception:
-            continue
-        old_data.append({
-            'area_code': item.area_code,
-            'insurance': insurance_map[item.iid.id],
-            'created': item.localtime,
-
-            'business_exchange_rate': item.rate,
-            'business_exchange_rate2': 0,  # 旧的没有
-            'business_tax_rate': item.businessTaxRate,
-
-            'force_exchange_rate': item.forceRate,
-            'force_exchange_rate2': 0,  # 旧的没有
-            'force_tax_rate': item.forceTaxRate,
-
-            'ali_rate': item.aliRate,
-            'profit_rate': item.profitRate,
-            'base_money': item.baseMoney
-        })
-    print 'move insuranceexchange:', len(old_data)
-    New_InsuranceScoreExchange.insert_many(old_data).execute()
+# def move_insuranceexchange():
+#     old_exchange = Old_CurrencyExchangeList.select()
+#     old_data = []
+#     for item in old_exchange:
+#         try:
+#             if item.iid.id == 0:
+#                 continue
+#         except Exception:
+#             continue
+#         old_data.append({
+#             'area_code': item.area_code,
+#             'insurance': insurance_map[item.iid.id],
+#             'created': item.localtime,
+#
+#             'business_exchange_rate': item.rate,
+#             'business_exchange_rate2': 0,  # 旧的没有
+#             'business_tax_rate': item.businessTaxRate,
+#
+#             'force_exchange_rate': item.forceRate,
+#             'force_exchange_rate2': 0,  # 旧的没有
+#             'force_tax_rate': item.forceTaxRate,
+#
+#             'ali_rate': item.aliRate,
+#             'profit_rate': item.profitRate,
+#             'base_money': item.baseMoney
+#         })
+#     print 'move insuranceexchange:', len(old_data)
+#     New_InsuranceScoreExchange.insert_many(old_data).execute()
 
 
 def _has_dic(src=[], dickey=None):
@@ -721,64 +721,64 @@ def _has_dic(src=[], dickey=None):
     else:
         return -1
 # 送油策略
-def move_lubeexchange():
-    old_policy = Old_HelpCenter.select()
-    for item in old_policy:
-        insurance = New_Insurance.get(New_Insurance.name.contains(item.iCompany))
-        try:
-            tmppolicy = New_LubePolicy.get(New_LubePolicy.area_code == item.area_code,
-                                                  New_LubePolicy.insurance == insurance)
-        except Exception:
-            tmppolicy = None
-
-        if tmppolicy:
-            policy = simplejson.loads(tmppolicy.policy)
-            index = _has_dic(policy, item.driverGift)
-            if index >= 0:
-                policy[index]['item'].append(
-                    {
-                        'name': item.insurance,
-                        'driver': item.driverGiftNum,
-                        'store': item.party2GiftNum,
-                        'minprice': int(minp),
-                        'maxprice': int(maxp),
-                        'flag': 1  # 暂时不知道设置为什么值，设置为1
-                    }
-                )
-            else:
-                policy.append(
-                    {
-                        'gift': item.driverGift,
-                        'items': [{
-                            'name': item.insurance,
-                            'driver': item.driverGiftNum,
-                            'store': item.party2GiftNum,
-                            'minprice': int(minp),
-                            'maxprice': int(maxp),
-                            'flag': 1  # 暂时不知道设置为什么值，设置为1
-                        }]
-                    }
-                )
-            tmppolicy.policy(simplejson.dumps(policy))
-            tmppolicy.save()
-        else:
-            minp,maxp = item.price.split('-')
-            data = [{
-                'gift': item.driverGift,
-                'items': [{
-                    'name': item.insurance,
-                    'driver': item.driverGiftNum,
-                    'store': item.party2GiftNum,
-                    'minprice': int(minp),
-                    'maxprice': int(maxp),
-                    'flag': 1  # 暂时不知道设置为什么值，设置为1
-                }]
-            }]
-            New_LubePolicy.create(
-                area_code=item.area_code,
-                insurance=insurance,
-                policy=simplejson.dumps(data)
-            )
+# def move_lubeexchange():
+#     old_policy = Old_HelpCenter.select()
+#     for item in old_policy:
+#         insurance = New_Insurance.get(New_Insurance.name.contains(item.iCompany))
+#         try:
+#             tmppolicy = New_LubePolicy.get(New_LubePolicy.area_code == item.area_code,
+#                                                   New_LubePolicy.insurance == insurance)
+#         except Exception:
+#             tmppolicy = None
+#
+#         if tmppolicy:
+#             policy = simplejson.loads(tmppolicy.policy)
+#             index = _has_dic(policy, item.driverGift)
+#             if index >= 0:
+#                 policy[index]['item'].append(
+#                     {
+#                         'name': item.insurance,
+#                         'driver': item.driverGiftNum,
+#                         'store': item.party2GiftNum,
+#                         'minprice': int(minp),
+#                         'maxprice': int(maxp),
+#                         'flag': 1  # 暂时不知道设置为什么值，设置为1
+#                     }
+#                 )
+#             else:
+#                 policy.append(
+#                     {
+#                         'gift': item.driverGift,
+#                         'items': [{
+#                             'name': item.insurance,
+#                             'driver': item.driverGiftNum,
+#                             'store': item.party2GiftNum,
+#                             'minprice': int(minp),
+#                             'maxprice': int(maxp),
+#                             'flag': 1  # 暂时不知道设置为什么值，设置为1
+#                         }]
+#                     }
+#                 )
+#             tmppolicy.policy(simplejson.dumps(policy))
+#             tmppolicy.save()
+#         else:
+#             minp,maxp = item.price.split('-')
+#             data = [{
+#                 'gift': item.driverGift,
+#                 'items': [{
+#                     'name': item.insurance,
+#                     'driver': item.driverGiftNum,
+#                     'store': item.party2GiftNum,
+#                     'minprice': int(minp),
+#                     'maxprice': int(maxp),
+#                     'flag': 1  # 暂时不知道设置为什么值，设置为1
+#                 }]
+#             }]
+#             New_LubePolicy.create(
+#                 area_code=item.area_code,
+#                 insurance=insurance,
+#                 policy=simplejson.dumps(data)
+#             )
 
 '''
 # 第三部分：互相依赖记录数据
@@ -1098,7 +1098,7 @@ if __name__ == '__main__':
     move_insuranceitems()
     #move_insurancearea()
     move_insuranceprice()
-    move_insuranceexchange()
+    #move_insuranceexchange()
     #move_lubeexchange()
     move_feedback()
     move_insuranceporderprice()
