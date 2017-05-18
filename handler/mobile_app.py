@@ -22,6 +22,7 @@ def get_insurance(area_code):
     items = []
     insurances = InsuranceArea.select(InsuranceArea.insurance). \
         where((InsuranceArea.area_code == area_code) & (InsuranceArea.active == 1)).order_by(InsuranceArea.sort.asc())
+    print area_code
     for insurance in insurances:
         items.append({
             'img': insurance.insurance.logo,
@@ -354,8 +355,8 @@ class MobileHomeHandler(MobileBaseHandler):
         result['data']['category'] = []
         # 保险
         tmp_code = area_code
-        # insurances = InsuranceArea.get_insurances_link(tmp_code)[:4]
-        insurances = []
+        insurances = InsuranceArea.get_insurances_link(tmp_code)[:4]
+        #insurances = []
         while len(insurances) == 0 and len(tmp_code) > 4:
             tmp_code = tmp_code[0: -4]
             insurances = get_insurance(tmp_code)[:4]

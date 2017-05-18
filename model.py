@@ -698,7 +698,7 @@ class InsuranceArea(db.Model):
                     'img': i.insurance.logo,
                     'name': i.insurance.name,
                     'price': 0,
-                    'link': setting.baseUrl + 'insurance/' + str(i.insurance.id)
+                    'link': 'czj://insurance/' + str(i.insurance.id)
                 })
         return insurance_list
 
