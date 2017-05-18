@@ -1784,3 +1784,103 @@ class MobileToolsHandler(MobileBaseHandler):
     def get(self):
         result = {'flag': 0, 'msg': '', "data": {}}
         self.render('mobile/tools.html')
+
+# -----------------------------------------------------额外API----------------------------------------------------------
+@route(r'/mobile/insurance_order_quote_info', name='insurance_order_quote_info')  # 查询保险报价信息
+class MobilInsuranceOrderQuoteInfoHandler(MobileBaseHandler):
+    """
+    @apiGroup order
+    @apiVersion 1.0.0
+    @api {post} /mobile/newinsuranceorder 04. 创建保险订单
+    @apiDescription app  创建保险订单
+
+    @apiHeader {String} token 用户登录凭证
+
+    @apiParam {String} id_card_front 身份证正面
+    @apiParam {String} id_card_back 身份证反面
+    @apiParam {String} drive_card_front 行驶证正面
+    @apiParam {String} drive_card_back 行驶证反面
+    @apiParam {Int} is_same_person 被保人与车主是否是同一人 是1 否0
+    @apiParam {String} id_card_front_owner 车主身份证正面
+    @apiParam {String} id_card_back_owner 车主身份证反面
+    @apiParam {Int} insurance 保险公司ID
+    @apiParam {String} forceI 交强险，字符串格式：1购买 ''未购买
+    @apiParam {String} damageI 商业险-主险-车辆损失险，字符串格式：1购买 ‘’未购买
+    @apiParam {String} damageIPlus 商业险-主险-车辆损失险-不计免赔特约险，字符串格式：1购买 ‘’未购买
+    @apiParam {String} thirdDutyI 商业险-主险-第三者责任险，含保额，字符串格式：5万 ‘’未购买
+    @apiParam {String} thirdDutyIPlus 商业险-主险-第三者责任险，含保额-不计免赔特约险，字符串格式：1购买 ‘’未购买
+    @apiParam {String} robbingI 商业险-主险-机动车全车盗抢险，字符串格式：1购买 ‘’未购买
+    @apiParam {String} robbingIPlus 商业险-主险-机动车全车盗抢险-不计免赔特约险，字符串格式：1购买 ‘’未购买
+    @apiParam {String} driverDutyI 商业险-主险-机动车车上人员责任险（司机），含保额，字符串格式：5万 ‘’未购买
+    @apiParam {String} driverDutyIPlus 商业险-主险-机动车车上人员责任险（司机），含保额-不计免赔特约险，字符串格式：1购买 ‘’未购买
+    @apiParam {String} passengerDutyI 商业险-主险-机动车车上人员责任险（乘客），含保额，字符串格式：5万 ‘’未购买
+    @apiParam {String} passengerDutyIPlus 商业险-主险-机动车车上人员责任险（乘客），含保额-不计免赔特约险，字符串格式：1购买 ‘’未购买
+    @apiParam {String} glassI 商业险-附加险-玻璃单独破碎险，字符串格式：1购买 ''未购买
+    @apiParam {String} scratchI 商业险-附加险-车身划痕损失险，含保额，字符串格式：5万 ‘’未购买
+    @apiParam {String} scratchIPlus 商业险-附加险-车身划痕损失险，含保额-不计免赔特约险，字符串格式：1购买 ‘’未购买
+    @apiParam {String} fireDamageI 商业险-主险-自燃损失险，字符串格式：1购买 ‘’未购买
+    @apiParam {String} fireDamageIPlus 商业险-主险-自燃损失险-不计免赔特约险，字符串格式：1购买 ‘’未购买
+    @apiParam {String} wadeI 商业险-主险-发动机涉水损失险，字符串格式：1购买 ‘’未购买
+    @apiParam {String} wadeIPlus 商业险-主险-发动机涉水损失险-不计免赔特约险，字符串格式：1购买 ‘’未购买
+    @apiParam {String} thirdSpecialI 商业险-附加险-机动车损失保险无法找到第三方特约金，字符串格式：1购买 ''未购买
+    @apiParam {String} delivery_to 保单邮寄接收人名称
+    @apiParam {String} delivery_tel 保单邮寄接收人电话
+    @apiParam {String} delivery_province 保单邮寄接收省份
+    @apiParam {String} delivery_city 保单邮寄接收城市
+    @apiParam {String} delivery_district 保单邮寄接收区域
+    @apiParam {String} delivery_address 保单邮寄地址
+    @apiParam {Int} gift_policy 礼品策略 1反油， 2反积分, 0无礼品
+    @apiSampleRequest /mobile/newinsuranceorder
+    """
+
+    def get(self):
+        result = {'flag': 0, 'msg': '', "data": {}}
+        iop_id = self.get_argument('iop_id',0)
+
+        try:
+            iop = InsuranceOrderPrice.get(id = int(iop_id))
+            io = InsuranceOrder.get(id=iop.insurance_order_id)
+            uci = io.insurance_orders_car_infos
+            if uci.count():
+                uci = uci[0]
+                data = {}
+
+                data['ChePai'] =uci.car_num
+                data['CheZhuName'] =uci.car_owner_name
+                data['CheZhuID'] =uci.car_owner_idcard
+                data['NewCar'] =False
+                data['CarChuDengDate'] =uci.first_register_date
+                data['CarShiBieCode'] =uci.car_frame_num
+                data['CarEngineCode'] =uci.car_engine_num
+                data['CarPinPaiXingHao'] =uci.car_model_type
+                data['GuoHu'] =True if uci.assigned else False
+                data['GuoHuDate'] =uci.assigned_date
+                data['forceI'] =True if getattr(iop,'forceI') == '1' else False
+                data['damageI'] =True if getattr(iop,'damageI') == '1' else False
+                data['damageIPlus'] =True if getattr(iop,'damageIPlus') == '1' else False
+                data['thirdDutyI'] =getattr(iop,'thirdDutyI')
+                data['thirdDutyIPlus'] =True if getattr(iop,'thirdDutyIPlus') == '1' else False
+                data['driverDutyI'] =getattr(iop,'thirdDutyI')
+                data['driverDutyIPlus'] =True if getattr(iop,'driverDutyIPlus') == '1' else False
+                data['passengerDutyI'] =getattr(iop,'passengerDutyI')
+                data['passengerDutyIPlus'] = True if getattr(iop,'passengerDutyIPlus') == '1' else False
+                data['robbingI'] = True if getattr(iop,'robbingI') == '1' else False
+                data['robbingIPlus'] = True if getattr(iop,'robbingIPlus') == '1' else False
+                data['glassI'] = True if getattr(iop,'glassI') == '1' else False
+                data['fireDamageI'] = True if getattr(iop,'fireDamageI') == '1' else False
+                data['fireDamageIPlus'] = True if getattr(iop,'fireDamageIPlus') == '1' else False
+                data['scratchI'] = getattr(iop,'fireDamageIPlus')
+                data['scratchIPlus'] = True if getattr(iop,'fireDamageIPlus') == '1' else False
+                data['wadeI'] = True if getattr(iop,'fireDamageIPlus') == '1' else False
+                data['wadeIPlus'] = True if getattr(iop,'fireDamageIPlus') == '1' else False
+                data['thirdSpecialI'] = True if getattr(iop,'fireDamageIPlus') == '1' else False
+                data['PTBName'] = uci.car_owner_name if uci.owner_buyer_isone else uci.buy_name
+                data['PTBID'] = uci.car_owner_idcard if uci.owner_buyer_isone else uci.buy_idcard
+                data['PTBSameCheZhu'] = True if uci.owner_buyer_isone == 1 else False
+            result['flag'] = 1
+            result['data'] = data
+            result['msg'] = '查询支持'
+        except Exception,e:
+            result['msg'] = '查询失败:%s'%e
+
+        self.write(simplejson.dumps(result))
