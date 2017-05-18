@@ -888,6 +888,11 @@ def move_insuranceporderprice():
 def move_insuranceorder():
     old_order = Old_InsuranceOrder.select().where(Old_InsuranceOrder.insurance << insurance_map.keys())
     old_data = []
+    paymentex = {
+        1:1,
+        6:2,
+        7:3
+    }
     for item in old_order:
         try:
             reciver = Old_InsuranceOrderReceiving.get(Old_InsuranceOrderReceiving.orderid == item)
@@ -896,44 +901,47 @@ def move_insuranceorder():
         addr = reciver.address.decode('utf-8')
         if not insurance_order_price_map.has_key(item.id):
             continue
-        old_data.append({
-            'ordernum': item.ordernum,
-            'user': user_map[item.user.id],
-            'store': store_map[item.store.id],
-            'current_order_price': insurance_order_price_map[item.id],
+        io = New_InsuranceOrder.create(
+            ordernum= item.ordernum,
+            user= user_map[item.user.id],
+            store= store_map[item.store.id],
+            current_order_price= insurance_order_price_map[item.id],
 
-            'id_card_front': imgurl+item.idcard if item.idcard else '',
-            'id_card_back': imgurl+item.idcardback if item.idcardback else '',
-            'drive_card_front': imgurl+item.drivercard if item.drivercard else '',
-            'drive_card_back': imgurl+item.drivercard2 if item.drivercard2 else '',
-            'payment': item.payment,
-            'ordered': item.ordered,
+            id_card_front= imgurl+item.idcard if item.idcard else '',
+            id_card_back= imgurl+item.idcardback if item.idcardback else '',
+            drive_card_front= imgurl+item.drivercard if item.drivercard else '',
+            drive_card_back= imgurl+item.drivercard2 if item.drivercard2 else '',
+            payment= paymentex[item.payment],
+            ordered= item.ordered,
 
-            'delivery_to': reciver.contact,
-            'delivery_tel': reciver.mobile,
-            'delivery_province': addr[:addr.find(u'省')+1],
-            'delivery_city': addr[addr.find(u'省')+1:addr.find(u'市')+1],
-            'delivery_region': addr[addr.find(u'市'):addr.find(u'市')+3],
-            'delivery_address': reciver.paddress,
-            'deliver_company': '',
-            'deliver_num': '',
+            delivery_to= reciver.contact,
+            delivery_tel= reciver.mobile,
+            delivery_province= addr[:addr.find(u'省')+1],
+            delivery_city= addr[addr.find(u'省')+1:addr.find(u'市')+1],
+            delivery_region= addr[addr.find(u'市'):addr.find(u'市')+3],
+            delivery_address= reciver.paddress,
+            deliver_company= '',
+            deliver_num= '',
 
-            'status': item.status,
-            'cancel_reason': item.cancelreason,
-            'cancel_time': item.canceltime,
-            'sms_content': '',  # 就得没有，暂时设置，后期需要人工处理
-            'sms_sent_time': item.paytime,
-            'local_summary': item.localsummary,
-            'pay_time': item.paytime,
-            'deal_time': item.ordered,
-            'order_count': 0,
-            'pay_account': item.pay_account,
-            'trade_no': item.trade_no,
-            'user_del': item.userDel
-        })
+            status= -1 if item.status == 5 else item.status,
+            cancel_reason= item.cancelreason,
+            cancel_time= item.canceltime,
+            sms_content= '',  # 就得没有，暂时设置，后期需要人工处理
+            sms_sent_time= item.paytime,
+            local_summary= item.localsummary,
+            pay_time= item.paytime,
+            deal_time= item.ordered,
+            order_count= 0,
+            pay_account= item.pay_account,
+            trade_no= item.trade_no,
+            user_del= item.userDel
+        )
+        iop = io.current_order_price
+        iop.insurance_order_id = iop.id
+        iop.save()
 
-    New_InsuranceOrder.insert_many(old_data).execute()
-    print 'move insuranceorder:', len(old_data)
+    # New_InsuranceOrder.insert_many(old_data).execute()
+    # print 'move insuranceorder:', len(old_data)
 
 # settlement:结算
 settlement_map = {}
@@ -953,7 +961,11 @@ order_map = {}
 
 def move_Order():
     old_order = Old_Order.select().where(Old_Order.user << user_map.keys())
-
+    paymentex = {
+        7:3,
+        6:2,
+        1:1
+    }
     for item in old_order:
         # try:
         #     if item.delivery:
@@ -964,6 +976,8 @@ def move_Order():
         #         deliverynum = None
         # except Exception:
         #     pass
+        if item.payment == 8:
+            continue
 
         order = New_Order.create(
             ordernum=item.ordernum,
@@ -979,14 +993,14 @@ def move_Order():
             # delivery=delivery,
             # delivery_num=deliverynum,
             ordered=item.ordered,
-            payment=item.payment,
+            payment=paymentex[item.payment],
             message=item.message,
             order_type=item.order_type,  # 付款方式 1金钱订单 2积分订单
             total_price=item.currentprice,  # 就得没有，暂时设置为这个
             pay_balance=item.pay_balance,
             pay_price=0,  # 旧的没有，暂时设置默认值
             pay_time=item.paytime,
-            status=item.status,
+            status= -1 if item.status == 5 else item.status,
             trade_no=item.trade_no,
             order_count=0,
             buyer_del=0  # 旧的没有，暂时设置
