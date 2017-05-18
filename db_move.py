@@ -1096,7 +1096,7 @@ if __name__ == '__main__':
     move_storeproductprice()
     move_insurance()
     move_insuranceitems()
-    move_insurancearea()
+    #move_insurancearea()
     move_insuranceprice()
     move_insuranceexchange()
     #move_lubeexchange()
