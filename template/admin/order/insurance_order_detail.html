@@ -1252,9 +1252,15 @@
         ShowLoading();
         var car_model_type  = document.getElementById('car_model_type').value;
         var register_date  = document.getElementById('first_register_date').value;
+        var frame_num  = document.getElementById('car_frame_num').value;
+        var car_num  = document.getElementById('car_num').value;
+        var insurance  = 1;
         $.get('/ajax/search_car_info', {_xsrf:xsrf,
+            insurance:insurance,
             car_model_type:car_model_type,
             register_date:register_date,
+            frame_num:frame_num,
+            car_num:car_num
             }, function (data) {
             HiddenLoading();
             var obj = jQuery.parseJSON(data);

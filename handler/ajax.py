@@ -1216,25 +1216,28 @@ class SearchCarInfoHandler(BaseHandler):
     def check_xsrf_cookie(self):
         pass
 
-    def sear_chcar_info(self, insurance='zhlh',car_model_type=None,register_date=None):
+    def sear_chcar_info(self, insurance=0,car_model_type=None,register_date=None,frame_num=None,car_num=None):
         url = 'http://apitest.baodaibao.com.cn/index.php?g=Api&m=SearchCarInfoApi&a=SearchCarInfo'
         msg = {'flag':0 , 'msg':'', 'data':''}
+        insurance = Insurance.get(id = int(insurance))
         post_data = {}
         post_data['changpai_model'] = car_model_type  # "北京现代BH7203AY"
         post_data['user_id'] = "142"
-        if insurance == 'taiping':
+        if insurance.eName == 'taiping':
             post_data['taiping_data'] = {
                 "customerid": "3"
             }
-        if insurance == 'zhlh':
+        if insurance.eName == 'zhlh':
             post_data['zhlh_data'] = {
                 "customerid": "17",
                 "first_register_data": register_date
             }
-        if insurance == 'huaan':
+        if insurance.eName == 'huaan':
             post_data['huaan_data'] = {
+                'frame_number': frame_num,
+                'car_number': car_num,
                 "customerid": "14",
-                # "city_code":"610000"
+                "city_code":"610000"
             }
         print simplejson.dumps(post_data)
         request = urllib2.Request(url, 'data=%s' % simplejson.dumps(post_data))
@@ -1259,10 +1262,12 @@ class SearchCarInfoHandler(BaseHandler):
 
     def get(self):
         io_id = self.get_argument('io_id', None)
-        insurance = self.get_argument('insurance', 'zhlh')
+        insurance = self.get_argument('insurance', 1)
         car_model_type = self.get_argument('car_model_type',None)
         register_date = self.get_argument('register_date', None)
-        self.sear_chcar_info(insurance,car_model_type,register_date)
+        frame_num = self.get_argument('frame_num', None)
+        car_num = self.get_argument('car_num', None)
+        self.sear_chcar_info(insurance,car_model_type,register_date,frame_num,car_num)
 
 @route(r'/ajax/auto_caculate_price', name='ajax_auto_caculate_price')  # 自动报价
 class AutoCaculateInsuranceOrderPriceHandler(BaseHandler):
