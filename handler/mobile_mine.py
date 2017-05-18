@@ -78,9 +78,9 @@ class MobileMineHandler(MobileBaseHandler):
                         result['data']['product_orders']['pay_back'] += count
             elif user.store.store_type == 2:
                 # 查询子订单数据
-                buy_orders = SubOrder.select(SubOrder.status, fn.Count(SubOrder.id).alias('count')). \
-                    where(SubOrder.status > -1, SubOrder.buyer_del == 0, SubOrder.buyer_store == user.store).\
-                    group_by(SubOrder.status).tuples()
+                buy_orders = Order.select(Order.status, fn.Count(Order.id).alias('count')). \
+                    where(Order.status > -1, Order.buyer_del == 0, Order.buyer_store == user.store).\
+                    group_by(Order.status).tuples()
                 for status, count in buy_orders:
                     if status == 0:
                         result['data']['product_orders']['wait_pay'] += count
