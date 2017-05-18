@@ -140,7 +140,7 @@ def move_bankcard():
 area_map = {}
 
 def move_area():
-    old_area = Old_Area.select().order_by(Old_Area.id.asc)
+    old_area = Old_Area.select()
     for item in old_area:
         area = New_Area.create(
             pid=item.pid if item.pid else None,
