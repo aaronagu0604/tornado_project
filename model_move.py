@@ -355,7 +355,7 @@ class Category(db.Model):
     sort = CharField(max_length=20)  # 显示顺序
     category_type = IntegerField(default=0)  # 1配件商城 2汽车装潢
     img_m = CharField(max_length=256, null=True)  # 分类图片手机端
-    hot = IntegerField(default=1)  # 热门分类
+    hot = IntegerField(default=0)  # 热门分类
     active = IntegerField(default=1)  # 状态 0删除 1有效
 
     class Meta:
@@ -395,7 +395,7 @@ class Brand(db.Model):
     pinyin = CharField(max_length=50, null=True)  # 中文拼音
     logo = CharField(max_length=100, null=True)  # 品牌logo
     intro = CharField(max_length=300, null=True)  # 品牌简介
-    hot = IntegerField(default=1)  # 热门品牌
+    hot = IntegerField(default=0)  # 热门品牌
     sort = IntegerField(default=1)  # 排序
     active = IntegerField(default=1)  # 状态 0删除 1有效
 
@@ -644,9 +644,12 @@ class Insurance(db.Model):
 class InsuranceArea(db.Model):
     id = PrimaryKeyField()
     area_code = CharField(max_length=32, default='')
-    insurance = ForeignKeyField(Insurance, related_name='areas', db_column='insurance_id')
+    insurance = ForeignKeyField(Insurance, db_column='insurance_id')
     lube_ok = IntegerField(default=1)  # 开通反油
-    score_ok = IntegerField(default=1)  # 开通反积分
+    dealer_store = ForeignKeyField(Store, db_column='dealer_store_id')  # 经销商
+    lube_policy = CharField(max_length=4000)  # 返油政策的json串
+    cash_ok = IntegerField(default=1)  # 开通反现
+    cash_policy = CharField(max_length=4000)  # 返现政策的json串
     sort = IntegerField(default=1)  # 显示顺序
     active = IntegerField(default=1)  # 状态 0删除 1有效
 
@@ -667,6 +670,20 @@ class InsuranceArea(db.Model):
             codes.append(area_code)
         return codes
 
+    # 获取该地区下的所有返油返现
+    @classmethod
+    def get_area_insurance(cls, area_code):
+        codes = cls.append_areas(area_code)
+        result = []
+        for i in InsuranceArea.select().where((InsuranceArea.area_code << codes) & (InsuranceArea.active == 1)):
+            result.append({
+                'insurance': i.insurance,
+                'lube': i.lube_policy,
+                'cash': i.cash_policy,
+                'dealer_store': i.dealer_store
+            })
+        return result
+
     @classmethod
     def get_insurances_link(cls, area_code):  # 获取该地区所有保险公司及链接
         temp_insurance_id = []
@@ -683,6 +700,29 @@ class InsuranceArea(db.Model):
                     'link': setting.baseUrl + 'insurance/' + str(i.insurance.id)
                 })
         return insurance_list
+
+    @classmethod
+    def get_oil_policy(cls, area_code, insurance_id):  # 根据保险公司和地区获取返佣比率
+        codes = cls.append_areas(area_code)
+        configs = InsuranceArea.select().join(Area, on=(Area.code == InsuranceArea.area_code)). \
+            where((InsuranceArea.area_code << codes) & (InsuranceArea.insurance == insurance_id)).\
+            order_by(db.fn.LENGTH(InsuranceArea.area_code).desc())
+        if configs.count() > 0:
+            return configs[0]
+        else:
+            return None
+
+    @classmethod
+    def get_score_policy(cls, area_code, insurance_id):  # 根据保险公司和地区获取返佣比率
+        codes = cls.append_areas(area_code)
+        configs = InsuranceArea.select(InsuranceArea). \
+            join(Area, on=(Area.code == InsuranceArea.area_code)). \
+            where((InsuranceArea.area_code << codes) & (InsuranceArea.insurance == insurance_id) &
+                  (Area.is_scorearea == 1)).order_by(db.fn.LENGTH(InsuranceArea.area_code).desc())
+        if configs.count() > 0:
+            return configs[0]
+        else:
+            return None
 
 
 # 保险子险种
@@ -703,6 +743,7 @@ class InsurancePrice(db.Model):
     id = PrimaryKeyField()
     insurance_item = ForeignKeyField(InsuranceItem, related_name='insurance_prices', db_column='insurance_item_id', null=True)  # 子险种
     coverage = CharField()  # 保险额度
+    coveragenum = IntegerField()  # 保险额度数字
 
     class Meta:
         db_table = 'tb_insurance_price'
@@ -727,11 +768,13 @@ class InsuranceOrderPrice(db.Model):
     cash = FloatField(default=0.0)  # 返现金额
     total_price = FloatField(default=0.0)  # 保险订单总价格
     force_price = FloatField(default=0.0)  # 交强险 价格
+    force_rate = FloatField(null=True)    # 交强险折扣
     business_price = FloatField(default=0.0)  # 商业险价格
+    business_rate = FloatField(null=True)    # 商业险折扣
     vehicle_tax_price = FloatField(default=0.0)  # 车船税价格
     sms_content = CharField(max_length=1024, null=True)  # 短信通知内容
 
-    append_refund_status = IntegerField(default=0)    # 补退款状态 0无需补退款 1待补款/退款 2已补款/退款
+    append_refund_status = IntegerField(default=0)    # 补退款状态 0无需补退款 1待补款
     append_refund_time = IntegerField(default=0)    # 补退款时间
     append_refund_reason = CharField(max_length=128, default='')    # 补退款原因
     append_refund_num = FloatField(default=0.0)    # 补退款金额
@@ -808,10 +851,17 @@ class InsuranceOrder(db.Model):
     store = ForeignKeyField(Store, related_name='insurance_orders', db_column='store_id')  # 店铺
     current_order_price = ForeignKeyField(InsuranceOrderPrice, db_column='current_order_price_id', null=True)  # 最终报价ID
 
-    id_card_front = CharField(max_length=255, null=True)  # 身份证
+    id_card_front = CharField(max_length=255, null=True)  # 身份证 投保人
     icfstatus = IntegerField(default=0) # 是否需要重新上传：0不需要1需要
-    id_card_back = CharField(max_length=255, null=True)  # 身份证背面
+    id_card_back = CharField(max_length=255, null=True)  # 身份证背面 投保人
     icbstatus = IntegerField(default=0)  # 是否需要重新上传：0不需要1需要
+
+    is_same_person = IntegerField(default=1)  # 投保人与车主是否是同一人 默认是
+    id_card_front_owner = CharField(max_length=255, null=True)  # 身份证 车主
+    icfostatus = IntegerField(default=0)  # 是否需要重新上传：0不需要1需要
+    id_card_back_owner = CharField(max_length=255, null=True)  # 身份证背面 车主
+    icbostatus = IntegerField(default=0)  # 是否需要重新上传：0不需要1需要
+
     drive_card_front = CharField(max_length=255, null=True)  # 行驶证
     dcfstatus = IntegerField(default=0)  # 是否需要重新上传：0不需要1需要
     drive_card_back = CharField(max_length=255, null=True)  # 行驶证副本
@@ -874,123 +924,111 @@ class InsuranceOrder(db.Model):
         db_table = 'tb_insurance_orders'
 
 
-# 卖保险兑现规则 返现政策
-class InsuranceScoreExchange(db.Model):
+# 车主信息表
+class UserCarInfo(db.Model):
     id = PrimaryKeyField()
-    area_code = CharField(max_length=12)  # 地区code
-    insurance = ForeignKeyField(Insurance, db_column='insurance_id')  # 保险公司ID
-    created = IntegerField()  # 创建时间
+    insuranceorder = ForeignKeyField(InsuranceOrder, related_name='insurance_orders_car_infos', db_column='insurance_order_id')  # 保险订单ID
+    # 车主信息
+    car_owner_type = CharField(max_length=50, null=True)  # 车主类型:个人private(中华必填)
+    ## 车主机构信息
+    car_owner_num = CharField(max_length=50, null=True)  # 车辆所属组织机构代码
+    ## 车主人信息
+    car_owner_name = CharField(max_length=50, null=True)  # 车主姓名
+    car_owner_idcard = CharField(max_length=50, null=True)  # 车主身份证号
+    car_owner_address = CharField(max_length=150, null=True)  # 车主身份证地址
 
-    business_exchange_rate = FloatField(default=0.0)  # 兑换率（商业险），仅商业险
-    business_exchange_rate2 = FloatField(default=0.0)  # 兑换率（商业险），商业险+交强险
-    business_tax_rate = FloatField(default=0.0)  # 商业险税率
+    # 被保险人信息
+    owner_buyer_isone = IntegerField(default=0)  # 0不是 1是
+    buy_name = CharField(max_length=50, null=True)  # 姓名
+    buy_idcard = CharField(max_length=50, null=True)  # 身份证号
 
-    force_exchange_rate = FloatField(default=0.0)  # 交强险兑换率, 仅交强险
-    force_exchange_rate2 = FloatField(default=0.0)  # 交强险兑换率, 商业险+交强险
-    force_tax_rate = FloatField(default=0.0)  # 交强险税率
+    # 车辆信息
+    car_num = CharField(max_length=50, null=True)  # 车牌号
+    car_frame_num = CharField(max_length=50, null=True)  # 车架号
+    car_engine_num = CharField(max_length=50, null=True)  # 发动机号
+    car_passenger_number = CharField(max_length=50, null=True)  # 车座位数
+    car_quality = CharField(max_length=50, null=True)  # 整车质量
 
-    ali_rate = FloatField(default=0.0)  # 银联支付宝微信转账 手续费率
-    profit_rate = FloatField(default=0.0)  # 利润率（车装甲）
-    base_money = FloatField(default=0.0)  # 多少元起兑
+    car_type = CharField(max_length=50, null=True)  # 车型：小客车car
+    car_use_type = CharField(max_length=50, null=True)  # 车辆使用类型：非运营non_operation,运营operation
+    car_nengyuan_type = CharField(max_length=50, null=True)  # 车主能源情况：燃油ranyou，混合hunhe
+
+    car_model_type = CharField(max_length=50, null=True)  # 品牌厂型
+    car_model_code = CharField(max_length=50, null=True)  # 车辆精友码
+    car_displacement = CharField(max_length=50, null=True)  # 车排量
+    car_price = CharField(max_length=50, null=True)  # 车价格
+
+    assigned = IntegerField(default=1)  # 是否过户：0没有1有
+    first_register_date = CharField(max_length=50, null=True) # 初次等级日期
+    assigned_date = CharField(max_length=50, null=True) # 过户日期
+    # 保险信息
+    start_date_enforce = CharField(max_length=50, null=True) # 交强险起保日期
+    start_date_trade = CharField(max_length=50, null=True)  # 商业险起保日期
+    # 中华联合额外字段
+    rta_type = CharField(max_length=50, null=True)  # 交管所车辆类型
+    car_detail_type = CharField(max_length=50, null=True)  # 细化车型
+    car_num_type = CharField(max_length=50, null=True)  # 车牌类型
+    license_type = CharField(max_length=50, null=True)  # 行驶证车辆类型
+    status = IntegerField(default=0)  # 0新报价 1已读报价
 
     class Meta:
-        db_table = "tb_insurance_score_exchange"
+        db_table = 'tb_insurance_order_car_info'
 
-    @classmethod
-    def append_areas(cls, area_code):
-        codes = []
-        if len(area_code) == 12:
-            codes.append(area_code)
-            codes.append(area_code[:8])
-            codes.append(area_code[:4])
-        elif len(area_code) == 8:
-            codes.append(area_code)
-            codes.append(area_code[:4])
-        elif len(area_code) == 4:
-            codes.append(area_code)
-        return codes
 
-    @classmethod
-    def get_insurances(cls, area_code):  # 获取该地区所有保险公司及返佣方式
-        temp_insurance_id = []
-        insurance_list = []
-        codes = cls.append_areas(area_code)
-        insurances = InsuranceScoreExchange.select(Insurance.id.alias('i_id'), Insurance.name.alias('i_name'), Area.is_scorearea.alias('is_score'), Area.is_lubearea.alias('is_lube')).\
-            join(Insurance, on=(Insurance.id == InsuranceScoreExchange.insurance)).\
-            join(Area, on=(Area.code == InsuranceScoreExchange.area_code)).\
-            where(InsuranceScoreExchange.area_code << codes).\
-            order_by(db.fn.LENGTH(InsuranceScoreExchange.area_code).desc()).dicts()
-        for i in insurances:
-            if i['i_id'] not in temp_insurance_id:
-                temp_insurance_id.append(i['i_id'])
-                insurance_list.append({
-                    'id': i['i_id'],
-                    'name': i['i_name'],
-                    'is_score': i['is_score'],
-                    'is_cash': i['is_score'],
-                    'is_lube': i['is_lube']
-                })
-        return insurance_list
+# 保代宝报价回调记录表
+class BaoDaiBaoQuote(db.Model):
+    id = PrimaryKeyField()
+    insuranceorder = ForeignKeyField(InsuranceOrder, db_column='insurance_order_id')  # 保险订单ID
+    content = CharField(max_length=400, null=True)  # 消息内容
+    quotenum = CharField(max_length=50, null=True)  # 报价单号
+    status = IntegerField(default=0)  # 0新报价 1已读报价
 
-    @classmethod
-    def get_score_policy(cls, area_code, insurance_id):  # 根据保险公司和地区获取返佣比率
-        codes = cls.append_areas(area_code)
-        configs = InsuranceScoreExchange.select(InsuranceScoreExchange).\
-            join(Area, on=(Area.code == InsuranceScoreExchange.area_code)).\
-            where((InsuranceScoreExchange.area_code << codes) & (InsuranceScoreExchange.insurance == insurance_id) &
-                  (Area.is_scorearea == 1)).order_by(db.fn.LENGTH(InsuranceScoreExchange.area_code).desc())
-        if configs.count() > 0:
-            return configs[0]
-        else:
-            return None
+    class Meta:
+        db_table = 'tb_baodaibao_quote'
 
+
+# # 卖保险兑现规则 返现政策
+# class InsuranceScoreExchange(db.Model):
+#     id = PrimaryKeyField()
+#     area_code = CharField(max_length=12)  # 地区code
+#     insurance = ForeignKeyField(Insurance, db_column='insurance_id')  # 保险公司ID
+#     created = IntegerField()  # 创建时间
+#
+#     business_exchange_rate = FloatField(default=0.0)  # 兑换率（商业险），仅商业险
+#     business_exchange_rate2 = FloatField(default=0.0)  # 兑换率（商业险），商业险+交强险
+#     business_tax_rate = FloatField(default=0.0)  # 商业险税率
+#
+#     force_exchange_rate = FloatField(default=0.0)  # 交强险兑换率, 仅交强险
+#     force_exchange_rate2 = FloatField(default=0.0)  # 交强险兑换率, 商业险+交强险
+#     force_tax_rate = FloatField(default=0.0)  # 交强险税率
+#
+#     ali_rate = FloatField(default=0.0)  # 银联支付宝微信转账 手续费率
+#     profit_rate = FloatField(default=0.0)  # 利润率（车装甲）
+#     base_money = FloatField(default=0.0)  # 多少元起兑
+#
+#     class Meta:
+#         db_table = "tb_insurance_score_exchange"
+#
 
 # 帮助中心 返油政策
-class LubePolicy(db.Model):
-    id = PrimaryKeyField()
-    area_code = CharField(max_length=12)  # 地区code
-    insurance = ForeignKeyField(Insurance, related_name='lube_policy', db_column='insurance_id')
-    policy = CharField(max_length=4000)  # 返油政策的json串
-
-    @classmethod
-    def append_areas(cls, area_code):
-        codes = []
-        if len(area_code) == 12:
-            codes.append(area_code)
-            codes.append(area_code[:8])
-            codes.append(area_code[:4])
-        elif len(area_code) == 8:
-            codes.append(area_code)
-            codes.append(area_code[:4])
-        elif len(area_code) == 4:
-            codes.append(area_code)
-        return codes
-
-    @classmethod
-    def get_oil_policy(cls, area_code, insurance_id):  # 根据保险公司和地区获取返佣比率
-        codes = cls.append_areas(area_code)
-        print codes
-        configs = LubePolicy.select(). \
-            join(Area, on=(Area.code == LubePolicy.area_code)). \
-            where((LubePolicy.area_code << codes) & (LubePolicy.insurance == insurance_id) &
-                  (Area.is_lubearea == 1)).order_by(db.fn.LENGTH(LubePolicy.area_code).desc())
-        if configs.count() > 0:
-            return configs[0]
-        else:
-            return None
-
-    class Meta:
-        db_table = "tb_lube_policy"
+# class LubePolicy(db.Model):
+#     id = PrimaryKeyField()
+#     area_code = CharField(max_length=12)  # 地区code
+#     insurance = ForeignKeyField(Insurance, related_name='lube_policy', db_column='insurance_id')
+#     policy = CharField(max_length=4000)  # 返油政策的json串
+#
+#     class Meta:
+#         db_table = "tb_lube_policy"
 
 
-# 店铺经销商返油反分积分映射表
+# 店铺经销商返油反分现映射表
 class SSILubePolicy(db.Model):
     id = PrimaryKeyField()
     store = ForeignKeyField(Store, related_name='store_policy', db_column='store_id')  # 门店
     insurance = ForeignKeyField(Insurance, related_name='insurance_policy', db_column='insurance_id')  # 保险公司
     dealer_store = ForeignKeyField(Store, related_name='dealer_store_policy', db_column='dealer_store_id')  # 经销商
-    cash = CharField(max_length=4000)  # 返油政策的json串  # 返现政策
-    lube = CharField(max_length=4000)  # 返油政策的json串  #　返油政策
+    cash = CharField(max_length=4000, default='')  # 返油政策的json串  # 返现政策
+    lube = CharField(max_length=4000, default='')  # 返油政策的json串  #　返油政策
 
     class Meta:
         db_table = "tb_store_gift_policy"
@@ -1051,7 +1089,7 @@ class HotSearch(db.Model):
 # 支付通知内容
 class PaymentNotify(db.Model):
     id = PrimaryKeyField()
-    content = CharField(max_length=50)   # 支付通知内容
+    content = TextField()   # 支付通知内容
     payment = IntegerField(default=1)  # 通知来源  1支付宝  2微信 3银联
     notify_time = IntegerField(default=0)  # 通知时间
     notify_type = IntegerField(default=0)  # 通知类型 1同步 2异步
