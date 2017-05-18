@@ -170,55 +170,6 @@ class MobilStorePopularizeHandler(MobileBaseHandler):
 
 
 # ----------------------------------------------------订单--------------------------------------------------------------
-def productOrderSearch(ft, type, index):
-    if type == 'all':  # 全部
-        ft &= (SubOrder.status > -1)
-    elif type == 'unpay':  # 待付款订单
-        ft &= (SubOrder.status == 0)
-    elif type == 'undispatch':  # 待发货
-        ft &= (SubOrder.status == 1)
-    elif type == 'unreceipt':  # 待收货
-        ft &= (Order.status == 2)
-    elif type == 'success':  # 交易完成/待评价
-        ft &= (Order.status == 3)
-    elif type == 'delete':  # 删除
-        ft &= (Order.status == -1)
-
-    result = []
-    orders = []
-    sos = SubOrder.select().join(Order).where(ft).order_by(Order.ordered.desc()).paginate(index, setting.MOBILE_PAGESIZE)
-    for so in sos:
-        items = []
-        for soi in so.items:
-            items.append({
-                'product': soi.product.name,
-                'cover': soi.product.cover,
-                'price': soi.store_product_price.price,
-                'quantity': soi.quantity,
-                'attributes': [attribute.value for attribute in soi.product.attributes],
-                'order_type': so.order.order_type
-            })
-        if so.order.id in orders:
-            pass
-        else:
-            orders.append(so.order.id)
-            result.append({
-                'id': so.order.id,
-                'soid': so.id,
-                'ordernum': so.order.ordernum,
-                'saler_store': so.saler_store.name,
-                'buyer_store': so.buyer_store.name,
-                'order_type': so.order.order_type,
-                'price': so.order.total_price,
-                'score': so.score,
-                'status': so.status,
-                'items': items,
-                'ordered': time.strftime('%Y-%m-%d %H-%M-%S', time.localtime(so.order.ordered)),
-                'deadline': time.strftime('%Y-%m-%d %H-%M-%S', time.localtime(so.order.ordered + setting.PRODUCT_ORDER_TIME_OUT))
-            })
-    return result
-
-
 @route(r'/mobile/purchaseorder', name='mobile_purchase_order')  # 普通商品订单列表（采购）
 class MobilPurchaseOrderHandler(MobileBaseHandler):
     """
@@ -243,19 +194,46 @@ class MobilPurchaseOrderHandler(MobileBaseHandler):
             so.fail_reason = u'超时未支付'
             so.save()
 
+    def product_orders(self, type, index):
+        ft = (Order.user == self.get_user()) & (Order.buyer_del == 0)
+        if type == 'all':  # 全部
+            ft &= (Order.status > -1)
+        elif type == 'unpay':  # 待付款订单
+            ft &= (Order.status == 0)
+        elif type == 'undispatch':  # 待发货
+            ft &= (Order.status == 1)
+        elif type == 'unreceipt':  # 待收货
+            ft &= (Order.status == 2)
+        elif type == 'success':  # 交易完成/待评价
+            ft &= (Order.status == 3)
+        elif type == 'delete':  # 删除
+            ft &= (Order.status == -1)
+
+        result = []
+        orders = Order.select().where(ft).order_by(Order.ordered.desc()).paginate(index, setting.MOBILE_PAGESIZE)
+        for o in orders:
+            result.append({
+                'id': o.id,
+                'ordernum': o.ordernum,
+                'order_type': o.order_type,
+                'price': o.total_price,
+                'score': o.total_score,
+                'status': o.status,
+                'ordered': time.strftime('%Y-%m-%d %H-%M-%S', time.localtime(o.ordered)),
+                'deadline': time.strftime('%Y-%m-%d %H-%M-%S', time.localtime(o.ordered + setting.PRODUCT_ORDER_TIME_OUT))
+            })
+        return result
+
     @require_auth
     def get(self):
         result = {'flag': 0, 'msg': '', "data": []}
         type = self.get_argument("type", 'all')
         index = int(self.get_argument('index', 1))
         user = self.get_user()
-        # 先删除超时订单
-        # self.delete_timeOut_order(user)
-        ft = (Order.user == user) & (Order.buyer_del == 0)
         try:
-            result['data'] = productOrderSearch(ft, type, index)
+            result['data'] = self.product_orders(type, index)
             result['flag'] = 1
-        except Exception:
+        except Exception, e:
             result['msg'] = u'系统错误'
         self.write(simplejson.dumps(result))
 
@@ -384,15 +362,56 @@ class MobileSellOrderHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/sellorder
     """
+
+    def productOrderSearch(self, type, index):
+        store = self.get_user().store
+        ft = (SubOrder.saler_store == store)
+        if type == 'all':  # 全部
+            ft &= (SubOrder.status > -1)
+        elif type == 'unpay':  # 待付款订单
+            ft &= (SubOrder.status == 0)
+        elif type == 'undispatch':  # 待发货
+            ft &= (SubOrder.status == 1)
+        elif type == 'unreceipt':  # 待收货
+            ft &= (SubOrder.status == 2)
+        elif type == 'success':  # 交易完成/待评价
+            ft &= (SubOrder.status == 3)
+        elif type == 'delete':  # 删除
+            ft &= (SubOrder.status == -1)
+
+        result = []
+        sos = SubOrder.select().order_by(SubOrder.id.desc()).paginate(index, setting.MOBILE_PAGESIZE)
+        for so in sos:
+            result.append({
+                'id': so.order.id,
+                'soid': so.id,
+                'ordernum': so.order.ordernum,
+                'saler_store': so.saler_store.name,
+                'buyer_store': so.buyer_store.name,
+                'order_type': so.order.order_type,
+                'price': so.order.total_price,
+                'score': so.score,
+                'status': so.status,
+                'items': [{
+                    'product': soi.product.name,
+                    'cover': soi.product.cover,
+                    'price': soi.store_product_price.price,
+                    'quantity': soi.quantity,
+                    'attributes': [attribute.value for attribute in soi.product.attributes],
+                    'order_type': so.order.order_type
+                } for soi in so.items],
+                'ordered': time.strftime('%Y-%m-%d %H-%M-%S', time.localtime(so.order.ordered)),
+                'deadline': time.strftime('%Y-%m-%d %H-%M-%S', time.localtime(so.order.ordered + setting.PRODUCT_ORDER_TIME_OUT))
+            })
+        return result
+
     @require_auth
     def get(self):
         result = {'flag': 0, 'msg': '', "data": []}
         type = self.get_argument("type", 'all')
         index = int(self.get_argument('index', 1))
-        store = self.get_user().store
-        ft = (SubOrder.saler_store == store)
         try:
-            result['data'] = productOrderSearch(ft, type, index)
+            result['data'] = self.productOrderSearch(type, index)
             result['flag'] = 1
         except Exception:
             result['msg'] = '系统错误'

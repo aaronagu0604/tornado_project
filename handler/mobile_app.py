@@ -1682,6 +1682,10 @@ class MobilePayOrderHandler(MobileBaseHandler):
         order.status += 1
         order.pay_time = now
         order.save()
+        for so in order.sub_orders:
+            so.status = 1
+            so.save()
+
         if order_type == 1:  # 1金钱订单
             money_record = MoneyRecord()
             money_record.user = user
