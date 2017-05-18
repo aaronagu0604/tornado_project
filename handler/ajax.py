@@ -1220,6 +1220,10 @@ class SearchCarInfoHandler(BaseHandler):
         url = 'http://apitest.baodaibao.com.cn/index.php?g=Api&m=SearchCarInfoApi&a=SearchCarInfo'
         msg = {'flag':0 , 'msg':'', 'data':''}
         insurance = Insurance.get(id = int(insurance))
+        if insurance.eName not in ['zhlh','taiping','huaan']:
+            msg['msg'] = '不支持自动报价的保险公司'
+            self.write(msg)
+            return
         post_data = {}
         post_data['changpai_model'] = car_model_type  # "北京现代BH7203AY"
         post_data['user_id'] = "142"
@@ -1239,11 +1243,11 @@ class SearchCarInfoHandler(BaseHandler):
                 "customerid": "14",
                 "city_code":"610000"
             }
-        print simplejson.dumps(post_data)
+        print 'post data:',simplejson.dumps(post_data)
         request = urllib2.Request(url, 'data=%s' % simplejson.dumps(post_data))
         response = urllib2.urlopen(request)
         result = response.read()
-        print result
+        print 'return data:',result
         jsondata = simplejson.loads(result)
         data = []
 
@@ -1279,6 +1283,10 @@ class AutoCaculateInsuranceOrderPriceHandler(BaseHandler):
     def quote_iop(self,insurance,io,items={},insurance_id='0'):
         result = {'flag': 0, 'msg': '', 'data': ''}
         insurance = insurance.eName
+        if insurance not in ['zhlh','taiping','huaan']:
+            result['msg'] = '不支持自动报价的保险公司'
+            self.write(result)
+            return
         notify_url = 'http:///api.dev.test.520czj.com/mobile/baodaibao_notify'
         url = 'http://apitest.baodaibao.com.cn/index.php?g=Api&m=QuoteApi&a=Quote'
         post_id = io.ordernum + str(time.time())[:10]
@@ -1304,7 +1312,7 @@ class AutoCaculateInsuranceOrderPriceHandler(BaseHandler):
         for k,v in items.items():
             if k in ['forceI','vehicleTax']:
                 continue
-            deductible,value = v.split(',')
+            deductible,value = v.decode('utf8').split(',')
             insuranceinfo.append({
                 "deductible": deductible,
                 "ip_name": insurance_items[k],

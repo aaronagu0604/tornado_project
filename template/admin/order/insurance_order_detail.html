@@ -413,8 +413,15 @@
                     <div class="col-xs-3">
                         品牌型号
                     </div>
-                    <div class="col-xs-6 rightTxt">
+                    <div class="col-xs-3 rightTxt">
                         <input id="car_model_type" class="form-control" type="text" {% if ioci %} value="{{ioci.car_model_type}}"{% endif %}/>
+                    </div>
+                    <div class="col-xs-3 rightTxt">
+                        <select id="search_insurance"  name="search_insurance" class="form-control">
+                            {% for i in insurances %}
+                            <option value="{{i.id}}">{{i.name}}</option>
+                            {% endfor %}
+                        </select>
                     </div>
                     <div class="col-xs-3">
                         <input type="button" class="btn btn-outline btn-primary btn-xs" onclick="searchcarinfo()" value="查询车辆细化型号"/>
@@ -786,6 +793,15 @@
                                                             <div class="col-xs-4 rightTxt">
                                                                 <input type="text" id="11_{{program['pid']}}" {% if not program['program'][11]['value'] %} disabled="disabled" {% endif %} class="form-control" name="glassIPrice" value="{{program['program'][11]['price']}}">
                                                             </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-xs-4 leftTxt"></div>
+                                                            <div class="checkbox col-xs-4 leftTxt">
+                                                                <label>
+                                                                    <input type="checkbox" name="glassType" style="visibility: visible;">进口玻璃
+                                                                </label>
+                                                            </div>
+                                                            <div class="col-xs-4 leftTxt"></div>
                                                         </div>
                                                     </td>
                                                     <td id="td12_{{program['pid']}}" {% if not program['program'][12]['value'] %} style="background-color: aliceblue" {% endif %}>
@@ -1691,9 +1707,14 @@
         }
 
         var glassICB = $(program).find('input[name="glassICB"]').is(':checked');    // 玻璃checkbox
+        var glassType = $(program).find('input[name="glassType"]').is(':checked');    // 进口玻璃checkbox
         if(glassICB){
             hastrade = true;
-            i_items['glassI'] = '0,';
+            if(glassType){
+                i_items['glassI'] = '0,进口';
+            } else {
+                i_items['glassI'] = '0,国产';
+            }
         }
 
         var scratchICB = $(program).find('input[name="scratchICB"]').is(':checked');    // 划痕checkbox
