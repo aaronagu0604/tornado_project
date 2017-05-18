@@ -143,7 +143,7 @@ def move_area():
     old_area = Old_Area.select().order_by(Old_Area.id.asc)
     for item in old_area:
         area = New_Area.create(
-            pid=item.pid,
+            pid=item.pid if item.pid else None,
             code=item.code,
             has_sub=item.has_sub,
             name=item.name,
