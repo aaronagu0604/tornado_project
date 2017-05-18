@@ -613,14 +613,17 @@ class MobileInsuranceOrderDetailHandler(MobileBaseHandler):
                 iPrice = 0
             if i.style == u'交强险':
                 iList['force'] = iValue if iValue else ''
-                iList['forceprice'] = iPrice
+                iList['forceprice'] = str(iPrice)
             elif i.style == u'商业险-主险' and iValue != 'false' and iValue:
-                iList['main'].append({'eName': i.eName, 'name': i.name, 'style': i.style, 'value': iValue, 'price':iPrice})
+                iList['main'].append({'eName': i.eName, 'name': i.name, 'style': i.style, 'value': iValue, 'price':str(iPrice)})
                 iList['mainprice'] += iPrice
             elif i.style == u'商业险-附加险' and iValue != 'false' and iValue:
-                iList['subjoin'].append({'eName': i.eName, 'name': i.name, 'style': i.style, 'value': iValue, 'price':iPrice})
+                iList['subjoin'].append({'eName': i.eName, 'name': i.name, 'style': i.style, 'value': iValue, 'price':str(iPrice)})
                 iList['subjoinprice'] += iPrice
-
+        if 'mainprice' in iList.keys():
+            iList['mainprice'] = str(iList['mainprice'])
+        if 'subjoinprice' in iList.keys():
+            iList['subjoinprice'] = str(iList['subjoinprice'])
         if insuranceorder.current_order_price.gift_policy == 1:
             commission = str(insuranceorder.current_order_price.score) + u'桶'
         elif insuranceorder.current_order_price.gift_policy == 2:
