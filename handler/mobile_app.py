@@ -1395,7 +1395,7 @@ class MobileNewOrderHandler(MobileBaseHandler):
             result['data']['order_id'] = order.id
             result['data']['payment'] = payment
             result['data']['pay_info'] = pay_order(payment, total_price, order.ordernum, u'车装甲普通商品')
-            if result['data']['pay_info'] and is_shop_cart == '1':
+            if is_shop_cart == '1':
                 ShopCart.delete().where(ShopCart.store == user.store, ShopCart.store_product_price << sppids).execute()
         else:
             result['msg'] = u"传入参数异常"
@@ -1788,6 +1788,7 @@ class MobileToolsHandler(MobileBaseHandler):
     def get(self):
         result = {'flag': 0, 'msg': '', "data": {}}
         self.render('mobile/tools.html')
+
 
 # -----------------------------------------------------额外API----------------------------------------------------------
 @route(r'/mobile/insurance_order_quote_info', name='insurance_order_quote_info')  # 查询保险报价信息
