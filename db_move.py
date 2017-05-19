@@ -1190,6 +1190,7 @@ def move_insuranceitem():
         'sort': item.sort  # 排序
     } for item in old_it]
     czjmoveInsuranceItem.insert_many(old_data).execute()
+    print 'move insurance item',len(old_data)
 
 def move_insuranceprice():
     old_it = czjInsurancePrice.select()
@@ -1199,6 +1200,7 @@ def move_insuranceprice():
         'coveragenum': item.coveragenum  # 保险额度数字
     } for item in old_it]
     czjmoveInsurancePrice.insert_many(old_data).execute()
+    print 'move insurance price',len(old_data)
 
 def move_carbrand():
     old_cb = czjCarBrand.select()
@@ -1213,6 +1215,7 @@ def move_carbrand():
         'active': item.active  # 状态 0删除 1有效
     } for item in old_cb]
     czjmoveCarBrand.insert_many(old_data).execute()
+    print 'move car brand',len(old_data)
 
 def move_carbrandfactor():
     old_cbf = czjCarBrandFactory.select()
@@ -1225,6 +1228,7 @@ def move_carbrandfactor():
         'active': item.active  # 状态 0删除 1有效
     } for item in old_cbf]
     czjmoveCarBrandFactory.insert_many(old_data).execute()
+    print 'move carbrandfactory',len(old_data)
 
 def move_car():
     old_c = czjCar.select()
@@ -1240,6 +1244,7 @@ def move_car():
         'active': item.active  # 状态 0删除 1有效
     } for item in old_c]
     czjmoveCar.insert_many(old_data).execute()
+    print 'move car',len(old_data)
 caritemgroup = {}
 def move_caritemgroup():
     old_c = czjCarItemGroup.select()
@@ -1249,6 +1254,7 @@ def move_caritemgroup():
         group_name=item.group_name  # 汽车型号
         )
         caritemgroup[item.id]=cc.id
+    print 'move caritemgroup',old_c.count()
     #czjmoveCarItemGroup.insert_many(old_data).execute()
 
 def move_carsk():
@@ -1262,13 +1268,14 @@ def move_carsk():
         'active': item.active  # 状态 0删除 1有效
     } for item in old_c]
     czjmoveCarSK.insert_many(old_data).execute()
+    print 'move carsk',len(old_data)
 
 def move_caritem():
     old_c = czjCarItem.select()
     old_data = [{
         'car_item_name': item.car_item_name,  # 汽车型号
         'car': item.car,  # 汽车
-        'group': caritemgroup[item.group],  # 所在分组
+        'group': caritemgroup[item.group.id],  # 所在分组
         'displacement': item.displacement,# 排量
         'gearbox': item.gearbox,  # 变速箱，AT自动，MT手动，8挡手自一体
         'actuator': item.actuator,  # 驱动方式，四驱，前驱，后驱
@@ -1288,6 +1295,7 @@ def move_caritem():
         'active': item.active  # 状态 0删除 1有效
     } for item in old_c]
     czjmoveCarItem.insert_many(old_data).execute()
+    print 'move car item',len(old_data)
 
 
 if __name__ == '__main__':
