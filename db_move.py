@@ -1240,14 +1240,16 @@ def move_car():
         'active': item.active  # 状态 0删除 1有效
     } for item in old_c]
     czjmoveCar.insert_many(old_data).execute()
-
+caritemgroup = {}
 def move_caritemgroup():
     old_c = czjCarItemGroup.select()
-    old_data = [{
-        'car': item.car,  # 汽车
-        'group_name':item.group_name  # 汽车型号
-    } for item in old_c]
-    czjmoveCarItemGroup.insert_many(old_data).execute()
+    for item in old_c:
+        cc = czjCarItemGroup.create(
+        car=item.car,  # 汽车
+        group_name=item.group_name  # 汽车型号
+        )
+        caritemgroup[item.id]=cc.id
+    #czjmoveCarItemGroup.insert_many(old_data).execute()
 
 def move_carsk():
     old_c = czjCarSK.select()
@@ -1266,7 +1268,7 @@ def move_caritem():
     old_data = [{
         'car_item_name': item.car_item_name,  # 汽车型号
         'car': item.car,  # 汽车
-        'group': item.group,  # 所在分组
+        'group': caritemgroup[item.group],  # 所在分组
         'displacement': item.displacement,# 排量
         'gearbox': item.gearbox,  # 变速箱，AT自动，MT手动，8挡手自一体
         'actuator': item.actuator,  # 驱动方式，四驱，前驱，后驱
@@ -1289,48 +1291,48 @@ def move_caritem():
 
 
 if __name__ == '__main__':
-    # move_hotsearch()
-    # move_delivery()
-    # move_bankcard()
-    # move_area()
-    # move_category()
-    # move_categoryattribute()
-    # move_categoryattributeitem()
-    # move_brand()
-    # move_brandcategory()
-    # move_adminuser()
-    # #move_adminuserlog()
-    # move_store()
-    # move_storebankaccount()
-    # move_storearea()
-    # move_user()
-    # move_storeaddress()
-    # move_scorerecord()
-    # move_moneyrecord()
-    # move_block()
-    # move_blockitem()
-    # move_blockitemarea()
-    # move_product()
-    # move_productpic()
-    # move_productattributevalue()
-    # move_productrelease()
-    # move_storeproductprice()
-    # move_insurance()
-    # #move_insurancearea()
-    # #move_insuranceexchange()
-    # #move_lubeexchange()
-    # move_feedback()
-    # #move_insuranceporderprice()
-    # move_insuranceorder()
-    # move_settlement()
-    # move_Order()
-    # move_orderitem()
-    # #move_cart()
-    # move_insuranceitem()
-    # move_insuranceprice()
-    # move_carbrand()
-    # move_carbrandfactor()
-    # move_car()
-    # move_caritemgroup()
-    # move_carsk()
+    move_hotsearch()
+    move_delivery()
+    move_bankcard()
+    move_area()
+    move_category()
+    move_categoryattribute()
+    move_categoryattributeitem()
+    move_brand()
+    move_brandcategory()
+    move_adminuser()
+    #move_adminuserlog()
+    move_store()
+    move_storebankaccount()
+    move_storearea()
+    move_user()
+    move_storeaddress()
+    move_scorerecord()
+    move_moneyrecord()
+    move_block()
+    move_blockitem()
+    move_blockitemarea()
+    move_product()
+    move_productpic()
+    move_productattributevalue()
+    move_productrelease()
+    move_storeproductprice()
+    move_insurance()
+    #move_insurancearea()
+    #move_insuranceexchange()
+    #move_lubeexchange()
+    move_feedback()
+    #move_insuranceporderprice()
+    move_insuranceorder()
+    move_settlement()
+    move_Order()
+    move_orderitem()
+    #move_cart()
+    move_insuranceitem()
+    move_insuranceprice()
+    move_carbrand()
+    move_carbrandfactor()
+    move_car()
+    move_caritemgroup()
+    move_carsk()
     move_caritem()

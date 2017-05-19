@@ -1089,7 +1089,7 @@ class HotSearch(db.Model):
 # 支付通知内容
 class PaymentNotify(db.Model):
     id = PrimaryKeyField()
-    content = TextField()   # 支付通知内容
+    content = CharField(max_length=2048)    # 支付通知内容
     payment = IntegerField(default=1)  # 通知来源  1支付宝  2微信 3银联
     notify_time = IntegerField(default=0)  # 通知时间
     notify_type = IntegerField(default=0)  # 通知类型 1同步 2异步
