@@ -1626,8 +1626,8 @@ class MobilNewInsuranceOrderHandler(MobileBaseHandler):
         thirdSpecialI = self.get_body_argument('thirdSpecialI', '')
 
         user = self.get_user()
-        if user and gift_policy and delivery_address and delivery_city and delivery_province and delivery_district and \
-                delivery_tel and delivery_to and insurance and drive_card_back and drive_card_front and id_card_back and \
+        if user and gift_policy and delivery_address and delivery_city and delivery_district and delivery_tel \
+                and delivery_to and insurance and drive_card_back and drive_card_front and id_card_back and \
                 id_card_front:
             order = InsuranceOrder()
             order.user = user
@@ -1680,7 +1680,7 @@ class MobilNewInsuranceOrderHandler(MobileBaseHandler):
             result['data']['order_id'] = order.id
             result['data']['order_price_id'] = order_price.id
         else:
-            result['msg'] = '输入参数异常'
+            result['msg'] = u'输入参数异常'
         self.write(simplejson.dumps(result))
         self.finish()
 
