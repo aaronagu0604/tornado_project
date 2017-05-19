@@ -1247,13 +1247,14 @@ def move_car():
     print 'move car',len(old_data)
 caritemgroup = {}
 def move_caritemgroup():
-    old_c = czjCarItemGroup.select()
+    old_c = czjCarItemGroup.select(czjCarItemGroup.id <= 5837)
     for item in old_c:
         cc = czjCarItemGroup.create(
         car=item.car,  # 汽车
         group_name=item.group_name  # 汽车型号
         )
         caritemgroup[item.id]=cc.id
+        print 'move carig:cc.id=',cc.id
     print 'move caritemgroup',old_c.count()
     #czjmoveCarItemGroup.insert_many(old_data).execute()
 
