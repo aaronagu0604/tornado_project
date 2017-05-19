@@ -37,6 +37,7 @@ alipay_account = "pay.chezhuangjia@520czj.com"  # 商家的支付宝邮箱
 
 # 交易过程中服务器异步通知的页面 要用 http://格式的完整路径，不允许加?id=123这类自定义参数
 NOTIFY_URL = 'http://www.520czj.com/mobile/alipay_notify'
+NOTIFY_URL_CZ = 'http://api.dev.test.520czj.com/mobile/alipay_cz_notify'
 
 
 

@@ -15,8 +15,11 @@ ALI_GATEWAY_URL = "https://openapi.alipay.com/gateway.do?"
 SIGN_TYPE = 'SHA-256'
 
 # 拼接要签名的字符串
-def join_string(total_amount, subject, body, ordernum):
-    notify_url = Settings.NOTIFY_URL
+def join_string(total_amount, subject, body, ordernum, isCZ):
+    if isCZ:
+        notify_url = Settings.NOTIFY_URL_CZ
+    else:
+        notify_url = Settings.NOTIFY_URL
     timestamp = time.strftime('%Y-%m-%d!%H:%M:%S', time.localtime())
     before_sign = '''app_id=%s&
         biz_content={
@@ -93,9 +96,9 @@ def check_sign(message, sign):
 
 
 # 获取最终签名后的字符串
-def get_alipay_string(total_price, subject, body, ordernum):
+def get_alipay_string(total_price, subject, body, ordernum, isCZ=False):
     try:
-        after_join_string = join_string(total_price, subject, body, ordernum)
+        after_join_string = join_string(total_price, subject, body, ordernum, isCZ)
         sign_string = alipay_sign(after_join_string)
         url_string = switch_to_urlencode(after_join_string)
         sorted_string = sort_string(url_string)

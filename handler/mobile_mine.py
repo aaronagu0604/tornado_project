@@ -1346,7 +1346,7 @@ class MobileFundRechargeHandler(MobileBaseHandler):
         if payment == 1:  # 1支付宝  2微信 3银联
             # response_url = get_pay_url(order_num, u'车装甲商品', price, True)
             # response_url = alipay.switch_to_utf_8(price, '充值', '车装甲充值', order_num)
-            pay_info = alipay.get_alipay_string(price, u'车装甲', u'车装甲充值', order_num)
+            pay_info = alipay.get_alipay_string(price, u'车装甲', u'车装甲充值', order_num, True)
             if len(pay_info) > 0:
                 result['data']['pay_info'] = pay_info
                 result['flag'] = 1

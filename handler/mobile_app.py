@@ -22,7 +22,6 @@ def get_insurance(area_code):
     items = []
     insurances = InsuranceArea.select(InsuranceArea.insurance). \
         where((InsuranceArea.area_code == area_code) & (InsuranceArea.active == 1)).order_by(InsuranceArea.sort.asc())
-    print area_code
     for insurance in insurances:
         items.append({
             'img': insurance.insurance.logo,
@@ -287,16 +286,15 @@ class MobileLoginHandler(MobileBaseHandler):
                                     area = area[:-4]
                                 set_device_info(jpushtag, code, user.mobile)
                         else:
-                            result['msg'] = '登录失败'
+                            result['msg'] = u'登录失败'
                     else:
-                        result['msg'] = "此账户被禁止登录，请联系管理员。"
+                        result['msg'] = u"此账户被禁止登录，请联系管理员。"
                 else:
-                    result['msg'] = "用户名或密码错误"
+                    result['msg'] = u"用户名或密码错误"
             except Exception, e:
-                print e
-                result['msg'] = "此用户不存在"
+                result['msg'] = u"此用户不存在"
         else:
-            result['msg'] = "请输入用户名或者密码"
+            result['msg'] = u"请输入用户名密码"
         self.write(simplejson.dumps(result))
         self.finish()
 
@@ -332,7 +330,7 @@ class MobileHomeHandler(MobileBaseHandler):
         result['data']['last_unread_price']['insurance'] = ''
         result['data']['last_unread_price']['time'] = ''
         result['data']['last_unread_price']['link'] = ''
-        if user is not None:
+        if user:
             result['data']['login_flag'] = 1
             # 消息通知
             message_list = Message.select().where(Message.store == user.store & Message.status == 0)
@@ -352,15 +350,20 @@ class MobileHomeHandler(MobileBaseHandler):
             banners = self.get_banner(self.get_default_area_code())
         result['data']['banner'] = banners
 
-        result['data']['category'] = []
         # 保险
-        tmp_code = area_code
-        insurances = InsuranceArea.get_insurances_link(tmp_code)[:4]
-        #insurances = []
-        while len(insurances) == 0 and len(tmp_code) > 4:
-            tmp_code = tmp_code[0: -4]
-            insurances = get_insurance(tmp_code)[:4]
-        result['data']['category'].append({'title': u'保险业务', 'data': insurances})
+        if user:
+            insurances = [{
+                'img': store_insurance.insurance.logo,
+                'name': store_insurance.insurance.name,
+                'price': 0,
+                'link': 'czj://insurance/%d' % store_insurance.insurance.id
+            } for store_insurance in user.store.store_policy]
+        else:
+            insurances = self.application.memcachedb.get('insurances_no_login')
+            if not insurances:
+                insurances = InsuranceArea.get_insurances_link('0027')
+                self.application.memcachedb.set('insurances_no_login', insurances)
+        result['data']['category'] = [{'title': u'保险业务', 'data': insurances}]
 
         # 热门分类
         tmp_code = area_code

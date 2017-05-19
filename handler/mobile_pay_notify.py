@@ -210,13 +210,13 @@ class MobileUPayCallbackHandler(RequestHandler):
 
 # ------------------------------------------------充值回调--------------------------------------------------------------
 def recharge(order_num, trade_no, money):
-    user_id = int(order_num.split('R')[0].strp('U'))
+    user_id = int(order_num.split('R')[0].strip('U'))
     user = User.get(id=user_id)
     store = user.store
     store.price += float(money)
     store.save()
     now = int(time.time())
-    MoneyRecord.create(user=user, store=user.store, process_type=1, process_log=u'充值', in_num=trade_no, money=money,
+    MoneyRecord.create(user=user, store=user.store, process_type=1, process_message=u'充值', in_num=trade_no, money=money,
                        status=1, apply_time=now, processing_time=now)
 
 
