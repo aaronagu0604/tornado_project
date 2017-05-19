@@ -1218,7 +1218,7 @@ def move_carbrandfactor():
     old_cbf = czjCarBrandFactory.select()
     old_data = [{
         'brand': item.brand,  # 汽车品牌
-        'factory_name': item.factor_name,  # 汽车品牌厂家
+        'factory_name': item.factory_name,  # 汽车品牌厂家
         'logo': item.logo,  # 汽车品牌logo
         'factory_intro': item.factor_intro,  # 汽车品牌简介
         'sort': item.sort,  # 同品牌下的排序
@@ -1328,7 +1328,7 @@ if __name__ == '__main__':
     # #move_cart()
     # move_insuranceitem()
     # move_insuranceprice()
-    move_carbrand()
+    #move_carbrand()
     move_carbrandfactor()
     move_car()
     move_caritemgroup()
