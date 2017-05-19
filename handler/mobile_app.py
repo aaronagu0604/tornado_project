@@ -1484,18 +1484,40 @@ class MobilInsuranceOrderBaseHandler(MobileBaseHandler):
             })
         return insurance_list
 
+    def get_store_delivery_address(self, store):
+        address = StoreAddress.select().where(StoreAddress.store == store).order_by(StoreAddress.is_default.desc())
+        if address.count() > 0:
+            store_delivery_address = {
+                'delivery_to': address[0].name,
+                'delivery_tel': address[0].mobile,
+                'delivery_province': address[0].province,
+                'delivery_city': address[0].city,
+                'delivery_district': address[0].region,
+                'delivery_address': address[0].address,
+            }
+        else:
+            store_delivery_address = {
+                'delivery_to': store.linkman,
+                'delivery_tel': store.mobile,
+                'delivery_province': Area.get(code=store.area_code[:4]).name if len(store.area_code) >= 4 else '',
+                'delivery_city': Area.get(code=store.area_code[:8]).name if len(store.area_code) >= 8 else '',
+                'delivery_district': Area.get(code=store.area_code).name if len(store.area_code) == 12 else '',
+                'delivery_address': store.address,
+            }
+        return store_delivery_address
+
     @require_auth
     def get(self):
         result = {'flag': 0, 'msg': '', "data": {}}
         user = self.get_user()
         try:
-            address = StoreAddress.get((StoreAddress.store == user.store) & (StoreAddress.is_default == 1))
-            result['data']['delivery_to'] = address.name
-            result['data']['delivery_tel'] = address.mobile
-            result['data']['delivery_province'] = address.province
-            result['data']['delivery_city'] = address.city
-            result['data']['delivery_district'] = address.region
-            result['data']['delivery_address'] = address.address
+            sda = self.get_store_delivery_address(user.store)
+            result['data']['delivery_to'] = sda['delivery_to']
+            result['data']['delivery_tel'] = sda['delivery_tel']
+            result['data']['delivery_province'] = sda['delivery_province']
+            result['data']['delivery_city'] = sda['delivery_city']
+            result['data']['delivery_district'] = sda['delivery_district']
+            result['data']['delivery_address'] = sda['delivery_address']
             result['data']['insurance_message'] = self.get_store_policies(user.store)
             for i_item in InsuranceItem.select():
                 if i_item.insurance_prices:
