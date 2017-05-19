@@ -668,15 +668,15 @@ def move_insurancearea():
         New_InsuranceArea.insert_many(old_data).execute()
 
 # insuranceprice:保额
-def move_insuranceprice():
-    old_price = Old_InsurancePrice.select()
-    old_data = [{
-        'insurance_item': insurance_item_map[item.pid.id],
-        'coverage': item.name,
-        'coveragenum': 0
-    } for item in old_price]
-    print 'move insuranceprice', len(old_data)
-    New_InsurancePrice.insert_many(old_data).execute()
+# def move_insuranceprice():
+#     old_price = Old_InsurancePrice.select()
+#     old_data = [{
+#         'insurance_item': insurance_item_map[item.pid.id],
+#         'coverage': item.name,
+#         'coveragenum': 0
+#     } for item in old_price]
+#     print 'move insuranceprice', len(old_data)
+#     New_InsurancePrice.insert_many(old_data).execute()
 
 # insurancescoreexchange:保险积分兑换规则
 # def move_insuranceexchange():
@@ -1162,6 +1162,7 @@ def move_cart():
 # 从czj库导入补充数据
 '''
 from model_move import InsuranceItem as czjmoveInsuranceItem
+from model_move import InsurancePrice as czjmoveInsurancePrice
 from model_move import CarBrand as czjmoveCarBrand
 from model_move import CarBrandFactory as czjmoveCarBrandFactory
 from model_move import Car as czjmoveCar
@@ -1169,7 +1170,9 @@ from model_move import CarItemGroup as czjmoveCarItemGroup
 from model_move import CarSK as czjmoveCarSK
 from model_move import CarItem as czjmoveCarItem
 
+
 from model import InsuranceItem as czjInsuranceItem
+from model import InsurancePrice as czjInsurancePrice
 from model import CarBrand as czjCarBrand
 from model import CarBrandFactory as czjCarBrandFactory
 from model import Car as czjCar
@@ -1187,6 +1190,15 @@ def move_insuranceitem():
         'sort': item.sort  # 排序
     } for item in old_it]
     czjmoveInsuranceItem.insert_many(old_data).execute()
+
+def move_insuranceprice():
+    old_it = czjInsurancePrice.select()
+    old_data = [{
+        'insurance_item': item.insurance_item,  # 子险种
+        'coverage': item.coverage,  # 保险额度
+        'coveragenum': item.coveragenum  # 保险额度数字
+    } for item in old_it]
+    czjmoveInsurancePrice.insert_many(old_data).execute()
 
 def move_carbrand():
     old_cb = czjCarBrand.select()
@@ -1304,9 +1316,7 @@ if __name__ == '__main__':
     move_productrelease()
     move_storeproductprice()
     move_insurance()
-
     #move_insurancearea()
-    move_insuranceprice()
     #move_insuranceexchange()
     #move_lubeexchange()
     move_feedback()
@@ -1317,6 +1327,7 @@ if __name__ == '__main__':
     move_orderitem()
     #move_cart()
     move_insuranceitem()
+    move_insuranceprice()
     move_carbrand()
     move_carbrandfactor()
     move_car()
