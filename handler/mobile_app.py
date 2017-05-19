@@ -1760,17 +1760,20 @@ class MobilePayOrderHandler(MobileBaseHandler):
                 else:
                     if user.store.price < total_price:
                         result['msg'] = u"您的余额不足"
+                        self.write(simplejson(result))
+                        return
                     else:
                         self.after_pay_operation(order, total_price, user, order_type)
+                        result['flag'] = 1
 
             result['data']['pay_info'] = pay_order(payment, total_price, ordernum, log)
+            result['data']['payment'] = payment
+
             if result['data']['pay_info']:
                 result['flag'] = 1
             if payment in [6, 7] and not result['data']['pay_info']:
                 result['msg'] = u'获取二维码失败'
-            else:
-                result['flag'] = 1
-                result['data']['payment'] = payment
+
         else:
             result['msg'] = u"传入参数异常"
         self.write(simplejson.dumps(result))
