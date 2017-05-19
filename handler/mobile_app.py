@@ -319,6 +319,7 @@ class MobileHomeHandler(MobileBaseHandler):
     """
 
     def get(self):
+        logging.error('----mobile_home')
         result = {'flag': 0, 'msg': '', "data": {}}
         area_code = self.get_store_area_code()
         user = self.get_user()
