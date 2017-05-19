@@ -1271,7 +1271,7 @@ def move_caritem():
         'gearbox': item.gearbox,  # 变速箱，AT自动，MT手动，8挡手自一体
         'actuator': item.actuator,  # 驱动方式，四驱，前驱，后驱
         'power': item.power,# 动力来源，汽油，柴油，电动，油电混合
-        'sale_category': item.sale_catetory,  # 销售分组，如：在售，停售
+        'sale_category': item.sale_category,  # 销售分组，如：在售，停售
         'catch_url': item.catch_url,  # 抓取详情页面路径
         'stop_sale': item.stop_sale,  # 停产？ 0正常销售 1已停产
         'sort': item.sort,  # 厂家或品牌下的排序
@@ -1329,8 +1329,8 @@ if __name__ == '__main__':
     # move_insuranceitem()
     # move_insuranceprice()
     #move_carbrand()
-    move_carbrandfactor()
-    move_car()
-    move_caritemgroup()
-    move_carsk()
+    # move_carbrandfactor()
+    # move_car()
+    # move_caritemgroup()
+    # move_carsk()
     move_caritem()
