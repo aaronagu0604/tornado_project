@@ -1279,8 +1279,8 @@ def move_caritem():
         'price': item.price,  # 指导价格
         'car_sk_engine_1': item.car_sk_engine_1,  # SK产品发动机推荐1
         'car_sk_engine_2': item.car_sk_engine_2,# SK产品发动机推荐2
-        'car_sk_gearbox_1': item.car_sk_gearbox_1,  # SK产品变速箱推荐1
-        'car_sk_gearbox_2': item.car_sk_gearbox_2,  # SK产品变速箱推荐2
+        'car_sk_gearbox_1': item.car_sk_gearbox_1 if item.car_sk_gearbox_1 else None,  # SK产品变速箱推荐1
+        'car_sk_gearbox_2': item.car_sk_gearbox_2 if item.car_sk_gearbox_2 else None,  # SK产品变速箱推荐2
         'brake_oil': item.brake_oil,  # SK产品刹车油
         'antifreeze_solution': item.antifreeze_solution,  # SK产品防冻液
         'active': item.active  # 状态 0删除 1有效
@@ -1328,7 +1328,7 @@ if __name__ == '__main__':
     # #move_cart()
     # move_insuranceitem()
     # move_insuranceprice()
-    #move_carbrand()
+    # move_carbrand()
     # move_carbrandfactor()
     # move_car()
     # move_caritemgroup()
