@@ -1297,7 +1297,7 @@
     }
     // searchcarinfo function 调用ajax并回填识别信息
     function searchcarinfo() {
-        //ShowLoading();
+        var index = layer.load(0, {shade: false});
         var car_model_type  = document.getElementById('car_model_type').value;
         var register_date  = document.getElementById('first_register_date').value;
         var frame_num  = document.getElementById('car_frame_num').value;
@@ -1312,9 +1312,10 @@
             frame_num:frame_num,
             car_num:car_num
             }, function (data) {
-            //HiddenLoading();
+            layer.close(index);
             var obj = jQuery.parseJSON(data);
             if (obj.flag == 1) {
+                alert("查询成功");
                 var detail_type = document.getElementById('detail_type')
                 for (var i = 1; i < detail_type.options.length; i++) {
                     detail_type.options.remove(i);
@@ -1675,6 +1676,7 @@
                     });
     }
     function  baodaibao_quote(program_id) {
+        var index = layer.load(0, {shade: false});
         // 根据获取 ID 获取元素
         var program = document.getElementById(program_id);
         document.getElementById('program_id_temp').value = program;
@@ -1838,7 +1840,7 @@
                 displacement:displacement,
                 model_code:model_code
             }, function (obj) {
-            HiddenLoading();
+            layer.close(index);
             console.log(obj);
 
            var obj = jQuery.parseJSON(obj);
