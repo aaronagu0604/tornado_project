@@ -1279,7 +1279,8 @@ class AutoCaculateInsuranceOrderPriceHandler(BaseHandler):
     def check_xsrf_cookie(self):
         pass
 
-    def quote_iop(self,insurance,io,items={},insurance_id='0'):
+    def quote_iop(self,insurance,io,items={},insurance_id='0',price=0,quality=0,displacement=0,
+                                          model_code=0):
         result = {'flag': 0, 'msg': '', 'data': ''}
         insurance = insurance.eName
         if insurance not in ['zhlh','taiping','huaan']:
@@ -1320,9 +1321,9 @@ class AutoCaculateInsuranceOrderPriceHandler(BaseHandler):
         post_data = {}
         car_infos = io.insurance_orders_car_infos[0]
         post_data['car'] = {
-            "car_price": car_infos.car_price,
-            "model_code": car_infos.car_model_code,
-            "displacement": car_infos.car_displacement
+            "car_price": price,
+            "model_code": model_code,
+            "displacement": displacement
         }
         post_data['orderArr'] = {
             # BaseInfo
@@ -1341,7 +1342,7 @@ class AutoCaculateInsuranceOrderPriceHandler(BaseHandler):
             "changpai_model": car_infos.car_model_type,  # 厂牌型号
             "frame_number": car_infos.car_frame_num,  # 车架号
             "engine_number": car_infos.car_engine_num,  # 发动机号
-            "standard_quality": car_infos.car_quality,  # 整备质量(中华必填)
+            "standard_quality": quality,  # 整备质量(中华必填)
             "first_register_date": car_infos.first_register_date,  # 初登日期(中华必填)
             "car_owner_type": car_infos.car_owner_type,  # 车主类型: 个人private(中华必填)
             # 车主信息
@@ -1420,7 +1421,7 @@ class AutoCaculateInsuranceOrderPriceHandler(BaseHandler):
                     "service_code": "6197J2004003"
                 }
             }
-        print 'post_data:',simplejson.dumps(post_data)
+        #print 'post_data:',simplejson.dumps(post_data)
         try:
             request = urllib2.Request(url, 'data=%s' % simplejson.dumps(post_data))
             response = urllib2.urlopen(request)
@@ -1511,13 +1512,14 @@ class AutoCaculateInsuranceOrderPriceHandler(BaseHandler):
                 dic['totalI'] = total_price
                 result['data'] = dic
             else:
-                result['msg'] = bdb_json['data']['HEAD']['RESPONSE_MESSAGE']
+                msglist = [item['MsgDesc'] for item in bdb_json['data']['body']['message']]
+                result['msg'] = '\n'.join(msglist)
         except Exception,e:
             import traceback
             traceback.print_exc()
             result['flag']=0
             result['msg']='报价失败'
-        print 'return result:',simplejson.dumps(result)
+        #print 'return result:',simplejson.dumps(result)
         self.write(simplejson.dumps(result))
 
         # step = 15
@@ -1572,7 +1574,8 @@ class AutoCaculateInsuranceOrderPriceHandler(BaseHandler):
         #     step -= 1
 
     @run_on_executor
-    def caculate_iop_price(self,io_id,i_id,items,insurance_id):
+    def caculate_iop_price(self,io_id,i_id,items,insurance_id,price,quality,displacement,
+                                          model_code):
         if not (io_id and i_id and items):
             self.write('该订单不存在')
 
@@ -1580,7 +1583,8 @@ class AutoCaculateInsuranceOrderPriceHandler(BaseHandler):
         io = InsuranceOrder.get(id=io_id)
         items = simplejson.loads(items)
 
-        self.quote_iop(i,io,items,insurance_id)
+        self.quote_iop(i,io,items,insurance_id,price,quality,displacement,
+                                          model_code)
 
 
     @asynchronous
@@ -1590,8 +1594,14 @@ class AutoCaculateInsuranceOrderPriceHandler(BaseHandler):
         i_id = self.get_body_argument('i_id', 0)
         items = self.get_body_argument('i_items', '')
         insurance_id =self.get_body_argument('insurance_type','0')
-        print io_id,i_id,items,insurance_id
-        a = yield self.caculate_iop_price(io_id,i_id,items,insurance_id)
+        price = self.get_body_argument('price',0)
+        quality = self.get_body_argument('quality',0)
+        model_code = self.get_body_argument('model_code','')
+        displacement = self.get_body_argument('displacement',0)
+        print io_id,i_id,items,insurance_id,price,quality,displacement,model_code
+        a = yield self.caculate_iop_price(io_id,i_id,items,insurance_id,
+                                          price,quality,displacement,
+                                          model_code)
 
 @route(r'/ajax/baodaibao_notify', name='ajax_baodaibao_notify')  # 报价回调函数
 class BaoDaiBaoNotifyHandler(BaseHandler):

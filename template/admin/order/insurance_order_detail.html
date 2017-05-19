@@ -304,10 +304,12 @@
                     <div class="col-xs-3 rightTxt">
                         <input id="buy_name" class="form-control" type="text" {% if ioci %} value="{{ioci.buy_name}}"{% endif %}/>
                     </div>
+                </div>
+                <div class="row" id="buyer_idcard_info2" style="margin-top: 5px; {% if o.is_same_person==1 %} display: none {% endif %}">
                     <div class="col-xs-3">
                         被保险人身份证号
                     </div>
-                    <div class="col-xs-3 rightTxt">
+                    <div class="col-xs-9 rightTxt">
                         <input id="buy_idcard" class="form-control" type="text" {% if ioci %} value="{{ioci.buy_idcard}}"{% endif %}/>
                     </div>
                 </div>
@@ -319,10 +321,12 @@
                     <div class="col-xs-3 rightTxt">
                         <input id="car_owner_name" class="form-control" type="text" {% if ioci %} value="{{ioci.car_owner_name}}"{% endif %}/>
                     </div>
-                   <div class="col-xs-3">
+                </div>
+                <div class="row">
+                    <div class="col-xs-3">
                         车主身份证号
                     </div>
-                    <div class="col-xs-3 rightTxt">
+                    <div class="col-xs-9 rightTxt">
                         <input id="car_owner_idcard" class="form-control" type="text" {% if ioci %} value="{{ioci.car_owner_idcard}}"{% endif %}/>
                     </div>
                 </div>
@@ -413,51 +417,75 @@
                     <div class="col-xs-3">
                         品牌型号
                     </div>
-                    <div class="col-xs-3 rightTxt">
+                    <div class="col-xs-9 rightTxt">
                         <input id="car_model_type" class="form-control" type="text" {% if ioci %} value="{{ioci.car_model_type}}"{% endif %}/>
                     </div>
-                    <div class="col-xs-3 rightTxt">
-                        <select id="search_insurance"  name="search_insurance" class="form-control">
-                            {% for i in insurances %}
-                            <option value="{{i.id}}">{{i.name}}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="col-xs-3">
-                        <input type="button" class="btn btn-outline btn-primary btn-xs" onclick="searchcarinfo()" value="查询车辆细化型号"/>
-                    </div>
+                    <!--<div class="col-xs-3 rightTxt">-->
+                        <!--<select id="search_insurance"  name="search_insurance" class="form-control">-->
+                            <!--{% for i in insurances %}-->
+                            <!--<option value="{{i.id}}">{{i.name}}</option>-->
+                            <!--{% endfor %}-->
+                        <!--</select>-->
+                    <!--</div>-->
                 </div>
+                <div style="display: none" id="cardetailinfo">
                 <div class="row">
+                    <div class="col-xs-3"></div>
                     <div class="col-xs-3">
                         细化型号
                     </div>
-                    <div class="col-xs-9 rightTxt">
+                    <div class="col-xs-3 rightTxt">
                         <select id="detail_type"  onchange="detail_type_select(this.value)" name="detail_type" class="form-control">
                             {% for k,v in detail_type.items() %}
                             <option value="{{k}}">{{v}}</option>
                             {% endfor %}
                         </select>
                     </div>
+                    <div class="col-xs-3">
+                        <input type="hidden" id="program_id_temp" >
+                        <input type="button" class="btn btn-outline btn-primary btn-xs" onclick="searchcarinfo()" value="查询车辆细化型号"/>
+                    </div>
                 </div>
                  <div class="row">
+                     <div class="col-xs-3"></div>
                      <div class="col-xs-3">
                         精友码
                      </div>
                      <div class="col-xs-3 rightTxt">
                          <input id="car_model_code" class="form-control" type="text" {% if ioci %} value="{{ioci.car_model_code}}"{% endif %}/>
                      </div>
-                    <div class="col-xs-1">
+                     <div class="col-xs-3"></div>
+                 </div>
+                 <div class="row">
+                     <div class="col-xs-3"></div>
+                     <div class="col-xs-3">
                         价格
                     </div>
-                    <div class="col-xs-2 rightTxt">
+                    <div class="col-xs-3 rightTxt">
                         <input id="car_price" class="form-control" type="text" {% if ioci %} value="{{ioci.car_price}}"{% endif %}/>
                     </div>
-                    <div class="col-xs-1">
+                     <div class="col-xs-3"></div>
+                 </div>
+                <div class="row">
+                    <div class="col-xs-3"></div>
+                    <div class="col-xs-3">
                         排量
                     </div>
-                    <div class="col-xs-2 rightTxt">
+                    <div class="col-xs-3 rightTxt">
                         <input id="car_displacement" class="form-control" type="text" {% if ioci %} value="{{ioci.car_displacement}}"{% endif %}/>
                     </div>
+                    <div class="col-xs-3"></div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-3"></div>
+                    <div class="col-xs-3">
+                        整备质量
+                    </div>
+                    <div class="col-xs-3 rightTxt">
+                        <input id="car_quality" class="form-control" type="text" {% if ioci %} value="{{ioci.car_quality}}"{% endif %}/>
+                    </div>
+                    <div class="col-xs-3"></div>
+                </div>
                 </div>
                 <!-- 行驶证副本信息 -->
                 <div class="row">
@@ -467,23 +495,23 @@
                     <div class="col-xs-3 rightTxt">
                         <input id="car_passenger_number" class="form-control" type="text" {% if ioci %} value="{{ioci.car_passenger_number}}"{% endif %}/>
                     </div>
-                    <div class="col-xs-3">
-                        整备质量
-                    </div>
-                    <div class="col-xs-3 rightTxt">
-                        <input id="car_quality" class="form-control" type="text" {% if ioci %} value="{{ioci.car_quality}}"{% endif %}/>
+                    <div class="col-xs-6">
+                        <input id="assigned" type="checkbox" {% if ioci.assigned==1 %} checked="checked" {% endif %}
+                       style="visibility: visible;">是否过户
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-xs-3">
-                        初次登记日期/过户日期
+                        初次登记日期
                     </div>
                     <div class="col-xs-3 rightTxt">
-                        <input id="first_register_date" class="form-control" type="text" {% if ioci.assigned %} value="{{ioci.assigned_date}}" {% else %} value="{{ioci.first_register_date}}" {% endif %}/>
+                        <input id="first_register_date" class="form-control" type="text" {% if ioci.assigned %} value="{{ioci.first_register_date}}" {% else %} value="{{ioci.first_register_date}}" {% endif %}/>
                     </div>
-                    <div class="col-xs-6">
-                        <input id="assigned" type="checkbox" {% if ioci.assigned==1 %} checked="checked" {% endif %}
-                       style="visibility: visible;">是否过户
+                    <div class="col-xs-3">
+                        过户日期
+                    </div>
+                    <div class="col-xs-3 rightTxt">
+                        <input id="assigned_date" class="form-control" type="text" {% if ioci.assigned %} value="{{ioci.assigned_date}}" {% else %} value="{{ioci.first_register_date}}" {% endif %}/>
                     </div>
                 </div>
                 <div class="row">
@@ -933,7 +961,7 @@
                                                     </td>
                                                     <td>
                                                         <input type="button" class="btn btn-outline btn-primary btn-xs" onclick="input_check({{ program['pid'] }}, 'check')" value="输入验证"/>
-                                                        <input type="button" class="btn btn-outline btn-primary btn-xs" onclick="baodaibao_quote({{ program['pid']}})"value="保险接口调用"/>
+                                                        <input type="button" class="btn btn-outline btn-primary btn-xs" onclick="quotedetailinfo({{ program['pid']}})"value="保险接口调用"/>
                                                         <input type="button" class="btn btn-outline btn-primary btn-xs" onclick="get_json({{program['pid']}})" value="快速录入"/>
                                                     </td>
                                                     <td>
@@ -1269,12 +1297,14 @@
     }
     // searchcarinfo function 调用ajax并回填识别信息
     function searchcarinfo() {
-        ShowLoading();
+        //ShowLoading();
         var car_model_type  = document.getElementById('car_model_type').value;
         var register_date  = document.getElementById('first_register_date').value;
         var frame_num  = document.getElementById('car_frame_num').value;
         var car_num  = document.getElementById('car_num').value;
-        var insurance  = 1;
+        //
+        var program = document.getElementById('program_id_temp');
+        var insurance  = $(program).find('select[name="insurance"]').find("option:selected").val();
         $.get('/ajax/search_car_info', {_xsrf:xsrf,
             insurance:insurance,
             car_model_type:car_model_type,
@@ -1282,10 +1312,13 @@
             frame_num:frame_num,
             car_num:car_num
             }, function (data) {
-            HiddenLoading();
+            //HiddenLoading();
             var obj = jQuery.parseJSON(data);
             if (obj.flag == 1) {
                 var detail_type = document.getElementById('detail_type')
+                for (var i = 1; i < detail_type.options.length; i++) {
+                    detail_type.options.remove(i);
+                }
                 for (var i=0,len=obj.data.length; i<len; i++)
                 {
                     detail_type.options.add(new Option(obj.data[i].display,obj.data[i].value));
@@ -1628,10 +1661,23 @@
 
     // 保险接口调用
     // 保存
+    function quotedetailinfo(program) {
+         layer.open({
+                        title: "细化车型确定",
+                        type: 1,
+                        area: ['60%', '60%'],
+                        content: $("#cardetailinfo"),
+                        btn: ['获取报价'],
+                        yes: function(index, layero){
+                        //按钮【按钮一】的回调
+                            baodaibao_quote(program);
+                        }
+                    });
+    }
     function  baodaibao_quote(program_id) {
-        ShowLoading();
         // 根据获取 ID 获取元素
         var program = document.getElementById(program_id);
+        document.getElementById('program_id_temp').value = program;
         // 获取数据
         var i_items = {};
 
@@ -1771,21 +1817,31 @@
          if (hasforce && hastrade) {
             insurance_type = 3;
          }
-         console.log(hasforce);
-         console.log(hastrade);
-         console.log(hasforce && hastrade);
+
+        var quality =document.getElementById('car_quality').value;   // 保险 ID
+        var model_code = document.getElementById('car_model_code').value;
+        var displacement = document.getElementById('car_displacement').value;
+        var price = document.getElementById('car_price').value;
+        //console.log(quality);
+        //console.log(price);
+        //console.log(displacement);
+        //console.log(price);
         $.post('/ajax/auto_caculate_price',
             {
                 _xsrf:xsrf,
                 i_id:insurance,
                 io_id:{{o.id}},
                 insurance_type:insurance_type,
-                i_items:JSON.stringify(i_items)
+                i_items:JSON.stringify(i_items),
+                quality:quality,
+                price:price,
+                displacement:displacement,
+                model_code:model_code
             }, function (obj) {
             HiddenLoading();
             console.log(obj);
 
-            var obj = jQuery.parseJSON(obj);
+           var obj = jQuery.parseJSON(obj);
             console.log(obj.data);
             console.log(obj.data.businessI);
             if (obj.flag == 1) {
