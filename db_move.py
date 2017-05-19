@@ -1248,7 +1248,7 @@ def move_car():
 
 caritemgroup = {}
 def move_caritemgroup():
-    old_c = czjCarItemGroup.select(czjCarItemGroup.id <= 5837)
+    old_c = czjCarItemGroup.select().where(czjCarItemGroup.id <= 5837)
     for item in old_c:
         cc = czjmoveCarItemGroup.create(
         car=item.car.id,  # 汽车
