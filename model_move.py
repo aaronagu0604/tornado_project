@@ -1270,7 +1270,7 @@ def init_db():
     from lib.util import find_subclasses
 
     models = find_subclasses(db.Model)
-    for model in models:
+    for model in [CarItemGroup]:
         if model.table_exists():
             print model
             model.drop_table()
