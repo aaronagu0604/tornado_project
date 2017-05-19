@@ -1220,7 +1220,7 @@ def move_carbrandfactor():
         'brand': item.brand,  # 汽车品牌
         'factory_name': item.factory_name,  # 汽车品牌厂家
         'logo': item.logo,  # 汽车品牌logo
-        'factory_intro': item.factor_intro,  # 汽车品牌简介
+        'factory_intro': item.factory_intro,  # 汽车品牌简介
         'sort': item.sort,  # 同品牌下的排序
         'active': item.active  # 状态 0删除 1有效
     } for item in old_cbf]
@@ -1277,8 +1277,8 @@ def move_caritem():
         'sort': item.sort,  # 厂家或品牌下的排序
         'car_type': item.car_type,# 车型：suv或紧凑型车……
         'price': item.price,  # 指导价格
-        'car_sk_engine_1': item.car_sk_enine_1,  # SK产品发动机推荐1
-        'car_sk_engine_2': item.car_sk_enine_2,# SK产品发动机推荐2
+        'car_sk_engine_1': item.car_sk_engine_1,  # SK产品发动机推荐1
+        'car_sk_engine_2': item.car_sk_engine_2,# SK产品发动机推荐2
         'car_sk_gearbox_1': item.car_sk_gearbox_1,  # SK产品变速箱推荐1
         'car_sk_gearbox_2': item.car_sk_gearbox_2,  # SK产品变速箱推荐2
         'brake_oil': item.brake_oil,  # SK产品刹车油
