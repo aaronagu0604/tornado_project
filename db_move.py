@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 # coding=utf8
 
-import datetime
-import simplejson
+
 '''
 # 数据库迁移代码
 # 思路：
@@ -33,7 +32,6 @@ from db_model import Product as Old_Product
 from db_model import ProductPic as Old_ProductPic
 from db_model import ProductAttribute as Old_ProductAttribute
 from db_model import ProductStandard as Old_ProductStandard # 商品发布
-from db_model import ReleaseArea as Old_ReleaseArea
 from db_model import CurrencyExchangeList as Old_CurrencyExchangeList # 积分兑换规则表
 from db_model import Cart as Old_Cart
 from db_model import Settlement as Old_Settlement
@@ -43,9 +41,7 @@ from db_model import Insurances as Old_Insurances  # 保险
 from db_model import InsurancePrice as Old_InsurancePrice
 from db_model import InsuranceOrder as Old_InsuranceOrder
 from db_model import InsuranceOrderReceiving as Old_InsuranceOrderReceiving
-from db_model import GroupOrder as Old_GroupOrder
 from db_model import OrderItem as Old_OrderItem
-from db_model import HelpCenter as Old_HelpCenter
 from db_model import Hot_Search as Old_HotSearch
 # newdatabase
 from model_move import Delivery as New_Delivery
@@ -77,7 +73,6 @@ from model_move import OrderItem as New_OrderItem
 from model_move import Insurance as New_Insurance
 from model_move import InsuranceArea as New_InsuranceArea
 from model_move import InsuranceItem as New_InsuranceItem
-#from model_move import InsuranceScoreExchange as New_InsuranceScoreExchange
 from model_move import InsurancePrice as New_InsurancePrice
 from model_move import InsuranceOrderPrice as New_InsuranceOrderPrice
 from model_move import InsuranceOrder as New_InsuranceOrder
@@ -86,7 +81,6 @@ from model_move import BlockItem as New_BlockItem
 from model_move import BlockItemArea as New_BlockItemArea
 from model_move import Feedback as New_Feedback
 from model_move import BankCard as New_BankCard
-#from model_move import LubePolicy as New_LubePolicy
 from model_move import HotSearch as New_HotSearch
 
 imgurl = 'http://img.520czj.com'
@@ -634,18 +628,18 @@ def move_insurance():
 # insuranceitems:保险子项目
 insurance_item_map = {}
 
-def move_insuranceitems():
-    old_insurance_items = Old_Insurances.select()
-    for item in old_insurance_items:
-        insurance_item = New_InsuranceItem.create(
-            name=item.name,
-            eName=item.eName,
-            style=item.style,
-            style_id=1,  # 旧的数据库和model字段不匹配，暂时设置为1
-            sort=item.sort,
-        )
-        insurance_item_map[item.id] = insurance_item.id
-    print 'move insuranceitems:', old_insurance_items.count()
+# def move_insuranceitems():
+#     old_insurance_items = Old_Insurances.select()
+#     for item in old_insurance_items:
+#         insurance_item = New_InsuranceItem.create(
+#             name=item.name,
+#             eName=item.eName,
+#             style=item.style,
+#             style_id=1,  # 旧的数据库和model字段不匹配，暂时设置为1
+#             sort=item.sort,
+#         )
+#         insurance_item_map[item.id] = insurance_item.id
+#     print 'move insuranceitems:', old_insurance_items.count()
 
 def move_insurancearea():
     old_area = Old_CurrencyExchangeList.select()
@@ -798,14 +792,115 @@ def move_feedback():
 # insuranceorderprice:保险报价单
 insurance_order_price_map = {}
 
-def move_insuranceporderprice():
-    old_insurance_order_price = Old_InsuranceOrder.select().where(Old_InsuranceOrder.insurance << insurance_map.keys())
-    for item in old_insurance_order_price:
+# def move_insuranceporderprice():
+#     old_insurance_order_price = Old_InsuranceOrder.select().where(Old_InsuranceOrder.insurance << insurance_map.keys())
+#     for item in old_insurance_order_price:
+#         try:
+#             adminuser = New_AdminUser.get(New_AdminUser.name == item.lasteditedby)
+#         except Exception:
+#             adminuser = New_AdminUser.get(New_AdminUser.id == 1)
+#         insuranceorderprice = New_InsuranceOrderPrice.create(
+#             insurance_order_id=0,  # 旧的没有
+#             insurance=insurance_map[item.insurance.id],
+#             created=item.ordered,  # 旧的没有
+#             admin_user=adminuser,  # 旧的没有
+#             gift_policy=item.LubeOrScore,
+#             response=1,  # 旧的没有
+#             status=1,  # 旧的没有
+#             score=0,  # 旧的没有
+#             cash=0,
+#             total_price=item.price,  # 保险订单总价格
+#             force_price=item.forceIprc,  # 交强险 价格
+#             business_price=item.businessIprc,  # 商业险价格
+#             vehicle_tax_price=item.vehicleTax,  # 车船税价格
+#             sms_content=0,  # 旧的没有
+#
+#             # 交强险
+#             forceI=0,  # 是否包含交强险
+#             forceIPrice=0,
+#
+#             # 商业险-主险-车辆损失险
+#             damageI=0,
+#             damageIPrice=0,
+#             damageIPlus=0,
+#             damageIPlusPrice=0,
+#
+#             # 商业险-主险-第三者责任险，含保额
+#             thirdDutyI=0,
+#             thirdDutyIPrice=0,
+#             thirdDutyIPlus=0,
+#             thirdDutyIPlusPrice=0,
+#
+#             # 商业险-主险-机动车全车盗抢险
+#             robbingI=0,
+#             robbingIPrice=0,
+#             robbingIPlus=0,
+#             robbingIPlusPrice=0,
+#
+#             # 商业险-主险-机动车车上人员责任险（司机），含保额
+#             driverDutyI=0,
+#             driverDutyIPrice=0,
+#             driverDutyIPlus=0,
+#             driverDutyIPlusPrice=0,
+#
+#             # 商业险-主险-机动车车上人员责任险（乘客），含保额
+#             passengerDutyI=0,
+#             passengerDutyIPrice=0,
+#             passengerDutyIPlus=0,
+#             passengerDutyIPlusPrice=0,
+#
+#             # 商业险-附加险-玻璃单独破碎险
+#             glassI=0,
+#             glassIPrice=0,
+#
+#             # 商业险-附加险-车身划痕损失险，含保额
+#             scratchI=0,
+#             scratchIPrice=0,
+#             scratchIPlus=0,
+#             scratchIPlusPrice=0,
+#
+#             # 商业险-附加险-自燃损失险
+#             fireDamageI=0,
+#             fireDamageIPrice=0,
+#             fireDamageIPlus=0,
+#             fireDamageIPlusPrice=0,
+#
+#             # 商业险-附加险-发动机涉水损失险
+#             wadeI=0,
+#             wadeIPrice=0,
+#             wadeIPlus=0,
+#             wadeIPlusPrice=0,
+#
+#             # 商业险-附加险-机动车损失保险无法找到第三方特约金
+#             thirdSpecialI=0,
+#             thirdSpecialIPrice=0,
+#         )
+#         insurance_order_price_map[item.id] = insuranceorderprice.id
+#     print 'move insuranceorderprice', old_insurance_order_price.count()
+
+# insuranceorder:保险订单
+def move_insuranceorder():
+    old_order = Old_InsuranceOrder.select().where(Old_InsuranceOrder.insurance << insurance_map.keys())
+    old_data = []
+    paymentex = {
+        1:1,
+        6:2,
+        7:3
+    }
+    for item in old_order:
+        try:
+            reciver = Old_InsuranceOrderReceiving.get(Old_InsuranceOrderReceiving.orderid == item)
+        except Exception:
+            continue
         try:
             adminuser = New_AdminUser.get(New_AdminUser.name == item.lasteditedby)
         except Exception:
             adminuser = New_AdminUser.get(New_AdminUser.id == 1)
-        insuranceorderprice = New_InsuranceOrderPrice.create(
+
+        addr = reciver.address.decode('utf-8')
+
+
+        iop = New_InsuranceOrderPrice.create(
             insurance_order_id=0,  # 旧的没有
             insurance=insurance_map[item.insurance.id],
             created=item.ordered,  # 旧的没有
@@ -881,31 +976,11 @@ def move_insuranceporderprice():
             thirdSpecialI=0,
             thirdSpecialIPrice=0,
         )
-        insurance_order_price_map[item.id] = insuranceorderprice.id
-    print 'move insuranceorderprice', old_insurance_order_price.count()
-
-# insuranceorder:保险订单
-def move_insuranceorder():
-    old_order = Old_InsuranceOrder.select().where(Old_InsuranceOrder.insurance << insurance_map.keys())
-    old_data = []
-    paymentex = {
-        1:1,
-        6:2,
-        7:3
-    }
-    for item in old_order:
-        try:
-            reciver = Old_InsuranceOrderReceiving.get(Old_InsuranceOrderReceiving.orderid == item)
-        except Exception:
-            continue
-        addr = reciver.address.decode('utf-8')
-        if not insurance_order_price_map.has_key(item.id):
-            continue
         io = New_InsuranceOrder.create(
             ordernum= item.ordernum,
             user= user_map[item.user.id],
             store= store_map[item.store.id],
-            current_order_price= insurance_order_price_map[item.id],
+            current_order_price= iop.id,
 
             id_card_front= imgurl+item.idcard if item.idcard else '',
             id_card_back= imgurl+item.idcardback if item.idcardback else '',
@@ -936,8 +1011,8 @@ def move_insuranceorder():
             trade_no= item.trade_no,
             user_del= item.userDel
         )
-        iop = io.current_order_price
-        iop.insurance_order_id = iop.id
+
+        iop.insurance_order_id = io.id
         iop.save()
 
     # New_InsuranceOrder.insert_many(old_data).execute()
@@ -1082,6 +1157,125 @@ def move_cart():
     New_ShopCart.insert_many(old_data).execute()
     print 'move cart:', old_cart.count()
 
+
+'''
+# 从czj库导入补充数据
+'''
+from model_move import InsuranceItem as czjmoveInsuranceItem
+from model_move import CarBrand as czjmoveCarBrand
+from model_move import CarBrandFactory as czjmoveCarBrandFactory
+from model_move import Car as czjmoveCar
+from model_move import CarItemGroup as czjmoveCarItemGroup
+from model_move import CarSK as czjmoveCarSK
+from model_move import CarItem as czjmoveCarItem
+
+from model import InsuranceItem as czjInsuranceItem
+from model import CarBrand as czjCarBrand
+from model import CarBrandFactory as czjCarBrandFactory
+from model import Car as czjCar
+from model import CarItemGroup as czjCarItemGroup
+from model import CarSK as czjCarSK
+from model import CarItem as czjCarItem
+
+def move_insuranceitem():
+    old_it = czjInsuranceItem.select()
+    old_data = [{
+        'eName': item.eName,  # 英文名
+        'name': item.name,  # 中文名
+        'style': item.style,  # 分类名
+        'style_id': item.style_id,  # 分类id 交强险1  商业险主险2  商业险附加险3
+        'sort': item.sort  # 排序
+    } for item in old_it]
+    czjmoveInsuranceItem.insert_many(old_data).execute()
+
+def move_carbrand():
+    old_cb = czjCarBrand.select()
+    old_data = [{
+        'brand_name': item.bank_name,  # 汽车品牌
+        'brand_pinyin_name': item.brand_pinyin_name,  # 汽车品牌拼音
+        'logo': item.logo,  # 汽车品牌logo
+        'brand_intro': item.brand_intro,  # 汽车品牌简介
+        'brand_pinyin_first': item.brand_pinyin_first,  # 汽车品牌拼音首字母
+        'catch_url': item.catch_url,  # 抓取详情页面路径
+        'sort': item.sort,  # 同拼音下的排序
+        'active': item.active  # 状态 0删除 1有效
+    } for item in old_cb]
+    czjmoveCarBrand.insert_many(old_data).execute()
+
+def move_carbrandfactor():
+    old_cbf = czjCarBrandFactory.select()
+    old_data = [{
+        'brand': item.brand,  # 汽车品牌
+        'factory_name': item.factor_name,  # 汽车品牌厂家
+        'logo': item.logo,  # 汽车品牌logo
+        'factory_intro': item.factor_intro,  # 汽车品牌简介
+        'sort': item.sort,  # 同品牌下的排序
+        'active': item.active  # 状态 0删除 1有效
+    } for item in old_cbf]
+    czjmoveCarBrandFactory.insert_many(old_data).execute()
+
+def move_car():
+    old_c = czjCar.select()
+    old_data = [{
+        'car_name': item.car_name,# 汽车
+        'car_pinyin_name': item.car_pinyin_name,# 汽车拼音
+        'brand': item.brand,# 汽车品牌
+        'factory': item.factory, # 汽车厂家
+        'logo': item.logo,# 汽车logo，汽车的图片
+        'catch_url': item.catch_url,# 抓取详情页面路径
+        'stop_sale': item.stop_sale,# 停产？ 0正常销售 1已停产
+        'sort':item.sort,  # 厂家或品牌下的排序
+        'active': item.active  # 状态 0删除 1有效
+    } for item in old_c]
+    czjmoveCar.insert_many(old_data).execute()
+
+def move_caritemgroup():
+    old_c = czjCarItemGroup.select()
+    old_data = [{
+        'car': item.car,  # 汽车
+        'group_name':item.group_name  # 汽车型号
+    } for item in old_c]
+    czjmoveCarItemGroup.insert_many(old_data).execute()
+
+def move_carsk():
+    old_c = czjCarSK.select()
+    old_data = [{
+        'name': item.name,  # 汽车
+        'intro': item.intro,  # 汽车拼音
+        'api_level': item.api_level,  # 汽车厂家
+        'logo': item.logo,  # 汽车logo，汽车的图片
+        'category': item.category,  # 抓取详情页面路径
+        'active': item.active  # 状态 0删除 1有效
+    } for item in old_c]
+    czjmoveCarSK.insert_many(old_data).execute()
+
+def move_caritem():
+    old_c = czjCarItem.select()
+    old_data = [{
+        'car_item_name': item.car_item_name,  # 汽车型号
+        'car': item.car,  # 汽车
+        'group': item.group,  # 所在分组
+        'displacement': item.displacement,# 排量
+        'gearbox': item.gearbox,  # 变速箱，AT自动，MT手动，8挡手自一体
+        'actuator': item.actuator,  # 驱动方式，四驱，前驱，后驱
+        'power': item.power,# 动力来源，汽油，柴油，电动，油电混合
+        'sale_category': item.sale_catetory,  # 销售分组，如：在售，停售
+        'catch_url': item.catch_url,  # 抓取详情页面路径
+        'stop_sale': item.stop_sale,  # 停产？ 0正常销售 1已停产
+        'sort': item.sort,  # 厂家或品牌下的排序
+        'car_type': item.car_type,# 车型：suv或紧凑型车……
+        'price': item.price,  # 指导价格
+        'car_sk_engine_1': item.car_sk_enine_1,  # SK产品发动机推荐1
+        'car_sk_engine_2': item.car_sk_enine_2,# SK产品发动机推荐2
+        'car_sk_gearbox_1': item.car_sk_gearbox_1,  # SK产品变速箱推荐1
+        'car_sk_gearbox_2': item.car_sk_gearbox_2,  # SK产品变速箱推荐2
+        'brake_oil': item.brake_oil,  # SK产品刹车油
+        'antifreeze_solution': item.antifreeze_solution,  # SK产品防冻液
+        'active': item.active  # 状态 0删除 1有效
+    } for item in old_c]
+    czjmoveCarItem.insert_many(old_data).execute()
+
+
 if __name__ == '__main__':
     move_hotsearch()
     move_delivery()
@@ -1093,7 +1287,7 @@ if __name__ == '__main__':
     move_brand()
     move_brandcategory()
     move_adminuser()
-    move_adminuserlog()
+    #move_adminuserlog()
     move_store()
     move_storebankaccount()
     move_storearea()
@@ -1110,15 +1304,22 @@ if __name__ == '__main__':
     move_productrelease()
     move_storeproductprice()
     move_insurance()
-    move_insuranceitems()
+
     #move_insurancearea()
     move_insuranceprice()
     #move_insuranceexchange()
     #move_lubeexchange()
     move_feedback()
-    move_insuranceporderprice()
+    #move_insuranceporderprice()
     move_insuranceorder()
     move_settlement()
     move_Order()
     move_orderitem()
     #move_cart()
+    move_insuranceitem()
+    move_carbrand()
+    move_carbrandfactor()
+    move_car()
+    move_caritemgroup()
+    move_carsk()
+    move_caritem()

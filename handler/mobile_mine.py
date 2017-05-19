@@ -93,7 +93,7 @@ class MobileMineHandler(MobileBaseHandler):
             insurance_orders = InsuranceOrder.select(InsuranceOrder.status, fn.Count(InsuranceOrder.id).alias('count')). \
                 where(InsuranceOrder.status > -1, InsuranceOrder.user_del == 0, InsuranceOrder.store == user.store). \
                 group_by(InsuranceOrder.status).tuples()
-            # 0待确认 1待出单 2完成 3退款 -1已删除(取消)
+            # 0待报价 1已核价/待支付 2已支付/待出单 3完成（已送积分/油） -1已删除(取消)
             for status, count in insurance_orders:
                 if status == 0:
                     result['data']['insurance_orders']['wait_pay'] += count
