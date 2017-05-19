@@ -210,14 +210,22 @@ class MobileUPayCallbackHandler(RequestHandler):
 
 # ------------------------------------------------充值回调--------------------------------------------------------------
 def recharge(order_num, trade_no, money):
+    logging.info('-----1---')
     user_id = int(order_num.split('R')[0].strip('U'))
+    logging.info('-----2---')
     user = User.get(id=user_id)
+    logging.info('-----3---')
     store = user.store
+    logging.info('-----4---')
     store.price += float(money)
+    logging.info('-----5---')
     store.save()
+    logging.info('-----6---')
     now = int(time.time())
+    logging.info('-----7---')
     MoneyRecord.create(user=user, store=user.store, process_type=1, process_message=u'充值', in_num=trade_no, money=money,
                        status=1, apply_time=now, processing_time=now)
+    logging.info('-----8---')
 
 
 # 支付宝充值完成后异步通知 支付宝回调
@@ -232,6 +240,7 @@ class MobileAlipayCZNotifyHandler(RequestHandler):
     def post(self):
         msg = "fail"
         params = {}
+        logging.info('-----get notify---')
         notify = PaymentNotify()
         notify.content = self.request.body
         notify.notify_time = int(time.time())
@@ -239,13 +248,17 @@ class MobileAlipayCZNotifyHandler(RequestHandler):
         notify.payment = 1
         notify.function_type = 1
         notify.save()
+        logging.info('-----notify db success---')
         ks = self.request.arguments.keys()
         for k in ks:
             params[k] = self.get_argument(k)
+
         ps = notify_verify(params)
+        logging.info('-----ps: %s---'%str(ps))
         if ps:
             if ps['trade_status'].upper().strip() == 'TRADE_FINISHED' or ps['trade_status'].upper().strip() == 'TRADE_SUCCESS':
-                create_msg(simplejson.dumps({'payment': 1, 'order_id': ps['out_trade_no']}), 'recharge')
+                logging.info('-----pay success---')
+                # create_msg(simplejson.dumps({'payment': 1, 'order_id': ps['out_trade_no']}), 'recharge')
                 recharge(ps['out_trade_no'], ps['trade_no'], ps['total_fee'])
                 msg = "success"
         self.write(msg)

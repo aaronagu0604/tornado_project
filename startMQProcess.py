@@ -42,13 +42,13 @@ with rabbitpy.Connection(url) as conn:
                         except Exception, e:
                             logging.error(e.message)
                     elif message.properties['message_type'] == 'pay_success':    # 支付成功
-                        pass
+                        logging.info('get pay_success')
                     elif message.properties['message_type'] == 'recharge':    # 充值
-                        pass
+                        logging.info('get recharge')
                     elif message.properties['message_type'] == 'append_refund_money':    # 补退款
-                        pass
+                        logging.info('get append_refund_money')
                     elif message.properties['message_type'] == 'audit_store':    # 审核门店、经销商，需要配返佣方案
-                        pass
+                        logging.info('get audit_store')
                     else:
                         logging.error('unknown msg type: ' + message.properties['message_type'] + ' body:' + message.body)
                     message.ack()
