@@ -929,6 +929,7 @@ class UserCarInfo(db.Model):
     car_engine_num = CharField(max_length=50, null=True)  # 发动机号
     car_passenger_number = CharField(max_length=50, null=True)  # 车座位数
     car_quality = CharField(max_length=50, null=True)  # 整车质量
+    car_glass_type = IntegerField(default=0)  # 0国产 1进口
 
     car_type = CharField(max_length=50, null=True)  # 车型：小客车car
     car_use_type = CharField(max_length=50, null=True)  # 车辆使用类型：非运营non_operation,运营operation

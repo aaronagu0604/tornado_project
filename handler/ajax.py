@@ -1116,6 +1116,7 @@ class OCRSaveHandler(BaseHandler):
         result = {'flag': 1, 'msg': '保存成功', 'data': ''}
         io_id = self.get_body_argument('io_id', None)
         ioci_id = int(self.get_body_argument('ioci_id',0))
+        print io_id,ioci_id
         try:
             ioci = UserCarInfo.get(id=ioci_id)
         except Exception,e:
@@ -1138,6 +1139,7 @@ class OCRSaveHandler(BaseHandler):
         buy_address = self.get_body_argument('buy_address', None)
         # 车辆信息
         car_num = self.get_body_argument('car_num', None)
+        car_glass_type = self.get_body_argument('car_glass_type', None)
         car_frame_num = self.get_body_argument('car_frame_num', None)
         car_engine_num = self.get_body_argument('car_engine_num', None)
         car_type = self.get_body_argument('car_type', None)
@@ -1168,8 +1170,12 @@ class OCRSaveHandler(BaseHandler):
         if ioci:
             ucinfo = ioci
         else:
-            ucinfo = UserCarInfo()
-            ucinfo.insuranceorder = io
+            ucis = io.insurance_orders_car_infos
+            if ucis.count():
+                ucinfo = ucis[0]
+            else:
+                ucinfo = UserCarInfo()
+                ucinfo.insuranceorder = io
         # 车主信息
         ucinfo.car_owner_name = car_owner_name  # 车主姓名
         ucinfo.car_owner_idcard = car_owner_idcard  # 车主身份证号
@@ -1188,6 +1194,7 @@ class OCRSaveHandler(BaseHandler):
         ucinfo.buy_address = buy_address  # 身份证地址
         # 车辆信息
         ucinfo.car_num = car_num  # 车牌号
+        ucinfo.car_glass_type = car_glass_type
         ucinfo.car_frame_num = car_frame_num  # 车架号
         ucinfo.car_engine_num = car_engine_num  # 发动机号
         ucinfo.car_type = car_type  # 车型
