@@ -96,13 +96,13 @@ class MobileMineHandler(MobileBaseHandler):
             # 0待报价 1已核价/待支付 2已支付/待出单 3完成（已送积分/油） -1已删除(取消)
             for item in insurance_orders:
                 if item.status == 0:
-                    result['data']['insurance_orders']['wait_quote'] += count
+                    result['data']['insurance_orders']['wait_quote'] += 1
                 elif item.status == 1 or item.current_order_price.append_refund_status==1:
-                    result['data']['insurance_orders']['wait_pay'] += count
+                    result['data']['insurance_orders']['wait_pay'] += 1
                 elif item.status == 2 and item.current_order_price.append_refund_status==0:
-                    result['data']['insurance_orders']['wait_send'] += count
+                    result['data']['insurance_orders']['wait_send'] += 1
                 elif item.status == 3:
-                    result['data']['insurance_orders']['finish'] += count
+                    result['data']['insurance_orders']['finish'] += 1
 
         result['flag'] = 1
         self.write(simplejson.dumps(result))
