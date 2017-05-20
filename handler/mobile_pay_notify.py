@@ -115,18 +115,16 @@ class MobileAlipayNotifyHandler(RequestHandler):
         msg = "fail"
         params = {}
         notify = PaymentNotify()
-        logging.debug('----%s----%s--' % (self.request.body, type(self.request.body)))
         notify.content = self.request.body
         notify.notify_time = int(time.time())
         notify.notify_type = 2
         notify.payment = 1
         notify.function_type = 1
         notify.save()
-        logging.debug('----!%s!----' % str(self.request.arguments))
         ks = self.request.arguments.keys()
         for k in ks:
             params[k] = self.get_argument(k)
-        ps = notify_verify(params)
+        ps = verify_alipay_request_sign(params)
         if ps:
             if ps['trade_status'].upper().strip() == 'TRADE_FINISHED' or ps['trade_status'].upper().strip() == 'TRADE_SUCCESS':
                 order, is_insurance_order = change_order_status(ps['out_trade_no'], ps['trade_no'])
@@ -235,7 +233,8 @@ class MobileAlipayCZNotifyHandler(RequestHandler):
         msg = "fail"
         params = {}
         notify = PaymentNotify()
-        logging.error('-----request body: %s----' % str(self.request.body))
+        logging.error('-----request body: %s-------type: %s-' % (str(self.request.body), type(self.request.body)))
+        logging.error('----!%s!----' % str(self.request.arguments))
         notify.content = str(self.request.body)
         notify.notify_time = int(time.time())
         notify.notify_type = 2
@@ -248,7 +247,7 @@ class MobileAlipayCZNotifyHandler(RequestHandler):
         ps = verify_alipay_request_sign(params)
         if ps:
             if ps['trade_status'].upper().strip() == 'TRADE_FINISHED' or ps['trade_status'].upper().strip() == 'TRADE_SUCCESS':
-                logging.info('-----pay success---')
+                logging.info('-----pay success: %s---' % str(ps))
                 # create_msg(simplejson.dumps({'payment': 1, 'order_id': ps['out_trade_no']}), 'recharge')
                 recharge(ps['out_trade_no'], ps['trade_no'], ps['total_fee'])
                 msg = "success"
