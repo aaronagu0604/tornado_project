@@ -8,7 +8,7 @@ from tornado.web import RequestHandler
 
 import setting
 from lib.mqhelper import create_msg
-from lib.payment.ali_app_pay import notify_verify
+from lib.payment.ali_app_pay import verify_alipay_request_sign
 from lib.payment.upay import Trade
 from lib.payment.wxPay import Notify_pub
 from lib.route import route
@@ -115,14 +115,14 @@ class MobileAlipayNotifyHandler(RequestHandler):
         msg = "fail"
         params = {}
         notify = PaymentNotify()
-        print('----%s----%s--' % (self.request.body, type(self.request.body)))
+        logging.debug('----%s----%s--' % (self.request.body, type(self.request.body)))
         notify.content = self.request.body
         notify.notify_time = int(time.time())
         notify.notify_type = 2
         notify.payment = 1
         notify.function_type = 1
         notify.save()
-        print('----!%s!----' % str(self.request.arguments))
+        logging.debug('----!%s!----' % str(self.request.arguments))
         ks = self.request.arguments.keys()
         for k in ks:
             params[k] = self.get_argument(k)
@@ -217,11 +217,9 @@ def recharge(order_num, trade_no, money):
     store = user.store
     store.price += float(money)
     store.save()
-    logging.info('-----6---')
     now = int(time.time())
     MoneyRecord.create(user=user, store=user.store, process_type=1, process_message=u'充值', in_num=trade_no, money=money,
                        status=1, apply_time=now, processing_time=now)
-    logging.info('-----8---')
 
 
 # 支付宝充值完成后异步通知 支付宝回调
@@ -247,9 +245,7 @@ class MobileAlipayCZNotifyHandler(RequestHandler):
         ks = self.request.arguments.keys()
         for k in ks:
             params[k] = self.get_argument(k)
-        ps = notify_verify(params)
-
-        logging.info('-----ps: %s---' % str(ps))
+        ps = verify_alipay_request_sign(params)
         if ps:
             if ps['trade_status'].upper().strip() == 'TRADE_FINISHED' or ps['trade_status'].upper().strip() == 'TRADE_SUCCESS':
                 logging.info('-----pay success---')
