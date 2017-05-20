@@ -1352,7 +1352,7 @@ class MobileFundRechargeHandler(MobileBaseHandler):
             else:
                 result['data']['pay_info'] = ''
         elif payment == 2:
-            pay_info = UnifiedOrder_pub(isCZ=True).getPrepayId(order_num, u'车装甲商品', int(price * 100))
+            pay_info = UnifiedOrder_pub(isCZ=True).getPrepayId(order_num, u'车装甲充值', int(price * 100))
             result['data']['pay_info'] = pay_info
             result['flag'] = 1
             result['msg'] = u'充值完成'

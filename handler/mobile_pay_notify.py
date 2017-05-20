@@ -209,15 +209,16 @@ class MobileUPayCallbackHandler(RequestHandler):
 
 
 # ------------------------------------------------充值回调--------------------------------------------------------------
-def recharge(order_num, trade_no, money):
+def recharge(order_num, trade_no, money, payment=''):
     user_id = int(order_num.split('R')[0].strip('U'))
     user = User.get(id=user_id)
     store = user.store
     store.price += float(money)
     store.save()
     now = int(time.time())
-    MoneyRecord.create(user=user, store=user.store, process_type=1, process_message=u'充值', in_num=trade_no, money=money,
-                       status=1, apply_time=now, processing_time=now)
+    process_log = u'支付方式：%s，订单号：order_id=%s' % (payment, order_num)
+    MoneyRecord.create(user=user, store=user.store, process_type=1, process_message=u'充值', apply_time=now,
+                       process_log=process_log, in_num=trade_no, money=money, status=1, processing_time=now)
 
 
 # 支付宝充值完成后异步通知 支付宝回调
@@ -245,7 +246,10 @@ class MobileAlipayCZNotifyHandler(RequestHandler):
         ps = verify_alipay_request_sign(params)
         if ps and (ps['trade_status'].upper().strip() == 'TRADE_FINISHED' or ps['trade_status'].upper().strip() == 'TRADE_SUCCESS'):
                 create_msg(simplejson.dumps({'payment': 1, 'order_id': ps['out_trade_no']}), 'recharge')
-                recharge(ps['out_trade_no'], ps['trade_no'], ps['receipt_amount'])
+                if MoneyRecord.select().where(MoneyRecord.in_num == ps['transaction_id']).count() > 0:
+                    logging.error(u'支付宝重复回调：order_id:%s in_num:%s' % (ps['out_trade_no'], ps['trade_no']))
+                else:
+                    recharge(ps['out_trade_no'], ps['trade_no'], ps['receipt_amount'], u'支付宝')
                 msg = "success"
         self.write(msg)
 
@@ -273,7 +277,10 @@ class MobileWeiXinPayCZNotifyHandler(RequestHandler):
         if notify_data.checkSign():
             if ps['return_code'] == 'SUCCESS' and ps['result_code'] == 'SUCCESS':
                 create_msg(simplejson.dumps({'payment': 2, 'order_id': ps['out_trade_no']}), 'recharge')
-                recharge(ps['out_trade_no'], ps['transaction_id'], int(ps['total_fee'])/100)
+                if MoneyRecord.select().where(MoneyRecord.in_num == ps['transaction_id']).count() > 0:
+                    logging.error(u'微信重复回调：order_id:%s in_num:%s' % (ps['out_trade_no'], ps['transaction_id']))
+                else:
+                    recharge(ps['out_trade_no'], ps['transaction_id'], float(ps['total_fee'])/100, u'微信')
                 notify_data.setReturnParameter('return_code', 'SUCCESS')
             else:
                 logging.info(u'微信通知支付失败')
@@ -295,10 +302,14 @@ class MobileUPayCZNotifyHandler(RequestHandler):
         result = {'return_code': 'FAIL'}
         try:
             ps = Trade().smart_str_decode(self.request.body)
+            logging.error('-------%s-----' % str(ps))
             if Trade().union_validate(ps):
                 if ps['respMsg'] == 'Success!':
                     create_msg(simplejson.dumps({'payment': 3, 'order_id': ps['out_trade_no']}), 'recharge')
-                    recharge(ps['out_trade_no'], ps['transaction_id'], ps['total_fee'])
+                    if MoneyRecord.select().where(MoneyRecord.in_num == ps['transaction_id']).count() > 0:
+                        logging.error(u'银联重复回调：order_id:%s in_num:%s' % (ps['out_trade_no'], ps['transaction_id']))
+                    else:
+                        recharge(ps['out_trade_no'], ps['transaction_id'], ps['total_fee'], u'银联')
                     result['return_code'] = 'SUCCESS'
                 else:
                     result['return_msg'] = 'upay get FAIL notify'
