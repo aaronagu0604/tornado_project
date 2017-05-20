@@ -1914,7 +1914,7 @@ class MobilInsuranceOrderQuoteInfoHandler(MobileBaseHandler):
                 data['PTBSameCheZhu'] = True if uci.owner_buyer_isone == 1 else False
             result['flag'] = 1
             result['data'] = data
-            result['msg'] = '查询支持'
+            result['msg'] = '查询成功'
         except Exception,e:
             result['msg'] = '查询失败:%s'%e
 
