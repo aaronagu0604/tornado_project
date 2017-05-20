@@ -8,7 +8,7 @@ from tornado.web import RequestHandler
 
 import setting
 from lib.mqhelper import create_msg
-from lib.payment.alipay_web.core import notify_verify
+from lib.payment.ali_app_pay import notify_verify
 from lib.payment.upay import Trade
 from lib.payment.wxPay import Notify_pub
 from lib.route import route
@@ -115,12 +115,14 @@ class MobileAlipayNotifyHandler(RequestHandler):
         msg = "fail"
         params = {}
         notify = PaymentNotify()
+        print('----%s----%s--' % (self.request.body, type(self.request.body)))
         notify.content = self.request.body
         notify.notify_time = int(time.time())
         notify.notify_type = 2
         notify.payment = 1
         notify.function_type = 1
         notify.save()
+        print('----!%s!----' % str(self.request.arguments))
         ks = self.request.arguments.keys()
         for k in ks:
             params[k] = self.get_argument(k)
@@ -246,6 +248,7 @@ class MobileAlipayCZNotifyHandler(RequestHandler):
         for k in ks:
             params[k] = self.get_argument(k)
         ps = notify_verify(params)
+
         logging.info('-----ps: %s---' % str(ps))
         if ps:
             if ps['trade_status'].upper().strip() == 'TRADE_FINISHED' or ps['trade_status'].upper().strip() == 'TRADE_SUCCESS':

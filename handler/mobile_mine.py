@@ -1346,26 +1346,26 @@ class MobileFundRechargeHandler(MobileBaseHandler):
         if payment == 1:  # 1支付宝  2微信 3银联
             # response_url = get_pay_url(order_num, u'车装甲商品', price, True)
             # response_url = alipay.switch_to_utf_8(price, '充值', '车装甲充值', order_num)
-            pay_info = alipay.get_alipay_string(price, u'车装甲', u'车装甲充值', order_num, True)
+            pay_info = alipay.get_alipay_string(price, u'车装甲充值', u'车装甲充值', order_num, True)
             if len(pay_info) > 0:
                 result['data']['pay_info'] = pay_info
                 result['flag'] = 1
-                result['msg'] = '充值完成'
+                result['msg'] = u'充值完成'
             else:
                 result['data']['pay_info'] = ''
         elif payment == 2:
             pay_info = UnifiedOrder_pub(isCZ=True).getPrepayId(order_num, u'车装甲商品', int(price * 100))
             result['data']['pay_info'] = pay_info
             result['flag'] = 1
-            result['msg'] = '充值完成'
+            result['msg'] = u'充值完成'
         elif payment == 3:
             pay_info = Trade(isCZ=True).trade(order_num, price)
             result['data']['pay_info'] = pay_info
             result['flag'] = 1
-            result['msg'] = '充值完成'
+            result['msg'] = u'充值完成'
         else:
             result['data']['pay_info'] = ''
-            result['msg'] = '传入参数错误'
+            result['msg'] = u'传入参数错误'
 
         self.write(simplejson.dumps(result))
 

@@ -1146,13 +1146,13 @@ class MobileShopCarHandler(MobileBaseHandler):
 def pay_order(payment, total_price, ordernum, log):
     pay_info = ''
     if payment == 1:  # 1支付宝  2微信 3银联 4余额 5积分 6立即支付宝 7立即微信
-        pay_info = alipay.get_alipay_string(total_price, u'车装甲', log, ordernum)
+        pay_info = alipay.get_alipay_string(total_price, log, log, ordernum)
     elif payment == 2:
         pay_info = UnifiedOrder_pub().getPrepayId(ordernum, log, int(total_price * 100))
     elif payment == 3:
         pay_info = Trade().trade(ordernum, total_price)
     elif payment == 6:
-        pay_info = alipay.get_alipay_qrcode(total_price, u'车装甲', log, ordernum)
+        pay_info = alipay.get_alipay_qrcode(total_price, log, log, ordernum)
     elif payment == 7:
         pay_info = Qrcode_pub().getPayQrcode(ordernum, log, int(total_price * 100))
     return pay_info
