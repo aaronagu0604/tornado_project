@@ -26,5 +26,5 @@ setting = {
     # 后台通知地址 (商户自行配置通知地址，需配置外网能访问的地址)
     'SDK_BACK_NOTIFY_URL': 'http://192.168.1.30:8889/mobile/upay_notify',
     # 后台通知地址 for 充值
-    'CZ_SDK_BACK_NOTIFY_URL': 'http://192.168.1.30:8889/mobile/upay_cz_notify',
+    'CZ_SDK_BACK_NOTIFY_URL': 'http://api.dev.test.520czj.com/mobile/upay_cz_notify',
 }

@@ -233,9 +233,7 @@ class MobileAlipayCZNotifyHandler(RequestHandler):
         msg = "fail"
         params = {}
         notify = PaymentNotify()
-        logging.error('-----request body: %s-------type: %s-' % (str(self.request.body), type(self.request.body)))
-        logging.error('----!%s!----' % str(self.request.arguments))
-        notify.content = str(self.request.body)
+        notify.content = self.request.body
         notify.notify_time = int(time.time())
         notify.notify_type = 2
         notify.payment = 1
@@ -245,13 +243,8 @@ class MobileAlipayCZNotifyHandler(RequestHandler):
         for k in ks:
             params[k] = self.get_argument(k)
         ps = verify_alipay_request_sign(params)
-        if ps:
-            if ps['trade_status'].upper().strip() == 'TRADE_FINISHED' or ps['trade_status'].upper().strip() == 'TRADE_SUCCESS':
-                logging.error('-----pay success: %s---' % str(ps))
-                try:
-                    create_msg(simplejson.dumps({'payment': 1, 'order_id': ps['out_trade_no']}), 'recharge')
-                except Exception, e:
-                    logging.error('-----error: %s---' % str(e))
+        if ps and (ps['trade_status'].upper().strip() == 'TRADE_FINISHED' or ps['trade_status'].upper().strip() == 'TRADE_SUCCESS'):
+                create_msg(simplejson.dumps({'payment': 1, 'order_id': ps['out_trade_no']}), 'recharge')
                 recharge(ps['out_trade_no'], ps['trade_no'], ps['receipt_amount'])
                 msg = "success"
         self.write(msg)
