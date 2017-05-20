@@ -64,7 +64,7 @@ class MobileMineHandler(MobileBaseHandler):
 
             if user.store.store_type == 1:
                 # 查询子订单数据
-                sale_orders = SubOrder.select(SubOrder.status, fn.Count(SubOrder.id).alias('count')). \
+                sale_orders = SubOrder.select(SubOrder.status, fn.Count(SubOrder.status).alias('count')). \
                     where(SubOrder.status > -1, SubOrder.saler_del == 0, SubOrder.saler_store == user.store).\
                     group_by(SubOrder.status).tuples()
                 for status, count in sale_orders:
@@ -74,11 +74,11 @@ class MobileMineHandler(MobileBaseHandler):
                         result['data']['product_orders']['wait_send'] += count
                     elif status == 2:
                         result['data']['product_orders']['wait_get'] += count
-                    elif status == 5:  # 仅考虑申请退款的状态
-                        result['data']['product_orders']['pay_back'] += count
+                    elif status == 3:  # 仅考虑申请退款的状态
+                        result['data']['product_orders']['finish'] += count
             elif user.store.store_type == 2:
                 # 查询子订单数据
-                buy_orders = Order.select(Order.status, fn.Count(Order.id).alias('count')). \
+                buy_orders = Order.select(Order.status, fn.Count(Order.status).alias('count')). \
                     where(Order.status > -1, Order.buyer_del == 0, Order.buyer_store == user.store).\
                     group_by(Order.status).tuples()
                 for status, count in buy_orders:
@@ -88,21 +88,21 @@ class MobileMineHandler(MobileBaseHandler):
                         result['data']['product_orders']['wait_send'] += count
                     elif status == 2:
                         result['data']['product_orders']['wait_get'] += count
-                    elif status == 5:
-                        result['data']['product_orders']['pay_back'] += count
-            insurance_orders = InsuranceOrder.select(InsuranceOrder.status, fn.Count(InsuranceOrder.id).alias('count')). \
-                where(InsuranceOrder.status > -1, InsuranceOrder.user_del == 0, InsuranceOrder.store == user.store). \
-                group_by(InsuranceOrder.status).tuples()
+                    elif status == 3:
+                        result['data']['product_orders']['finish'] += count
+            insurance_orders = InsuranceOrder.select(). \
+                where(InsuranceOrder.status > -1, InsuranceOrder.user_del == 0, InsuranceOrder.store == user.store)\
+
             # 0待报价 1已核价/待支付 2已支付/待出单 3完成（已送积分/油） -1已删除(取消)
-            for status, count in insurance_orders:
-                if status == 0:
+            for item in insurance_orders:
+                if item.status == 0:
+                    result['data']['insurance_orders']['wait_quote'] += count
+                elif item.status == 1 or item.current_order_price.append_refund_status==1:
                     result['data']['insurance_orders']['wait_pay'] += count
-                elif status == 1:
+                elif item.status == 2 and item.current_order_price.append_refund_status==0:
                     result['data']['insurance_orders']['wait_send'] += count
-                elif status == 2:
+                elif item.status == 3:
                     result['data']['insurance_orders']['finish'] += count
-                elif status == 3:
-                    result['data']['insurance_orders']['pay_back'] += count
 
         result['flag'] = 1
         self.write(simplejson.dumps(result))
@@ -531,7 +531,7 @@ class MobileInsuranceOrderHandler(MobileBaseHandler):
         index = int(self.get_argument('index', 1))
         store = self.get_user().store
         ft = ((InsuranceOrder.store == store) & (InsuranceOrder.user_del == 0))
-        # 0待确认 1待付款 2付款完成 3已办理 4已邮寄 -1已删除(取消)
+        # 0待报价 1已核价/待支付 2已支付/待出单 3完成（已送积分/油） -1已删除(取消)
         iop = False
         if type == 'all':  # 全部
             ft &= (InsuranceOrder.status > -1) & (InsuranceOrder.user_del == 0)
