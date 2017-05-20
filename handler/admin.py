@@ -1727,7 +1727,6 @@ class InsuranceOrderDetailHandler(AdminBaseHandler):
         else:
             active = 'i_order'
         rta_type = {
-            '': '---未选择---',
             "B11": "重型普通半挂式",
             "B12": "重型厢式半挂车",
             "B13": "重型罐式半挂车",
@@ -1877,7 +1876,6 @@ class InsuranceOrderDetailHandler(AdminBaseHandler):
         }
 
         license_type = {
-            '': '---未选择---',
             "398003": "小型客车",
             "398002": "中型客车",
             "398001": "大型客车",
@@ -1893,7 +1891,6 @@ class InsuranceOrderDetailHandler(AdminBaseHandler):
         }
 
         car_num_type = {
-            '': '---未选择---',
             "02": "小型汽车号牌",
             "01": "大型汽车号牌",
             #"03": "使馆汽车号牌",
@@ -1924,13 +1921,11 @@ class InsuranceOrderDetailHandler(AdminBaseHandler):
         }
 
         car_detail_type = {
-            '': '---未选择---',
             "11": "非跑车",
             "12": "跑车"
         }
 
         fuel_type = {
-            '': '---未选择---',
             'ranyou': '燃油',
             #'chundiandong': '纯电动',
             #'ranliaodianchi': '燃料电池',
@@ -1938,19 +1933,16 @@ class InsuranceOrderDetailHandler(AdminBaseHandler):
             'hunhe': '混合动力'
         }
         owner_type = {
-            '': '---未选择---',
             'private': '个人',
             'qiye': '企业',
             'jiguan': '机关'
         }
         car_use_type = {
-            '': '---未选择---',
             'operation': '运营',
             'non_operation': '非运营',
             'chuzu': '出租'
         }
         car_type = {
-            '': '---未选择---',
             'car': '客车',
             'truck': '货车',
             'special': '特种车'

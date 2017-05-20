@@ -376,7 +376,7 @@
                     <div class="col-xs-3 rightTxt">
                         <select id="car_nengyuan_type" name="fuel_type" class="form-control">
                             {% for k,v in fuel_type.items() %}
-                            <option value="{{k}}" {% if ioci.car_nengyuan_type == k %} selected {% endif %}>{{v}}</option>
+                            <option value="{{k}}" {% if (ioci.car_nengyuan_type == k) or ( k =='ranyou')%} selected {% endif %}>{{v}}</option>
                             {% endfor %}
                         </select>
                     </div>
@@ -386,7 +386,7 @@
                     <div class="col-xs-3 rightTxt">
                         <select id="car_type" name="car_type" class="form-control">
                             {% for k,v in car_type.items() %}
-                            <option value="{{k}}" {% if ioci.car_type ==k %} selected {% endif %}>{{v}}</option>
+                            <option value="{{k}}" {% if ioci.car_type ==k or ( k =='car')%} selected {% endif %}>{{v}}</option>
                             {% endfor %}
                         </select>
                     </div>
@@ -398,7 +398,7 @@
                     <div class="col-xs-3 rightTxt">
                         <select id="car_use_type" name="car_use_type" class="form-control">
                             {% for k,v in car_use_type.items() %}
-                            <option value="{{k}}" {% if ioci.car_use_type == k %} selected {% endif %}>{{v}}</option>
+                            <option value="{{k}}" {% if ioci.car_use_type == k or ( k =='non_operation')%} selected {% endif %}>{{v}}</option>
                             {% endfor %}
                         </select>
                     </div>
@@ -408,7 +408,7 @@
                     <div class="col-xs-3 rightTxt">
                         <select id="car_owner_type" name="car_owner_type" class="form-control">
                             {% for k,v in owner_type.items() %}
-                            <option value="{{k}}" {% if ioci.car_owner_type == k %} selected {% endif %}>{{v}}</option>
+                            <option value="{{k}}" {% if ioci.car_owner_type == k or ( k =='private')%} selected {% endif %}>{{v}}</option>
                             {% endfor %}
                         </select>
                     </div>
@@ -536,7 +536,7 @@
                     <div class="col-xs-3 rightTxt">
                         <select id="rta_type" class="form-control">
                             {% for k,v in rta_type.items() %}
-                            <option value="{{k}}" {% if ioci.rta_type==k %} selected "{% endif %}>{{v}}</option>
+                            <option value="{{k}}" {% if ioci.rta_type==k or ( k =='K33')%} selected "{% endif %}>{{v}}</option>
                             {% endfor %}
                         </select>
                     </div>
@@ -546,7 +546,7 @@
                     <div class="col-xs-3 rightTxt">
                         <select id="car_detail_type" class="form-control">
                             {% for k,v in car_detail_type.items() %}
-                            <option value="{{k}}" {% if ioci.car_detail_type==k %} selected "{% endif %}>{{v}}</option>
+                            <option value="{{k}}" {% if ioci.car_detail_type==k or ( k =='11')%} selected "{% endif %}>{{v}}</option>
                             {% endfor %}
                         </select>
                     </div>
@@ -558,7 +558,7 @@
                     <div class="col-xs-3 rightTxt">
                         <select id="car_num_type" class="form-control">
                             {% for k,v in car_num_type.items() %}
-                            <option value="{{k}}" {% if ioci.car_num_type==k %} selected "{% endif %}>{{v}}</option>
+                            <option value="{{k}}" {% if ioci.car_num_type==k or ( k =='02')%} selected "{% endif %}>{{v}}</option>
                             {% endfor %}
                         </select>
                     </div>
@@ -568,7 +568,7 @@
                     <div class="col-xs-3 rightTxt">
                         <select id="license_type" class="form-control">
                             {% for k,v in license_type.items() %}
-                            <option value="{{k}}" {% if ioci.license_type==k %} selected "{% endif %}>{{v}}</option>
+                            <option value="{{k}}" {% if ioci.license_type==k or ( k =='398003')%} selected "{% endif %}>{{v}}</option>
                             {% endfor %}
                         </select>
                     </div>
