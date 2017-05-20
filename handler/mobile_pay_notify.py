@@ -247,7 +247,7 @@ class MobileAlipayCZNotifyHandler(RequestHandler):
         ps = verify_alipay_request_sign(params)
         if ps:
             if ps['trade_status'].upper().strip() == 'TRADE_FINISHED' or ps['trade_status'].upper().strip() == 'TRADE_SUCCESS':
-                logging.info('-----pay success: %s---' % str(ps))
+                logging.error('-----pay success: %s---' % str(ps))
                 # create_msg(simplejson.dumps({'payment': 1, 'order_id': ps['out_trade_no']}), 'recharge')
                 recharge(ps['out_trade_no'], ps['trade_no'], ps['total_fee'])
                 msg = "success"
