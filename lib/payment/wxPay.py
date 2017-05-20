@@ -42,7 +42,6 @@ try:
     from cStringIO import StringIO
 except ImportError:
     pycurl = None
-import logging
 from wxconfig import WxPayConf_pub
 from payqrcode import createqrcode
 
@@ -150,7 +149,7 @@ class Common_util_pub(object):
         #签名步骤一：按字典序排序参数,formatBizQueryParaMap已做
         String = self.formatBizQueryParaMap(obj, False)
         #签名步骤二：在string后加入KEY
-        String = "{0}&key={1}".format(String,WxPayConf_pub.KEY)
+        String = "{0}&key={1}".format(String, WxPayConf_pub.KEY)
         #签名步骤三：MD5加密
         String = hashlib.md5(String).hexdigest()
         #签名步骤四：所有字符转为大写
@@ -293,7 +292,7 @@ class UnifiedOrder_pub(Wxpay_client_pub):
     def createXml(self):
         """生成接口参数xml"""
         # 检测必填参数
-        self.parameters["notify_url"] = WxPayConf_pub.NOTIFY_URL if self.isCZ else WxPayConf_pub.NOTIFY_URL
+        self.parameters["notify_url"] = WxPayConf_pub.CZ_NOTIFY_URL if self.isCZ else WxPayConf_pub.NOTIFY_URL
         if any(self.parameters[key] is None for key in ("out_trade_no", "body", "total_fee", "notify_url", "trade_type")):
             raise ValueError("missing parameter")
         if self.parameters["trade_type"] == "JSAPI" and self.parameters["openid"] is None:
@@ -351,7 +350,7 @@ class Qrcode_pub(Wxpay_client_pub):
     def createXml(self):
         """生成接口参数xml"""
         # 检测必填参数
-        self.parameters["notify_url"] = WxPayConf_pub.NOTIFY_URL if self.isCZ else WxPayConf_pub.NOTIFY_URL
+        self.parameters["notify_url"] = WxPayConf_pub.CZ_NOTIFY_URL if self.isCZ else WxPayConf_pub.NOTIFY_URL
         if any(self.parameters[key] is None for key in ("out_trade_no", "body", "total_fee", "notify_url", "trade_type")):
             raise ValueError("missing parameter")
         if self.parameters["trade_type"] == "JSAPI" and self.parameters["openid"] is None:

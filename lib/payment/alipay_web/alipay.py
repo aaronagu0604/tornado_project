@@ -37,7 +37,6 @@ def alipay_sign(total_amount, subject, body, ordernum):
 
 def get_pay_url(tn, subject, total_fee, isCZ=False):
     """get token
-
     """
     _GATEWAY = "http://wappaygw.alipay.com/service/rest.htm"
     req_id = str(time.time())
