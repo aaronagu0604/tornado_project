@@ -570,6 +570,14 @@ class SaveIOPHandler(BaseHandler):
             io = InsuranceOrder.get(id=pid.insurance_order_id)
             io.status = 1
             io.save()
+            # 创建首页消息
+            msg = Message()
+            msg.store = io.store
+            msg.type = 'insurance_order_detail'
+            msg.link = 'czj://insurance_order_detail/%d' % io.id
+            msg.other_id = pid.id
+            msg.content = '您有新的报价单'
+            msg.save()
             if send_msg == '1':
                 io = InsuranceOrder.get(id=pid.insurance_order_id)
                 sms = {'mobile': io.store.mobile, 'signtype': '1', 'isyzm': 'changePrice',
