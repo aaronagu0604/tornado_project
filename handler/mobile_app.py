@@ -539,7 +539,7 @@ class MobileReadMessageHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/read_message
     """
-
+    @require_auth
     def post(self):
         result = {'flag': 1, 'data': [], 'msg': 'message read status update success'}
         msg_id = self.get_body_argument('id',0)
