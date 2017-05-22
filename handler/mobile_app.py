@@ -38,10 +38,7 @@ def get_insurance(area_code):
     @api {get} /mobile 01. 车装甲协议
     @apiDescription 车装甲协议；http://或者https://开头，跳转入webview；czj://开头，进入原生界面，详情如下：
 
-    @apiParam {String} insurance 进入购买保险详情，后跟保险ID（暂时不使用，已改为h5完成），例：czj://insurance/1
-    @apiParam {String} insurance_list 进入全部保险列表，例：czj://insurance_list
-    @apiParam {String} product 进入商品详情，后跟商品ID（暂时不使用，已改为h5完成），例：czj://product/1
-    @apiParam {String} category 进入某分类、某品牌列表，后跟分类、品牌ID，ID为0标识所有；例：czj://category/1/brand/1
+    @apiParam {String} brand 进入某品牌列表，后跟品牌ID，ID为0标识所有；例：czj://brand/1
     @apiParam {String} insurance_order_list 进入保险订单列表，后跟状态，例：czj://insurance_order_list/0，表示报价列表
     @apiParam {String} insurance_order_detail 进入保险订单详情，后跟保险订单ID，例：czj://insurance_order_detail/1
     @apiParam {String} score_product 进入积分商城，例：czj://score_product
@@ -948,6 +945,27 @@ class MobileInsuranceListHandler(MobileBaseHandler):
         self.finish()
 
 
+@route(r'/mobile/category', name='mobile_category')  # 分类页面
+class MobileCategoryHandler(MobileBaseHandler):
+    """
+    @apiGroup app
+    @apiVersion 1.0.0
+    @api {get} /mobile/category 07. 产品分类页
+    @apiDescription 产品分类页
+
+    @apiHeader {String} token 用户登录凭证
+
+    @apiParam {Int} type 1车险，2润滑油品牌
+
+    @apiSampleRequest /mobile/category
+    """
+
+    def get(self):
+        t = self.get_argument("type", "1")
+        # todo: 增加查询全部保险和商品品牌得代码，传入前台绑定
+        self.render('mobile/category.html', type=t)
+
+
 @route(r'/mobile/product', name='mobile_product')  # 产品详情页
 class MobileProductHandler(MobileBaseHandler):
     """
@@ -1005,9 +1023,9 @@ class MobileInsuranceHandler(MobileBaseHandler):
     def get(self):
         result = {'flag': 0, 'msg': '', "data": {}}
         id = self.get_argument("id", None)
-        type = self.get_argument("type", None)
+        f = self.get_argument('f', None)
         insurance = Insurance.get(id=id)
-        self.render('mobile/insurance.html', insurance=insurance)
+        self.render('mobile/insurance.html', insurance=insurance, f=f)
 
 
 @route(r'/mobile/addshopcar', name='mobile_add_shop_car')  # 添加购物车
@@ -1828,7 +1846,6 @@ class MobileToolsHandler(MobileBaseHandler):
     """
 
     def get(self):
-        result = {'flag': 0, 'msg': '', "data": {}}
         self.render('mobile/tools.html')
 
 

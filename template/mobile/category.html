@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>分类</title>
+    <link rel="icon" type="image/png" href="/style/favicon.ico"/>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+    <link rel="stylesheet" href="//g.alicdn.com/msui/sm/0.6.2/css/sm.min.css">
+    <style type="text/css">
+        .bg {
+            background: url(http://img.520czj.com/upload/0/201612/30/14830821401252.png) no-repeat;
+            filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod='scale')";
+            -moz-background-size: 100% auto;
+            background-size: 100% auto;
+            height: 60px;
+        }
+
+        .item-i {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+<body>
+<div class="page-group">
+    <div class="page">
+        <div class="content">
+            <div class="buttons-tab">
+                <a href="#tab1" {% if type=='1' %}class="tab-link button active" {% else %}class="tab-link button" {%
+                   endif %}>全部车险</a>
+                <a href="#tab2" {% if type=='2' %}class="tab-link button active" {% else %}class="tab-link button" {%
+                   endif %}>润滑油品牌</a>
+            </div>
+            <div class="content-block" style="padding: 0;">
+                <div class="tabs">
+                    <div id="tab1" {% if type=='1' %}class="tab active" {% else %}class="tab" {% endif %}>
+                        <div class="content-block">
+                            <div class="row">
+                                <div class="col-25 item-i">
+                                    <a href="/mobile/insurance?id=1&f=web">
+                                        <div class="bg">
+                                        </div>
+                                        <div>
+                                            英大车险
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="tab2" {% if type=='2' %}class="tab active" {% else %}class="tab" {% endif %}>
+                        <div class="content-block">
+                            <div class="row">
+                                <div class="col-25 item-i">
+                                    <div class="bg">
+                                    </div>
+                                    <div>
+                                        壳牌
+                                    </div>
+                                </div>
+                                <div class="col-25 item-i">
+                                    <div class="bg">
+                                    </div>
+                                    <div>
+                                        嘉实多
+                                    </div>
+                                </div>
+                                <div class="col-25 item-i">
+                                    <div class="bg">
+                                    </div>
+                                    <div>
+                                        SK
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type='text/javascript' src='//g.alicdn.com/sj/lib/zepto/zepto.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm.min.js' charset='utf-8'></script>
+</body>
+</html>

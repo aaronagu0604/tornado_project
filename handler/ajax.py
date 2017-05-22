@@ -17,11 +17,6 @@ import os
 import random
 from payqrcode import postRequest
 import urllib2
-import StringIO
-from PIL import Image
-from pytesseract import image_to_string
-import urllib, sys
-import ssl
 import base64
 
 @route(r'/ajax/GetSubAreas', name='ajax_GetSubAreas')  # 获取下级区域
@@ -1035,7 +1030,12 @@ class OCRHandler(BaseHandler):
         request.add_header('Authorization', 'APPCODE ' + appcode)
         # 根据API的要求，定义相对应的Content - Type
         request.add_header('Content-Type', 'application/json; charset=UTF-8')
-        response = urllib2.urlopen(request)
+        import ssl
+        ctx = ssl.create_default_context()
+        ctx.check_hostname = False
+        ctx.verify_mode = ssl.CERT_NONE
+
+        response = urllib2.urlopen(request, context=ctx)
         ocrresult = response.read()
         print 'idcard:',ocrresult
         return simplejson.loads(ocrresult)['outputs'][0]['outputValue']['dataValue']
@@ -1062,7 +1062,12 @@ class OCRHandler(BaseHandler):
         request.add_header('Authorization', 'APPCODE ' + appcode)
         # 根据API的要求，定义相对应的Content - Type
         request.add_header('Content-Type', 'application/json; charset=UTF-8')
-        response = urllib2.urlopen(request)
+        import ssl
+        ctx = ssl.create_default_context()
+        ctx.check_hostname = False
+        ctx.verify_mode = ssl.CERT_NONE
+
+        response = urllib2.urlopen(request, context=ctx)
         ocrresult = response.read()
         print 'drivecard:',ocrresult
         try:
