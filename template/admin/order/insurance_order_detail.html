@@ -939,7 +939,7 @@
                                                                 <label>交强险折扣</label>
                                                             </div>
                                                             <div class="col-xs-4 rightTxt">
-                                                                <input type="text" class="form-control" name="force_rate" value="{{program['force_rate']}}">
+                                                                <input type="text" class="form-control" name="force_rate" value="{{ program['force_rate'] and program['force_rate'] or '' }}">
                                                             </div>
                                                         </div>
                                                         <div class="row">
@@ -947,7 +947,7 @@
                                                                 <label>商业险折扣</label>
                                                             </div>
                                                             <div class="col-xs-4 rightTxt">
-                                                                <input type="text" class="form-control" name="business_rate" value="{{program['business_rate']}}">
+                                                                <input type="text" class="form-control" name="business_rate" value="{{ program['business_rate'] and program['business_rate'] or '' }}">
                                                             </div>
                                                         </div>
                                                     </td>
