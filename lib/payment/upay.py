@@ -3,10 +3,9 @@
 import types, hashlib, time, base64, os
 import urllib2
 import urllib
-from urllib import urlencode, urlopen
-from uconfig import setting  # 见config.py
+from uconfig import upsetting as setting  # 见config.py
 from OpenSSL.crypto import load_pkcs12, FILETYPE_PEM, sign, verify, load_certificate
-
+import logging
 
 class Trade(object):
     def __init__(self, isCZ=False):
@@ -181,6 +180,7 @@ class Trade(object):
             return False
 
     def trade(self, orderId, total_fee):
+        logging.info('===upay  trade:%s,%s' % (orderId,total_fee))
         params = self.createAutoFormHtml(orderId, total_fee)
         r = urllib2.urlopen(setting['SDK_App_Request_Url'], data=urllib.urlencode(params), timeout=10).read()
         params = self.smart_str_decode(r)
@@ -188,8 +188,7 @@ class Trade(object):
             if params['respCode'] == '00':
                 return params['tn']
         except Exception,e:
-            import logging
-            logging.error(e)
+            logging.info('===upay error:%s'%e)
             return ''
 
 if __name__ == '__main__':

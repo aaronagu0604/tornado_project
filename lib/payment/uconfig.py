@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from setting import domanName
-setting = {
+upsetting = {
     # 银联相关
     # 签名证书路径
     'SDK_SIGN_CERT_PATH': '/var/lib/jenkins/jobs/czj/workspace/lib/payment/upayfile/czj.pfx',
