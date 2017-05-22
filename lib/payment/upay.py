@@ -187,7 +187,9 @@ class Trade(object):
         try:
             if params['respCode'] == '00':
                 return params['tn']
-        except:
+        except Exception,e:
+            import logging
+            logging.error(e)
             return ''
 
 if __name__ == '__main__':
