@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+from setting import domanName
 
 class WxPayConf_pub(object):
     """配置账号信息"""
@@ -19,12 +19,12 @@ class WxPayConf_pub(object):
 
     #=======【异步通知url设置】===================================
     #异步通知url，商户根据实际开发过程设定
-    NOTIFY_URL = "http://www.520czj.com/mobile/weixin_notify"
-    CZ_NOTIFY_URL = "http://api.dev.test.520czj.com/mobile/weixin_cz_notify"
+    NOTIFY_URL = domanName+"/mobile/weixin_notify"
+    CZ_NOTIFY_URL = domanName+"/mobile/weixin_cz_notify"
 
     #=======【JSAPI路径设置】===================================
     #获取access_token过程中的跳转uri，通过跳转将code传入jsapi支付页面
-    JS_API_CALL_URL = "http://www.520czj.com/pay/?showwxpaytitle=1"
+    JS_API_CALL_URL = domanName+"/pay/?showwxpaytitle=1"
 
     #=======【证书路径设置】=====================================
     #证书路径,注意应该填写绝对路径

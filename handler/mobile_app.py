@@ -1363,10 +1363,13 @@ class MobileNewOrderHandler(MobileBaseHandler):
                     order.status = 1
                     order.pay_time = now
                     order.save()
+                    # 资金类别 # 1提现、2充值、3售出、4采购、5保险、6退款
                     money_record = MoneyRecord()
                     money_record.user = user
                     money_record.store = user.store
+                    money_record.type = 4
                     money_record.process_type = 2
+                    money_record.process_message = '采购'
                     money_record.process_log = u'购买产品使用余额支付, 订单号：' + order.ordernum
                     money_record.status = 1
                     money_record.money = total_price
@@ -1773,6 +1776,7 @@ class MobilePayOrderHandler(MobileBaseHandler):
                     if user.store.price < order.current_order_price.append_refund_num:
                         result['msg'] = u"您的余额不足"
                     else:
+                        # 资金类别 # 1提现、2充值、3售出、4采购、5保险、6退款
                         order.current_order_price.append_refund_status = 2
                         order.current_order_price.save()
                         user.store.price -= order.current_order_price.append_refund_num
@@ -1780,6 +1784,8 @@ class MobilePayOrderHandler(MobileBaseHandler):
                         money_record = MoneyRecord()
                         money_record.user = user
                         money_record.store = user.store
+                        money_record.type = 5 if 'I' in order_number else 4
+                        money_record.process_message = '保险'if 'I' in order_number else '采购'
                         money_record.process_type = 2
                         money_record.process_log = u'余额补款保单, 订单号：%s, 补单号：%s' % (order.ordernum, ordernum)
                         money_record.status = 1

@@ -29,7 +29,8 @@ MQEXCHANGENAME = 'czj_exchange'
 MQQUEUENAME = 'czj_queue'
 MQROUTINGKEY = 'czj_routing_key'
 
-baseUrl = 'http://api.dev.test.520czj.com/mobile/'
+domanName = 'http://api.dev.test.520czj.com'
+baseUrl = domanName + '/mobile/'
 
 presentToA = u'车主'
 presentToB = u'修理厂'

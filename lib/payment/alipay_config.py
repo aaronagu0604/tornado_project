@@ -1,5 +1,5 @@
 #coding:utf-8
-
+from setting import domanName
 RSA_ALIPAY_PUBLIC = """-----BEGIN PUBLIC KEY-----
 MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtf8HtMUWmaEur63+cxCwc7paeBXuMZeVZPoSKG86JYw4sOfoQ6V1ZGeXHoA9H+USXYBLnpwZsLxEmQCDtfzzDzqfsLLGAZDuVV29G5yvEWlWWXcBjJfb/59R+nZPPr/aN9LSl5lnxEJ7h3Y/TUzMhw9Z2q7UtbiqWQGptJLY8wZHY7i8HXdyvAZ4L9wemGOus9UBH6SI8Cq8y24rdLyR4gXeT8wKNFDfEfGVBgZ1qc8RVsbUXhWQKiUX7jY9xHHeiC81IA44r9lrK6h23bkvsuNv2n3oq8d66Vn978MPa/NJAMtCShPCRT6RgqZfWNaOZHM2Yb0fXl6IeW8YqypC5wIDAQAB
 -----END PUBLIC KEY-----"""
@@ -35,8 +35,8 @@ key = "d2fmn3xc7f45bxl21qfjdojhw7q0049t"
 alipay_account = "pay.chezhuangjia@520czj.com"  # 商家的支付宝邮箱
 
 # 交易过程中服务器异步通知的页面 要用 http://格式的完整路径，不允许加?id=123这类自定义参数
-NOTIFY_URL = 'http://www.520czj.com/mobile/alipay_notify'
-NOTIFY_URL_CZ = 'http://api.dev.test.520czj.com/mobile/alipay_cz_notify'
+NOTIFY_URL = domanName+'/mobile/alipay_notify'
+NOTIFY_URL_CZ = domanName+'/mobile/alipay_cz_notify'
 
 
 

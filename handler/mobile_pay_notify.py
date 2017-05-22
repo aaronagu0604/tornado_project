@@ -217,7 +217,8 @@ def recharge(order_num, trade_no, money, payment=''):
     store.save()
     now = int(time.time())
     process_log = u'支付方式：%s，订单号：order_id=%s' % (payment, order_num)
-    MoneyRecord.create(user=user, store=user.store, process_type=1, process_message=u'充值', apply_time=now,
+    # 资金类别 # 1提现、2充值、3售出、4采购、5保险、6退款
+    MoneyRecord.create(user=user, store=user.store, type=2,process_type=1, process_message=u'充值', apply_time=now,
                        process_log=process_log, in_num=trade_no, money=money, status=1, processing_time=now)
 
 
