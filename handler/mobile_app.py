@@ -507,7 +507,7 @@ class MobileHomeHandler(MobileBaseHandler):
             ft = StoreProductPrice.area_code << area_code
         else:
             ft = StoreProductPrice.area_code == area_code
-        spps = Product.select(Product.id.alias('id'),
+        spps = Product.select(StoreProductPrice.id.alias('id'),
                               Product.name.alias('name'),
                               Product.cover.alias('cover'),
                               StoreProductPrice.price.alias('price'),

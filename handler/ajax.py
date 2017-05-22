@@ -1428,7 +1428,7 @@ class AutoCaculateInsuranceOrderPriceHandler(BaseHandler):
                     "service_code": "6197J2004003"
                 }
             }
-        #print 'post_data:',simplejson.dumps(post_data)
+        print 'post_data:',simplejson.dumps(post_data)
         try:
             request = urllib2.Request(url, 'data=%s' % simplejson.dumps(post_data))
             response = urllib2.urlopen(request)
