@@ -527,6 +527,31 @@ class MobileHomeHandler(MobileBaseHandler):
             })
         return items[:6]
 
+@route(r'/mobile/read_message', name='mobile_read_message')  # 首页消息读取
+class MobileReadMessageHandler(MobileBaseHandler):
+    """
+    @apiGroup app
+    @apiVersion 1.0.0
+    @api {get} /mobile/read_message 02. 热搜
+    @apiDescription 首页消息读取
+    
+    @apiParam {String} id 银行卡号
+
+    @apiSampleRequest /mobile/read_message
+    """
+
+    def post(self):
+        result = {'flag': 1, 'data': [], 'msg': 'message read status update success'}
+        msg_id = self.get_body_argument('id',0)
+        try:
+            message = Message.get(id=msg_id)
+            message.status = 1
+            message.save()
+        except Exception,e:
+            result['flag'] = 0
+            result['msg'] = 'read faild'
+        self.write(simplejson.dumps(result))
+
 
 @route(r'/mobile/get_bank_name', name='GetBankName')  # 用户获取银行卡名称
 class MobileGetBankNameHandler(MobileBaseHandler):
