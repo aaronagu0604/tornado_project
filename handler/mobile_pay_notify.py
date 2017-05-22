@@ -246,7 +246,7 @@ class MobileAlipayCZNotifyHandler(RequestHandler):
         ps = verify_alipay_request_sign(params)
         if ps and (ps['trade_status'].upper().strip() == 'TRADE_FINISHED' or ps['trade_status'].upper().strip() == 'TRADE_SUCCESS'):
                 create_msg(simplejson.dumps({'payment': 1, 'order_id': ps['out_trade_no']}), 'recharge')
-                if MoneyRecord.select().where(MoneyRecord.in_num == ps['transaction_id']).count() > 0:
+                if MoneyRecord.select().where(MoneyRecord.in_num == ps['trade_no']).count() > 0:
                     logging.error(u'支付宝重复回调：order_id:%s in_num:%s' % (ps['out_trade_no'], ps['trade_no']))
                 else:
                     recharge(ps['out_trade_no'], ps['trade_no'], ps['receipt_amount'], u'支付宝')
