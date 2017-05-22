@@ -632,7 +632,7 @@ class MobileInsuranceOrderDetailHandler(MobileBaseHandler):
         if insuranceorder.current_order_price.gift_policy == 1:
             commission = str(insuranceorder.current_order_price.score) + u'桶'
         elif insuranceorder.current_order_price.gift_policy == 2:
-            commission = str(insuranceorder.current_order_price.score) + u'积分'
+            commission = str(insuranceorder.current_order_price.score) + u'元'
         else:
             commission = u'无'
         result["flag"] = 1
