@@ -6,6 +6,7 @@ import urllib
 from uconfig import upsetting as setting  # 见config.py
 from OpenSSL.crypto import load_pkcs12, FILETYPE_PEM, sign, verify, load_certificate
 import logging
+from urllib import unquote
 
 class Trade(object):
     def __init__(self, isCZ=False):
@@ -165,7 +166,8 @@ class Trade(object):
         # 公钥
         public_key = self.getPulbicKeyByCertId(params['certId'])
         # 签名串
-        signature_str = params['signature']
+        # signature_str = unquote(params['signature'])
+        signature_str = unquote(params['signature'].encode('utf-8'))
         del params['signature']
         # 组合
         params_str = self.createLinkString(params)
