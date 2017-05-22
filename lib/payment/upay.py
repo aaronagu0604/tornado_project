@@ -180,17 +180,14 @@ class Trade(object):
             return False
 
     def trade(self, orderId, total_fee):
-        logging.info('===upay  trade:%s,%s' % (orderId,total_fee))
         params = self.createAutoFormHtml(orderId, total_fee)
-        logging.info(params)
         r = urllib2.urlopen(setting['SDK_App_Request_Url'], data=urllib.urlencode(params), timeout=10).read()
         params = self.smart_str_decode(r)
         logging.info(params)
         try:
             if params['respCode'] == '00':
                 return params['tn']
-        except Exception,e:
-            logging.info('===upay error:%s'%e)
+        except:
             return ''
 
 if __name__ == '__main__':
