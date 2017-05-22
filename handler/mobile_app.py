@@ -334,6 +334,7 @@ class MobileHomeHandler(MobileBaseHandler):
             message_list = Message.select().where(Message.store == user.store & Message.status == 0)
             if message_list.count() > 0:
                 result['data']['last_unread_price']['show'] = 1
+                result['data']['last_unread_price']['id'] = message_list[0].id
                 result['data']['last_unread_price']['msg'] = message_list[0].content
                 result['data']['last_unread_price']['type'] = message_list[0].type
                 result['data']['last_unread_price']['link'] = message_list[0].link
