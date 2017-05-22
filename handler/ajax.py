@@ -540,6 +540,7 @@ class SaveIOPHandler(BaseHandler):
         groups = self.get_body_argument('groups', None)
         i_items = self.get_body_argument('i_items', None)
         send_msg = self.get_body_argument('send_msg', None)
+        print groups,i_items,send_msg
         if not (groups and i_items):
             result['msg'] = u'参数不全'
             self.write(simplejson.dumps(result))
@@ -571,6 +572,9 @@ class SaveIOPHandler(BaseHandler):
             for item in i_items:
                 pid.__dict__['_data'][item] = i_items[item]
             pid.save()
+            io = InsuranceOrder.get(id=pid.insurance_order_id)
+            io.status = 1
+            io.save()
             if send_msg == '1':
                 io = InsuranceOrder.get(id=pid.insurance_order_id)
                 sms = {'mobile': io.store.mobile, 'signtype': '1', 'isyzm': 'changePrice',
