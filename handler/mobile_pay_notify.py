@@ -190,8 +190,8 @@ class MobileUPayCallbackHandler(RequestHandler):
             ps = Trade().smart_str_decode(self.request.body)
             if Trade().union_validate(ps):
                 if ps['respMsg'] == 'Success!':
-                    order, is_insurance_order = change_order_status(ps['out_trade_no'], ps['transaction_id'])
-                    create_msg(simplejson.dumps({'payment': 3, 'order_id': ps['out_trade_no']}), 'pay_success')
+                    order, is_insurance_order = change_order_status(ps['orderId'], ps['queryId'])
+                    create_msg(simplejson.dumps({'payment': 3, 'order_id': ps['orderId']}), 'pay_success')
                     if is_insurance_order and order:
                         send_new_insurance_order_msg(order.delivery_tel, order.store.name, order.store.area_code,
                                                      order.ordernum, order.insurance.name, order.payment,
@@ -302,15 +302,20 @@ class MobileUPayCZNotifyHandler(RequestHandler):
     def post(self):
         result = {'return_code': 'FAIL'}
         try:
+            logging.error('----body:---%s-----' % self.request.body)
             ps = Trade().smart_str_decode(self.request.body)
             logging.error('-------%s-----' % str(ps))
             if Trade().union_validate(ps):
                 if ps['respMsg'] == 'Success!':
+                    logging.error('--0----%s------' % ps['orderId'])
                     create_msg(simplejson.dumps({'payment': 3, 'order_id': ps['orderId']}), 'recharge')
+                    logging.error('------1------')
                     if MoneyRecord.select().where(MoneyRecord.in_num == ps['queryId']).count() > 0:
                         logging.error(u'银联重复回调：order_id:%s in_num:%s' % (ps['orderId'], ps['queryId']))
                     else:
+                        logging.error('------2------')
                         recharge(ps['orderId'], ps['queryId'], float(ps['settleAmt'])/100, u'银联')
+                        logging.error('------3------')
                     result['return_code'] = 'SUCCESS'
                 else:
                     result['return_msg'] = 'upay get FAIL notify'
