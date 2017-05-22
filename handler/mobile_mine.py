@@ -997,6 +997,12 @@ class MobileUpdateInsuranceOrderIMGHandler(MobileBaseHandler):
             elif imgtype == 'icb':
                 io.id_card_back = imgurl
                 io.icbstatus = 0
+            elif imgtype == 'icof':
+                io.id_card_front_owner = imgurl
+                io.icfostatus = 0
+            elif imgtype == 'icob':
+                io.id_card_back_owner = imgurl
+                io.icbostatus = 0
             elif imgtype == 'dcf':
                 io.drive_card_front = imgurl
                 io.dcfstatus = 0
