@@ -2003,8 +2003,8 @@ class InsuranceOrderDetailHandler(AdminBaseHandler):
         msg = Message()
         msg.store = InsuranceOrder.get(id=iop.insurance_order_id).store
         msg.type = 'insuranceorderprice'
-        msg.link = 'czj://insuranceorderprice/%d'%iop.id
-        msg.other_id = iop.id
+        msg.link = 'czj://insuranceorderprice/%d'%iop.insurance_order_id
+        msg.other_id = iop.insurance_order_id
         msg.content = '您有新的报价单'
         msg.save()
         self.flash("保存成功")

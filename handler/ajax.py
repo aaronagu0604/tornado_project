@@ -998,6 +998,14 @@ class UpdateIOCardStatusHandler(BaseHandler):
 
             setattr(io, img_type, img_status)
             io.save()
+            # 创建首页消息
+            msg = Message()
+            msg.store = io.store
+            msg.type = 'insurance_order_detail'
+            msg.link = 'czj://insurance_order_detail/%d' % io_id
+            msg.other_id = io_id
+            msg.content = '您的保险订单需要重新上传图片'
+            msg.save()
         except Exception,e:
             result['flag'] = 0
             result['msg'] = '更新状态失败：%s'%e
