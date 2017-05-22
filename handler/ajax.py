@@ -1091,7 +1091,7 @@ class OCRHandler(BaseHandler):
         except:
             return simplejson.loads([])
     @run_on_executor
-    def insuranceorderocr(self,io_id):
+    def insuranceorderocr(self,io_id,isone):
         if not io_id:
             self.write('该订单不存在')
         io = InsuranceOrder.get(id=io_id)
@@ -1102,23 +1102,23 @@ class OCRHandler(BaseHandler):
             ocrresult = self.ali_idcard_ocr(img_data)
 
             result['id_card_front'] = simplejson.loads(ocrresult)
-        if io.id_card_back:
-            request = urllib2.Request(io.id_card_back)
+        if isone==0 and io.id_card_front_owner:
+            request = urllib2.Request(io.id_card_front_owner)
             img_data = urllib2.urlopen(request).read()
-            ocrresult = self.ali_idcard_ocr(img_data, False)
-            result['id_card_back'] = simplejson.loads(ocrresult)
+            ocrresult = self.ali_idcard_ocr(img_data)
+
+            result['id_card_front_owner'] = simplejson.loads(ocrresult)
+        # if io.id_card_back:
+        #     request = urllib2.Request(io.id_card_back)
+        #     img_data = urllib2.urlopen(request).read()
+        #     ocrresult = self.ali_idcard_ocr(img_data, False)
+        #     result['id_card_back'] = simplejson.loads(ocrresult)
         if io.drive_card_front:
             request = urllib2.Request(io.drive_card_front)
             img_data = urllib2.urlopen(request).read()
             ocrresult = self.ali_drive_ocr(img_data)
 
             result['drive_card_front'] = simplejson.loads(ocrresult)
-        # if io.drive_card_back:
-        #     print io.drive_card_back
-        #     request = urllib2.Request(io.drive_card_back)
-        #     ocrresult = self.ali_drive_ocr(img_data)
-
-        #     result['drive_card_front'] = simplejson.loads(ocrresult)
 
         self.write(simplejson.dumps(result))
 
@@ -1128,7 +1128,8 @@ class OCRHandler(BaseHandler):
     def get(self):
 
         io_id = self.get_argument('io_id', None)
-        a = yield self.insuranceorderocr(io_id)
+        owner_buyer_isone = int(self.get_argument('owner_buyer_isone',1))
+        a = yield self.insuranceorderocr(io_id,owner_buyer_isone)
 
 @route(r'/ajax/ocr_save', name='ajax_ocr_save')  # 保存图片识别信息
 class OCRSaveHandler(BaseHandler):

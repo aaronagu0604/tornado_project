@@ -1345,7 +1345,16 @@
     // OCR function 调用ajax并回填识别信息
     function imgocr(id) {
          ShowLoading();
-        $.get('/ajax/ocr', {_xsrf:xsrf, io_id:id}, function (data) {
+         // 被保险人信息
+        var owner_buyer_isone = document.getElementById('owner_buyer_isone').checked;
+        if (owner_buyer_isone) {
+            owner_buyer_isone = 1;
+        } else {
+            owner_buyer_isone = 0;
+        }
+        $.get('/ajax/ocr', {_xsrf:xsrf,
+        owner_buyer_isone:owner_buyer_isone,
+        io_id:id}, function (data) {
             HiddenLoading();
             var obj = jQuery.parseJSON(data);
             if (obj.flag == 1) {

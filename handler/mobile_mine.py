@@ -464,14 +464,14 @@ class MobileSubOrderDetailHandler(MobileBaseHandler):
             pic = None
             if pics:
                 pic = pics[0]
-            productattibute = ProductAttributeValue.get(ProductAttributeValue.product == product.product)
-            attribute = "%s %s" % (productattibute.attribute.name, productattibute.value)
+            # productattibute = ProductAttributeValue.get(ProductAttributeValue.product == product.product)
+            # attribute = "%s %s" % (productattibute.attribute.name, productattibute.value)
             items.append({
                 'img': pic,
                 'name': product.product.name,
                 'price': product.price,
                 'quantity': product.quantity,
-                'attribute': attribute
+                'attribute': ''
             })
         if items:
             result['flag'] = 1
