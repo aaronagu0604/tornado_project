@@ -371,6 +371,7 @@ class MobileSellOrderHandler(MobileBaseHandler):
     def productOrderSearch(self, type, index):
         store = self.get_user().store
         ft = (SubOrder.saler_store == store)
+        # 0待付款 1待发货 2待收货 3交易完成（待评价） 4已评价 5申请退款 6已退款 -1已取消
         if type == 'all':  # 全部
             ft &= (SubOrder.status > -1)
         elif type == 'unpay':  # 待付款订单
@@ -385,7 +386,7 @@ class MobileSellOrderHandler(MobileBaseHandler):
             ft &= (SubOrder.status == -1)
 
         result = []
-        sos = SubOrder.select().order_by(SubOrder.id.desc()).paginate(index, setting.MOBILE_PAGESIZE)
+        sos = SubOrder.select().where(ft).order_by(SubOrder.id.desc()).paginate(index, setting.MOBILE_PAGESIZE)
         for so in sos:
             result.append({
                 'id': so.order.id,
