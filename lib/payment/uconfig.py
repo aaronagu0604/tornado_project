@@ -7,7 +7,7 @@ upsetting = {
     # 签名证书密码
     'SDK_SIGN_CERT_PWD': '890604',
     # 验签证书路径
-    'SDK_VERIFY_CERT_DIR': '/home/www/workspace/eofan/src/lib/payment/upayfile/',
+    'SDK_VERIFY_CERT_DIR': '/var/lib/jenkins/jobs/czj/workspace/lib/payment/upayfile/',
     # 前台请求地址
     'SDK_FRONT_TRANS_URL': 'https://gateway.95516.com/gateway/api/frontTransReq.do',
     # 后台请求地址

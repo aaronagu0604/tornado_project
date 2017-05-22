@@ -165,6 +165,7 @@ class Trade(object):
     def union_validate(self, params):
         # 公钥
         public_key = self.getPulbicKeyByCertId(params['certId'])
+
         # 签名串
         # signature_str = unquote(params['signature'])
         signature_str = unquote(params['signature'].encode('utf-8'))

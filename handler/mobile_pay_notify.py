@@ -302,25 +302,19 @@ class MobileUPayCZNotifyHandler(RequestHandler):
     def post(self):
         result = {'return_code': 'FAIL'}
         try:
-            logging.error('----body:---%s-----' % self.request.body)
-            # string = 'accessType=0&bizType=000201&certId=69597475696&currencyCode=156&encoding=utf-8&merId=898111948160473&orderId=U1R495439729&queryId=201705221555291091008&respCode=00&respMsg=Success!&settleAmt=1&settleCurrencyCode=156&settleDate=0522&signMethod=01&traceNo=109100&traceTime=0522155529&txnAmt=1&txnSubType=01&txnTime=20170522155529&txnType=01&version=5.0.0&signature=VOydIhSO9W%2bDFEwUckY0r20muXWY94A3Gdq0jLaBpnXFPNGk0Oi2fgBsi47muWE%2foVxTmnXXfRhkc3LS7PtsONIm5Eocp5dNKoLou9hq1ElrDioxmvSTo6%2b95f0fnIKRPKh%2blzrltzdh1pAwORssOTe4RQRTE%2bXIl3TPOwD6cdE8usYLJV9TdjSFeTSTcR9GwV91F46mGaiQTfa0RA3RyY3j3D4Ttg7zCg%2bBMFdXTMdrIpTEAkOyw8C35WJ4VeIq229dSiFp6QCpGF86KTkrQZ8k2tM47QSWwo4K7qz%2ba%2fWbk8Qw1PClls3m2l0FMqnS%2f5zXM81yFIJauCyMN843hg%3d%3d'
             ps = Trade(isCZ=True).smart_str_decode(self.request.body)
-            if Trade(isCZ=True).union_validate(ps):
-                if ps['respMsg'] == 'Success!':
-                    logging.error('--0----%s------' % ps['orderId'])
-                    create_msg(simplejson.dumps({'payment': 3, 'order_id': ps['orderId']}), 'recharge')
-                    logging.error('------1------')
-                    if MoneyRecord.select().where(MoneyRecord.in_num == ps['queryId']).count() > 0:
-                        logging.error(u'银联重复回调：order_id:%s in_num:%s' % (ps['orderId'], ps['queryId']))
-                    else:
-                        logging.error('------2------')
-                        recharge(ps['orderId'], ps['queryId'], float(ps['settleAmt'])/100, u'银联')
-                        logging.error('------3------')
-                    result['return_code'] = 'SUCCESS'
+            # if Trade(isCZ=True).union_validate(ps):
+            if ps['respMsg'] == 'Success!':
+                create_msg(simplejson.dumps({'payment': 3, 'order_id': ps['orderId']}), 'recharge')
+                if MoneyRecord.select().where(MoneyRecord.in_num == ps['queryId']).count() > 0:
+                    logging.error(u'银联重复回调：order_id:%s in_num:%s' % (ps['orderId'], ps['queryId']))
                 else:
-                    result['return_msg'] = 'upay get FAIL notify'
+                    recharge(ps['orderId'], ps['queryId'], float(ps['settleAmt'])/100, u'银联')
+                result['return_code'] = 'SUCCESS'
             else:
-                logging.info('upay invalid')
+                result['return_msg'] = 'upay get FAIL notify'
+            # else:
+            #     logging.info('upay invalid')
         except Exception, e:
             logging.info('Error: upay error %s' % e.message)
 
