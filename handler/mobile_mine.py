@@ -1443,7 +1443,7 @@ class MobileWithdrawCashHandler(MobileBaseHandler):
                         account_truename = s.bank_truename
                         account_account = s.bank_account
                         account_name = s.bank_name
-                        MoneyRecord.create(user=user, store=user.store, process_type=1, process_log='提现',
+                        MoneyRecord.create(user=user, store=user.store, process_type=2,  process_message='提现',process_log='提现',
                                            out_account_type=account_type, out_account_truename=account_truename,
                                            out_account_account=account_account, out_account_name=account_name,
                                            money=money, status=0, apply_time=now)
@@ -1451,7 +1451,7 @@ class MobileWithdrawCashHandler(MobileBaseHandler):
                     elif account_type == 1:
                         account_truename = s.alipay_truename
                         account_account = s.alipay_account
-                        MoneyRecord.create(user=user, store=user.store, process_type=1, process_log='提现',
+                        MoneyRecord.create(user=user, store=user.store, process_type=2, process_message='提现',process_log='提现',
                                            out_account_type=account_type, out_account_truename=account_truename,
                                            ut_account_account=account_account, money=money, status=0, apply_time=now)
                         store.save()
