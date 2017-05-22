@@ -36,7 +36,7 @@ class MobileMineHandler(MobileBaseHandler):
         result['data']['login_flag'] = 0
         result['data']['store_name'] = ''
         result['data']['user_name'] = ''
-        result['data']['active'] = '未审核'
+        result['data']['active'] = u'未审核'
         result['data']['store_type'] = 2  # 默认未登陆未门店
         result['data']['store_price'] = 0
         result['data']['store_score'] = 0
@@ -47,6 +47,7 @@ class MobileMineHandler(MobileBaseHandler):
         result['data']['insurance_orders']['finish'] = 0
         result['data']['insurance_orders']['pay_back'] = 0
         result['data']['product_orders'] = {}
+        result['data']['product_orders']['wait_quote'] = 0
         result['data']['product_orders']['wait_pay'] = 0
         result['data']['product_orders']['wait_send'] = 0
         result['data']['product_orders']['wait_get'] = 0
@@ -90,8 +91,8 @@ class MobileMineHandler(MobileBaseHandler):
                         result['data']['product_orders']['wait_get'] += count
                     elif status == 3:
                         result['data']['product_orders']['finish'] += count
-            insurance_orders = InsuranceOrder.select(). \
-                where(InsuranceOrder.status > -1, InsuranceOrder.user_del == 0, InsuranceOrder.store == user.store)\
+            insurance_orders = InsuranceOrder.select().\
+                where(InsuranceOrder.status > -1, InsuranceOrder.user_del == 0, InsuranceOrder.store == user.store)
 
             # 0待报价 1已核价/待支付 2已支付/待出单 3完成（已送积分/油） -1已删除(取消)
             for item in insurance_orders:
