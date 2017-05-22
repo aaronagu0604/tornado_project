@@ -415,12 +415,16 @@ def move_storeaddress():
 # scorerecord:积分流水
 def move_scorerecord():
     old_record = Old_Score.select().where(Old_Score.user << user_map.keys())
+    scoretype = {
+        0:1,
+        1:2
+    }
     old_data = [{
         'user': user_map[item.user.id],
         'store': store_map[item.user.store.id],
         'ordernum': item.orderNum,
         'type': item.jftype,
-        'process_type': item.stype,
+        'process_type': scoretype[item.stype],
         'process_log': item.log,
         'score': item.score,
         'created': item.created,
