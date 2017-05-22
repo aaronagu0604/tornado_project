@@ -1702,16 +1702,20 @@ class MobilePayOrderHandler(MobileBaseHandler):
     @apiSampleRequest /mobile/payorder
     """
 
-    def after_pay_operation(self, order, total_price, user, order_type):
+    def after_pay_operation(self, order, total_price, user, order_type, order_T):
         now = int(time.time())
         user.store.price -= total_price
         user.store.save()
         order.status += 1
         order.pay_time = now
         order.save()
-        for so in order.sub_orders:
-            so.status = 1
-            so.save()
+        if order_T == 'product':
+            for so in order.sub_orders:
+                so.status = 1
+                so.save()
+        else:
+            order.current_order_price.status = order.status
+            order.current_order_price.save()
 
         if order_type == 1:  # 1金钱订单
             money_record = MoneyRecord()
@@ -1734,6 +1738,7 @@ class MobilePayOrderHandler(MobileBaseHandler):
         now = int(time.time())
         if order_number and payment:
             if 'S' in order_number:  # 普通商品订单
+                order_T = 'product'
                 order = Order.get(ordernum=order_number)
                 ordernum = order.ordernum
                 if order.status != 0:
@@ -1744,6 +1749,7 @@ class MobilePayOrderHandler(MobileBaseHandler):
                     order_type = order.order_type
                     log = u'车装甲普通订单'
             elif 'I' in order_number:  # 保险订单
+                order_T = 'insurance'
                 order = InsuranceOrder.get(ordernum=order_number)
                 ordernum = order.ordernum
                 log = u'车装甲保单'
@@ -1786,7 +1792,7 @@ class MobilePayOrderHandler(MobileBaseHandler):
                         self.write(simplejson(result))
                         return
                     else:
-                        self.after_pay_operation(order, total_price, user, order_type)
+                        self.after_pay_operation(order, total_price, user, order_type, order_T)
                         result['flag'] = 1
 
             result['data']['pay_info'] = pay_order(payment, total_price, ordernum, log)

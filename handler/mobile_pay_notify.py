@@ -305,11 +305,11 @@ class MobileUPayCZNotifyHandler(RequestHandler):
             logging.error('-------%s-----' % str(ps))
             if Trade().union_validate(ps):
                 if ps['respMsg'] == 'Success!':
-                    create_msg(simplejson.dumps({'payment': 3, 'order_id': ps['out_trade_no']}), 'recharge')
-                    if MoneyRecord.select().where(MoneyRecord.in_num == ps['transaction_id']).count() > 0:
-                        logging.error(u'银联重复回调：order_id:%s in_num:%s' % (ps['out_trade_no'], ps['transaction_id']))
+                    create_msg(simplejson.dumps({'payment': 3, 'order_id': ps['orderId']}), 'recharge')
+                    if MoneyRecord.select().where(MoneyRecord.in_num == ps['queryId']).count() > 0:
+                        logging.error(u'银联重复回调：order_id:%s in_num:%s' % (ps['orderId'], ps['queryId']))
                     else:
-                        recharge(ps['out_trade_no'], ps['transaction_id'], ps['total_fee'], u'银联')
+                        recharge(ps['orderId'], ps['queryId'], float(ps['settleAmt'])/100, u'银联')
                     result['return_code'] = 'SUCCESS'
                 else:
                     result['return_msg'] = 'upay get FAIL notify'
