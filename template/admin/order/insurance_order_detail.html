@@ -1285,7 +1285,7 @@
                 var obj = jQuery.parseJSON(data);
                 input.blur();
                 if (obj.flag == 1) {
-                    alert('更改状态成功!');
+                    layer.alert('更改状态成功!');
                     if (img_status == 1) {
                         input.className ='btn btn-outline btn-warning btn-xs';
                         input.value = '取消重新上传';
@@ -1295,7 +1295,7 @@
                         input.value = '重新上传';
                     }
                 } else {
-                    alert(obj.msg);
+                    layer.alert(obj.msg);
                 }
             });
     }
@@ -1326,7 +1326,7 @@
             layer.close(index);
             var obj = jQuery.parseJSON(data);
             if (obj.flag == 1) {
-                alert("查询成功");
+                layer.alert("查询成功");
                 var detail_type = document.getElementById('detail_type')
                 for (var i = 1; i < detail_type.options.length; i++) {
                     detail_type.options.remove(i);
@@ -1337,7 +1337,7 @@
                 }
 
             } else {
-                alert(obj.msg);
+                layer.alert(obj.msg);
             }
         });
     }
@@ -1363,7 +1363,7 @@
                 document.getElementById('start_date_enforce').value=timestr;
                 document.getElementById('start_date_trade').value=timestr;
             } else {
-                alert(obj.msg);
+                layer.alert(obj.msg);
             }
         });
     }
@@ -1469,9 +1469,9 @@
             HiddenLoading();
             var obj = jQuery.parseJSON(data);
             if (obj.flag == 1) {
-                alert("OCR信息保存成功");
+                layer.alert("OCR信息保存成功");
             } else {
-                alert(obj.msg);
+                layer.alert(obj.msg);
             }
         });
     }
@@ -1510,7 +1510,7 @@
                     $(program).find('input[name="cash"]').val(0);
                 }
                 else {
-                    alert(obj.msg);
+                    layer.alert(obj.msg);
                 }
                 $(program).find('input[name="business_s"]').val(0);    // 商业险返佣率
                 $(program).find('input[name="force_s"]').val(0);    // 交强险返佣率
@@ -1540,7 +1540,7 @@
                     $(program).find('input[name="storeoilnum"]').val(0);
                 }
                 else {
-                    alert(obj.msg);
+                    layer.alert(obj.msg);
                 }
             });
         }
@@ -1569,7 +1569,7 @@
                     $(program).find('input[name="cash"]').val(0);
                 }
                 else {
-                    alert(obj.msg);
+                    layer.alert(obj.msg);
                 }
             });
         } else if(gift == 2){    // 返现
@@ -1587,7 +1587,7 @@
                     $(program).find('input[name="base_money"]').val(obj.data.base_money);    // 起兑金额
                 }
                 else {
-                    alert(obj.msg);
+                    layer.alert(obj.msg);
                 }
             });
         }
@@ -1642,7 +1642,7 @@
         if (obj != null) {
             //检查小数点后是否对于两位http://blog.csdn.net/shanzhizi
             if (obj.value.toString().split(".").length > 1 && obj.value.toString().split(".")[1].length > 2) {
-                alert("小数点后多于两位！");
+                layer.alert("小数点后多于两位！");
                 obj.value = "";
             }
         }
@@ -1653,7 +1653,7 @@
         txt.select(); //选择对象
         tag=document.execCommand("Copy"); //执行浏览器复制命令
         if(tag){
-            alert('复制内容成功');
+            layer.alert('复制内容成功');
         }
     }
 
@@ -1662,7 +1662,7 @@
         e.select(); //选择对象
         tag=document.execCommand("Copy"); //执行浏览器复制命令
         if(tag){
-            alert('复制内容成功');
+            layer.alert('复制内容成功');
         }
     }
 
@@ -1671,10 +1671,10 @@
         $.post("/ajax/submit_local_summary", { _xsrf:xsrf, ordernum:ordernum, localsummary:localsummary}, function (data) {
             var obj = jQuery.parseJSON(data);
             if (obj.flag == 1) {
-                alert('成功');
+                layer.alert('成功');
             }
             else {
-                alert(obj.msg);
+                layer.alert(obj.msg);
             }
         });
     }
@@ -1866,7 +1866,7 @@
             console.log(obj.data);
             console.log(obj.data.businessI);
             if (obj.flag == 1) {
-                alert('报价成功!');
+                layer.alert('报价成功!');
                 $(program).find('input[name="business_price"]').val(obj.data.businessI);  // 商业险总额
                 $(program).find('input[name="business_rate"]').val(obj.data.businessZK);    // 商业险折扣
                 $(program).find('input[name="forceIPrice"]').val(obj.data.forceI);    // 交强
@@ -1892,7 +1892,7 @@
                 $(program).find('input[name="vehicle_tax_price"]').val(obj.data.vehicle_tax_price);    // 车船税价格
                 $(program).find('input[name="insurance_price"]').val(obj.data.totalI);    // 保险总额
             } else {
-                alert(obj.msg);
+                layer.alert(obj.msg);
             }
         });
     }
@@ -2112,7 +2112,7 @@
         var forceICB = $(program).find('input[name="forceICB"]').is(':checked');    // 交强险 checkbox
         if(forceICB){
             if(forceIPrice*1<=0) {
-                alert('提交失败：交强险报价不能小于或等于0');
+                layer.alert('提交失败：交强险报价不能小于或等于0');
                 return
             } else {
                 i_items['forceI'] = 1;
@@ -2120,7 +2120,7 @@
             }
         } else {
             if(forceIPrice*1>0) {
-                alert('提交失败：交强险没有选中但是报价大于0');
+                layer.alert('提交失败：交强险没有选中但是报价大于0');
                 return
             } else {
                 i_items['forceI'] = '';
@@ -2130,18 +2130,18 @@
         var vehicle_tax_price = $(program).find('input[name="vehicle_tax_price"]').val();    // 车船税价格
         var vehicleTaxCB = $(program).find('input[name="vehicleTaxCB"]').is(':checked');    // 交强险 checkbox
         if(vehicleTaxCB && vehicle_tax_price*1<=0){
-            alert('提交失败：车船税报价不能小于或等于0');
+            layer.alert('提交失败：车船税报价不能小于或等于0');
             return
         }
         if(vehicleTaxCB == false && vehicle_tax_price*1>0){
-            alert('提交失败：车船税没有选中但是报价大于0');
+            layer.alert('提交失败：车船税没有选中但是报价大于0');
             return
         }
         var damageIPrice = $(program).find('input[name="damageIPrice"]').val();    // 车辆损失
         var damageICB = $(program).find('input[name="damageICB"]').is(':checked');    // checkbox
         if(damageICB){
             if(damageIPrice*1<=0){
-                alert('提交失败：车损险报价不能小于或等于0');
+                layer.alert('提交失败：车损险报价不能小于或等于0');
                 return
             } else {
                 i_items['damageI'] = 1;
@@ -2149,7 +2149,7 @@
             }
         }else {
             if(damageIPrice*1>0) {
-                alert('提交失败：车损险没有选中但是报价大于0');
+                layer.alert('提交失败：车损险没有选中但是报价大于0');
                 return
             } else {
                 i_items['damageI'] = '';
@@ -2160,7 +2160,7 @@
         var damageIPlusCB = $(program).find('input[name="damageIPlusCB"]').is(':checked');    // checkbox
         if(damageIPlusCB){
             if(damageIPlusPrice*1<=0) {
-                alert('提交失败：车损不计免赔险报价不能小于或等于0');
+                layer.alert('提交失败：车损不计免赔险报价不能小于或等于0');
                 return
             } else {
                 i_items['damageIPlus'] = 1;
@@ -2168,7 +2168,7 @@
             }
         } else {
             if(damageIPlusPrice*1>0) {
-                alert('提交失败：车损不计免赔险没有选中但是报价大于0');
+                layer.alert('提交失败：车损不计免赔险没有选中但是报价大于0');
                 return
             } else {
                 i_items['damageIPlus'] = '';
@@ -2180,7 +2180,7 @@
         var thirdDutyIP = $(program).find('select[name="thirdDutyIP"]').find("option:selected").text();    // 三责 险额
         if(thirdDutyICB){
             if(thirdDutyIPrice*1<=0){
-                alert('提交失败：三责险报价不能小于或等于0');
+                layer.alert('提交失败：三责险报价不能小于或等于0');
                 return
             } else {
                 i_items['thirdDutyI'] = thirdDutyIP;
@@ -2188,7 +2188,7 @@
             }
         } else {
             if(thirdDutyIPrice*1>0) {
-                alert('提交失败：三责险没有选中但是报价大于0' + thirdDutyIPrice);
+                layer.alert('提交失败：三责险没有选中但是报价大于0' + thirdDutyIPrice);
                 return
             } else {
                 i_items['thirdDutyI'] = '';
@@ -2200,7 +2200,7 @@
         var thirdDutyIPlusCB = $(program).find('input[name="thirdDutyIPlusCB"]').is(':checked');    // checkbox
         if(thirdDutyIPlusCB){
             if(thirdDutyIPlusPrice*1<=0){
-                alert('提交失败：三责不计免赔险报价不能小于或等于0');
+                layer.alert('提交失败：三责不计免赔险报价不能小于或等于0');
                 return
             } else {
                 i_items['thirdDutyIPlus'] = 1;
@@ -2208,7 +2208,7 @@
             }
         } else {
             if(thirdDutyIPlusPrice*1>0) {
-                alert('提交失败：三责不计免赔险没有选中但是报价大于0');
+                layer.alert('提交失败：三责不计免赔险没有选中但是报价大于0');
                 return
             } else {
                 i_items['thirdDutyIPlus'] = '';
@@ -2220,7 +2220,7 @@
         var robbingICB = $(program).find('input[name="robbingICB"]').is(':checked');    // checkbox
         if(robbingICB){
             if(robbingIPrice*1<=0) {
-                alert('提交失败：盗抢险报价不能小于或等于0');
+                layer.alert('提交失败：盗抢险报价不能小于或等于0');
                 return
             } else {
                 i_items['robbingI'] = 1;
@@ -2228,7 +2228,7 @@
             }
         } else {
             if(robbingIPrice*1>0) {
-                alert('提交失败：盗抢险没有选中但是报价大于0');
+                layer.alert('提交失败：盗抢险没有选中但是报价大于0');
                 return
             } else {
                 i_items['robbingI'] = '';
@@ -2240,7 +2240,7 @@
         var robbingIPlusCB = $(program).find('input[name="robbingIPlusCB"]').is(':checked');    // checkbox
         if(robbingIPlusCB){
             if(robbingIPlusPrice*1<=0) {
-                alert('提交失败：盗抢不计免赔险报价不能小于或等于0');
+                layer.alert('提交失败：盗抢不计免赔险报价不能小于或等于0');
                 return
             } else {
                 i_items['robbingIPlus'] = 1;
@@ -2248,7 +2248,7 @@
             }
         } else {
             if(robbingIPlusPrice*1>0) {
-                alert('提交失败：盗抢不计免赔险没有选中但是报价大于0');
+                layer.alert('提交失败：盗抢不计免赔险没有选中但是报价大于0');
                 return
             } else {
                 i_items['robbingIPlus'] = '';
@@ -2261,7 +2261,7 @@
         var driverDutyIS = $(program).find('select[name="driverDutyIS"]').find("option:selected").text();    // 司机 险额
         if(driverDutyICB){
             if(driverDutyIPrice*1<=0) {
-                alert('提交失败：车上司机险报价不能小于或等于0');
+                layer.alert('提交失败：车上司机险报价不能小于或等于0');
                 return
             } else {
                 i_items['driverDutyI'] = driverDutyIS;
@@ -2269,7 +2269,7 @@
             }
         } else {
             if(driverDutyIPrice*1>0){
-                alert('提交失败：车上司机险没有选中但是报价大于0');
+                layer.alert('提交失败：车上司机险没有选中但是报价大于0');
                 return
             } else {
                 i_items['driverDutyI'] = '';
@@ -2281,7 +2281,7 @@
         var driverDutyIPlusCB = $(program).find('input[name="driverDutyIPlusCB"]').is(':checked');    // checkbox
         if(driverDutyIPlusCB){
             if(driverDutyIPlusPrice*1<=0) {
-                alert('提交失败：车上司机不计免赔险报价不能小于或等于0');
+                layer.alert('提交失败：车上司机不计免赔险报价不能小于或等于0');
                 return
             } else {
                 i_items['driverDutyIPlus'] = 1;
@@ -2289,7 +2289,7 @@
             }
         } else {
             if(driverDutyIPlusPrice*1>0) {
-                alert('提交失败：车上司机不计免赔险没有选中但是报价大于0');
+                layer.alert('提交失败：车上司机不计免赔险没有选中但是报价大于0');
                 return
             } else {
                 i_items['driverDutyIPlus'] = '';
@@ -2302,7 +2302,7 @@
         var passengerDutyIS = $(program).find('select[name="passengerDutyIS"]').find("option:selected").text();    // 乘客 险额
         if(passengerDutyICB){
             if(passengerDutyIPrice*1<=0) {
-                alert('提交失败：车上乘客险报价不能小于或等于0');
+                layer.alert('提交失败：车上乘客险报价不能小于或等于0');
                 return
             } else {
                 i_items['passengerDutyI'] = passengerDutyIS;
@@ -2310,7 +2310,7 @@
             }
         } else {
             if(passengerDutyIPrice*1>0) {
-                alert('提交失败：车上乘客险没有选中但是报价大于0');
+                layer.alert('提交失败：车上乘客险没有选中但是报价大于0');
                 return
             } else {
                 i_items['passengerDutyI'] = '';
@@ -2322,7 +2322,7 @@
         var passengerDutyIPlusCB = $(program).find('input[name="passengerDutyIPlusCB"]').is(':checked');    // checkbox
         if(passengerDutyIPlusCB){
             if(passengerDutyIPlusPrice*1<=0) {
-                alert('提交失败：车上乘客不计免赔险报价不能小于或等于0');
+                layer.alert('提交失败：车上乘客不计免赔险报价不能小于或等于0');
                 return
             } else {
                 i_items['passengerDutyIPlus'] = 1;
@@ -2330,7 +2330,7 @@
             }
         } else {
             if(passengerDutyIPlusPrice*1>0) {
-                alert('提交失败：车上乘客不计免赔险没有选中但是报价大于0');
+                layer.alert('提交失败：车上乘客不计免赔险没有选中但是报价大于0');
                 return
             } else {
                 i_items['passengerDutyIPlus'] = '';
@@ -2342,7 +2342,7 @@
         var glassICB = $(program).find('input[name="glassICB"]').is(':checked');    // checkbox
         if(glassICB){
             if(glassIPrice*1<=0) {
-                alert('提交失败：玻璃险报价不能小于或等于0');
+                layer.alert('提交失败：玻璃险报价不能小于或等于0');
                 return
             } else {
                 i_items['glassI'] = 1;
@@ -2350,7 +2350,7 @@
             }
         } else {
             if(glassIPrice*1>0) {
-                alert('提交失败：玻璃险没有选中但是报价大于0');
+                layer.alert('提交失败：玻璃险没有选中但是报价大于0');
                 return
             } else {
                 i_items['glassI'] = '';
@@ -2363,7 +2363,7 @@
         var scratchIS = $(program).find('select[name="scratchIS"]').find("option:selected").text();    // 划痕 险额
         if(scratchICB){
             if(scratchIPrice*1<=0) {
-                alert('提交失败：划痕险报价不能小于或等于0');
+                layer.alert('提交失败：划痕险报价不能小于或等于0');
                 return
             } else {
                 i_items['scratchI'] = scratchIS;
@@ -2371,7 +2371,7 @@
             }
         } else {
             if(scratchIPrice*1>0) {
-                alert('提交失败：划痕险没有选中但是报价大于0');
+                layer.alert('提交失败：划痕险没有选中但是报价大于0');
                 return
             } else {
                 i_items['scratchI'] = '';
@@ -2383,7 +2383,7 @@
         var scratchIPlusCB = $(program).find('input[name="scratchIPlusCB"]').is(':checked');    // checkbox
         if(scratchIPlusCB){
             if(scratchIPlusPrice*1<=0) {
-                alert('提交失败：划痕不计免赔险报价不能小于或等于0');
+                layer.alert('提交失败：划痕不计免赔险报价不能小于或等于0');
                 return
             } else {
                 i_items['scratchIPlus'] = 1;
@@ -2391,7 +2391,7 @@
             }
         } else {
             if(scratchIPlusPrice*1>0) {
-                alert('提交失败：划痕不计免赔险没有选中但是报价大于0');
+                layer.alert('提交失败：划痕不计免赔险没有选中但是报价大于0');
                 return
             } else {
                 i_items['scratchIPlus'] = '';
@@ -2403,7 +2403,7 @@
         var fireDamageICB = $(program).find('input[name="fireDamageICB"]').is(':checked');    // checkbox
         if(fireDamageICB){
             if(fireDamageIPrice*1<=0) {
-                alert('提交失败：自燃险报价不能小于或等于0');
+                layer.alert('提交失败：自燃险报价不能小于或等于0');
                 return
             } else {
                 i_items['fireDamageI'] = 1;
@@ -2411,7 +2411,7 @@
             }
         } else {
             if(fireDamageIPrice*1>0) {
-                alert('提交失败：自燃险没有选中但是报价大于0');
+                layer.alert('提交失败：自燃险没有选中但是报价大于0');
                 return
             } else {
                 i_items['fireDamageI'] = '';
@@ -2423,7 +2423,7 @@
         var fireDamageIPlusCB = $(program).find('input[name="fireDamageIPlusCB"]').is(':checked');    // checkbox
         if(fireDamageIPlusCB){
             if(fireDamageIPlusPrice*1<=0) {
-                alert('提交失败：自燃不计免赔险报价不能小于或等于0');
+                layer.alert('提交失败：自燃不计免赔险报价不能小于或等于0');
                 return
             } else {
                 i_items['fireDamageIPlus'] = 1;
@@ -2431,7 +2431,7 @@
             }
         } else {
             if(fireDamageIPlusPrice*1>0) {
-                alert('提交失败：自燃险不计免赔没有选中但是报价大于0');
+                layer.alert('提交失败：自燃险不计免赔没有选中但是报价大于0');
                 return
             } else {
                 i_items['fireDamageIPlus'] = '';
@@ -2443,7 +2443,7 @@
         var wadeICB = $(program).find('input[name="wadeICB"]').is(':checked');    // checkbox
         if(wadeICB){
             if(wadeIPrice*1<=0) {
-                alert('提交失败：涉水险报价不能小于或等于0');
+                layer.alert('提交失败：涉水险报价不能小于或等于0');
                 return
             } else {
                 i_items['wadeI'] = 1;
@@ -2451,7 +2451,7 @@
             }
         } else {
             if(wadeIPrice*1>0) {
-                alert('提交失败：涉水险没有选中但是报价大于0');
+                layer.alert('提交失败：涉水险没有选中但是报价大于0');
                 return
             } else {
                 i_items['wadeI'] = '';
@@ -2463,7 +2463,7 @@
         var wadeIPlusCB = $(program).find('input[name="wadeIPlusCB"]').is(':checked');    // checkbox
         if(wadeIPlusCB){
             if(wadeIPlusPrice*1<=0) {
-                alert('提交失败：涉水不计免赔险报价不能小于或等于0');
+                layer.alert('提交失败：涉水不计免赔险报价不能小于或等于0');
                 return
             } else {
                 i_items['wadeIPlus'] = 1;
@@ -2471,7 +2471,7 @@
             }
         } else {
             if(wadeIPlusPrice*1>0) {
-                alert('提交失败：涉水不计免赔险没有选中但是报价大于0');
+                layer.alert('提交失败：涉水不计免赔险没有选中但是报价大于0');
                 return
             } else {
                 i_items['wadeIPlus'] = '';
@@ -2483,7 +2483,7 @@
         var thirdSpecialICB = $(program).find('input[name="thirdSpecialICB"]').is(':checked');    // checkbox
         if(thirdSpecialICB){
             if(thirdSpecialIPrice*1<=0){
-                alert('提交失败：无法找到第三方险报价不能小于或等于0');
+                layer.alert('提交失败：无法找到第三方险报价不能小于或等于0');
                 return
             } else {
                 i_items['thirdSpecialI'] = 1;
@@ -2491,7 +2491,7 @@
             }
         } else {
             if(thirdSpecialIPrice*1>0) {
-                alert('提交失败：无法找到第三方险没有选中但是报价大于0');
+                layer.alert('提交失败：无法找到第三方险没有选中但是报价大于0');
                 return
             } else {
                 i_items['thirdSpecialI'] = '';
@@ -2524,9 +2524,9 @@
         $.post('/ajax/save_iop_data', {_xsrf:xsrf, i_items:JSON.stringify(i_items), groups:JSON.stringify(groups), send_msg:send_msg}, function (data) {
             var obj = jQuery.parseJSON(data);
             if (obj.flag == 1) {
-                alert('保存成功!');
+                layer.alert('保存成功!');
             } else {
-                alert(obj.msg);
+                layer.alert(obj.msg);
             }
         });
     }
@@ -2539,10 +2539,10 @@
         $.post('/ajax/new_program/'+oid, {_xsrf:xsrf}, function (data) {
             var obj = jQuery.parseJSON(data);
             if (obj.flag == 1) {
-                alert('创建新方案成功!');
+                layer.alert('创建新方案成功!');
                 window.location.reload();
             } else {
-                alert(obj.msg);
+                layer.alert(obj.msg);
             }
         });
     }
@@ -2561,13 +2561,13 @@
             }, function (data) {
                 var obj = jQuery.parseJSON(data);
                 if (obj.flag == 1) {
-                    alert('申请补款成功!');
+                    layer.alert('申请补款成功!');
                 } else {
-                    alert(obj.msg);
+                    layer.alert(obj.msg);
                 }
             });
         } else {
-            alert('该订单状态下不可以补款，只有已支付或已完成的可以！')
+            layer.alert('该订单状态下不可以补款，只有已支付或已完成的可以！')
         }
     }
     //===========================点击展开关闭效果====================================
