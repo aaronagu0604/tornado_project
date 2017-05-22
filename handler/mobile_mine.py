@@ -43,11 +43,11 @@ class MobileMineHandler(MobileBaseHandler):
 
         result['data']['insurance_orders'] = {}
         result['data']['insurance_orders']['wait_pay'] = 0
+        result['data']['insurance_orders']['wait_quote'] = 0
         result['data']['insurance_orders']['wait_send'] = 0
         result['data']['insurance_orders']['finish'] = 0
         result['data']['insurance_orders']['pay_back'] = 0
         result['data']['product_orders'] = {}
-        result['data']['product_orders']['wait_quote'] = 0
         result['data']['product_orders']['wait_pay'] = 0
         result['data']['product_orders']['wait_send'] = 0
         result['data']['product_orders']['wait_get'] = 0
