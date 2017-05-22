@@ -4,8 +4,8 @@
 import time
 from peewee import *
 import hashlib
-from bootloader import db
-# from bootloader import db_move as db
+#from bootloader import db
+from bootloader import db_move as db
 from lib.util import vmobile
 import re
 import setting
