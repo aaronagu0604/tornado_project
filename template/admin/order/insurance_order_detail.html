@@ -628,7 +628,9 @@
                                 {% endif %}
                             </td>
                             <td>{{program['admin_user']}}</td>
-                            <td><a href="###" id="a_{{program['pid']}}" onclick="openShutManager(this, {{program['pid']}})" style="font-size: 22px; color:black;">+</a></td>
+                            <td style="text-align: center;"><span class="fa fa-plus fa-1x" id="a_{{program['pid']}}"
+                                      onclick="openShutManager(this, {{program['pid']}})"
+                            style="cursor:pointer;"></span></td>
                         </tr>
                         <tr id="{{program['pid']}}" style="display: none">
                             <td colspan="9">
@@ -2571,15 +2573,14 @@
     //===========================点击展开关闭效果====================================
     function openShutManager(thisObj, oTargetObj){
         var targetObj = document.getElementById(oTargetObj);
-//        console.debug(thisObj.scrollTop);
         if(targetObj.style.display!="none"){
             targetObj.style.display="none";
             targetObj.scrollTop = 100;
-            thisObj.innerText = '+';
+            $(thisObj).attr("class",'fa fa-plus fa-1x'); //.innerText = '+';
         } else {
             targetObj.style.display="";
             targetObj.scrollTop = 100;
-            thisObj.innerText = '-';
+            $(thisObj).attr("class",'fa fa-minus fa-1x');
         }
     }
 </script>
