@@ -51,6 +51,7 @@ class MobileMineHandler(MobileBaseHandler):
         result['data']['product_orders']['wait_pay'] = 0
         result['data']['product_orders']['wait_send'] = 0
         result['data']['product_orders']['wait_get'] = 0
+        result['data']['product_orders']['finish'] = 0
         result['data']['product_orders']['pay_back'] = 0
         user = self.get_user()
         if user is not None:  # 已登录
