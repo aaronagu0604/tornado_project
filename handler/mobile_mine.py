@@ -395,13 +395,14 @@ class MobileSellOrderHandler(MobileBaseHandler):
                 'saler_store': so.saler_store.name,
                 'buyer_store': so.buyer_store.name,
                 'order_type': so.order.order_type,
-                'price': so.order.total_price,
+                'price': so.price,
                 'score': so.score,
                 'status': so.status,
                 'items': [{
                     'product': soi.product.name,
                     'cover': soi.product.cover,
-                    'price': soi.store_product_price.price,
+                    'id':soi.store_product_price.id,
+                    'price': soi.store_product_price.price if so.order.order_type == 1 else soi.store_product_price.score,
                     'quantity': soi.quantity,
                     'attributes': [attribute.value for attribute in soi.product.attributes],
                     'order_type': so.order.order_type
@@ -409,6 +410,7 @@ class MobileSellOrderHandler(MobileBaseHandler):
                 'ordered': time.strftime('%Y-%m-%d %H-%M-%S', time.localtime(so.order.ordered)),
                 'deadline': time.strftime('%Y-%m-%d %H-%M-%S', time.localtime(so.order.ordered + setting.PRODUCT_ORDER_TIME_OUT))
             })
+        print simplejson.dumps(result)
         return result
 
     @require_auth
@@ -618,8 +620,9 @@ class MobileInsuranceOrderDetailHandler(MobileBaseHandler):
             if not iPrice:
                 iPrice = 0
             if i.style == u'交强险':
-                iList['force'] = iValue if iValue else ''
-                iList['forceprice'] = str(iPrice)
+                iValue = getattr(insuranceorder.current_order_price, i.eName)
+                iList['force'] = 1 if insuranceorder.current_order_price.force_price else 0
+                iList['forceprice'] = str(insuranceorder.current_order_price.force_price)
             elif i.style == u'商业险-主险' and iValue != 'false' and iValue:
                 iList['main'].append({'eName': i.eName, 'name': i.name, 'style': i.style, 'value': iValue, 'price':str(iPrice)})
                 iList['mainprice'] += iPrice
@@ -695,7 +698,6 @@ class MobileInsuranceOrderDetailHandler(MobileBaseHandler):
                 'address': insuranceorder.delivery_address
             }
         }
-
         self.write(simplejson.dumps(result))
 
     @require_auth
