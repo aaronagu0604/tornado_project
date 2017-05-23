@@ -63,7 +63,7 @@ class Trade(object):
 
     # 获取公钥
     def getPulbicKeyByCertId(self, certId):
-        cert_dir = setting['SDK_VERIFY_CERT_DIR']
+        cert_dir = setting['SDK_SIGN_CERT_PATH']
         for root, dirs, files in os.walk(cert_dir):
             for file in files:
                 if os.path.splitext(file)[1] == '.cer':
@@ -181,6 +181,18 @@ class Trade(object):
             return True
         except:
             return False
+
+    # 新验签
+    def union_validate_new(self, params):
+        old_sign = params['signature']
+        del params['signature']
+        print params
+        new_sign = self.union_pay_sign(params, setting['SDK_SIGN_CERT_PATH'], setting['SDK_SIGN_CERT_PWD'])
+        if old_sign == new_sign:
+            return True
+        else:
+            return False
+
 
     def trade(self, orderId, total_fee):
         params = self.createAutoFormHtml(orderId, total_fee)
