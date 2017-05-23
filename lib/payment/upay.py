@@ -67,7 +67,9 @@ class Trade(object):
         for root, dirs, files in os.walk(cert_dir):
             for file in files:
                 if os.path.splitext(file)[1] == '.cer':
+                    logging.error('---sign file:%s---' % os.path.join(root, file))
                     if str(self.getCertIdByCerPath(os.path.join(root, file))) == certId:
+                        logging.error('---certId=%s---' % certId)
                         return self.getCerToX509(os.path.join(root, file))
         return False
         # print(os.path.join(root, file))
@@ -170,7 +172,7 @@ class Trade(object):
     def union_validate(self, params):
         # 公钥
         public_key = self.getPulbicKeyByCertId(params['certId'])
-
+        logging.error('--------%s-' % public_key)
         # 签名串
         # signature_str = unquote(params['signature'])
         signature_str = unquote(params['signature'].encode('utf-8'))

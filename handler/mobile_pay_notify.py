@@ -309,7 +309,7 @@ class MobileUPayCZNotifyHandler(RequestHandler):
             from urllib import unquote
             string = unquote(string.encode('utf-8'))
             ps = Trade(isCZ=True).smart_str_decode(string)
-            if Trade(isCZ=True).union_validate_new(ps):
+            if Trade(isCZ=True).union_validate(ps):
                 if ps['respMsg'] == 'Success!':
                     create_msg(simplejson.dumps({'payment': 3, 'order_id': ps['orderId']}), 'recharge')
                     if MoneyRecord.select().where(MoneyRecord.in_num == ps['queryId']).count() > 0:
