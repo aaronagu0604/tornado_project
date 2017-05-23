@@ -1811,17 +1811,22 @@ class MobileFilterMyProductsHandler(MobileBaseHandler):
         store = self.get_user().store
         brand_list = []
         serve_area_list = []
+        bids = []
         for p in store.products:
-            if p.product.brand.name not in brand_list:
+            if p.product.brand.id not in bids:
+                bids.append(p.product.brand.id)
                 brand_list.append({
                     'name': p.product.brand.name,
                     'id': p.product.brand.id
                 })
+        sas = []
         for service_area in store.service_areas:
-            serve_area_list.append({
-                'name': service_area.area.name,
-                'area_code': service_area.area.code
-            })
+            if service_area.id not in sas:
+                sas.append(service_area.id)
+                serve_area_list.append({
+                    'name': service_area.area.name,
+                    'area_code': service_area.area.code
+                })
         result['data'] = {
             'brand': brand_list,
             'serve_area': serve_area_list
