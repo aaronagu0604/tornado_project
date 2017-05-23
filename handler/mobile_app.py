@@ -528,6 +528,7 @@ class MobileHomeHandler(MobileBaseHandler):
             })
         return items[:6]
 
+
 @route(r'/mobile/read_message', name='mobile_read_message')  # 首页消息读取
 class MobileReadMessageHandler(MobileBaseHandler):
     """
