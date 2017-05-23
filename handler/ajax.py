@@ -578,7 +578,6 @@ class SaveIOPHandler(BaseHandler):
             msg.content = '您有新的报价单'
             msg.save()
             # 进行极光推送
-            io.user.mobile
             sms = {'apptype': 1, 'body': '您有新的报价单！', 'jpushtype': 'alias', 'alias': io.user.mobile,
                    'extras':{'link':'czj://insurance_order_detail/%s' % io.id}}
             create_msg(simplejson.dumps(sms), 'jpush')
