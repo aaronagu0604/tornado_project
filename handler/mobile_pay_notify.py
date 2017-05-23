@@ -322,7 +322,7 @@ class MobileUPayCZNotifyHandler(RequestHandler):
             else:
                 logging.info('upay invalid')
         except Exception, e:
-            logging.info('Error: upay error %s' % e.message)
+            logging.info('Error: upay error %s' % e)
 
         self.write(simplejson.dumps(result))
 
