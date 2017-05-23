@@ -570,17 +570,20 @@ class SaveIOPHandler(BaseHandler):
             io.status = 1
             io.save()
             # 创建首页消息
-            msg = Message()
-            msg.store = io.store
-            msg.type = 'insurance_order_detail'
-            msg.link = 'czj://insurance_order_detail/%d' % io.id
-            msg.other_id = pid.id
-            msg.content = '您有新的报价单'
-            msg.save()
-            # 进行极光推送
-            sms = {'apptype': 1, 'body': '您有新的报价单！', 'jpushtype': 'alias', 'alias': io.user.mobile,
-                   'extras':{'link':'czj://insurance_order_detail/%s' % io.id}}
-            create_msg(simplejson.dumps(sms), 'jpush')
+            msg = Message.select().where(Message.store == io.store.id, Message.type == 'new_insurance_order_price',
+                                         Message.status == 0,Message.other_id == pid.id)
+            if msg.count()==0:
+                msg = Message()
+                msg.store = io.store
+                msg.type = 'new_insurance_order_price'
+                msg.link = 'czj://insurance_order_detail/%d' % io.id
+                msg.other_id = pid.id
+                msg.content = '您有新的报价单'
+                msg.save()
+                # 进行极光推送
+                sms = {'apptype': 1, 'body': '您有新的报价单！', 'jpushtype': 'alias', 'alias': io.user.mobile,
+                       'extras':{'link':'czj://insurance_order_detail/%s' % io.id}}
+                create_msg(simplejson.dumps(sms), 'jpush')
             if send_msg == '1':
                 io = InsuranceOrder.get(id=pid.insurance_order_id)
                 sms = {'mobile': io.store.mobile, 'signtype': '1', 'isyzm': 'changePrice',
@@ -988,7 +991,7 @@ class UpdateIOCardStatusHandler(BaseHandler):
 
     def post(self):
         result = {'flag': 1, 'msg': '保存成功', 'data': ''}
-        io_id = self.get_body_argument('io_id',None)
+        io_id = int(self.get_body_argument('io_id',0))
         img_type = self.get_body_argument('img_type', None)
         img_status = int(self.get_body_argument('img_status', 1)) # 0不需要 1需要
         if not (io_id and img_type and img_status):
@@ -1002,10 +1005,12 @@ class UpdateIOCardStatusHandler(BaseHandler):
             setattr(io, img_type, img_status)
             io.save()
             # 创建首页消息
-            if img_status:
+            msg = Message.select().where(Message.store == io.store.id,Message.type == 'new_insurance_order_img',
+                                         Message.status == 0, Message.other_id == io_id)
+            if img_status and msg.count() == 0:
                 msg = Message()
                 msg.store = io.store
-                msg.type = 'insurance_order_detail'
+                msg.type = 'new_insurance_order_img'
                 msg.link = 'czj://insurance_order_detail/%s' % io_id
                 msg.other_id = io_id
                 msg.content = '您的保险订单需要重新上传图片'
