@@ -2354,7 +2354,7 @@ class SendMsgHandler(AdminBaseHandler):
         if sms_type == 0:
             if is_users == 'all_user':
                 content_log['content'] = u'为用户 所有用户 推送极光消息，消息内容：' + content
-                create_msg(simplejson.dumps({'body': content, 'jpushtype':'tags', 'tags':['all']}), 'jpush')
+                create_msg(simplejson.dumps({'body': content, 'jpushtype':'tags', 'tags':['all'], 'extras': {'link':''}}), 'jpush')
                 AdminUserLog.create(admin_user=self.get_admin_user(),
                                     created=int(time.time()),
                                     content= u'为用户 所有用户 推送极光消息，消息内容：' + content)
@@ -2364,7 +2364,7 @@ class SendMsgHandler(AdminBaseHandler):
                     content_log['content'] = u'为用户 ' + number + u' 推送极光消息，消息内容：' + content
                     num = number.split(',')
                     for n in num:
-                        sms = {'apptype': 1, 'body': content, 'jpushtype':'alias', 'alias': n}
+                        sms = {'apptype': 1, 'body': content, 'jpushtype':'alias', 'alias': n, 'extras':{'link':''}}
                         create_msg(simplejson.dumps(sms), 'jpush')
                     AdminUserLog.create(admin_user=self.get_admin_user(),
                                         created=int(time.time()),
@@ -2382,7 +2382,7 @@ class SendMsgHandler(AdminBaseHandler):
                 if district != '0':
                     tags = [district]
 
-                create_msg(simplejson.dumps({'body': content, 'jpushtype': 'tags', 'tags': tags}),
+                create_msg(simplejson.dumps({'body': content, 'jpushtype': 'tags', 'tags': tags, 'extras':{'link':''}}),
                            'jpush')
                 AdminUserLog.create(admin_user=self.get_admin_user(),
                                     created=int(time.time()),

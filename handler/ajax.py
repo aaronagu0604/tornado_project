@@ -578,6 +578,11 @@ class SaveIOPHandler(BaseHandler):
             msg.other_id = pid.id
             msg.content = '您有新的报价单'
             msg.save()
+            # 进行极光推送
+            io.user.mobile
+            sms = {'apptype': 1, 'body': '您有新的报价单！', 'jpushtype': 'alias', 'alias': io.user.mobile,
+                   'extras':{'link':'czj://insurance_order_detail/%s' % io.id}}
+            create_msg(simplejson.dumps(sms), 'jpush')
             if send_msg == '1':
                 io = InsuranceOrder.get(id=pid.insurance_order_id)
                 sms = {'mobile': io.store.mobile, 'signtype': '1', 'isyzm': 'changePrice',
@@ -1006,6 +1011,11 @@ class UpdateIOCardStatusHandler(BaseHandler):
             msg.other_id = io_id
             msg.content = '您的保险订单需要重新上传图片'
             msg.save()
+            # 进行极光推送
+            io.user.mobile
+            sms = {'apptype': 1, 'body': '您有保险订单图片审核未通过，需要重新上传！', 'jpushtype': 'alias', 'alias': io.user.mobile,
+                   'extras':{'link':'czj://insurance_order_detail/%s' % io_id}}
+            create_msg(simplejson.dumps(sms), 'jpush')
         except Exception,e:
             result['flag'] = 0
             result['msg'] = '更新状态失败：%s'%e
