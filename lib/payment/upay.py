@@ -210,7 +210,7 @@ class Trade(object):
             return ''
 
 if __name__ == '__main__':
-    tn = Trade().trade('u110s111', 0.1)
+    tn = Trade(isCZ=True).trade('u110s111', 0.1)
     print('---%s---' % tn)
     result={}
     if tn:
