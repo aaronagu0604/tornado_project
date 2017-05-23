@@ -120,6 +120,7 @@ class Trade(object):
 
     # 签名
     def union_pay_sign(self, params, cert_path, cert_pwd):
+        logging.error('--params==%s--'%params)
         prestr = self.createLinkString(params)
         logging.error('--prestr==%s---' % prestr)
         # sha1编码
