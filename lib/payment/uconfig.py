@@ -3,11 +3,11 @@ from setting import domanName
 upsetting = {
     # 银联相关
     # 签名证书路径
-    'SDK_SIGN_CERT_PATH': '/var/lib/jenkins/jobs/czj/workspace/lib/payment/upayfile/700000000000001_acp.pfx',
-    'SDK_SIGN_CERT_PWD': '000000',
-    # 'SDK_SIGN_CERT_PATH': '/var/lib/jenkins/jobs/czj/workspace/lib/payment/upayfile/czj.pfx',
+    # 'SDK_SIGN_CERT_PATH': '/var/lib/jenkins/jobs/czj/workspace/lib/payment/upayfile/700000000000001_acp.pfx',
+    'SDK_SIGN_CERT_PATH': '/var/lib/jenkins/jobs/czj/workspace/lib/payment/upayfile/czj.pfx',
     # 签名证书密码
-    # 'SDK_SIGN_CERT_PWD': '890604',
+    # 'SDK_SIGN_CERT_PWD': '000000',
+    'SDK_SIGN_CERT_PWD': '890604',
     # 验签证书路径
     'SDK_VERIFY_CERT_DIR': '/var/lib/jenkins/jobs/czj/workspace/lib/payment/upayfile/',
     # 前台请求地址

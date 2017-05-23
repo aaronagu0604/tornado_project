@@ -63,7 +63,7 @@ class Trade(object):
 
     # 获取公钥
     def getPulbicKeyByCertId(self, certId):
-        cert_dir = setting['SDK_SIGN_CERT_PATH']
+        cert_dir = setting['SDK_VERIFY_CERT_DIR']
         for root, dirs, files in os.walk(cert_dir):
             for file in files:
                 if os.path.splitext(file)[1] == '.cer':
