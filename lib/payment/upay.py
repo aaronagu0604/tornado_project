@@ -67,12 +67,9 @@ class Trade(object):
         for root, dirs, files in os.walk(cert_dir):
             for file in files:
                 if os.path.splitext(file)[1] == '.cer':
-                    logging.error('---sign file:%s---' % os.path.join(root, file))
                     if str(self.getCertIdByCerPath(os.path.join(root, file))) == certId:
-                        logging.error('---certId=%s---' % certId)
                         return self.getCerToX509(os.path.join(root, file))
         return False
-        # print(os.path.join(root, file))
 
 
     # 字符串编解码处理
@@ -122,18 +119,13 @@ class Trade(object):
 
     # 签名
     def union_pay_sign(self, params, cert_path, cert_pwd):
-        logging.error('--params==%s--'%params)
         prestr = self.createLinkString(params)
-        logging.error('--prestr==%s---' % prestr)
         # sha1编码
         params_sha1 = hashlib.sha1(prestr).hexdigest()
-        logging.error('--params_sha1==%s---' % params_sha1)
         # 秘钥
         private_key = self.getPrivateKey(cert_path, cert_pwd)
-        logging.error('--private_key==%s---' % str(private_key))
         # 编码验证
         sign_falg = sign(private_key, params_sha1, 'sha1')
-        logging.error('--sign_falg==%s---' % str(sign_falg))
         if sign_falg:
             signature_base64 = base64.b64encode(sign_falg)
             return signature_base64
@@ -172,9 +164,7 @@ class Trade(object):
     def union_validate(self, params):
         # 公钥
         public_key = self.getPulbicKeyByCertId(params['certId'])
-        logging.error('--------%s-' % public_key)
         # 签名串
-        # signature_str = unquote(params['signature'])
         signature_str = unquote(params['signature'].encode('utf-8'))
         del params['signature']
         # 组合
@@ -187,17 +177,6 @@ class Trade(object):
             verify(public_key, signature, params_sha1, 'sha1')
             return True
         except:
-            return False
-
-    # 新验签
-    def union_validate_new(self, params):
-        old_sign = params['signature']
-        del params['signature']
-        new_sign = self.union_pay_sign(params, setting['SDK_SIGN_CERT_PATH'], setting['SDK_SIGN_CERT_PWD'])
-        logging.error('--new_sign==%s---' % new_sign)
-        if old_sign == new_sign:
-            return True
-        else:
             return False
 
 
@@ -213,7 +192,7 @@ class Trade(object):
             return ''
 
 if __name__ == '__main__':
-    tn = Trade(isCZ=True).trade('u110s111', 0.1)
+    tn = Trade().trade('u110s111', 0.1)
     print('---%s---' % tn)
     result={}
     if tn:
