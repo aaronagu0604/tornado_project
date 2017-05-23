@@ -302,9 +302,9 @@ class MobileUPayCZNotifyHandler(RequestHandler):
     def post(self):
         result = {'return_code': 'FAIL'}
         try:
-            # string = self.request.body
-            string = 'accessType=0&bizType=000201&certId=69597475696&currencyCode=156&encoding=utf-8&merId=898111948160473&orderId=U1R495439729&queryId=201705221555291091008&respCode=00&respMsg=Success!&settleAmt=1&settleCurrencyCode=156&settleDate=0522&signMethod=01&traceNo=109100&traceTime=0522155529&txnAmt=1&txnSubType=01&txnTime=20170522155529&txnType=01&version=5.0.0&signature=VOydIhSO9W%2bDFEwUckY0r20muXWY94A3Gdq0jLaBpnXFPNGk0Oi2fgBsi47muWE%2foVxTmnXXfRhkc3LS7PtsONIm5Eocp5dNKoLou9hq1ElrDioxmvSTo6%2b95f0fnIKRPKh%2blzrltzdh1pAwORssOTe4RQRTE%2bXIl3TPOwD6cdE8usYLJV9TdjSFeTSTcR9GwV91F46mGaiQTfa0RA3RyY3j3D4Ttg7zCg%2bBMFdXTMdrIpTEAkOyw8C35WJ4VeIq229dSiFp6QCpGF86KTkrQZ8k2tM47QSWwo4K7qz%2ba%2fWbk8Qw1PClls3m2l0FMqnS%2f5zXM81yFIJauCyMN843hg%3d%3d'
-
+            string = self.request.body
+            # string = 'accessType=0&bizType=000201&certId=69597475696&currencyCode=156&encoding=utf-8&merId=898111948160473&orderId=U1R495439729&queryId=201705221555291091008&respCode=00&respMsg=Success!&settleAmt=1&settleCurrencyCode=156&settleDate=0522&signMethod=01&traceNo=109100&traceTime=0522155529&txnAmt=1&txnSubType=01&txnTime=20170522155529&txnType=01&version=5.0.0&signature=VOydIhSO9W%2bDFEwUckY0r20muXWY94A3Gdq0jLaBpnXFPNGk0Oi2fgBsi47muWE%2foVxTmnXXfRhkc3LS7PtsONIm5Eocp5dNKoLou9hq1ElrDioxmvSTo6%2b95f0fnIKRPKh%2blzrltzdh1pAwORssOTe4RQRTE%2bXIl3TPOwD6cdE8usYLJV9TdjSFeTSTcR9GwV91F46mGaiQTfa0RA3RyY3j3D4Ttg7zCg%2bBMFdXTMdrIpTEAkOyw8C35WJ4VeIq229dSiFp6QCpGF86KTkrQZ8k2tM47QSWwo4K7qz%2ba%2fWbk8Qw1PClls3m2l0FMqnS%2f5zXM81yFIJauCyMN843hg%3d%3d'
+            logging.error('---string:%s-------type:%s----' % (self.request.body, type(self.request.body)))
             from urllib import unquote
             string = unquote(string.encode('utf-8'))
             ps = Trade(isCZ=True).smart_str_decode(string)
