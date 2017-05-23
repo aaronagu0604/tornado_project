@@ -121,12 +121,16 @@ class Trade(object):
     # 签名
     def union_pay_sign(self, params, cert_path, cert_pwd):
         prestr = self.createLinkString(params)
+        logging.error('--prestr==%s---' % prestr)
         # sha1编码
         params_sha1 = hashlib.sha1(prestr).hexdigest()
+        logging.error('--params_sha1==%s---' % params_sha1)
         # 秘钥
         private_key = self.getPrivateKey(cert_path, cert_pwd)
+        logging.error('--private_key==%s---' % str(private_key))
         # 编码验证
         sign_falg = sign(private_key, params_sha1, 'sha1')
+        logging.error('--sign_falg==%s---' % str(sign_falg))
         if sign_falg:
             signature_base64 = base64.b64encode(sign_falg)
             return signature_base64
@@ -186,8 +190,8 @@ class Trade(object):
     def union_validate_new(self, params):
         old_sign = params['signature']
         del params['signature']
-        print params
         new_sign = self.union_pay_sign(params, setting['SDK_SIGN_CERT_PATH'], setting['SDK_SIGN_CERT_PWD'])
+        logging.error('--new_sign==%s---' % new_sign)
         if old_sign == new_sign:
             return True
         else:
