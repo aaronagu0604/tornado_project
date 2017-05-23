@@ -40,14 +40,14 @@
                     <div id="tab1" {% if type=='1' %}class="tab active" {% else %}class="tab" {% endif %}>
                         <div class="content-block">
                             <div class="row">
-                                <div class="col-25 item-i">
-                                    <a href="/mobile/insurance?id=1&f=web">
-                                        <div class="bg">
-                                        </div>
-                                        <div>
-                                            英大车险
-                                        </div>
-                                    </a>
+                                <div class="col-25 item-i" onclick="goDetail('czj://insurance/1/英大车险')">
+
+                                    <div class="bg">
+                                    </div>
+                                    <div>
+                                        英大车险
+                                    </div>
+
                                 </div>
                             </div>
                         </div>
@@ -85,7 +85,18 @@
         </div>
     </div>
 </div>
+<input type="hidden" id="f" value="{{f}}"/>
 <script type='text/javascript' src='//g.alicdn.com/sj/lib/zepto/zepto.min.js' charset='utf-8'></script>
 <script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm.min.js' charset='utf-8'></script>
+<script type="text/javascript">
+    function goDetail(link) {
+        if ($("#f").val() == "android") {
+            androidObj.smartGo(link);
+        }
+        else if ($("#f").val() == "ios") {
+            smartGo(link);
+        }
+    }
+</script>
 </body>
 </html>

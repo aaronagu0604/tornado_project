@@ -990,8 +990,9 @@ class MobileCategoryHandler(MobileBaseHandler):
 
     def get(self):
         t = self.get_argument("type", "1")
+        f = self.get_argument("f", "android")
         # todo: 增加查询全部保险和商品品牌得代码，传入前台绑定
-        self.render('mobile/category.html', type=t)
+        self.render('mobile/category.html', type=t, f=f)
 
 
 @route(r'/mobile/product', name='mobile_product')  # 产品详情页
