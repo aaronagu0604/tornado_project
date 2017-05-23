@@ -92,7 +92,8 @@
             androidObj.smartGo(link);
         }
         else if ($("#f").val() == "ios") {
-            smartGo(link);
+            //smartGo(link);
+            window.webkit.messageHandlers.smartGo.postMessage(link);
         }
     }
 </script>
