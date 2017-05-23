@@ -913,7 +913,7 @@ class MobileInsuranceMethodHandler(MobileBaseHandler):
                 'score': iop.score,
                 'commission': commission,
                 'total_price': iop.total_price,
-                'default': 1 if iop.id == io_id else 0,
+                'default': 1 if iop == InsuranceOrder.get(id=io_id).current_order_price else 0,
                 'status': iop.status,
                 'response': iop.response
             })

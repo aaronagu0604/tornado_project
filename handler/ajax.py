@@ -559,9 +559,8 @@ class SaveIOPHandler(BaseHandler):
             pid.business_price = groups['business_price']
             pid.vehicle_tax_price = groups['vehicle_tax_price']
 
-            pid.force_rate = groups['force_rate']
-            pid.business_rate = groups['business_rate']
-
+            pid.force_rate = groups['force_rate'] if groups['force_rate'] else None
+            pid.business_rate = groups['business_rate'] if groups['business_rate'] else None
             pid.sms_content = groups['psummary']
             for item in i_items:
                 pid.__dict__['_data'][item] = i_items[item]
