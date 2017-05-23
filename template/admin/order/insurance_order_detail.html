@@ -423,71 +423,59 @@
                     <div class="col-xs-9 rightTxt">
                         <input id="car_model_type" class="form-control" type="text" {% if ioci %} value="{{ioci.car_model_type}}"{% endif %}/>
                     </div>
-                    <!--<div class="col-xs-3 rightTxt">-->
-                        <!--<select id="search_insurance"  name="search_insurance" class="form-control">-->
-                            <!--{% for i in insurances %}-->
-                            <!--<option value="{{i.id}}">{{i.name}}</option>-->
-                            <!--{% endfor %}-->
-                        <!--</select>-->
-                    <!--</div>-->
                 </div>
-                <div style="display: none" id="cardetailinfo">
-                <div class="row">
-                    <div class="col-xs-3"></div>
-                    <div class="col-xs-3">
+                <div style="display: none; margin: 1rem; 0.3rem;" id="cardetailinfo">
+                <div class="row" style="margin: 0;">
+                    <div class="col-xs-2">
                         细化型号
                     </div>
-                    <div class="col-xs-3 rightTxt">
+                    <div class="col-xs-8">
                         <select id="detail_type"  onchange="detail_type_select(this.value)" name="detail_type" class="form-control">
                             {% for k,v in detail_type.items() %}
                             <option value="{{k}}">{{v}}</option>
                             {% endfor %}
                         </select>
                     </div>
-                    <div class="col-xs-3">
+                    <div class="col-xs-2">
                         <input type="hidden" id="program_id_temp" >
                         <input type="button" class="btn btn-outline btn-primary btn-xs" onclick="searchcarinfo()" value="查询车辆细化型号"/>
                     </div>
                 </div>
-                 <div class="row">
-                     <div class="col-xs-3"></div>
-                     <div class="col-xs-3">
+                 <div class="row" style="margin: 0;">
+                     <div class="col-xs-2">
                         精友码
                      </div>
-                     <div class="col-xs-3 rightTxt">
+                     <div class="col-xs-8">
                          <input id="car_model_code" class="form-control" type="text"/>
                      </div>
-                     <div class="col-xs-3"></div>
+                     <div class="col-xs-2"></div>
                  </div>
-                 <div class="row">
-                     <div class="col-xs-3"></div>
-                     <div class="col-xs-3">
+                 <div class="row" style="margin: 0;">
+                     <div class="col-xs-2">
                         价格
                     </div>
-                    <div class="col-xs-3 rightTxt">
+                    <div class="col-xs-8">
                         <input id="car_price" class="form-control" type="text"/>
                     </div>
-                     <div class="col-xs-3"></div>
+                     <div class="col-xs-2"></div>
                  </div>
-                <div class="row">
-                    <div class="col-xs-3"></div>
-                    <div class="col-xs-3">
+                <div class="row" style="margin: 0;">
+                    <div class="col-xs-2">
                         排量
                     </div>
-                    <div class="col-xs-3 rightTxt">
+                    <div class="col-xs-8">
                         <input id="car_displacement" class="form-control" type="text"/>
                     </div>
-                    <div class="col-xs-3"></div>
-                </div>
-                <div class="row">
-                    <div class="col-xs-3"></div>
-                    <div class="col-xs-3">
+                    <div class="col-xs-2"></div>
+                </div >
+                <div class="row" style="margin: 0;">
+                    <div class="col-xs-2">
                         整备质量
                     </div>
-                    <div class="col-xs-3 rightTxt">
+                    <div class="col-xs-8">
                         <input id="car_quality" class="form-control" type="text"/>
                     </div>
-                    <div class="col-xs-3"></div>
+                    <div class="col-xs-2"></div>
                 </div>
                 </div>
                 <!-- 行驶证副本信息 -->
