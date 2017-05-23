@@ -617,7 +617,7 @@
                             </td>
                             <td>{{program['admin_user']}}</td>
                             <td style="text-align: center;cursor:pointer;"
-                                onclick="openShutManager(this, {{program['pid']}})">
+                                onclick="openShutManager(this, {{program['pid']}}, {{program['gift_policy']}})">
                                 <span class="fa fa-plus fa-1x" id="a_{{program['pid']}}"></span>
                             </td>
                         </tr>
@@ -977,13 +977,13 @@
                                         <div class="panel-heading">
                                             <div class="panel-title">
                                                 <div class="row">
-                                                    <div class="col-xs-5" style="line-height: 34px;">返佣信息</div>
-                                                    <div class="col-xs-7">
+                                                    <div class="col-xs-4" style="line-height: 34px;">返佣信息</div>
+                                                    <div class="col-xs-8">
                                                         <div class="row">
                                                             <div class="col-xs-5" style="line-height: 34px; text-align: right;">
                                                                 返佣类型:</div>
-                                                            <div class="col-xs-7 rightTxt">
-                                                                <select id="gift_policy" name="gift_policy" onchange="get_gift_policy({{ program['pid'] }}, this.value)" class="form-control">
+                                                            <div class="col-xs-7">
+                                                                <select id="gift_policy_{{program['pid']}}" name="gift_policy" onchange="get_gift_policy({{ program['pid'] }}, this.value)" class="form-control">
                                                                     <option value="1" {{ 1 == program['gift_policy'] and "selected" or '' }}>返油</option>
                                                                     <option value="2" {{ 2 == program['gift_policy'] and "selected" or '' }}>返现</option>
                                                                 </select>
@@ -1288,6 +1288,7 @@
                 }
             });
     }
+
     function detail_type_select(value) {
         var obj = jQuery.parseJSON(value);
         document.getElementById('car_model_code').value = obj.model_code;
@@ -2573,13 +2574,13 @@
         }
     }
     //===========================点击展开关闭效果====================================
-    function openShutManager(thisObj, oTargetObj){
+    function openShutManager(thisObj, oTargetObj, gift){
         var targetObj = document.getElementById(oTargetObj);
-
         if(targetObj.style.display!="none"){
             $($(thisObj).find('span')[0]).attr("class",'fa fa-plus fa-1x');
         } else {
             $($(thisObj).find('span')[0]).attr("class",'fa fa-minus fa-1x');
+            get_gift_policy(oTargetObj, gift);
         }
         $(targetObj).toggle();
     }

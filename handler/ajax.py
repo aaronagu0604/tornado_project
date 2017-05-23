@@ -537,7 +537,7 @@ class SaveIOPHandler(BaseHandler):
         send_msg = self.get_body_argument('send_msg', None)
         print groups,i_items,send_msg
         if not (groups and i_items):
-            result['msg'] = u'参数不全'
+            result['msg'] = u'参数不全，保存失败'
             self.write(simplejson.dumps(result))
             return
         groups = simplejson.loads(groups)
@@ -559,15 +559,15 @@ class SaveIOPHandler(BaseHandler):
             pid.business_price = groups['business_price']
             pid.vehicle_tax_price = groups['vehicle_tax_price']
 
-            pid.force_rate = groups['force_rate'] if groups['force_rate'] else 10.0
-            pid.business_rate = groups['business_rate'] if groups['business_rate'] else 10.0
+            pid.force_rate = groups['force_rate']
+            pid.business_rate = groups['business_rate']
 
             pid.sms_content = groups['psummary']
-            print groups['psummary']
             for item in i_items:
                 pid.__dict__['_data'][item] = i_items[item]
             pid.save()
             io = InsuranceOrder.get(id=pid.insurance_order_id)
+            io.current_order_price = pid
             io.status = 1
             io.save()
             # 创建首页消息
