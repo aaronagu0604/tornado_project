@@ -994,7 +994,8 @@ class UpdateIOCardStatusHandler(BaseHandler):
         io_id = int(self.get_body_argument('io_id',0))
         img_type = self.get_body_argument('img_type', None)
         img_status = int(self.get_body_argument('img_status', 1)) # 0不需要 1需要
-        if not (io_id and img_type and img_status):
+        print io_id,img_status,img_type
+        if not (io_id and img_type):
             result['flag'] = 0
             result['msg'] = u'参数不全'
             self.write(simplejson.dumps(result))
