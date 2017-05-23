@@ -307,7 +307,7 @@ class MobileUPayCZNotifyHandler(RequestHandler):
             string = 'accessType=0&bizType=000201&certId=69597475696&currencyCode=156&encoding=utf-8&merId=898111948160473&orderId=U1R495515764&queryId=201705231302447470008&respCode=00&respMsg=Success!&settleAmt=1&settleCurrencyCode=156&settleDate=0523&signMethod=01&traceNo=747000&traceTime=0523130244&txnAmt=1&txnSubType=01&txnTime=20170523130244&txnType=01&version=5.0.0&signature=S%2bI59XpD3Lq1VFJlhyKHsgMyDslnl3bUnFP3zztHnEqKb0F5ONk28kLPjmalN0%2fxfL87vfv34RcA2vhJZHuSg%2bufO49IENmE8UHBrEoVS6h1aA3%2fZu0AAMAV023O84uJ4MkBE2WboZU3D8kfhq6L2Sv12j8WRuevScPe29PpSpT%2f4AqE%2b6mnPmh%2fHznTghh7ZXmn3dgnhxN0l6NcGz10%2f%2fDSUNNdPLo66CRThNDDlUCjr1oefWB5UH8EHXRYYYz4amoInmHGQ%2bwqssjixsnNUYJWYvzq22cSgvoTz3K5aNQym24ll83jLC4hrfPTXOdI7rtcN6M%2bEiZ5hYF93ooZFg%3d%3d'
             # logging.error('---string:%s-------type:%s----' % (self.request.body, type(self.request.body)))
             from urllib import unquote
-            string = unquote(string.encode('utf-8'))
+            #string = unquote(string.encode('utf-8'))
             ps = Trade(isCZ=True).smart_str_decode(string)
             if Trade(isCZ=True).union_validate_new(ps):
                 if ps['respMsg'] == 'Success!':
