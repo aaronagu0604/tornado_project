@@ -1094,32 +1094,35 @@ class OCRHandler(BaseHandler):
     def insuranceorderocr(self,io_id,isone):
         if not io_id:
             self.write('该订单不存在')
-        io = InsuranceOrder.get(id=io_id)
-        result = {'flag': 1}
-        if io.id_card_front:
-            request = urllib2.Request(io.id_card_front)
-            img_data = urllib2.urlopen(request).read()
-            ocrresult = self.ali_idcard_ocr(img_data)
+        try:
+            io = InsuranceOrder.get(id=io_id)
+            result = {'flag': 1}
+            if io.id_card_front:
+                request = urllib2.Request(io.id_card_front)
+                img_data = urllib2.urlopen(request).read()
+                ocrresult = self.ali_idcard_ocr(img_data)
 
-            result['id_card_front'] = simplejson.loads(ocrresult)
-        if isone==0 and io.id_card_front_owner:
-            request = urllib2.Request(io.id_card_front_owner)
-            img_data = urllib2.urlopen(request).read()
-            ocrresult = self.ali_idcard_ocr(img_data)
+                result['id_card_front'] = simplejson.loads(ocrresult)
+            if isone==0 and io.id_card_front_owner:
+                request = urllib2.Request(io.id_card_front_owner)
+                img_data = urllib2.urlopen(request).read()
+                ocrresult = self.ali_idcard_ocr(img_data)
 
-            result['id_card_front_owner'] = simplejson.loads(ocrresult)
-        # if io.id_card_back:
-        #     request = urllib2.Request(io.id_card_back)
-        #     img_data = urllib2.urlopen(request).read()
-        #     ocrresult = self.ali_idcard_ocr(img_data, False)
-        #     result['id_card_back'] = simplejson.loads(ocrresult)
-        if io.drive_card_front:
-            request = urllib2.Request(io.drive_card_front)
-            img_data = urllib2.urlopen(request).read()
-            ocrresult = self.ali_drive_ocr(img_data)
+                result['id_card_front_owner'] = simplejson.loads(ocrresult)
+            # if io.id_card_back:
+            #     request = urllib2.Request(io.id_card_back)
+            #     img_data = urllib2.urlopen(request).read()
+            #     ocrresult = self.ali_idcard_ocr(img_data, False)
+            #     result['id_card_back'] = simplejson.loads(ocrresult)
+            if io.drive_card_front:
+                request = urllib2.Request(io.drive_card_front)
+                img_data = urllib2.urlopen(request).read()
+                ocrresult = self.ali_drive_ocr(img_data)
 
-            result['drive_card_front'] = simplejson.loads(ocrresult)
-
+                result['drive_card_front'] = simplejson.loads(ocrresult)
+        except Exception,e:
+            result['flag'] = 0
+            result['msg'] = 'ocr 识别失败'
         self.write(simplejson.dumps(result))
 
 
