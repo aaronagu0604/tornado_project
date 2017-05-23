@@ -129,7 +129,7 @@ class Trade(object):
         private_key = self.getPrivateKey(cert_path, cert_pwd)
         logging.error('--private_key==%s---' % str(private_key))
         # 编码验证
-        sign_falg = sign(private_key, params_sha1, 'SHA-1')
+        sign_falg = sign(private_key, params_sha1, 'sha1')
         logging.error('--sign_falg==%s---' % str(sign_falg))
         if sign_falg:
             signature_base64 = base64.b64encode(sign_falg)
