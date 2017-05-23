@@ -1002,7 +1002,7 @@ class UpdateIOCardStatusHandler(BaseHandler):
             msg = Message()
             msg.store = io.store
             msg.type = 'insurance_order_detail'
-            msg.link = 'czj://insurance_order_detail/%d' % io_id
+            msg.link = 'czj://insurance_order_detail/%s' % io_id
             msg.other_id = io_id
             msg.content = '您的保险订单需要重新上传图片'
             msg.save()
