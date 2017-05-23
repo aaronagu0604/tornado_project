@@ -1354,6 +1354,10 @@
                 document.getElementById('car_num').value=obj.drive_card_front.plate_num;
                 document.getElementById('car_engine_num').value=obj.drive_card_front.engine_num;
                 document.getElementById('car_frame_num').value=obj.drive_card_front.vin;
+                if (owner_buyer_isone==0) {
+                    document.getElementById('buy_name').value=obj.id_card_front_owner.name;
+                    document.getElementById('buy_idcard').value=obj.id_card_front_owner.num;
+                }
                 var timestr = obj.drive_card_front.register_date
                 timestr = timestr.substring(0,4)+'-'+timestr.substring(4,6)+'-'+timestr.substring(6);
                 document.getElementById('first_register_date').value=timestr;
