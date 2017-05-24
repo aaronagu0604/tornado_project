@@ -23,10 +23,10 @@ class Db(object):
             def __str__(self):
                 r = {}
                 for k in self._data.keys():
-                  try:
-                     r[k] = str(getattr(self, k))
-                  except:
-                     r[k] = simplejson.dumps(getattr(self, k))
+                    try:
+                        r[k] = str(getattr(self, k))
+                    except:
+                        r[k] = simplejson.dumps(getattr(self, k))
                 return str(r)
             class Meta:
                 database = self.database

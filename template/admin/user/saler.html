@@ -1,8 +1,6 @@
 {% extends "layout/admin.html" %}
 {% block css %}
 <link href="/style/css/plugins/dataTables.bootstrap.css" rel="stylesheet">
-<link href="/style/css/select2.css" rel="stylesheet"/>
-{{xsrf()}}
 <style>
     #num{
         width:130px;
@@ -20,34 +18,27 @@
         background:#528ACB;
         color:#fff;
     }
-
 </style>
 {% endblock %}
 {% block content %}
-
 <div class="row">
     <nav>
-        <div>
-            <a class="navbar-brand" href="#">经销商列表</a>
-        </div>
+        <div><a class="navbar-brand" href="#">经销商列表</a></div>
         <div class="pull-right">
-            <form id="cx" action="" method="get" style="margin-top:10px;">
+            <form id="cx" class="navbar-form navbar-left" action="" method="get">
                 <p>
                     <label class="num">地区：&nbsp;</label>
-                    <select name="province" id="province" onchange="GetSubAreas(this.value, 'city', '')"
-                            style="height:28px;margin-left: -10px;margin-top: 10px;border-radius:4px;">
+                    <select name="province" id="province" onchange="GetSubAreas(this.value, 'city', '')" style="height:28px;margin-left: 10px;margin-top: 10px;border-radius:4px;">
                         <option value="">--所有省份--</option>
                         {% for area in items %}
                         <option value="{{area.code}}" {{ 'selected' if area.code==province else ''}}>
                         {{area.name}}</option>
                         {% endfor %}
                     </select>
-                    <select name="city" id="city" onchange="GetSubAreas(this.value, 'district', '')"
-                            style="height:28px;margin-left: 10px;margin-top: 10px;border-radius:4px;">
+                    <select name="city" id="city" onchange="GetSubAreas(this.value, 'district', '')" style="height:28px;margin-left: 10px;margin-top: 10px;border-radius:4px;">
                         <option value="">--所有城市--</option>
                     </select>
-                    <select name="district" id="district"
-                            style="height:28px;margin-left: 10px;margin-top: 10px;border-radius:4px;">
+                    <select name="district" id="district" style="height:28px;margin-left: 10px;margin-top: 10px;border-radius:4px;">
                         <option value="">--所有区县--</option>
                     </select>
                     <label class="num">名称：</label>

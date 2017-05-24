@@ -1304,7 +1304,42 @@ def move_caritem():
     print 'move car item',len(old_data)
 
 
+from db_model import HelpCenter as old_HelpCenter
+def get_insurances():
+    result = {'data': {}}
+    rows = old_HelpCenter.select().order_by(old_HelpCenter.sort, old_HelpCenter.sort2)
+    tmpList = []
+    for row in rows:
+        result['data']['iCompany'] = row.iCompany
+        if '+' in row.insurance:
+            forceI, comI = row.insurance.split('+')
+            insurance = '%s+(%s)%s' % (forceI, row.price, comI)
+        elif u'单商业险' == row.insurance:
+            insurance = '%s(%s)' % (row.insurance, row.price)
+        else:
+            insurance = row.insurance
+        if row.driverGift not in tmpList:
+            tmpList.append(row.driverGift)
+            tmpDict = {'gift': '', 'insurances': []}
+            if row.driverGift == row.party2Gift:
+                tmpDict['gift'] = row.driverGift
+            else:
+                tmpDict['gift'] = row.driverGift+u'（修理厂:'+row.party2Gift+'）'
+            tmpDict['insurances'].append([insurance, row.driverGiftNum, row.party2GiftNum])
+            result['data']['type'].append(tmpDict)
+        else:
+            for i, tmpDict in enumerate(result['data']['type']):
+                if row.driverGift == row.party2Gift:
+                    tmpGift = row.driverGift
+                else:
+                    tmpGift = row.driverGift + u'（修理厂:' + row.party2Gift + '）'
+                if tmpGift == tmpDict['gift']:
+                    result['data']['type'][i]['insurances'].append(
+                        [insurance, row.driverGiftNum, row.party2GiftNum])
+    return result
+
 if __name__ == '__main__':
+    print get_insurances()
     # move_hotsearch()
     # move_delivery()
     # move_bankcard()
@@ -1333,7 +1368,7 @@ if __name__ == '__main__':
     # move_storeproductprice()
     # move_insurance()
     # #move_insurancearea()
-    # #move_insuranceexchange()
+    # move_insuranceexchange()
     # #move_lubeexchange()
     # move_feedback()
     # #move_insuranceporderprice()
@@ -1347,6 +1382,6 @@ if __name__ == '__main__':
     # move_carbrand()
     # move_carbrandfactor()
     # move_car()
-    move_caritemgroup()
+    # move_caritemgroup()
     # move_carsk()
-    move_caritem()
+    # move_caritem()

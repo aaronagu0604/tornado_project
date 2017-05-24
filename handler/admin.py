@@ -1692,7 +1692,8 @@ class InsuranceOrderDetailHandler(AdminBaseHandler):
         insurances = Insurance.select()
 
         programs = []
-        insurance_order_prices = InsuranceOrderPrice.select().where(InsuranceOrderPrice.insurance_order_id == oid)
+        insurance_order_prices = InsuranceOrderPrice.select().where(InsuranceOrderPrice.insurance_order_id == oid).\
+            order_by(InsuranceOrderPrice.created.desc())
         for program in insurance_order_prices:
             i_item_list = []
             for i_item in i_items:
@@ -1702,7 +1703,6 @@ class InsuranceOrderDetailHandler(AdminBaseHandler):
                     'i_item_price': [{'id': iip.id, 'coverage': iip.coverage, 'coveragenum':iip.coveragenum} for iip in i_item.insurance_prices],
                     'price': program.__dict__['_data'][i_item.eName+'Price'] if program.__dict__['_data'][i_item.eName+'Price'] else 0
                 })
-            # store_policy = SSILubePolicy.get((SSILubePolicy.store == o.store) & (SSILubePolicy.insurance == program.insurance))
             programs.append({
                 'pid': program.id,
                 'ioid':program.insurance_order_id,
@@ -1715,7 +1715,6 @@ class InsuranceOrderDetailHandler(AdminBaseHandler):
                 'vehicle_tax_price': program.vehicle_tax_price,
                 'program': i_item_list,
                 'msg': program.sms_content if program.sms_content else '',
-                # 'rates': simplejson.loads(store_policy.lube),
                 'response': program.response,
                 'append_refund_status': 1 if (program.append_refund_status==0 and (o.status==2 or o.status==3)) else 0,
                 'append_refund_num': program.append_refund_num,
