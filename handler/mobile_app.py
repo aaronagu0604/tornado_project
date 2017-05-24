@@ -403,7 +403,7 @@ class MobileHomeHandler(MobileBaseHandler):
             score_product = self.get_score_product(tmp_code)
         if len(score_product) == 0:
             score_product = self.get_score_product(self.get_default_area_code())
-        result['data']['category'].append({'title': u'积分兑换', 'data': score_product})
+        result['data']['category'].append({'title': u'积分兑换', 'data': []})
 
         result['flag'] = 1
 
