@@ -630,7 +630,7 @@ class AppendRefundMoneyHandler(BaseHandler):
                 if ar_num > 0.001:    # 让客户补款
                     iop.append_refund_status = 1
                 elif ar_num < 0.001:    # 给客户退款
-                    io.store.price += ar_num
+                    io.store.price -= ar_num
                     io.store.save()
                     iop.append_refund_status = 2
                     iop.total_price += ar_num
