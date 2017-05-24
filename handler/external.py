@@ -10,11 +10,11 @@ import time
 @route(r'/user/showInsurance/(\d+)')  # 保单展示
 class showInsurance(BaseHandler):
     def get(self, oid):
-        addr = self.get_argument('addr', "False")
+        addr = self.get_argument('addr', "0")
         if not int(oid):
             return self.render('404.html')
 
-        if addr == 'True':
+        if addr == '1':
             if (int(oid)-97)%91:
                 print 'False',(int(oid)-97)%91
                 return self.render('404.html')

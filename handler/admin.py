@@ -1958,7 +1958,7 @@ class InsuranceOrderDetailHandler(AdminBaseHandler):
                     poid=poid, poid2=poid2, programs=programs, rta_type=rta_type, license_type=license_type,
                     car_num_type=car_num_type,car_detail_type=car_detail_type, fuel_type=fuel_type,
                     owner_type=owner_type, car_use_type=car_use_type, car_type=car_type,
-                    detail_type=detail_type, ioci=ioci)
+                    detail_type=detail_type, ioci=ioci,doman='http://127.0.0.1:8890')
 
     def post(self, oid):
         '''

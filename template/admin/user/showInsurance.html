@@ -22,7 +22,7 @@
             <div class="col-xs-12 col-sm-6 col-md-6">下单时间：<span>{{o.ordered|datetimeformat}}&nbsp;&nbsp;16:48</span>
             </div>
         </div>
-        {% if addr == "True" %}
+        {% if addr == "1" %}
         <div class="row order">
             <div class="col-xs-12 col-sm-12 col-md-12">业务单类型：<span>保险</span></div>
             <div class="col-xs-12 col-sm-12 col-md-12">
@@ -43,7 +43,7 @@
             </tr>
             {% endfor %}
         </div>
-        {% if addr == "True" %}
+        {% if addr == "1" %}
         <div class="row species">
             <p>寄送地址</p>
             <div class="col-xs-12 col-sm-12 col-md-12">联系人：<span>{{o.delivery_to}}</span></div>
