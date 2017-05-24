@@ -532,7 +532,7 @@ class MobileInsuranceOrderHandler(MobileBaseHandler):
     def dead_insurance_order_price(self,store):
         now = int(time.time())
         iopselect = InsuranceOrderPrice.select().join(InsuranceOrder,
-                                                      on=(InsuranceOrderPrice.insurance_order_id==InsuranceOrder.di)). \
+                                                      on=(InsuranceOrderPrice.insurance_order_id==InsuranceOrder.id)). \
             where(InsuranceOrder.store == store.id,InsuranceOrder.status << [0,1],InsuranceOrderPrice.created+setting.deadlineTime<now)
 
         for iop in iopselect:
