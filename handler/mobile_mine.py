@@ -955,8 +955,8 @@ class MobileChangeInsuranceMethodHandler(MobileBaseHandler):
     @require_auth
     def get(self):
         result = {'flag': 0, 'msg': '', "data": []}
-        io_id = self.get_argument('id', '')
-        iop_id = self.get_argument('iop_id', '')
+        io_id = int(self.get_argument('id', 0))
+        iop_id = int(self.get_argument('iop_id', 0))
 
         if not (io_id and iop_id):
             result['msg'] = u'传入参数异常'
