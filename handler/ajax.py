@@ -585,12 +585,17 @@ class SaveIOPHandler(BaseHandler):
                 sms = {'apptype': 1, 'body': '您有新的报价单！', 'jpushtype': 'alias', 'alias': io.user.mobile,
                        'extras':{'link':'czj://insurance_order_detail/%s' % io.id}}
                 create_msg(simplejson.dumps(sms), 'jpush')
+            admin_user = self.get_admin_user()
+            content = '%s进行报价：io.id:%d'%(admin_user.name,io.id)
             if send_msg == '1':
                 io = InsuranceOrder.get(id=pid.insurance_order_id)
                 sms = {'mobile': io.store.mobile, 'signtype': '1', 'isyzm': 'changePrice',
                        'body': [io.ordernum, pid.insurance.name, groups['total_price'], groups['psummary']]}
                 create_msg(simplejson.dumps(sms), 'sms')  # 变更价格
+                '%s进行报价并发送短信：io.id:%d' % (admin_user.name, io.id)
             result['flag'] = 1
+
+            AdminUserLog.create(admin_user=admin_user, created=now, content=content)
         else:
             result['msg'] = u'该方案已不可再更改'
 
