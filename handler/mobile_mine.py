@@ -533,7 +533,7 @@ class MobileInsuranceOrderHandler(MobileBaseHandler):
         now = int(time.time())
         iopselect = InsuranceOrderPrice.select().join(InsuranceOrder,
                                                       on=(InsuranceOrderPrice.insurance_order_id==InsuranceOrder.id)). \
-            where(InsuranceOrder.store == store.id,InsuranceOrder.status << [0,1])#,InsuranceOrderPrice.created+setting.deadlineTime<now)
+            where(InsuranceOrder.store == store.id,InsuranceOrder.status << [0,1],InsuranceOrderPrice.created+setting.deadlineTime<now)
 
         for iop in iopselect:
             iop.status = 0
@@ -602,7 +602,7 @@ class MobileInsuranceOrderHandler(MobileBaseHandler):
                 'mobile': io.store.mobile
             })
         result['flag'] = 1
-
+        logging.info('ios count:%d'%ios.count())
         self.write(simplejson.dumps(result))
 
 
