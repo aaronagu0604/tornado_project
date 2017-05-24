@@ -2087,6 +2087,9 @@ class InsuranceOrderDelHandler(AdminBaseHandler):
                     if iop.gift_policy == 2:    # 返现
                         money = iop.cash
                         admin_user = self.get_admin_user()
+                        store = io.store
+                        store.price += money
+                        store.save()
                         MoneyRecord.create(user=io.user, store=io.store, process_type=1, process_message=u'保险',
                                            process_log=u'卖保险返现所得', money=money, status=1, apply_time=now,
                                            processing_time=now, processing_by=admin_user)
