@@ -543,8 +543,9 @@ class SaveIOPHandler(BaseHandler):
         groups = simplejson.loads(groups)
         i_items = simplejson.loads(i_items)
         pid = InsuranceOrderPrice.get(id=groups['pid'])
+        io = InsuranceOrder.get(id=pid.insurance_order_id)
         now = int(time.time())
-        if pid.response == 0 or pid.response == 1:
+        if pid.response in [0,1] and io.status in [0,1]:
             pid.created = now
             pid.admin_user = self.get_admin_user()
             pid.gift_policy = groups['gift_policy']
