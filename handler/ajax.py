@@ -1270,7 +1270,7 @@ class SearchCarInfoHandler(BaseHandler):
 
     def sear_chcar_info(self, insurance=0,car_model_type=None,register_date=None,frame_num=None,car_num=None):
         url = 'http://apitest.baodaibao.com.cn/index.php?g=Api&m=SearchCarInfoApi&a=SearchCarInfo'
-        msg = {'flag':0 , 'msg':'', 'data':''}
+        msg = {'flag':0 , 'msg':'查询失败', 'data':''}
         insurance = Insurance.get(id = int(insurance))
         if insurance.eName not in ['zhlh','taiping','huaan']:
             msg['msg'] = '不支持自动报价的保险公司'
