@@ -1090,7 +1090,7 @@
                                                     </div>
                                                     <div class="row" style="color:#567656; font-size:13px; padding-right: 13px; padding-bottom: 10px; text-align: right;">用户补款为正，给用户退款为负；退款进入用户余额</div>
                                                     <div class="row" style="text-align: right;padding-right: 13px; ">
-                                                        <input onclick="append_refund_money({{program['pid']}}, {{program['append_refund_status']}})" type="button" class="btn btn-primary btn-sm" value="补退款"/>
+                                                        <input onclick="append_refund_money({{program['pid']}}, {{program['can_append_refund']}},{{program['append_refund_status']}})" type="button" class="btn btn-primary btn-sm" value="补退款"/>
                                                     </div>
                                                 </div>
                                             </div>
@@ -2551,10 +2551,12 @@
     }
 
     //补退款
-    function append_refund_money(pid, ar_status){
-        if(ar_status==1) {
-            var ar_num = document.getElementById("ar_num").value;//对象是contents
-            var ar_reason = document.getElementById("ar_reason").value;//对象是contents
+    function append_refund_money(pid, can,ar_status){
+        if(can==1) {
+            var program = document.getElementById(pid);
+            var ar_num = $(program).find('input[name="append_refund_num"]').val();//对象是contents
+            var ar_reason = $(program).find('textarea[name="ar_reason"]').val();//对象是contents
+
             $.post('/ajax/append_refund_money', {
                 _xsrf: xsrf,
                 ar_num: ar_num,

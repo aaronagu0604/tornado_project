@@ -605,22 +605,26 @@ class AppendRefundMoneyHandler(BaseHandler):
         ar_reason = self.get_body_argument('ar_reason', None)
         pid = self.get_body_argument('pid', None)
         ar_status = self.get_body_argument('ar_status', None)
+
         admin_user = self.get_admin_user()
         now = int(time.time())
+        content = ''
+        print self.request.body,(ar_num , ar_reason , pid , ar_status)
         if not (ar_num and ar_reason and pid and ar_status):
             result['msg'] = u'参数不全'
             self.write(simplejson.dumps(result))
             return
         try:
             ar_num = float(ar_num)
+            print ar_num
             io = InsuranceOrder.get(current_order_price=pid)
             iop = InsuranceOrderPrice.get(id=pid)
             if iop.append_refund_status != int(ar_status):
                 result['msg'] = u'该补退款已有别人发起，刷新页面确认后重试！'
             else:
-                if ar_num > 0:    # 让客户补款
+                if ar_num > 0.001:    # 让客户补款
                     iop.append_refund_status = 1
-                elif ar_num < 0:    # 给客户退款
+                elif ar_num < 0.001:    # 给客户退款
                     io.store.price += ar_num
                     io.store.save()
                     iop.append_refund_status = 2
