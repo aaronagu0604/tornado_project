@@ -1822,7 +1822,7 @@ class MobilePayOrderHandler(MobileBaseHandler):
                         result['msg'] = u"您的余额不足"
                     else:
                         # 资金类别 # 1提现、2充值、3售出、4采购、5保险、6退款
-                        order.current_order_price.append_refund_status = 2
+                        order.current_order_price.append_refund_status = 0
                         order.current_order_price.save()
                         user.store.price -= order.current_order_price.append_refund_num
                         user.store.save()
