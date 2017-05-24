@@ -1838,6 +1838,7 @@ class MobilePayOrderHandler(MobileBaseHandler):
                         money_record.apply_time = now
                         money_record.save()
                         result['flag'] = 1
+                        result['msg'] = u"支付成功"
                 else:
                     if user.store.price < total_price:
                         result['msg'] = u"您的余额不足"
