@@ -164,7 +164,7 @@ class MobileWeiXinPayCallbackHandler(RequestHandler):
                 create_msg(simplejson.dumps({'payment': 2, 'order_id': ps['out_trade_no']}), 'pay_success')
                 if is_insurance_order and order:
                     send_new_insurance_order_msg(order.delivery_tel, order.store.name, order.store.area_code,
-                                                 order.ordernum, order.insurance.name, order.payment,
+                                                 order.ordernum, order.current_order_price.insurance.name, order.payment,
                                                  order.current_order_price.gift_policy, order.sms_content,
                                                  order.current_order_price.total_price)
                     notify_data.setReturnParameter('return_code', 'SUCCESS')
