@@ -529,12 +529,27 @@ class MobileInsuranceOrderHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/insuranceorder
     """
+    def dead_insurance_order_price(self,store):
+        now = int(time.time())
+        iopselect = InsuranceOrderPrice.select().join(InsuranceOrder,
+                                                      on=(InsuranceOrderPrice.insurance_order_id==InsuranceOrder.di)). \
+            where(InsuranceOrder.store == store.id,InsuranceOrder.status << [0,1],InsuranceOrderPrice.created+setting.deadlineTime<now)
+
+        for iop in iopselect:
+            iop.status = 0
+            iop.save()
+            io = InsuranceOrder.get(id=iop.insurance_order_id)
+            if io.status == 1:
+                io.status = 0
+                io.save()
+
     @require_auth
     def get(self):
         result = {'flag': 0, 'msg': '', "data": []}
         type = self.get_argument("type", 'all')
         index = int(self.get_argument('index', 1))
         store = self.get_user().store
+        self.dead_insurance_order_price(store)
         ft = ((InsuranceOrder.store == store) & (InsuranceOrder.user_del == 0))
         # 0待报价 1已核价/待支付 2已支付/待出单 3完成（已送积分/油） -1已删除(取消)
         iop = False
@@ -948,10 +963,21 @@ class MobileChangeInsuranceMethodHandler(MobileBaseHandler):
             self.write(simplejson.dumps(result))
             return
         try:
-            iop_io_id = InsuranceOrderPrice.get(id=iop_id).insurance_order_id
-            if iop_io_id == int(io_id):
+            iop = InsuranceOrderPrice.get(id=iop_id)
+            if io.status in  [2,3,-1]:
+                result['flag'] = 0
+                result['msg'] = '该订单不允许切换报价方案'
+                self.write(simplejson.dumps(result))
+                return
+            if iop.insurance_order_id == int(io_id):
                 io = InsuranceOrder.get(id=io_id)
                 io.current_order_price = int(iop_id)
+                # 0待报价 1已核价/待支付 2已支付/待出单 3完成（已送积分/油） -1已删除(取消)
+                if iop.status == 0 or iop.response == 0:
+                    io.status = 0
+                elif iop.status==1 and iop.response==1:
+                    io.status = 1
+
                 io.save()
                 result['flag'] = 1
                 result['msg'] = u'修改成功！'

@@ -1702,6 +1702,7 @@ class InsuranceOrderDetailHandler(AdminBaseHandler):
             # store_policy = SSILubePolicy.get((SSILubePolicy.store == o.store) & (SSILubePolicy.insurance == program.insurance))
             programs.append({
                 'pid': program.id,
+                'ioid':program.insurance_order_id,
                 'insurance': program.insurance,
                 'gift_policy': program.gift_policy,
                 'cash': program.cash,

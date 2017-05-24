@@ -597,7 +597,7 @@
                         </thead>
                         <tbody>
                         <tr>
-                            <td>{{program['pid']}}</td>
+                            <td>{{program['pid']}}{{program['pid']==o.current_order_price.id and '当前所选方案' or ''}}</td>
                             <td>{{ program['created'] | datetimeformat }}</td>
                             <td>{{program['insurance'].name}}</td>
                             <td>{{program['force_price']}}</td>
