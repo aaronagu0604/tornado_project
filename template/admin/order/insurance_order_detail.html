@@ -1906,6 +1906,39 @@
         // 根据获取 ID 获取元素
         var program = document.getElementById(program_id);
         // 获取数据
+        var forceICB = $(program).find('input[name="forceICB"]').is(':checked');    // 交强险 checkbox
+
+        var vehicleTaxCB = $(program).find('input[name="vehicleTaxCB"]').is(':checked');    // 车船税 checkbox
+
+        var damageICB = $(program).find('input[name="damageICB"]').is(':checked');    // 车损 checkbox
+        var damageIPlusCB = $(program).find('input[name="damageIPlusCB"]').is(':checked');    // 车损不计免赔checkbox
+
+        var thirdDutyICB = $(program).find('input[name="thirdDutyICB"]').is(':checked');    // 三责 checkbox
+        var thirdDutyIPlusCB = $(program).find('input[name="thirdDutyIPlusCB"]').is(':checked');    // 三责不计免赔checkbox
+
+        var robbingICB = $(program).find('input[name="robbingICB"]').is(':checked');    // 盗抢checkbox
+        var robbingIPlusCB = $(program).find('input[name="robbingIPlusCB"]').is(':checked');    // 盗抢免责checkbox
+
+        var driverDutyICB = $(program).find('input[name="driverDutyICB"]').is(':checked');    // 车上司机免责checkboxcheckbox
+        var driverDutyIPlusCB = $(program).find('input[name="driverDutyIPlusCB"]').is(':checked');    // 车上司机免责checkbox
+
+        var passengerDutyICB = $(program).find('input[name="passengerDutyICB"]').is(':checked');    // 车上乘客checkbox
+        var passengerDutyIPlusCB = $(program).find('input[name="passengerDutyIPlusCB"]').is(':checked');    // checkbox
+
+        var glassICB = $(program).find('input[name="glassICB"]').is(':checked');    // 玻璃checkbox
+        var glassType = $(program).find('input[name="car_glass_type"]').is(':checked');    // 进口玻璃checkbox
+
+        var scratchICB = $(program).find('input[name="scratchICB"]').is(':checked');    // 划痕checkbox
+        var scratchIPlusCB = $(program).find('input[name="scratchIPlusCB"]').is(':checked');    // 划痕免责checkbox
+
+        var fireDamageICB = $(program).find('input[name="fireDamageICB"]').is(':checked');    // 自燃checkbox
+        var fireDamageIPlusCB = $(program).find('input[name="fireDamageIPlusCB"]').is(':checked');    // 自燃免责checkbox
+
+        var wadeICB = $(program).find('input[name="wadeICB"]').is(':checked');    // 涉水checkbox
+        var wadeIPlusCB = $(program).find('input[name="wadeIPlusCB"]').is(':checked');    // 涉水免责checkbox
+
+        var thirdSpecialICB = $(program).find('input[name="thirdSpecialICB"]').is(':checked');    // 跑路checkbox
+
         var forceIPrice = $(program).find('input[name="forceIPrice"]').val();    // 交强
         var vehicle_tax_price = $(program).find('input[name="vehicle_tax_price"]').val();    // 车船税价格
         var business_price = $(program).find('input[name="business_price"]').val();    // 商业险总额
@@ -1950,76 +1983,108 @@
         }
         if(operation == "msg"){
             if(check == 1){
+                var total = '';
                 var msg = '';
+                var hasbus = false;
                 var business_rate = $(program).find('input[name="business_rate"]').val();    // 商业险折扣
                 var force_rate = $(program).find('input[name="force_rate"]').val();    // 交强险折扣
-                if(business_rate == ''){
-                    msg = '商业险'+total_business+'元\n'
-                } else{
-                    msg = '商业险'+business_rate+'折'+total_business+'元\n'
-                }
-                if(force_rate == ''){
-                    msg = msg+'交强险'+forceIPrice+'元\n'
-                } else {
-                    msg = msg+'交强险'+force_rate+'折'+forceIPrice+'元\n'
-                }
-                msg = msg+'车船税'+vehicle_tax_price+'元\n' + '合计'+total_price+'元；\n'+'其中:';
 
-                if(damageIPrice != ''){
+
+                if(damageICB){
+                    hasbus = true;
                     msg = msg+'车辆损失险'+damageIPrice+'元\n'
                 }
-                if(damageIPlusPrice != ''){
+                if(damageIPlusCB){
+                    hasbus = true;
                     msg = msg+'车辆损失不计免赔'+damageIPlusPrice+'元\n'
                 }
-                if(thirdDutyIPrice != ''){
-                    msg = msg +'第三着责任险'+thirdDutyIPrice+'元\n'
+                if(thirdDutyICB){
+                    hasbus = true;
+                    msg = msg +'第三者责任险'+thirdDutyIPrice+'元\n'
                 }
-                if(thirdDutyIPlusPrice != ''){
-                    msg = msg +'第三着责任不计免赔'+thirdDutyIPlusPrice+'元\n'
+                if(thirdDutyIPlusCB){
+                    hasbus = true;
+                    msg = msg +'第三者责任不计免赔'+thirdDutyIPlusPrice+'元\n'
                 }
-                if( robbingIPrice != ''){
+                if( robbingICB){
+                    hasbus = true;
                     msg = msg +'盗抢险'+robbingIPrice+'元\n'
                 }
-                if(robbingIPlusPrice != ''){
+                if(robbingIPlusCB){
+                    hasbus = true;
                     msg = msg +'盗抢险不计免赔'+robbingIPlusPrice+'元\n'
                 }
-                if(driverDutyIPrice != ''){
+                if(driverDutyICB){
+                    hasbus = true;
                     msg = msg +'车上人员责任险（司机）'+driverDutyIPrice+'元\n'
                 }
-                if(driverDutyIPlusPrice != ''){
+                if(driverDutyIPlusCB){
+                    hasbus = true;
                     msg = msg +'车上人员责任险（司机）不计免赔'+driverDutyIPlusPrice+'元\n'
                 }
-                if(passengerDutyIPrice != ''){
+                if(passengerDutyICB){
+                    hasbus = true;
                     msg = msg +'车上人员责任险（乘客）'+passengerDutyIPrice+'元\n'
                 }
-                if(passengerDutyIPlusPrice != ''){
+                if(passengerDutyIPlusCB){
+                    hasbus = true;
                     msg = msg +'车上人员责任险（乘客）不计免赔'+passengerDutyIPlusPrice+'元\n'
                 }
-                if(glassIPrice != ''){
+                if(glassICB){
+                    hasbus = true;
                     msg = msg +'玻璃单独破碎险'+glassIPrice+'元\n'
                 }
-                if(scratchIPrice != ''){
+                if(scratchICB){
+                    hasbus = true;
                     msg = msg +'车身划痕损失险'+scratchIPrice+'元\n'
                 }
-                if(scratchIPlusPrice != ''){
+                if(scratchIPlusCB){
+                    hasbus = true;
                     msg = msg +'车身划痕损失不计免赔'+scratchIPlusPrice+'元\n'
                 }
-                if(fireDamageIPrice != ''){
+                if(fireDamageICB){
+                    hasbus = true;
                     msg = msg +'自燃损失险'+fireDamageIPrice+'元\n'
                 }
-                if(fireDamageIPlusPrice != ''){
+                if(fireDamageIPlusCB){
+                    hasbus = true;
                     msg = msg +'自燃损失不计免赔'+fireDamageIPlusPrice+'元\n'
                 }
-                if(wadeIPrice != ''){
+                if(wadeICB){
+                    hasbus = true;
                     msg = msg +'发动机涉水损失险'+wadeIPrice+'元\n'
                 }
-                if(wadeIPlusPrice != ''){
+                if(wadeIPlusCB){
+                    hasbus = true;
                     msg = msg +'发动机涉水损失不计免赔'+wadeIPlusPrice+'元\n'
                 }
-                if(thirdSpecialIPrice != ''){
+                if(thirdSpecialICB){
+                    hasbus = true;
                     msg = msg +'车辆损失无法找到第三方特约险'+thirdSpecialIPrice+'元\n'
                 }
-                $(program).find('textarea[name="psummary"]').val(msg);
+                if (hasbus) {
+                    if(business_rate == ''){
+                        total = '商业险'+total_business+'元\n'
+                    } else{
+                        total = '商业险'+business_rate+'折'+total_business+'元\n'
+                    }
+                }
+                if (msg != '') {
+                    msg = "其中：\n" + msg;
+                }
+                total = total + msg;
+                if (forceICB) {
+                    if(force_rate == ''){
+                        total = total+'交强险'+forceIPrice+'元\n'
+                    } else {
+                        total = total+'交强险'+force_rate+'折'+forceIPrice+'元\n'
+                    }
+                }
+                if (vehicleTaxCB) {
+                    total = total+'车船税'+vehicle_tax_price+'元\n' + '合计'+total_price+'元；\n';
+                }
+
+                $(program).find('textarea[name="psummary"]').val(total);
 
                 var business_s = $(program).find('input[name="business_s"]').val();    // 商业险返佣率
                 var force_s = $(program).find('input[name="force_s"]').val();    // 交强险返佣率
@@ -2030,7 +2095,7 @@
                 var cash = total_business*(1-business_tax/100)*business_s/100 + forceIPrice*(1-force_tax/100)*force_s/100 - total_price*(ali_rate/100+profit/100);
                 $(program).find('input[name="cash"]').val(cash.toFixed(2));
             } else {
-                alter('保险金额有误');
+                layer.alert('保险金额有误');
             }
         }
     }
