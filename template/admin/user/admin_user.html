@@ -18,7 +18,7 @@
 <form class="form-horizontal" id="form" method="post" action="/admin/admin_user/{{adminUser and adminUser.id or 0}}">
     {{xsrf()}}
     <div class="row">
-        <div class="col-lg-12">
+        <div class="col-md-8">
             <div class="panel panel-default">
                 <h3 class="panel-title" style="background:#438bca;color:#fff;width:100%;height:38px;line-height:38px;border-top-left-radius: 4px;
 border-top-right-radius: 4px;padding-left:15px;
@@ -71,8 +71,40 @@ border-top-right-radius: 4px;padding-left:15px;
                 </div>
             </div>
         </div>
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <h3 class="panel-title" style="background:#438bca;color:#fff;width:100%;height:38px;line-height:38px;border-top-left-radius: 4px;
+border-top-right-radius: 4px;padding-left:15px;
+">角色说明
+                </h3>
+                <div class="panel-body" style="margin-left:20px;">
+
+                    <div>
+                        A: 管理员
+                    </div>
+                    <div>
+                        K: 客服
+                    </div>
+                    <div>
+                        D: 开发人员
+                    </div>
+                    <div>
+                        C: 财务
+                    </div>
+                    <div>
+                        S: 市场
+                    </div>
+                    <div>
+                        Y:运营
+                    </div>
+                    <div>
+                        W:外部算保险订单人员
+                    </div>
+                </div>
+            </div>
+        </div>
         {% if handler.vrole('AD') %}
-        <div class="col-lg-12">
+        <div class="col-md-12">
             <div class="panel panel-primary">
                 <div class="panel-heading">
                     <h3 class="panel-title">用户列表　

@@ -50,7 +50,11 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
+            {% if admin.roles=='W' %}
+            <a class="navbar-brand" href="#">车装甲管理系统</a>
+            {% else %}
             <a class="navbar-brand" href="/admin">车装甲管理系统</a>
+            {% endif %}
             <a class="navbar-brand" href="javascript:void(0);" id="controlLeft">隐藏左栏</a>
         </div>
         <!-- /.navbar-header -->
@@ -72,6 +76,7 @@
         <div class="navbar-default sidebar" id="leftTree" role="navigation">
             <div class="sidebar-nav navbar-collapse">
                 <ul class="nav" id="side-menu">
+                    {% if admin.roles!='W' %}
                     <li {% if active=='saler' or active=='referee' or active=='store' or active=='admin_user'
                         or active=='user'%} class="active"{% endif %} ">
                     <a href="#"><i class="fa fa-user fa-fw"></i>&nbsp;&nbsp;&nbsp;用户管理
@@ -144,18 +149,21 @@
                         <!--</li>-->
                     </ul>
                     </li>
+                    {% endif %}
                     <li {% if active=='p_order' or active=='p_order_a' or active=='i_order' or active=='i_order_a'
                          %}class="active"{% endif %}>
                         <a href="#"><i class="fa fa-align-justify fa-fw"></i>&nbsp;&nbsp;&nbsp;订单管理
                             <span class="fa arrow"></span>
                         </a>
                         <ul class="nav nav-second-level">
+                            {% if admin.roles!='W' %}
                             <li>
                                 <a {% if active=='p_order' %}class="active"{% endif %} href="/admin/product_orders">商品订单</a>
                             </li>
                              <li>
                                 <a {% if active=='p_order_a' %}class="active"{% endif %} href="/admin/product_orders?archive=1&status=-2">商品订单归档</a>
                             </li>
+                            {% endif %}
                             <li>
                                 <a {% if active=='i_order' %}class="active"{% endif %} href="/admin/insurance_orders">保险订单</a>
                             </li>
@@ -164,7 +172,7 @@
                             </li>
                         </ul>
                     </li>
-
+                    {% if admin.roles!='W' %}
                     <li {% if active=='insurance' or active=='insurance_area'
                          %}class="active"{% endif %}>
                         <a href="#"><i class="fa fa-yen fa-fw"></i>&nbsp;&nbsp;&nbsp;保险业务
@@ -223,6 +231,7 @@
                             </li>
                         </ul>
                     </li>
+                    {% endif %}
                     <li {% if active=='static' or active=='msg' or active=='log' or active=='update' or active=='pw'
                         or active=='pic' %}class="active"{% endif %}>
                         <a href="#"><i class="fa fa-unlock fa-fw"></i>&nbsp;&nbsp;&nbsp;系统设置
@@ -231,6 +240,7 @@
                             <!--<li>-->
                                 <!--<a {% if active=='static' %} class="active"{% endif %} href="/admin/static">静态页面</a>-->
                             <!--</li>-->
+                            {% if admin.roles!='W' %}
                             <li>
                                 <a {% if active=='pic' %} class="active"{% endif %} href="/admin/upload_pic">图片上传</a>
                             </li>
@@ -243,6 +253,7 @@
                             <li>
                                 <a {% if active=='update' %}class="active"{% endif %} href="/admin/update">更新管理</a>
                             </li>
+                            {% endif %}
                             <li>
                                 <a {% if active=='pw' %} class="active"{% endif %} href="/admin/pw">修改密码</a>
                             </li>

@@ -48,7 +48,10 @@ class LoginHandler(BaseHandler):
                         user.updatesignin()
                         self.session['admin'] = user
                         self.session.save()
-                        self.redirect("/admin")
+                        if 'W' in user.roles:
+                            self.redirect("/admin/insurance_orders")
+                        else:
+                            self.redirect("/admin")
                         return
                     else:
                         self.flash("此账户被禁止登录，请联系管理员。")
@@ -1656,7 +1659,7 @@ class InsuranceOrderHandler(AdminBaseHandler):
             search_area = province + '%'
             ft &= (Store.area_code % search_area)
         admin_user = self.get_admin_user()
-        if admin_user.area_code:
+        if admin_user.area_code and ('W' in admin_user.roles):
             area_code = admin_user.area_code + '%'
             ft &= (Store.area_code % area_code)
 
