@@ -49,6 +49,7 @@ def change_order_status(ordernum, trade_no):
             money_record.money = order.current_order_price.append_refund_num
             money_record.apply_time = int(time.time())
             money_record.save()
+            return order,False
     except Exception, e:
         logging.info(
             'Error: change order status error; ordernum %s,trade_no %s,log: %s' % (ordernum, trade_no, e.message))
