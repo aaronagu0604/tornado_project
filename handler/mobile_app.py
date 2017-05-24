@@ -1675,7 +1675,7 @@ class MobilNewInsuranceOrderHandler(MobileBaseHandler):
         thirdSpecialI = self.get_body_argument('thirdSpecialI', '')
 
         user = self.get_user()
-        if user and gift_policy and delivery_address and delivery_city and delivery_district and delivery_tel \
+        if user and gift_policy and delivery_address and delivery_city and delivery_province and delivery_tel \
                 and delivery_to and insurance and drive_card_back and drive_card_front and id_card_back and \
                 id_card_front:
             order = InsuranceOrder()
