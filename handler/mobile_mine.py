@@ -984,6 +984,7 @@ class MobileChangeInsuranceMethodHandler(MobileBaseHandler):
             else:
                 result['msg'] = u'方案与订单不匹配'
         except Exception, e:
+            logging.error(e)
             result['msg'] = u'方案或订单不存在'
 
         self.write(simplejson.dumps(result))
