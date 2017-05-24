@@ -638,7 +638,7 @@ class MobileInsuranceOrderDetailHandler(MobileBaseHandler):
             if i.style == u'交强险':
                 iValue = getattr(insuranceorder.current_order_price, i.eName)
                 iList['force'] = '1' if insuranceorder.current_order_price.forceI=='1' else '0'
-                iList['forceprice'] = str(insuranceorder.current_order_price.forceIPrice)
+                iList['forceprice'] = str(insuranceorder.current_order_price.forceIPrice if insuranceorder.current_order_price.forceIPrice else 0.0)
             elif i.style == u'商业险-主险' and iValue != 'false' and iValue:
                 iList['main'].append({'eName': i.eName, 'name': i.name, 'style': i.style, 'value': iValue, 'price':str(iPrice)})
                 iList['mainprice'] += iPrice
@@ -891,7 +891,7 @@ class MobileInsuranceMethodHandler(MobileBaseHandler):
                     # force = iValue if iValue else ''
                     # forceprice = iPrice
                     force = '1' if iop.forceI=='1' else '0'
-                    forceprice = str(iop.forceIPrice)
+                    forceprice = str(iop.forceIPrice if iop.forceIPrice else 0.0)
                 elif i.style == u'商业险-主险' and iValue != 'false' and iValue:
                     main.append({'eName': i.eName, 'name': i.name, 'style': i.style, 'value': iValue, 'price':str(iPrice)})
                     mainprice += iPrice
