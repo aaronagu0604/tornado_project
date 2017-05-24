@@ -1306,7 +1306,7 @@ def move_caritem():
 
 from db_model import HelpCenter as old_HelpCenter
 def get_insurances():
-    result = {'data': {}}
+    result = {'data': {'type': []}}
     rows = old_HelpCenter.select().order_by(old_HelpCenter.sort, old_HelpCenter.sort2)
     tmpList = []
     for row in rows:

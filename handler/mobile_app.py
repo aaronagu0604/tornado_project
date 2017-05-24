@@ -1232,25 +1232,25 @@ class MobileOrderBaseHandler(MobileBaseHandler):
         if spp_dicts:
             sppids = [key for key in spp_dicts]
             if user is not None:
-                for address in user.store.addresses:
-                    if address.is_default == 1:
-                        result['data']['address']['address_id'] = address.id
-                        result['data']['address']['mobile'] = address.mobile
-                        result['data']['address']['province'] = address.province
-                        result['data']['address']['city'] = address.city
-                        result['data']['address']['district'] = address.region
-                        result['data']['address']['address'] = address.address
-                        result['data']['address']['receiver'] = address.name
-                        result['data']['address']['is_default'] = address.is_default
-                        break
+                address = StoreAddress.select().where(StoreAddress.store == user.store).\
+                    order_by(StoreAddress.is_default.desc())
+                if address.is_default == 1:
+                    result['data']['address']['address_id'] = address[0].id
+                    result['data']['address']['mobile'] = address[0].mobile
+                    result['data']['address']['province'] = address[0].province
+                    result['data']['address']['city'] = address[0].city
+                    result['data']['address']['district'] = address[0].region
+                    result['data']['address']['address'] = address[0].address
+                    result['data']['address']['receiver'] = address[0].name
+                    result['data']['address']['is_default'] = address[0].is_default
                 else:
                     result['data']['address'] = {}
                 result['data']['last_pay_type'] = user.last_pay_type
 
                 stores = []
-                product_list = StoreProductPrice.select(). \
-                    where((StoreProductPrice.active == 1) & (StoreProductPrice.id << sppids)).order_by(
-                    StoreProductPrice.store)
+                product_list = StoreProductPrice.select().\
+                    where((StoreProductPrice.active == 1) & (StoreProductPrice.id << sppids)).\
+                    order_by(StoreProductPrice.store)
                 for product_price in product_list:
                     products = {
                         'sppid': product_price.id,
