@@ -1840,7 +1840,7 @@ class MobilePayOrderHandler(MobileBaseHandler):
                 else:
                     if user.store.price < total_price:
                         result['msg'] = u"您的余额不足"
-                        self.write(simplejson(result))
+                        self.write(simplejson.dumps(result))
                         return
                     else:
                         self.after_pay_operation(order, total_price, user, order_type, order_T)
