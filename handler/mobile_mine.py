@@ -886,8 +886,10 @@ class MobileInsuranceMethodHandler(MobileBaseHandler):
                 if not iPrice:
                     iPrice = 0
                 if i.style == u'交强险':
-                    force = iValue if iValue else ''
-                    forceprice = iPrice
+                    # force = iValue if iValue else ''
+                    # forceprice = iPrice
+                    force = '1' if iop.force_price else '0'
+                    forceprice = str(iop.force_price)
                 elif i.style == u'商业险-主险' and iValue != 'false' and iValue:
                     main.append({'eName': i.eName, 'name': i.name, 'style': i.style, 'value': iValue, 'price':str(iPrice)})
                     mainprice += iPrice
