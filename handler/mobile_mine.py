@@ -665,7 +665,7 @@ class MobileInsuranceOrderDetailHandler(MobileBaseHandler):
             'store_name': insuranceorder.store.name,
             'store_addr': Area.get_detailed_address(insuranceorder.store.area_code) + insuranceorder.store.address,
             'mobile': insuranceorder.store.mobile,
-            'total_price': insuranceorder.current_order_price.total_price,
+            'total_price': str(insuranceorder.current_order_price.total_price),
             'is_same_person': insuranceorder.is_same_person,
             'insuranceorderprice': {
                 'status': insuranceorder.status,
