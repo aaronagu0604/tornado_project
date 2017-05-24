@@ -63,7 +63,7 @@ class MobileBaseHandler(RequestHandler):
 class AdminPageNotFoundHandler(RequestHandler):
     def get(self):
         self.set_status(404)
-        return self.write("您访问的资源不存在")
+        return self.render('404.html')
 
 
 class BaseHandler(RequestHandler, FlashMessagesMixin):
@@ -144,11 +144,8 @@ class BaseHandler(RequestHandler, FlashMessagesMixin):
                 Request Info<br>
                 %s""" % (error, trace_info, request_info)
         self.set_status(status_code)
-        if status_code == 404:
-            return self.render('site/404.html')
-        else:
-            msg = msg if self.settings['debug'] else None
-            return self.render('site/error.html', msg=msg)
+        msg = msg if self.settings['debug'] else None
+        return self.render('error.html', msg=msg)
 
 
 class AdminBaseHandler(BaseHandler):
