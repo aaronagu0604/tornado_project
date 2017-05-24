@@ -602,7 +602,7 @@ class MobileInsuranceOrderHandler(MobileBaseHandler):
                 'mobile': io.store.mobile
             })
         result['flag'] = 1
-        print simplejson.dumps(result)
+
         self.write(simplejson.dumps(result))
 
 
