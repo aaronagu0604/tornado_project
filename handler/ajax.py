@@ -542,7 +542,7 @@ class SaveIOPHandler(BaseHandler):
             return
         groups = simplejson.loads(groups)
         i_items = simplejson.loads(i_items)
-        pid = InsuranceOrderPrice.get(id=groups['pid'])
+        pid = InsuranceOrderPrice.get(id=int(groups['pid']))
         io = InsuranceOrder.get(id=pid.insurance_order_id)
         now = int(time.time())
         if pid.response in [0,1] and io.status in [0,1]:
@@ -566,7 +566,7 @@ class SaveIOPHandler(BaseHandler):
             for item in i_items:
                 pid.__dict__['_data'][item] = i_items[item]
             pid.save()
-            io = InsuranceOrder.get(id=pid.insurance_order_id)
+
             io.current_order_price = pid
             io.status = 1
             io.save()
