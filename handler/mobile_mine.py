@@ -602,6 +602,7 @@ class MobileInsuranceOrderHandler(MobileBaseHandler):
                 'mobile': io.store.mobile
             })
         result['flag'] = 1
+        print simplejson.dumps(result)
         self.write(simplejson.dumps(result))
 
 
@@ -636,8 +637,8 @@ class MobileInsuranceOrderDetailHandler(MobileBaseHandler):
                 iPrice = 0
             if i.style == u'交强险':
                 iValue = getattr(insuranceorder.current_order_price, i.eName)
-                iList['force'] = '1' if insuranceorder.current_order_price.force_price else '0'
-                iList['forceprice'] = str(insuranceorder.current_order_price.force_price)
+                iList['force'] = '1' if insuranceorder.current_order_price.forceI=='1' else '0'
+                iList['forceprice'] = str(insuranceorder.current_order_price.forceIPrice)
             elif i.style == u'商业险-主险' and iValue != 'false' and iValue:
                 iList['main'].append({'eName': i.eName, 'name': i.name, 'style': i.style, 'value': iValue, 'price':str(iPrice)})
                 iList['mainprice'] += iPrice
@@ -706,6 +707,7 @@ class MobileInsuranceOrderDetailHandler(MobileBaseHandler):
                 'address': insuranceorder.delivery_address
             }
         }
+        print simplejson.dumps(result)
         self.write(simplejson.dumps(result))
 
     @require_auth
@@ -888,8 +890,8 @@ class MobileInsuranceMethodHandler(MobileBaseHandler):
                 if i.style == u'交强险':
                     # force = iValue if iValue else ''
                     # forceprice = iPrice
-                    force = '1' if iop.force_price else '0'
-                    forceprice = str(iop.force_price)
+                    force = '1' if iop.forceI=='1' else '0'
+                    forceprice = str(iop.forceIPrice)
                 elif i.style == u'商业险-主险' and iValue != 'false' and iValue:
                     main.append({'eName': i.eName, 'name': i.name, 'style': i.style, 'value': iValue, 'price':str(iPrice)})
                     mainprice += iPrice
