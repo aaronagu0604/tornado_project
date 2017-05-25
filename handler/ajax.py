@@ -1071,12 +1071,12 @@ class OCRHandler(BaseHandler):
         request.add_header('Authorization', 'APPCODE ' + appcode)
         # 根据API的要求，定义相对应的Content - Type
         request.add_header('Content-Type', 'application/json; charset=UTF-8')
-        import ssl
-        ctx = ssl.create_default_context()
-        ctx.check_hostname = False
-        ctx.verify_mode = ssl.CERT_NONE
+        # import ssl
+        # ctx = ssl.create_default_context()
+        # ctx.check_hostname = False
+        # ctx.verify_mode = ssl.CERT_NONE
 
-        response = urllib2.urlopen(request, context=ctx)
+        response = urllib2.urlopen(request)#, context=ctx)
         ocrresult = response.read()
         print 'idcard:',ocrresult
         return simplejson.loads(ocrresult)['outputs'][0]['outputValue']['dataValue']
@@ -1103,12 +1103,12 @@ class OCRHandler(BaseHandler):
         request.add_header('Authorization', 'APPCODE ' + appcode)
         # 根据API的要求，定义相对应的Content - Type
         request.add_header('Content-Type', 'application/json; charset=UTF-8')
-        import ssl
-        ctx = ssl.create_default_context()
-        ctx.check_hostname = False
-        ctx.verify_mode = ssl.CERT_NONE
+        # import ssl
+        # ctx = ssl.create_default_context()
+        # ctx.check_hostname = False
+        # ctx.verify_mode = ssl.CERT_NONE
 
-        response = urllib2.urlopen(request, context=ctx)
+        response = urllib2.urlopen(request)#, context=ctx)
         ocrresult = response.read()
         print 'drivecard:',ocrresult
         try:
