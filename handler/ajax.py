@@ -586,7 +586,7 @@ class SaveIOPHandler(BaseHandler):
                        'extras':{'link':'czj://insurance_order_detail/%s' % io.id}}
                 create_msg(simplejson.dumps(sms), 'jpush')
             admin_user = self.get_admin_user()
-            content = '%s进行报价：io.id:%d'%(admin_user.name,io.id)
+            content = '%s进行报价：io.id:%d'%(admin_user.username,io.id)
             if send_msg == '1':
                 io = InsuranceOrder.get(id=pid.insurance_order_id)
                 sms = {'mobile': io.store.mobile, 'signtype': '1', 'isyzm': 'changePrice',

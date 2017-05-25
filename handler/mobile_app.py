@@ -342,7 +342,7 @@ class MobileHomeHandler(MobileBaseHandler):
         if user:
             result['data']['login_flag'] = 1
             # 消息通知
-            message_list = Message.select().where(Message.store == user.store & Message.status == 0)
+            message_list = Message.select().where(Message.store == user.store.id, Message.status == 0)
             if message_list.count() > 0:
                 result['data']['last_unread_price']['show'] = 1
                 result['data']['last_unread_price']['id'] = message_list[0].id
