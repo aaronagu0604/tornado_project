@@ -729,12 +729,13 @@ def _has_dic(src=[], dickey=None):
 from db_model import HelpCenter as Old_HelpCenter
 from model import InsuranceArea
 def move_lubeexchange():
-    print '---------------'
     InsuranceArea.delete().execute()
     old_policy = Old_HelpCenter.select()
+    tmp_area = []
     area_code_list = []
     for i in old_policy:
-        if i.area_code not in area_code_list:
+        if i.area_code not in tmp_area:
+            tmp_area.append(i.area_code)
             area_code_list.append({'code': i.area_code, 'ic_name': i.iCompany})
     print(u'area_code_list: %s' % area_code_list)
     for al in area_code_list:
