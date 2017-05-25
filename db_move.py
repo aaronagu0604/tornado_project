@@ -790,7 +790,7 @@ def move_lubeexchange():
                 area_code = al['code'],
                 insurance = i_id,
                 lube_ok = 1,
-                dealer_store = 0,
+                dealer_store = 1,
                 lube_policy = simplejson.dumps(data),
                 cash_ok = 0,
                 cash_policy = '',
@@ -820,7 +820,7 @@ def move_lubeexchange():
                 ias[0].cash_policy = simplejson.dumps(score_data)
                 ias[0].save()
             else:
-                InsuranceArea.create(area_code=oc.area_code, insurance=i_id, lube_ok=0, dealer_store=0, lube_policy='',
+                InsuranceArea.create(area_code=oc.area_code, insurance=i_id, lube_ok=0, dealer_store=1, lube_policy='',
                     cash_ok=1, cash_policy=simplejson.dumps(score_data), sort=1, active=1)
         else:
             print('---%s--' % oc.iid.name)
