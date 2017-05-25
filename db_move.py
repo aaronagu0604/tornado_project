@@ -724,8 +724,7 @@ def _has_dic(src=[], dickey=None):
     else:
         return -1
 
-# 送油策略
-
+# 返佣策略
 from db_model import HelpCenter as Old_HelpCenter
 from model import InsuranceArea
 def move_lubeexchange():
@@ -789,14 +788,31 @@ def move_lubeexchange():
                     })
 
         for i_id in i_list:
+            score_data = ''
+            ocs = Old_CurrencyExchangeList.select().where((Old_CurrencyExchangeList.area_code == al['code']) &
+                                                          (Old_CurrencyExchangeList.iid == i_id) &
+                                                          (Old_CurrencyExchangeList.iswork == 1) &
+                                                          (Old_CurrencyExchangeList.is_cash == 0))
+            if ocs.count() > 0:
+                score_data = {"pr": 0,
+                              "fer2": ocs[0].forceRate*100,
+                              "fer": ocs[0].forceRate*100,
+                              "ftr": 0,
+                              "ber2": ocs[0].businessTaxRate*100,
+                              "ber": ocs[0].businessTaxRate*100,
+                              "bm": 0,
+                              "btr": 0,
+                              "ar": 0}
+            else:
+                print('--area_code:%s, i:%s---' % (al['code'], i_id))
             InsuranceArea.create(
                 area_code = al['code'],
                 insurance = i_id,
                 lube_ok = 1,
                 dealer_store = 0,
                 lube_policy = simplejson.dumps(data),
-                cash_ok = 0,
-                cash_policy = '',
+                cash_ok = 1 if score_data else 0,
+                cash_policy = simplejson.dumps(score_data),
                 sort = 1,
                 active = 1
             )
