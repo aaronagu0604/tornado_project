@@ -102,6 +102,11 @@ class MobileGetVCodeAppHandler(MobileBaseHandler):
                 result['msg'] = u'您已经登录，可以修改密码'
                 self.write(simplejson.dumps(result))
                 return
+            muser = User.select().where(User.mobile == mobile)
+            if muser.count()<1:
+                result['msg'] = '您还不是车装甲的注册会员，无法获取忘记密码验证码'
+                self.write(simplejson.dumps(result))
+                return
 
         VCode.delete().where(VCode.created < (int(time.time()) - 30 * 60)).execute()
 
