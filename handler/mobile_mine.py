@@ -168,8 +168,7 @@ class MobilStorePopularizeHandler(MobileBaseHandler):
                     result['flag'] = 1
 
         except Exception, e:
-            import traceback
-            traceback.print_exc()
+            logging.error(e)
             result['msg'] = u'生成图片失败'
         logging.info(simplejson.dumps(result))
         self.write(simplejson.dumps(result))
