@@ -592,7 +592,7 @@ class SaveIOPHandler(BaseHandler):
                 sms = {'mobile': io.store.mobile, 'signtype': '1', 'isyzm': 'changePrice',
                        'body': [io.ordernum, pid.insurance.name, groups['total_price'], groups['psummary']]}
                 create_msg(simplejson.dumps(sms), 'sms')  # 变更价格
-                '%s进行报价并发送短信：io.id:%d' % (admin_user.name, io.id)
+                '%s进行报价并发送短信：io.id:%d' % (admin_user.username, io.id)
             result['flag'] = 1
 
             AdminUserLog.create(admin_user=admin_user, created=now, content=content)

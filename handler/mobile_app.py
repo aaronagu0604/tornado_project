@@ -831,6 +831,10 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
         productList = []
         ft = (Product.active == 1)
         # 根据规格参数搜索
+        category = int(category)
+        attribute = int(attribute)
+        brand = [int(item) for item  in brand]
+        index = int(index)
         if category and attribute:
             ft1 = ft2 = None
             c = Category.get(id=category)
@@ -877,6 +881,7 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
             join(Product, on=(Product.id == ProductRelease.product)). \
             join(StoreProductPrice, on=(StoreProductPrice.product_release == ProductRelease.id)). \
             join(Store, on=(Store.id == ProductRelease.store)).where(ft).dicts()
+        print products
         # 排序
         if sort == '1':
             products = products.order_by(StoreProductPrice.price.desc())
