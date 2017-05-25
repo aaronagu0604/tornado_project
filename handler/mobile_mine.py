@@ -6,7 +6,7 @@ import os
 import simplejson
 from PIL import Image, ImageDraw, ImageFont
 
-import setting
+from setting import popularizePIC
 from handler import MobileBaseHandler
 from handler import require_auth
 import lib.payment.ali_app_pay as alipay
@@ -152,8 +152,8 @@ class MobilStorePopularizeHandler(MobileBaseHandler):
             addr2 = ''
             mobile = user.mobile
             now = str(time.time())[:10]
-            logging.info(setting.popularizePIC)
-            for pop in setting.popularizePIC:
+            logging.info(popularizePIC)
+            for pop in popularizePIC:
                 area_limits = 0
                 for area_code in pop['area_code'].split(','):
                     if user.store.area_code.startswith(area_code):
