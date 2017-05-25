@@ -91,6 +91,11 @@ class MobileGetVCodeAppHandler(MobileBaseHandler):
                 result['msg'] = u'您已经是车装甲会员'
                 self.write(simplejson.dumps(result))
                 return
+            muser = User.select().where(User.mobile == mobile)
+            if muser.count():
+                result['msg'] = '您已是车装甲的注册会员，无法重复获取注册验证码'
+                self.write(simplejson.dumps(result))
+                return
         elif flag == 3 or flag == 4:
             if not user:
                 result['msg'] = u'您还不是车装甲会员'
