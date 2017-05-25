@@ -736,10 +736,10 @@ def move_lubeexchange():
     for i in old_policy:
         if i.area_code not in area_code_list:
             area_code_list.append({'code': i.area_code, 'ic_name': i.iCompany})
-    print(u'area_code_list: %s' % (area_code_list))
+    print(u'area_code_list: %s' % area_code_list)
     for al in area_code_list:
         i_list = []
-        i_names = al['ic_name'].strip('/')
+        i_names = al['ic_name'].split('/')
         for i_name in i_names:
             if i_name != u'太平':
                 i_name += '%'
