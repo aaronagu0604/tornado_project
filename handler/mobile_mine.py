@@ -138,8 +138,8 @@ class MobilStorePopularizeHandler(MobileBaseHandler):
         draw.text((pop['phoneWidth'], pop['phoneHeight']), mobile, fill=pop['wordColour'], font=ttfont)
         im.save(newPic)
         shutil.move(newPic, '/home/www/fileservice/data/image/store_popularize/%s'%newPic_name)
-        # return 'http://img.520czj.com/image/store_popularize/' + newPic_name
-        return 'http://img.520czj.com/image/2017/03/13/server1_20170313163651ySUQVEGMkNXIYiOapFZfwsvB.png'
+        return 'http://img.520czj.com/image/store_popularize/' + newPic_name
+        #return 'http://img.520czj.com/image/2017/03/13/server1_20170313163651ySUQVEGMkNXIYiOapFZfwsvB.png'
 
     @require_auth
     def get(self):
@@ -167,6 +167,8 @@ class MobilStorePopularizeHandler(MobileBaseHandler):
                     result['flag'] = 1
 
         except Exception, e:
+            import traceback
+            traceback.print_exc()
             result['msg'] = u'生成图片失败'
         self.write(simplejson.dumps(result))
 
