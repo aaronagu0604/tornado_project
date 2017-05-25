@@ -11,6 +11,7 @@
 '''
 
 # old database
+import simplejson
 from db_model import Delivery as Old_Delivery
 from db_model import Area as Old_Area
 from db_model import AdType as Old_AdType
@@ -722,65 +723,63 @@ def _has_dic(src=[], dickey=None):
             return index
     else:
         return -1
+
 # 送油策略
-# def move_lubeexchange():
-#     old_policy = Old_HelpCenter.select()
-#     for item in old_policy:
-#         insurance = New_Insurance.get(New_Insurance.name.contains(item.iCompany))
-#         try:
-#             tmppolicy = New_LubePolicy.get(New_LubePolicy.area_code == item.area_code,
-#                                                   New_LubePolicy.insurance == insurance)
-#         except Exception:
-#             tmppolicy = None
-#
-#         if tmppolicy:
-#             policy = simplejson.loads(tmppolicy.policy)
-#             index = _has_dic(policy, item.driverGift)
-#             if index >= 0:
-#                 policy[index]['item'].append(
-#                     {
-#                         'name': item.insurance,
-#                         'driver': item.driverGiftNum,
-#                         'store': item.party2GiftNum,
-#                         'minprice': int(minp),
-#                         'maxprice': int(maxp),
-#                         'flag': 1  # 暂时不知道设置为什么值，设置为1
-#                     }
-#                 )
-#             else:
-#                 policy.append(
-#                     {
-#                         'gift': item.driverGift,
-#                         'items': [{
-#                             'name': item.insurance,
-#                             'driver': item.driverGiftNum,
-#                             'store': item.party2GiftNum,
-#                             'minprice': int(minp),
-#                             'maxprice': int(maxp),
-#                             'flag': 1  # 暂时不知道设置为什么值，设置为1
-#                         }]
-#                     }
-#                 )
-#             tmppolicy.policy(simplejson.dumps(policy))
-#             tmppolicy.save()
-#         else:
-#             minp,maxp = item.price.split('-')
-#             data = [{
-#                 'gift': item.driverGift,
-#                 'items': [{
-#                     'name': item.insurance,
-#                     'driver': item.driverGiftNum,
-#                     'store': item.party2GiftNum,
-#                     'minprice': int(minp),
-#                     'maxprice': int(maxp),
-#                     'flag': 1  # 暂时不知道设置为什么值，设置为1
-#                 }]
-#             }]
-#             New_LubePolicy.create(
-#                 area_code=item.area_code,
-#                 insurance=insurance,
-#                 policy=simplejson.dumps(data)
-#             )
+
+from db_model import HelpCenter as Old_HelpCenter
+from model import InsuranceArea
+def move_lubeexchange():
+    InsuranceArea.delete().execute()
+    old_policy = Old_HelpCenter.select()
+    area_code_list = []
+    for i in old_policy:
+        if i.area_code not in area_code_list:
+            area_code_list.append({'code': i.area_code, 'ic_name': i.iCompany})
+    print area_code_list
+    for al in area_code_list:
+        i_list = []
+        i_names = al['ic_name'].strip('/')
+        print i_names
+        for i_name in i_names:
+            if i_name != u'太平':
+                i_name += '%'
+                insurance = New_Insurance.select().where(New_Insurance.name % i_name)
+            else:
+                i_name = u'太平车险'
+                insurance = New_Insurance.select().where(New_Insurance.name == i_name)
+            i_list.append(insurance)
+        print i_list
+        for item in old_policy:
+            if item.area_code == al['code']:
+                try:
+                    minp, maxp = item.price.split('-')
+                except:
+                    minp = item.strip(u'≥').strip(u'以上')
+                    maxp = ''
+                data = [{
+                    'gift': item.driverGift,
+                    'items': [{
+                        'name': item.insurance,
+                        'driver': item.driverGiftNum,
+                        'store': item.party2GiftNum,
+                        'minprice': minp,
+                        'maxprice': maxp,
+                        'flag': 1  # 暂时不知道设置为什么值，设置为1
+                    }]
+                }]
+
+        # for i_id in i_list:
+        #     InsuranceArea.create(
+        #         area_code = al['code'],
+        #         insurance = i_id,
+        #         lube_ok = 1,
+        #         dealer_store = 0,
+        #         lube_policy = simplejson.dumps(data),
+        #         cash_ok = 0,
+        #         cash_policy = '',
+        #         sort = 1,
+        #         active = 1
+        #     )
 
 '''
 # 第三部分：互相依赖记录数据
@@ -1306,41 +1305,6 @@ def move_caritem():
     } for item in old_c]
     czjmoveCarItem.insert_many(old_data).execute()
     print 'move car item',len(old_data)
-
-
-from db_model import HelpCenter as old_HelpCenter
-def get_insurances():
-    result = {'data': {'type': []}}
-    rows = old_HelpCenter.select().order_by(old_HelpCenter.sort, old_HelpCenter.sort2)
-    tmpList = []
-    for row in rows:
-        result['data']['iCompany'] = row.iCompany
-        if '+' in row.insurance:
-            forceI, comI = row.insurance.split('+')
-            insurance = '%s+(%s)%s' % (forceI, row.price, comI)
-        elif u'单商业险' == row.insurance:
-            insurance = '%s(%s)' % (row.insurance, row.price)
-        else:
-            insurance = row.insurance
-        if row.driverGift not in tmpList:
-            tmpList.append(row.driverGift)
-            tmpDict = {'gift': '', 'insurances': []}
-            if row.driverGift == row.party2Gift:
-                tmpDict['gift'] = row.driverGift
-            else:
-                tmpDict['gift'] = row.driverGift+u'（修理厂:'+row.party2Gift+'）'
-            tmpDict['insurances'].append([insurance, row.driverGiftNum, row.party2GiftNum])
-            result['data']['type'].append(tmpDict)
-        else:
-            for i, tmpDict in enumerate(result['data']['type']):
-                if row.driverGift == row.party2Gift:
-                    tmpGift = row.driverGift
-                else:
-                    tmpGift = row.driverGift + u'（修理厂:' + row.party2Gift + '）'
-                if tmpGift == tmpDict['gift']:
-                    result['data']['type'][i]['insurances'].append(
-                        [insurance, row.driverGiftNum, row.party2GiftNum])
-    return result
 
 if __name__ == '__main__':
     print get_insurances()

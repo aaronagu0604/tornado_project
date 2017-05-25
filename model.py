@@ -648,7 +648,7 @@ class InsuranceArea(db.Model):
     area_code = CharField(max_length=32, default='')
     insurance = ForeignKeyField(Insurance, db_column='insurance_id')
     lube_ok = IntegerField(default=1)  # 开通反油
-    dealer_store = ForeignKeyField(Store, db_column='dealer_store_id')  # 经销商
+    dealer_store = ForeignKeyField(Store, db_column='dealer_store_id', default=0)  # 经销商
     lube_policy = CharField(max_length=4000)  # 返油政策的json串
     cash_ok = IntegerField(default=1)  # 开通反现
     cash_policy = CharField(max_length=4000)  # 返现政策的json串
