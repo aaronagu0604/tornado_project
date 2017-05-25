@@ -514,7 +514,7 @@ def move_blockitemarea():
 product_map = {}
 
 def move_product():
-    old_prodcut = Old_Product.select()
+    old_prodcut = Old_Product.select().where(Old_Product.is_index == 0)
     for item in old_prodcut:
         product = New_Product.create(
             name=item.name,
@@ -581,6 +581,9 @@ def move_productrelease():
         )
         step += 1
         product_release_map[item.id] = release.id
+        product = New_Product.get(id=product_map[item.product.id])
+        product.unit = item.unit
+        product.save()
 
     print 'move productrelease:', step, '/', old_release.count()
 
