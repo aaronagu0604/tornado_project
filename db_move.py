@@ -729,32 +729,37 @@ def _has_dic(src=[], dickey=None):
 from db_model import HelpCenter as Old_HelpCenter
 from model import InsuranceArea
 def move_lubeexchange():
+    print '---------------'
     InsuranceArea.delete().execute()
     old_policy = Old_HelpCenter.select()
     area_code_list = []
     for i in old_policy:
         if i.area_code not in area_code_list:
             area_code_list.append({'code': i.area_code, 'ic_name': i.iCompany})
-    print area_code_list
+    print('area_code_list: %s' % (area_code_list))
     for al in area_code_list:
         i_list = []
         i_names = al['ic_name'].strip('/')
-        print i_names
         for i_name in i_names:
             if i_name != u'太平':
                 i_name += '%'
                 insurance = New_Insurance.select().where(New_Insurance.name % i_name)
+                i_id = insurance[0].id if len(insurance) > 0 else 0
             else:
                 i_name = u'太平车险'
                 insurance = New_Insurance.select().where(New_Insurance.name == i_name)
-            i_list.append(insurance)
-        print i_list
+                i_id = insurance[0].id if len(insurance) > 0 else 0
+            if i_id:
+                i_list.append(i_id)
+            else:
+                print('---no i id-----')
+        print('i_list=%s' % i_list)
         for item in old_policy:
             if item.area_code == al['code']:
                 try:
                     minp, maxp = item.price.split('-')
                 except:
-                    minp = item.strip(u'≥').strip(u'以上')
+                    minp = item.price.strip(u'≥').strip(u'以上')
                     maxp = ''
                 data = [{
                     'gift': item.driverGift,
@@ -1307,7 +1312,7 @@ def move_caritem():
     print 'move car item',len(old_data)
 
 if __name__ == '__main__':
-    print get_insurances()
+    print move_lubeexchange()
     # move_hotsearch()
     # move_delivery()
     # move_bankcard()
