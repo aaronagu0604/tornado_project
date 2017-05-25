@@ -1247,9 +1247,9 @@ class MobileOrderBaseHandler(MobileBaseHandler):
         if spp_dicts:
             sppids = [key for key in spp_dicts]
             if user is not None:
-                address = StoreAddress.select().where(StoreAddress.store == user.store).\
-                    order_by(StoreAddress.is_default.desc())
-                if address.is_default == 1:
+                address = StoreAddress.select().where(StoreAddress.store == user.store,StoreAddress.is_default==1).\
+                    order_by(StoreAddress.id.desc())
+                if address.count():
                     result['data']['address']['address_id'] = address[0].id
                     result['data']['address']['mobile'] = address[0].mobile
                     result['data']['address']['province'] = address[0].province
