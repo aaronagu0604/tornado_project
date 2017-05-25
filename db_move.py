@@ -741,6 +741,7 @@ def move_lubeexchange():
     for al in area_code_list:
         i_list = []
         i_names = al['ic_name'].split('/')
+        data = []
         for i_name in i_names:
             if i_name != u'太平':
                 i_name += '%'
@@ -762,17 +763,30 @@ def move_lubeexchange():
                 except:
                     minp = item.price.strip(u'≥').strip(u'以上')
                     maxp = ''
-                data = [{
-                    'gift': item.driverGift,
-                    'items': [{
-                        'name': item.insurance,
-                        'driver': item.driverGiftNum,
-                        'store': item.party2GiftNum,
-                        'minprice': minp,
-                        'maxprice': maxp,
-                        'flag': 1  # 暂时不知道设置为什么值，设置为1
-                    }]
-                }]
+                gift_in = False
+                for d in data:
+                    if d['gift'] == item.driverGift:
+                        d['items'].append({
+                            'name': item.insurance,
+                            'driver': item.driverGiftNum,
+                            'store': item.party2GiftNum,
+                            'minprice': minp,
+                            'maxprice': maxp,
+                            'flag': 1  # 暂时不知道设置为什么值，设置为1
+                        })
+                        gift_in = True
+                if not gift_in:
+                    data.append({
+                        'gift': item.driverGift,
+                        'items': [{
+                            'name': item.insurance,
+                            'driver': item.driverGiftNum,
+                            'store': item.party2GiftNum,
+                            'minprice': minp,
+                            'maxprice': maxp,
+                            'flag': 1  # 暂时不知道设置为什么值，设置为1
+                        }]
+                    })
 
         for i_id in i_list:
             InsuranceArea.create(
