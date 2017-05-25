@@ -388,6 +388,21 @@ class MobileSellOrderHandler(MobileBaseHandler):
         result = []
         sos = SubOrder.select().where(ft).order_by(SubOrder.id.desc()).paginate(index, setting.MOBILE_PAGESIZE)
         for so in sos:
+            items = []
+            totalprice = 0.0
+            for soi in so.items:
+                totalprice += soi.price*soi.quantity
+                items.append(
+                    {
+                        'product': soi.product.name,
+                        'cover': soi.product.cover,
+                        'id': soi.store_product_price.id,
+                        'price': soi.price,
+                        'quantity': soi.quantity,
+                        'attributes': [attribute.value for attribute in soi.product.attributes],
+                        'order_type': so.order.order_type
+                    }
+                )
             result.append({
                 'id': so.order.id,
                 'soid': so.id,
@@ -395,18 +410,10 @@ class MobileSellOrderHandler(MobileBaseHandler):
                 'saler_store': so.saler_store.name,
                 'buyer_store': so.buyer_store.name,
                 'order_type': so.order.order_type,
-                'price': so.price,
-                'score': so.score,
+                'price': totalprice,
+                'score': totalprice,
                 'status': so.status,
-                'items': [{
-                    'product': soi.product.name,
-                    'cover': soi.product.cover,
-                    'id':soi.store_product_price.id,
-                    'price': soi.price,
-                    'quantity': soi.quantity,
-                    'attributes': [attribute.value for attribute in soi.product.attributes],
-                    'order_type': so.order.order_type
-                } for soi in so.items],
+                'items': items,
                 'ordered': time.strftime('%Y-%m-%d %H-%M-%S', time.localtime(so.order.ordered)),
                 'deadline': time.strftime('%Y-%m-%d %H-%M-%S', time.localtime(so.order.ordered + setting.PRODUCT_ORDER_TIME_OUT))
             })
