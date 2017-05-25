@@ -36,6 +36,7 @@ class MobileMineHandler(MobileBaseHandler):
         result['data']['login_flag'] = 0
         result['data']['store_name'] = ''
         result['data']['user_name'] = ''
+        result['data']['user_cover'] = 'http://img.520czj.com/image/2017/05/25/server1_20170525183829INZDSzGmjVfQBTUysOJAnuPl.png'
         result['data']['active'] = u'未审核'
         result['data']['store_type'] = 2  # 默认未登陆未门店
         result['data']['store_price'] = 0
