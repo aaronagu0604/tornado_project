@@ -15,7 +15,6 @@ from lib.payment.wxPay import UnifiedOrder_pub
 from lib.route import route
 from model import *
 import logging
-import shutil
 from bootloader import settings
 
 

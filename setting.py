@@ -78,7 +78,8 @@ popularizePIC = [{
     'addr2Width': 182,
     'addr2Height': 1057,
     'phoneWidth': 96,
-    'phoneHeight': 1133
+    'phoneHeight': 1133,
+    'testfield':1024
 },{
     'activity': 'happyNewYear',
     'area_code': '00',
