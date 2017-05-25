@@ -736,7 +736,6 @@ def move_lubeexchange():
         if i.area_code not in tmp_area:
             tmp_area.append(i.area_code)
             area_code_list.append({'code': i.area_code, 'ic_name': i.iCompany})
-    print(u'area_code_list: %s' % area_code_list)
     for al in area_code_list:
         i_list = []
         i_names = al['ic_name'].split('/')
@@ -754,7 +753,6 @@ def move_lubeexchange():
                 i_list.append(i_id)
             else:
                 print(u'---no i id--%s---' % i_name)
-        print('i_list=%s' % i_list)
         for item in old_policy:
             if item.area_code == al['code']:
                 try:
@@ -788,34 +786,45 @@ def move_lubeexchange():
                     })
 
         for i_id in i_list:
-            score_data = ''
-            ocs = Old_CurrencyExchangeList.select().where((Old_CurrencyExchangeList.area_code == al['code']) &
-                                                          (Old_CurrencyExchangeList.iid == i_id) &
-                                                          (Old_CurrencyExchangeList.iswork == 1) &
-                                                          (Old_CurrencyExchangeList.is_cash == 0))
-            if ocs.count() > 0:
-                score_data = {"pr": 0,
-                              "fer2": ocs[0].forceRate*100,
-                              "fer": ocs[0].forceRate*100,
-                              "ftr": 0,
-                              "ber2": ocs[0].businessTaxRate*100,
-                              "ber": ocs[0].businessTaxRate*100,
-                              "bm": 0,
-                              "btr": 0,
-                              "ar": 0}
-            else:
-                print('--area_code:%s, i:%s---' % (al['code'], i_id))
             InsuranceArea.create(
                 area_code = al['code'],
                 insurance = i_id,
                 lube_ok = 1,
                 dealer_store = 0,
                 lube_policy = simplejson.dumps(data),
-                cash_ok = 1 if score_data else 0,
-                cash_policy = simplejson.dumps(score_data),
+                cash_ok = 0,
+                cash_policy = '',
                 sort = 1,
                 active = 1
             )
+
+    score_data = ''
+    ocs = Old_CurrencyExchangeList.select().where((Old_CurrencyExchangeList.iswork == 1) & (Old_CurrencyExchangeList.is_cash == 0))
+    for oc in ocs:
+        score_data = {"pr": 0,
+                      "fer2": ocs.forceRate * 100,
+                      "fer": ocs.forceRate * 100,
+                      "ftr": 0,
+                      "ber2": ocs.businessTaxRate * 100,
+                      "ber": ocs.businessTaxRate * 100,
+                      "bm": 0,
+                      "btr": 0,
+                      "ar": 0}
+        new_i = New_Insurance.select().where(New_Insurance.name == oc.iid.name)
+        i_id = 0
+        if new_i.count() > 0:
+            i_id = new_i[0].id
+            ias = InsuranceArea.select().where((InsuranceArea.insurance == i_id) & (InsuranceArea.area_code == oc.area_code))
+            if ias.count() > 0:
+                ias[0].cash_ok = 1
+                ias[0].cash_policy = simplejson.dumps(score_data)
+                ias[0].save()
+            else:
+                InsuranceArea.create(area_code=oc.area_code, insurance=i_id, lube_ok=0, dealer_store=0, lube_policy='',
+                    cash_ok=1, cash_policy=simplejson.dumps(score_data), sort=1, active=1)
+        else:
+            print('---%s--' % oc.iid.name)
+
 
 '''
 # 第三部分：互相依赖记录数据
