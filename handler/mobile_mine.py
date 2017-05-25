@@ -402,7 +402,7 @@ class MobileSellOrderHandler(MobileBaseHandler):
                     'product': soi.product.name,
                     'cover': soi.product.cover,
                     'id':soi.store_product_price.id,
-                    'price': soi.store_product_price.price if so.order.order_type == 1 else soi.store_product_price.score,
+                    'price': soi.price,
                     'quantity': soi.quantity,
                     'attributes': [attribute.value for attribute in soi.product.attributes],
                     'order_type': so.order.order_type
