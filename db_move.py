@@ -802,11 +802,11 @@ def move_lubeexchange():
     ocs = Old_CurrencyExchangeList.select().where((Old_CurrencyExchangeList.iswork == 1) & (Old_CurrencyExchangeList.is_cash == 0))
     for oc in ocs:
         score_data = {"pr": 0,
-                      "fer2": ocs.forceRate * 100,
-                      "fer": ocs.forceRate * 100,
+                      "fer2": oc.forceRate * 100,
+                      "fer": oc.forceRate * 100,
                       "ftr": 0,
-                      "ber2": ocs.businessTaxRate * 100,
-                      "ber": ocs.businessTaxRate * 100,
+                      "ber2": oc.businessTaxRate * 100,
+                      "ber": oc.businessTaxRate * 100,
                       "bm": 0,
                       "btr": 0,
                       "ar": 0}
