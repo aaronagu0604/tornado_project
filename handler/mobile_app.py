@@ -832,7 +832,7 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
         ft = (Product.active == 1)
         # 根据规格参数搜索
         category = int(category)
-        attribute = int(attribute)
+        attribute = attribute
         brand = [int(item) for item  in brand]
         index = int(index)
         if category and attribute:
