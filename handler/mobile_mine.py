@@ -16,6 +16,7 @@ from lib.route import route
 from model import *
 import logging
 import shutil
+from bootloader import settings
 
 
 @route(r'/mobile/mine', name='mobile_mine')  # app我的主界面
@@ -125,21 +126,21 @@ class MobilStorePopularizeHandler(MobileBaseHandler):
     @apiSampleRequest /mobile/storepopularize
     """
     def act_insurance(self, pop, uid, storeName, addr1, addr2, mobile, now):
-        pic = '%s_%s_'%(pop['PicPath'], str(uid))
-        newPic = '%s%s.png'%(pic, now)
-        newPic_name = newPic.split('/')[-1]
-        ttfont = ImageFont.truetype(setting.typeface, pop['wordSize'])
-        im = Image.open(pop['basePicPath'])
-        draw = ImageDraw.Draw(im)
-        draw.text((pop['storeWidth'], pop['storeHeight']), storeName, fill=pop['wordColour'], font=ttfont)
-        draw.text((pop['addrWidth'], pop['addrHeight']), addr1, fill=pop['wordColour'], font=ttfont)
-        if addr2:
-            draw.text((pop['addr2Width'], pop['addr2Height']), addr2, fill=pop['wordColour'], font=ttfont)
-        draw.text((pop['phoneWidth'], pop['phoneHeight']), mobile, fill=pop['wordColour'], font=ttfont)
-        im.save(newPic)
-        shutil.move(newPic, '/home/www/fileservice/data/image/store_popularize/%s'%newPic_name)
-        return 'http://img.520czj.com/image/store_popularize/' + newPic_name
-        #return 'http://img.520czj.com/image/2017/03/13/server1_20170313163651ySUQVEGMkNXIYiOapFZfwsvB.png'
+        pic = os.path.join(settings['upload_path'], "store_popularize/repairCar_%d.png"%(uid))
+        if not os.path.exists(pic):
+            newPic_name = pic.split('/')[-1]
+            ttfont = ImageFont.truetype(setting.typeface, pop['wordSize'])
+            im = Image.open(pop['basePicPath'])
+            draw = ImageDraw.Draw(im)
+            draw.text((pop['storeWidth'], pop['storeHeight']), storeName, fill=pop['wordColour'], font=ttfont)
+            draw.text((pop['addrWidth'], pop['addrHeight']), addr1, fill=pop['wordColour'], font=ttfont)
+            if addr2:
+                draw.text((pop['addr2Width'], pop['addr2Height']), addr2, fill=pop['wordColour'], font=ttfont)
+            draw.text((pop['phoneWidth'], pop['phoneHeight']), mobile, fill=pop['wordColour'], font=ttfont)
+            im.save(pic)
+
+        return setting.domanName + '/upload/store_popularize/' + newPic_name
+
 
     @require_auth
     def get(self):
