@@ -152,6 +152,7 @@ class MobilStorePopularizeHandler(MobileBaseHandler):
             addr2 = ''
             mobile = user.mobile
             now = str(time.time())[:10]
+            logging.info(setting.popularizePIC)
             for pop in setting.popularizePIC:
                 area_limits = 0
                 for area_code in pop['area_code'].split(','):
