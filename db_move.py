@@ -1074,8 +1074,9 @@ def move_Order():
             ordered=item.ordered,
             payment=paymentex[item.payment],
             message=item.message,
-            order_type=item.order_type,  # 付款方式 1金钱订单 2积分订单
+            order_type=item.is_score+1,  # 付款方式 1金钱订单 2积分订单
             total_price=item.currentprice,  # 就得没有，暂时设置为这个
+            total_score=item.scoreNum,
             pay_balance=item.pay_balance,
             pay_price=0,  # 旧的没有，暂时设置默认值
             pay_time=item.paytime,
