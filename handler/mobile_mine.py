@@ -170,6 +170,7 @@ class MobilStorePopularizeHandler(MobileBaseHandler):
             import traceback
             traceback.print_exc()
             result['msg'] = u'生成图片失败'
+        logging.info(simplejson.dumps(result))
         self.write(simplejson.dumps(result))
 
 
