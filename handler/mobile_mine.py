@@ -162,7 +162,7 @@ class MobilStorePopularizeHandler(MobileBaseHandler):
                     addr2 = addr[pop['addr2tab']:]
                 else:
                     addr1 = addr
-                logging.info(picPath,area_limits)
+                logging.info(area_limits)
                 if area_limits == 1:
                     picPath = self.act_insurance(pop, user.id, storeName, addr1, addr2, mobile, now)
                     result['data'].append(picPath)
