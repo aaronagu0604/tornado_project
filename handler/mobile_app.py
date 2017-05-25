@@ -217,9 +217,14 @@ class MobileRegHandler(MobileBaseHandler):
                     and licenseCode and licensePic and storePic and password):
                 raise Exception('申请信息不完整')
             try:
-                admin_user = AdminUser.get(code=referee)
+                if referee:
+                    admin_user = AdminUser.get(code=referee)
+                else:
+                    admin_user = None
             except:
-                admin_user = None
+                result['msg'] = '该推广编码错误，请确认或者置空改选填项。'
+                self.write(simplejson.dumps(result))
+                return
             now = int(time.time())
             sid = Store.create(store_type=int(store_type), admin_code=referee, admin_user=admin_user, name=companyName,
                                area_code=district, address=address, legal_person=legalPerson, license_code=licenseCode,
