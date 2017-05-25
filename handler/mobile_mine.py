@@ -152,7 +152,7 @@ class MobilStorePopularizeHandler(MobileBaseHandler):
             addr2 = ''
             mobile = user.mobile
             now = str(time.time())[:10]
-            logging.info(popularizePIC)
+
             for pop in popularizePIC:
                 area_limits = 0
                 for area_code in pop['area_code'].split(','):
@@ -163,7 +163,7 @@ class MobilStorePopularizeHandler(MobileBaseHandler):
                     addr2 = addr[pop['addr2tab']:]
                 else:
                     addr1 = addr
-                logging.info(area_limits)
+
                 if area_limits == 1:
                     picPath = self.act_insurance(pop, user.id, storeName, addr1, addr2, mobile, now)
                     result['data'].append(picPath)
