@@ -126,7 +126,7 @@ class MobilStorePopularizeHandler(MobileBaseHandler):
     @apiSampleRequest /mobile/storepopularize
     """
     def act_insurance(self, pop, uid, storeName, addr1, addr2, mobile, now):
-        pic = os.path.join(settings['upload_path'], "store_popularize/repairCar_%d.png"%(uid))
+        pic = os.path.join(settings['upload_path'], "store_popularize/repairCar_%d.jpeg"%(uid))
         if not os.path.exists(pic):
             newPic_name = pic.split('/')[-1]
             ttfont = ImageFont.truetype(setting.typeface, pop['wordSize'])
@@ -137,7 +137,7 @@ class MobilStorePopularizeHandler(MobileBaseHandler):
             if addr2:
                 draw.text((pop['addr2Width'], pop['addr2Height']), addr2, fill=pop['wordColour'], font=ttfont)
             draw.text((pop['phoneWidth'], pop['phoneHeight']), mobile, fill=pop['wordColour'], font=ttfont)
-            im.save(pic)
+            im.save(pic, format='jpeg')
 
         return setting.domanName + '/upload/store_popularize/' + newPic_name
 
