@@ -752,7 +752,7 @@ def move_lubeexchange():
             if i_id:
                 i_list.append(i_id)
             else:
-                print('---no i id-----')
+                print(u'---no i id--%s---' % i_name)
         print('i_list=%s' % i_list)
         for item in old_policy:
             if item.area_code == al['code']:
