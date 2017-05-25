@@ -469,6 +469,7 @@ class MobileSubOrderDetailHandler(MobileBaseHandler):
         result['data']['order_type'] = order.order_type
 
         items = []
+        total_price = 0.0
         for product in suborder.items:
             pics = [item.pic for item in product.product.pics]
             pic = None
@@ -476,6 +477,7 @@ class MobileSubOrderDetailHandler(MobileBaseHandler):
                 pic = pics[0]
             # productattibute = ProductAttributeValue.get(ProductAttributeValue.product == product.product)
             # attribute = "%s %s" % (productattibute.attribute.name, productattibute.value)
+            total_price += product.price*product.quantity
             items.append({
                 'img': pic,
                 'name': product.product.name,
@@ -486,6 +488,7 @@ class MobileSubOrderDetailHandler(MobileBaseHandler):
         if items:
             result['flag'] = 1
         result['data']['items'] = items
+        result['data']['totalprice'] = total_price
         self.write(simplejson.dumps(result))
 
 
