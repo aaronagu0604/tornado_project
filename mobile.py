@@ -23,8 +23,11 @@ class Application(tornado.web.Application):
         self.jinja_env.globals['settings'] = settings
         self.memcachedb = memcachedb
 
-        handlers = [tornado.web.url(r"/style/(.+)", tornado.web.StaticFileHandler, dict(path=settings['static_path']), name='static_path')]\
-                   + Route.routes() + [(r".*", MobilePageNotFoundHandler)]
+        handlers = [tornado.web.url(r"/upload/(.+)", tornado.web.StaticFileHandler, \
+                    dict(path=settings['upload_path']), name='upload_path'), \
+                    tornado.web.url(r"/style/(.+)", tornado.web.StaticFileHandler, \
+                    dict(path=settings['static_path']), name='static_path')] + \
+                    Route.routes() + [(r".*", MobilePageNotFoundHandler)]
         tornado.web.Application.__init__(self, handlers, **settings)
 
 
