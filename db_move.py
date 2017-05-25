@@ -773,18 +773,18 @@ def move_lubeexchange():
                     }]
                 }]
 
-        # for i_id in i_list:
-        #     InsuranceArea.create(
-        #         area_code = al['code'],
-        #         insurance = i_id,
-        #         lube_ok = 1,
-        #         dealer_store = 0,
-        #         lube_policy = simplejson.dumps(data),
-        #         cash_ok = 0,
-        #         cash_policy = '',
-        #         sort = 1,
-        #         active = 1
-        #     )
+        for i_id in i_list:
+            InsuranceArea.create(
+                area_code = al['code'],
+                insurance = i_id,
+                lube_ok = 1,
+                dealer_store = 0,
+                lube_policy = simplejson.dumps(data),
+                cash_ok = 0,
+                cash_policy = '',
+                sort = 1,
+                active = 1
+            )
 
 '''
 # 第三部分：互相依赖记录数据
