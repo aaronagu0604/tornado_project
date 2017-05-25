@@ -14,6 +14,7 @@ from tornado.web import RequestHandler
 class WebAppIndexHandler(BaseHandler):
     def get(self):
         brands = []
+        f = self.get_argument('f', 'app')
         chars = '<li>#</li>'
         q = CarBrand.select(CarBrand.brand_pinyin_first).where(CarBrand.active == 1).group_by(CarBrand.brand_pinyin_first).\
             order_by(CarBrand.brand_pinyin_first.asc(), CarBrand.sort.asc()).tuples()
@@ -24,7 +25,7 @@ class WebAppIndexHandler(BaseHandler):
             item['items'] = CarBrand.select().where((CarBrand.active == 1) & (CarBrand.brand_pinyin_first == py))
             brands.append(item)
 
-        self.render("webapp/index.html", brands=brands, chars=chars)
+        self.render("webapp/index.html", brands=brands, chars=chars, f=f)
 
 
 @route(r'/webapp/car/(\d+)', name='webapp_car')
