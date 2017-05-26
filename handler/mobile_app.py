@@ -374,7 +374,7 @@ class MobileHomeHandler(MobileBaseHandler):
             if not insurances:
                 insurances = InsuranceArea.get_insurances_link('0027')
                 self.application.memcachedb.set('insurances_no_login', insurances)
-        result['data']['category'] = [{'title': u'保险业务', 'data': insurances}]
+        result['data']['category'] = [{'title': u'保险业务', 'data': insurances[:1]}]
 
         # 热门分类
         tmp_code = area_code
@@ -384,7 +384,7 @@ class MobileHomeHandler(MobileBaseHandler):
             categories = self.get_category(tmp_code)
         if len(categories) == 0:
             categories = self.get_category(self.get_default_area_code())
-        result['data']['category'].append({'title': u'热门分类', 'data': categories[:4]})
+        result['data']['category'].append({'title': u'热门分类', 'data': categories[:2]})
 
         # 热销品牌
         tmp_code = area_code
@@ -394,7 +394,7 @@ class MobileHomeHandler(MobileBaseHandler):
             brands = self.get_brand(tmp_code)
         if len(brands) == 0:
             brands = self.get_brand(self.get_default_area_code())
-        result['data']['category'].append({'title': u'热销品牌', 'data': brands[:4]})
+        result['data']['category'].append({'title': u'热销品牌', 'data': brands[:3]})
 
         # 推荐商品
         tmp_code = area_code
