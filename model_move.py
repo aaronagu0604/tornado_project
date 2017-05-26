@@ -48,7 +48,7 @@ class Area(db.Model):
     def get_detailed_address(cls, area_code):
         area_code_len = len(area_code)
         try:
-            area = Area.get(code = area_code)
+            area = Area.get(code=area_code)
             if area_code_len == 12:
                 address = area.pid.pid.name + area.pid.name + area.name
             elif area_code_len == 8:
@@ -657,26 +657,21 @@ class InsuranceArea(db.Model):
     class Meta:
         db_table = 'tb_insurance_area'
 
-    @classmethod
-    def append_areas(cls, area_code):
-        codes = []
-        if len(area_code) == 12:
-            codes.append(area_code)
-            codes.append(area_code[:8])
-            codes.append(area_code[:4])
-        elif len(area_code) == 8:
-            codes.append(area_code)
-            codes.append(area_code[:4])
-        elif len(area_code) == 4:
-            codes.append(area_code)
-        return codes
-
-    # 获取该地区下的所有返油返现
+    # 获取该地区下的所有返油返现规则
     @classmethod
     def get_area_insurance(cls, area_code):
-        codes = cls.append_areas(area_code)
         result = []
-        for i in InsuranceArea.select().where((InsuranceArea.area_code << codes) & (InsuranceArea.active == 1)):
+        ft = (InsuranceArea.active == 1)
+        if len(area_code) == 12:
+            codes = [area_code, area_code[:8], area_code[:4]]
+            ft &= (InsuranceArea.area_code << codes)
+        elif len(area_code) == 8:
+            tmp_code = area_code+'%'
+            ft &= ((InsuranceArea.area_code == area_code[:4]) | (InsuranceArea.area_code % tmp_code))
+        elif len(area_code) == 4:
+            tmp_code = area_code+'%'
+            ft &= (InsuranceArea.area_code % tmp_code)
+        for i in InsuranceArea.select().where(ft):
             result.append({
                 'insurance': i.insurance,
                 'lube': i.lube_policy,
@@ -689,41 +684,26 @@ class InsuranceArea(db.Model):
     def get_insurances_link(cls, area_code):  # 获取该地区所有保险公司及链接
         temp_insurance_id = []
         insurance_list = []
-        codes = cls.append_areas(area_code)
-        insurances = InsuranceArea.select().where((InsuranceArea.area_code << codes) & (InsuranceArea.active == 1))
-        for i in insurances:
+        ft = (InsuranceArea.active == 1)
+        if len(area_code) == 12:
+            codes = [area_code, area_code[:8], area_code[:4]]
+            ft &= (InsuranceArea.area_code << codes)
+        elif len(area_code) == 8:
+            tmp_code = area_code+'%'
+            ft &= ((InsuranceArea.area_code == area_code[:4]) | (InsuranceArea.area_code % tmp_code))
+        elif len(area_code) == 4:
+            tmp_code = area_code+'%'
+            ft &= (InsuranceArea.area_code % tmp_code)
+        for i in InsuranceArea.select().where(ft):
             if i.id not in temp_insurance_id:
                 temp_insurance_id.append(i.id)
                 insurance_list.append({
                     'img': i.insurance.logo,
                     'name': i.insurance.name,
                     'price': 0,
-                    'link': setting.baseUrl + 'insurance/' + str(i.insurance.id)
+                    'link': 'czj://insurance/' + str(i.insurance.id)
                 })
         return insurance_list
-
-    @classmethod
-    def get_oil_policy(cls, area_code, insurance_id):  # 根据保险公司和地区获取返佣比率
-        codes = cls.append_areas(area_code)
-        configs = InsuranceArea.select().join(Area, on=(Area.code == InsuranceArea.area_code)). \
-            where((InsuranceArea.area_code << codes) & (InsuranceArea.insurance == insurance_id)).\
-            order_by(db.fn.LENGTH(InsuranceArea.area_code).desc())
-        if configs.count() > 0:
-            return configs[0]
-        else:
-            return None
-
-    @classmethod
-    def get_score_policy(cls, area_code, insurance_id):  # 根据保险公司和地区获取返佣比率
-        codes = cls.append_areas(area_code)
-        configs = InsuranceArea.select(InsuranceArea). \
-            join(Area, on=(Area.code == InsuranceArea.area_code)). \
-            where((InsuranceArea.area_code << codes) & (InsuranceArea.insurance == insurance_id) &
-                  (Area.is_scorearea == 1)).order_by(db.fn.LENGTH(InsuranceArea.area_code).desc())
-        if configs.count() > 0:
-            return configs[0]
-        else:
-            return None
 
 
 # 保险子险种
@@ -936,7 +916,8 @@ class UserCarInfo(db.Model):
     ## 车主人信息
     car_owner_name = CharField(max_length=50, null=True)  # 车主姓名
     car_owner_idcard = CharField(max_length=50, null=True)  # 车主身份证号
-    car_owner_address = CharField(max_length=150, null=True)  # 车主身份证地址
+    car_owner_idcard_date = CharField(max_length=50, null=True)  # 车主身份证住址
+    car_owner_address = CharField(max_length=150, null=True)  # 被保险地址
 
     # 被保险人信息
     owner_buyer_isone = IntegerField(default=0)  # 0不是 1是
@@ -949,6 +930,7 @@ class UserCarInfo(db.Model):
     car_engine_num = CharField(max_length=50, null=True)  # 发动机号
     car_passenger_number = CharField(max_length=50, null=True)  # 车座位数
     car_quality = CharField(max_length=50, null=True)  # 整车质量
+    car_glass_type = IntegerField(default=0)  # 0国产 1进口
 
     car_type = CharField(max_length=50, null=True)  # 车型：小客车car
     car_use_type = CharField(max_length=50, null=True)  # 车辆使用类型：非运营non_operation,运营operation
@@ -1028,8 +1010,8 @@ class SSILubePolicy(db.Model):
     store = ForeignKeyField(Store, related_name='store_policy', db_column='store_id')  # 门店
     insurance = ForeignKeyField(Insurance, related_name='insurance_policy', db_column='insurance_id')  # 保险公司
     dealer_store = ForeignKeyField(Store, related_name='dealer_store_policy', db_column='dealer_store_id')  # 经销商
-    cash = TextField(default='')  # 返油政策的json串  # 返现政策
-    lube = TextField(default='')  # 返油政策的json串  #　返油政策
+    cash = CharField(max_length=4000, default='')  # 返现政策的json串  # 返现政策
+    lube = CharField(max_length=4000, default='')  # 返油政策的json串  #　返油政策
 
     class Meta:
         db_table = "tb_store_gift_policy"
@@ -1090,7 +1072,7 @@ class HotSearch(db.Model):
 # 支付通知内容
 class PaymentNotify(db.Model):
     id = PrimaryKeyField()
-    content = CharField(max_length=2048)    # 支付通知内容
+    content = CharField(max_length=2048)   # 支付通知内容
     payment = IntegerField(default=1)  # 通知来源  1支付宝  2微信 3银联
     notify_time = IntegerField(default=0)  # 通知时间
     notify_type = IntegerField(default=0)  # 通知类型 1同步 2异步
@@ -1271,7 +1253,7 @@ def init_db():
     from lib.util import find_subclasses
 
     models = find_subclasses(db.Model)
-    for model in [CarItemGroup]:
+    for model in models:
         if model.table_exists():
             print model
             model.drop_table()
