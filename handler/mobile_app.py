@@ -39,7 +39,7 @@ def get_insurance(area_code):
     @apiDescription 车装甲协议；http://或者https://开头，跳转入webview；czj://开头，进入原生界面，详情如下：
 
     @apiParam {String} insurance 进入某保险详情，后跟保险ID与Name，例：czj://insurance/2/中华联合
-    @apiParam {String} brand 进入某品牌列表，后跟品牌ID，ID为0标识所有；例：czj://brand/1
+    @apiParam {String} brand 进入某品牌列表，后跟分类、品牌ID，ID为0标识所有；例：czj://category/0/brand/1
     @apiParam {String} insurance_order_list 进入保险订单列表，后跟状态，例：czj://insurance_order_list/0，表示报价列表
     @apiParam {String} insurance_order_detail 进入保险订单详情，后跟保险订单ID，例：czj://insurance_order_detail/1
     @apiParam {String} score_product 进入积分商城，例：czj://score_product
