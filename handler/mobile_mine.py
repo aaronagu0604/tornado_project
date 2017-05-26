@@ -1741,7 +1741,7 @@ class MobileMoneyRecordHandler(MobileBaseHandler):
         ft = (MoneyRecord.store == store)
         if process_type:
             ft &= (MoneyRecord.process_type == int(process_type))
-        money_records = MoneyRecord.select().where(ft)
+        money_records = MoneyRecord.select().where(ft).order_by(MoneyRecord.id.desc())
         money_records = money_records.paginate(index, setting.MOBILE_PAGESIZE)
         for record in money_records:
             result['data'].append({
