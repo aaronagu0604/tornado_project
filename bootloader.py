@@ -46,3 +46,6 @@ db = Db({'db': settings['db_name'], 'host': settings['db_host'], 'port': setting
          'max_connections':settings['max_connections'], 'stale_timeout':settings['stale_timeout']})
 
 
+db_move3 = Db({'db': 'czjmove3', 'host': settings['db_host'], 'port': settings['db_port'], \
+         'user': settings['db_user'], 'passwd': settings['db_passwd'], 'charset': 'utf8', \
+         'max_connections':settings['max_connections'], 'stale_timeout':settings['stale_timeout']})
