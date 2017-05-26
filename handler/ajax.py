@@ -1124,17 +1124,25 @@ class OCRHandler(BaseHandler):
                 ocrresult = self.ali_idcard_ocr(img_data)
 
                 result['id_card_front'] = simplejson.loads(ocrresult)
+            if io.id_card_back:
+                request = urllib2.Request(io.id_card_back)
+                img_data = urllib2.urlopen(request).read()
+                ocrresult = self.ali_idcard_ocr(img_data, False)
+                result['id_card_back'] = simplejson.loads(ocrresult)
+
             if isone==0 and io.id_card_front_owner:
                 request = urllib2.Request(io.id_card_front_owner)
                 img_data = urllib2.urlopen(request).read()
                 ocrresult = self.ali_idcard_ocr(img_data)
 
                 result['id_card_front_owner'] = simplejson.loads(ocrresult)
-            # if io.id_card_back:
-            #     request = urllib2.Request(io.id_card_back)
-            #     img_data = urllib2.urlopen(request).read()
-            #     ocrresult = self.ali_idcard_ocr(img_data, False)
-            #     result['id_card_back'] = simplejson.loads(ocrresult)
+            if isone==0 and io.id_card_back_owner:
+                request = urllib2.Request(io.id_card_back_owner)
+                img_data = urllib2.urlopen(request).read()
+                ocrresult = self.ali_idcard_ocr(img_data,False)
+
+                result['id_card_back_owner'] = simplejson.loads(ocrresult)
+
             if io.drive_card_front:
                 request = urllib2.Request(io.drive_card_front)
                 img_data = urllib2.urlopen(request).read()
@@ -1174,7 +1182,7 @@ class OCRSaveHandler(BaseHandler):
         # 车主信息
         car_owner_name = self.get_body_argument('car_owner_name', None)
         car_owner_idcard = self.get_body_argument('car_owner_idcard', None)
-        car_owner_date = self.get_body_argument('car_owner_date', None)
+        car_owner_idcard_date = self.get_body_argument('car_owner_idcard_date', None)
         car_owner_address = self.get_body_argument('car_owner_address', None)
         car_owner_type = self.get_body_argument('car_owner_type', None)
         car_use_type = self.get_body_argument('car_use_type', None)
@@ -1185,8 +1193,8 @@ class OCRSaveHandler(BaseHandler):
         owner_buyer_isone = self.get_body_argument('owner_buyer_isone', None)
         buy_name = self.get_body_argument('buy_name', None)
         buy_idcard = self.get_body_argument('buy_idcard', None)
-        buy_date = self.get_body_argument('buy_date', None)
-        buy_address = self.get_body_argument('buy_address', None)
+
+
         # 车辆信息
         car_num = self.get_body_argument('car_num', None)
         car_glass_type = self.get_body_argument('car_glass_type', None)
@@ -1217,6 +1225,9 @@ class OCRSaveHandler(BaseHandler):
             return
 
         io = InsuranceOrder.get(id=int(io_id))
+        io.is_same_person = owner_buyer_isone
+        io.save()
+
         if ioci:
             ucinfo = ioci
         else:
@@ -1229,8 +1240,9 @@ class OCRSaveHandler(BaseHandler):
         # 车主信息
         ucinfo.car_owner_name = car_owner_name  # 车主姓名
         ucinfo.car_owner_idcard = car_owner_idcard  # 车主身份证号
-        ucinfo.car_owner_date = car_owner_date  # 车主身份证有效期
-        ucinfo.car_owner_address = car_owner_address  # 车主身份证地址
+        ucinfo.car_owner_address = car_owner_address  # 身份证地址
+        ucinfo.car_owner_idcard_date = car_owner_idcard_date  # 车主身份证有效期
+
         ucinfo.car_owner_type = car_owner_type  # 车主类型:小客车car
         ucinfo.car_use_type = car_use_type  # 车辆使用类型：非运营non_operation,运营operation
         ucinfo.car_nengyuan_type = car_nengyuan_type  # 车主能源情况：燃油ranyou，混合hunhe
@@ -1240,8 +1252,7 @@ class OCRSaveHandler(BaseHandler):
         ucinfo.owner_buyer_isone = owner_buyer_isone  # 0不是 1是
         ucinfo.buy_name = buy_name  # 姓名
         ucinfo.buy_idcard = buy_idcard  # 身份证号
-        ucinfo.buy_date = buy_date  # 身份证有效期
-        ucinfo.buy_address = buy_address  # 身份证地址
+
         # 车辆信息
         ucinfo.car_num = car_num  # 车牌号
         ucinfo.car_glass_type = car_glass_type

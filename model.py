@@ -917,7 +917,8 @@ class UserCarInfo(db.Model):
     ## 车主人信息
     car_owner_name = CharField(max_length=50, null=True)  # 车主姓名
     car_owner_idcard = CharField(max_length=50, null=True)  # 车主身份证号
-    car_owner_address = CharField(max_length=150, null=True)  # 车主身份证地址
+    car_owner_idcard_date = CharField(max_length=50, null=True)  # 车主身份证住址
+    car_owner_address = CharField(max_length=150, null=True)  # 被保险地址
 
     # 被保险人信息
     owner_buyer_isone = IntegerField(default=0)  # 0不是 1是

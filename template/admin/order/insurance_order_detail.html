@@ -299,25 +299,8 @@
                         </div>
                     </div>
                 </div>
-                <!--被保险人身份证信息-->
-                <div class="row" id="buyer_idcard_info1" style="margin-top: 5px; {% if o.is_same_person==1 %} display: none {% endif %}">
-                    <div class="col-xs-3">
-                        被保险人姓名
-                    </div>
-                    <div class="col-xs-3 rightTxt">
-                        <input id="buy_name" class="form-control" type="text" {% if ioci %} value="{{ioci.buy_name}}"{% endif %}/>
-                    </div>
-                </div>
-                <div class="row" id="buyer_idcard_info2" style="margin-top: 5px; {% if o.is_same_person==1 %} display: none {% endif %}">
-                    <div class="col-xs-3">
-                        被保险人身份证号
-                    </div>
-                    <div class="col-xs-9 rightTxt">
-                        <input id="buy_idcard" class="form-control" type="text" {% if ioci %} value="{{ioci.buy_idcard}}"{% endif %}/>
-                    </div>
-                </div>
                 <!--车主身份证信息-->
-                <div class="row">
+                <div class="row" id="buyer_idcard_info1" style="margin-top: 5px; {% if o.is_same_person==1 %} display: none {% endif %}">
                     <div class="col-xs-3">
                         车主姓名
                     </div>
@@ -325,7 +308,7 @@
                         <input id="car_owner_name" class="form-control" type="text" {% if ioci %} value="{{ioci.car_owner_name}}"{% endif %}/>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row" id="buyer_idcard_info2" style="margin-top: 5px; {% if o.is_same_person==1 %} display: none {% endif %}">
                     <div class="col-xs-3">
                         车主身份证号
                     </div>
@@ -333,14 +316,40 @@
                         <input id="car_owner_idcard" class="form-control" type="text" {% if ioci %} value="{{ioci.car_owner_idcard}}"{% endif %}/>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row" id="buyer_idcard_info3" style="margin-top: 5px; {% if o.is_same_person==1 %} display: none {% endif %}">
                     <div class="col-xs-3">
-                        车主住址
+                        车主身份证住址
                     </div>
                     <div class="col-xs-9 rightTxt">
                         <input id="car_owner_address" class="form-control" type="text" {% if ioci %} value="{{ioci.car_owner_address}}"{% endif %}/>
                     </div>
                 </div>
+                <div class="row" id="buyer_idcard_info4" style="margin-top: 5px; {% if o.is_same_person==1 %} display: none {% endif %}">
+                    <div class="col-xs-3">
+                        车主身份证有效期
+                    </div>
+                    <div class="col-xs-9 rightTxt">
+                        <input id="car_owner_idcard_date" class="form-control" type="text" {% if ioci %} value="{{ioci.car_owner_idcard_date}}"{% endif %}/>
+                    </div>
+                </div>
+                <!--被保险人身份证信息-->
+                <div class="row"  >
+                    <div class="col-xs-3">
+                        被保险人姓名
+                    </div>
+                    <div class="col-xs-3 rightTxt">
+                        <input id="buy_name" class="form-control" type="text" {% if ioci %} value="{{ioci.buy_name}}"{% endif %}/>
+                    </div>
+                </div>
+                <div class="row" >
+                    <div class="col-xs-3">
+                        被保险人身份证号
+                    </div>
+                    <div class="col-xs-9 rightTxt">
+                        <input id="buy_idcard" class="form-control" type="text" {% if ioci %} value="{{ioci.buy_idcard}}"{% endif %}/>
+                    </div>
+                </div>
+
                 <div class="row">
                     <div class="col-xs-3">
                         所属机构组织代码
@@ -1171,6 +1180,12 @@
         } else {
             targetObj.style.display="";
         }
+        targetObj = document.getElementById('buyer_idcard_info4');
+        if(targetObj.style.display!="none"){
+            targetObj.style.display="none";
+        } else {
+            targetObj.style.display="";
+        }
     }
 
     function get_json(program_id) {
@@ -1347,19 +1362,34 @@
             HiddenLoading();
             var obj = jQuery.parseJSON(data);
             if (obj.flag == 1) {
+                var timestr = '';
+                if (owner_buyer_isone==0) {
+                    document.getElementById('buy_name').value=obj.id_card_front.name;
+                    document.getElementById('buy_idcard').value=obj.id_card_front.num;
 
-                document.getElementById('car_owner_name').value=obj.id_card_front.name;
-                document.getElementById('car_owner_address').value=obj.id_card_front.address;
-                document.getElementById('car_owner_idcard').value=obj.id_card_front.num;
+                    document.getElementById('car_owner_name').value=obj.id_card_front_owner.name;
+                    document.getElementById('car_owner_address').value=obj.id_card_front_owner.address;
+                    document.getElementById('car_owner_idcard').value=obj.id_card_front_owner.num;
+                    timestr = obj.id_card_back_owner.end_date;
+                    timestr = timestr.substring(0,4)+'-'+timestr.substring(4,6)+'-'+timestr.substring(6);
+                    document.getElementById('car_owner_idcard_date').value=timestr;
+                } else {
+                    document.getElementById('buy_name').value=obj.id_card_front.name;
+                    document.getElementById('buy_idcard').value=obj.id_card_front.num;
+
+                    document.getElementById('car_owner_name').value=obj.id_card_front.name;
+                    document.getElementById('car_owner_address').value=obj.id_card_front.address;
+                    document.getElementById('car_owner_idcard').value=obj.id_card_front.num;
+                    timestr = obj.id_card_back.end_date;
+                    timestr = timestr.substring(0,4)+'-'+timestr.substring(4,6)+'-'+timestr.substring(6);
+                    document.getElementById('car_owner_idcard_date').value=timestr;
+                }
 
                 document.getElementById('car_num').value=obj.drive_card_front.plate_num;
                 document.getElementById('car_engine_num').value=obj.drive_card_front.engine_num;
                 document.getElementById('car_frame_num').value=obj.drive_card_front.vin;
-                if (owner_buyer_isone==0) {
-                    document.getElementById('buy_name').value=obj.id_card_front_owner.name;
-                    document.getElementById('buy_idcard').value=obj.id_card_front_owner.num;
-                }
-                var timestr = obj.drive_card_front.register_date
+
+                timestr = obj.drive_card_front.register_date
                 timestr = timestr.substring(0,4)+'-'+timestr.substring(4,6)+'-'+timestr.substring(6);
                 document.getElementById('first_register_date').value=timestr;
                 document.getElementById('car_model_type').value=obj.drive_card_front.model;
@@ -1372,12 +1402,15 @@
     }
 
     function ocr_save(io_id,ioci_id) {
+        ShowLoading();
         var car_owner_name = document.getElementById('car_owner_name').value;
         var car_owner_idcard = document.getElementById('car_owner_idcard').value;
-
+        var car_owner_idcard_date = document.getElementById('car_owner_idcard_date').value;
         var car_owner_address = document.getElementById('car_owner_address').value;
-        var car_owner_type = document.getElementById('car_owner_type').options[document.getElementById('car_owner_type').selectedIndex].value;;
-        var car_use_type = document.getElementById('car_use_type').options[document.getElementById('car_use_type').selectedIndex].value;;
+
+        var car_owner_type = document.getElementById('car_owner_type').options[document.getElementById('car_owner_type').selectedIndex].value;
+
+        var car_use_type = document.getElementById('car_use_type').options[document.getElementById('car_use_type').selectedIndex].value;
         var car_nengyuan_type = document.getElementById('car_nengyuan_type').options[document.getElementById('car_nengyuan_type').selectedIndex].value;;
         // 机构信息
         var car_owner_num = document.getElementById('car_owner_num').value;
@@ -1433,7 +1466,6 @@
                 car_owner_name : car_owner_name,
                 car_owner_idcard : car_owner_idcard,
 
-                car_owner_address : car_owner_address,
                 car_owner_type : car_owner_type,
                 car_use_type : car_use_type,
                 car_nengyuan_type : car_nengyuan_type,
@@ -1443,7 +1475,8 @@
                 owner_buyer_isone : owner_buyer_isone,
                 buy_name : buy_name,
                 buy_idcard : buy_idcard,
-
+                car_owner_address : car_owner_address,
+                car_owner_idcard_date:car_owner_idcard_date,
                 // 车辆信息
                 car_num : car_num,
                 car_glass_type: glass_type,
@@ -2170,6 +2203,7 @@
 
     // 保存
     function  saveData(program_id, send_msg) {
+        ShowLoading();
         // 根据获取 ID 获取元素
         var program = document.getElementById(program_id);
         // 获取数据
@@ -2181,6 +2215,7 @@
         if(forceICB){
             if(forceIPrice*1<=0) {
                 layer.alert('提交失败：交强险报价不能小于或等于0');
+                 HiddenLoading();
                 return
             } else {
                 i_items['forceI'] = 1;
@@ -2189,6 +2224,7 @@
         } else {
             if(forceIPrice*1>0) {
                 layer.alert('提交失败：交强险没有选中但是报价大于0');
+                 HiddenLoading();
                 return
             } else {
                 i_items['forceI'] = '';
@@ -2199,10 +2235,12 @@
         var vehicleTaxCB = $(program).find('input[name="vehicleTaxCB"]').is(':checked');    // 交强险 checkbox
         if(vehicleTaxCB && vehicle_tax_price*1<=0){
             layer.alert('提交失败：车船税报价不能小于或等于0');
+             HiddenLoading();
             return
         }
         if(vehicleTaxCB == false && vehicle_tax_price*1>0){
             layer.alert('提交失败：车船税没有选中但是报价大于0');
+             HiddenLoading();
             return
         }
         var damageIPrice = $(program).find('input[name="damageIPrice"]').val();    // 车辆损失
@@ -2210,6 +2248,7 @@
         if(damageICB){
             if(damageIPrice*1<=0){
                 layer.alert('提交失败：车损险报价不能小于或等于0');
+                 HiddenLoading();
                 return
             } else {
                 i_items['damageI'] = 1;
@@ -2218,6 +2257,7 @@
         }else {
             if(damageIPrice*1>0) {
                 layer.alert('提交失败：车损险没有选中但是报价大于0');
+                 HiddenLoading();
                 return
             } else {
                 i_items['damageI'] = '';
@@ -2229,6 +2269,7 @@
         if(damageIPlusCB){
             if(damageIPlusPrice*1<=0) {
                 layer.alert('提交失败：车损不计免赔险报价不能小于或等于0');
+                 HiddenLoading();
                 return
             } else {
                 i_items['damageIPlus'] = 1;
@@ -2237,6 +2278,7 @@
         } else {
             if(damageIPlusPrice*1>0) {
                 layer.alert('提交失败：车损不计免赔险没有选中但是报价大于0');
+                 HiddenLoading();
                 return
             } else {
                 i_items['damageIPlus'] = '';
@@ -2249,6 +2291,7 @@
         if(thirdDutyICB){
             if(thirdDutyIPrice*1<=0){
                 layer.alert('提交失败：三责险报价不能小于或等于0');
+                 HiddenLoading();
                 return
             } else {
                 i_items['thirdDutyI'] = thirdDutyIP;
@@ -2257,6 +2300,7 @@
         } else {
             if(thirdDutyIPrice*1>0) {
                 layer.alert('提交失败：三责险没有选中但是报价大于0' + thirdDutyIPrice);
+                 HiddenLoading();
                 return
             } else {
                 i_items['thirdDutyI'] = '';
@@ -2269,6 +2313,7 @@
         if(thirdDutyIPlusCB){
             if(thirdDutyIPlusPrice*1<=0){
                 layer.alert('提交失败：三责不计免赔险报价不能小于或等于0');
+                 HiddenLoading();
                 return
             } else {
                 i_items['thirdDutyIPlus'] = 1;
@@ -2277,6 +2322,7 @@
         } else {
             if(thirdDutyIPlusPrice*1>0) {
                 layer.alert('提交失败：三责不计免赔险没有选中但是报价大于0');
+                 HiddenLoading();
                 return
             } else {
                 i_items['thirdDutyIPlus'] = '';
@@ -2289,6 +2335,7 @@
         if(robbingICB){
             if(robbingIPrice*1<=0) {
                 layer.alert('提交失败：盗抢险报价不能小于或等于0');
+                 HiddenLoading();
                 return
             } else {
                 i_items['robbingI'] = 1;
@@ -2297,6 +2344,7 @@
         } else {
             if(robbingIPrice*1>0) {
                 layer.alert('提交失败：盗抢险没有选中但是报价大于0');
+                 HiddenLoading();
                 return
             } else {
                 i_items['robbingI'] = '';
@@ -2309,6 +2357,7 @@
         if(robbingIPlusCB){
             if(robbingIPlusPrice*1<=0) {
                 layer.alert('提交失败：盗抢不计免赔险报价不能小于或等于0');
+                 HiddenLoading();
                 return
             } else {
                 i_items['robbingIPlus'] = 1;
@@ -2317,6 +2366,7 @@
         } else {
             if(robbingIPlusPrice*1>0) {
                 layer.alert('提交失败：盗抢不计免赔险没有选中但是报价大于0');
+                 HiddenLoading();
                 return
             } else {
                 i_items['robbingIPlus'] = '';
@@ -2330,6 +2380,7 @@
         if(driverDutyICB){
             if(driverDutyIPrice*1<=0) {
                 layer.alert('提交失败：车上司机险报价不能小于或等于0');
+                 HiddenLoading();
                 return
             } else {
                 i_items['driverDutyI'] = driverDutyIS;
@@ -2338,6 +2389,7 @@
         } else {
             if(driverDutyIPrice*1>0){
                 layer.alert('提交失败：车上司机险没有选中但是报价大于0');
+                 HiddenLoading();
                 return
             } else {
                 i_items['driverDutyI'] = '';
@@ -2350,6 +2402,7 @@
         if(driverDutyIPlusCB){
             if(driverDutyIPlusPrice*1<=0) {
                 layer.alert('提交失败：车上司机不计免赔险报价不能小于或等于0');
+                 HiddenLoading();
                 return
             } else {
                 i_items['driverDutyIPlus'] = 1;
@@ -2358,6 +2411,7 @@
         } else {
             if(driverDutyIPlusPrice*1>0) {
                 layer.alert('提交失败：车上司机不计免赔险没有选中但是报价大于0');
+                 HiddenLoading();
                 return
             } else {
                 i_items['driverDutyIPlus'] = '';
@@ -2371,6 +2425,7 @@
         if(passengerDutyICB){
             if(passengerDutyIPrice*1<=0) {
                 layer.alert('提交失败：车上乘客险报价不能小于或等于0');
+                 HiddenLoading();
                 return
             } else {
                 i_items['passengerDutyI'] = passengerDutyIS;
@@ -2379,6 +2434,7 @@
         } else {
             if(passengerDutyIPrice*1>0) {
                 layer.alert('提交失败：车上乘客险没有选中但是报价大于0');
+                 HiddenLoading();
                 return
             } else {
                 i_items['passengerDutyI'] = '';
@@ -2391,6 +2447,7 @@
         if(passengerDutyIPlusCB){
             if(passengerDutyIPlusPrice*1<=0) {
                 layer.alert('提交失败：车上乘客不计免赔险报价不能小于或等于0');
+                 HiddenLoading();
                 return
             } else {
                 i_items['passengerDutyIPlus'] = 1;
@@ -2399,6 +2456,7 @@
         } else {
             if(passengerDutyIPlusPrice*1>0) {
                 layer.alert('提交失败：车上乘客不计免赔险没有选中但是报价大于0');
+                 HiddenLoading();
                 return
             } else {
                 i_items['passengerDutyIPlus'] = '';
@@ -2411,6 +2469,7 @@
         if(glassICB){
             if(glassIPrice*1<=0) {
                 layer.alert('提交失败：玻璃险报价不能小于或等于0');
+                 HiddenLoading();
                 return
             } else {
                 i_items['glassI'] = 1;
@@ -2419,6 +2478,7 @@
         } else {
             if(glassIPrice*1>0) {
                 layer.alert('提交失败：玻璃险没有选中但是报价大于0');
+                 HiddenLoading();
                 return
             } else {
                 i_items['glassI'] = '';
@@ -2432,6 +2492,7 @@
         if(scratchICB){
             if(scratchIPrice*1<=0) {
                 layer.alert('提交失败：划痕险报价不能小于或等于0');
+                 HiddenLoading();
                 return
             } else {
                 i_items['scratchI'] = scratchIS;
@@ -2440,6 +2501,7 @@
         } else {
             if(scratchIPrice*1>0) {
                 layer.alert('提交失败：划痕险没有选中但是报价大于0');
+                 HiddenLoading();
                 return
             } else {
                 i_items['scratchI'] = '';
@@ -2452,6 +2514,7 @@
         if(scratchIPlusCB){
             if(scratchIPlusPrice*1<=0) {
                 layer.alert('提交失败：划痕不计免赔险报价不能小于或等于0');
+                 HiddenLoading();
                 return
             } else {
                 i_items['scratchIPlus'] = 1;
@@ -2460,6 +2523,7 @@
         } else {
             if(scratchIPlusPrice*1>0) {
                 layer.alert('提交失败：划痕不计免赔险没有选中但是报价大于0');
+                 HiddenLoading();
                 return
             } else {
                 i_items['scratchIPlus'] = '';
@@ -2472,6 +2536,7 @@
         if(fireDamageICB){
             if(fireDamageIPrice*1<=0) {
                 layer.alert('提交失败：自燃险报价不能小于或等于0');
+                 HiddenLoading();
                 return
             } else {
                 i_items['fireDamageI'] = 1;
@@ -2480,6 +2545,7 @@
         } else {
             if(fireDamageIPrice*1>0) {
                 layer.alert('提交失败：自燃险没有选中但是报价大于0');
+                 HiddenLoading();
                 return
             } else {
                 i_items['fireDamageI'] = '';
@@ -2492,6 +2558,7 @@
         if(fireDamageIPlusCB){
             if(fireDamageIPlusPrice*1<=0) {
                 layer.alert('提交失败：自燃不计免赔险报价不能小于或等于0');
+                 HiddenLoading();
                 return
             } else {
                 i_items['fireDamageIPlus'] = 1;
@@ -2500,6 +2567,7 @@
         } else {
             if(fireDamageIPlusPrice*1>0) {
                 layer.alert('提交失败：自燃险不计免赔没有选中但是报价大于0');
+                 HiddenLoading();
                 return
             } else {
                 i_items['fireDamageIPlus'] = '';
@@ -2512,6 +2580,7 @@
         if(wadeICB){
             if(wadeIPrice*1<=0) {
                 layer.alert('提交失败：涉水险报价不能小于或等于0');
+                 HiddenLoading();
                 return
             } else {
                 i_items['wadeI'] = 1;
@@ -2520,6 +2589,7 @@
         } else {
             if(wadeIPrice*1>0) {
                 layer.alert('提交失败：涉水险没有选中但是报价大于0');
+                 HiddenLoading();
                 return
             } else {
                 i_items['wadeI'] = '';
@@ -2532,6 +2602,7 @@
         if(wadeIPlusCB){
             if(wadeIPlusPrice*1<=0) {
                 layer.alert('提交失败：涉水不计免赔险报价不能小于或等于0');
+                 HiddenLoading();
                 return
             } else {
                 i_items['wadeIPlus'] = 1;
@@ -2540,6 +2611,7 @@
         } else {
             if(wadeIPlusPrice*1>0) {
                 layer.alert('提交失败：涉水不计免赔险没有选中但是报价大于0');
+                 HiddenLoading();
                 return
             } else {
                 i_items['wadeIPlus'] = '';
@@ -2552,6 +2624,7 @@
         if(thirdSpecialICB){
             if(thirdSpecialIPrice*1<=0){
                 layer.alert('提交失败：无法找到第三方险报价不能小于或等于0');
+                 HiddenLoading();
                 return
             } else {
                 i_items['thirdSpecialI'] = 1;
@@ -2560,6 +2633,7 @@
         } else {
             if(thirdSpecialIPrice*1>0) {
                 layer.alert('提交失败：无法找到第三方险没有选中但是报价大于0');
+                 HiddenLoading();
                 return
             } else {
                 i_items['thirdSpecialI'] = '';
@@ -2590,6 +2664,7 @@
         groups['cash'] = cash;
         groups['psummary'] = psummary;
         $.post('/ajax/save_iop_data', {_xsrf:xsrf, i_items:JSON.stringify(i_items), groups:JSON.stringify(groups), send_msg:send_msg}, function (data) {
+            HiddenLoading();
             var obj = jQuery.parseJSON(data);
             if (obj.flag == 1) {
                 layer.alert('保存成功!');
