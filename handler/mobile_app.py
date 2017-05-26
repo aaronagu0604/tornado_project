@@ -366,7 +366,8 @@ class MobileHomeHandler(MobileBaseHandler):
                 'img': store_insurance.insurance.logo,
                 'name': store_insurance.insurance.name,
                 'price': 0,
-                'link': 'czj://insurance/%d' % store_insurance.insurance.id
+                'link': 'czj://insurance/' + str(store_insurance.insurance.id) +
+                '/' + store_insurance.insurance.name
             } for store_insurance in user.store.store_policy]
         else:
             insurances = self.application.memcachedb.get('insurances_no_login')
@@ -996,8 +997,42 @@ class MobileCategoryHandler(MobileBaseHandler):
     def get(self):
         t = self.get_argument("type", "1")
         f = self.get_argument("f", "android")
-        # todo: 增加查询全部保险和商品品牌得代码，传入前台绑定
-        self.render('mobile/category.html', type=t, f=f)
+
+        user = self.get_user()
+        # 保险
+        if user:
+            insurances = [{
+                              'img': store_insurance.insurance.logo,
+                              'name': store_insurance.insurance.name,
+                              'price': 0,
+                              'link': 'czj://insurance/' + str(store_insurance.insurance.id)
+                              + '/' + store_insurance.insurance.name
+                          } for store_insurance in user.store.store_policy]
+        else:
+            insurances = self.application.memcachedb.get('insurances_no_login')
+            if not insurances:
+                insurances = InsuranceArea.get_insurances_link('0027')
+                self.application.memcachedb.set('insurances_no_login', insurances)
+
+        brands = []
+        spps = Brand.select(Brand.id.alias('id'), Brand.logo.alias('logo'), Brand.name.alias('name'),
+                            Product.category.alias('cid')). \
+            join(Product, on=Product.brand == Brand.id). \
+            join(ProductRelease, on=ProductRelease.product == Product.id). \
+            join(StoreProductPrice, on=StoreProductPrice.product_release == ProductRelease.id). \
+            tuples()
+        blist = []
+        for id, logo, name, cid in spps:
+            if id not in blist:
+                blist.append(id)
+                brands.append({
+                    'img': logo,
+                    'name': name,
+                    'price': 0,
+                    'link': 'czj://category/%d/brand/%d' % (cid, id)
+                })
+
+        self.render('mobile/category.html', type=t, f=f, insurances=insurances, brands=brands)
 
 
 @route(r'/mobile/product', name='mobile_product')  # 产品详情页
