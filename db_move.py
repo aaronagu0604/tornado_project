@@ -258,6 +258,7 @@ def move_brandcategory():
 adminuser_map = {}  # adminuser id 映射表，在转移的时候记录下来，后边有需要指向其的外键的时候替换即可
 
 def move_adminuser():
+    New_AdminUser.delete().execute()
     old_adminuser = Old_AdminUser.select()
     for item in old_adminuser:
         adminuser = New_AdminUser.create(
