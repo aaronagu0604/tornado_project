@@ -831,36 +831,28 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
         ft = (Product.active == 1)
         # 根据规格参数搜索
         category = int(category)
-        attribute = [int(item) for item  in attribute]
+        attribute = [int(item) for item in attribute]
         brand = [int(item) for item in brand]
         index = int(index)
         if category and attribute:
             ft1 = ft2 = None
             c = Category.get(id=category)
             for i, a in enumerate(c.attributes):
-                cais = CategoryAttributeItems.select().where(
-                    (CategoryAttributeItems.category_attribute == a.id) & (CategoryAttributeItems.id << attribute))
+                cais = CategoryAttributeItems.select().where((CategoryAttributeItems.category_attribute == a.id) &
+                                                             (CategoryAttributeItems.id << attribute))
                 for cai in cais:
-                    ft2 = (ProductAttributeValue.value == cai.name) if not ft2 else ft2 | (
-                    ProductAttributeValue.value == cai.name)
+                    ft2 = (ProductAttributeValue.value == cai.name) if not ft2 else ft2 | (ProductAttributeValue.value == cai.name)
                 if ft2:
                     ft1 = ft2 if not ft1 else ft1 & ft2
             if ft1:
                 products = Product.select().join(ProductAttributeValue).where(ft1)
                 pids = [product.id for product in products]
                 ft = (Product.id << pids)
-                # for i, f in enumerate(fts):
-                #     if i == 0:
-                #         products = Product.select().join(ProductAttributeValue).where(f)
-                #     else:
-                #         products = Product.select().join(ProductAttributeValue).where(f & (Product.id << pids))
-                #     pids = [product.id for product in products]
         elif category:
             ft &= (Product.category == category)
         ft &= ((StoreProductPrice.price > 0) & (StoreProductPrice.active == 1) & (ProductRelease.active == 1))
         if keyword:
-            keyword = '%' + '%'
-            ft &= (Product.name % keyword)
+            ft &= (Product.name.contains(keyword))
         if brand:
             ft &= (Product.brand << brand)
         if len(area_code) == 12:  # 门店可以购买的范围仅仅到区县
