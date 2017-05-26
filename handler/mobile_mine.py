@@ -1449,7 +1449,6 @@ class MobileWithdrawCashHandler(MobileBaseHandler):
     """
     @require_auth
     def get(self):
-
         result = {'flag': 0, 'msg': '', "data": {}}
         store = self.get_user().store
         store_bank_accounts = StoreBankAccount.select().where(StoreBankAccount.store == store).order_by(StoreBankAccount.is_default.desc())
