@@ -757,10 +757,11 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
                     ft2 = (ProductAttributeValue.value == cai.name) if not ft2 else ft2 | (ProductAttributeValue.value == cai.name)
                 if ft2:
                     ft1 = ft2 if not ft1 else ft1 & ft2
+            print ft1
             if ft1:
                 products = Product.select().join(ProductAttributeValue).where(ft1)
                 pids = [product.id for product in products]
-                ft = (Product.id << pids)
+                ft = (Product.id << pids) if pids else ft
         elif category:
             ft &= (Product.category == category)
         ft &= ((StoreProductPrice.price > 0) & (StoreProductPrice.active == 1) & (ProductRelease.active == 1))
@@ -799,6 +800,7 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
         else:
             products = products.order_by(ProductRelease.sort.desc())
         ps = products.paginate(index, setting.MOBILE_PAGESIZE)
+        #print ps
         for p in ps:
             productList.append({
                 'prid': p['prid'],
