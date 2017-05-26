@@ -781,7 +781,8 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
             ProductRelease.id.alias('prid'), Product.id.alias('pid'), StoreProductPrice.id.alias('sppid'),
             Product.name.alias('name'), StoreProductPrice.price.alias('price'), Product.unit.alias('unit'),
             ProductRelease.buy_count.alias('buy_count'), Product.cover.alias('cover'),
-            Product.resume.alias('resume'), Store.name.alias('sName'), ProductRelease.is_score.alias('is_score')). \
+            Product.resume.alias('resume'), Store.name.alias('sName'), ProductRelease.is_score.alias('is_score'),
+            ProductRelease.sort.alias('sort')). \
             join(Product, on=(Product.id == ProductRelease.product)). \
             join(StoreProductPrice, on=(StoreProductPrice.product_release == ProductRelease.id)). \
             join(Store, on=(Store.id == ProductRelease.store)).where(ft).dicts()
