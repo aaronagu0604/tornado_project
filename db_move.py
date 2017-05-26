@@ -168,7 +168,7 @@ def move_area():
 category_map = {}
 
 def move_category():
-    old_category = Old_PinPaiType.select().where(Old_PinPaiType.id << [1,3,4])
+    old_category = Old_PinPaiType.select()
     for item in old_category:
         category = New_Category.create(
             name=item.name,
@@ -241,7 +241,7 @@ def move_brand():
 
 # brandcategory:品牌产品类型
 def move_brandcategory():
-    old_brandcategory = Old_PinPai.select()  # 过滤后只余下新数据库brand对应的PinPai数据
+    old_brandcategory = Old_PinPai.select().where()  # 过滤后只余下新数据库brand对应的PinPai数据
 
     old_data = [{
         'brand': brand_map[item.id],
