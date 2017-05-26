@@ -347,6 +347,10 @@ class MobileReceiveOrderHandler(MobileBaseHandler):
         if sub_orders.count() > 0:
             sub_orders[0].status = 3
             sub_orders[0].save()
+            # 收完货，把该订单的钱同步给销售方
+            salestore = sub_orders[0].saler_store
+            salestore.price += sub_orders[0].price
+            salestore.save()
             if len(set([sub_order.status for sub_order in sub_orders])) == 1:
                 sub_orders[0].order.status = 3
                 sub_orders[0].order.save()
