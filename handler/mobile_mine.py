@@ -663,6 +663,9 @@ class MobileInsuranceOrderDetailHandler(MobileBaseHandler):
                 iValue = getattr(insuranceorder.current_order_price, i.eName)
                 iList['force'] = '1' if insuranceorder.current_order_price.forceI=='1' else '0'
                 iList['forceprice'] = str(insuranceorder.current_order_price.forceIPrice if insuranceorder.current_order_price.forceIPrice else 0.0)
+                iList['vehicle_tax'] = '1' if insuranceorder.current_order_price.vehicle_tax_price else '0'
+                iList['vehicle_tax_price'] = str(
+                    insuranceorder.current_order_price.vehicle_tax_price if insuranceorder.current_order_price.vehicle_tax_price else 0.0)
             elif i.style == u'商业险-主险' and iValue != 'false' and iValue:
                 iList['main'].append({'eName': i.eName, 'name': i.name, 'style': i.style, 'value': iValue, 'price':str(iPrice)})
                 iList['mainprice'] += iPrice
@@ -899,8 +902,10 @@ class MobileInsuranceMethodHandler(MobileBaseHandler):
 
         ops = InsuranceOrderPrice.select().where(InsuranceOrderPrice.insurance_order_id == io_id)
         for iop in ops:
-            force = ''
+            force = '0'
             forceprice = 0
+            vehicle_tax = '0'
+            vehicle_tax_price = 0.0
             mainprice = 0
             subjoinprice = 0
             main = []
@@ -916,6 +921,9 @@ class MobileInsuranceMethodHandler(MobileBaseHandler):
                     # forceprice = iPrice
                     force = '1' if iop.forceI=='1' else '0'
                     forceprice = str(iop.forceIPrice if iop.forceIPrice else 0.0)
+                    vehicle_tax = '1' if iop.vehicle_tax_price else '0'
+                    vehicle_tax_price = str(
+                        iop.vehicle_tax_price if iop.vehicle_tax_price else 0.0)
                 elif i.style == u'商业险-主险' and iValue != 'false' and iValue:
                     main.append({'eName': i.eName, 'name': i.name, 'style': i.style, 'value': iValue, 'price':str(iPrice)})
                     mainprice += iPrice
@@ -941,6 +949,8 @@ class MobileInsuranceMethodHandler(MobileBaseHandler):
                 'created':time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(iop.created)),
                 'force': force,
                 'forceprice':forceprice,
+                'vehicle_tax':vehicle_tax,
+                'vehicle_tax_price':vehicle_tax_price,
                 'main': main,
                 'mainprice': mainprice,
                 'subjoin': subjoin,
