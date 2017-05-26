@@ -649,9 +649,9 @@ class InsuranceArea(db.Model):
     insurance = ForeignKeyField(Insurance, db_column='insurance_id')
     lube_ok = IntegerField(default=1)  # 开通反油
     dealer_store = ForeignKeyField(Store, db_column='dealer_store_id', default=0)  # 经销商
-    lube_policy = CharField(max_length=4000)  # 返油政策的json串
+    lube_policy = TextField(max_length=4000)  # 返油政策的json串
     cash_ok = IntegerField(default=1)  # 开通反现
-    cash_policy = CharField(max_length=4000)  # 返现政策的json串
+    cash_policy = TextField(max_length=4000)  # 返现政策的json串
     sort = IntegerField(default=1)  # 显示顺序
     active = IntegerField(default=1)  # 状态 0删除 1有效
 
@@ -1011,8 +1011,8 @@ class SSILubePolicy(db.Model):
     store = ForeignKeyField(Store, related_name='store_policy', db_column='store_id')  # 门店
     insurance = ForeignKeyField(Insurance, related_name='insurance_policy', db_column='insurance_id')  # 保险公司
     dealer_store = ForeignKeyField(Store, related_name='dealer_store_policy', db_column='dealer_store_id')  # 经销商
-    cash = CharField(max_length=4000, default='')  # 返油政策的json串  # 返现政策
-    lube = CharField(max_length=4000, default='')  # 返油政策的json串  #　返油政策
+    cash = TextField(max_length=4000, default='')  # 返油政策的json串  # 返现政策
+    lube = TextField(max_length=4000, default='')  # 返油政策的json串  #　返油政策
 
     class Meta:
         db_table = "tb_store_gift_policy"
@@ -1389,7 +1389,7 @@ def load_test_data():
                        money=100.5, status=1, apply_time=1487032696)
 
 if __name__ == '__main__':
-    # init_db()
+    init_db()
     # load_test_data()
     # LubePolicy.create_table()
 

@@ -1452,7 +1452,7 @@ class MobileWithdrawCashHandler(MobileBaseHandler):
 
         result = {'flag': 0, 'msg': '', "data": {}}
         store = self.get_user().store
-        store_bank_accounts = StoreBankAccount.select().where(StoreBankAccount.store==store).order_by(StoreBankAccount.is_default.desc())
+        store_bank_accounts = StoreBankAccount.select().where(StoreBankAccount.store == store).order_by(StoreBankAccount.is_default.desc())
         result['data']['totalprice'] = store.price
         result['data']['withdrawline'] = 100
         result['data']['items'] = []
@@ -1460,7 +1460,7 @@ class MobileWithdrawCashHandler(MobileBaseHandler):
             result['flag'] = 1
             if bank_account.account_type == 0:
                 url = 'http://img.hb.aicdn.com/f36700ea3039da9f49d23c11ebf1be1aec12996a439da-5HoGoW_fw658'
-                for k,v in setting.bank_en.items():
+                for k, v in setting.bank_en.items():
                     if v.find(bank_account.bank_name)>=0:
                         url = 'https://apimg.alipay.com/combo.png?d=cashier&t=%s'%k
                 result['data']['items'].append({

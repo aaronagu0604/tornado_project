@@ -1362,10 +1362,9 @@ class WithdrawHandler(AdminBaseHandler):
         status = self.get_argument("status", 0)
         status = int(status) if status else 0
 
-        if status == -1:
-            ft = (MoneyRecord.status > -1)
-        else:
-            ft = (MoneyRecord.status == status)
+        ft = (MoneyRecord.type == 1)
+        if status > -1:
+            ft &= (MoneyRecord.status == status)
 
         if begindate and enddate:
             begin = time.strptime(begindate, "%Y-%m-%d")

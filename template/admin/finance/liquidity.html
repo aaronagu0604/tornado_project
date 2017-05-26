@@ -18,7 +18,6 @@
                 <form class="navbar-form navbar-left" action="" method="get">
                     <input value="1" type="hidden" name="page">
                     <input value="" type="hidden" name="sid">
-
                     <div class="btn-group btn-group-xs">
                         <a type="button" class="btn btn-default {% if type=='2' %} active {% endif %}"  href="/admin/store_liquidity/{{sid}}?type=2" style="padding:8px 4px;border:1px solid #ccc;border-bottom-left-radius:4px;border-top-left-radius:4px;">资金</a>
                         <a type="button" class="btn btn-default {% if type=='1' %} active {% endif %}" href="/admin/store_liquidity/{{sid}}?type=1" style="padding:8px 4px;border:1px solid #ccc;border-left:none;">积分</a>
@@ -40,45 +39,45 @@
             <table class="table table-hover" id="tb_user" cellpadding="0" cellspacing="0" border="0">
                 <thead>
                 <tr style="background:#528acb;color:#fff;text-align:center;height:38px;line-height:38px;">
-                    <th style="width:10%;text-align:center;">单号</th>
-                    <th style="width:10%;text-align:center;">出入账</th>
-                    <th style="width:10%;text-align:center;">类别</th>
-                    <th style="width:10%;text-align:center;">数值</th>
-                    <th style="width:10%;text-align:center;">日志</th>
-                    <th style="width:12%;text-align:center;">时间</th>
+                    <th style="width:15%;text-align:center;">单号</th>
+                    <th style="width:15%;text-align:center;">出入账</th>
+                    <th style="width:15%;text-align:center;">类别</th>
+                    <th style="width:15%;text-align:center;">数值</th>
+                    <th style="width:20%;text-align:center;">日志</th>
+                    <th style="width:20%;text-align:center;">时间</th>
                 </tr>
                 </thead>
                 <tbody>
                 {% for a in lists %}
                 {% if type == '1' %}
                 <tr>
-                    <td>{{a.ordernum}}</td>
-                    <td>{{a.process_type==0 and '入账' or '出账'}}</td>
+                    <td style="width:15%;text-align:center;">{{a.ordernum}}</td>
+                    <td style="width:15%;text-align:center;">{{a.process_type==0 and '入账' or '出账'}}</td>
                     {% if a.type == 1 %}
-                    <td>兑换商品</td>
+                    <td style="width:15%;text-align:center;">兑换商品</td>
                     {% elif a.type == 2 %}
-                    <td>兑现</td>
+                    <td style="width:15%;text-align:center;">兑现</td>
                     {% elif a.type == 3 %}
-                    <td>卖保险获取</td>
+                    <td style="width:15%;text-align:center;">卖保险获取</td>
                     {% else %}
-                    <td>其它</td>
+                    <td style="width:15%;text-align:center;">其它</td>
                     {% endif %}
-                    <td>{{a.score}}</td>
-                    <td>{{a.process_log}}</td>
-                    <td>{{a.created | datetimeformat}}</td>
+                    <td style="width:15%;text-align:center;">{{a.score}}</td>
+                    <td style="width:15%;text-align:center;">{{a.process_log}}</td>
+                    <td style="width:15%;text-align:center;">{{a.created | datetimeformat}}</td>
                 </tr>
                 {% else %}
                 <tr>
-                    <td>{{a.in_num}}</td>
+                    <td style="width:15%;text-align:center;">{{a.in_num}}</td>
                     {% if a.process_type==1 %}
-                    <td>入账</td>
+                    <td style="width:15%;text-align:center;">入账</td>
                     {% elif a.process_type==2 %}
-                    <td>出账</td>
+                    <td style="width:15%;text-align:center;">出账</td>
                     {% endif %}
-                    <td>{{a.process_message}}</td>
-                    <td>{{a.money}}</td>
-                    <td>{{a.process_log}}</td>
-                    <td>{{a.apply_time | datetimeformat}}</td>
+                    <td style="width:15%;text-align:center;">{{a.process_message}}</td>
+                    <td style="width:15%;text-align:center;">{{a.money}}</td>
+                    <td style="width:15%;text-align:center;">{{a.process_log}}</td>
+                    <td style="width:15%;text-align:center;">{{a.apply_time | datetimeformat}}</td>
                 </tr>
                 {% endif %}
                 {% endfor %}
