@@ -1017,8 +1017,8 @@
 
                                                 <div class="col-xs-3 leftTxt"><span>转账率：</span></div>
                                                 <div class="col-xs-3 rightTxt"><input name="ali_rate" value="" class="form-control"/></div>
-                                                <div class="col-xs-3 leftTxt"><span>起兑金：</span></div>
-                                                <div class="col-xs-3 rightTxt"><input name="base_money" value="" class="form-control"/></div>
+                                                <div class="col-xs-3 leftTxt" style="display: none" ><span>起兑金：</span></div>
+                                                <div class="col-xs-3 rightTxt" style="display: none"><input name="base_money" value="" class="form-control"/></div>
 
                                                 <div class="col-xs-3 leftTxt"><span>获利率：</span></div>
                                                 <div class="col-xs-3 rightTxt"><input name="profit" value="" class="form-control"/></div>
@@ -1030,19 +1030,19 @@
                                                 <div class="row" id="{{program['pid']}}1" {% if 1 != program['gift_policy'] %}  style="display: none" {% endif %}>
                                                     <div class="col-xs-6">
                                                         <div class="col-xs-6 leftTxt"><span>车主油品：</span></div>
-                                                        <div class="col-xs-6 rightTxt"><input name="driveroiltype" value="" class="form-control"/></div>
+                                                        <div class="col-xs-6 rightTxt"><input name="driveroiltype" value="{{program['driver_lube_type']}}" class="form-control"/></div>
                                                     </div>
                                                     <div class="col-xs-6">
                                                         <div class="col-xs-6 leftTxt"><span>车主数量：</span></div>
-                                                        <div class="col-xs-6 rightTxt"><input name="driveroilnum" value="" class="form-control"/></div>
+                                                        <div class="col-xs-6 rightTxt"><input name="driveroilnum" value="{{program['driver_lube_num']}}" class="form-control"/></div>
                                                     </div>
                                                     <div class="col-xs-6">
                                                         <div class="col-xs-6 leftTxt"><span>门店油品：</span></div>
-                                                        <div class="col-xs-6 rightTxt"><input name="storeoiltype" value="" class="form-control"/></div>
+                                                        <div class="col-xs-6 rightTxt"><input name="storeoiltype" value="{{program['store_lube_type']}}" class="form-control"/></div>
                                                     </div>
                                                     <div class="col-xs-6">
                                                         <div class="col-xs-6 leftTxt"><span>门店数量：</span></div>
-                                                        <div class="col-xs-6 rightTxt"><input name="storeoilnum" value="" class="form-control"/></div>
+                                                        <div class="col-xs-6 rightTxt"><input name="storeoilnum" value="{{program['store_lube_num']}}" class="form-control"/></div>
                                                     </div>
                                                     <div class="col-xs-6"></div>
                                                     <div class="col-xs-6">
@@ -1511,77 +1511,6 @@
             }
         });
     }
-    // 选择返佣方式
-    function change_gift_policy(pid, gift) {
-        if(gift == 1){
-            // 根据获取 ID 获取元素
-            var program = document.getElementById(pid);
-            // 获取数据
-            var insurance = $(program).find('select[name="insurance"]').val();   // 保险 ID
-            var gift_policy = $(program).find('select[name="gift_policy"]').val();   // 返佣方式
-
-            var vehicle_tax_price = $(program).find('input[name="vehicle_tax_price"]').val();    // 车船税价格
-            var total_force = 0;
-            var total_business = 0;
-            // 获取循环的险种数据
-            $(program).find('table tr td').each(function (index, element) {
-                var i_item_name = $(this).find('input[name="i_item"]').attr('c_name');
-                var i_item = $(this).find('input[name="i_item"]').attr('e_name');
-                var i_type = $(this).find('input[name="i_item"]').attr('i_type');
-                var i_item_value = $(this).find('input[name="i_item"]').val();
-                if(i_type == 1){
-                    total_force = i_item_value;    // 交强险总金额
-                }else if (i_type == 2 | i_type == 3){
-                    total_business = total_business*1 + i_item_value*1;    // 商业险总金额
-                }
-            });
-            // 回填
-            $.get("/ajax/calculate_gift_oil", { _xsrf:xsrf, iopid:pid, insurance:insurance, business:total_business, force:total_force}, function (data) {
-                var obj = jQuery.parseJSON(data);
-                if (obj.flag == 1) {
-                    $(program).find('input[name="driveroiltype"]').val(obj.data.driveroiltype);
-                    $(program).find('input[name="driveroilnum"]').val(obj.data.driveroilnum);
-                    $(program).find('input[name="storeoiltype"]').val(obj.data.storeoiltype);
-                    $(program).find('input[name="storeoilnum"]').val(obj.data.storeoilnum);
-                    $(program).find('input[name="cash"]').val(0);
-                }
-                else {
-                    layer.alert(obj.msg);
-                }
-                $(program).find('input[name="business_s"]').val(0);    // 商业险返佣率
-                $(program).find('input[name="force_s"]').val(0);    // 交强险返佣率
-                $(program).find('input[name="ali_rate"]').val(0);    // 转账费率
-                $(program).find('input[name="profit"]').val(0);    // 利润率
-                $(program).find('input[name="business_tax"]').val(0);    // 商业险税率
-                $(program).find('input[name="force_tax"]').val(0);    // 交强险税率
-                $(program).find('input[name="base_money"]').val(0);    // 起兑金额
-            });
-        } else if(gift == 2){
-            var program = document.getElementById(pid);
-            var iid = $(program).find('select[name="insurance"]').val();   // 获取保险公司ID
-
-            $.get("/ajax/get_score_rate", {pid: pid, iid: iid}, function (data) {
-                var obj = jQuery.parseJSON(data);
-                if (obj.flag == 1) {
-                    $(program).find('input[name="business_s"]').val(obj.data.business_s);    // 商业险返佣率
-                    $(program).find('input[name="force_s"]').val(obj.data.force_s);    // 交强险返佣率
-                    $(program).find('input[name="ali_rate"]').val(obj.data.ali_rate);    // 转账费率
-                    $(program).find('input[name="profit"]').val(obj.data.profit_rate);    // 利润率
-                    $(program).find('input[name="business_tax"]').val(obj.data.business_tax);    // 商业险税率
-                    $(program).find('input[name="force_tax"]').val(obj.data.force_tax);    // 交强险税率
-                    $(program).find('input[name="base_money"]').val(obj.data.base_money);    // 起兑金额
-                    $(program).find('input[name="driveroiltype"]').val();
-                    $(program).find('input[name="driveroilnum"]').val(0);
-                    $(program).find('input[name="storeoiltype"]').val();
-                    $(program).find('input[name="storeoilnum"]').val(0);
-                }
-                else {
-                    layer.alert(obj.msg);
-                }
-            });
-        }
-
-    }
 
     // 切换返佣方式
     function get_gift_policy(pid, gift) {
@@ -1602,7 +1531,7 @@
                     $(program).find('input[name="driveroilnum"]').val(obj.data.driveroilnum);
                     $(program).find('input[name="storeoiltype"]').val(obj.data.storeoiltype);
                     $(program).find('input[name="storeoilnum"]').val(obj.data.storeoilnum);
-                    $(program).find('input[name="cash"]').val(0);
+                    //$(program).find('input[name="cash"]').val(0);
                 }
                 else {
                     layer.alert(obj.msg);
@@ -2646,6 +2575,12 @@
         var business_price = $(program).find('input[name="business_price"]').val();    // 商业险总额
         var insurance_price = $(program).find('input[name="insurance_price"]').val();    // 保险总额
         var gift_policy = $(program).find('select[name="gift_policy"]').val();   // 返佣方式
+
+        var driveroiltype = $(program).find('input[name="driveroiltype"]').val();
+        var driveroilnum = $(program).find('input[name="driveroilnum"]').val();
+        var storeoiltype = $(program).find('input[name="storeoiltype"]').val();
+        var storeoilnum = $(program).find('input[name="storeoilnum"]').val();
+
         var cash = $(program).find('input[name="cash"]').val();    // 积分
         var psummary = $(program).find('textarea[name="psummary"]').val();    // 短信
         var force_rate = $(program).find('input[name="force_rate"]').val();    // 交强险折扣
@@ -2661,6 +2596,10 @@
         groups['total_price'] = insurance_price;
         groups['force_rate'] = force_rate;
         groups['business_rate'] = business_rate;
+        groups['driveroiltype'] = driveroiltype
+        groups['driveroilnum'] = driveroilnum
+        groups['storeoiltype'] = storeoiltype
+        groups['storeoilnum'] = storeoilnum
         groups['cash'] = cash;
         groups['psummary'] = psummary;
         $.post('/ajax/save_iop_data', {_xsrf:xsrf, i_items:JSON.stringify(i_items), groups:JSON.stringify(groups), send_msg:send_msg}, function (data) {

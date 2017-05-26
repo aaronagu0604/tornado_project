@@ -554,7 +554,11 @@ class SaveIOPHandler(BaseHandler):
             if groups['gift_policy'] == '2':
                 pid.cash = groups['cash']
             else:
-                pid.cash = 0
+                pid.driver_lube_type = groups['driveroiltype']   # 返车主油品型号
+                pid.driver_lube_num = groups['driveroilnum']  # 返车主油品数量
+                pid.store_lube_type = groups['storeoiltype']   # 返修理厂油品型号
+                pid.store_lube_num = groups['storeoilnum']
+
             pid.total_price = groups['total_price']
             pid.force_price = groups['force_price']
             pid.business_price = groups['business_price']

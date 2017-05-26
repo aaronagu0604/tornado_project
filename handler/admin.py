@@ -1707,6 +1707,10 @@ class InsuranceOrderDetailHandler(AdminBaseHandler):
                 'ioid':program.insurance_order_id,
                 'insurance': program.insurance,
                 'gift_policy': program.gift_policy,
+                'driver_lube_type': program.driver_lube_type,  # 返车主油品型号
+                'driver_lube_num': program.driver_lube_num,   # 返车主油品数量
+                'store_lube_type': program.store_lube_type,   # 返修理厂油品型号
+                'store_lube_num': program.store_lube_num,
                 'cash': program.cash,
                 'total_price': program.total_price,
                 'force_price': program.force_price,
