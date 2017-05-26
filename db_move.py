@@ -168,7 +168,7 @@ def move_area():
 category_map = {}
 
 def move_category():
-    old_category = Old_PinPaiType.select()
+    old_category = Old_PinPaiType.select().where(Old_PinPaiType.id << [1,3,4])
     for item in old_category:
         category = New_Category.create(
             name=item.name,
@@ -1352,13 +1352,13 @@ def move_caritem():
     print 'move car item',len(old_data)
 
 if __name__ == '__main__':
-    print move_lubeexchange()
-    # move_hotsearch()
-    # move_delivery()
-    # move_bankcard()
-    # move_area()
-    # move_category()
-    # move_categoryattribute()
+    pass
+    # move_hotsearch()    # 热搜
+    # move_delivery()   # 物流公司
+    # move_bankcard()   # 银行卡
+    # move_area()   # 地区
+    # move_category()   # 分类
+    # move_categoryattribute()  # 分类和品牌关系
     # move_categoryattributeitem()
     # move_brand()
     # move_brandcategory()
@@ -1398,3 +1398,4 @@ if __name__ == '__main__':
     # move_caritemgroup()
     # move_carsk()
     # move_caritem()
+    # move_lubeexchange()

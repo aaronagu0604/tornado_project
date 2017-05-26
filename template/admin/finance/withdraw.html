@@ -23,7 +23,6 @@
                 <div class="input-group custom-search-form">
                     <input type="text" name="begindate" id="begindate" value="{{begindate}}" class="Wdate form-control"  onClick="WdatePicker()" placeholder="开始日期" style="width:110px;height:34px;margin-right:5px;border:1px solid #ccc;border-radius:4px;"/>
                     <input type="text" name="enddate" id="enddate" value="{{enddate}}" class="Wdate form-control" onClick="WdatePicker()" placeholder="截止日期" style="width:110px;height:34px;margin-right:5px;border:1px solid #ccc;border-radius:4px;"/>
-
                     <input type="text" name="keyword" id="keyword" value="{{keyword or ''}}" class="form-control" placeholder="按店铺查找" style="width:210px;height:34px;border:1px solid #ccc;border-bottom-left-radius:4px;border-top-left-radius:4px;"/>
                     <span class="input-group-btn">
                         <button class="btn btn-default" type="submit" id="bt_submit">
@@ -58,25 +57,15 @@
                         <a href="#" onclick="store_liquidity('{{a.store.id}}', '{{a.store.name}}')">{{a.store.name}}</a>
                     </td>
                     <td>
-                        {% if a.account_type == 0 %}
+                        {% if a.out_account_type == 0 %}
                         银联
-                        {%elif a.account_type == 1 %}
+                        {%elif a.out_account_type == 1 %}
                         支付宝
                         {%endif%}
                     </td>
-                    <td>
-                        {% if a.account_type == 0 %}
-                        {{a.account_name}}&nbsp;{{a.account_branchname}}&nbsp;{{a.account_account}}
-                        {%elif a.account_type == 1 %}
-                        alipay_account
-                        {%endif%}
-                    </td>
-                    {% if a.account_type == 0 %}
-                    <td>{{a.account_truename}}</td>
-                    {% else %}
-                    <td> alipay_truename </td>
-                    {% endif %}
-                    <td>{{a.sum_money}}</td>
+                    <td>{{a.out_account_account}}</td>
+                    <td>{{a.out_account_truename}}</td>
+                    <td>{{a.money}}</td>
                     <td data-id="{{a.id}}" class="status" style="cursor: pointer;">
                         {% if a.status == 0 %}
                         <span style="color: red;">未处理</span>

@@ -1359,31 +1359,31 @@ class WithdrawHandler(AdminBaseHandler):
         key = self.get_argument("keyword", None)
         begindate = self.get_argument("begindate", '')
         enddate = self.get_argument("enddate", '')
-        status = int(self.get_argument("status", 0))
+        status = self.get_argument("status", 0)
+        status = int(status) if status else 0
 
-        ft = (Withdraw.id > 0)
+        if status == -1:
+            ft = (MoneyRecord.status > -1)
+        else:
+            ft = (MoneyRecord.status == status)
+
         if begindate and enddate:
             begin = time.strptime(begindate, "%Y-%m-%d")
             end = time.strptime((enddate + " 23:59:59"), "%Y-%m-%d %H:%M:%S")
-            ft = ft & (Withdraw.apply_time > time.mktime(begin)) & (Withdraw.apply_time < time.mktime(end))
-
-        if status == -1:
-            ft =ft
-        else:
-            ft = ft & (Withdraw.status == status)
+            ft = ft & (MoneyRecord.apply_time > time.mktime(begin)) & (MoneyRecord.apply_time < time.mktime(end))
 
         if key:
             keyword = '%' + key + '%'
-            ft = ft & ((Store.name.contains(keyword)) | ((User.mobile.contains(keyword))))
-            uq = Withdraw.select().join(Store, on=(Withdraw.store == Store.id)).join(User, on=(Store.id == User.store)).where(ft)
+            ft = ft & ((Store.name.contains(keyword)) | (User.mobile.contains(keyword)))
+            uq = MoneyRecord.select().join(Store, on=(MoneyRecord.store == Store.id)).join(User, on=(MoneyRecord.user == User.id)).where(ft)
         else:
-            uq = Withdraw.select().where(ft)
+            uq = MoneyRecord.select().where(ft)
         total = uq.count()
         if total % pagesize > 0:
             totalpage = total / pagesize + 1
         else:
             totalpage = total / pagesize
-        lists = uq.order_by(Withdraw.apply_time.desc()).paginate(page, pagesize)
+        lists = uq.order_by(MoneyRecord.apply_time.desc()).paginate(page, pagesize)
         self.render('/admin/finance/withdraw.html', lists=lists, total=total, page=page, pagesize=pagesize,
                     totalpage=totalpage, active='withdraw', keyword=key, begindate=begindate, enddate=enddate,
                     status=status)

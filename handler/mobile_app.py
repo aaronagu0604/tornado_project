@@ -775,8 +775,7 @@ class MobileFilterHandler(MobileBaseHandler):
                     'name': u'品牌',
                     'values': [{'id': bc.brand.id, 'name': bc.brand.name} for bc in brandCategorys]
                 })
-                result['data']['filter_items'] += self.getCategoryAttribute(brandCategorys[0],
-                                                                            brandCategorys[0].category.id)
+                result['data']['filter_items'] += self.getCategoryAttribute(brandCategorys[0], brandCategorys[0].category.id)
             else:
                 result['msg'] = u'未查到该分类'
                 self.write(simplejson.dumps(result))
@@ -833,7 +832,7 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
         # 根据规格参数搜索
         category = int(category)
         attribute = [int(item) for item  in attribute]
-        brand = [int(item) for item  in brand]
+        brand = [int(item) for item in brand]
         index = int(index)
         if category and attribute:
             ft1 = ft2 = None
@@ -881,7 +880,7 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
             join(Product, on=(Product.id == ProductRelease.product)). \
             join(StoreProductPrice, on=(StoreProductPrice.product_release == ProductRelease.id)). \
             join(Store, on=(Store.id == ProductRelease.store)).where(ft).dicts()
-        print products
+
         # 排序
         if sort == '1':
             products = products.order_by(StoreProductPrice.price.desc())
@@ -940,8 +939,7 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
         if len(categories) > 1:
             result['data']['products'] = []
         else:
-            result['data']['products'] = self.getProductList(keyword, sort, categories[0], brands, attributes, index,
-                                                             area_code)
+            result['data']['products'] = self.getProductList(keyword, sort, categories[0], brands, attributes, index, area_code)
 
         result['data']['category'] = ''
         result['data']['brand'] = ''

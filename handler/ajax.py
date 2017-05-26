@@ -703,9 +703,9 @@ class WithdrawChangeStatusHandler(BaseHandler):
         fid = int(self.get_argument("fid", 0))
         try:
             if fid != 0:
-                p = Withdraw.get(Withdraw.id == fid)
+                p = MoneyRecord.get(MoneyRecord.id == fid)
                 status_old = p.status
-                p.status = p.status + 1
+                p.status += 1
                 if p.status == 1:
                     p.processing_result = u'汇款完成'
                 if p.status > 1:
@@ -714,12 +714,11 @@ class WithdrawChangeStatusHandler(BaseHandler):
                 p.processing_by = self.get_admin_user()
                 p.save()
                 result = p.status
-                if status_old == 0 and p.status == 1:
-                    #已经给您的${bankName}尾号为${bankNum}的银行卡汇款，将于两小时内到账，请注意查收。
-                    sms = {'mobile': p.user.mobile, 'body': [p.account_name, p.account_account[-4:]], 'signtype': '1',
-                           'isyzm': 'accountNotice'}
+                if status_old == 0 and p.status == 1 and p.out_account_type == 0:
+                    # 已经给您的${bankName}尾号为${bankNum}的银行卡汇款，将于两小时内到账，请注意查收。
+                    sms = {'mobile': p.user.mobile, 'body': [p.out_account_truename, p.out_account_account[-4:]],
+                           'signtype': '1', 'isyzm': 'accountNotice'}
                     create_msg(simplejson.dumps(sms), 'sms')
-
         except Exception, e:
             result = -1
         self.write(simplejson.dumps(result))
@@ -835,7 +834,6 @@ class InsuranceExportHandler(BaseHandler):
                     jiaoqiang += ',车船'
                 if s.current_order_price.force_price > 0:
                     jiaoqiang += ',商业'
-                gift  = None
                 if s.current_order_price.gift_policy == 2:
                     gift = '佣金返积分'
                 elif s.current_order_price.gift_policy == 1:
@@ -868,9 +866,7 @@ class InsuranceExportHandler(BaseHandler):
                     u'另有人'
 
                 f.write(line.encode('gb18030'))
-
         except Exception, e:
-            print e
             pass
         finally:
             f.close()
