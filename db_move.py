@@ -442,6 +442,7 @@ def move_moneyrecord():
         'user': user_map[item.user.id],
         'store': store_map[item.user.store.id],
         'process_type': 2,  # 1.0系统提现都为出钱。所以设置为2
+        'type': 1,
         'process_message': item.processing_result,
         'process_log': '',
         'in_num': '',  # 旧的没有

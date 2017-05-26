@@ -297,6 +297,7 @@ class MoneyRecord(db.Model):
     user = ForeignKeyField(User, related_name='money_records', db_column='user_id')  # 用户
     store = ForeignKeyField(Store, related_name='money_records', db_column='store_id')  # 店铺
     process_type = IntegerField(default=0)  # 资金流动类型 1入账 2出账
+    type = IntegerField()  # 资金类别 # 1提现、2充值、3售出、4采购、5保险、6退款
     process_message = CharField(max_length=4, default='')  # 提现、充值、售出、采购、保险、退款
     process_log = CharField(max_length=255, default='')  # 资金流动
     in_num = CharField(max_length=32, default='')  # 在线充值订单号
@@ -647,9 +648,9 @@ class InsuranceArea(db.Model):
     insurance = ForeignKeyField(Insurance, db_column='insurance_id')
     lube_ok = IntegerField(default=1)  # 开通反油
     dealer_store = ForeignKeyField(Store, db_column='dealer_store_id')  # 经销商
-    lube_policy = CharField(max_length=4000)  # 返油政策的json串
+    lube_policy = TextField(default='')  # 返油政策的json串
     cash_ok = IntegerField(default=1)  # 开通反现
-    cash_policy = CharField(max_length=4000)  # 返现政策的json串
+    cash_policy = TextField(default='')  # 返现政策的json串
     sort = IntegerField(default=1)  # 显示顺序
     active = IntegerField(default=1)  # 状态 0删除 1有效
 
@@ -1027,8 +1028,8 @@ class SSILubePolicy(db.Model):
     store = ForeignKeyField(Store, related_name='store_policy', db_column='store_id')  # 门店
     insurance = ForeignKeyField(Insurance, related_name='insurance_policy', db_column='insurance_id')  # 保险公司
     dealer_store = ForeignKeyField(Store, related_name='dealer_store_policy', db_column='dealer_store_id')  # 经销商
-    cash = CharField(max_length=4000, default='')  # 返油政策的json串  # 返现政策
-    lube = CharField(max_length=4000, default='')  # 返油政策的json串  #　返油政策
+    cash = TextField(default='')  # 返油政策的json串  # 返现政策
+    lube = TextField(default='')  # 返油政策的json串  #　返油政策
 
     class Meta:
         db_table = "tb_store_gift_policy"
