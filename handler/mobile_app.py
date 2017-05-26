@@ -1451,14 +1451,14 @@ class MobilInsuranceOrderBaseHandler(MobileBaseHandler):
             rake_back = []
             if sp.lube:
                 rake_back.append({
-                    'name': "返油",
+                    'name': "油品",
                     'type': 1,
                     'link': "czj://lube_policy",
-                    'link_str': "查看返油政策>>"
+                    'link_str': "查看油品政策>>"
                 })
             if sp.cash:
                 rake_back.append({
-                    'name': "返现",
+                    'name': "现金",
                     'type': 2,
                     'link': "",
                     'link_str': "奖励现金将存入个人余额"

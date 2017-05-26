@@ -697,7 +697,7 @@ class MobileInsuranceOrderDetailHandler(MobileBaseHandler):
             'is_append': 1 if insuranceorder.current_order_price.append_refund_status == 1 and insuranceorder.current_order_price.append_refund_num > 0 else 0,
             'append_num':  insuranceorder.current_order_price.append_refund_num,
             'append_reason': insuranceorder.current_order_price.append_refund_reason,
-            'gift_policy': u'返油' if insuranceorder.current_order_price.gift_policy == 1 else u'返佣金',
+            'gift_policy': u'油品' if insuranceorder.current_order_price.gift_policy == 1 else u'现金',
             'store_name': insuranceorder.store.name,
             'store_addr': Area.get_detailed_address(insuranceorder.store.area_code) + insuranceorder.store.address,
             'mobile': insuranceorder.store.mobile,
