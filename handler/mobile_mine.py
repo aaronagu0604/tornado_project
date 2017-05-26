@@ -351,6 +351,11 @@ class MobileReceiveOrderHandler(MobileBaseHandler):
             salestore = sub_orders[0].saler_store
             salestore.price += sub_orders[0].price
             salestore.save()
+            # 1提现、2充值、3售出、4采购、5保险、6退款
+            now = int(time.time())
+            MoneyRecord.create(user=salestore.users[0], store=salestore, process_type=1, type=3, process_message='售出',
+                               process_log='售出',
+                               money=sub_orders[0].price, status=1, apply_time=now)
             if len(set([sub_order.status for sub_order in sub_orders])) == 1:
                 sub_orders[0].order.status = 3
                 sub_orders[0].order.save()
