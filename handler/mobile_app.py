@@ -350,7 +350,7 @@ class MobileHomeHandler(MobileBaseHandler):
         if user and user.active == 1:
             # 登陆用户，并且用户属于认证用户
             hots = [i for i in user.store.store_policy if i.insurance.hot == 1]
-            sorted_hots = sorted(hots, key=lambda x: x.sort, reverse=True)
+            sorted_hots = sorted(hots, key=lambda x: x.insurance.sort, reverse=True)
             insurances = [{
                 'img': store_insurance.insurance.logo,
                 'name': store_insurance.insurance.name,
