@@ -1389,7 +1389,7 @@ def load_test_data():
                        money=100.5, status=1, apply_time=1487032696)
 
 if __name__ == '__main__':
-    # init_db()
+    init_db()
     # load_test_data()
     # LubePolicy.create_table()
 
