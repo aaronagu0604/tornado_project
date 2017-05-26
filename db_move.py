@@ -517,7 +517,7 @@ def move_blockitemarea():
 product_map = {}
 
 def move_product():
-    old_prodcut = Old_Product.select().where(Old_Product.is_index == 0)
+    old_prodcut = Old_Product.select()
     for item in old_prodcut:
         product = New_Product.create(
             name=item.name,
