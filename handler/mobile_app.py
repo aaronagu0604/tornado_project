@@ -18,20 +18,6 @@ from model import *
 from mqProcess.jpushhelper import set_device_info
 
 
-def get_insurance(area_code):
-    items = []
-    insurances = InsuranceArea.select(InsuranceArea.insurance). \
-        where((InsuranceArea.area_code == area_code) & (InsuranceArea.active == 1)).order_by(InsuranceArea.sort.asc())
-    for insurance in insurances:
-        items.append({
-            'img': insurance.insurance.logo,
-            'name': insurance.insurance.name,
-            'price': 0,
-            'link': 'czj://insurance/%d' % insurance.insurance.id
-        })
-    return items
-
-
 """
     @apiGroup aaaa
     @apiVersion 1.0.0
@@ -873,34 +859,6 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
                     result['data']['brand'] = Product.get(id=result['data']['products'][0]['pid']).brand.id
             except Exception, e:
                 pass
-        self.write(simplejson.dumps(result))
-        self.finish()
-
-
-@route(r'/mobile/insurance_list', name='mobile_insurance_list')  # 保险列表
-class MobileInsuranceListHandler(MobileBaseHandler):
-    """
-    @apiGroup app
-    @apiVersion 1.0.0
-    @api {get} /mobile/insurance_list 06. 保险列表
-    @apiDescription 保险列表
-
-    @apiHeader {String} token 用户登录凭证
-
-    @apiSampleRequest /mobile/insurance_list
-    """
-
-    def get(self):
-        result = {'flag': 0, 'msg': '', "data": {}}
-        user = self.get_user()
-        if user is not None:
-            tmp_code = user.store.area_code
-            insurances = get_insurance(tmp_code)
-            while len(insurances) == 0 and len(tmp_code) > 4:
-                tmp_code = tmp_code[0: -4]
-                insurances = get_insurance(tmp_code)
-            result['data']['insurance'] = insurances
-            result['flag'] = 1
         self.write(simplejson.dumps(result))
         self.finish()
 
