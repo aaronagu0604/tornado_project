@@ -640,7 +640,7 @@ class AppendRefundMoneyHandler(BaseHandler):
                     iop.total_price += ar_num
                     process_log = u'订单：%s退款' % (io.ordernum)
                     MoneyRecord.create(user=io.user, store=io.store,process_type=1, process_message=u'退款',
-                                       process_log=process_log, money=ar_num, status=1, apply_time=now,
+                                       process_log=process_log, type=6 ,money=-ar_num, status=1, apply_time=now,
                                        processing_time=now, processing_by=admin_user)
                 io.save()
                 iop.append_refund_time = now
