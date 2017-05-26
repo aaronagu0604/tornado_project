@@ -361,30 +361,41 @@ class MobileHomeHandler(MobileBaseHandler):
         result['data']['banner'] = banners
 
         # 保险
-        if user:
+        if user and user.active == 1:
+            # 登陆用户，并且用户属于认证用户
+            hots = [i for i in user.store.store_policy if i.insurance.hot == 1]
+            sorted_hots = sorted(hots, key=lambda x: x.sort, reverse=True)
             insurances = [{
                 'img': store_insurance.insurance.logo,
                 'name': store_insurance.insurance.name,
                 'price': 0,
                 'link': 'czj://insurance/' + str(store_insurance.insurance.id) +
                 '/' + store_insurance.insurance.name
-            } for store_insurance in user.store.store_policy]
+            } for store_insurance in sorted_hots]
         else:
             insurances = self.application.memcachedb.get('insurances_no_login')
             if not insurances:
-                insurances = InsuranceArea.get_insurances_link('0027')
+                all = Insurance.select().where(Insurance.active == 1). \
+                    order_by(Insurance.sort.desc()).limit(4)
+                insurances = [{
+                                  'img': insurance.logo,
+                                  'name': insurance.name,
+                                  'price': 0,
+                                  'link': 'czj://insurance/' + str(insurance.id)
+                                          + '/' + insurance.name
+                              } for insurance in all]
                 self.application.memcachedb.set('insurances_no_login', insurances)
         result['data']['category'] = [{'title': u'保险业务', 'data': insurances}]
 
         # 热门分类
-        tmp_code = area_code
-        categories = self.get_category(tmp_code)
-        while len(categories) == 0 and len(tmp_code) > 4:
-            tmp_code = tmp_code[0: -4]
-            categories = self.get_category(tmp_code)
-        if len(categories) == 0:
-            categories = self.get_category(self.get_default_area_code())
-        result['data']['category'].append({'title': u'热门分类', 'data': categories[:4]})
+        # tmp_code = area_code
+        # categories = self.get_category(tmp_code)
+        # while len(categories) == 0 and len(tmp_code) > 4:
+        #     tmp_code = tmp_code[0: -4]
+        #     categories = self.get_category(tmp_code)
+        # if len(categories) == 0:
+        #     categories = self.get_category(self.get_default_area_code())
+        result['data']['category'].append({'title': u'热门分类', 'data': []})
 
         # 热销品牌
         tmp_code = area_code
@@ -397,23 +408,23 @@ class MobileHomeHandler(MobileBaseHandler):
         result['data']['category'].append({'title': u'热销品牌', 'data': brands[:4]})
 
         # 推荐商品
-        tmp_code = area_code
-        recommends = self.get_recommend(tmp_code)
-        while len(recommends) == 0 and len(tmp_code) > 4:
-            tmp_code = tmp_code[0: -4]
-            recommends = self.get_recommend(tmp_code)
-        if len(recommends) == 0:
-            recommends = self.get_recommend(self.get_default_area_code())
+        # tmp_code = area_code
+        # recommends = self.get_recommend(tmp_code)
+        # while len(recommends) == 0 and len(tmp_code) > 4:
+        #     tmp_code = tmp_code[0: -4]
+        #     recommends = self.get_recommend(tmp_code)
+        # if len(recommends) == 0:
+        #     recommends = self.get_recommend(self.get_default_area_code())
         result['data']['category'].append({'title': u'为您推荐', 'data': []})
 
         # 积分商品
-        tmp_code = area_code
-        score_product = self.get_score_product(tmp_code)
-        while len(score_product) == 0 and len(tmp_code) > 4:
-            tmp_code = tmp_code[0: -4]
-            score_product = self.get_score_product(tmp_code)
-        if len(score_product) == 0:
-            score_product = self.get_score_product(self.get_default_area_code())
+        # tmp_code = area_code
+        # score_product = self.get_score_product(tmp_code)
+        # while len(score_product) == 0 and len(tmp_code) > 4:
+        #     tmp_code = tmp_code[0: -4]
+        #     score_product = self.get_score_product(tmp_code)
+        # if len(score_product) == 0:
+        #     score_product = self.get_score_product(self.get_default_area_code())
         result['data']['category'].append({'title': u'积分兑换', 'data': []})
 
         result['flag'] = 1
@@ -622,91 +633,6 @@ class MobileHotSearchHandler(MobileBaseHandler):
 
 
 # -----------------------------------------------------普通商品---------------------------------------------------------
-@route(r'/mobile/discover', name='mobile_discover')  # 发现
-class MobileDiscoverHandler(MobileBaseHandler):
-    """
-    @apiGroup app
-    @apiVersion 1.0.0
-    @api {get} /mobile/discover 03. 发现
-    @apiDescription 发现
-
-    @apiHeader {String} token 用户登录凭证
-    @apiSampleRequest /mobile/discover
-    """
-
-    def get(self):
-        result = {'flag': 1, 'msg': '', 'data': []}
-        area_code = self.get_store_area_code()
-
-        if isinstance(area_code, list):
-            ft = StoreProductPrice.area_code << area_code
-        else:
-            ft = StoreProductPrice.area_code == area_code
-        productlist = Product.select(Product.category.alias('cid'), Product.brand.alias('bid')). \
-            join(ProductRelease, on=(ProductRelease.product == Product.id)). \
-            join(Store, on=(Store.id == ProductRelease.store)). \
-            join(StoreProductPrice, on=(StoreProductPrice.product_release == ProductRelease.id)). \
-            where(ft).tuples()
-        cbs = {}
-
-        cbs = {}
-        for cid, bid in productlist:
-            if cid not in cbs.keys():
-                cbs[cid] = []
-            else:
-                if bid not in cbs[cid]:
-                    cbs[cid].append(bid)
-                else:
-                    pass
-        tmp_num = 0
-        for cid in cbs.keys():
-            if tmp_num == 0:
-                tmp_ad = {'img': 'http://img.520czj.com/image/2017/02/15/server1_20170215111526VDJrFZYbKUeiLjuGkcsxTIhW.png', 'link': ''}
-            elif tmp_num == 1:
-                tmp_ad = {'img': 'http://img.520czj.com/image/2017/02/22/server1_20170222162422ShymVuXKNglbcJCrIvLFAoEO.png', 'link': ''}
-            tmp_num += 1
-            category = Category.get(id=cid)
-            result['data'].append({
-                'name': category.name,
-                'cid': category.id,
-                'ads': tmp_ad,
-                'subs': [{
-                    'name': u'热销品牌',
-                    'subs': [{'img': brand.logo,
-                              'name': brand.name,
-                              'price': 0,
-                              'link': 'czj://category/%d/brand/%d' % (cid, brand.id)} for brand in
-                             Brand.select().where(Brand.id << cbs[cid]) if brand.hot == 1]
-                },
-                    {
-                        'name': u'不太热销的',
-                        'subs': [{'img': brand.logo,
-                                  'name': brand.name,
-                                  'price': 0,
-                                  'link': 'czj://category/%d/brand/%d' % (cid, brand.id)} for brand in
-                                 Brand.select().where(Brand.id << cbs[cid]) if brand.hot != 1]
-                    }
-                ]
-            })
-
-        # 保险商城
-        area_code = self.get_store_area_code()
-        result['data'].append({
-            'name': u'保险商城',
-            'cid': 0,
-            'subs': [{
-                'name': u'热门保险',
-                'subs': InsuranceArea.get_insurances_link(area_code)[:3]
-            }, {
-                'name': u'不太热门保险',
-                'subs': InsuranceArea.get_insurances_link(area_code)[3:]
-            }],
-            'ads': {'img': 'http://img.520czj.com/image/category/20170104184002.jpg', 'link': ''}
-        })
-
-        self.write(simplejson.dumps(result))
-        self.finish()
-
 
 @route(r'/mobile/filter', name='mobile_filter')  # 普通商品筛选界面
 class MobileFilterHandler(MobileBaseHandler):
@@ -1000,7 +926,7 @@ class MobileCategoryHandler(MobileBaseHandler):
 
         user = self.get_user()
         # 保险
-        if user:
+        if user and user.active == 1:
             insurances = [{
                               'img': store_insurance.insurance.logo,
                               'name': store_insurance.insurance.name,
@@ -1011,26 +937,28 @@ class MobileCategoryHandler(MobileBaseHandler):
         else:
             insurances = self.application.memcachedb.get('insurances_no_login')
             if not insurances:
-                insurances = InsuranceArea.get_insurances_link('0027')
+                all = Insurance.select().where(Insurance.active == 1).\
+                    order_by(Insurance.sort.desc())
+                insurances = [{
+                              'img': insurance.logo,
+                              'name': insurance.name,
+                              'price': 0,
+                              'link': 'czj://insurance/' + str(insurance.id)
+                              + '/' + insurance.name
+                          } for insurance in all]
                 self.application.memcachedb.set('insurances_no_login', insurances)
 
         brands = []
-        spps = Brand.select(Brand.id.alias('id'), Brand.logo.alias('logo'), Brand.name.alias('name'),
-                            Product.category.alias('cid')). \
-            join(Product, on=Product.brand == Brand.id). \
-            join(ProductRelease, on=ProductRelease.product == Product.id). \
-            join(StoreProductPrice, on=StoreProductPrice.product_release == ProductRelease.id). \
-            tuples()
-        blist = []
-        for id, logo, name, cid in spps:
-            if id not in blist:
-                blist.append(id)
-                brands.append({
-                    'img': logo,
-                    'name': name,
-                    'price': 0,
-                    'link': 'czj://category/%d/brand/%d' % (cid, id)
-                })
+        spps = Brand.select(). \
+            where(Brand.active == 1).order_by(Brand.sort.desc())
+
+        for ii in spps:
+            brands.append({
+                'img': ii.logo,
+                'name': ii.name,
+                'price': 0,
+                'link': 'czj://category/0/brand/' + str(ii.id)
+            })
 
         self.render('mobile/category.html', type=t, f=f, insurances=insurances, brands=brands)
 

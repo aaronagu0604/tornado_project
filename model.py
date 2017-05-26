@@ -681,31 +681,6 @@ class InsuranceArea(db.Model):
             })
         return result
 
-    @classmethod
-    def get_insurances_link(cls, area_code):  # 获取该地区所有保险公司及链接
-        temp_insurance_id = []
-        insurance_list = []
-        ft = (InsuranceArea.active == 1)
-        if len(area_code) == 12:
-            codes = [area_code, area_code[:8], area_code[:4]]
-            ft &= (InsuranceArea.area_code << codes)
-        elif len(area_code) == 8:
-            tmp_code = area_code+'%'
-            ft &= ((InsuranceArea.area_code == area_code[:4]) | (InsuranceArea.area_code % tmp_code))
-        elif len(area_code) == 4:
-            tmp_code = area_code+'%'
-            ft &= (InsuranceArea.area_code % tmp_code)
-        for i in InsuranceArea.select().where(ft):
-            if i.id not in temp_insurance_id:
-                temp_insurance_id.append(i.id)
-                insurance_list.append({
-                    'img': i.insurance.logo,
-                    'name': i.insurance.name,
-                    'price': 0,
-                    'link': 'czj://insurance/' + str(i.insurance.id)
-                })
-        return insurance_list
-
 
 # 保险子险种
 class InsuranceItem(db.Model):
@@ -1005,7 +980,7 @@ class BaoDaiBaoQuote(db.Model):
 #         db_table = "tb_lube_policy"
 
 
-# 店铺经销商返油反分现映射表
+# 店铺经销商返油返现映射表
 class SSILubePolicy(db.Model):
     id = PrimaryKeyField()
     store = ForeignKeyField(Store, related_name='store_policy', db_column='store_id')  # 门店
