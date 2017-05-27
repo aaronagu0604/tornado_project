@@ -1942,100 +1942,18 @@ class MobileLubePolicyHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/lubepolicy
     """
-    # 一个地区多个保险公司返油政策相同 或 一个保险公司
-    def get_insurances(self, rows, result):
-        tmpList = []
-        for row in rows:
-            result['data']['iCompany'] = row.iCompany
-            if '+' in row.insurance:
-                forceI, comI = row.insurance.split('+')
-                insurance = '%s+(%s)%s' % (forceI, row.price, comI)
-            elif u'单商业险' == row.insurance:
-                insurance = '%s(%s)' % (row.insurance, row.price)
-            else:
-                insurance = row.insurance
-            if row.driverGift not in tmpList:
-                tmpList.append(row.driverGift)
-                tmpDict = {'gift': '', 'insurances': []}
-                if row.driverGift == row.party2Gift:
-                    tmpDict['gift'] = row.driverGift
-                else:
-                    tmpDict['gift'] = row.driverGift+u'（修理厂:'+row.party2Gift+'）'
-                tmpDict['insurances'].append([insurance, row.driverGiftNum, row.party2GiftNum])
-                result['data']['type'].append(tmpDict)
-            else:
-                for i, tmpDict in enumerate(result['data']['type']):
-                    if row.driverGift == row.party2Gift:
-                        tmpGift = row.driverGift
-                    else:
-                        tmpGift = row.driverGift + u'（修理厂:' + row.party2Gift + '）'
-                    if tmpGift == tmpDict['gift']:
-                        result['data']['type'][i]['insurances'].append(
-                            [insurance, row.driverGiftNum, row.party2GiftNum])
-        return result
 
-    # 一个地区多个保险公司返油政策不同
-    def get_insurances_for_difI(self, rows, result, iCompanyName):
-        tmpList = []
-        result['data']['iCompany'] = iCompanyName
-        for row in rows:
-            if '+' in row.insurance:
-                forceI, comI = row.insurance.split('+')
-                insurance = '%s+(%s)%s' % (forceI, row.price, comI)
-            elif u'单商业险' == row.insurance:
-                insurance = '%s(%s)' % (row.insurance, row.price)
-            else:
-                insurance = row.insurance
-
-            driverGiftName = u'%s（%s）'%(row.driverGift, row.iCompany)
-            facilitatorGiftName = u'%s（%s）'%(row.party2Gift, row.iCompany)
-            if driverGiftName not in tmpList:
-                tmpList.append(driverGiftName)
-                tmpDict = {'gift': '', 'insurances': []}
-                if driverGiftName == facilitatorGiftName:
-                    tmpDict['gift'] = driverGiftName
-                else:
-                    tmpDict['gift'] = u'%s（修理厂:%s）（%s）'%(row.driverGift, row.party2Gift, row.iCompany)
-                tmpDict['insurances'].append([insurance, row.driverGiftNum, row.party2GiftNum])
-                result['data']['type'].append(tmpDict)
-            else:
-                for i, tmpDict in enumerate(result['data']['type']):
-                    if driverGiftName == facilitatorGiftName:
-                        tmpGift = driverGiftName
-                    else:
-                        tmpGift = u'%s（修理厂:%s）（%s）'%(row.driverGift, row.party2Gift, row.iCompany)
-                    if tmpGift == tmpDict['gift']:
-                        result['data']['type'][i]['insurances'].append(
-                            [insurance, row.driverGiftNum, row.party2GiftNum])
-        return result
-
-    @require_auth
+    # @require_auth
     def get(self):
-        result = {
-            'flag': 0,
-            'msg': '',
-            'data': {
-                'iCompany': '',
-                'presentToA': setting.presentToA,
-                'remark': '',
-                'presentToB': setting.presentToB,
-                'type': []
-            }
-        }
         area_code = self.get_store_area_code()
-        result['data']['remark'] = setting.get_help_center_remark(area_code)
-        store = self.get_user().store
-        rows = SSILubePolicy.select().where(SSILubePolicy.store == store)
+        # store = self.get_user().store
+        rows = SSILubePolicy.select().where(SSILubePolicy.store == 1)
         policylist = []
-        if rows.count() > 0:
-            for item in rows:
-                policylist.append({
-                    'name': item.insurance.name,
-                    'lube': simplejson.loads(item.lube)
-                })
-            result['flag'] = 1
-        else:
-            result['msg'] = u'该地区的具体优惠政策请联系车装甲客服'
+        for item in rows:
+            policylist.append({
+                'name': item.insurance.name,
+                'lube': simplejson.loads(item.lube)
+            })
         self.render('mobile/lube_protocol.html', policylist=policylist)
 
 
