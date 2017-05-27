@@ -531,108 +531,113 @@ def move_product():
             created=item.created,
             active=item.status  # 旧的没有，暂时这样处理
         )
-        if item.LA.count():
-            for la in item.LA:
-                if la.level and la.classes and la.capacity and la.viscosity:
-                    level  = New_CategoryAttribute.get(New_CategoryAttribute.ename == 'level')
-                    level_cls = New_CategoryAttributeItems.get(New_CategoryAttributeItems.name == la.level,
-                                                               New_CategoryAttributeItems.category_attribute == level.id)
-                    print product.id,level.id,level_cls.id,la.level
-                    New_ProductAttributeValue.create(
-                        product=product.id,
-                        attribute=level.id,
-                        attribute_item=level_cls.id,
-                        value=la.level
-                    )
-                    classes = New_CategoryAttribute.get(New_CategoryAttribute.ename == 'classes')
-                    classes_cls = New_CategoryAttributeItems.get(New_CategoryAttributeItems.name == la.classes,
-                                                               New_CategoryAttributeItems.category_attribute == classes.id)
-                    New_ProductAttributeValue.create(
-                        product=product.id,
-                        attribute=classes.id,
-                        attribute_item=classes_cls.id,
-                        value=la.classes
-                    )
-                    capacity = New_CategoryAttribute.get(New_CategoryAttribute.ename == 'capacity')
-                    capacity_cls = New_CategoryAttributeItems.get(New_CategoryAttributeItems.name == la.capacity,
-                                                                 New_CategoryAttributeItems.category_attribute == capacity.id)
-                    New_ProductAttributeValue.create(
-                        product=product.id,
-                        attribute=capacity.id,
-                        attribute_item=capacity_cls.id,
-                        value=la.capacity
-                    )
-                    viscosity = New_CategoryAttribute.get(New_CategoryAttribute.ename == 'viscosity')
-                    viscosity_cls = New_CategoryAttributeItems.get(New_CategoryAttributeItems.name == la.viscosity,
-                                                                 New_CategoryAttributeItems.category_attribute == viscosity.id)
-                    New_ProductAttributeValue.create(
-                        product=product.id,
-                        attribute=viscosity.id,
-                        attribute_item=viscosity_cls.id,
-                        value=la.viscosity
-                    )
-                else:
-                    continue
-        if item.NA.count():
-            for na in item.NA:
-                if na.configuration and na.CAN and na.size:
-                    configuration = New_CategoryAttribute.get(New_CategoryAttribute.ename == 'configuration')
-                    configuration_cls = New_CategoryAttributeItems.get(New_CategoryAttributeItems.name == na.configuration,
-                                                                   New_CategoryAttributeItems.category_attribute == configuration.id)
-                    New_ProductAttributeValue.create(
-                        product=product.id,
-                        attribute=configuration.id,
-                        attribute_item=configuration_cls.id,
-                        value=na.configuration
-                    )
-                    can = New_CategoryAttribute.get(New_CategoryAttribute.ename == 'CAN')
-                    can_cls = New_CategoryAttributeItems.get(
-                        New_CategoryAttributeItems.name == na.CAN,
-                        New_CategoryAttributeItems.category_attribute == can.id)
-                    New_ProductAttributeValue.create(
-                        product=product.id,
-                        attribute=can.id,
-                        attribute_item=can_cls.id,
-                        value=na.CAN
-                    )
-                    size = New_CategoryAttribute.get(New_CategoryAttribute.ename == 'psize')
-                    size_cls = New_CategoryAttributeItems.get(
-                        New_CategoryAttributeItems.name == na.size,
-                        New_CategoryAttributeItems.category_attribute == size.id)
-                    New_ProductAttributeValue.create(
-                        product=product.id,
-                        attribute=size.id,
-                        attribute_item=size_cls.id,
-                        value=na.size
-                    )
-                else:
-                    continue
-        if item.RA.count():
-            for ra in item.RA:
-                if ra.size and ra.lens:
-                    size = New_CategoryAttribute.get(New_CategoryAttribute.ename == 'jsize')
-                    size_cls = New_CategoryAttributeItems.get(
-                        New_CategoryAttributeItems.name == ra.size,
-                        New_CategoryAttributeItems.category_attribute == size.id)
-                    New_ProductAttributeValue.create(
-                        product=product.id,
-                        attribute=size.id,
-                        attribute_item=size_cls.id,
-                        value=ra.size
-                    )
-                    lens = New_CategoryAttribute.get(New_CategoryAttribute.ename == 'lens')
-                    lens_cls = New_CategoryAttributeItems.get(
-                        New_CategoryAttributeItems.name == ra.size,
-                        New_CategoryAttributeItems.category_attribute == size.id)
-                    New_ProductAttributeValue.create(
-                        product=product.id,
-                        attribute=lens.id,
-                        attribute_item=lens_cls.id,
-                        value=ra.size
-                    )
-                else:
-                    continue
-
+        try:
+            if item.LA.count():
+                for la in item.LA:
+                    if la.level and la.classes and la.capacity and la.viscosity:
+                        level  = New_CategoryAttribute.get(New_CategoryAttribute.ename == 'level')
+                        level_cls = New_CategoryAttributeItems.get(New_CategoryAttributeItems.name == la.level,
+                                                                   New_CategoryAttributeItems.category_attribute == level.id)
+                        print product.id,level.id,level_cls.id,la.level
+                        New_ProductAttributeValue.create(
+                            product=product.id,
+                            attribute=level.id,
+                            attribute_item=level_cls.id,
+                            value=la.level
+                        )
+                        classes = New_CategoryAttribute.get(New_CategoryAttribute.ename == 'classes')
+                        classes_cls = New_CategoryAttributeItems.get(New_CategoryAttributeItems.name == la.classes,
+                                                                   New_CategoryAttributeItems.category_attribute == classes.id)
+                        New_ProductAttributeValue.create(
+                            product=product.id,
+                            attribute=classes.id,
+                            attribute_item=classes_cls.id,
+                            value=la.classes
+                        )
+                        capacity = New_CategoryAttribute.get(New_CategoryAttribute.ename == 'capacity')
+                        capacity_cls = New_CategoryAttributeItems.get(New_CategoryAttributeItems.name == la.capacity,
+                                                                     New_CategoryAttributeItems.category_attribute == capacity.id)
+                        New_ProductAttributeValue.create(
+                            product=product.id,
+                            attribute=capacity.id,
+                            attribute_item=capacity_cls.id,
+                            value=la.capacity
+                        )
+                        viscosity = New_CategoryAttribute.get(New_CategoryAttribute.ename == 'viscosity')
+                        viscosity_cls = New_CategoryAttributeItems.get(New_CategoryAttributeItems.name == la.viscosity,
+                                                                     New_CategoryAttributeItems.category_attribute == viscosity.id)
+                        New_ProductAttributeValue.create(
+                            product=product.id,
+                            attribute=viscosity.id,
+                            attribute_item=viscosity_cls.id,
+                            value=la.viscosity
+                        )
+                    else:
+                        continue
+            if item.NA.count():
+                for na in item.NA:
+                    if na.configuration and na.CAN and na.size:
+                        configuration = New_CategoryAttribute.get(New_CategoryAttribute.ename == 'configuration')
+                        configuration_cls = New_CategoryAttributeItems.get(New_CategoryAttributeItems.name == na.configuration,
+                                                                       New_CategoryAttributeItems.category_attribute == configuration.id)
+                        New_ProductAttributeValue.create(
+                            product=product.id,
+                            attribute=configuration.id,
+                            attribute_item=configuration_cls.id,
+                            value=na.configuration
+                        )
+                        can = New_CategoryAttribute.get(New_CategoryAttribute.ename == 'CAN')
+                        can_cls = New_CategoryAttributeItems.get(
+                            New_CategoryAttributeItems.name == na.CAN,
+                            New_CategoryAttributeItems.category_attribute == can.id)
+                        New_ProductAttributeValue.create(
+                            product=product.id,
+                            attribute=can.id,
+                            attribute_item=can_cls.id,
+                            value=na.CAN
+                        )
+                        size = New_CategoryAttribute.get(New_CategoryAttribute.ename == 'psize')
+                        size_cls = New_CategoryAttributeItems.get(
+                            New_CategoryAttributeItems.name == na.size,
+                            New_CategoryAttributeItems.category_attribute == size.id)
+                        New_ProductAttributeValue.create(
+                            product=product.id,
+                            attribute=size.id,
+                            attribute_item=size_cls.id,
+                            value=na.size
+                        )
+                    else:
+                        continue
+            if item.RA.count():
+                for ra in item.RA:
+                    if ra.size and ra.lens:
+                        size = New_CategoryAttribute.get(New_CategoryAttribute.ename == 'jsize')
+                        size_cls = New_CategoryAttributeItems.get(
+                            New_CategoryAttributeItems.name == ra.size,
+                            New_CategoryAttributeItems.category_attribute == size.id)
+                        New_ProductAttributeValue.create(
+                            product=product.id,
+                            attribute=size.id,
+                            attribute_item=size_cls.id,
+                            value=ra.size
+                        )
+                        lens = New_CategoryAttribute.get(New_CategoryAttribute.ename == 'lens')
+                        lens_cls = New_CategoryAttributeItems.get(
+                            New_CategoryAttributeItems.name == ra.size,
+                            New_CategoryAttributeItems.category_attribute == size.id)
+                        New_ProductAttributeValue.create(
+                            product=product.id,
+                            attribute=lens.id,
+                            attribute_item=lens_cls.id,
+                            value=ra.size
+                        )
+                    else:
+                        continue
+        except Exception,e:
+            print e
+            product.active = 0
+            product.save()
+            continue
         product_map[item.id] = product.id
     print 'move product:', old_prodcut.count()
 
