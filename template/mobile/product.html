@@ -62,8 +62,8 @@
                     {% endif %}</div>
                     </div>
                     <div class="col-15 p_share">
-                        <div class="icon icon-star" style="font-size:1.1rem;color:#aaa;"></div>
-                        <div class="p_small_font">分享</div>
+                        <!--<div class="icon icon-star" style="font-size:1.1rem;color:#aaa;"></div>-->
+                        <!--<div class="p_small_font">分享</div>-->
                     </div>
                 </div>
 
@@ -74,9 +74,7 @@
                         <div class="item-media"><i class="icon icon-home"></i></div>
                         <div class="item-inner">
                           <div class="item-title p_font_title">{{product['store']}}</div>
-                            <div class="item-after" id="tel" data="{{product['mobile']}}"
-                            onclick="callPhone()">
-                                <span class="icon icon-phone"></span></div>
+
                         </div>
                       </div>
                     </li>
@@ -125,10 +123,16 @@ function showDetail() {
     $('#tab1').attr('class', 'tab');
     $('#tab2').attr('class', 'tab active');
 
-    if($('#ctab1')) {
         $('#ctab1').attr('class', 'tab-link button');
         $('#ctab2').attr('class', 'tab-link active button');
-    }
+{% if product['from'] =='1' %}
+    if ("{{product['platform']}}" == "android") {
+            androidObj.showDetail();
+        }
+        else if ("{{product['platform']}}" == "ios") {
+            window.webkit.messageHandlers.showDetail.postMessage();
+        }
+     {% endif %}
 }
 
 function showMain() {
@@ -136,14 +140,6 @@ function showMain() {
     $('#tab1').attr('class', 'tab active');
 }
 
-function getBusinessTel() {
-    return $('#tel').attr('data');
-}
-
-function callPhone() {
-    var phone = getBusinessTel();
-    alert(phone + '-' + '{{product["platform"]}}');
-}
 </script>
 </body>
 </html>

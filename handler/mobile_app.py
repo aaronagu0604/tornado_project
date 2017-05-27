@@ -877,6 +877,7 @@ class MobileCategoryHandler(MobileBaseHandler):
     @apiHeader {String} token 用户登录凭证
 
     @apiParam {Int} type 1车险，2润滑油品牌
+    @apiParam {String} f android，ios
 
     @apiSampleRequest /mobile/category
     """
