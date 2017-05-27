@@ -1488,7 +1488,11 @@ def init_store_po():
     new_SSILubePolicy.delete().execute()
     for store in New_Store.select(New_Store.active == 1):
         print('--------%s: %s------' % (store.id, store.area_code))
-        for area_po in New_InsuranceArea.get_area_insurance(store.area_code):
+        try:
+            results = New_InsuranceArea.get_area_insurance(store.area_code)
+        except Exception, e:
+            print('-----Error: %s %s-' % (store.id, store.name))
+        for area_po in results:
             new_SSILubePolicy.create(store=store, insurance=area_po['insurance'], cash=area_po['cash'],
                                     dealer_store=area_po['dealer_store'], lube=area_po['lube'])
 
