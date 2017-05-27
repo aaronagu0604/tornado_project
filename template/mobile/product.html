@@ -94,7 +94,7 @@
                 </div>
                 <div style="margin:0 auto;text-align: center;" class="row">
                     <div style="margin: 1rem 4rem;">
-                        <a href="#" onclick="showDetail()" class="button button-success">查看更多详情</a>
+                        <a href="#" onclick="h5ShowDetail()" class="button button-success">查看更多详情</a>
                     </div>
                 </div>
             </div>
@@ -125,6 +125,15 @@ function showDetail() {
 
         $('#ctab1').attr('class', 'tab-link button');
         $('#ctab2').attr('class', 'tab-link active button');
+}
+
+
+function h5ShowDetail() {
+    $('#tab1').attr('class', 'tab');
+    $('#tab2').attr('class', 'tab active');
+
+        $('#ctab1').attr('class', 'tab-link button');
+        $('#ctab2').attr('class', 'tab-link active button');
 {% if product['from'] =='1' %}
     if ("{{product['platform']}}" == "android") {
             androidObj.showDetail();
@@ -134,6 +143,7 @@ function showDetail() {
         }
      {% endif %}
 }
+
 
 function showMain() {
     $('#tab2').attr('class', 'tab');
