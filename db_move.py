@@ -583,7 +583,7 @@ def move_product():
                         product=product.id,
                         attribute=configuration.id,
                         attribute_item=configuration_cls.id,
-                        value=la.configuration
+                        value=na.configuration
                     )
                     can = New_CategoryAttribute.get(New_CategoryAttribute.ename == 'CAN')
                     can_cls = New_CategoryAttributeItems.get(
@@ -593,7 +593,7 @@ def move_product():
                         product=product.id,
                         attribute=can.id,
                         attribute_item=can_cls.id,
-                        value=la.CAN
+                        value=na.CAN
                     )
                     size = New_CategoryAttribute.get(New_CategoryAttribute.ename == 'psize')
                     size_cls = New_CategoryAttributeItems.get(
