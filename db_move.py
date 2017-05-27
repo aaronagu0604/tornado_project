@@ -1415,9 +1415,11 @@ def move_lubeexchange():
     tmp_area = []
     area_code_list = []
     for i in old_policy:
-        if i.area_code not in tmp_area:
-            tmp_area.append(i.area_code)
+        if (i.area_code+i.iCompany) not in tmp_area:
+            tmp_area.append(i.area_code+i.iCompany)
             area_code_list.append({'code': i.area_code, 'ic_name': i.iCompany})
+    for tmp_a in tmp_area:
+        print(u'-返油地区，公司：-%s--' % tmp_a)
     for al in area_code_list:
         i_list = []
         i_names = al['ic_name'].split('/')
@@ -1492,7 +1494,6 @@ def move_lubeexchange():
                       "btr": 0,
                       "ar": 0}
         new_i = New_Insurance.select().where(New_Insurance.name == oc.iid.name)
-        i_id = 0
         if new_i.count() > 0:
             i_id = new_i[0].id
             ias = InsuranceArea.select().where((InsuranceArea.insurance == i_id) & (InsuranceArea.area_code == oc.area_code))
