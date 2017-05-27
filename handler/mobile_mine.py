@@ -2222,6 +2222,7 @@ class MobileVersionHandler(MobileBaseHandler):
         lists = q.order_by(order_str).limit(1)
         result = {'version': '', 'baseUrl': '', 'isForce': 'false', 'flag':0, 'releaseNotes':''}
         try:
+            logging.info(lists.count())
             if lists.count()>0:
                 update = lists[0]
                 result['version'] = update.version
