@@ -105,7 +105,7 @@
 
         </div>
     </div>
-
+<input id="tel" type="hidden" value="{{product['mobile']}}" />
 </div>
 
 <script type='text/javascript' src='//g.alicdn.com/sj/lib/zepto/zepto.min.js' charset='utf-8'></script>
@@ -148,6 +148,10 @@ function h5ShowDetail() {
 function showMain() {
     $('#tab2').attr('class', 'tab');
     $('#tab1').attr('class', 'tab active');
+}
+
+function getBusinessTel() {
+    return $('#tel').val();
 }
 
 </script>
