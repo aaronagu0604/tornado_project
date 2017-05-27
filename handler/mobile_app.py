@@ -462,6 +462,7 @@ class MobileHomeHandler(MobileBaseHandler):
             ft = StoreProductPrice.area_code << area_code
         else:
             ft = StoreProductPrice.area_code == area_code
+        ft &= Product.category == 1
         spps = Brand.select(Brand.id.alias('id'),Brand.logo.alias('logo'),Brand.name.alias('name'),Product.category.alias('cid')). \
             join(Product, on=Product.brand == Brand.id). \
             join(ProductRelease, on=ProductRelease.product == Product.id). \
