@@ -537,6 +537,7 @@ def move_product():
                     level  = New_CategoryAttribute.get(New_CategoryAttribute.ename == 'level')
                     level_cls = New_CategoryAttributeItems.get(New_CategoryAttributeItems.name == la.level,
                                                                New_CategoryAttributeItems.category_attribute == level.id)
+                    print product.id,level.id,level_cls.id,la.level
                     New_ProductAttributeValue.create(
                         product=product.id,
                         attribute=level.id,
@@ -576,7 +577,7 @@ def move_product():
             for na in item.NA:
                 if na.configuration and na.CAN and na.size:
                     configuration = New_CategoryAttribute.get(New_CategoryAttribute.ename == 'configuration')
-                    configuration_cls = New_CategoryAttributeItems.get(New_CategoryAttributeItems.name == la.configuration,
+                    configuration_cls = New_CategoryAttributeItems.get(New_CategoryAttributeItems.name == na.configuration,
                                                                    New_CategoryAttributeItems.category_attribute == configuration.id)
                     New_ProductAttributeValue.create(
                         product=product.id,
@@ -586,7 +587,7 @@ def move_product():
                     )
                     can = New_CategoryAttribute.get(New_CategoryAttribute.ename == 'CAN')
                     can_cls = New_CategoryAttributeItems.get(
-                        New_CategoryAttributeItems.name == la.CAN,
+                        New_CategoryAttributeItems.name == na.CAN,
                         New_CategoryAttributeItems.category_attribute == can.id)
                     New_ProductAttributeValue.create(
                         product=product.id,
