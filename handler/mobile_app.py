@@ -731,9 +731,9 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
 
     @apiParam {String} keyword 搜索关键字
     @apiParam {String} sort 价格排序 1正序， 2逆序； 默认为1  销量排序 3正序， 4逆序； 默认2
-    @apiParam {String} category 分类ID， 多选, 例：1,2,3
-    @apiParam {String} brand 品牌ID组合， 多选, 例：1,2,3
-    @apiParam {String} attribute 属性ID组合, 多选, 例： 1,2,3
+    @apiParam {String} category 分类ID， 多选, 例：1,2,3；未选择传入空串；默认润滑油的ID
+    @apiParam {String} brand 品牌ID组合， 多选, 例：1,2,3；未选择传入空串
+    @apiParam {String} attribute 属性ID组合, 多选, 例： 1,2,3；未选择传入空串
     @apiParam {Int} index 页数
 
     @apiSampleRequest /mobile/discoverproducts
