@@ -130,7 +130,7 @@ function showDetail() {
             androidObj.showDetail();
         }
         else if ("{{product['platform']}}" == "ios") {
-            window.webkit.messageHandlers.showDetail.postMessage();
+            window.webkit.messageHandlers.showDetail.postMessage('');
         }
      {% endif %}
 }
