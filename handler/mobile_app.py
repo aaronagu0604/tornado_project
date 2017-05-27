@@ -786,7 +786,7 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
 
     def getProductList(self, keyword, sort, category, brands, attribute, index, area_code):
         productList = []
-        ft = (Product.active == 1) #&(Product.category == category.id)
+        ft = (Product.active == 1) & (Product.category == category.id)
         # 根据规格参数搜索
         attribute = [int(item) for item in attribute]
         brands = [int(item) for item in brands]
@@ -874,7 +874,7 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
         attributes = attribute.strip(',').split(',') if attribute else []
         area_code = self.get_store_area_code()
         try:
-            category = Category.get(id=int(category))
+            category = Category.get(id=int(1))
         except Exception,e:
             category = Category.get(id=1)
         self.hot_search_add_keyword(keyword)
