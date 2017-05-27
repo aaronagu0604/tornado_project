@@ -1408,7 +1408,7 @@ def move_caritem():
 
 # 地区返佣策略
 from db_model import HelpCenter as Old_HelpCenter
-from model import InsuranceArea
+from model_move import InsuranceArea
 def move_lubeexchange():
     InsuranceArea.delete().execute()
     old_policy = Old_HelpCenter.select()
