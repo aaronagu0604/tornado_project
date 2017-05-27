@@ -880,7 +880,7 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
         self.hot_search_add_keyword(keyword)
 
         result['data']['filter_items'] = self.getFilter()
-        result['data']['products'] = self.getProductList(keyword, sort, category, brands, attributes, index, area_code)
+        result['data']['products'] = []#self.getProductList(keyword, sort, category, brands, attributes, index, area_code)
         logging.info(result)
         self.write(simplejson.dumps(result))
         self.finish()
