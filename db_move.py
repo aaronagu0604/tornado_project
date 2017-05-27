@@ -105,10 +105,20 @@ delivery_map = {}
 
 def move_delivery():
     old_delivery = Old_Delivery.select()
+    dimg = {
+        1:'http://img.520czj.com/image/2017/05/27/server1_20170527164411pSZiMHxQDnaCAwYTXtfBOboN.png',
+        2:'http://img.520czj.com/image/2017/05/27/server1_20170527164450kbEPeCUcpsHNZLwyolOxSfYA.png',
+        3:'http://img.520czj.com/image/2017/05/27/server1_20170527164507wPjrQpaAcVDCIhKHsyEfMqxm.png',
+        4:'http://img.520czj.com/image/2017/05/27/server1_20170527164545LdQkeXxGjqnBTuvPUAWacpMO.png',
+        5:'http://img.520czj.com/image/2017/05/27/server1_20170527164525ZwIbqopDuhviCJzYfPVGANtB.png',
+        6:'http://img.520czj.com/image/2017/05/27/server1_20170527164617nvFldkMYcXIoSbVjfUgAZLyp.png',
+        7:'http://img.520czj.com/image/2017/05/27/server1_20170527164630IALYMnQsvrPRwfjzUxqHEdbg.png',
+        8:'http://img.520czj.com/image/2017/05/27/server1_20170527164644smAIaHCTXdVwLhGMvoifBEQK.png',
+    }
     for item in old_delivery:
         delivery = New_Delivery.create(
             name=item.name,
-            img=''
+            img=dimg[item.id]
         )
 
         delivery_map[item.id] = delivery.id
