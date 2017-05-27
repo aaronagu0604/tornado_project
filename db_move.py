@@ -277,17 +277,21 @@ def move_brandcategory():
 '''
 # adminuser:管理员账户
 adminuser_map = {}  # adminuser id 映射表，在转移的时候记录下来，后边有需要指向其的外键的时候替换即可
-
+from db_model import Referee
 def move_adminuser():
     New_AdminUser.delete().execute()
     old_adminuser = Old_AdminUser.select()
     for item in old_adminuser:
+        try:
+            referer = Referee.get(Referee.name==item.username).number
+        except Exception,e:
+            referer = ''
         adminuser = New_AdminUser.create(
             username=item.username,
             password=item.password,
             mobile=item.mobile,
             email=item.email,
-            code="",  # 旧的没找到，暂时设置空
+            code=referer,  # 旧的没找到，暂时设置空
             realname=item.realname,
             roles=item.roles,
             area_code='',
@@ -314,7 +318,7 @@ def move_adminuserlog():
 '''
 # store:店铺
 store_map = {}
-
+from db_model import RefereeUsers
 def move_store():
     old_store = Old_Store.select()
     for item in old_store:
@@ -322,6 +326,10 @@ def move_store():
             user = Old_User.get(Old_User.store == item)
         except Exception:
             continue
+        try:
+            ref = RefereeUsers.get(RefereeUsers.store == item.id).refereeNum
+        except Exception,e:
+            ref = ''
         if user.grade == 5:
             grade = 1
             process_insurance = 1
@@ -333,7 +341,7 @@ def move_store():
             process_insurance = 0
         store = New_Store.create(
             store_type=grade,
-            admin_code=None,  # 旧的没有
+            admin_code=ref,  # 旧的没有
             admin_user=None,  # 旧的没有
             name=item.name,
             area_code=item.area_code,
