@@ -1461,9 +1461,11 @@ from model_move import SSILubePolicy as new_SSILubePolicy
 def init_store_po():
     new_SSILubePolicy.delete().execute()
     for store in New_Store.select():
+        print('--------%s: %s------' % (store.id, store.area_code))
         for area_po in New_InsuranceArea.get_area_insurance(store.area_code):
-            new_SSILubePolicy.create(store=store, insurance=area_po['insurance'], cash=area_po['cash'],
-                                    dealer_store=area_po['dealer_store'], lube=area_po['lube'])
+            print area_po['insurance'].id
+            # new_SSILubePolicy.create(store=store, insurance=area_po['insurance'], cash=area_po['cash'],
+            #                         dealer_store=area_po['dealer_store'], lube=area_po['lube'])
 
 if __name__ == '__main__':
     pass
