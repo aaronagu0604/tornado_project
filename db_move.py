@@ -827,107 +827,6 @@ def _has_dic(src=[], dickey=None):
     else:
         return -1
 
-# 返佣策略
-from db_model import HelpCenter as Old_HelpCenter
-from model import InsuranceArea
-def move_lubeexchange():
-    InsuranceArea.delete().execute()
-    old_policy = Old_HelpCenter.select()
-    tmp_area = []
-    area_code_list = []
-    for i in old_policy:
-        if i.area_code not in tmp_area:
-            tmp_area.append(i.area_code)
-            area_code_list.append({'code': i.area_code, 'ic_name': i.iCompany})
-    for al in area_code_list:
-        i_list = []
-        i_names = al['ic_name'].split('/')
-        data = []
-        for i_name in i_names:
-            if i_name != u'太平':
-                i_name += '%'
-                insurance = New_Insurance.select().where(New_Insurance.name % i_name)
-                i_id = insurance[0].id if insurance.count() > 0 else 0
-            else:
-                i_name = u'太平车险'
-                insurance = New_Insurance.select().where(New_Insurance.name == i_name)
-                i_id = insurance[0].id if insurance.count() > 0 else 0
-            if i_id:
-                i_list.append(i_id)
-            else:
-                print(u'---no i id--%s---' % i_name)
-        for item in old_policy:
-            if item.area_code == al['code']:
-                try:
-                    minp, maxp = item.price.split('-')
-                except:
-                    minp = item.price.strip(u'≥').strip(u'以上')
-                    maxp = ''
-                gift_in = False
-                for d in data:
-                    if d['gift'] == item.driverGift:
-                        d['items'].append({
-                            'name': item.insurance,
-                            'driver': item.driverGiftNum,
-                            'store': item.party2GiftNum,
-                            'minprice': minp,
-                            'maxprice': maxp,
-                            'flag': 1  # 暂时不知道设置为什么值，设置为1
-                        })
-                        gift_in = True
-                if not gift_in:
-                    data.append({
-                        'gift': item.driverGift,
-                        'items': [{
-                            'name': item.insurance,
-                            'driver': item.driverGiftNum,
-                            'store': item.party2GiftNum,
-                            'minprice': minp,
-                            'maxprice': maxp,
-                            'flag': 1  # 暂时不知道设置为什么值，设置为1
-                        }]
-                    })
-
-        for i_id in i_list:
-            InsuranceArea.create(
-                area_code = al['code'],
-                insurance = i_id,
-                lube_ok = 1,
-                dealer_store = 1,
-                lube_policy = simplejson.dumps(data),
-                cash_ok = 0,
-                cash_policy = '',
-                sort = 1,
-                active = 1
-            )
-
-    score_data = ''
-    ocs = Old_CurrencyExchangeList.select().where((Old_CurrencyExchangeList.iswork == 1) & (Old_CurrencyExchangeList.is_cash == 0))
-    for oc in ocs:
-        score_data = {"pr": 0,
-                      "fer2": round(oc.forceRate * 100, 2),
-                      "fer": round(oc.forceRate * 100),
-                      "ftr": 0,
-                      "ber2": round(oc.rate * 100),
-                      "ber": round(oc.rate * 100),
-                      "bm": 0,
-                      "btr": 0,
-                      "ar": 0}
-        new_i = New_Insurance.select().where(New_Insurance.name == oc.iid.name)
-        i_id = 0
-        if new_i.count() > 0:
-            i_id = new_i[0].id
-            ias = InsuranceArea.select().where((InsuranceArea.insurance == i_id) & (InsuranceArea.area_code == oc.area_code))
-            if ias.count() > 0:
-                ias[0].cash_ok = 1
-                ias[0].cash_policy = simplejson.dumps(score_data)
-                ias[0].save()
-            else:
-                InsuranceArea.create(area_code=oc.area_code, insurance=i_id, lube_ok=0, dealer_store=1, lube_policy='',
-                    cash_ok=1, cash_policy=simplejson.dumps(score_data), sort=1, active=1)
-        else:
-            print('---%s--' % oc.iid.name)
-
 
 '''
 # 第三部分：互相依赖记录数据
@@ -1454,51 +1353,184 @@ def move_caritem():
     czjmoveCarItem.insert_many(old_data).execute()
     print 'move car item',len(old_data)
 
+
+# 地区返佣策略
+from db_model import HelpCenter as Old_HelpCenter
+from model import InsuranceArea
+def move_lubeexchange():
+    InsuranceArea.delete().execute()
+    old_policy = Old_HelpCenter.select()
+    tmp_area = []
+    area_code_list = []
+    for i in old_policy:
+        if i.area_code not in tmp_area:
+            tmp_area.append(i.area_code)
+            area_code_list.append({'code': i.area_code, 'ic_name': i.iCompany})
+    for al in area_code_list:
+        i_list = []
+        i_names = al['ic_name'].split('/')
+        data = []
+        for i_name in i_names:
+            if i_name != u'太平':
+                i_name += '%'
+                insurance = New_Insurance.select().where(New_Insurance.name % i_name)
+                i_id = insurance[0].id if insurance.count() > 0 else 0
+            else:
+                i_name = u'太平车险'
+                insurance = New_Insurance.select().where(New_Insurance.name == i_name)
+                i_id = insurance[0].id if insurance.count() > 0 else 0
+            if i_id:
+                i_list.append(i_id)
+            else:
+                print(u'---no i id--%s---' % i_name)
+        for item in old_policy:
+            if item.area_code == al['code']:
+                try:
+                    minp, maxp = item.price.split('-')
+                except:
+                    minp = item.price.strip(u'≥').strip(u'以上')
+                    maxp = ''
+                gift_in = False
+                for d in data:
+                    if d['gift'] == item.driverGift:
+                        d['items'].append({
+                            'name': item.insurance,
+                            'driver': item.driverGiftNum,
+                            'store': item.party2GiftNum,
+                            'minprice': minp,
+                            'maxprice': maxp,
+                            'flag': 1  # 暂时不知道设置为什么值，设置为1
+                        })
+                        gift_in = True
+                if not gift_in:
+                    data.append({
+                        'gift': item.driverGift,
+                        'items': [{
+                            'name': item.insurance,
+                            'driver': item.driverGiftNum,
+                            'store': item.party2GiftNum,
+                            'minprice': minp,
+                            'maxprice': maxp,
+                            'flag': 1  # 暂时不知道设置为什么值，设置为1
+                        }]
+                    })
+
+        for i_id in i_list:
+            InsuranceArea.create(
+                area_code = al['code'],
+                insurance = i_id,
+                lube_ok = 1,
+                dealer_store = 1,
+                lube_policy = simplejson.dumps(data),
+                cash_ok = 0,
+                cash_policy = '',
+                sort = 1,
+                active = 1
+            )
+
+    score_data = ''
+    ocs = Old_CurrencyExchangeList.select().where((Old_CurrencyExchangeList.iswork == 1) & (Old_CurrencyExchangeList.is_cash == 0))
+    for oc in ocs:
+        score_data = {"pr": 0,
+                      "fer2": round(oc.forceRate * 100, 2),
+                      "fer": round(oc.forceRate * 100),
+                      "ftr": 0,
+                      "ber2": round(oc.rate * 100),
+                      "ber": round(oc.rate * 100),
+                      "bm": 0,
+                      "btr": 0,
+                      "ar": 0}
+        new_i = New_Insurance.select().where(New_Insurance.name == oc.iid.name)
+        i_id = 0
+        if new_i.count() > 0:
+            i_id = new_i[0].id
+            ias = InsuranceArea.select().where((InsuranceArea.insurance == i_id) & (InsuranceArea.area_code == oc.area_code))
+            if ias.count() > 0:
+                ias[0].cash_ok = 1
+                ias[0].cash_policy = simplejson.dumps(score_data)
+                ias[0].save()
+            else:
+                InsuranceArea.create(area_code=oc.area_code, insurance=i_id, lube_ok=0, dealer_store=1, lube_policy='',
+                    cash_ok=1, cash_policy=simplejson.dumps(score_data), sort=1, active=1)
+        else:
+            print('---%s--' % oc.iid.name)
+
+
+# 初始化店铺的返佣规则
+from model_move import SSILubePolicy as new_SSILubePolicy
+def init_store_po():
+    new_SSILubePolicy.delete().execute()
+    for store in New_Store.select():
+        for area_po in New_InsuranceArea.get_area_insurance(store.area_code):
+            new_SSILubePolicy.create(store=store, insurance=area_po['insurance'], cash=area_po['cash'],
+                                    dealer_store=area_po['dealer_store'], lube=area_po['lube'])
+
 if __name__ == '__main__':
     pass
-    move_hotsearch()    # 热搜
-    move_delivery()   # 物流公司
-    move_bankcard()   # 银行卡
-    move_area()   # 地区
-    move_category()   # 分类
-    move_categoryattribute()  # 分类和品牌关系
-    move_categoryattributeitem()
-    move_brand()
-    move_brandcategory()
-    move_adminuser()
-    # move_adminuserlog()
-    move_store()
-    move_storebankaccount()
-    move_storearea()
-    move_user()
-    move_storeaddress()
-    move_scorerecord()
-    move_moneyrecord()
-    move_block()
-    move_blockitem()
-    move_blockitemarea()
-    move_product()
-    move_productpic()
+    # move_hotsearch()    # 热搜
+    # move_delivery()   # 物流公司
+    # move_bankcard()   # 银行卡
+    # move_area()   # 地区
+    # move_category()   # 分类
+    # move_categoryattribute()  # 分类和品牌关系
+    # move_categoryattributeitem()
+    # move_brand()
+    # move_brandcategory()
+    # move_adminuser()
+    # #move_adminuserlog()
+    # move_store()
+    # move_storebankaccount()
+    # move_storearea()
+    # move_user()
+    # move_storeaddress()
+    # move_scorerecord()
+    # move_moneyrecord()
+    # move_block()
+    # move_blockitem()
+    # move_blockitemarea()
+    # move_product()
+    # move_productpic()
     # move_productattributevalue()
-    move_productrelease()
-    move_storeproductprice()
-    move_insurance()
-    # move_insurancearea()
-    # move_insuranceexchange()
+    # move_productrelease()
+    # move_storeproductprice()
+    # move_insurance()
+    # #move_insurancearea()
+    # # move_insuranceexchange()
+    # #move_lubeexchange()
+    # move_feedback()
+    # #move_insuranceporderprice()
+    # move_insuranceorder()
+    # move_settlement()
+    # move_Order()
+    # move_orderitem()
+    # #move_cart()
+    # move_insuranceitem()
+    # move_insuranceprice()
+    # # move_carbrand()
+    # # move_carbrandfactor()
+    # # move_car()
+    # # move_caritemgroup()
+    # # move_carsk()
+    # # move_caritem()
     # move_lubeexchange()
-    move_feedback()
-    # move_insuranceporderprice()
-    move_insuranceorder()
-    move_settlement()
-    move_Order()
-    move_orderitem()
-    # move_cart()
-    move_insuranceitem()
-    move_insuranceprice()
-    # move_carbrand()
-    # move_carbrandfactor()
-    # move_car()
-    # move_caritemgroup()
-    # move_carsk()
-    # move_caritem()
-    move_lubeexchange()
+    init_store_po()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
