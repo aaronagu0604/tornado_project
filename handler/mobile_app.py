@@ -775,7 +775,7 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
         brandCategorys = BrandCategory.select().where(BrandCategory.category == c_id)
         if brandCategorys.count() > 0:
             filterlist.append({
-                'cid': id,
+                'cid': c_id,
                 'ename': 'pp',
                 'aid': 0,
                 'name': u'品牌',
@@ -880,8 +880,8 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
         self.hot_search_add_keyword(keyword)
 
         result['data']['filter_items'] = self.getFilter()
-        result['data']['products'] = []#self.getProductList(keyword, sort, category, brands, attributes, index, area_code)
-        logging.info(result)
+        result['data']['products'] = self.getProductList(keyword, sort, category, brands, attributes, index, area_code)
+
         self.write(simplejson.dumps(result))
         self.finish()
 
