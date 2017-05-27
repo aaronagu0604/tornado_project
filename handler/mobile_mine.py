@@ -2228,7 +2228,7 @@ class MobileVersionHandler(MobileBaseHandler):
                 result['isForce'] = update.isForce
                 result['releaseNotes'] = update.instructions
                 if update.client == 'android_b' or update.client == 'android_c':
-                    result['baseUrl'] = "http://www.520czj.com" + update.path +'?r=' + str(time.time())
+                    result['baseUrl'] = setting.domanName + update.path +'?r=' + str(time.time())
                 result['flag'] = 1
         except Exception, e:
             logging.info('Error: mobile/update/%s %s'%(client, e.message))

@@ -472,54 +472,66 @@ def move_moneyrecord():
     print 'move moneyrecord:', len(old_data)
 
 # # block:广告区域
-# block_map = {}
-# '''
-# # 广告部分
-# '''
-# def move_block():
-#     old_block = Old_AdType.select()
-#     for item in old_block:
-#         block = New_Block.create(
-#             tag='',
-#             name=item.name,
-#             remark=item.remark,
-#             img=imgurl+item.imagename if item.imagename else '',
-#             active=1  # 旧的没有，设置默认 值1（有效）
-#         )
-#
-#         block_map[item.id] = block.id
-#     print 'move block:', old_block.count()
-#
-# # blockitem：广告
-# block_item_map = {}
-#
-# def move_blockitem():
-#     old_blockitem = Old_Ad.select().where(Old_Ad.atype << block_map.keys())
-#     for item in old_blockitem:
-#         blockitem = New_BlockItem.create(
-#             area_code=item.city_code if item.city_code else '',
-#             block=block_map[item.atype],
-#             name='数据库迁移数据',  # 旧的没有，暂时设置，后期人工处理
-#             link=0,  # 旧的没有，设置默认值：0
-#             ext_id=block_map[item.atype],  # 旧的没有，设置默认值：0
-#             remark=item.remark,
-#             img=imgurl+item.picurl if item.picurl else '',
-#             sort=item.sort,
-#             activ=item.flag
-#         )
-#         block_item_map[item.id] = blockitem.id
-#     print 'move blockitem:', old_blockitem.count()
-#
-# # blockitemarea:广告投放区域
-# def move_blockitemarea():
-#     old_blockitem = Old_Ad.select()
-#     old_data = [{
-#         'block_item': block_item_map[item.id],
-#         'area_code': item.city_code
-#     } for item in old_blockitem if item.city_code]
-#
-#     print 'move blockitemarea:', len(old_data)
-#     New_BlockItemArea.insert_many(old_data).execute()
+block_map = {}
+'''
+# 广告部分
+'''
+def move_block():
+    block = New_Block.create(
+        tag='banner',
+        name='手机b端上方banner轮播位置',
+        active=1  # 旧的没有，设置默认 值1（有效）
+    )
+
+    block_map[block.id] = block.id
+
+    print 'move block:', 1
+
+# blockitem：广告
+block_item_map = {}
+
+def move_blockitem():
+
+    New_BlockItem.create(area_code='',block= 1,name='人保车险',link='czj://insurance/13',img='')
+    New_BlockItem.create(area_code='', block=1, name='安盛保险', link='czj://insurance/15', img='')
+    New_BlockItem.create(area_code='', block=1, name='太平洋保险', link='czj://insurance/12', img='')
+    New_BlockItem.create(area_code='', block=1, name='大地保险', link='czj://insurance/10', img='')
+    New_BlockItem.create(area_code='', block=1, name='国寿财', link='czj://insurance/11', img='')
+    New_BlockItem.create(area_code='', block=1, name='平安车险', link='czj://insurance/9', img='')
+
+    print 'move blockitem:', 6
+
+# blockitemarea:广告投放区域
+def move_blockitemarea():
+    old_blockitem = Old_Ad.select()
+    old_data = [{
+            'block_item': 1,
+            'area_code': ''
+        },
+        {
+            'block_item': 2,
+            'area_code': '0027'
+        },
+        {
+            'block_item': 3,
+            'area_code': '0004'
+        },
+        {
+            'block_item': 4,
+            'area_code': '00160016'
+        },
+        {
+            'block_item': 5,
+            'area_code': '00160016'
+        },
+        {
+            'block_item': 6,
+            'area_code': '00300004'
+        }
+    ]
+
+    print 'move blockitemarea:', len(old_data)
+    New_BlockItemArea.insert_many(old_data).execute()
 '''
 # 产品部分
 '''
