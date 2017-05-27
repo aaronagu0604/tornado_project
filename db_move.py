@@ -1418,8 +1418,8 @@ def move_lubeexchange():
         if (i.area_code+i.iCompany) not in tmp_area:
             tmp_area.append(i.area_code+i.iCompany)
             area_code_list.append({'code': i.area_code, 'ic_name': i.iCompany})
-    for tmp_a in tmp_area:
-        print(u'-返油地区，公司：-%s--' % tmp_a)
+    for tmp_a in area_code_list:
+        print(u'--%s--' % str(tmp_a))
     for al in area_code_list:
         i_list = []
         i_names = al['ic_name'].split('/')
@@ -1579,7 +1579,7 @@ if __name__ == '__main__':
     # move_carsk()
     # move_caritem()
     move_lubeexchange()
-    init_store_po()
+    # init_store_po()
 
 
 

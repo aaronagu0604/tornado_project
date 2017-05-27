@@ -663,6 +663,39 @@ class InsuranceArea(db.Model):
     def get_area_insurance(cls, area_code):
         result = []
         ft = (InsuranceArea.active == 1)
+        if len(area_code) == 12:    # 门店是区，能查发布到省市和该区的规则
+            codes = [area_code, area_code[:8], area_code[:4]]
+            ft &= (InsuranceArea.area_code << codes)
+        elif len(area_code) == 8:    # 门店地区是市，只能查发布到省和该市的规则
+            codes = [area_code, area_code[:4]]
+            ft &= (InsuranceArea.area_code << codes)
+        elif len(area_code) == 4:    # 门店地区是省，只能查发布到省得规则
+            ft &= (InsuranceArea.area_code == area_code)
+        tmp_dict = {}
+        tmp_i_list = []
+        for i in InsuranceArea.select().where(ft).order_by(InsuranceArea.area_code.asc()):    # 顺序省->市->区
+            if i.insurance not in tmp_i_list:
+                tmp_i_list.append(i.insurance)
+                result.append({
+                            'insurance': i.insurance,
+                            'lube': i.lube_policy,
+                            'cash': i.cash_policy,
+                            'dealer_store': i.dealer_store
+                        })
+            else:
+                for r in result:
+                    if r['insurance'] == i.insurance:
+                        if i.cash_policy:
+                            r['cash'] = i.cash_policy
+                        if i.lube_policy:
+                            r['lube'] = i.lube_policy
+        return result
+
+    @classmethod
+    def get_insurances_link(cls, area_code):  # 获取该地区所有保险公司及链接
+        temp_insurance_id = []
+        insurance_list = []
+        ft = (InsuranceArea.active == 1)
         if len(area_code) == 12:
             codes = [area_code, area_code[:8], area_code[:4]]
             ft &= (InsuranceArea.area_code << codes)
@@ -987,7 +1020,7 @@ class SSILubePolicy(db.Model):
     insurance = ForeignKeyField(Insurance, related_name='insurance_policy', db_column='insurance_id')  # 保险公司
     dealer_store = ForeignKeyField(Store, related_name='dealer_store_policy', db_column='dealer_store_id')  # 经销商
     cash = TextField(default='')  # 返现政策的json串  # 返现政策
-    lube = TextField(default='')  # 返油政策的json串  #　返油政策
+    lube = TextField(default='')  # 返油政策的json串  # 返油政策
 
     class Meta:
         db_table = "tb_store_gift_policy"
