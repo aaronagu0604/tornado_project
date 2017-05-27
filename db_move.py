@@ -517,7 +517,7 @@ def move_blockitemarea():
 product_map = {}
 
 def move_product():
-    old_prodcut = Old_Product.select()
+    old_prodcut = Old_Product.select().where(Old_Product.is_index == 0)
     for item in old_prodcut:
         product = New_Product.create(
             name=item.name,
@@ -531,13 +531,113 @@ def move_product():
             created=item.created,
             active=item.status  # 旧的没有，暂时这样处理
         )
+        if item.LA.count():
+            for la in item.LA:
+                if la.level and la.classes and la.capacity and la.viscosity:
+                    level  = New_CategoryAttribute.get(New_CategoryAttribute.ename == 'level')
+                    level_cls = New_CategoryAttributeItems.get(New_CategoryAttributeItems.name == la.level,
+                                                               New_CategoryAttributeItems.category_attribute == level.id)
+                    New_ProductAttributeValue.create(
+                        product=item.id,
+                        attribute=level.id,
+                        attribute_item=level_cls.id,
+                        value=la.level
+                    )
+                    classes = New_CategoryAttribute.get(New_CategoryAttribute.ename == 'classes')
+                    classes_cls = New_CategoryAttributeItems.get(New_CategoryAttributeItems.name == la.classes,
+                                                               New_CategoryAttributeItems.category_attribute == classes.id)
+                    New_ProductAttributeValue.create(
+                        product=item.id,
+                        attribute=classes.id,
+                        attribute_item=classes_cls.id,
+                        value=la.classes
+                    )
+                    capacity = New_CategoryAttribute.get(New_CategoryAttribute.ename == 'capacity')
+                    capacity_cls = New_CategoryAttributeItems.get(New_CategoryAttributeItems.name == la.capacity,
+                                                                 New_CategoryAttributeItems.category_attribute == capacity.id)
+                    New_ProductAttributeValue.create(
+                        product=item.id,
+                        attribute=capacity.id,
+                        attribute_item=capacity_cls.id,
+                        value=la.capacity
+                    )
+                    viscosity = New_CategoryAttribute.get(New_CategoryAttribute.ename == 'viscosity')
+                    viscosity_cls = New_CategoryAttributeItems.get(New_CategoryAttributeItems.name == la.viscosity,
+                                                                 New_CategoryAttributeItems.category_attribute == viscosity.id)
+                    New_ProductAttributeValue.create(
+                        product=item.id,
+                        attribute=viscosity.id,
+                        attribute_item=viscosity_cls.id,
+                        value=la.viscosity
+                    )
+                else:
+                    continue
+        if item.NA.count():
+            for na in item.NA:
+                if na.configuration and na.CAN and na.size:
+                    configuration = New_CategoryAttribute.get(New_CategoryAttribute.ename == 'configuration')
+                    configuration_cls = New_CategoryAttributeItems.get(New_CategoryAttributeItems.name == la.configuration,
+                                                                   New_CategoryAttributeItems.category_attribute == configuration.id)
+                    New_ProductAttributeValue.create(
+                        product=item.id,
+                        attribute=configuration.id,
+                        attribute_item=configuration_cls.id,
+                        value=la.configuration
+                    )
+                    can = New_CategoryAttribute.get(New_CategoryAttribute.ename == 'CAN')
+                    can_cls = New_CategoryAttributeItems.get(
+                        New_CategoryAttributeItems.name == la.CAN,
+                        New_CategoryAttributeItems.category_attribute == can.id)
+                    New_ProductAttributeValue.create(
+                        product=item.id,
+                        attribute=can.id,
+                        attribute_item=can_cls.id,
+                        value=la.CAN
+                    )
+                    size = New_CategoryAttribute.get(New_CategoryAttribute.ename == 'psize')
+                    size_cls = New_CategoryAttributeItems.get(
+                        New_CategoryAttributeItems.name == na.size,
+                        New_CategoryAttributeItems.category_attribute == size.id)
+                    New_ProductAttributeValue.create(
+                        product=item.id,
+                        attribute=size.id,
+                        attribute_item=size_cls.id,
+                        value=na.size
+                    )
+                else:
+                    continue
+        if item.RA.count():
+            for ra in item.RA:
+                if ra.size and ra.lens:
+                    size = New_CategoryAttribute.get(New_CategoryAttribute.ename == 'jsize')
+                    size_cls = New_CategoryAttributeItems.get(
+                        New_CategoryAttributeItems.name == ra.size,
+                        New_CategoryAttributeItems.category_attribute == size.id)
+                    New_ProductAttributeValue.create(
+                        product=item.id,
+                        attribute=size.id,
+                        attribute_item=size_cls.id,
+                        value=ra.size
+                    )
+                    lens = New_CategoryAttribute.get(New_CategoryAttribute.ename == 'lens')
+                    lens_cls = New_CategoryAttributeItems.get(
+                        New_CategoryAttributeItems.name == ra.size,
+                        New_CategoryAttributeItems.category_attribute == size.id)
+                    New_ProductAttributeValue.create(
+                        product=item.id,
+                        attribute=lens.id,
+                        attribute_item=lens_cls.id,
+                        value=ra.size
+                    )
+                else:
+                    continue
 
         product_map[item.id] = product.id
     print 'move product:', old_prodcut.count()
 
 # productpic:产品附图
 def move_productpic():
-    old_productpic = Old_ProductPic.select()
+    old_productpic = Old_ProductPic.select().where(Old_ProductPic.product << product_map.keys())
     old_data = [{
                     'product': product_map[item.product.id],
                     'pic': imgurl+item.path if item.path else '',
@@ -547,18 +647,18 @@ def move_productpic():
     New_ProductPic.insert_many(old_data).execute()
 
 # productattributevalue:产品型号
-def move_productattributevalue():
-    old_attribute = Old_ProductAttribute.select()
-    old_data = [{
-        'product': product_map[item.product.id],
-        'attribute': item.attribute,
-        'attribute_item': 0,  # 旧的没有，需要额外处理
-        'value': 0,  # 旧的没有，需要额外处理
-    } for item in old_attribute]
-
-    if old_data:
-        New_ProductAttributeValue.insert_many(old_data).execute()
-    print 'move productattributevalue:', len(old_data)
+# def move_productattributevalue():
+#     old_attribute = Old_ProductAttribute.select()
+#     old_data = [{
+#         'product': product_map[item.product.id],
+#         'attribute': item.attribute,
+#         'attribute_item': 0,  # 旧的没有，需要额外处理
+#         'value': 0,  # 旧的没有，需要额外处理
+#     } for item in old_attribute]
+#
+#     if old_data:
+#         New_ProductAttributeValue.insert_many(old_data).execute()
+#     print 'move productattributevalue:', len(old_data)
 
 # productrelease:产品发布
 product_release_map = {}
@@ -1365,7 +1465,7 @@ if __name__ == '__main__':
     move_brand()
     move_brandcategory()
     move_adminuser()
-    #move_adminuserlog()
+    # move_adminuserlog()
     move_store()
     move_storebankaccount()
     move_storearea()
@@ -1378,20 +1478,20 @@ if __name__ == '__main__':
     move_blockitemarea()
     move_product()
     move_productpic()
-    move_productattributevalue()
+    # move_productattributevalue()
     move_productrelease()
     move_storeproductprice()
     move_insurance()
-    #move_insurancearea()
+    # move_insurancearea()
     # move_insuranceexchange()
-    #move_lubeexchange()
+    # move_lubeexchange()
     move_feedback()
-    #move_insuranceporderprice()
+    # move_insuranceporderprice()
     move_insuranceorder()
     move_settlement()
     move_Order()
     move_orderitem()
-    #move_cart()
+    # move_cart()
     move_insuranceitem()
     move_insuranceprice()
     # move_carbrand()
