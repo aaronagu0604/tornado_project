@@ -881,7 +881,7 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
 
         result['data']['filter_items'] = self.getFilter()
         result['data']['products'] = self.getProductList(keyword, sort, category, brands, attributes, index, area_code)
-        logging.info(simplejson.dumps(result))
+        logging.info(result)
         self.write(simplejson.dumps(result))
         self.finish()
 
