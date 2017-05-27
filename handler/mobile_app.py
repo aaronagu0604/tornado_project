@@ -738,37 +738,67 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/discoverproducts
     """
+    def getCategoryAttribute(self, c_id):
+        '''
+        attributeList = [{
+            'id': id,
+            'name': '容量',
+            'values': [{
+                'id': 1,
+                'name': 1L
+            },{
+                'id': 1,
+                'name': 3L
+            }]
+        },{}]
+        '''
+        attributeList = []
+        category = Category.get(id=c_id)
+        for attribute in category.attributes:
+            tmpList = []
+            for item in attribute.items:
+                tmpList.append({
+                    'id': item.id,
+                    'name': item.name
+                })
+            attributeList.append({
+                'cid': c_id,
+                'aid': attribute.id,
+                'name': attribute.name,
+                'ename': attribute.ename,
+                'values': tmpList
+            })
+        return attributeList
 
-    def getProductList(self, keyword, sort, category, brand, attribute, index, area_code):
+    def getFilter(self,c_id=1):
+        filter = []
+        brandCategorys = BrandCategory.select().where(BrandCategory.category == c_id)
+        if brandCategorys.count() > 0:
+            filter.append({
+                'cid': id,
+                'ename': 'pp',
+                'aid': 0,
+                'name': u'品牌',
+                'values': [{'id': bc.brand.id, 'name': bc.brand.name} for bc in brandCategorys]
+            })
+            filter += self.getCategoryAttribute(c_id)
+
+    def getProductList(self, keyword, sort, category, brands, attribute, index, area_code):
         productList = []
-        ft = (Product.active == 1)
+        ft = (Product.active == 1)&(Product.category == category.id)
         # 根据规格参数搜索
-        category = int(category) if category else 0
         attribute = [int(item) for item in attribute]
-        brand = [int(item) for item in brand]
-        index = int(index)
-        if category and attribute:
-            ft1 = ft2 = None
-            c = Category.get(id=category)
-            for i, a in enumerate(c.attributes):
-                cais = CategoryAttributeItems.select().where((CategoryAttributeItems.category_attribute == a.id) &
-                                                             (CategoryAttributeItems.id << attribute))
-                for cai in cais:
-                    ft2 = (ProductAttributeValue.value == cai.name) if not ft2 else ft2 | (ProductAttributeValue.value == cai.name)
-                if ft2:
-                    ft1 = ft2 if not ft1 else ft1 & ft2
-            print ft1
-            if ft1:
-                products = Product.select().join(ProductAttributeValue).where(ft1)
-                pids = [product.id for product in products]
-                ft = (Product.id << pids) if pids else ft
-        elif category:
-            ft &= (Product.category == category)
+        brands = [int(item) for item in brands]
+
+        if attribute:
+            ft &= (ProductAttributeValue.value << attribute)
+
         ft &= ((StoreProductPrice.price > 0) & (StoreProductPrice.active == 1) & (ProductRelease.active == 1))
+
         if keyword:
             ft &= (Product.name.contains(keyword))
-        if brand:
-            ft &= (Product.brand << brand)
+        if brands:
+            ft &= (Product.brand << brands)
         if len(area_code) == 12:  # 门店可以购买的范围仅仅到区县
             ft &= (((db.fn.Length(StoreProductPrice.area_code) == 4) & (StoreProductPrice.area_code == area_code[:4])) |
                    ((db.fn.Length(StoreProductPrice.area_code) == 8) & (StoreProductPrice.area_code == area_code[:8])) |
@@ -778,6 +808,7 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
                    (StoreProductPrice.area_code == area_code))
         elif len(area_code) == 4:  # 门店可以购买的范围到省级
             ft &= (StoreProductPrice.area_code == area_code)
+
         products = ProductRelease.select(
             ProductRelease.id.alias('prid'), Product.id.alias('pid'), StoreProductPrice.id.alias('sppid'),
             Product.name.alias('name'), StoreProductPrice.price.alias('price'), Product.unit.alias('unit'),
@@ -786,6 +817,7 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
             ProductRelease.sort.alias('sort')). \
             join(Product, on=(Product.id == ProductRelease.product)). \
             join(StoreProductPrice, on=(StoreProductPrice.product_release == ProductRelease.id)). \
+            join(ProductAttributeValue, on=(ProductAttributeValue.product == Product.id)). \
             join(Store, on=(Store.id == ProductRelease.store)).where(ft).dicts()
 
         # 排序
@@ -800,7 +832,7 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
         else:
             products = products.order_by(ProductRelease.sort.desc())
         ps = products.paginate(index, setting.MOBILE_PAGESIZE)
-        #print ps
+
         for p in ps:
             productList.append({
                 'prid': p['prid'],
@@ -836,32 +868,19 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
         category = self.get_argument("category", '')
         brand = self.get_argument("brand", '')
         attribute = self.get_argument("attribute", '')
-        index = self.get_argument("index", None)
-        index = int(index) if index else 1
-        categories = list(set(category.strip(',').split(',')))
+        index = int(self.get_argument("index", 1))
         brands = brand.strip(',').split(',') if brand else []
         attributes = attribute.strip(',').split(',') if attribute else []
         area_code = self.get_store_area_code()
-
+        try:
+            category = Category.get(id=int(category))
+        except Exception,e:
+            category = Category.get(id=1)
         self.hot_search_add_keyword(keyword)
-        if len(categories) > 1:
-            result['data']['products'] = []
-        else:
-            result['data']['products'] = self.getProductList(keyword, sort, categories[0], brands, attributes, index, area_code)
 
-        result['data']['category'] = ''
-        result['data']['brand'] = ''
-        if category or brand:
-            result['data']['category'] = category
-            result['data']['brand'] = brand
-        else:
-            try:
-                if u'油' in keyword or u'仪' in keyword:
-                    result['data']['category'] = Product.get(id=result['data']['products'][0]['pid']).category.id
-                else:
-                    result['data']['brand'] = Product.get(id=result['data']['products'][0]['pid']).brand.id
-            except Exception, e:
-                pass
+        result['data']['filter_items'] = self.getFilter()
+        result['data']['products'] = self.getProductList(keyword, sort, category, brands, attributes, index, area_code)
+
         self.write(simplejson.dumps(result))
         self.finish()
 
