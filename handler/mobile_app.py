@@ -933,7 +933,8 @@ class MobileCategoryHandler(MobileBaseHandler):
 
         brands = []
         spps = Brand.select(). \
-            where(Brand.active == 1).order_by(Brand.sort.desc())
+            where(Brand.active == 1,BrandCategory.category == 1). \
+            join(BrandCategory,on=(BrandCategory.brand == Brand.id)).order_by(Brand.sort.desc())
 
         for ii in spps:
             brands.append({
