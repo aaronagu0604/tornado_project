@@ -232,15 +232,26 @@ brand_map = {}
 
 def move_brand():
     old_brand = Old_PinPai.select()
+    bimg = {
+        'SK':'http://img.520czj.com/image/2017/05/27/server1_20170527182941lGdCgLpTOMyZAWQmatrPFRbe.png',
+        'JDS':'http://img.520czj.com/image/2017/05/27/server1_20170527183436VDyYrdRwQoeUHmAEpZgFNnTx.png',
+        'DDE':'http://img.520czj.com/image/2017/05/27/server1_20170527183547clbksEmudXIAfpCKOYynMPZr.png',
+        'Mobil':'http://img.520czj.com/image/2017/05/27/server1_20170527183634XEeCuPfIHrKlhvqUiLWSNRzy.png',
+        'QP':'http://img.520czj.com/image/2017/05/27/server1_20170527183752JvaAPqlEHQkMIrdsThnwCueG.png',
+        'JSD':'http://img.520czj.com/image/2017/05/27/server1_20170527183913vXMEoJHufAnkDCbwmIqcpaZN.png',
+    }
     for item in old_brand:
         if not item.name:
             continue
-
+        if item.engname in bimg.keys():
+            brandimg = bimg[item.engname]
+        else:
+            brandimg = imgurl+item.logo if item.logo else ''
         brand = New_Brand.create(
             name=item.name,
             engname=item.engname,
             pinyin=item.pinyin,
-            logo=imgurl+item.logo if item.logo else '',
+            logo=brandimg,
             intro=item.intro,
             hot=0,  # 旧的没有，设置默认值：0(否)
             sort=1,  # 旧的没有,设置默认值：1
