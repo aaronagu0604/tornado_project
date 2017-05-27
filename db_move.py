@@ -492,12 +492,18 @@ block_item_map = {}
 
 def move_blockitem():
 
-    New_BlockItem.create(area_code='',block= 1,name='人保车险',link='czj://insurance/13',img='')
-    New_BlockItem.create(area_code='', block=1, name='安盛保险', link='czj://insurance/15', img='')
-    New_BlockItem.create(area_code='', block=1, name='太平洋保险', link='czj://insurance/12', img='')
-    New_BlockItem.create(area_code='', block=1, name='大地保险', link='czj://insurance/10', img='')
-    New_BlockItem.create(area_code='', block=1, name='国寿财', link='czj://insurance/11', img='')
-    New_BlockItem.create(area_code='', block=1, name='平安车险', link='czj://insurance/9', img='')
+    New_BlockItem.create(area_code='',block= 1,name='人保车险',link='czj://insurance/13',
+                         img='http://img.520czj.com/image/2017/05/27/server1_20170527181018hmjKPAJzqkWLIauDBxwfNQTd.jpg')
+    New_BlockItem.create(area_code='', block=1, name='安盛保险', link='czj://insurance/15',
+                         img='http://img.520czj.com/image/2017/05/27/server1_20170527180904UVCJzBIlGWxndOXPKemvELbc.jpg')
+    New_BlockItem.create(area_code='', block=1, name='太平洋保险', link='czj://insurance/12',
+                         img='http://img.520czj.com/image/2017/05/27/server1_20170527181032McbqYutagRDsTyUGJFILhSXQ.jpg')
+    New_BlockItem.create(area_code='', block=1, name='大地保险', link='czj://insurance/10',
+                         img='http://img.520czj.com/image/2017/05/27/server1_20170527180922KTOStzdYavZfXPrERAjkQBuU.jpg')
+    New_BlockItem.create(area_code='', block=1, name='国寿财', link='czj://insurance/11',
+                         img='http://img.520czj.com/image/2017/05/27/server1_20170527180941PSwNaUJcjBTMOuFKmxzhCyEQ.jpg')
+    New_BlockItem.create(area_code='', block=1, name='平安车险', link='czj://insurance/9',
+                         img='http://img.520czj.com/image/2017/05/27/server1_20170527180958tbVqFrUywOpHhPKBRDlXAvLm.jpg')
 
     print 'move blockitem:', 6
 
