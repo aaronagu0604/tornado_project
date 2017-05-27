@@ -1943,18 +1943,18 @@ class MobileLubePolicyHandler(MobileBaseHandler):
     @apiSampleRequest /mobile/lubepolicy
     """
 
-    # @require_auth
+    @require_auth
     def get(self):
         area_code = self.get_store_area_code()
-        # store = self.get_user().store
-        rows = SSILubePolicy.select().where(SSILubePolicy.store == 1)
+        store = self.get_user().store
+        rows = SSILubePolicy.select().where(SSILubePolicy.store == store)
         policylist = []
         for item in rows:
             policylist.append({
                 'name': item.insurance.name,
                 'lube': simplejson.loads(item.lube)
             })
-        self.render('mobile/lube_protocol.html', policylist=policylist)
+        self.render('mobile/lube_protocol.html', policylist=policylist, area_code=area_code)
 
 
 # -----------------------------------------------------设置-------------------------------------------------------------
