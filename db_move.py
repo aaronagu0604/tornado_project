@@ -461,55 +461,55 @@ def move_moneyrecord():
     New_MoneyRecord.insert_many(old_data).execute()
     print 'move moneyrecord:', len(old_data)
 
-# block:广告区域
-block_map = {}
-'''
-# 广告部分
-'''
-def move_block():
-    old_block = Old_AdType.select()
-    for item in old_block:
-        block = New_Block.create(
-            tag='',
-            name=item.name,
-            remark=item.remark,
-            img=imgurl+item.imagename if item.imagename else '',
-            active=1  # 旧的没有，设置默认 值1（有效）
-        )
-
-        block_map[item.id] = block.id
-    print 'move block:', old_block.count()
-
-# blockitem：广告
-block_item_map = {}
-
-def move_blockitem():
-    old_blockitem = Old_Ad.select().where(Old_Ad.atype << block_map.keys())
-    for item in old_blockitem:
-        blockitem = New_BlockItem.create(
-            area_code=item.city_code if item.city_code else '',
-            block=block_map[item.atype],
-            name='数据库迁移数据',  # 旧的没有，暂时设置，后期人工处理
-            link=0,  # 旧的没有，设置默认值：0
-            ext_id=block_map[item.atype],  # 旧的没有，设置默认值：0
-            remark=item.remark,
-            img=imgurl+item.picurl if item.picurl else '',
-            sort=item.sort,
-            activ=item.flag
-        )
-        block_item_map[item.id] = blockitem.id
-    print 'move blockitem:', old_blockitem.count()
-
-# blockitemarea:广告投放区域
-def move_blockitemarea():
-    old_blockitem = Old_Ad.select()
-    old_data = [{
-        'block_item': block_item_map[item.id],
-        'area_code': item.city_code
-    } for item in old_blockitem if item.city_code]
-
-    print 'move blockitemarea:', len(old_data)
-    New_BlockItemArea.insert_many(old_data).execute()
+# # block:广告区域
+# block_map = {}
+# '''
+# # 广告部分
+# '''
+# def move_block():
+#     old_block = Old_AdType.select()
+#     for item in old_block:
+#         block = New_Block.create(
+#             tag='',
+#             name=item.name,
+#             remark=item.remark,
+#             img=imgurl+item.imagename if item.imagename else '',
+#             active=1  # 旧的没有，设置默认 值1（有效）
+#         )
+#
+#         block_map[item.id] = block.id
+#     print 'move block:', old_block.count()
+#
+# # blockitem：广告
+# block_item_map = {}
+#
+# def move_blockitem():
+#     old_blockitem = Old_Ad.select().where(Old_Ad.atype << block_map.keys())
+#     for item in old_blockitem:
+#         blockitem = New_BlockItem.create(
+#             area_code=item.city_code if item.city_code else '',
+#             block=block_map[item.atype],
+#             name='数据库迁移数据',  # 旧的没有，暂时设置，后期人工处理
+#             link=0,  # 旧的没有，设置默认值：0
+#             ext_id=block_map[item.atype],  # 旧的没有，设置默认值：0
+#             remark=item.remark,
+#             img=imgurl+item.picurl if item.picurl else '',
+#             sort=item.sort,
+#             activ=item.flag
+#         )
+#         block_item_map[item.id] = blockitem.id
+#     print 'move blockitem:', old_blockitem.count()
+#
+# # blockitemarea:广告投放区域
+# def move_blockitemarea():
+#     old_blockitem = Old_Ad.select()
+#     old_data = [{
+#         'block_item': block_item_map[item.id],
+#         'area_code': item.city_code
+#     } for item in old_blockitem if item.city_code]
+#
+#     print 'move blockitemarea:', len(old_data)
+#     New_BlockItemArea.insert_many(old_data).execute()
 '''
 # 产品部分
 '''
@@ -1492,9 +1492,9 @@ if __name__ == '__main__':
     move_storeaddress()
     move_scorerecord()
     move_moneyrecord()
-    move_block()
-    move_blockitem()
-    move_blockitemarea()
+    # move_block()
+    # move_blockitem()
+    # move_blockitemarea()
     move_product()
     move_productpic()
     # move_productattributevalue()

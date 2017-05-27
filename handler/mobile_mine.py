@@ -2289,6 +2289,14 @@ class MobileFeedbackHandler(MobileBaseHandler):
 
 @route(r'/mobile/update/(\S+)', name='mobile_verison')    # 手机端程序更新
 class MobileVersionHandler(MobileBaseHandler):
+    """
+        @apiGroup mine
+        @apiVersion 1.0.0
+        @api {get} /mobile/update 22. 手机端程序更新
+        @apiDescription 手机端程序更新:需要客户端类型
+
+        @apiSampleRequest /mobile/update/
+        """
     def get(self, client):
         order_str = MobileUpdate.updatedtime.desc()
         ft = (MobileUpdate.state == 1) & (MobileUpdate.client == client)
