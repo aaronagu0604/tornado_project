@@ -771,21 +771,22 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
         return attributeList
 
     def getFilter(self,c_id=1):
-        filter = []
+        filterlist = []
         brandCategorys = BrandCategory.select().where(BrandCategory.category == c_id)
         if brandCategorys.count() > 0:
-            filter.append({
+            filterlist.append({
                 'cid': id,
                 'ename': 'pp',
                 'aid': 0,
                 'name': u'品牌',
                 'values': [{'id': bc.brand.id, 'name': bc.brand.name} for bc in brandCategorys]
             })
-            filter += self.getCategoryAttribute(c_id)
+            filterlist += self.getCategoryAttribute(c_id)
+        return filterlist
 
     def getProductList(self, keyword, sort, category, brands, attribute, index, area_code):
         productList = []
-        ft = (Product.active == 1)&(Product.category == category.id)
+        ft = (Product.active == 1) #&(Product.category == category.id)
         # 根据规格参数搜索
         attribute = [int(item) for item in attribute]
         brands = [int(item) for item in brands]
