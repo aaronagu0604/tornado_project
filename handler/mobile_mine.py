@@ -954,9 +954,9 @@ class MobileInsuranceMethodHandler(MobileBaseHandler):
                 subjoinprice = str(subjoinprice)
 
             if iop.gift_policy == 1:
-                commission = u'%s桶'%str(iop.score)
+                commission = u'%s桶'%str(iop.driver_lube_num+iop.store_lube_num)
             elif iop.gift_policy == 2:
-                commission = u'¥%s'%str(iop.driver_lube_num+iop.store_lube_num)
+                commission = u'¥%s'%str(iop.score)
             else:
                 commission = u'待计算'
 
