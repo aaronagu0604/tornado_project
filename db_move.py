@@ -776,6 +776,40 @@ insurance_map = {}
 
 def move_insurance():
     old_insurance = Old_Product.select().where(Old_Product.is_index == 1)
+    ihs = {
+        1: 1,
+        2: 0,
+        3: 0,
+        4: 0,
+        5: 0,
+        6: 1,
+        7: 1,
+        8: 1,
+        9: 1,
+        10: 1,
+        11: 1,
+        12: 1,
+        13: 1,
+        14: 1,
+        15: 1,
+    }
+    iss = {
+        1: 13,
+        2: 1,
+        3: 2,
+        4: 3,
+        5: 4,
+        6: 10,
+        7: 11,
+        8: 14,
+        9: 5,
+        10: 9,
+        11: 8,
+        12: 7,
+        13: 15,
+        14: 6,
+        15: 12,
+    }
     for item in old_insurance:
         insurance = New_Insurance.create(
             name=item.name,
@@ -783,8 +817,12 @@ def move_insurance():
             intro=item.resume[:50], #字符串长度太长，暂时设置为空
             logo=imgurl+item.cover,
             sort=0,  # 旧的没有，设置默认值：0
+            hot=1,
             active=item.status  # 旧的没有，设置默认值：1（有效）
         )
+        insurance.hot = ihs[insurance.id]
+        insurance.sort = iss[insurance.id]
+        insurance.save()
         insurance_map[item.id] = insurance.id
     print 'move insurance:', old_insurance.count()
 
