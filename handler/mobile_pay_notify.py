@@ -325,7 +325,9 @@ class MobileUPayCZNotifyHandler(RequestHandler):
 
 
 
-
+if __name__ == '__main__':
+    import sys
+    change_order_status(sys.argv[1], sys.argv[2])
 
 
 
