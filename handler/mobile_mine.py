@@ -973,7 +973,7 @@ class MobileInsuranceMethodHandler(MobileBaseHandler):
                 'subjoin': subjoin,
                 'subjoinprice': subjoinprice,
                 'gift_policy': u'返油' if iop.gift_policy == 1 else u'返佣金',
-                'gift_summary': u'返佣提醒' if io_id==9469 else '',
+                'gift_summary': u'返佣提醒' if io_id!=9469 else '',
                 'score': iop.score,
                 'commission': commission,
                 'total_price': iop.total_price,
