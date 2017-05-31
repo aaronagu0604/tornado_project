@@ -761,11 +761,25 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
         category = Category.get(id=c_id)
         for attribute in category.attributes:
             tmpList = []
+            other = None
             for item in attribute.items:
+                if item.name in ['红色','绿色']:
+                    continue
+                if item.name == '其它':
+                    other = {
+                    'id': item.id,
+                    'name': item.name
+                }
                 tmpList.append({
                     'id': item.id,
                     'name': item.name
                 })
+
+
+            tmpList.sort(key=lambda d:d['name'])
+
+            if other:
+                tmpList.append(other)
             attributeList.append({
                 'cid': c_id,
                 'aid': attribute.id,
