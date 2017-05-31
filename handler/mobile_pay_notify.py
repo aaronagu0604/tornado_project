@@ -15,13 +15,13 @@ from lib.route import route
 from model import *
 
 
-# ------------------------------------------------购物回调--------------------------------------------------------------
+# ------------------------------------------------第三方回调------------------------------------------------------------
 # 修改订单状态
 def change_order_status(ordernum, trade_no):
     is_insurance_order = False
     try:
         ordernum_list = ordernum.split('A')
-        if len(ordernum_list) == 1:    # 正常订单回调
+        if len(ordernum_list) == 1:    # 订单（普通商品、保单）支付回调
             if 'I' in ordernum:    # 保单
                 order = InsuranceOrder.get(ordernum=ordernum)
                 order.change_status(2)
@@ -34,22 +34,12 @@ def change_order_status(ordernum, trade_no):
             order.save()
             logging.info('order_id=%s order_num=%s trade_no=%s\n' % (order.id, order.ordernum, trade_no))
             return order, is_insurance_order
-        elif len(ordernum_list) == 2:    # 补款回调
+        elif len(ordernum_list) == 2:    # 保单补款回调
             ordernum_originally = ordernum_list[0]
             order = InsuranceOrder.get(ordernum=ordernum_originally)
             order.current_order_price.append_refund_status = 0
             order.current_order_price.total_price += order.current_order_price.append_refund_num
             order.current_order_price.save()
-            money_record = MoneyRecord()
-            money_record.user = order.user
-            money_record.store = order.store
-            money_record.process_type = 2
-            money_record.type = 7
-            money_record.process_log = u'余额补款保单, 订单号：%s, 补单号：%s' % (ordernum_originally, ordernum)
-            money_record.status = 1
-            money_record.money = order.current_order_price.append_refund_num
-            money_record.apply_time = int(time.time())
-            money_record.save()
             return order, False
     except Exception, e:
         logging.info('Error: change order status error; ordernum %s,trade_no %s,log: %s' % (ordernum, trade_no, e.message))

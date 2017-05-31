@@ -1759,7 +1759,7 @@ class MobilePayOrderHandler(MobileBaseHandler):
             money_record.store = user.store
             money_record.type = 4
             money_record.process_type = 2
-            money_record.process_message = '采购'
+            money_record.process_message = u'采购'
             money_record.process_log = u'购买产品使用余额支付, 订单号：' + order.ordernum
             money_record.status = 1
             money_record.money = total_price
@@ -1807,49 +1807,29 @@ class MobilePayOrderHandler(MobileBaseHandler):
                 result['msg'] = u'订单类型不可知'
                 return self.write(simplejson.dumps(result))
             if payment == 4:  # 余额支付
-                if 'I' in order_number and order.status in [2, 3] and order.current_order_price.append_refund_status == 1:
+                if 'I' in order_number and order.status in [2, 3] and order.current_order_price.append_refund_status == 1:  # 保单补款
                     if user.store.price < order.current_order_price.append_refund_num:
                         result['msg'] = u"您的余额不足"
                     else:
-                        # 资金类别 # 1提现、2充值、3售出、4采购、5保险、6退款 7补款
-                        if order.current_order_price.append_refund_status == 1:
-                            order.current_order_price.append_refund_status = 0
-                            order.current_order_price.total_price += total_price
-                            order.current_order_price.save()
-                            user.store.price -= order.current_order_price.append_refund_num
-                            user.store.save()
-                            money_record = MoneyRecord()
-                            money_record.user = user
-                            money_record.store = user.store
-                            money_record.type = 7
-                            money_record.process_message = '补款'
-                            money_record.process_type = 2
-                            money_record.process_log = u'余额补款保单, 订单号：%s, 补单号：%s' % (order.ordernum, ordernum)
-                            money_record.status = 1
-                            money_record.money = order.current_order_price.append_refund_num
-                            money_record.apply_time = now
-                            money_record.save()
-                            result['flag'] = 1
-                            result['msg'] = u"支付成功"
-                        else:
-                            order.current_order_price.append_refund_status = 0
-                            order.current_order_price.save()
-                            user.store.price -= order.current_order_price.append_refund_num
-                            user.store.save()
-                            money_record = MoneyRecord()
-                            money_record.user = user
-                            money_record.store = user.store
-                            money_record.type = 5 if 'I' in order_number else 4
-                            money_record.process_message = '保险'if 'I' in order_number else '采购'
-                            money_record.process_type = 2
-                            money_record.process_log = u'余额补款保单, 订单号：%s, 补单号：%s' % (order.ordernum, ordernum)
-                            money_record.status = 1
-                            money_record.money = order.current_order_price.append_refund_num
-                            money_record.apply_time = now
-                            money_record.save()
-                            result['flag'] = 1
-                            result['msg'] = u"支付成功"
-                else:
+                        order.current_order_price.append_refund_status = 0
+                        order.current_order_price.total_price += total_price
+                        order.current_order_price.save()
+                        user.store.price -= order.current_order_price.append_refund_num
+                        user.store.save()
+                        money_record = MoneyRecord()
+                        money_record.user = user
+                        money_record.store = user.store
+                        money_record.type = 7
+                        money_record.process_message = u'补款'
+                        money_record.process_type = 2
+                        money_record.process_log = u'余额补款保单, 订单号：%s, 补单号：%s' % (order.ordernum, ordernum)
+                        money_record.status = 1
+                        money_record.money = order.current_order_price.append_refund_num
+                        money_record.apply_time = now
+                        money_record.save()
+                        result['flag'] = 1
+                        result['msg'] = u"支付成功"
+                else:   # 支付保单
                     if user.store.price < total_price:
                         result['msg'] = u"您的余额不足"
                         self.write(simplejson.dumps(result))
