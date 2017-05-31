@@ -667,10 +667,18 @@ class MobileInsuranceOrderDetailHandler(MobileBaseHandler):
                 iList['vehicle_tax_price'] = str(
                     insuranceorder.current_order_price.vehicle_tax_price if insuranceorder.current_order_price.vehicle_tax_price else 0.0)
             elif i.style == u'商业险-主险' and iValue != 'false' and iValue:
-                iList['main'].append({'eName': i.eName, 'name': i.name, 'style': i.style, 'value': iValue, 'price':str(iPrice)})
+                iList['main'].append({'eName': i.eName,
+                                      'name': '%s(%s)'%(i.name,iValue) if len(iValue)>1 else i.name,
+                                      'style': i.style,
+                                      'value': iValue,
+                                      'price':str(iPrice)})
                 iList['mainprice'] += iPrice
             elif i.style == u'商业险-附加险' and iValue != 'false' and iValue:
-                iList['subjoin'].append({'eName': i.eName, 'name': i.name, 'style': i.style, 'value': iValue, 'price':str(iPrice)})
+                iList['subjoin'].append({'eName': i.eName,
+                                         'name': '%s(%s)'%(i.name,iValue) if len(iValue)>1 else i.name,
+                                         'style': i.style,
+                                         'value': iValue,
+                                         'price':str(iPrice)})
                 iList['subjoinprice'] += iPrice
         if 'mainprice' in iList.keys():
             iList['mainprice'] = str(iList['mainprice'])
@@ -926,10 +934,18 @@ class MobileInsuranceMethodHandler(MobileBaseHandler):
                     vehicle_tax_price = str(
                         iop.vehicle_tax_price if iop.vehicle_tax_price else 0.0)
                 elif i.style == u'商业险-主险' and iValue != 'false' and iValue:
-                    main.append({'eName': i.eName, 'name': i.name, 'style': i.style, 'value': iValue, 'price':str(iPrice)})
+                    main.append({'eName': i.eName,
+                                 'name': '%s(%s)'%(i.name,iValue) if len(iValue)>1 else i.name,
+                                 'style': i.style,
+                                 'value': iValue,
+                                 'price':str(iPrice)})
                     mainprice += iPrice
                 elif i.style == u'商业险-附加险' and iValue != 'false' and iValue:
-                    subjoin.append({'eName': i.eName, 'name': i.name, 'style': i.style, 'value': iValue, 'price':str(iPrice)})
+                    subjoin.append({'eName': i.eName,
+                                    'name': '%s(%s)'%(i.name,iValue) if len(iValue)>1 else i.name,
+                                    'style': i.style,
+                                    'value': iValue,
+                                    'price':str(iPrice)})
                     subjoinprice += iPrice
             if mainprice:
                 mainprice =str(mainprice)
@@ -965,7 +981,7 @@ class MobileInsuranceMethodHandler(MobileBaseHandler):
                 'status': iop.status,
                 'response': iop.response
             })
-
+        print simplejson.dumps(result)
         self.write(simplejson.dumps(result))
 
 
