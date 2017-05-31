@@ -9,7 +9,7 @@ import urllib2
 import simplejson
 import alipay_config as Settings
 from payqrcode import createqrcode
-
+import logging
 ALI_GATEWAY_URL = "https://openapi.alipay.com/gateway.do?"
 
 SIGN_TYPE = 'SHA-256'
@@ -101,6 +101,7 @@ def get_alipay_string(total_price, subject, body, ordernum, isCZ=False):
         result_string = (sorted_string + '&' + switch_to_urlencode('sign='+sign_string)).replace('+', '%20')
     except Exception, e:
         result_string = ''
+    logging.info(result_string)
     return result_string
 
 # 获取最终签名后的字符串
@@ -110,6 +111,7 @@ def get_alipay_string_qrcode(total_price, subject, body, ordernum):
     url_string = switch_to_urlencode(after_join_string)
     sorted_string = sort_string(url_string)
     result_string = (sorted_string + '&' + switch_to_urlencode('sign='+sign_string)).replace('+', '%20')
+    logging.info(result_string)
     return result_string
 
 # 获取支付宝二维码支付二维码图片链接地址
