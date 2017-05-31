@@ -189,6 +189,14 @@
                     <div class="col-xs-3">详细地址：</div>
                     <div class="col-xs-9 rightTxt">--</div>
                 </div>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-12 col-md-6">
+        <div class="panel panel-primary">
+            <div class="panel-body">
+                <h4>订单操作</h4>
                 <div class="row leftLine">
                     <div class="col-xs-3">分享保单：<Br>含地址</div>
                     <div class="col-xs-6 rightTxt">
@@ -227,9 +235,7 @@
         <div class="panel panel-primary">
             <div class="panel-body" data-am-widget="gallery"  data-am-gallery="{ pureview: true }">
 
-                <h4>图片信息
-                    <input type="button" class="btn btn-outline btn-primary btn-xs" onclick="imgocr({{ o.id }})" value="OCR"/>
-                    <input type="button" class="btn btn-outline btn-primary btn-xs" onclick="ocr_save({{ o.id }},{{ioci and ioci.id or 0 }})" value="保存"/>
+                <h4>保险图片
                 </h4>
 
                 <div class="row">
@@ -299,6 +305,19 @@
                         </div>
                     </div>
                 </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-12 col-md-6">
+        <div class="panel panel-primary">
+            <div class="panel-body" data-am-widget="gallery"  data-am-gallery="{ pureview: true }">
+
+                <h4>图片信息录入
+                    <input type="button" class="btn btn-outline btn-primary btn-xs" onclick="imgocr({{ o.id }})" value="OCR"/>
+                    <input type="button" class="btn btn-outline btn-primary btn-xs" onclick="ocr_save({{ o.id }},{{ioci and ioci.id or 0 }})" value="保存"/>
+                </h4>
+
                 <!--车主身份证信息-->
                 <div class="row" id="buyer_idcard_info1" style="margin-top: 5px; {% if o.is_same_person==1 %} display: none {% endif %}">
                     <div class="col-xs-3">
