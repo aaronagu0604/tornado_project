@@ -770,10 +770,11 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
                     'id': item.id,
                     'name': item.name
                 }
-                tmpList.append({
-                    'id': item.id,
-                    'name': item.name
-                })
+                else:
+                    tmpList.append({
+                        'id': item.id,
+                        'name': item.name
+                    })
 
 
             tmpList.sort(key=lambda d:d['name'])
