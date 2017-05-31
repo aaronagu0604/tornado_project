@@ -1947,13 +1947,15 @@ class MobileLubePolicyHandler(MobileBaseHandler):
     def get(self):
         area_code = self.get_store_area_code()
         store = self.get_user().store
-        rows = SSILubePolicy.select().where(SSILubePolicy.store == store)
+        rows = SSILubePolicy.select().where((SSILubePolicy.store == store) &
+                                            (SSILubePolicy.lube != ''))
         policylist = []
         for item in rows:
-            policylist.append({
-                'name': item.insurance.name,
-                'lube': simplejson.loads(item.lube)
-            })
+            if len(item.lube) > 0:
+                policylist.append({
+                    'name': item.insurance.name,
+                    'lube': simplejson.loads(item.lube)
+                })
         self.render('mobile/lube_protocol.html', policylist=policylist, area_code=area_code)
 
 
