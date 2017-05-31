@@ -1417,15 +1417,7 @@ def move_lubeexchange():
     for i in old_policy:
         if (i.area_code+i.iCompany) not in tmp_area:
             tmp_area.append(i.area_code+i.iCompany)
-            if u'单交强险' == i.insurance:
-                flag = 1
-            elif u'单商业险' == i.insurance:
-                flag = 2
-            elif u'+' in i.insurance:
-                flag = 3
-            else:
-                print(u'warning: 不是单交强商业也不是商+交：%s' % i.id)
-            area_code_list.append({'code': i.area_code, 'ic_name': i.iCompany, 'flag': flag})
+            area_code_list.append({'code': i.area_code, 'ic_name': i.iCompany})
     for al in area_code_list:
         i_list = []
         i_names = al['ic_name'].split('/')
@@ -1452,6 +1444,15 @@ def move_lubeexchange():
                     maxp = ''
                 gift_in = False
                 for d in data:
+                    if u'单交强险' == item.insurance:
+                        flag = 1
+                    elif u'单商业险' == item.insurance:
+                        flag = 2
+                    elif u'+' in item.insurance:
+                        flag = 3
+                    else:
+                        flag = 3
+                        print(u'warning: 不是单交强商业也不是商+交：%s' % item.id)
                     if d['gift'] == item.driverGift:
                         d['items'].append({
                             'name': item.insurance,
@@ -1459,7 +1460,7 @@ def move_lubeexchange():
                             'store': item.party2GiftNum,
                             'minprice': minp,
                             'maxprice': maxp,
-                            'flag': al['flag']
+                            'flag': flag
                         })
                         gift_in = True
                 if not gift_in:
@@ -1584,7 +1585,7 @@ if __name__ == '__main__':
     # move_carsk()
     # move_caritem()
     move_lubeexchange()
-    init_store_po()
+    # init_store_po()
 
 
 
