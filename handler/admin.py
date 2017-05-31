@@ -58,6 +58,7 @@ class LoginHandler(BaseHandler):
                 else:
                     self.flash("密码错误")
             except Exception, e:
+                print e
                 self.flash("此用户不存在")
         else:
             self.flash("请输入用户名或者密码")

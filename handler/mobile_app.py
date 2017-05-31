@@ -338,12 +338,14 @@ class MobileHomeHandler(MobileBaseHandler):
 
         # 获取首页banner列表，没有数据时使用西安的数据
         tmp_code = area_code
-        banners = self.get_banner(tmp_code)
-        while len(banners) == 0 and len(tmp_code) > 4:
+        banners = []
+        while len(tmp_code) >= 4:
+            banners += self.get_banner(tmp_code)
             tmp_code = tmp_code[0: -4]
-            banners = self.get_banner(tmp_code)
-        if len(banners) == 0:
-            banners = self.get_banner(self.get_default_area_code())
+        banners += self.get_banner('')
+        banners += self.get_banner(None)
+        # if len(banners) == 0:
+        #     banners += self.get_banner(self.get_default_area_code())
         result['data']['banner'] = banners
 
         # 保险
@@ -420,9 +422,11 @@ class MobileHomeHandler(MobileBaseHandler):
 
     def get_banner(self, area_code):
         items = []
-        banners = BlockItem.select(BlockItem).join(Block, on=(Block.id == BlockItem.block)). \
+        banners = BlockItem.select(BlockItem). \
+            join(Block, on=(Block.id == BlockItem.block)). \
+            join(BlockItemArea,on=(BlockItemArea.block_item == BlockItem.id)). \
             where((Block.tag == 'banner') & (Block.active == 1) & (BlockItem.active == 1) & (
-        BlockItem.area_code << [area_code, '', None])). \
+            BlockItemArea.area_code == area_code)). \
             order_by(BlockItem.sort.asc())
         for p in banners:
             items.append({
@@ -1732,6 +1736,7 @@ class MobilePayOrderHandler(MobileBaseHandler):
             money_record = MoneyRecord()
             money_record.user = user
             money_record.store = user.store
+            money_record.type = 4
             money_record.process_type = 2
             money_record.process_log = u'购买产品使用余额支付, 订单号：' + order.ordernum
             money_record.status = 1
