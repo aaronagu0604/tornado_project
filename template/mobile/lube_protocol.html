@@ -9,12 +9,6 @@
     <link rel="icon" type="image/png" href="/style/favicon.ico"/>
     <title>返油政策</title>
     <link rel="stylesheet" href="//g.alicdn.com/msui/sm/0.6.2/css/sm.min.css">
-    <style type="text/css">
-        .left-text {
-            text-align: left;
-            margin-left: 5px;
-        }
-    </style>
 </head>
 
 <body>
@@ -24,7 +18,7 @@
                 <div class="list-group" style="font-size: 0.65rem;">
                     <ul>
                         {% for policy in policylist %}
-                        <li class="list-group-title" style="color:#000;padding: .4rem .3rem;">
+                        <li class="list-group-title" style="color:#000;padding: .4rem .3rem; background-color: #dff0d8;">
                             保险公司： {{policy['name']}}</li>
                         {% for lube in policy['lube'] %}
                         <li style="background-color:#eee;">
