@@ -1442,17 +1442,17 @@ def move_lubeexchange():
                 except:
                     minp = item.price.strip(u'≥').strip(u'以上')
                     maxp = ''
+                if u'单交强险' == item.insurance:
+                    flag = 1
+                elif u'单商业险' == item.insurance:
+                    flag = 2
+                elif u'+' in item.insurance:
+                    flag = 3
+                else:
+                    flag = 3
+                    print(u'warning: 不是单交强商业也不是商+交：%s' % item.id)
                 gift_in = False
                 for d in data:
-                    if u'单交强险' == item.insurance:
-                        flag = 1
-                    elif u'单商业险' == item.insurance:
-                        flag = 2
-                    elif u'+' in item.insurance:
-                        flag = 3
-                    else:
-                        flag = 3
-                        print(u'warning: 不是单交强商业也不是商+交：%s' % item.id)
                     if d['gift'] == item.driverGift:
                         d['items'].append({
                             'name': item.insurance,
