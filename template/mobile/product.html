@@ -164,7 +164,7 @@ function share(name, pic_url) {
             androidObj.share(name, pic_url);
         }
         else if ("{{product['platform']}}" == "ios") {
-            window.webkit.messageHandlers.share.postMessage(name, pic_url);
+            window.webkit.messageHandlers.share.postMessage({'name':name, 'pic_url':pic_url});
         }
 }
 
