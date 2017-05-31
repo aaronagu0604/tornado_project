@@ -790,6 +790,7 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
         return filterlist
 
     def getProductList(self, keyword, sort, category, brands, attribute, index, area_code):
+        print attribute
         productList = []
         ft = (Product.active == 1) & (Product.category == category.id)
         # 根据规格参数搜索
@@ -797,7 +798,7 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
         brands = [int(item) for item in brands]
 
         if attribute:
-            ft &= (ProductAttributeValue.value << attribute)
+            ft &= (ProductAttributeValue.attribute_item << attribute)
 
         ft &= ((StoreProductPrice.price > 0) & (StoreProductPrice.active == 1) & (ProductRelease.active == 1))
 
@@ -815,17 +816,18 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
         elif len(area_code) == 4:  # 门店可以购买的范围到省级
             ft &= (StoreProductPrice.area_code == area_code)
 
-        products = ProductRelease.select(
+        products = StoreProductPrice.select(
             ProductRelease.id.alias('prid'), Product.id.alias('pid'), StoreProductPrice.id.alias('sppid'),
             Product.name.alias('name'), StoreProductPrice.price.alias('price'), Product.unit.alias('unit'),
             ProductRelease.buy_count.alias('buy_count'), Product.cover.alias('cover'),
             Product.resume.alias('resume'), Store.name.alias('sName'), ProductRelease.is_score.alias('is_score'),
             ProductRelease.sort.alias('sort')). \
+            join(ProductRelease,on=(ProductRelease.id == StoreProductPrice.product_release)). \
             join(Product, on=(Product.id == ProductRelease.product)). \
-            join(StoreProductPrice, on=(StoreProductPrice.product_release == ProductRelease.id)). \
             join(ProductAttributeValue, on=(ProductAttributeValue.product == Product.id)). \
             join(Store, on=(Store.id == ProductRelease.store)).where(ft).dicts()
 
+        print products
         # 排序
         if sort == '1':
             products = products.order_by(StoreProductPrice.price.desc())
@@ -838,22 +840,25 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
         else:
             products = products.order_by(ProductRelease.sort.desc())
         ps = products.paginate(index, setting.MOBILE_PAGESIZE)
-
+        prds = []
         for p in ps:
-            productList.append({
-                'prid': p['prid'],
-                'pid': p['pid'],
-                'sppid': p['sppid'],
-                'name': p['name'],
-                'price': p['price'],
-                'unit': p['unit'] if p['unit'] else '件',
-                'buy_count': p['buy_count'],
-                'cover': p['cover'],
-                'resume': p['resume'],
-                'storeName': p['sName'],
-                'is_score': p['is_score']
-            })
-
+            if p['prid'] not in prds:
+                prds.append(p['prid'])
+                productList.append({
+                    'prid': p['prid'],
+                    'pid': p['pid'],
+                    'sppid': p['sppid'],
+                    'name': p['name'],
+                    'price': p['price'],
+                    'unit': p['unit'] if p['unit'] else '件',
+                    'buy_count': p['buy_count'],
+                    'cover': p['cover'],
+                    'resume': p['resume'],
+                    'storeName': p['sName'],
+                    'is_score': p['is_score']
+                })
+        print 'discoverproducts len:',len(productList)
+        print simplejson.dumps(productList)
         return productList
 
     def hot_search_add_keyword(self, keyword):
