@@ -1472,7 +1472,7 @@ def move_lubeexchange():
                             'store': item.party2GiftNum,
                             'minprice': minp,
                             'maxprice': maxp,
-                            'flag': al['flag']
+                            'flag': flag
                         }]
                     })
 
