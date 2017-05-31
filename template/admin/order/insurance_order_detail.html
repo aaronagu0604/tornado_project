@@ -1553,6 +1553,10 @@
                     //$(program).find('input[name="cash"]').val(0);
                 }
                 else {
+                    $(program).find('input[name="driveroiltype"]').val('');
+                    $(program).find('input[name="driveroilnum"]').val(0);
+                    $(program).find('input[name="storeoiltype"]').val('');
+                    $(program).find('input[name="storeoilnum"]').val(0);
                     layer.alert(obj.msg);
                 }
             });

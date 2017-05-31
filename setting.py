@@ -64,6 +64,22 @@ def get_help_center_remark(area_code):
 
 typeface = '/home/www/workspace/eofan/src/simsun.ttc'
 popularizePIC = [{
+    'activity': '6-01',
+    'area_code': '00',
+    'basePicPath': '/home/www/workspace/eofan/src/upload/popularizePIC/6-01.png',
+    'PicPath': '/home/www/workspace/eofan/src/upload/popularizePIC/6-01',
+    'wordSize':40,
+    'wordColour': (0,216,198),
+    'storeWidth': 96,
+    'storeHeight': 925,
+    'addrWidth': 96,
+    'addrHeight': 1020,
+    'addr2tab':16,
+    'addr2Width': 96,
+    'addr2Height': 1062,
+    'phoneWidth': 96,
+    'phoneHeight': 1140
+},{
     'activity': 'repairCar',
     'area_code': '00',
     'basePicPath': '/home/www/workspace/eofan/src/upload/popularizePIC/repairCar.png',
@@ -79,39 +95,8 @@ popularizePIC = [{
     'addr2Height': 1057,
     'phoneWidth': 96,
     'phoneHeight': 1133
-},{
-    'activity': 'happyNewYear',
-    'area_code': '00',
-    'basePicPath': '/home/www/workspace/eofan/src/upload/popularizePIC/happyNewYear.png',
-    'PicPath': '/home/www/workspace/eofan/src/upload/popularizePIC/happyNewYear',
-    'wordSize':30,
-    'wordColour': (255, 255, 255),
-    'storeWidth': 96,
-    'storeHeight': 924,
-    'addrWidth': 96,
-    'addrHeight': 1016,
-    'addr2tab':25,
-    'addr2Width': 182,
-    'addr2Height': 1057,
-    'phoneWidth': 96,
-    'phoneHeight': 1133
-},{
-    'activity': 'insurance',
-    'area_code': '00',
-    'basePicPath': '/home/www/workspace/eofan/src/upload/popularizePIC/insurance.png',
-    'PicPath': '/home/www/workspace/eofan/src/upload/popularizePIC/insurance',
-    'wordSize':30,
-    'wordColour': (255, 255, 255),
-    'storeWidth': 96,
-    'storeHeight': 925,
-    'addrWidth': 96,
-    'addrHeight': 1016,
-    'addr2tab':25,
-    'addr2Width': 182,
-    'addr2Height': 1057,
-    'phoneWidth': 96,
-    'phoneHeight': 1133
-}]
+}
+]
 
 bank_en = {
   "SRCB": "深圳农村商业银行",

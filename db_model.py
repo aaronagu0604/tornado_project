@@ -1906,7 +1906,7 @@ class InsuranceAdmin(db_old.Model):
 class HelpCenter(db_old.Model):
     id = PrimaryKeyField()
     area_code =  CharField(max_length=12)  # 地区ID
-    insurance = CharField(max_length=32)  #保险
+    insurance = CharField(max_length=32)  # 保险
     iCompany = CharField(max_length=32)  # 保险公司
     price = CharField(max_length=32)   # 价格区间
     driverGift = CharField(max_length=32)  # 车主赠品

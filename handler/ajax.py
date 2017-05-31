@@ -480,7 +480,7 @@ class WebAppCarItemListHandler(BaseHandler):
         self.write(simplejson.dumps(result))
 
 
-@route(r'/ajax/calculate_gift_oil', name='ajax_get_gift_oil_rate')  # 获取返佣比率
+@route(r'/ajax/calculate_gift_oil', name='ajax_get_gift_oil_rate')  # 获取返油比率
 class GetGiftOilHandler(BaseHandler):
     def get(self):
         result = {'flag': 0, 'msg': '', "data": {}}
@@ -493,7 +493,7 @@ class GetGiftOilHandler(BaseHandler):
         try:
             iop = InsuranceOrderPrice.get(id=iopid)
             insurance = InsuranceOrder.get(id=iop.insurance_order_id)
-            policy = SSILubePolicy.get((SSILubePolicy.store==insurance.store) & (SSILubePolicy.insurance == insurance))
+            policy = SSILubePolicy.get((SSILubePolicy.store == insurance.store) & (SSILubePolicy.insurance == iid))
             policylist = simplejson.loads(policy.lube)
 
             if forcetotal and businesstotal:
@@ -511,7 +511,9 @@ class GetGiftOilHandler(BaseHandler):
             role = None
             for item in policylist:
                 for p in item['items']:
-                    if (int(p['minprice']) <= totalprice) and (totalprice <= int(p['maxprice'])) and (flag == int(p['flag'])):
+                    min_price = (int(p['minprice']) <= totalprice) if p['minprice'] else True
+                    max_price = (totalprice <= int(p['maxprice'])) if p['maxprice'] else True
+                    if min_price and max_price and (flag == int(p['flag'])):
                         role = p
                         role['oiltype'] = item['gift']
             if role:

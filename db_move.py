@@ -1417,7 +1417,15 @@ def move_lubeexchange():
     for i in old_policy:
         if (i.area_code+i.iCompany) not in tmp_area:
             tmp_area.append(i.area_code+i.iCompany)
-            area_code_list.append({'code': i.area_code, 'ic_name': i.iCompany})
+            if u'单交强险' == i.insurance:
+                flag = 1
+            elif u'单商业险' == i.insurance:
+                flag = 2
+            elif u'+' in i.insurance:
+                flag = 3
+            else:
+                print(u'warning: 不是单交强商业也不是商+交：%s' % i.id)
+            area_code_list.append({'code': i.area_code, 'ic_name': i.iCompany, 'flag': flag})
     for tmp_a in area_code_list:
         print(u'--%s--' % str(tmp_a))
     for al in area_code_list:
@@ -1453,7 +1461,7 @@ def move_lubeexchange():
                             'store': item.party2GiftNum,
                             'minprice': minp,
                             'maxprice': maxp,
-                            'flag': 1  # 暂时不知道设置为什么值，设置为1
+                            'flag': al['flag']
                         })
                         gift_in = True
                 if not gift_in:
@@ -1465,7 +1473,7 @@ def move_lubeexchange():
                             'store': item.party2GiftNum,
                             'minprice': minp,
                             'maxprice': maxp,
-                            'flag': 1  # 暂时不知道设置为什么值，设置为1
+                            'flag': al['flag']
                         }]
                     })
 
@@ -1579,7 +1587,7 @@ if __name__ == '__main__':
     # move_carsk()
     # move_caritem()
     move_lubeexchange()
-    # init_store_po()
+    init_store_po()
 
 
 
