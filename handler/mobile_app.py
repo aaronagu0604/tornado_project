@@ -1848,6 +1848,7 @@ class MobilePayOrderHandler(MobileBaseHandler):
 
         else:
             result['msg'] = u"传入参数异常"
+        logging.info(simplejson.dumps(result))
         self.write(simplejson.dumps(result))
         self.finish()
 
