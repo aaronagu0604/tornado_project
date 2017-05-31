@@ -1496,6 +1496,7 @@ class MobilInsuranceOrderBaseHandler(MobileBaseHandler):
             insurance_list.append({
                 'id': sp.insurance.id,
                 'name': sp.insurance.name,
+                'rake_back_title':'选择优惠方式',
                 'rake_back': rake_back
             })
         return insurance_list
