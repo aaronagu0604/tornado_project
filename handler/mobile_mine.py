@@ -685,7 +685,7 @@ class MobileInsuranceOrderDetailHandler(MobileBaseHandler):
         if 'subjoinprice' in iList.keys():
             iList['subjoinprice'] = str(iList['subjoinprice'])
         if insuranceorder.current_order_price.gift_policy == 1:
-            commission = str(insuranceorder.current_order_price.score) + u'桶'
+            commission = str(insuranceorder.current_order_price.driver_lube_num+insuranceorder.current_order_price.store_lube_num) + u'桶'
         elif insuranceorder.current_order_price.gift_policy == 2:
             commission = str(insuranceorder.current_order_price.score) + u'元'
         else:
@@ -956,7 +956,7 @@ class MobileInsuranceMethodHandler(MobileBaseHandler):
             if iop.gift_policy == 1:
                 commission = u'%s桶'%str(iop.score)
             elif iop.gift_policy == 2:
-                commission = u'¥%s'%str(iop.score)
+                commission = u'¥%s'%str(iop.driver_lube_num+iop.store_lube_num)
             else:
                 commission = u'待计算'
 
