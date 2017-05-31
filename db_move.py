@@ -1426,8 +1426,6 @@ def move_lubeexchange():
             else:
                 print(u'warning: 不是单交强商业也不是商+交：%s' % i.id)
             area_code_list.append({'code': i.area_code, 'ic_name': i.iCompany, 'flag': flag})
-    for tmp_a in area_code_list:
-        print(u'--%s--' % str(tmp_a))
     for al in area_code_list:
         i_list = []
         i_names = al['ic_name'].split('/')
@@ -1533,10 +1531,9 @@ from model_move import SSILubePolicy as new_SSILubePolicy
 def init_store_po():
     new_SSILubePolicy.delete().execute()
     for store in New_Store.select().where(New_Store.active == 1):
-        print('--------%s: %s------' % (store.id, store.area_code))
         for area_po in New_InsuranceArea.get_area_insurance(store.area_code):
             new_SSILubePolicy.create(store=store, insurance=area_po['insurance'], cash=area_po['cash'],
-                                    dealer_store=area_po['dealer_store'], lube=area_po['lube'])
+                                     dealer_store=area_po['dealer_store'], lube=area_po['lube'])
 
 if __name__ == '__main__':
     # pass
