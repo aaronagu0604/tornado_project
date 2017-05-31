@@ -1738,6 +1738,7 @@ class MobilePayOrderHandler(MobileBaseHandler):
             money_record.store = user.store
             money_record.type = 4
             money_record.process_type = 2
+            money_record.process_message = '采购'
             money_record.process_log = u'购买产品使用余额支付, 订单号：' + order.ordernum
             money_record.status = 1
             money_record.money = total_price
