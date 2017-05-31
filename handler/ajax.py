@@ -620,14 +620,12 @@ class AppendRefundMoneyHandler(BaseHandler):
         admin_user = self.get_admin_user()
         now = int(time.time())
         content = ''
-        print self.request.body,(ar_num , ar_reason , pid , ar_status)
         if not (ar_num and ar_reason and pid and ar_status):
             result['msg'] = u'参数不全'
             self.write(simplejson.dumps(result))
             return
         try:
             ar_num = float(ar_num)
-            print ar_num
             io = InsuranceOrder.get(current_order_price=pid)
             iop = InsuranceOrderPrice.get(id=pid)
             if iop.append_refund_status != int(ar_status):
@@ -638,7 +636,6 @@ class AppendRefundMoneyHandler(BaseHandler):
                 elif ar_num < 0.001:    # 给客户退款
                     io.store.price -= ar_num
                     io.store.save()
-                    iop.append_refund_status = 2
                     iop.total_price += ar_num
                     process_log = u'订单：%s退款' % (io.ordernum)
                     MoneyRecord.create(user=io.user, store=io.store,process_type=1, process_message=u'退款',
