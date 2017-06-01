@@ -687,7 +687,7 @@ class MobileInsuranceOrderDetailHandler(MobileBaseHandler):
         if insuranceorder.current_order_price.gift_policy == 1:
             commission = str(insuranceorder.current_order_price.driver_lube_num+insuranceorder.current_order_price.store_lube_num) + u'桶'
         elif insuranceorder.current_order_price.gift_policy == 2:
-            commission = str(insuranceorder.current_order_price.score) + u'元'
+            commission = str(insuranceorder.current_order_price.cash) + u'元'
         else:
             commission = u'无'
         result["flag"] = 1
@@ -956,7 +956,7 @@ class MobileInsuranceMethodHandler(MobileBaseHandler):
             if iop.gift_policy == 1:
                 commission = u'%s桶'%str(iop.driver_lube_num+iop.store_lube_num)
             elif iop.gift_policy == 2:
-                commission = u'¥%s'%str(iop.score)
+                commission = u'¥%s'%str(iop.cash)
             else:
                 commission = u'待计算'
 
