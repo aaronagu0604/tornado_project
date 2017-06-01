@@ -1795,7 +1795,7 @@ class MobilePayOrderHandler(MobileBaseHandler):
                 else:
                     total_price = order.total_price
                     order_type = order.order_type
-                    log = u'车装甲普通订单'
+                    log = u'车装甲普通商品'
             elif 'I' in order_number:  # 保险订单
                 order_T = 'insurance'
                 order = InsuranceOrder.get(ordernum=order_number)
