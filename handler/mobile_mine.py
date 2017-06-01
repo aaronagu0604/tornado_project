@@ -9,7 +9,8 @@ from PIL import Image, ImageDraw, ImageFont
 from setting import popularizePIC
 from handler import MobileBaseHandler
 from handler import require_auth
-import lib.payment.ali_app_pay as alipay
+# import lib.payment.ali_app_pay as alipay
+import lib.payment.alipay_web.submit as alipay_web_app
 from lib.payment.upay import Trade
 from lib.payment.wxPay import UnifiedOrder_pub
 from lib.route import route
@@ -1431,7 +1432,8 @@ class MobileFundRechargeHandler(MobileBaseHandler):
 
         result['data']['payment'] = payment
         if payment == 1:  # 1支付宝  2微信 3银联
-            pay_info = alipay.get_alipay_string(price, u'车装甲充值', u'车装甲充值', order_num, True)
+            # pay_info = alipay.get_alipay_string(price, u'车装甲充值', u'车装甲充值', order_num, True)
+            pay_info = alipay_web_app.get_pay_url(order_num.encode('utf-8'), u'车装甲充值', str(price), True)
             if len(pay_info) > 0:
                 result['data']['pay_info'] = pay_info
                 result['flag'] = 1
