@@ -1002,8 +1002,8 @@ class MobileProductHandler(MobileBaseHandler):
         iv = []
         tmp = []
         for i in items:
-            if i.name not in iv:
-                iv.append(i.name)
+            if i.attribute_item.name not in iv:
+                iv.append(i.attribute_item.name)
                 tmp.append(i)
         items = tmp
         attributes = sorted(items, key=lambda item: item.attribute.sort)
