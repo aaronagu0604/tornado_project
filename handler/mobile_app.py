@@ -11,6 +11,7 @@ import setting
 from handler import MobileBaseHandler, require_auth
 from lib.mqhelper import create_msg
 import lib.payment.ali_app_pay as alipay
+import lib.payment.alipay_web.alipay as alipay_web_app
 from lib.payment.upay import Trade
 from lib.payment.wxPay import UnifiedOrder_pub, Qrcode_pub
 from lib.route import route
@@ -1167,7 +1168,8 @@ class MobileShopCarHandler(MobileBaseHandler):
 def pay_order(payment, total_price, ordernum, log):
     pay_info = ''
     if payment == 1:  # 1支付宝  2微信 3银联 4余额 5积分 6立即支付宝 7立即微信
-        pay_info = alipay.get_alipay_string(total_price, log, log, ordernum)
+        # pay_info = alipay.get_alipay_string(total_price, log, log, ordernum)
+        pay_info = alipay_web_app.alipay_sign(ordernum.encode('utf-8'), log, str(total_price))
     elif payment == 2:
         pay_info = UnifiedOrder_pub().getPrepayId(ordernum, log, int(total_price * 100))
     elif payment == 3:
@@ -1401,7 +1403,7 @@ class MobileNewOrderHandler(MobileBaseHandler):
                     money_record.store = user.store
                     money_record.type = 4
                     money_record.process_type = 2
-                    money_record.process_message = '采购'
+                    money_record.process_message = u'采购'
                     money_record.process_log = u'购买产品使用余额支付, 订单号：' + order.ordernum
                     money_record.status = 1
                     money_record.money = total_price
@@ -1431,10 +1433,13 @@ class MobileNewOrderHandler(MobileBaseHandler):
                     order_item.quantity = product['quantity']
                     order_item.price = spp.price if order_type == 1 else spp.score
                     order_item.save()
-            result['flag'] = 1
             result['data']['order_id'] = order.id
             result['data']['payment'] = payment
             result['data']['pay_info'] = pay_order(payment, total_price, order.ordernum, u'车装甲普通商品')
+            if result['data']['pay_info']:
+                result['flag'] = 1
+            else:
+                result['msg'] = u'订单支付失败'
             if is_shop_cart == '1':
                 ShopCart.delete().where(ShopCart.store == user.store, ShopCart.store_product_price << sppids).execute()
         else:
@@ -1843,6 +1848,8 @@ class MobilePayOrderHandler(MobileBaseHandler):
 
             if result['data']['pay_info']:
                 result['flag'] = 1
+            else:
+                result['msg'] = u'订单支付失败'
             if payment in [6, 7] and not result['data']['pay_info']:
                 result['msg'] = u'获取二维码失败'
 

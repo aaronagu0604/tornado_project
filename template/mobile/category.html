@@ -8,7 +8,6 @@
     <meta name="viewport" content="initial-scale=1, maximum-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-
     <link rel="stylesheet" href="//g.alicdn.com/msui/sm/0.6.2/css/sm.min.css">
     <style type="text/css">
         .item-i {
@@ -52,15 +51,13 @@
                                 {% for i in brands%}
                                 <div class="col-25 item-i" onclick="goDetail('{{i.link}}')">
                                     <div style="height:60px;">
-                                        <img src="{{i.img}}" style="width:100%;" >
+                                        <img src="{{i.img}}" style="width:50%; height: 50%" >
                                     </div>
                                     <div style="text-overflow:ellipsis;white-space: nowrap;overflow: hidden;">
                                         {{i.name}}
                                     </div>
                                 </div>
                                 {% endfor %}
-
-
                             </div>
                         </div>
                     </div>
