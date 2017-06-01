@@ -434,7 +434,7 @@ class MobileHomeHandler(MobileBaseHandler):
                 'img': p.img,
                 'name': p.name,
                 'price': 0,
-                'display': '',
+                'display_price': '',
                 'link': p.link
             })
         return items
@@ -458,7 +458,7 @@ class MobileHomeHandler(MobileBaseHandler):
                     'img': item.img_m,
                     'name': item.name,
                     'price': 0,
-                    'display': '',
+                    'display_price': '',
                     'link': 'czj://category/%s' % item.id
                 })
         return items
@@ -483,7 +483,7 @@ class MobileHomeHandler(MobileBaseHandler):
                     'img': logo,
                     'name': name,
                     'price': 0,
-                    'display': '',
+                    'display_price': '',
                     'link': 'czj://category/%d/brand/%d' %(cid, id)
                 })
 
@@ -510,7 +510,7 @@ class MobileHomeHandler(MobileBaseHandler):
                 'img': cover,
                 'name': name,
                 'price': price,
-                'display': u'￥' + str(price),
+                'display_price': u'￥' + str(price),
                 'score': score,
                 'link': 'czj://product/%d' % id,
                 'is_score': 0,
@@ -539,7 +539,7 @@ class MobileHomeHandler(MobileBaseHandler):
                 'img': cover,
                 'name': name,
                 'price': price,
-                'display': '',
+                'display_price': '',
                 'score': score,
                 'link': 'czj://score_product_detail/%d' % id,
                 'is_score': 1,
@@ -874,7 +874,7 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
                     'sppid': p['sppid'],
                     'name': p['name'],
                     'price': p['price'],
-                    'display': display_price,
+                    'display_price': display_price,
                     'unit': p['unit'] if p['unit'] else '件',
                     'buy_count': p['buy_count'],
                     'cover': p['cover'],
