@@ -1515,7 +1515,7 @@ class MobileWithdrawCashHandler(MobileBaseHandler):
         result = {'flag': 0, 'msg': '', "data": []}
         user = self.get_user()
         store = user.store
-        money = int(self.get_body_argument('money', None))
+        money = float(self.get_body_argument('money', None))
         bank_id = self.get_body_argument('bank_id', None)
         account_type = int(self.get_body_argument('account_type', 0))
         try:
