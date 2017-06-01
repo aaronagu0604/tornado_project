@@ -772,7 +772,7 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
             tmpList = []
             other = None
             for item in attribute.items:
-                if item.name in ['红色','绿色']:
+                if item.name in ['红色', '绿色']:
                     continue
                 if item.name == '其它':
                     other = {
@@ -784,10 +784,7 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
                         'id': item.id,
                         'name': item.name
                     })
-
-
             tmpList.sort(key=lambda d:d['name'])
-
             if other:
                 tmpList.append(other)
             attributeList.append({
@@ -814,7 +811,6 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
         return filterlist
 
     def getProductList(self, keyword, sort, category, brands, attribute, index, area_code, loginUser):
-        print attribute
         productList = []
         ft = (Product.active == 1) & (Product.category == category.id)
         # 根据规格参数搜索
@@ -846,7 +842,7 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
             ProductRelease.buy_count.alias('buy_count'), Product.cover.alias('cover'),
             Product.resume.alias('resume'), Store.name.alias('sName'), ProductRelease.is_score.alias('is_score'),
             ProductRelease.sort.alias('sort')). \
-            join(ProductRelease,on=(ProductRelease.id == StoreProductPrice.product_release)). \
+            join(ProductRelease, on=(ProductRelease.id == StoreProductPrice.product_release)). \
             join(Product, on=(Product.id == ProductRelease.product)). \
             join(ProductAttributeValue, on=(ProductAttributeValue.product == Product.id)). \
             join(Store, on=(Store.id == ProductRelease.store)).where(ft).dicts()
@@ -869,7 +865,7 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
             if p['prid'] not in prds:
                 prds.append(p['prid'])
                 display_price = ''
-                if loginUser: # 未登陆不显示价格
+                if loginUser:    # 未登陆不显示价格
                     display_price = '¥' + str(p['price']) + '/' + (p['unit'] if p['unit'] else '件')
                 productList.append({
                     'prid': p['prid'],
@@ -885,7 +881,7 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
                     'storeName': p['sName'],
                     'is_score': p['is_score']
                 })
-        print 'discoverproducts len:',len(productList)
+        print 'discoverproducts len:', len(productList)
         print simplejson.dumps(productList)
         return productList
 
@@ -913,7 +909,7 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
         area_code = self.get_store_area_code()
         try:
             category = Category.get(id=int(1))
-        except Exception,e:
+        except Exception, e:
             category = Category.get(id=1)
         self.hot_search_add_keyword(keyword)
 

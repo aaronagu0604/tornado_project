@@ -251,15 +251,15 @@ class MobileOrderDetailHandler(MobileBaseHandler):
     """
     @apiGroup mine
     @apiVersion 1.0.0
-    @api {get} /mobile/sellorder 03. 普通商品售出订单
-    @apiDescription 普通商品售出订单
+    @api {get} /mobile/orderdetail 03. 普通商品订单详情（采购）
+    @apiDescription 普通商品订单详情（采购）
 
     @apiHeader {String} token 用户登录凭证
 
     @apiParam {String} type 订单状态类型 all全部，unpay待支付，undispatch待发货，unreceipt待收货，success交易完成/待评价， delete删除
     @apiParam {Int} index 每页起始个数
 
-    @apiSampleRequest /mobile/sellorder
+    @apiSampleRequest /mobile/orderdetail
     """
     @require_auth
     def get(self):
@@ -302,8 +302,8 @@ class MobileOrderDetailHandler(MobileBaseHandler):
                     'price': product.price,
                     'quantity': product.quantity,
                     'attribute': attribute,
-                    'score':product.store_product_price.score,
-                    'is_score':product.store_product_price.product_release.is_score
+                    'score': int(product.store_product_price.score),
+                    'is_score': product.store_product_price.product_release.is_score
                 })
             suborders.append({
                 'name': suborder.saler_store.name,
@@ -312,7 +312,7 @@ class MobileOrderDetailHandler(MobileBaseHandler):
                 'products': products,
                 'soid': suborder.id,
                 'price': suborder.price,
-                'score': suborder.score,
+                'score': int(suborder.score),
                 'status': suborder.status,
                 'order_type': order.order_type
             })
@@ -426,13 +426,12 @@ class MobileSellOrderHandler(MobileBaseHandler):
                 'buyer_store': so.buyer_store.name,
                 'order_type': so.order.order_type,
                 'price': totalprice,
-                'score': totalprice,
+                'score': int(totalprice),
                 'status': so.status,
                 'items': items,
                 'ordered': time.strftime('%Y-%m-%d %H-%M-%S', time.localtime(so.order.ordered)),
                 'deadline': time.strftime('%Y-%m-%d %H-%M-%S', time.localtime(so.order.ordered + setting.PRODUCT_ORDER_TIME_OUT))
             })
-        print simplejson.dumps(result)
         return result
 
     @require_auth
