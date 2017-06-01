@@ -34,6 +34,7 @@
         <div class="pull-right">
             <form class="navbar-form navbar-left" action="" method="get" role="search">
                 <input type="hidden" name="page" value="1">
+                <input type="hidden" name="archive" value="{{archive}}">
                 <label class="num">地区：</label>
                 <select name="province_code" id="province_code" onchange="province_change(this.value, 0)" data-default="{{default_province}}" style="width:120px;">
                     <option value="">--选择省份--</option>

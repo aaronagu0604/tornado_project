@@ -1678,7 +1678,8 @@ class InsuranceOrderHandler(AdminBaseHandler):
 
         self.render('admin/order/insurance_orders.html', orders=orders, total=total, page=page, pagesize=pagesize,
                     totalpage=totalpage, status=status, active=active, begin_date=begin_date, end_date=end_date,
-                    keyword=keyword, items=items, default_province=default_province, default_city=default_city, Area=Area)
+                    keyword=keyword, items=items, default_province=default_province, default_city=default_city,
+                    archive=archive, Area=Area)
 
 
 @route(r'/admin/insurance_order/(\d+)', name='admin_insurance_order_detail')  # 保险订单详情
