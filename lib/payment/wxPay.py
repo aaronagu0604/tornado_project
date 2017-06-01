@@ -37,6 +37,7 @@ import hashlib
 import threading
 from urllib import quote
 import xml.etree.ElementTree as ET
+import logging
 try:
     import pycurl
     from cStringIO import StringIO
@@ -333,6 +334,7 @@ class UnifiedOrder_pub(Wxpay_client_pub):
             else:
                 sign_again_params = ''
         except Exception, err:
+            logging.error(err)
             sign_again_params = ''
         return sign_again_params
 
