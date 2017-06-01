@@ -236,7 +236,7 @@ def move_brand():
         'SK':'http://img.520czj.com/image/2017/06/01/server1_20170601175334WndwPBvCXehYyRcJuapMGTQF.jpg',
         'JDS':'http://img.520czj.com/image/2017/06/01/server1_20170601175436WfNoPAZOSYRMQgTXtadeGrFU.jpg',
         'DDE':'http://img.520czj.com/image/2017/06/01/server1_20170601175241mqPXrYtVWNkiLfCpIKJjyQHZ.jpg',
-        'Mobil':'http://img.520czj.com/image/2017/05/27/server1_20170527183634XEeCuPfIHrKlhvqUiLWSNRzy.png',
+        'Mobil':'http://img.520czj.com/image/2017/06/01/server1_20170601183330gTDhpLetGxoMZuNUlrbIJfRi.jpg',
         'QP':'http://img.520czj.com/image/2017/06/01/server1_20170601175411CWOdMwzhxfIXjJtRDpqavEYo.jpg',
         'JSD':'http://img.520czj.com/image/2017/05/27/server1_20170527183913vXMEoJHufAnkDCbwmIqcpaZN.png',
     }
