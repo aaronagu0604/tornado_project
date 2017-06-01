@@ -510,7 +510,7 @@ class MobileHomeHandler(MobileBaseHandler):
                 'img': cover,
                 'name': name,
                 'price': price,
-                'display_price': u'￥' + str(price),
+                'display_price': u'¥' + str(price),
                 'score': score,
                 'link': 'czj://product/%d' % id,
                 'is_score': 0,
@@ -867,7 +867,7 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
                 prds.append(p['prid'])
                 display_price = ''
                 if loginUser: # 未登陆不显示价格
-                    display_price = '￥' + str(p['price']) + '/' + (p['unit'] if p['unit'] else '件')
+                    display_price = '¥' + str(p['price']) + '/' + (p['unit'] if p['unit'] else '件')
                 productList.append({
                     'prid': p['prid'],
                     'pid': p['pid'],
