@@ -1003,7 +1003,8 @@ class MobileProductHandler(MobileBaseHandler):
         product = {'name': spp.product_release.product.name, 'type': type, 'from': f, 'id': id,
                    'price': spp.price, 'pics': pics, 'buy_count': spp.product_release.buy_count,
                    'store': spp.store.name, 'mobile': spp.store.mobile, 'attributes': attributes,
-                   'login': login, 'platform': platform,'intro':spp.product_release.product.intro}
+                   'login': login, 'platform': platform,'intro':spp.product_release.product.intro,
+                   'cover': spp.product_release.product.cover}
         if str(type) == '2':
             product['price'] = spp.score
 
