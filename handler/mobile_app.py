@@ -434,6 +434,7 @@ class MobileHomeHandler(MobileBaseHandler):
                 'img': p.img,
                 'name': p.name,
                 'price': 0,
+                'display': '',
                 'link': p.link
             })
         return items
@@ -457,6 +458,7 @@ class MobileHomeHandler(MobileBaseHandler):
                     'img': item.img_m,
                     'name': item.name,
                     'price': 0,
+                    'display': '',
                     'link': 'czj://category/%s' % item.id
                 })
         return items
@@ -481,6 +483,7 @@ class MobileHomeHandler(MobileBaseHandler):
                     'img': logo,
                     'name': name,
                     'price': 0,
+                    'display': '',
                     'link': 'czj://category/%d/brand/%d' %(cid, id)
                 })
 
@@ -507,6 +510,7 @@ class MobileHomeHandler(MobileBaseHandler):
                 'img': cover,
                 'name': name,
                 'price': price,
+                'display': u'￥' + str(price),
                 'score': score,
                 'link': 'czj://product/%d' % id,
                 'is_score': 0,
@@ -535,6 +539,7 @@ class MobileHomeHandler(MobileBaseHandler):
                 'img': cover,
                 'name': name,
                 'price': price,
+                'display': '',
                 'score': score,
                 'link': 'czj://score_product_detail/%d' % id,
                 'is_score': 1,
@@ -805,7 +810,7 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
             filterlist += self.getCategoryAttribute(c_id)
         return filterlist
 
-    def getProductList(self, keyword, sort, category, brands, attribute, index, area_code):
+    def getProductList(self, keyword, sort, category, brands, attribute, index, area_code, loginUser):
         print attribute
         productList = []
         ft = (Product.active == 1) & (Product.category == category.id)
@@ -860,12 +865,16 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
         for p in ps:
             if p['prid'] not in prds:
                 prds.append(p['prid'])
+                display_price = ''
+                if loginUser: # 未登陆不显示价格
+                    display_price = '￥' + str(p['price']) + '/' + (p['unit'] if p['unit'] else '件')
                 productList.append({
                     'prid': p['prid'],
                     'pid': p['pid'],
                     'sppid': p['sppid'],
                     'name': p['name'],
                     'price': p['price'],
+                    'display': display_price,
                     'unit': p['unit'] if p['unit'] else '件',
                     'buy_count': p['buy_count'],
                     'cover': p['cover'],
@@ -906,7 +915,7 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
         self.hot_search_add_keyword(keyword)
 
         result['data']['filter_items'] = self.getFilter()
-        result['data']['products'] = self.getProductList(keyword, sort, category, brands, attributes, index, area_code)
+        result['data']['products'] = self.getProductList(keyword, sort, category, brands, attributes, index, area_code, self.get_user())
 
         self.write(simplejson.dumps(result))
         self.finish()
