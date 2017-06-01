@@ -1855,8 +1855,13 @@ class MobilePayOrderHandler(MobileBaseHandler):
                 result['flag'] = 1
             else:
                 result['msg'] = u'订单支付失败'
+
             if payment in [6, 7] and not result['data']['pay_info']:
                 result['msg'] = u'获取二维码失败'
+
+            if payment == 4 and result['flag'] == 1:
+                # 余额支付成功
+                result['msg'] = u'订单支付成功'
 
         else:
             result['msg'] = u"传入参数异常"
