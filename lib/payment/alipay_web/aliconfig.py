@@ -19,7 +19,7 @@ class Settings:
     RETURN_URL = domanName+'/mobile/alipay_callback'
 
     # 交易过程中服务器异步通知的页面 要用 http://格式的完整路径，不允许加?id=123这类自定义参数
-    NOTIFY_URL = domanName+'/mobile/alipay_notify'
+    NOTIFY_URL = domanName+'/mobile/alipay_notify_web'
 
     SHOW_URL = ''
 
@@ -47,8 +47,8 @@ class Settings:
     # 充值同步回调，没做接口哈哈
     CZ_RETURN_URL = domanName+'/mobile/alipay_cz_callback'
 
-    # 交易过程中服务器异步通知的页面 要用 http://格式的完整路径，不允许加?id=123这类自定义参数
-    CZ_NOTIFY_URL = domanName+'/mobile/alipay_cz_notify'
+    # 交易过程中服务器异步通知的页面 要用 http://格式的完整路径，不允许加?id=123这类自定义参数 web支付充值回调
+    CZ_NOTIFY_URL = domanName+'/mobile/alipay_cz_notify_web'
 
 
 

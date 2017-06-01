@@ -9,6 +9,7 @@ from tornado.web import RequestHandler
 import setting
 from lib.mqhelper import create_msg
 from lib.payment.ali_app_pay import verify_alipay_request_sign
+from lib.payment.alipay_web.core import notify_verify
 from lib.payment.upay import Trade
 from lib.payment.wxPay import Notify_pub
 from lib.route import route
@@ -32,7 +33,6 @@ def change_order_status(ordernum, trade_no):
             order.trade_no = trade_no
             order.pay_time = int(time.time())  # 支付时间
             order.save()
-            logging.info('order_id=%s order_num=%s trade_no=%s\n' % (order.id, order.ordernum, trade_no))
             return order, is_insurance_order
         elif len(ordernum_list) == 2:    # 保单补款回调
             ordernum_originally = ordernum_list[0]
@@ -55,7 +55,7 @@ def send_new_insurance_order_msg(mobile, storeName, area_code, ordernum, iName, 
             paymentV = '微信支付'
         elif payment == 3:
             paymentV = '银联支付'
-        elif payment==4:
+        elif payment == 4:
             paymentV = '余额支付'
         else:
             paymentV = '其它方式支付'
@@ -93,7 +93,7 @@ class MobileAlipayCallbackHandler(RequestHandler):
         self.write('')
 
 
-# 支付宝支付完成后异步通知 支付宝回调
+# 支付宝支付完成后异步通知 支付宝回调 （APP支付）
 @route('/mobile/alipay_notify', name='mobile_alipay_notify')
 class MobileAlipayNotifyHandler(RequestHandler):
     def check_xsrf_cookie(self):
@@ -125,7 +125,43 @@ class MobileAlipayNotifyHandler(RequestHandler):
                                                  order.ordernum, order.current_order_price.insurance.name, order.payment,
                                                  order.current_order_price.gift_policy, order.sms_content,
                                                  order.current_order_price.total_price)
-                    msg = "success"
+                msg = "success"
+        self.write(msg)
+
+
+# 支付宝支付完成后异步通知 支付宝回调（web支付）
+@route('/mobile/alipay_notify_web', name='mobile_alipay_notify_web')
+class MobileAlipayNotifyWebHandler(RequestHandler):
+    def check_xsrf_cookie(self):
+        pass
+
+    def options(self):
+        pass
+
+    def post(self):
+        notify = PaymentNotify()
+        notify.content = self.request.body
+        notify.notify_time = int(time.time())
+        notify.notify_type = 2
+        notify.payment = 1
+        notify.function_type = 1
+        notify.save()
+        msg = "fail"
+        params = {}
+        ks = self.request.arguments.keys()
+        for k in ks:
+            params[k] = self.get_argument(k)
+        ps = notify_verify(params)
+        if ps:
+            if ps['trade_status'].upper().strip() == 'TRADE_FINISHED' or ps['trade_status'].upper().strip() == 'TRADE_SUCCESS':
+                order, is_insurance_order = change_order_status(ps['out_trade_no'], ps['trade_no'])
+                create_msg(simplejson.dumps({'payment': 1, 'order_id': ps['out_trade_no']}), 'pay_success')
+                if is_insurance_order and order:
+                    send_new_insurance_order_msg(order.delivery_tel, order.store.name, order.store.area_code,
+                                                 order.ordernum, order.current_order_price.insurance.name,
+                                                 order.payment, order.current_order_price.gift_policy,
+                                                 order.sms_content, order.current_order_price.total_price)
+                msg = "success"
         self.write(msg)
 
 
@@ -158,7 +194,7 @@ class MobileWeiXinPayCallbackHandler(RequestHandler):
                                                  order.ordernum, order.current_order_price.insurance.name, order.payment,
                                                  order.current_order_price.gift_policy, order.sms_content,
                                                  order.current_order_price.total_price)
-                    notify_data.setReturnParameter('return_code', 'SUCCESS')
+                notify_data.setReturnParameter('return_code', 'SUCCESS')
             else:
                 logging.info(u'微信通知支付失败')
         else:
@@ -188,7 +224,7 @@ class MobileUPayCallbackHandler(RequestHandler):
                                                      order.ordernum, order.insurance.name, order.payment,
                                                      order.current_order_price.gift_policy, order.sms_content,
                                                      order.current_order_price.total_price)
-                        result['return_code'] = 'SUCCESS'
+                    result['return_code'] = 'SUCCESS'
                 else:
                     result['return_msg'] = 'upay get FAIL notify'
             else:
@@ -208,12 +244,12 @@ def recharge(order_num, trade_no, money, payment=''):
     store.save()
     now = int(time.time())
     process_log = u'支付方式：%s，订单号：order_id=%s' % (payment, order_num)
-    # 资金类别 # 1提现、2充值、3售出、4采购、5保险、6退款
+    # 资金类别 # 1提现、2充值、3售出、4采购、5保险、6退款、7保单补款
     MoneyRecord.create(user=user, store=user.store, type=2,process_type=1, process_message=u'充值', apply_time=now,
                        process_log=process_log, in_num=trade_no, money=money, status=1, processing_time=now)
 
 
-# 支付宝充值完成后异步通知 支付宝回调
+# 支付宝充值完成后异步通知 支付宝回调（APP 支付）
 @route('/mobile/alipay_cz_notify', name='mobile_alipay_cz_notify')
 class MobileAlipayCZNotifyHandler(RequestHandler):
     def check_xsrf_cookie(self):
@@ -237,10 +273,44 @@ class MobileAlipayCZNotifyHandler(RequestHandler):
             params[k] = self.get_argument(k)
         ps = verify_alipay_request_sign(params)
         if ps and (ps['trade_status'].upper().strip() == 'TRADE_FINISHED' or ps['trade_status'].upper().strip() == 'TRADE_SUCCESS'):
+            if MoneyRecord.select().where(MoneyRecord.in_num == ps['trade_no']).count() > 0:
+                logging.error(u'支付宝重复回调：order_id:%s in_num:%s' % (ps['out_trade_no'], ps['trade_no']))
+            else:
                 create_msg(simplejson.dumps({'payment': 1, 'order_id': ps['out_trade_no']}), 'recharge')
+                recharge(ps['out_trade_no'], ps['trade_no'], ps['receipt_amount'], u'支付宝')
+            msg = "success"
+        self.write(msg)
+
+
+# 支付宝支付完成后异步通知 支付宝回调 （手机网站支付）
+@route('/mobile/alipay_cz_notify_web', name='mobile_alipay_cz_notify_web')
+class MobileAlipayCZNotifyWebHandler(RequestHandler):
+    def check_xsrf_cookie(self):
+        pass
+
+    def options(self):
+        pass
+
+    def post(self):
+        notify = PaymentNotify()
+        notify.content = self.request.body
+        notify.notify_time = int(time.time())
+        notify.notify_type = 2
+        notify.payment = 1
+        notify.function_type = 1
+        notify.save()
+        msg = "fail"
+        params = {}
+        ks = self.request.arguments.keys()
+        for k in ks:
+            params[k] = self.get_argument(k)
+        ps = notify_verify(params)
+        if ps:
+            if ps['trade_status'].upper().strip() == 'TRADE_FINISHED' or ps['trade_status'].upper().strip() == 'TRADE_SUCCESS':
                 if MoneyRecord.select().where(MoneyRecord.in_num == ps['trade_no']).count() > 0:
                     logging.error(u'支付宝重复回调：order_id:%s in_num:%s' % (ps['out_trade_no'], ps['trade_no']))
                 else:
+                    create_msg(simplejson.dumps({'payment': 1, 'order_id': ps['out_trade_no']}), 'recharge')
                     recharge(ps['out_trade_no'], ps['trade_no'], ps['receipt_amount'], u'支付宝')
                 msg = "success"
         self.write(msg)
