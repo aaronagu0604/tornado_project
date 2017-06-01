@@ -314,6 +314,7 @@ class UnifiedOrder_pub(Wxpay_client_pub):
 
         self.postXml()  # 以post方式提交xml到对应的接口url
         self.result = self.xmlToArray(self.response)
+        logging.info(self.result)
 
         sign_again_params = {}
         try:
@@ -334,7 +335,8 @@ class UnifiedOrder_pub(Wxpay_client_pub):
             else:
                 sign_again_params = ''
         except Exception, err:
-            logging.error(err)
+            import traceback
+            logging.error(traceback.format_exc())
             sign_again_params = ''
         return sign_again_params
 
