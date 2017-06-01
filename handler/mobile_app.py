@@ -1436,10 +1436,14 @@ class MobileNewOrderHandler(MobileBaseHandler):
             result['data']['order_id'] = order.id
             result['data']['payment'] = payment
             result['data']['pay_info'] = pay_order(payment, total_price, order.ordernum, u'车装甲普通商品')
-            if result['data']['pay_info']:
+            if payment in [1,2,3]:
+                if result['data']['pay_info']:
+                    result['flag'] = 1
+                else:
+                    result['msg'] = u'订单支付失败'
+            elif payment in [4,5]:
                 result['flag'] = 1
-            else:
-                result['msg'] = u'订单支付失败'
+                result['msg'] = '支付成功'
             if is_shop_cart == '1':
                 ShopCart.delete().where(ShopCart.store == user.store, ShopCart.store_product_price << sppids).execute()
         else:
