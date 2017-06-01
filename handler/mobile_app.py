@@ -1167,6 +1167,7 @@ class MobileShopCarHandler(MobileBaseHandler):
 # -------------------------------------------------------商品/保险订单--------------------------------------------------
 def pay_order(payment, total_price, ordernum, log):
     pay_info = ''
+    logging.info('pay_order parameters:',payment,total_price,ordernum)
     if payment == 1:  # 1支付宝  2微信 3银联 4余额 5积分 6立即支付宝 7立即微信
         # pay_info = alipay.get_alipay_string(total_price, log, log, ordernum)
         pay_info = alipay_web_app.get_pay_url(ordernum.encode('utf-8'), log, str(total_price))
