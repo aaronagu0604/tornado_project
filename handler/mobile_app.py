@@ -217,8 +217,11 @@ class MobileRegHandler(MobileBaseHandler):
             user.store = sid.id
             user.token = setting.user_token_prefix + str(uuid.uuid4())
             user.save()
-            StoreAddress.create(store=sid.id, province=province, city=city, region=district, address=address,
-                                street='', name=legalPerson, mobile=mobile, created=now, create_by=user.id)
+            province_name = Area.get(code=province)
+            city_name = Area.get(code=city)
+            district_name = Area.get(code=district)
+            StoreAddress.create(store=sid.id, province=province_name, city=city_name, region=district_name, street='',
+                                address=address, name=legalPerson, mobile=mobile, created=now, create_by=user.id)
             self.application.memcachedb.set(user.token, str(user.id), setting.user_expire)
             result['data'] = {
                 'token': user.token,
