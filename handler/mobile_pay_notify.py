@@ -30,6 +30,9 @@ def change_order_status(ordernum, trade_no):
             else:    # 普通商品订单
                 order = Order.get(ordernum=ordernum)
                 order.status = 1
+                for sub_order in order.sub_orders:
+                    sub_order.status = 1
+                    sub_order.save()
             order.trade_no = trade_no
             order.pay_time = int(time.time())  # 支付时间
             order.save()
