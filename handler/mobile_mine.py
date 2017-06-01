@@ -702,7 +702,7 @@ class MobileInsuranceOrderDetailHandler(MobileBaseHandler):
             'paytype': insuranceorder.payment,
             'deadlinewarning': deadlineWarning,
             'commission': commission,
-            'gift_summary': u'返佣提醒',
+            'gift_summary': u'返佣提醒3721ad打发打发爱的发的发的发大道发的发大道发的发大水发大水发的说法打发打发。',
             'is_append': 1 if insuranceorder.current_order_price.append_refund_status == 1 and insuranceorder.current_order_price.append_refund_num > 0 else 0,
             'append_num':  insuranceorder.current_order_price.append_refund_num,
             'append_reason': insuranceorder.current_order_price.append_refund_reason,
