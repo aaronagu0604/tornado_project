@@ -259,8 +259,6 @@ class MobileAlipayCZNotifyHandler(RequestHandler):
         pass
 
     def post(self):
-        msg = "fail"
-        params = {}
         notify = PaymentNotify()
         notify.content = self.request.body
         notify.notify_time = int(time.time())
@@ -268,6 +266,8 @@ class MobileAlipayCZNotifyHandler(RequestHandler):
         notify.payment = 1
         notify.function_type = 1
         notify.save()
+        msg = "fail"
+        params = {}
         ks = self.request.arguments.keys()
         for k in ks:
             params[k] = self.get_argument(k)
@@ -313,7 +313,7 @@ class MobileAlipayCZNotifyWebHandler(RequestHandler):
                     logging.error(u'支付宝重复回调：order_id:%s in_num:%s' % (ps['out_trade_no'], ps['trade_no']))
                 else:
                     create_msg(simplejson.dumps({'payment': 1, 'order_id': ps['out_trade_no']}), 'recharge')
-                    recharge(ps['out_trade_no'], ps['trade_no'], ps['receipt_amount'], u'支付宝')
+                    recharge(ps['out_trade_no'], ps['trade_no'], ps['total_fee'], u'支付宝')
                 msg = "success"
         self.write(msg)
 
@@ -388,15 +388,8 @@ class MobileUPayCZNotifyHandler(RequestHandler):
 
 
 if __name__ == '__main__':
-    parms = 'service=alipay.wap.trade.create.direct&sign=7c5abaf1402c2107b1c9a03b89427698&sec_id=MD5&v=1.0&notify_data=%3Cnotify%3E%3Cpayment_type%3E1%3C%2Fpayment_type%3E%3Csubject%3E%E8%BD%A6%E8%A3%85%E7%94%B2%E5%85%85%E5%80%BC%3C%2Fsubject%3E%3Ctrade_no%3E2017060121001004990279309698%3C%2Ftrade_no%3E%3Cbuyer_email%3E17629260130%3C%2Fbuyer_email%3E%3Cgmt_create%3E2017-06-01+11%3A51%3A19%3C%2Fgmt_create%3E%3Cnotify_type%3Etrade_status_sync%3C%2Fnotify_type%3E%3Cquantity%3E1%3C%2Fquantity%3E%3Cout_trade_no%3EU1284R496289064%3C%2Fout_trade_no%3E%3Cnotify_time%3E2017-06-01+13%3A21%3A40%3C%2Fnotify_time%3E%3Cseller_id%3E2088221897731280%3C%2Fseller_id%3E%3Ctrade_status%3ETRADE_SUCCESS%3C%2Ftrade_status%3E%3Cis_total_fee_adjust%3EN%3C%2Fis_total_fee_adjust%3E%3Ctotal_fee%3E0.01%3C%2Ftotal_fee%3E%3Cgmt_payment%3E2017-06-01+11%3A51%3A19%3C%2Fgmt_payment%3E%3Cseller_email%3Epay.chezhuangjia%40520czj.com%3C%2Fseller_email%3E%3Cprice%3E0.01%3C%2Fprice%3E%3Cbuyer_id%3E2088402583702995%3C%2Fbuyer_id%3E%3Cnotify_id%3Ef189c3cb570498b78af217a60224ab1nn2%3C%2Fnotify_id%3E%3Cuse_coupon%3EN%3C%2Fuse_coupon%3E%3C%2Fnotify%3E'
-    from urllib import unquote
-    data = {}
-    for p in unquote(parms.encode('utf-8')).split('&'):
-        k, v = p.split('=')
-        data[k] = v
-    print data
-    ps = notify_verify(data)
+    parms = {'sec_id': u'MD5', 'v': u'1.0', 'notify_data': u'<notify><payment_type>1</payment_type><subject>\u8f66\u88c5\u7532\u5145\u503c</subject><trade_no>2017060121001004990279718514</trade_no><buyer_email>17629260130</buyer_email><gmt_create>2017-06-01 15:11:40</gmt_create><notify_type>trade_status_sync</notify_type><quantity>1</quantity><out_trade_no>U1284R496301090</out_trade_no><notify_time>2017-06-01 15:11:41</notify_time><seller_id>2088221897731280</seller_id><trade_status>TRADE_SUCCESS</trade_status><is_total_fee_adjust>N</is_total_fee_adjust><total_fee>0.01</total_fee><gmt_payment>2017-06-01 15:11:41</gmt_payment><seller_email>pay.chezhuangjia@520czj.com</seller_email><price>0.01</price><buyer_id>2088402583702995</buyer_id><notify_id>cd8b4964f7dd5b0ef1445bd72c516c6nn2</notify_id><use_coupon>N</use_coupon></notify>', 'service': u'alipay.wap.trade.create.direct', 'sign': u'eb9170996068512528a03acbc1f27417'}
+    ps = notify_verify(parms)
     print ps
-
-
-
+    if ps['trade_status'].upper().strip() == 'TRADE_FINISHED' or ps['trade_status'].upper().strip() == 'TRADE_SUCCESS':
+        print ps['out_trade_no'], ps['total_fee'], ps['trade_no']

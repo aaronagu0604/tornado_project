@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
-import types
 import urllib2
+import types
+from urllib import urlencode, urlopen
 import xml.etree.ElementTree as etree
 
 from lib.payment.alipay_web.aliconfig import Settings
@@ -97,16 +98,36 @@ def build_mysign(prestr, key, sign_type='MD5'):
     return ''
 
 
+# 验证---签名&&数据是否支付宝发送
 def notify_verify(post):
-    """验证---签名&&数据是否支付宝发送
-
-    """
-    #初级验证---签名
+    # 初级验证---签名
+    order_params = {}
+    params = {}
     _, prestr = fix_params_filter(post)
     mysign = build_mysign(prestr, Settings.KEY, Settings.SIGN_TYPE)
     if mysign != post.get('sign'):
         return False
-    return True
+    tree = etree.fromstring(post.get("notify_data").encode('utf-8'))
+    notify_id = tree.find("notify_id").text
+    order_params["trade_no"] = tree.find("trade_no").text
+    order_params["out_trade_no"] = tree.find("out_trade_no").text
+    order_params["trade_status"] = tree.find("trade_status").text
+    order_params["total_fee"] = tree.find("total_fee").text
+    order_params['buyer_email'] = tree.find("buyer_email").text
+    # 二级验证---数据是否支付宝发送
+    if notify_id:
+        params['partner'] = Settings.PARTNER
+        params['notify_id'] = notify_id
+        if Settings.TRANSPORT == 'https':
+            params['service'] = 'notify_verify'
+            gateway = 'https://mapi.alipay.com/gateway.do'
+        else:
+            gateway = 'http://notify.alipay.com/trade/notify_query.do'
+        verify_url = "%s?%s" % (gateway, urlencode(params))
+        verify_result = urlopen(verify_url).read()
+        if verify_result.lower().strip() == 'true':
+            return order_params
+    return False
 
 
 def return_verify(query_params):
