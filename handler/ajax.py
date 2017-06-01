@@ -7,7 +7,7 @@ from lib.route import route
 from model import *
 from bootloader import db
 from lib.mqhelper import create_msg
-
+from setting import domanName
 from tornado.gen import coroutine
 from tornado.web import asynchronous
 from tornado.concurrent import run_on_executor
@@ -1360,7 +1360,7 @@ class AutoCaculateInsuranceOrderPriceHandler(BaseHandler):
             result['msg'] = '不支持自动报价的保险公司'
             self.write(result)
             return
-        notify_url = 'http:///api.dev.test.520czj.com/mobile/baodaibao_notify'
+        notify_url = domanName + '/mobile/baodaibao_notify'
         url = 'http://apitest.baodaibao.com.cn/index.php?g=Api&m=QuoteApi&a=Quote'
         post_id = io.ordernum + str(time.time())[:10]
         insurance_items = {
