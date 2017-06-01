@@ -11,7 +11,7 @@ import setting
 from handler import MobileBaseHandler, require_auth
 from lib.mqhelper import create_msg
 import lib.payment.ali_app_pay as alipay
-import lib.payment.alipay_web.alipay as alipay_web_app
+import lib.payment.alipay_web.submit as alipay_web_app
 from lib.payment.upay import Trade
 from lib.payment.wxPay import UnifiedOrder_pub, Qrcode_pub
 from lib.route import route
@@ -1169,7 +1169,7 @@ def pay_order(payment, total_price, ordernum, log):
     pay_info = ''
     if payment == 1:  # 1支付宝  2微信 3银联 4余额 5积分 6立即支付宝 7立即微信
         # pay_info = alipay.get_alipay_string(total_price, log, log, ordernum)
-        pay_info = alipay_web_app.alipay_sign(ordernum.encode('utf-8'), log, str(total_price))
+        pay_info = alipay_web_app.get_pay_url(ordernum.encode('utf-8'), log, str(total_price))
     elif payment == 2:
         pay_info = UnifiedOrder_pub().getPrepayId(ordernum, log, int(total_price * 100))
     elif payment == 3:
