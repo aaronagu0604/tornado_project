@@ -233,11 +233,11 @@ brand_map = {}
 def move_brand():
     old_brand = Old_PinPai.select()
     bimg = {
-        'SK':'http://img.520czj.com/image/2017/05/27/server1_20170527182941lGdCgLpTOMyZAWQmatrPFRbe.png',
-        'JDS':'http://img.520czj.com/image/2017/05/27/server1_20170527183436VDyYrdRwQoeUHmAEpZgFNnTx.png',
-        'DDE':'http://img.520czj.com/image/2017/05/27/server1_20170527183547clbksEmudXIAfpCKOYynMPZr.png',
+        'SK':'http://img.520czj.com/image/2017/06/01/server1_20170601175334WndwPBvCXehYyRcJuapMGTQF.jpg',
+        'JDS':'http://img.520czj.com/image/2017/06/01/server1_20170601175436WfNoPAZOSYRMQgTXtadeGrFU.jpg',
+        'DDE':'http://img.520czj.com/image/2017/06/01/server1_20170601175241mqPXrYtVWNkiLfCpIKJjyQHZ.jpg',
         'Mobil':'http://img.520czj.com/image/2017/05/27/server1_20170527183634XEeCuPfIHrKlhvqUiLWSNRzy.png',
-        'QP':'http://img.520czj.com/image/2017/05/27/server1_20170527183752JvaAPqlEHQkMIrdsThnwCueG.png',
+        'QP':'http://img.520czj.com/image/2017/06/01/server1_20170601175411CWOdMwzhxfIXjJtRDpqavEYo.jpg',
         'JSD':'http://img.520czj.com/image/2017/05/27/server1_20170527183913vXMEoJHufAnkDCbwmIqcpaZN.png',
     }
     for item in old_brand:
@@ -1588,54 +1588,54 @@ def auto_del_repeat_product_attr():
 
 if __name__ == '__main__':
     # pass
-    # move_hotsearch()    # 热搜
-    # move_delivery()   # 物流公司
-    # move_bankcard()   # 银行卡
-    # move_area()   # 地区
-    # move_category()   # 分类
-    # move_categoryattribute()  # 分类和品牌关系
-    # move_categoryattributeitem()
-    # move_brand()
-    # move_brandcategory()
-    # move_adminuser()
-    # # move_adminuserlog()
-    # move_store()
-    # move_storebankaccount()
-    # move_storearea()
-    # move_user()
-    # move_storeaddress()
-    # move_scorerecord()
-    # move_moneyrecord()
-    #
-    # move_product()
-    # move_productpic()
-    # # move_productattributevalue()
-    # move_productrelease()
-    # move_storeproductprice()
-    # move_insurance()
-    # # move_insurancearea()
-    # # move_insuranceexchange()
-    # # move_lubeexchange()
-    # move_feedback()
-    # # move_insuranceporderprice()
-    # move_insuranceorder()
-    # move_settlement()
-    # move_Order()
-    # move_orderitem()
-    # move_cart()
-    # move_insuranceitem()
-    # move_insuranceprice()
-    # move_block()
-    # move_blockitem()
-    # move_blockitemarea()
-    # # move_carbrand()
-    # # move_carbrandfactor()
-    # # move_car()
-    # # move_caritemgroup()
-    # # move_carsk()
-    # # move_caritem()
+    move_hotsearch()    # 热搜
+    move_delivery()   # 物流公司
+    move_bankcard()   # 银行卡
+    move_area()   # 地区
+    move_category()   # 分类
+    move_categoryattribute()  # 分类和品牌关系
+    move_categoryattributeitem()
+    move_brand()
+    move_brandcategory()
+    move_adminuser()
+    # move_adminuserlog()
+    move_store()
+    move_storebankaccount()
+    move_storearea()
+    move_user()
+    move_storeaddress()
+    move_scorerecord()
+    move_moneyrecord()
+
+    move_product()
+    move_productpic()
+    # move_productattributevalue()
+    move_productrelease()
+    move_storeproductprice()
+    move_insurance()
+    # move_insurancearea()
+    # move_insuranceexchange()
     # move_lubeexchange()
-    # init_store_po()
+    move_feedback()
+    # move_insuranceporderprice()
+    move_insuranceorder()
+    move_settlement()
+    move_Order()
+    move_orderitem()
+    move_cart()
+    move_insuranceitem()
+    move_insuranceprice()
+    move_block()
+    move_blockitem()
+    move_blockitemarea()
+    # move_carbrand()
+    # move_carbrandfactor()
+    # move_car()
+    # move_caritemgroup()
+    # move_carsk()
+    # move_caritem()
+    move_lubeexchange()
+    init_store_po()
     auto_del_repeat_product_attr()
 
 
