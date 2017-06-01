@@ -1477,9 +1477,11 @@ def move_lubeexchange():
             if item.area_code == al['code']:
                 try:
                     minp, maxp = item.price.split('-')
+                    item_price = u'（%s）' % item.price
                 except:
                     minp = item.price.strip(u'≥').strip(u'以上')
                     maxp = ''
+                    item_price = u'%s以上' % minp
                 if u'+' in item.insurance:
                     flag = 3
                 elif u'单商业' in item.insurance:
@@ -1492,7 +1494,7 @@ def move_lubeexchange():
                 for d in data:
                     if d['gift'] == item.driverGift:
                         d['items'].append({
-                            'name': item.insurance,
+                            'name': item.insurance + item_price,
                             'driver': item.driverGiftNum,
                             'store': item.party2GiftNum,
                             'minprice': minp,
@@ -1644,8 +1646,9 @@ if __name__ == '__main__':
     # # move_caritemgroup()
     # # move_carsk()
     # # move_caritem()
-    # move_lubeexchange()
-    # init_jingxiaoshang
+    move_lubeexchange()
+    init_jingxiaoshang()
+    init_store_po()
     # move_feedback()
     # move_insuranceporderprice()
     # move_insuranceorder()
