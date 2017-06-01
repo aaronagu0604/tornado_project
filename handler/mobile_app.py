@@ -859,9 +859,9 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
             products = products.order_by(ProductRelease.buy_count.asc())
         else:
             products = products.order_by(ProductRelease.sort.desc())
-        ps = products.paginate(index, setting.MOBILE_PAGESIZE)
+
         prds = []
-        for p in ps:
+        for p in products:
             if p['prid'] not in prds:
                 prds.append(p['prid'])
                 display_price = ''
@@ -881,9 +881,9 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
                     'storeName': p['sName'],
                     'is_score': p['is_score']
                 })
-        print 'discoverproducts len:', len(productList)
-        print simplejson.dumps(productList)
-        return productList
+        print 'discoverproducts len:',len(productList[(index-1)*10:index*10])
+        print simplejson.dumps(productList[(index-1)*10:index*10])
+        return productList[(index-1)*10:index*10]
 
     def hot_search_add_keyword(self, keyword):
         if keyword:
