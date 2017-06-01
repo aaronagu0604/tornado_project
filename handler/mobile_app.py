@@ -997,7 +997,15 @@ class MobileProductHandler(MobileBaseHandler):
         type = self.get_argument("price", 2)
         platform = self.get_argument('platform', 'android')
         pics = sorted(spp.product_release.product.pics, key=lambda pic: pic.sort)
+
         items = [i for i in spp.product_release.product.attributes if i.attribute.active == 1]
+        iv = []
+        tmp = []
+        for i in items:
+            if i.name not in iv:
+                iv.append(i.name)
+                tmp.append(i)
+        items = tmp
         attributes = sorted(items, key=lambda item: item.attribute.sort)
         login = self.get_user() is not None
         product = {'name': spp.product_release.product.name, 'type': type, 'from': f, 'id': id,
