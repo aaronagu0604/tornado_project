@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+from setting import domanName
 
 class Settings:
     # 安全检验码，以数字和字母组成的32位字符
@@ -16,10 +16,10 @@ class Settings:
     SIGN_TYPE = 'MD5'
 
     # 付完款后跳转的页面（同步通知） 要用 http://格式的完整路径，不允许加?id=123这类自定义参数
-    RETURN_URL = 'http://www.520czj.com/mobile/alipay_callback'
+    RETURN_URL = domanName+'/mobile/alipay_callback'
 
     # 交易过程中服务器异步通知的页面 要用 http://格式的完整路径，不允许加?id=123这类自定义参数
-    NOTIFY_URL = 'http://www.520czj.com/mobile/alipay_notify'
+    NOTIFY_URL = domanName+'/mobile/alipay_notify'
 
     SHOW_URL = ''
 
@@ -44,11 +44,11 @@ class Settings:
     #请保证cacert.pem文件在当前文件夹目录中
     #CACERT = 'cacert.pem'
 
-    CZ_RETURN_URL = 'http://www.520czj.com/mobile/alipay_cz_callback'
+    # 充值同步回调，没做接口哈哈
+    CZ_RETURN_URL = domanName+'/mobile/alipay_cz_callback'
 
     # 交易过程中服务器异步通知的页面 要用 http://格式的完整路径，不允许加?id=123这类自定义参数
-    CZ_NOTIFY_URL = 'http://www.520czj.com/mobile/alipay_cz_notify'
-
+    CZ_NOTIFY_URL = domanName+'/mobile/alipay_cz_notify'
 
 
 
