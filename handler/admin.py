@@ -1330,7 +1330,7 @@ class MobileUpdateShowHandler(AdminBaseHandler):
         p.version = version
         p.path = path
         p.client = client
-        p.instructions = instructions
+        p.instruction = instructions
         if state == 1:
             p.state = 1
         else:
