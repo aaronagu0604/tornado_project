@@ -86,7 +86,7 @@
                         {% for attr in product['attributes']%}
                         <div class="row p_para_item" >
                             <div class="col-50 p_para_item_left">{{attr.attribute.name}}</div>
-                            <div class="col-50">{{attr.value}}</div>
+                            <div class="col-50">{{attr.attribute_item.value}}</div>
                         </div>
                         {% endfor %}
 
