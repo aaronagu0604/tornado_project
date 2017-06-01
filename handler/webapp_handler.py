@@ -28,6 +28,7 @@ class WebAppIndexHandler(BaseHandler):
         self.render("webapp/index.html", brands=brands, chars=chars, f=f)
 
 
+
 @route(r'/webapp/car/(\d+)', name='webapp_car')
 class WebAppCarHandler(BaseHandler):
     def get(self, id):
