@@ -495,7 +495,6 @@ class GetGiftOilHandler(BaseHandler):
             insurance = InsuranceOrder.get(id=iop.insurance_order_id)
             policy = SSILubePolicy.get((SSILubePolicy.store == insurance.store) & (SSILubePolicy.insurance == iid))
             policylist = simplejson.loads(policy.lube)
-
             if forcetotal and businesstotal:
                 flag = 3
                 totalprice = forcetotal + businesstotal
@@ -521,9 +520,7 @@ class GetGiftOilHandler(BaseHandler):
                 result['data']['driveroilnum'] = role['driver']
                 result['data']['storeoiltype'] = role['oiltype']
                 result['data']['storeoilnum'] = role['store']
-                result['flag'] = 1
-            else:
-                result['msg'] = u'无可用规则'
+            result['flag'] = 1
         except Exception, e:
             result['msg'] = u'本店铺该保险公司没有配置返佣规则！'
 

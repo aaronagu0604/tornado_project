@@ -304,7 +304,9 @@ class MobileAlipayCZNotifyWebHandler(RequestHandler):
         ks = self.request.arguments.keys()
         for k in ks:
             params[k] = self.get_argument(k)
+        logging.error('----parms=%s---' % params)
         ps = notify_verify(params)
+        logging.error('----ps=%s---' % ps)
         if ps:
             if ps['trade_status'].upper().strip() == 'TRADE_FINISHED' or ps['trade_status'].upper().strip() == 'TRADE_SUCCESS':
                 if MoneyRecord.select().where(MoneyRecord.in_num == ps['trade_no']).count() > 0:
@@ -386,9 +388,15 @@ class MobileUPayCZNotifyHandler(RequestHandler):
 
 
 if __name__ == '__main__':
-    import sys
-    change_order_status(sys.argv[1], sys.argv[2])
-
+    parms = 'service=alipay.wap.trade.create.direct&sign=7c5abaf1402c2107b1c9a03b89427698&sec_id=MD5&v=1.0&notify_data=%3Cnotify%3E%3Cpayment_type%3E1%3C%2Fpayment_type%3E%3Csubject%3E%E8%BD%A6%E8%A3%85%E7%94%B2%E5%85%85%E5%80%BC%3C%2Fsubject%3E%3Ctrade_no%3E2017060121001004990279309698%3C%2Ftrade_no%3E%3Cbuyer_email%3E17629260130%3C%2Fbuyer_email%3E%3Cgmt_create%3E2017-06-01+11%3A51%3A19%3C%2Fgmt_create%3E%3Cnotify_type%3Etrade_status_sync%3C%2Fnotify_type%3E%3Cquantity%3E1%3C%2Fquantity%3E%3Cout_trade_no%3EU1284R496289064%3C%2Fout_trade_no%3E%3Cnotify_time%3E2017-06-01+13%3A21%3A40%3C%2Fnotify_time%3E%3Cseller_id%3E2088221897731280%3C%2Fseller_id%3E%3Ctrade_status%3ETRADE_SUCCESS%3C%2Ftrade_status%3E%3Cis_total_fee_adjust%3EN%3C%2Fis_total_fee_adjust%3E%3Ctotal_fee%3E0.01%3C%2Ftotal_fee%3E%3Cgmt_payment%3E2017-06-01+11%3A51%3A19%3C%2Fgmt_payment%3E%3Cseller_email%3Epay.chezhuangjia%40520czj.com%3C%2Fseller_email%3E%3Cprice%3E0.01%3C%2Fprice%3E%3Cbuyer_id%3E2088402583702995%3C%2Fbuyer_id%3E%3Cnotify_id%3Ef189c3cb570498b78af217a60224ab1nn2%3C%2Fnotify_id%3E%3Cuse_coupon%3EN%3C%2Fuse_coupon%3E%3C%2Fnotify%3E'
+    from urllib import unquote
+    data = {}
+    for p in unquote(parms.encode('utf-8')).split('&'):
+        k, v = p.split('=')
+        data[k] = v
+    print data
+    ps = notify_verify(data)
+    print ps
 
 
 
