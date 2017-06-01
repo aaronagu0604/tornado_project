@@ -1936,9 +1936,9 @@ class MobilInsuranceOrderQuoteInfoHandler(MobileBaseHandler):
             iop = InsuranceOrderPrice.get(id = int(iop_id))
             io = InsuranceOrder.get(id=iop.insurance_order_id)
             uci = io.insurance_orders_car_infos
+            data = {}
             if uci.count():
                 uci = uci[0]
-                data = {}
 
                 data['ChePai'] =uci.car_num
                 data['CheZhuName'] =uci.car_owner_name
@@ -1972,9 +1972,13 @@ class MobilInsuranceOrderQuoteInfoHandler(MobileBaseHandler):
                 data['PTBName'] = uci.car_owner_name if uci.owner_buyer_isone else uci.buy_name
                 data['PTBID'] = uci.car_owner_idcard if uci.owner_buyer_isone else uci.buy_idcard
                 data['PTBSameCheZhu'] = True if uci.owner_buyer_isone == 1 else False
-            result['flag'] = 1
-            result['data'] = data
-            result['msg'] = '查询成功'
+                result['flag'] = 1
+                result['data'] = data
+                result['msg'] = '查询成功'
+            else:
+                result['flag'] = 0
+                result['data'] = data
+                result['msg'] = '查询失败：未进行OCR识别!'
         except Exception,e:
             result['msg'] = '查询失败:%s'%e
 

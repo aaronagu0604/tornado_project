@@ -1330,7 +1330,7 @@ class SearchCarInfoHandler(BaseHandler):
                 value = simplejson.dumps(item)
                 data.append({'display':display, 'value':value})
             msg['data'] = data
-
+        print simplejson.dumps(msg)
         self.write(simplejson.dumps(msg))
 
 
