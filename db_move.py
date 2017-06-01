@@ -1551,17 +1551,27 @@ def move_lubeexchange():
         else:
             print('---%s--' % oc.iid.name)
 
+
 # 初始化地区经销商
 def init_jingxiaoshang():
-    service_store_area = {
-        '00270007': 13468738831,  # 汉中 黄显照
-        '00270003': 13571705078,    # 宝鸡 马总
-        '00270005': 13196328186,    # 渭南 曹盼
-        '00270004': 18082239925,   # 咸阳 张双鹏
-    }
-    for key, v in service_store_area.items():
-        print key, v
-        ias = InsuranceArea.select().where(InsuranceArea.area_code == key)
+    service_store_mobile = ['15591601991', '18738808268', '18189180515', '18082239925', '13196328186',
+                            '15909518062', '13571705078', '13772128583', '15909518079', '13323560933',
+                            '18503516282', '18066546153', '18638886818', '13720628544']
+    area_code_list = []
+    area_store_list = []
+    for m in service_store_mobile:
+        try:
+            ns = New_Store.get(mobile=m)
+            if ns.area_code[:8] not in area_code_list:
+                area_code_list.append(ns.area_code[:8])
+                area_store_list.append({'area': ns.area_code[:8], 'store': ns.id})
+        except Exception, e:
+            print m
+    for ac in area_store_list:
+        area = ac['area'] + '%'
+        for ia in InsuranceArea.select().where(InsuranceArea.area_code % area):
+            ia.dealer_store = ac['store']
+            ia.save()
 
 
 # 初始化店铺的返佣规则
@@ -1573,6 +1583,7 @@ def init_store_po():
             new_SSILubePolicy.create(store=store, insurance=area_po['insurance'], cash=area_po['cash'],
                                      dealer_store=area_po['dealer_store'], lube=area_po['lube'])
 
+# 删除商品重复的规格参数
 def auto_del_repeat_product_attr():
     need_del_PAV = []
     for p in New_Product.select():
@@ -1587,56 +1598,74 @@ def auto_del_repeat_product_attr():
           (len(need_del_PAV), str(need_del_PAV)))
 
 if __name__ == '__main__':
-    # pass
-    move_hotsearch()    # 热搜
-    move_delivery()   # 物流公司
-    move_bankcard()   # 银行卡
-    move_area()   # 地区
-    move_category()   # 分类
-    move_categoryattribute()  # 分类和品牌关系
-    move_categoryattributeitem()
-    move_brand()
-    move_brandcategory()
-    move_adminuser()
-    # move_adminuserlog()
-    move_store()
-    move_storebankaccount()
-    move_storearea()
-    move_user()
-    move_storeaddress()
-    move_scorerecord()
-    move_moneyrecord()
-
-    move_product()
-    move_productpic()
-    # move_productattributevalue()
-    move_productrelease()
-    move_storeproductprice()
-    move_insurance()
-    # move_insurancearea()
-    # move_insuranceexchange()
+    pass
+    # move_hotsearch()    # 热搜
+    # move_delivery()   # 物流公司
+    # move_bankcard()   # 银行卡
+    # move_area()   # 地区
+    # move_category()   # 分类
+    # move_categoryattribute()  # 分类和品牌关系
+    # move_categoryattributeitem()
+    # move_brand()
+    # move_brandcategory()
+    # move_adminuser()
+    # # move_adminuserlog()
+    # move_store()
+    # move_storebankaccount()
+    # move_storearea()
+    # move_user()
+    # move_storeaddress()
+    # move_scorerecord()
+    # move_moneyrecord()
+    #
+    # move_product()
+    # move_productpic()
+    # # move_productattributevalue()
+    # move_productrelease()
+    # move_storeproductprice()
+    # move_insurance()
+    # # move_insurancearea()
+    # # move_insuranceexchange()
+    # move_feedback()
+    # # move_insuranceporderprice()
+    # move_insuranceorder()
+    # move_settlement()
+    # move_Order()
+    # move_orderitem()
+    # move_cart()
+    # move_insuranceitem()
+    # move_insuranceprice()
+    # move_block()
+    # move_blockitem()
+    # move_blockitemarea()
+    # # move_carbrand()
+    # # move_carbrandfactor()
+    # # move_car()
+    # # move_caritemgroup()
+    # # move_carsk()
+    # # move_caritem()
     # move_lubeexchange()
-    move_feedback()
+    # init_jingxiaoshang
+    # move_feedback()
     # move_insuranceporderprice()
-    move_insuranceorder()
-    move_settlement()
-    move_Order()
-    move_orderitem()
-    move_cart()
-    move_insuranceitem()
-    move_insuranceprice()
-    move_block()
-    move_blockitem()
-    move_blockitemarea()
+    # move_insuranceorder()
+    # move_settlement()
+    # move_Order()
+    # move_orderitem()
+    # move_cart()
+    # move_insuranceitem()
+    # move_insuranceprice()
+    # move_block()
+    # move_blockitem()
+    # move_blockitemarea()
     # move_carbrand()
     # move_carbrandfactor()
     # move_car()
     # move_caritemgroup()
     # move_carsk()
     # move_caritem()
-    move_lubeexchange()
-    init_store_po()
-    auto_del_repeat_product_attr()
+    # init_store_po()
+    # auto_del_repeat_product_attr()
 
 
 
