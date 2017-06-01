@@ -158,9 +158,9 @@
                 </div>
                 <div class="row leftLine">
                     <div class="col-xs-3">订单金额：</div>
-                    <div class="col-xs-3 rightTxt">--</div>
+                    <div class="col-xs-3 rightTxt">{% if o.status >0 %} {{o.current_order_price.total_price}} {% else %} -- {% endif %}</div>
                     <div class="col-xs-3">支付方式：</div>
-                    <div class="col-xs-3 rightTxt">--</div>
+                    <div class="col-xs-3 rightTxt">{% if o.payment == 1 %}支付宝{% elif o.payment == 2 %}微信{% elif o.payment == 3 %}银联{% elif o.payment == 4 %}余额{% else %}--{% endif %}</div>
                 </div>
                 <div class="row leftLine">
                     <div class="col-xs-3">下单门店：</div>
@@ -182,12 +182,12 @@
                     <div class="col-xs-3 rightTxt">{{o.delivery_tel}}</div>
                 </div>
                 <div class="row leftLine">
-                    <div class="col-xs-3">收件省市：</div>
-                    <div class="col-xs-9 rightTxt">--</div>
+                    <div class="col-xs-3">收件省市区：</div>
+                    <div class="col-xs-9 rightTxt">{{o.delivery_province}}{{o.delivery_city}}{{o.delivery_region}}</div>
                 </div>
                 <div class="row leftLine">
                     <div class="col-xs-3">详细地址：</div>
-                    <div class="col-xs-9 rightTxt">--</div>
+                    <div class="col-xs-9 rightTxt">{{o.delivery_address}}</div>
                 </div>
                 </ul>
             </div>

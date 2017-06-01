@@ -1573,57 +1573,70 @@ def init_store_po():
             new_SSILubePolicy.create(store=store, insurance=area_po['insurance'], cash=area_po['cash'],
                                      dealer_store=area_po['dealer_store'], lube=area_po['lube'])
 
+def auto_del_repeat_product_attr():
+    need_del_PAV = []
+    for p in New_Product.select():
+        p_attrs = []
+        for n in New_ProductAttributeValue.select().where(New_ProductAttributeValue.product == p):
+            if n.attribute.id not in p_attrs:
+                p_attrs.append(n.attribute.id)
+            else:
+                need_del_PAV.append(n.id)
+    New_ProductAttributeValue.delete().where(New_ProductAttributeValue.id << need_del_PAV).execute()
+    print('delete repeat product attribute value: total num=%s, ProductAttributeValue id: %s' %
+          (len(need_del_PAV), str(need_del_PAV)))
+
 if __name__ == '__main__':
     # pass
-    move_hotsearch()    # 热搜
-    move_delivery()   # 物流公司
-    move_bankcard()   # 银行卡
-    move_area()   # 地区
-    move_category()   # 分类
-    move_categoryattribute()  # 分类和品牌关系
-    move_categoryattributeitem()
-    move_brand()
-    move_brandcategory()
-    move_adminuser()
-    # move_adminuserlog()
-    move_store()
-    move_storebankaccount()
-    move_storearea()
-    move_user()
-    move_storeaddress()
-    move_scorerecord()
-    move_moneyrecord()
-
-    move_product()
-    move_productpic()
-    # move_productattributevalue()
-    move_productrelease()
-    move_storeproductprice()
-    move_insurance()
-    # move_insurancearea()
-    # move_insuranceexchange()
+    # move_hotsearch()    # 热搜
+    # move_delivery()   # 物流公司
+    # move_bankcard()   # 银行卡
+    # move_area()   # 地区
+    # move_category()   # 分类
+    # move_categoryattribute()  # 分类和品牌关系
+    # move_categoryattributeitem()
+    # move_brand()
+    # move_brandcategory()
+    # move_adminuser()
+    # # move_adminuserlog()
+    # move_store()
+    # move_storebankaccount()
+    # move_storearea()
+    # move_user()
+    # move_storeaddress()
+    # move_scorerecord()
+    # move_moneyrecord()
+    #
+    # move_product()
+    # move_productpic()
+    # # move_productattributevalue()
+    # move_productrelease()
+    # move_storeproductprice()
+    # move_insurance()
+    # # move_insurancearea()
+    # # move_insuranceexchange()
+    # # move_lubeexchange()
+    # move_feedback()
+    # # move_insuranceporderprice()
+    # move_insuranceorder()
+    # move_settlement()
+    # move_Order()
+    # move_orderitem()
+    # move_cart()
+    # move_insuranceitem()
+    # move_insuranceprice()
+    # move_block()
+    # move_blockitem()
+    # move_blockitemarea()
+    # # move_carbrand()
+    # # move_carbrandfactor()
+    # # move_car()
+    # # move_caritemgroup()
+    # # move_carsk()
+    # # move_caritem()
     # move_lubeexchange()
-    move_feedback()
-    # move_insuranceporderprice()
-    move_insuranceorder()
-    move_settlement()
-    move_Order()
-    move_orderitem()
-    move_cart()
-    move_insuranceitem()
-    move_insuranceprice()
-    move_block()
-    move_blockitem()
-    move_blockitemarea()
-    # move_carbrand()
-    # move_carbrandfactor()
-    # move_car()
-    # move_caritemgroup()
-    # move_carsk()
-    # move_caritem()
-    move_lubeexchange()
-    init_store_po()
-
+    # init_store_po()
+    auto_del_repeat_product_attr()
 
 
 

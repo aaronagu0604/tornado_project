@@ -520,6 +520,11 @@ class GetGiftOilHandler(BaseHandler):
                 result['data']['driveroilnum'] = role['driver']
                 result['data']['storeoiltype'] = role['oiltype']
                 result['data']['storeoilnum'] = role['store']
+            else:
+                result['data']['driveroiltype'] = ''
+                result['data']['driveroilnum'] = 0
+                result['data']['storeoiltype'] = ''
+                result['data']['storeoilnum'] = 0
             result['flag'] = 1
         except Exception, e:
             result['msg'] = u'本店铺该保险公司没有配置返佣规则！'

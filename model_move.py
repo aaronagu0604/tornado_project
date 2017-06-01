@@ -446,7 +446,7 @@ class ProductPic(db.Model):
         db_table = 'tb_product_pics'
 
 
-# 产品属性值
+# 产品属性值 商品规格参数
 class ProductAttributeValue(db.Model):
     id = PrimaryKeyField()
     product = ForeignKeyField(Product, related_name='attributes', db_column='product_id')  # 所属商品
