@@ -586,7 +586,7 @@ def move_product():
                         level_cls = New_CategoryAttributeItems.get(New_CategoryAttributeItems.name == la.level,
                                                                    New_CategoryAttributeItems.category_attribute == level.id)
                         print product.id,level.id,level_cls.id,la.level
-                        New_ProductAttributeValue.create(
+                        New_ProductAttributeValue.get_or_create(
                             product=product.id,
                             attribute=level.id,
                             attribute_item=level_cls.id,
@@ -595,7 +595,7 @@ def move_product():
                         classes = New_CategoryAttribute.get(New_CategoryAttribute.ename == 'classes')
                         classes_cls = New_CategoryAttributeItems.get(New_CategoryAttributeItems.name == la.classes,
                                                                    New_CategoryAttributeItems.category_attribute == classes.id)
-                        New_ProductAttributeValue.create(
+                        New_ProductAttributeValue.get_or_create(
                             product=product.id,
                             attribute=classes.id,
                             attribute_item=classes_cls.id,
@@ -604,7 +604,7 @@ def move_product():
                         capacity = New_CategoryAttribute.get(New_CategoryAttribute.ename == 'capacity')
                         capacity_cls = New_CategoryAttributeItems.get(New_CategoryAttributeItems.name == la.capacity,
                                                                      New_CategoryAttributeItems.category_attribute == capacity.id)
-                        New_ProductAttributeValue.create(
+                        New_ProductAttributeValue.get_or_create(
                             product=product.id,
                             attribute=capacity.id,
                             attribute_item=capacity_cls.id,
@@ -613,7 +613,7 @@ def move_product():
                         viscosity = New_CategoryAttribute.get(New_CategoryAttribute.ename == 'viscosity')
                         viscosity_cls = New_CategoryAttributeItems.get(New_CategoryAttributeItems.name == la.viscosity,
                                                                      New_CategoryAttributeItems.category_attribute == viscosity.id)
-                        New_ProductAttributeValue.create(
+                        New_ProductAttributeValue.get_or_create(
                             product=product.id,
                             attribute=viscosity.id,
                             attribute_item=viscosity_cls.id,
@@ -627,7 +627,7 @@ def move_product():
                         configuration = New_CategoryAttribute.get(New_CategoryAttribute.ename == 'configuration')
                         configuration_cls = New_CategoryAttributeItems.get(New_CategoryAttributeItems.name == na.configuration,
                                                                        New_CategoryAttributeItems.category_attribute == configuration.id)
-                        New_ProductAttributeValue.create(
+                        New_ProductAttributeValue.get_or_create(
                             product=product.id,
                             attribute=configuration.id,
                             attribute_item=configuration_cls.id,
@@ -637,7 +637,7 @@ def move_product():
                         can_cls = New_CategoryAttributeItems.get(
                             New_CategoryAttributeItems.name == na.CAN,
                             New_CategoryAttributeItems.category_attribute == can.id)
-                        New_ProductAttributeValue.create(
+                        New_ProductAttributeValue.get_or_create(
                             product=product.id,
                             attribute=can.id,
                             attribute_item=can_cls.id,
@@ -647,7 +647,7 @@ def move_product():
                         size_cls = New_CategoryAttributeItems.get(
                             New_CategoryAttributeItems.name == na.size,
                             New_CategoryAttributeItems.category_attribute == size.id)
-                        New_ProductAttributeValue.create(
+                        New_ProductAttributeValue.get_or_create(
                             product=product.id,
                             attribute=size.id,
                             attribute_item=size_cls.id,
@@ -662,7 +662,7 @@ def move_product():
                         size_cls = New_CategoryAttributeItems.get(
                             New_CategoryAttributeItems.name == ra.size,
                             New_CategoryAttributeItems.category_attribute == size.id)
-                        New_ProductAttributeValue.create(
+                        New_ProductAttributeValue.get_or_create(
                             product=product.id,
                             attribute=size.id,
                             attribute_item=size_cls.id,
@@ -672,7 +672,7 @@ def move_product():
                         lens_cls = New_CategoryAttributeItems.get(
                             New_CategoryAttributeItems.name == ra.size,
                             New_CategoryAttributeItems.category_attribute == size.id)
-                        New_ProductAttributeValue.create(
+                        New_ProductAttributeValue.get_or_create(
                             product=product.id,
                             attribute=lens.id,
                             attribute_item=lens_cls.id,
