@@ -881,9 +881,9 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
                     'storeName': p['sName'],
                     'is_score': p['is_score']
                 })
-        print 'discoverproducts len:',len(productList[(index-1)*10:index*10])
-        print simplejson.dumps(productList[(index-1)*10:index*10])
-        return productList[(index-1)*10:index*10]
+        print 'discoverproducts len:',len(productList[(index-1)*setting.MOBILE_PAGESIZE:index*setting.MOBILE_PAGESIZE])
+        print simplejson.dumps(productList[(index-1)*setting.MOBILE_PAGESIZE:index*setting.MOBILE_PAGESIZE])
+        return productList[(index-1)*setting.MOBILE_PAGESIZE:index*setting.MOBILE_PAGESIZE]
 
     def hot_search_add_keyword(self, keyword):
         if keyword:
