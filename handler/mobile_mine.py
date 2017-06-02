@@ -693,7 +693,10 @@ class MobileInsuranceOrderDetailHandler(MobileBaseHandler):
         result["flag"] = 1
         deadlineWarning = ''
 
-
+        messagelist = Message.select().where(Message.store == insuranceorder.store.id,Message.other_id==insuranceorder.id)
+        for m in messagelist:
+            m.status = 1
+            m.save()
         result['data'] = {
             'id': insuranceorder.id,
             'ordernum': insuranceorder.ordernum,
