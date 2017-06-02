@@ -1057,148 +1057,166 @@ def move_insuranceorder():
         addr = reciver.address.decode('utf-8')
 
         damageI = 0
-        if item.damageI.find('t'):
-            damageI = 1
-        elif item.damageI.find('f'):
-            damageI = 0
-        elif item.damageI.find('万') or item.damageI.find('千'):
-            damageI = item.damageI
+        if item.damage:
+            if item.damageI.find('t'):
+                damageI = 1
+            elif item.damageI.find('f'):
+                damageI = 0
+            elif item.damageI.find('万') or item.damageI.find('千'):
+                damageI = item.damageI
 
         damageSpecialI = 0
-        if item.damageSpecialI.find('t'):
-            damageSpecialI = 1
-        elif item.damageSpecialI.find('f'):
-            damageSpecialI = 0
-        elif item.damageSpecialI.find('万') or item.damageSpecialI.find('千'):
-            damageSpecialI = item.damageSpecialI
+        if item.damageSpecialI:
+            if item.damageSpecialI.find('t'):
+                damageSpecialI = 1
+            elif item.damageSpecialI.find('f'):
+                damageSpecialI = 0
+            elif item.damageSpecialI.find('万') or item.damageSpecialI.find('千'):
+                damageSpecialI = item.damageSpecialI
 
         thirdDutyI = 0
-        if item.thirdDutyI.find('t'):
-            thirdDutyI = 1
-        elif item.thirdDutyI.find('f'):
-            thirdDutyI = 0
-        elif item.thirdDutyI.find('万') or item.thirdDutyI.find('千'):
-            thirdDutyI = item.thirdDutyI
+        if item.thirdDutyI:
+            if item.thirdDutyI.find('t'):
+                thirdDutyI = 1
+            elif item.thirdDutyI.find('f'):
+                thirdDutyI = 0
+            elif item.thirdDutyI.find('万') or item.thirdDutyI.find('千'):
+                thirdDutyI = item.thirdDutyI
 
         thirdDutySpecialI = 0
-        if item.thirdDutySpecialI.find('t'):
-            thirdDutySpecialI = 1
-        elif item.thirdDutySpecialI.find('f'):
-            thirdDutySpecialI = 0
-        elif item.thirdDutySpecialI.find('万') or item.thirdDutySpecialI.find('千'):
-            thirdDutySpecialI = item.thirdDutySpecialI
+        if item.thirdDutySpecialI:
+            if item.thirdDutySpecialI.find('t'):
+                thirdDutySpecialI = 1
+            elif item.thirdDutySpecialI.find('f'):
+                thirdDutySpecialI = 0
+            elif item.thirdDutySpecialI.find('万') or item.thirdDutySpecialI.find('千'):
+                thirdDutySpecialI = item.thirdDutySpecialI
 
         robbingI = 0
-        if item.robbingI.find('t'):
-            robbingI = 1
-        elif item.robbingI.find('f'):
-            robbingI = 0
-        elif item.robbingI.find('万') or item.robbingI.find('千'):
-            robbingI = item.robbingI
+        if item.robbingI:
+            if item.robbingI.find('t'):
+                robbingI = 1
+            elif item.robbingI.find('f'):
+                robbingI = 0
+            elif item.robbingI.find('万') or item.robbingI.find('千'):
+                robbingI = item.robbingI
 
         robbingSpecialI = 0
-        if item.robbingSpecialI.find('t'):
-            robbingSpecialI = 1
-        elif item.robbingSpecialI.find('f'):
-            robbingSpecialI = 0
-        elif item.robbingSpecialI.find('万') or item.robbingSpecialI.find('千'):
-            robbingSpecialI = item.robbingSpecialI
+        if item.robbingSpecialI:
+            if item.robbingSpecialI.find('t'):
+                robbingSpecialI = 1
+            elif item.robbingSpecialI.find('f'):
+                robbingSpecialI = 0
+            elif item.robbingSpecialI.find('万') or item.robbingSpecialI.find('千'):
+                robbingSpecialI = item.robbingSpecialI
 
         driverDutyI = 0
-        if item.driverDutyI.find('t'):
-            driverDutyI = 1
-        elif item.driverDutyI.find('f'):
-            driverDutyI = 0
-        elif item.driverDutyI.find('万') or item.driverDutyI.find('千'):
-            driverDutyI = item.driverDutyI
+        if item.driverDutyI:
+            if item.driverDutyI.find('t'):
+                driverDutyI = 1
+            elif item.driverDutyI.find('f'):
+                driverDutyI = 0
+            elif item.driverDutyI.find('万') or item.driverDutyI.find('千'):
+                driverDutyI = item.driverDutyI
 
         driverDutySpecialI = 0
-        if item.driverDutySpecialI.find('t'):
-            driverDutySpecialI = 1
-        elif item.driverDutySpecialI.find('f'):
-            driverDutySpecialI = 0
-        elif item.driverDutySpecialI.find('万') or item.driverDutySpecialI.find('千'):
-            driverDutySpecialI = item.driverDutySpecialI
+        if item.driverDutySpecialI:
+            if item.driverDutySpecialI.find('t'):
+                driverDutySpecialI = 1
+            elif item.driverDutySpecialI.find('f'):
+                driverDutySpecialI = 0
+            elif item.driverDutySpecialI.find('万') or item.driverDutySpecialI.find('千'):
+                driverDutySpecialI = item.driverDutySpecialI
 
         passengerDutyI = 0
-        if item.passengerDutyI.find('t'):
-            passengerDutyI = 1
-        elif item.passengerDutyI.find('f'):
-            passengerDutyI = 0
-        elif item.passengerDutyI.find('万') or item.passengerDutyI.find('千'):
-            passengerDutyI = item.passengerDutyI
+        if item.passengerDutyI:
+            if item.passengerDutyI.find('t'):
+                passengerDutyI = 1
+            elif item.passengerDutyI.find('f'):
+                passengerDutyI = 0
+            elif item.passengerDutyI.find('万') or item.passengerDutyI.find('千'):
+                passengerDutyI = item.passengerDutyI
 
         passengerDutySpecialI = 0
-        if item.passengerDutySpecialI.find('t'):
-            passengerDutySpecialI = 1
-        elif item.passengerDutySpecialI.find('f'):
-            passengerDutySpecialI = 0
-        elif item.passengerDutySpecialI.find('万') or item.passengerDutySpecialI.find('千'):
-            passengerDutySpecialI = item.passengerDutySpecialI
+        if item.passengerDutySpecialI:
+            if item.passengerDutySpecialI.find('t'):
+                passengerDutySpecialI = 1
+            elif item.passengerDutySpecialI.find('f'):
+                passengerDutySpecialI = 0
+            elif item.passengerDutySpecialI.find('万') or item.passengerDutySpecialI.find('千'):
+                passengerDutySpecialI = item.passengerDutySpecialI
 
         glassI = 0
-        if item.glassI.find('t'):
-            glassI = 1
-        elif item.glassI.find('f'):
-            glassI = 0
-        elif item.glassI.find('万') or item.glassI.find('千'):
-            glassI = item.glassI
+        if item.glassI:
+            if item.glassI.find('t'):
+                glassI = 1
+            elif item.glassI.find('f'):
+                glassI = 0
+            elif item.glassI.find('万') or item.glassI.find('千'):
+                glassI = item.glassI
 
         scratchI = 0
-        if item.scratchI.find('t'):
-            scratchI = 1
-        elif item.scratchI.find('f'):
-            scratchI = 0
-        elif item.scratchI.find('万') or item.scratchI.find('千'):
-            scratchI = item.scratchI
+        if item.scratchI:
+            if item.scratchI.find('t'):
+                scratchI = 1
+            elif item.scratchI.find('f'):
+                scratchI = 0
+            elif item.scratchI.find('万') or item.scratchI.find('千'):
+                scratchI = item.scratchI
 
         scratchSpecialI = 0
-        if item.scratchSpecialI.find('t'):
-            scratchSpecialI = 1
-        elif item.scratchSpecialI.find('f'):
-            scratchSpecialI = 0
-        elif item.scratchSpecialI.find('万') or item.scratchSpecialI.find('千'):
-            scratchSpecialI = item.scratchSpecialI
+        if item.scratchSpecialI:
+            if item.scratchSpecialI.find('t'):
+                scratchSpecialI = 1
+            elif item.scratchSpecialI.find('f'):
+                scratchSpecialI = 0
+            elif item.scratchSpecialI.find('万') or item.scratchSpecialI.find('千'):
+                scratchSpecialI = item.scratchSpecialI
 
         normalDamageI = 0
-        if item.normalDamageI.find('t'):
-            normalDamageI = 1
-        elif item.normalDamageI.find('f'):
-            normalDamageI = 0
-        elif item.normalDamageI.find('万') or item.normalDamageI.find('千'):
-            normalDamageI = item.normalDamageI
+        if item.normalDamageI:
+            if item.normalDamageI.find('t'):
+                normalDamageI = 1
+            elif item.normalDamageI.find('f'):
+                normalDamageI = 0
+            elif item.normalDamageI.find('万') or item.normalDamageI.find('千'):
+                normalDamageI = item.normalDamageI
 
         normalDamageSpecialI = 0
-        if item.normalDamageSpecialI.find('t'):
-            normalDamageSpecialI = 1
-        elif item.normalDamageSpecialI.find('f'):
-            normalDamageSpecialI = 0
-        elif item.normalDamageSpecialI.find('万') or item.normalDamageSpecialI.find('千'):
-            normalDamageSpecialI = item.normalDamageSpecialI
+        if item.normalDamageSpecialI:
+            if item.normalDamageSpecialI.find('t'):
+                normalDamageSpecialI = 1
+            elif item.normalDamageSpecialI.find('f'):
+                normalDamageSpecialI = 0
+            elif item.normalDamageSpecialI.find('万') or item.normalDamageSpecialI.find('千'):
+                normalDamageSpecialI = item.normalDamageSpecialI
 
         wadeI = 0
-        if item.wadeI.find('t'):
-            wadeI = 1
-        elif item.wadeI.find('f'):
-            wadeI = 0
-        elif item.wadeI.find('万') or item.wadeI.find('千'):
-            wadeI = item.wadeI
+        if item.wadeI:
+            if item.wadeI.find('t'):
+                wadeI = 1
+            elif item.wadeI.find('f'):
+                wadeI = 0
+            elif item.wadeI.find('万') or item.wadeI.find('千'):
+                wadeI = item.wadeI
 
         wadeSpecialI = 0
-        if item.wadeSpecialI.find('t'):
-            wadeSpecialI = 1
-        elif item.wadeSpecialI.find('f'):
-            wadeSpecialI = 0
-        elif item.wadeSpecialI.find('万') or item.wadeSpecialI.find('千'):
-            wadeSpecialI = item.wadeSpecialI
+        if item.wadeSpecialI:
+            if item.wadeSpecialI.find('t'):
+                wadeSpecialI = 1
+            elif item.wadeSpecialI.find('f'):
+                wadeSpecialI = 0
+            elif item.wadeSpecialI.find('万') or item.wadeSpecialI.find('千'):
+                wadeSpecialI = item.wadeSpecialI
 
         thirdSpecialI = 0
-        if item.thirdSpecialI.find('t'):
-            thirdSpecialI = 1
-        elif item.thirdSpecialI.find('f'):
-            thirdSpecialI = 0
-        elif item.thirdSpecialI.find('万') or item.thirdSpecialI.find('千'):
-            thirdSpecialI = item.thirdSpecialI
+        if item.thirdSpecialI:
+            if item.thirdSpecialI.find('t'):
+                thirdSpecialI = 1
+            elif item.thirdSpecialI.find('f'):
+                thirdSpecialI = 0
+            elif item.thirdSpecialI.find('万') or item.thirdSpecialI.find('千'):
+                thirdSpecialI = item.thirdSpecialI
         iop = New_InsuranceOrderPrice.create(
             insurance_order_id=0,  # 旧的没有
             insurance=insurance_map[item.insurance.id],
