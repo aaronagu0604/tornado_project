@@ -294,7 +294,7 @@ def move_adminuser():
             code=referer,  # 旧的没找到，暂时设置空
             realname=item.realname,
             roles=item.roles,
-            area_code='',
+            area_code='0030' if item.username == '余飞' else '',
             signuped=item.signuped,
             lsignined=item.lsignined,
             active=item.isactive
