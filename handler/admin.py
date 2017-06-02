@@ -373,6 +373,42 @@ class MoneyHistoryHandler(AdminBaseHandler):
                     totalpage=totalpage, store_id=store_id)
 
 
+@route(r'/admin/orders_history', name='admin_orders')  # 店铺/经销商订单数
+class OrdersHistoryHandler(AdminBaseHandler):
+    def get(self):
+        page = int(self.get_argument("page", '1') if len(self.get_argument("page", '1')) > 0 else '1')
+        pagesize = self.settings['admin_pagesize']
+        store_id = int(self.get_argument("store_id", '-1'))
+
+        cfs = MoneyRecord.select().where((MoneyRecord.store == store_id) & (MoneyRecord.status == 1))
+        total = cfs.count()
+        if total % pagesize > 0:
+            totalpage = total / pagesize + 1
+        else:
+            totalpage = total / pagesize if (total / pagesize) > 0 else 1
+        cfs = cfs.order_by(MoneyRecord.apply_time.desc()).paginate(page, pagesize)
+
+        self.render('admin/user/money_history.html', list=cfs, total=total, page=page, pagesize=pagesize,
+                    totalpage=totalpage, store_id=store_id)
+
+@route(r'/admin/insurance_orders_history', name='admin_insurance_orders')  # 店铺/经销商保单数
+class InsuranceOrdersHistoryHandler(AdminBaseHandler):
+    def get(self):
+        page = int(self.get_argument("page", '1') if len(self.get_argument("page", '1')) > 0 else '1')
+        pagesize = self.settings['admin_pagesize']
+        store_id = int(self.get_argument("store_id", '-1'))
+
+        cfs = MoneyRecord.select().where((MoneyRecord.store == store_id) & (MoneyRecord.status == 1))
+        total = cfs.count()
+        if total % pagesize > 0:
+            totalpage = total / pagesize + 1
+        else:
+            totalpage = total / pagesize if (total / pagesize) > 0 else 1
+        cfs = cfs.order_by(MoneyRecord.apply_time.desc()).paginate(page, pagesize)
+
+        self.render('admin/user/money_history.html', list=cfs, total=total, page=page, pagesize=pagesize,
+                    totalpage=totalpage, store_id=store_id)
+
 @route(r'/admin/saler_product/(\d+)', name='admin_saler_product')  # 经销商产品地域信息
 class SalerProductHandler(AdminBaseHandler):
     def get(self, store_id):
