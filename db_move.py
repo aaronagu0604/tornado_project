@@ -1057,7 +1057,7 @@ def move_insuranceorder():
         addr = reciver.address.decode('utf-8')
 
         damageI = 0
-        if item.damage:
+        if item.damageI:
             if item.damageI.find('t'):
                 damageI = 1
             elif item.damageI.find('f'):
