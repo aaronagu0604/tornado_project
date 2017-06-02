@@ -1696,7 +1696,8 @@ class InsuranceOrderDetailHandler(AdminBaseHandler):
         poid2 = (int(oid) * 91 + 97)
         i_items = InsuranceItem.select().order_by(InsuranceItem.sort)
         insurances = Insurance.select()
-
+        admin = self.get_admin_user()
+        admin = AdminUser.get(id=admin.id)
         programs = []
         insurance_order_prices = InsuranceOrderPrice.select().where(InsuranceOrderPrice.insurance_order_id == oid).\
             order_by(InsuranceOrderPrice.created.desc())
@@ -1968,11 +1969,12 @@ class InsuranceOrderDetailHandler(AdminBaseHandler):
             ioci = o.insurance_orders_car_infos[0]
         else:
             ioci = None
+
         self.render('admin/order/insurance_order_detail.html', active=active, o=o, insurances=insurances,
                     poid=poid, poid2=poid2, programs=programs, rta_type=rta_type, license_type=license_type,
                     car_num_type=car_num_type,car_detail_type=car_detail_type, fuel_type=fuel_type,
                     owner_type=owner_type, car_use_type=car_use_type, car_type=car_type,
-                    detail_type=detail_type, ioci=ioci,doman='http://admin.520czj.com')
+                    detail_type=detail_type, ioci=ioci,doman='http://admin.520czj.com',isG=admin.roles.find('G')<0)
 
     def post(self, oid):
         '''

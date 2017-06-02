@@ -1011,7 +1011,7 @@
                                                             <div class="col-xs-5" style="line-height: 34px; text-align: right;">
                                                                 返佣类型:</div>
                                                             <div class="col-xs-7">
-                                                                <select id="gift_policy_{{program['pid']}}" name="gift_policy" onchange="get_gift_policy({{ program['pid'] }}, this.value)" class="form-control">
+                                                                <select id="gift_policy_{{program['pid']}}" {% if isG %} disabled="disabled" {% endif %} name="gift_policy" onchange="get_gift_policy({{ program['pid'] }}, this.value)" class="form-control">
                                                                     <option value="1" {{ 1 == program['gift_policy'] and "selected" or '' }}>返油</option>
                                                                     <option value="2" {{ 2 == program['gift_policy'] and "selected" or '' }}>返现</option>
                                                                 </select>
@@ -1025,43 +1025,43 @@
                                         <div class="panel-body">
                                             <div class="row" id="{{program['pid']}}2" {% if 2 != program['gift_policy'] %}  style="display: none" {% endif %}>
                                                 <div class="col-xs-3 leftTxt"><span>商返率：</span></div>
-                                                <div class="col-xs-3 rightTxt"><input name="business_s" value="" class="form-control"/></div>
+                                                <div class="col-xs-3 rightTxt"><input name="business_s" {% if isG %} disabled="disabled" {% endif %} value="" class="form-control"/></div>
                                                 <div class="col-xs-3 leftTxt"><span>交返率：</span></div>
-                                                <div class="col-xs-3 rightTxt"><input name="force_s" value="" class="form-control"/></div>
+                                                <div class="col-xs-3 rightTxt"><input name="force_s" {% if isG %} disabled="disabled" {% endif %} value="" class="form-control"/></div>
 
                                                 <div class="col-xs-3 leftTxt"><span>商税率：</span></div>
-                                                <div class="col-xs-3 rightTxt"><input name="business_tax" value="" class="form-control"/></div>
+                                                <div class="col-xs-3 rightTxt"><input name="business_tax" {% if isG %} disabled="disabled" {% endif %} value="" class="form-control"/></div>
                                                 <div class="col-xs-3 leftTxt"><span>交税率：</span></div>
-                                                <div class="col-xs-3 rightTxt"><input name="force_tax" value="" class="form-control"/></div>
+                                                <div class="col-xs-3 rightTxt"><input name="force_tax" {% if isG %} disabled="disabled" {% endif %} value="" class="form-control"/></div>
 
                                                 <div class="col-xs-3 leftTxt"><span>转账率：</span></div>
-                                                <div class="col-xs-3 rightTxt"><input name="ali_rate" value="" class="form-control"/></div>
+                                                <div class="col-xs-3 rightTxt"><input name="ali_rate" {% if isG %} disabled="disabled" {% endif %} value="" class="form-control"/></div>
                                                 <div class="col-xs-3 leftTxt" style="display: none" ><span>起兑金：</span></div>
-                                                <div class="col-xs-3 rightTxt" style="display: none"><input name="base_money" value="" class="form-control"/></div>
+                                                <div class="col-xs-3 rightTxt" style="display: none"><input name="base_money" {% if isG %} disabled="disabled" {% endif %} value="" class="form-control"/></div>
 
                                                 <div class="col-xs-3 leftTxt"><span>获利率：</span></div>
-                                                <div class="col-xs-3 rightTxt"><input name="profit" value="" class="form-control"/></div>
+                                                <div class="col-xs-3 rightTxt"><input name="profit" {% if isG %} disabled="disabled" {% endif %} value="" class="form-control"/></div>
                                                 <div style="color:#B94FFF;" class="col-xs-3 leftTxt"><span>返现：</span></div>
-                                                <div class="col-xs-3 rightTxt"><input name="cash" value="{{program['cash']}}" class="form-control"/></div>
+                                                <div class="col-xs-3 rightTxt"><input name="cash" {% if isG %} disabled="disabled" {% endif %} value="{{program['cash']}}" class="form-control"/></div>
                                             </div>
 
                                             <div>
                                                 <div class="row" id="{{program['pid']}}1" {% if 1 != program['gift_policy'] %}  style="display: none" {% endif %}>
                                                     <div class="col-xs-6">
                                                         <div class="col-xs-6 leftTxt"><span>车主油品：</span></div>
-                                                        <div class="col-xs-6 rightTxt"><input name="driveroiltype" value="{{program['driver_lube_type']}}" class="form-control"/></div>
+                                                        <div class="col-xs-6 rightTxt"><input name="driveroiltype" {% if isG %} disabled="disabled" {% endif %} value="{{program['driver_lube_type']}}" class="form-control"/></div>
                                                     </div>
                                                     <div class="col-xs-6">
                                                         <div class="col-xs-6 leftTxt"><span>车主数量：</span></div>
-                                                        <div class="col-xs-6 rightTxt"><input name="driveroilnum" value="{{program['driver_lube_num']}}" class="form-control"/></div>
+                                                        <div class="col-xs-6 rightTxt"><input name="driveroilnum" {% if isG %} disabled="disabled" {% endif %} value="{{program['driver_lube_num']}}" class="form-control"/></div>
                                                     </div>
                                                     <div class="col-xs-6">
                                                         <div class="col-xs-6 leftTxt"><span>门店油品：</span></div>
-                                                        <div class="col-xs-6 rightTxt"><input name="storeoiltype" value="{{program['store_lube_type']}}" class="form-control"/></div>
+                                                        <div class="col-xs-6 rightTxt"><input name="storeoiltype" {% if isG %} disabled="disabled" {% endif %} value="{{program['store_lube_type']}}" class="form-control"/></div>
                                                     </div>
                                                     <div class="col-xs-6">
                                                         <div class="col-xs-6 leftTxt"><span>门店数量：</span></div>
-                                                        <div class="col-xs-6 rightTxt"><input name="storeoilnum" value="{{program['store_lube_num']}}" class="form-control"/></div>
+                                                        <div class="col-xs-6 rightTxt"><input name="storeoilnum" {% if isG %} disabled="disabled" {% endif %} value="{{program['store_lube_num']}}" class="form-control"/></div>
                                                     </div>
                                                     <div class="col-xs-6"></div>
                                                     <div class="col-xs-6">
