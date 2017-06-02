@@ -148,15 +148,18 @@
                         {% endif %}
                     </td>
                     <td>
+                        <!--# 支付方式  1支付宝  2微信 3银联 4余额 5积分-->
                         {% if o.status==2 or o.status==3 %}
                             {% if o.payment==1 %}
-                            <div style="color:#487;">支付宝</div>
+                            支付宝
+                            {% elif o.payment==2 %}
+                            微信
+                            {% elif o.payment==3 %}
+                            银联
+                            {% elif o.payment==4 %}
+                            余额
                             {% elif o.payment==5 %}
-                            <div style="color:#0000ff;">积分</div>
-                            {% elif o.payment==6 %}
-                            <div style="color:#006600;">微信</div>
-                            {% elif o.payment==7 %}
-                            <div style="color:#004400;">银联</div>
+                            积分
                             {%endif%}
                         {% else %}
                         --

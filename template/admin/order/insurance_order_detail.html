@@ -160,7 +160,24 @@
                     <div class="col-xs-3">订单金额：</div>
                     <div class="col-xs-3 rightTxt">{% if o.status >0 %} {{o.current_order_price.total_price}} {% else %} -- {% endif %}</div>
                     <div class="col-xs-3">支付方式：</div>
-                    <div class="col-xs-3 rightTxt">{% if o.payment == 1 %}支付宝{% elif o.payment == 2 %}微信{% elif o.payment == 3 %}银联{% elif o.payment == 4 %}余额{% else %}--{% endif %}</div>
+                    <div class="col-xs-3 rightTxt">
+                        <!--# 支付方式  1支付宝  2微信 3银联 4余额 5积分-->
+                        {% if o.status==2 or o.status==3 %}
+                            {% if o.payment==1 %}
+                            支付宝
+                            {% elif o.payment==2 %}
+                            微信
+                            {% elif o.payment==3 %}
+                            银联
+                            {% elif o.payment==4 %}
+                            余额
+                            {% elif o.payment==5 %}
+                            积分
+                            {%endif%}
+                        {% else %}
+                        --
+                        {% endif %}
+                    </div>
                 </div>
                 <div class="row leftLine">
                     <div class="col-xs-3">下单门店：</div>
