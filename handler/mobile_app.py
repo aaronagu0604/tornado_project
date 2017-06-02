@@ -390,8 +390,25 @@ class MobileHomeHandler(MobileBaseHandler):
         result['data']['category'].append({'title': u'热门分类', 'data': []})
 
         # 热销品牌
-        brands = self.get_brand(area_code)
-        result['data']['category'].append({'title': u'热销品牌', 'data': brands[:4]})
+        if user and user.active == 1:
+            brands = self.get_brand(area_code)
+            result['data']['category'].append({'title': u'热销品牌', 'data': brands[:4]})
+        else:
+            brands = self.application.memcachedb.get('brands_no_login')
+            if not brands:
+                all = Brand.select(Brand.id.alias('id'), Brand.logo.alias('logo'),
+                            Brand.name.alias('name'), BrandCategory.category.alias('cid')). \
+                    where(Brand.active == 1,BrandCategory.category==1). \
+                    join(BrandCategory,on=(BrandCategory.brand == Brand.id)). \
+                    order_by(Brand.sort.desc()).limit(4).tuples()
+                brands = [{
+                    'img': logo,
+                    'name': name,
+                    'price': 0,
+                    'display_price': '',
+                    'link': 'czj://category/%d/brand/%d' % (cid, id)
+                } for id, logo, name, cid in all]
+                self.application.memcachedb.set('insurances_no_login', brands)
 
         # 推荐商品
         # tmp_code = area_code
