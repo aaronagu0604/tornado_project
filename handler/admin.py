@@ -160,15 +160,14 @@ class StoresHandler(AdminBaseHandler):
         if keyword:
             keyword2 = '%' + keyword + '%'
             ft &= (Store.name % keyword2)
-        cfs = Store.select().where(ft)
+        cfs = Store.select().where(ft).order_by(Store.created.desc())
         total = cfs.count()
         if total % pagesize > 0:
             totalpage = total / pagesize + 1
         else:
             totalpage = total / pagesize if (total / pagesize) > 0 else 1
         cfs = cfs.paginate(page, pagesize)
-        items = Area.select().where((Area.pid >> None) & (Area.is_delete == 0) & (Area.is_site == 1)).order_by(
-            Area.spell, Area.sort)
+        items = Area.select().where((Area.pid >> None) & (Area.is_delete == 0) & (Area.is_site == 1)).order_by(Area.spell, Area.sort)
         self.render('/admin/user/store.html', stores=cfs, total=total, page=page, pagesize=pagesize,
                     totalpage=totalpage, active='store', status=status, keyword=keyword, Area=Area, items=items,
                     province=default_province, city=default_city, district=default_district)

@@ -390,13 +390,7 @@ class MobileHomeHandler(MobileBaseHandler):
         result['data']['category'].append({'title': u'热门分类', 'data': []})
 
         # 热销品牌
-        tmp_code = area_code
-        brands = self.get_brand(tmp_code)
-        while len(brands) == 0 and len(tmp_code) > 4:
-            tmp_code = tmp_code[0: -4]
-            brands = self.get_brand(tmp_code)
-        if len(brands) == 0:
-            brands = self.get_brand(self.get_default_area_code())
+        brands = self.get_brand(area_code)
         result['data']['category'].append({'title': u'热销品牌', 'data': brands[:4]})
 
         # 推荐商品
@@ -426,12 +420,10 @@ class MobileHomeHandler(MobileBaseHandler):
 
     def get_banner(self, area_code):
         items = []
-        banners = BlockItem.select(BlockItem). \
-            join(Block, on=(Block.id == BlockItem.block)). \
+        banners = BlockItem.select(BlockItem).join(Block, on=(Block.id == BlockItem.block)). \
             join(BlockItemArea,on=(BlockItemArea.block_item == BlockItem.id)). \
             where((Block.tag == 'banner') & (Block.active == 1) & (BlockItem.active == 1) & (
-            BlockItemArea.area_code == area_code)). \
-            order_by(BlockItem.sort.asc())
+            BlockItemArea.area_code == area_code)).order_by(BlockItem.sort.asc())
         for p in banners:
             items.append({
                 'img': p.img,
@@ -448,8 +440,7 @@ class MobileHomeHandler(MobileBaseHandler):
             ft = StoreProductPrice.area_code << area_code
         else:
             ft = StoreProductPrice.area_code == area_code
-        spps = Category.select(). \
-            join(Product, on=Product.category == Category.id). \
+        spps = Category.select().join(Product, on=Product.category == Category.id). \
             join(ProductRelease, on=ProductRelease.product == Product.id). \
             join(StoreProductPrice, on=StoreProductPrice.product_release == ProductRelease.id). \
             where(ft)
@@ -468,18 +459,25 @@ class MobileHomeHandler(MobileBaseHandler):
 
     def get_brand(self, area_code):
         items = []
-        if isinstance(area_code, list):
-            ft = StoreProductPrice.area_code << area_code
-        else:
-            ft = StoreProductPrice.area_code == area_code
-        ft &= Product.category == 1
-        spps = Brand.select(Brand.id.alias('id'),Brand.logo.alias('logo'),Brand.name.alias('name'),Product.category.alias('cid')). \
-            join(Product, on=Product.brand == Brand.id). \
-            join(ProductRelease, on=ProductRelease.product == Product.id). \
-            join(StoreProductPrice, on=StoreProductPrice.product_release == ProductRelease.id). \
-            where(ft).tuples()
+        ft = (Product.category == 1)
+        if len(area_code) == 12:  # 门店注册地到区县，可以买发布到该省、市、和该区县的
+            ft &= (((db.fn.Length(StoreProductPrice.area_code) == 4) & (StoreProductPrice.area_code == area_code[:4])) |
+                   ((db.fn.Length(StoreProductPrice.area_code) == 8) & (StoreProductPrice.area_code == area_code[:8])) |
+                   (StoreProductPrice.area_code == area_code))
+        elif len(area_code) == 8:  # 门店注册地到市级，可以买发布到该省、市，和该市以下所有区县
+            tmp_area = area_code + '%'
+            ft &= (((db.fn.Length(StoreProductPrice.area_code) == 4) & (StoreProductPrice.area_code == area_code[:4])) |
+                   (StoreProductPrice.area_code % tmp_area))
+        elif len(area_code) == 4:  # 门店注册地是省
+            tmp_area = area_code + '%'
+            ft &= (StoreProductPrice.area_code % tmp_area)
+        spps = Brand.select(Brand.id.alias('id'), Brand.logo.alias('logo'),
+                            Brand.name.alias('name'), Product.category.alias('cid')).\
+            join(Product, on=Product.brand == Brand.id).\
+            join(ProductRelease, on=ProductRelease.product == Product.id).\
+            join(StoreProductPrice, on=StoreProductPrice.product_release == ProductRelease.id).where(ft).tuples()
         blist = []
-        for id,logo,name,cid in spps:
+        for id, logo, name, cid in spps:
             if id not in blist:
                 blist.append(id)
                 items.append({
@@ -487,7 +485,7 @@ class MobileHomeHandler(MobileBaseHandler):
                     'name': name,
                     'price': 0,
                     'display_price': '',
-                    'link': 'czj://category/%d/brand/%d' %(cid, id)
+                    'link': 'czj://category/%d/brand/%d' % (cid, id)
                 })
 
         return items
@@ -836,15 +834,17 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
             ft &= (Product.name.contains(keyword))
         if brands:
             ft &= (Product.brand << brands)
-        if len(area_code) == 12:  # 门店可以购买的范围仅仅到区县
+        if len(area_code) == 12:  # 门店注册地到区县，可以买发布到该省、市、和该区县的
             ft &= (((db.fn.Length(StoreProductPrice.area_code) == 4) & (StoreProductPrice.area_code == area_code[:4])) |
                    ((db.fn.Length(StoreProductPrice.area_code) == 8) & (StoreProductPrice.area_code == area_code[:8])) |
                    (StoreProductPrice.area_code == area_code))
-        elif len(area_code) == 8:  # 门店可以购买的范围到市级
+        elif len(area_code) == 8:  # 门店注册地到市级，可以买发布到该省、市，和该市以下所有区县
+            tmp_area = area_code + '%'
             ft &= (((db.fn.Length(StoreProductPrice.area_code) == 4) & (StoreProductPrice.area_code == area_code[:4])) |
-                   (StoreProductPrice.area_code == area_code))
-        elif len(area_code) == 4:  # 门店可以购买的范围到省级
-            ft &= (StoreProductPrice.area_code == area_code)
+                   (StoreProductPrice.area_code % tmp_area))
+        elif len(area_code) == 4:  # 门店注册地是省
+            tmp_area = area_code + '%'
+            ft &= (StoreProductPrice.area_code % tmp_area)
 
         products = StoreProductPrice.select(
             ProductRelease.id.alias('prid'), Product.id.alias('pid'), StoreProductPrice.id.alias('sppid'),
@@ -856,7 +856,6 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
             join(Product, on=(Product.id == ProductRelease.product)). \
             join(Store, on=(Store.id == ProductRelease.store)).where(ft).dicts()
 
-        print products
         # 排序
         if sort == '1':
             products = products.order_by(StoreProductPrice.price.desc())
