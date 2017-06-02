@@ -1155,6 +1155,8 @@ class OCRHandler(BaseHandler):
 
                 result['drive_card_front'] = simplejson.loads(ocrresult)
         except Exception,e:
+            import traceback
+            logging.error(traceback.format_exc())
             result['flag'] = 0
             result['msg'] = 'ocr 识别失败:%s'%e
         self.write(simplejson.dumps(result))
