@@ -819,10 +819,16 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
 
         if attribute:
             att = {k.id:[cai.id for cai in k.items if cai.id in attribute] for k in category.attributes}
+            att = {k:v for k,v in att.items() if v}
             logging.info(att)
-            for k,v in att.items():
-                if v:
-                    ft &= (ProductAttributeValue.attribute_item << v)
+            # ft1 = None
+            # for k,v in att.items():
+            #     if v:
+            #         if ft1:
+            #             ft1 |= (ProductAttributeValue.attribute_item << v)
+            #         else:
+            #             ft1 = (ProductAttributeValue.attribute_item << v)
+            # ft &= (ft1)
 
         ft &= ((StoreProductPrice.price > 0) & (StoreProductPrice.active == 1) & (ProductRelease.active == 1))
 
@@ -848,7 +854,6 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
             ProductRelease.sort.alias('sort')). \
             join(ProductRelease, on=(ProductRelease.id == StoreProductPrice.product_release)). \
             join(Product, on=(Product.id == ProductRelease.product)). \
-            join(ProductAttributeValue, on=(ProductAttributeValue.product == Product.id)). \
             join(Store, on=(Store.id == ProductRelease.store)).where(ft).dicts()
 
         print products
@@ -866,7 +871,16 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
 
         prds = []
         for p in products:
-            if p['prid'] not in prds:
+
+            isadd = True
+            for k,v in att.items():
+                pavlist = ProductAttributeValue.select().where(ProductAttributeValue.product == p['pid'],
+                                                               ProductAttributeValue.attribute == k,
+                                                               ProductAttributeValue.attribute_item << v)
+                if pavlist.count() ==0:
+                    isadd = False
+
+            if isadd and (p['prid'] not in prds):
                 prds.append(p['prid'])
                 display_price = ''
                 if loginUser:    # 未登陆不显示价格
