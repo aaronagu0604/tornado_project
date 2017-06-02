@@ -408,7 +408,7 @@ class MobileHomeHandler(MobileBaseHandler):
                     'display_price': '',
                     'link': 'czj://category/%d/brand/%d' % (cid, id)
                 } for id, logo, name, cid in all]
-                self.application.memcachedb.set('insurances_no_login', brands)
+                self.application.memcachedb.set('brands_no_login', brands)
 
         # 推荐商品
         # tmp_code = area_code
