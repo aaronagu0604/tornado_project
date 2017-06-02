@@ -459,7 +459,7 @@ class MobileHomeHandler(MobileBaseHandler):
 
     def get_brand(self, area_code):
         items = []
-        ft = (Product.category == 1)
+        ft = (Product.category == 1) & (ProductRelease.active == 1) & (StoreProductPrice.active == 1) & (StoreProductPrice.price > 0)
         if len(area_code) == 12:  # 门店注册地到区县，可以买发布到该省、市、和该区县的
             ft &= (((db.fn.Length(StoreProductPrice.area_code) == 4) & (StoreProductPrice.area_code == area_code[:4])) |
                    ((db.fn.Length(StoreProductPrice.area_code) == 8) & (StoreProductPrice.area_code == area_code[:8])) |
@@ -810,14 +810,15 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
 
     def getProductList(self, keyword, sort, category, brands, attribute, index, area_code, loginUser):
         productList = []
-        ft = (Product.active == 1) & (Product.category == category.id)
+        ft = (Product.active == 1) & (ProductRelease.active == 1) & (StoreProductPrice.active == 1) & \
+             (StoreProductPrice.price > 0) & (Product.category == category.id)
         # 根据规格参数搜索
         attribute = [int(item) for item in attribute]
         brands = [int(item) for item in brands]
 
         if attribute:
-            att = {k.id:[cai.id for cai in k.items if cai.id in attribute] for k in category.attributes}
-            att = {k:v for k,v in att.items() if v}
+            att = {k.id: [cai.id for cai in k.items if cai.id in attribute] for k in category.attributes}
+            att = {k: v for k, v in att.items() if v}
             logging.info(att)
             # ft1 = None
             # for k,v in att.items():
@@ -827,8 +828,6 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
             #         else:
             #             ft1 = (ProductAttributeValue.attribute_item << v)
             # ft &= (ft1)
-
-        ft &= ((StoreProductPrice.price > 0) & (StoreProductPrice.active == 1) & (ProductRelease.active == 1))
 
         if keyword:
             ft &= (Product.name.contains(keyword))
@@ -870,14 +869,13 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
 
         prds = []
         for p in products:
-
             isadd = True
             if attribute:
-                for k,v in att.items():
+                for k, v in att.items():
                     pavlist = ProductAttributeValue.select().where(ProductAttributeValue.product == p['pid'],
                                                                    ProductAttributeValue.attribute == k,
                                                                    ProductAttributeValue.attribute_item << v)
-                    if pavlist.count() ==0:
+                    if pavlist.count() == 0:
                         isadd = False
 
             if isadd and (p['prid'] not in prds):
