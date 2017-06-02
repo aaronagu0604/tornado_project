@@ -369,16 +369,30 @@ def move_store():
 # storebank:店铺账户
 def move_storebankaccount():
     old_bank = Old_User.select().where(Old_User.store << store_map.keys())
-    old_data = [{
-        'store': store_map[item.store.id],
-        'account_type': 0 if item.bank_account else 1,  # 旧的没有，设置默认值：0
-        'alipay_truename': item.alipay_truename,
-        'alipay_account': item.alipay_account,
-        'bank_truename': item.bank_truename,
-        'bank_account': item.bank_account,
-        'bank_name': item.bank_name,
-        'is_default': 0  # 旧的没有，设置默认值：0（否）
-    } for item in old_bank]
+    old_data = []
+    for item in old_bank:
+        if item.alipay_account:
+            old_data.append({
+                'store': store_map[item.store.id],
+                'account_type': 1,  # 账户类型 0银联 1支付宝
+                'alipay_truename': item.alipay_truename,
+                'alipay_account': item.alipay_account,
+                'bank_truename': '',
+                'bank_account': '',
+                'bank_name': '',
+                'is_default': 0  # 旧的没有，设置默认值：0（否）
+            })
+        if item.bank_account:
+            old_data.append({
+                'store': store_map[item.store.id],
+                'account_type': 0,  # 账户类型 0银联 1支付宝
+                'alipay_truename': '',
+                'alipay_account': '',
+                'bank_truename': item.bank_truename,
+                'bank_account': item.bank_account,
+                'bank_name': item.bank_name,
+                'is_default': 0  # 旧的没有，设置默认值：0（否）
+            })
 
     New_StoreBankAccount.insert_many(old_data).execute()
     print 'move storebankaccount', old_bank.count()
