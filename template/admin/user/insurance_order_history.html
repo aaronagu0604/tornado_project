@@ -17,22 +17,30 @@
             <table class="table table-hover" id="tb_vendor" cellpadding="0" cellspacing="0" border="0" style="text-align:center;">
                 <thead>
                     <tr style="background:#528acb;color:#fff;text-align:center;height:38px;line-height:38px;">
+                        <th style="width:10%;text-align:center;">订单号</th>
                         <th style="width:10%;text-align:center;">时间</th>
                         <th style="width:10%;text-align:center;">金额</th>
-                        <th style="width:10%;text-align:center;">描述</th>
+                        <th style="width:10%;text-align:center;">状态</th>
                     </tr>
                     {% for item in list %}
                     <tr>
-                        <td>{{item.apply_time|datetimeformat}}</td>
+                        <td>{{item.ordernum}}</td>
+                        <td>{{item.ordered|datetimeformat}}</td>
                         <td>
-                            {% if item.process_type == 1%}
-                            <span style="color: #5cb85c;">+{{item.money}}</span>
-                            {% elif item.process_type==2 %}
-                            <span style="color: #f0ad4e;">-{{item.money}}</span>
-                            {% endif %}
+                            <span style="color: #5cb85c;">{{item.current_order_price.total_price}}</span>
                         </td>
                         <td>
-                            {{item.process_log}}
+                            {% if item.status==0 %}
+                            <div style="color:#FF0800;">待报价</div>
+                            {% elif item.status==1  %}
+                            <div style="color:#990033;">待付款</div>
+                            {% elif item.status==2 %}
+                            <div style="color:#00CC00;">已付款</div>
+                            {% elif item.status==3 %}
+                            <div style="color:#487;">已办理</div>
+                            {% elif item.status==-1 %}
+                            <div style="color:#000800;">已取消</div>
+                            {% endif %}
                         </td>
                     </tr>
                     {% endfor %}
@@ -68,7 +76,7 @@
             startPage: {{page}},
             visiblePages: 8,
             onPageClick: function (event, page) {
-                self.location="/admin/score_history?store_id={{store_id}}&page="+page;
+                self.location="/admin/insurance_order_history?store_id={{store_id}}&page="+page;
             }
         });
     });

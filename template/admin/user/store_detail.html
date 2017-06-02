@@ -144,11 +144,11 @@
                     <div class="col-sm-6"><label>余额：￥{{s.price}}(<a href='#' onclick="pop('余额变动记录','/admin/money_history?store_id={{s.id}}')">查看变动记录</a>)</label></div>
                 </div>
                 <div class="row">
-                    <div class="col-sm-6"><label>保险订单数：{{s.insurance_orders.count()}} (<a href='/admin/insurance_orders?store_id={{s.id}}'>查看详情</a>)</label></div>
+                    <div class="col-sm-6"><label>保险订单数：{{s.insurance_orders.count()}} (<a href='#' onclick="pop('保险订单历史','/admin/insurance_order_history?store_id={{s.id}}')">查看详情</a>)</label></div>
                     {% if s.store_type == 1 %}
-                    <div class="col-sm-6"><label>商品销售订单：{{s.saler_sub_orders.count()}}(<a href='/admin/product_orders?archive=2&store_id={{s.id}}&store_type=1'>查看详情</a>)</label></div>
+                    <div class="col-sm-6"><label>商品销售订单：{{s.saler_sub_orders.count()}}(<a href='#' onclick="pop('售出订单历史','/admin/order_history?store_id={{s.id}}')">查看详情</a>)</label></div>
                     {% elif s.store_type == 2 %}
-                    <div class="col-sm-6"><label>商品购买订单：{{s.buyer_sub_orders.count()}}(<a href='/admin/product_orders?archive=2&store_id={{s.id}}&store_type=2'>查看详情</a>)</label></div>
+                    <div class="col-sm-6"><label>商品购买订单：{{s.orders.count()}}(<a href='#' onclick="pop('采购订单历史','/admin/order_history?store_id={{s.id}}')">查看详情</a>)</label></div>
                     {% endif %}
                 </div>
                 <br>

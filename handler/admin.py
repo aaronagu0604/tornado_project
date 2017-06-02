@@ -373,40 +373,44 @@ class MoneyHistoryHandler(AdminBaseHandler):
                     totalpage=totalpage, store_id=store_id)
 
 
-@route(r'/admin/orders_history', name='admin_orders')  # 店铺/经销商订单数
+@route(r'/admin/order_history', name='admin_order')  # 店铺/经销商订单数
 class OrdersHistoryHandler(AdminBaseHandler):
     def get(self):
         page = int(self.get_argument("page", '1') if len(self.get_argument("page", '1')) > 0 else '1')
         pagesize = self.settings['admin_pagesize']
         store_id = int(self.get_argument("store_id", '-1'))
 
-        cfs = MoneyRecord.select().where((MoneyRecord.store == store_id) & (MoneyRecord.status == 1))
+        store = Store.get(id=store_id)
+        if store.store_type == 1: # 1经销商 2门店
+            cfs = store.saler_sub_orders.order_by(SubOrder.id.desc())
+        else:
+            cfs = store.orders.order_by(Order.id.desc())
         total = cfs.count()
         if total % pagesize > 0:
             totalpage = total / pagesize + 1
         else:
             totalpage = total / pagesize if (total / pagesize) > 0 else 1
-        cfs = cfs.order_by(MoneyRecord.apply_time.desc()).paginate(page, pagesize)
+        cfs = cfs.paginate(page, pagesize)
+        statusmap = {0:'待付款', 1:'待发货', 2:'待收货', 3:'交易完成（待评价）', 4:'已评价', 5:'申请退款', 6:'已退款', -1:'已取消'}
+        self.render('admin/user/order_history.html', list=cfs, total=total, page=page, pagesize=pagesize,
+                    totalpage=totalpage, store_id=store_id,store_type=store.store_type,statusmap=statusmap)
 
-        self.render('admin/user/money_history.html', list=cfs, total=total, page=page, pagesize=pagesize,
-                    totalpage=totalpage, store_id=store_id)
-
-@route(r'/admin/insurance_orders_history', name='admin_insurance_orders')  # 店铺/经销商保单数
+@route(r'/admin/insurance_order_history', name='admin_insurance_order')  # 店铺/经销商保单数
 class InsuranceOrdersHistoryHandler(AdminBaseHandler):
     def get(self):
         page = int(self.get_argument("page", '1') if len(self.get_argument("page", '1')) > 0 else '1')
         pagesize = self.settings['admin_pagesize']
         store_id = int(self.get_argument("store_id", '-1'))
 
-        cfs = MoneyRecord.select().where((MoneyRecord.store == store_id) & (MoneyRecord.status == 1))
+        cfs = InsuranceOrder.select().where(InsuranceOrder.store == store_id).order_by(InsuranceOrder.id.desc())
         total = cfs.count()
         if total % pagesize > 0:
             totalpage = total / pagesize + 1
         else:
             totalpage = total / pagesize if (total / pagesize) > 0 else 1
-        cfs = cfs.order_by(MoneyRecord.apply_time.desc()).paginate(page, pagesize)
+        cfs = cfs.paginate(page, pagesize)
 
-        self.render('admin/user/money_history.html', list=cfs, total=total, page=page, pagesize=pagesize,
+        self.render('admin/user/insurance_order_history.html', list=cfs, total=total, page=page, pagesize=pagesize,
                     totalpage=totalpage, store_id=store_id)
 
 @route(r'/admin/saler_product/(\d+)', name='admin_saler_product')  # 经销商产品地域信息
