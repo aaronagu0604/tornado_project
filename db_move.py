@@ -356,9 +356,9 @@ def move_store():
             intro=item.intro,
             linkman=item.link_man,
             mobile=item.mobile,
-            price=user.cashed_money,  # 由店铺对应用户转移而来
+            price=user.cashed_money+user.score,  # 由店铺对应用户转移而来
             process_insurance=process_insurance,  # 旧的没有，暂时这样处理
-            score=user.score,  # 旧的没有，不知道这样处理对不对
+            score=0,  # 旧的没有，不知道这样处理对不对
             active=item.check_state,
             created=item.created
         )
