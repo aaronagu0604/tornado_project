@@ -818,7 +818,10 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
         brands = [int(item) for item in brands]
 
         if attribute:
-            ft &= (ProductAttributeValue.attribute_item << attribute)
+            att = {k.id:[cai.id for cai in k.items if cai.id in attribute] for k in category.attributes}
+            for k,v in att.items():
+                if v:
+                    ft &= (ProductAttributeValue.attribute_item << v)
 
         ft &= ((StoreProductPrice.price > 0) & (StoreProductPrice.active == 1) & (ProductRelease.active == 1))
 
