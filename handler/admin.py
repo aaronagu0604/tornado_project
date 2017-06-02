@@ -1555,6 +1555,7 @@ class ProductOrdersHandler(AdminBaseHandler):
         store_id = self.get_argument('store_id',None)
         store_type = self.get_argument('store_type',None)
         pagesize = setting.ADMIN_PAGESIZE
+        # 0待付款 1待发货 2待收货 3交易完成（待评价） 4已评价 5申请退款 6已退款 -1已取消
         if archive == '1':
             ft = (Order.status << [3,4,6,-1])
         elif archive == '2':
