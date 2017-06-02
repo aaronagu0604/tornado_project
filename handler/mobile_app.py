@@ -409,7 +409,7 @@ class MobileHomeHandler(MobileBaseHandler):
                     'link': 'czj://category/%d/brand/%d' % (cid, id)
                 } for id, logo, name, cid in all]
                 self.application.memcachedb.set('brands_no_login', brands)
-
+            result['data']['category'].append({'title': u'热销品牌', 'data': brands[:4]})
         # 推荐商品
         # tmp_code = area_code
         # recommends = self.get_recommend(tmp_code)
