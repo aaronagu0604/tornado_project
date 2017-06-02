@@ -819,6 +819,7 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
 
         if attribute:
             att = {k.id:[cai.id for cai in k.items if cai.id in attribute] for k in category.attributes}
+            logging.info(att)
             for k,v in att.items():
                 if v:
                     ft &= (ProductAttributeValue.attribute_item << v)
