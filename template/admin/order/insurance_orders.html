@@ -212,7 +212,7 @@
             startPage: {{page}},
             visiblePages: 8,
             onPageClick: function (event, page) {
-                self.location="/admin/insurance_orders?status={{status}}&begin_date={{begin_date or ''}}&end_date={{end_date or ''}}&keyword={{keyword or ''}}&province_code={{default_province or ''}}&city_code={{default_city or ''}}&page="+page;
+                self.location="/admin/insurance_orders?archive={{archive}}&status={{status}}&begin_date={{begin_date or ''}}&end_date={{end_date or ''}}&keyword={{keyword or ''}}&province_code={{default_province or ''}}&city_code={{default_city or ''}}&page="+page;
             }
         });
 

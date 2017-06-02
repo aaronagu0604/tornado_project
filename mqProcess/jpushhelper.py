@@ -43,7 +43,7 @@ def send_users_base_tags(tags, body, extras = {'link':''}):
         android_msg = jpush.android(alert=body)
     push.notification = jpush.notification(alert=body, android=android_msg, ios=ios_msg)
     push.options = {
-        "apns_production": False
+        "apns_production": True
     }
 
     result = push.send()
@@ -73,7 +73,7 @@ def send_users_base_alias(alias, body, extras = {'link':''}):
 
     push.platform = jpush.all_
     push.options = {
-        "apns_production": False
+        "apns_production": True
     }
     result = push.send()
     print result.payload
@@ -100,7 +100,7 @@ def send_users_base_regid(reg_id, body, extras = None):
 
     push.platform = jpush.all_
     push.options = {
-        "apns_production": False
+        "apns_production": True
     }
 
     result = push.send()

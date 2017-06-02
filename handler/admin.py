@@ -1629,7 +1629,7 @@ class InsuranceOrderHandler(AdminBaseHandler):
         if archive:    # 归档
             status = int(status) if status else -2
             if status == -2:
-                ft = (InsuranceOrder.status > -2)
+                ft = (InsuranceOrder.status << [3, -1])
             else:
                 ft = (InsuranceOrder.status == status)
             if keyword:
