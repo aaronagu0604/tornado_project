@@ -873,12 +873,13 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
         for p in products:
 
             isadd = True
-            for k,v in att.items():
-                pavlist = ProductAttributeValue.select().where(ProductAttributeValue.product == p['pid'],
-                                                               ProductAttributeValue.attribute == k,
-                                                               ProductAttributeValue.attribute_item << v)
-                if pavlist.count() ==0:
-                    isadd = False
+            if attribute:
+                for k,v in att.items():
+                    pavlist = ProductAttributeValue.select().where(ProductAttributeValue.product == p['pid'],
+                                                                   ProductAttributeValue.attribute == k,
+                                                                   ProductAttributeValue.attribute_item << v)
+                    if pavlist.count() ==0:
+                        isadd = False
 
             if isadd and (p['prid'] not in prds):
                 prds.append(p['prid'])
