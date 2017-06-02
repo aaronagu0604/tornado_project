@@ -1079,7 +1079,7 @@ class OCRHandler(BaseHandler):
 
         response = urllib2.urlopen(request)#, context=ctx)
         ocrresult = response.read()
-        print 'idcard:',ocrresult
+        logging.info(ocrresult)
         return simplejson.loads(ocrresult)['outputs'][0]['outputValue']['dataValue']
 
     def ali_drive_ocr(self,imgdata):
@@ -1111,7 +1111,7 @@ class OCRHandler(BaseHandler):
 
         response = urllib2.urlopen(request)#, context=ctx)
         ocrresult = response.read()
-        print 'drivecard:',ocrresult
+        logging.info(ocrresult)
         try:
             return simplejson.loads(ocrresult)['outputs'][0]['outputValue']['dataValue']
         except:
