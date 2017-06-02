@@ -15,6 +15,10 @@ from tornado.web import asynchronous
 from tornado.concurrent import run_on_executor
 from concurrent.futures import ThreadPoolExecutor
 from lib.mqhelper import create_msg
+@route(r'/',name='admin root')
+class RootHandler(AdminBaseHandler):
+    def get(self):
+        self.redirect('/admin')
 
 @route(r'/admin', name='admin_index')  # 后台首页
 class IndexHandler(AdminBaseHandler):
