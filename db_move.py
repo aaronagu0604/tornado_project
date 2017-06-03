@@ -1793,11 +1793,11 @@ def update_store_address():
                 province = ''
 
             try:
-                city = New_Area.get(New_Area.code == store.area_code[4:8]).name
+                city = New_Area.get(New_Area.code == store.area_code[0:8]).name
             except Exception:
                 city = ''
             try:
-                region = New_Area.get(New_Area.code == store.area_code[8:12]).name
+                region = New_Area.get(New_Area.code == store.area_code[0:12]).name
             except Exception:
                 region = ''
 
