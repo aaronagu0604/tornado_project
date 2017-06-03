@@ -1782,6 +1782,37 @@ def update_store_po():
             item.lube = '[{"items": [{"name": "\u5355\u5546\u4e1a\u9669", "driver": 3, "maxprice": "", "flag": 2, "minprice": "12500", "store": 17}, {"name": "\u4ea4\u5f3a\u9669+\u5546\u4e1a\u966912500\u4ee5\u4e0a", "driver": 3, "maxprice": "", "flag": 3, "minprice": "12500", "store": 19}], "gift": "ZIC X9"}, {"items": [{"name": "\u5355\u5546\u4e1a\u9669", "driver": 3, "maxprice": "", "flag": 2, "minprice": "6000", "store": 16}, {"name": "\u4ea4\u5f3a\u9669+\u5546\u4e1a\u96696000\u4ee5\u4e0a", "driver": 3, "maxprice": "", "flag": 3, "minprice": "6000", "store": 18}], "gift": "ZIC X7"}, {"items": [{"name": "\u5355\u5546\u4e1a\u9669", "driver": 3, "maxprice": "5399", "flag": 2, "minprice": "5100", "store": 15}, {"name": "\u5355\u5546\u4e1a\u9669\uff084900-5099\uff09", "driver": 3, "maxprice": "5099", "flag": 2, "minprice": "4900", "store": 14}, {"name": "\u5355\u5546\u4e1a\u9669\uff084600-4899\uff09", "driver": 3, "maxprice": "4899", "flag": 2, "minprice": "4600", "store": 13}, {"name": "\u5355\u5546\u4e1a\u9669\uff084300-4599\uff09", "driver": 3, "maxprice": "4599", "flag": 2, "minprice": "4300", "store": 12}, {"name": "\u5355\u5546\u4e1a\u9669\uff084100-4299\uff09", "driver": 3, "maxprice": "4299", "flag": 2, "minprice": "4100", "store": 11}, {"name": "\u5355\u5546\u4e1a\u9669\uff083800-4099\uff09", "driver": 3, "maxprice": "4099", "flag": 2, "minprice": "3800", "store": 10}, {"name": "\u5355\u5546\u4e1a\u9669\uff083500-3799\uff09", "driver": 3, "maxprice": "3799", "flag": 2, "minprice": "3500", "store": 9}, {"name": "\u5355\u5546\u4e1a\u9669\uff083300-3499\uff09", "driver": 3, "maxprice": "3499", "flag": 2, "minprice": "3300", "store": 8}, {"name": "\u5355\u5546\u4e1a\u9669\uff083000-3299\uff09", "driver": 3, "maxprice": "3299", "flag": 2, "minprice": "3000", "store": 7}, {"name": "\u5355\u5546\u4e1a\u9669\uff082700-2999\uff09", "driver": 3, "maxprice": "2999", "flag": 2, "minprice": "2700", "store": 6}, {"name": "\u5355\u5546\u4e1a\u9669\uff082500-2699\uff09", "driver": 3, "maxprice": "2699", "flag": 2, "minprice": "2500", "store": 5}, {"name": "\u5355\u5546\u4e1a\u9669\uff082200-2499\uff09", "driver": 3, "maxprice": "2499", "flag": 2, "minprice": "2200", "store": 4}, {"name": "\u5355\u5546\u4e1a\u9669\uff081900-2199\uff09", "driver": 3, "maxprice": "2199", "flag": 2, "minprice": "1900", "store": 3}, {"name": "\u5355\u5546\u4e1a\u9669\uff081700-1899\uff09", "driver": 2, "maxprice": "1899", "flag": 2, "minprice": "1700", "store": 3}, {"name": "\u5355\u5546\u4e1a\u9669\uff081400-1699\uff09", "driver": 2, "maxprice": "1699", "flag": 2, "minprice": "1400", "store": 2}, {"name": "\u5355\u5546\u4e1a\u96691300\u4ee5\u4e0a", "driver": 1, "maxprice": "", "flag": 2, "minprice": "1300", "store": 2}, {"name": "\u4ea4\u5f3a\u9669+\u5546\u4e1a\u9669\uff085100-5399\uff09", "driver": 3, "maxprice": "5399", "flag": 3, "minprice": "5100", "store": 17}, {"name": "\u4ea4\u5f3a\u9669+\u5546\u4e1a\u9669\uff084900-5099\uff09", "driver": 3, "maxprice": "5099", "flag": 3, "minprice": "4900", "store": 16}, {"name": "\u4ea4\u5f3a\u9669+\u5546\u4e1a\u9669\uff084600-4899\uff09", "driver": 3, "maxprice": "4899", "flag": 3, "minprice": "4600", "store": 15}, {"name": "\u4ea4\u5f3a\u9669+\u5546\u4e1a\u9669\uff084300-4599\uff09", "driver": 3, "maxprice": "4599", "flag": 3, "minprice": "4300", "store": 14}, {"name": "\u4ea4\u5f3a\u9669+\u5546\u4e1a\u9669\uff084100-4299\uff09", "driver": 3, "maxprice": "4299", "flag": 3, "minprice": "4100", "store": 13}, {"name": "\u4ea4\u5f3a\u9669+\u5546\u4e1a\u9669\uff083800-4099\uff09", "driver": 3, "maxprice": "4099", "flag": 3, "minprice": "3800", "store": 12}, {"name": "\u4ea4\u5f3a\u9669+\u5546\u4e1a\u9669\uff083500-3799\uff09", "driver": 3, "maxprice": "3799", "flag": 3, "minprice": "3500", "store": 11}, {"name": "\u4ea4\u5f3a\u9669+\u5546\u4e1a\u9669\uff083300-3499\uff09", "driver": 3, "maxprice": "3499", "flag": 3, "minprice": "3300", "store": 10}, {"name": "\u4ea4\u5f3a\u9669+\u5546\u4e1a\u9669\uff083000-3299\uff09", "driver": 3, "maxprice": "3299", "flag": 3, "minprice": "3000", "store": 9}, {"name": "\u4ea4\u5f3a\u9669+\u5546\u4e1a\u9669\uff082700-2999\uff09", "driver": 3, "maxprice": "2999", "flag": 3, "minprice": "2700", "store": 8}, {"name": "\u4ea4\u5f3a\u9669+\u5546\u4e1a\u9669\uff082500-2699\uff09", "driver": 3, "maxprice": "2699", "flag": 3, "minprice": "2500", "store": 7}, {"name": "\u4ea4\u5f3a\u9669+\u5546\u4e1a\u9669\uff082200-2499\uff09", "driver": 3, "maxprice": "2499", "flag": 3, "minprice": "2200", "store": 6}, {"name": "\u4ea4\u5f3a\u9669+\u5546\u4e1a\u9669\uff081900-2199\uff09", "driver": 3, "maxprice": "2199", "flag": 3, "minprice": "1900", "store": 5}, {"name": "\u4ea4\u5f3a\u9669+\u5546\u4e1a\u9669\uff081700-1899\uff09", "driver": 3, "maxprice": "1899", "flag": 3, "minprice": "1700", "store": 4}, {"name": "\u4ea4\u5f3a\u9669+\u5546\u4e1a\u9669\uff081400-1699\uff09", "driver": 3, "maxprice": "1699", "flag": 3, "minprice": "1400", "store": 3}, {"name": "\u4ea4\u5f3a\u9669+\u5546\u4e1a\u9669\uff081200-1399\uff09", "driver": 2, "maxprice": "1399", "flag": 3, "minprice": "1200", "store": 3}, {"name": "\ufeff\u5355\u4ea4\u5f3a\u9669\u4ee5\u4e0a", "driver": 1, "maxprice": "", "flag": 1, "minprice": "", "store": 1}], "gift": "ZIC X5"}]'
             item.save()
 
+def update_store_address():
+    new_store = New_Store.select()
+    for store in new_store:
+        if store.addresses.count() == 0:
+            old_store = Old_Score.get(Old_Store.mobile == store.mobile)
+            try:
+                province = New_Area.get(New_Area.code == old_store.area_code[:4])
+            except Exception:
+                province = ''
+
+            try:
+                city = New_Area.get(New_Area.code == old_store.area_code[4:8])
+            except Exception:
+                city = ''
+            try:
+                region = New_Area.get(New_Area.code == old_store.area_code[8:12])
+            except Exception:
+                region = ''
+
+            New_StoreAddress.create(
+                store=store,
+                province=province,
+                city=city,
+                region=region,
+                address=old_store.address,
+                name=old_store.linkman,
+                mobile=old_store.mobile,
+                is_default=0,
+                created=0,  # 旧的没有，设置默认值：0
+                create_by=1
+            )
 # 删除商品重复的规格参数
 def auto_del_repeat_product_attr():
     need_del_PAV = []
@@ -1797,58 +1828,59 @@ def auto_del_repeat_product_attr():
           (len(need_del_PAV), str(need_del_PAV)))
 
 if __name__ == '__main__':
-    #pass
-    move_hotsearch()    # 热搜
-    move_delivery()   # 物流公司
-    move_bankcard()   # 银行卡
-    move_area()   # 地区
-    move_category()   # 分类
-    move_categoryattribute()  # 分类和品牌关系
-    move_categoryattributeitem()
-    move_brand()
-    move_brandcategory()
-    move_adminuser()
-    # move_adminuserlog()
-    move_store()
-    move_storebankaccount()
-    move_storearea()
-    move_user()
-    move_storeaddress()
-    move_scorerecord()
-    move_moneyrecord()
-
-    move_product()
-    move_productpic()
-    # move_productattributevalue()
-    move_productrelease()
-    move_storeproductprice()
-    move_insurance()
-    # move_insurancearea()
-    # move_insuranceexchange()
-    move_feedback()
-    # move_insuranceporderprice()
-    move_insuranceorder()
-    move_settlement()
-    move_Order()
-    move_orderitem()
-    move_cart()
-    move_insuranceitem()
-    move_insuranceprice()
-    move_block()
-    move_blockitem()
-    move_blockitemarea()
-    # move_carbrand()
-    # move_carbrandfactor()
-    # move_car()
-    # move_caritemgroup()
-    # move_carsk()
-    # move_caritem()
-    move_lubeexchange()
-    init_jingxiaoshang()
-    move_feedback()
-    auto_del_repeat_product_attr()
-    init_store_po()
-    update_store_po()
+    pass
+    # move_hotsearch()    # 热搜
+    # move_delivery()   # 物流公司
+    # move_bankcard()   # 银行卡
+    # move_area()   # 地区
+    # move_category()   # 分类
+    # move_categoryattribute()  # 分类和品牌关系
+    # move_categoryattributeitem()
+    # move_brand()
+    # move_brandcategory()
+    # move_adminuser()
+    # # move_adminuserlog()
+    # move_store()
+    # move_storebankaccount()
+    # move_storearea()
+    # move_user()
+    # move_storeaddress()
+    # move_scorerecord()
+    # move_moneyrecord()
+	#
+    # move_product()
+    # move_productpic()
+    # # move_productattributevalue()
+    # move_productrelease()
+    # move_storeproductprice()
+    # move_insurance()
+    # # move_insurancearea()
+    # # move_insuranceexchange()
+    # move_feedback()
+    # # move_insuranceporderprice()
+    # move_insuranceorder()
+    # move_settlement()
+    # move_Order()
+    # move_orderitem()
+    # move_cart()
+    # move_insuranceitem()
+    # move_insuranceprice()
+    # move_block()
+    # move_blockitem()
+    # move_blockitemarea()
+    move_carbrand()
+    move_carbrandfactor()
+    move_car()
+    move_caritemgroup()
+    move_carsk()
+    move_caritem()
+    # move_lubeexchange()
+    # init_jingxiaoshang()
+    # move_feedback()
+    # auto_del_repeat_product_attr()
+    # init_store_po()
+    # update_store_po()
+    update_store_address()
 
 
 
