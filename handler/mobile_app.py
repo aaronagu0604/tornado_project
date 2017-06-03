@@ -399,7 +399,7 @@ class MobileHomeHandler(MobileBaseHandler):
                 all = Brand.select(Brand.id.alias('id'), Brand.logo.alias('logo'),
                             Brand.name.alias('name'), BrandCategory.category.alias('cid')). \
                     where(Brand.active == 1,BrandCategory.category==1). \
-                    join(BrandCategory,on=(BrandCategory.brand == Brand.id)). \
+                    join(BrandCategory, on=(BrandCategory.brand == Brand.id)). \
                     order_by(Brand.sort.desc()).limit(4).tuples()
                 brands = [{
                     'img': logo,
@@ -490,7 +490,7 @@ class MobileHomeHandler(MobileBaseHandler):
         #     ft &= (StoreProductPrice.area_code % tmp_area)
         spps = Brand.select(Brand.id.alias('id'), Brand.logo.alias('logo'),
                             Brand.name.alias('name'), Product.category.alias('cid')).\
-            join(Product, on=Product.brand == Brand.id).where(ft).limit(4).tuples()
+            join(Product, on=Product.brand == Brand.id).where(ft).tuples()
         blist = []
         for id, logo, name, cid in spps:
             if id not in blist:
@@ -503,7 +503,7 @@ class MobileHomeHandler(MobileBaseHandler):
                     'link': 'czj://category/%d/brand/%d' % (cid, id)
                 })
 
-        return items
+        return items[:4]
 
     def get_recommend(self, area_code):
         items = []
