@@ -1822,11 +1822,9 @@ if __name__ == '__main__':
     # move_caritem()
     move_lubeexchange()
     init_jingxiaoshang()
-    #init_store_po()
     move_feedback()
-    # move_insuranceporderprice()
-    #init_store_po()
     auto_del_repeat_product_attr()
+    # init_store_po()
 
 
 
