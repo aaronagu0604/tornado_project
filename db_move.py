@@ -286,6 +286,12 @@ def move_adminuser():
             referer = Referee.get(Referee.name==item.username).number
         except Exception,e:
             referer = ''
+        roles = 'G'
+        if item.username.find('张晓华')>=0 or item.username.find('王琳')>=0:
+            roles += item.roles
+        else:
+            roles = item.roles
+
         adminuser = New_AdminUser.create(
             username=item.username,
             password=item.password,
@@ -293,7 +299,7 @@ def move_adminuser():
             email=item.email,
             code=referer,  # 旧的没找到，暂时设置空
             realname=item.realname,
-            roles=item.roles,
+            roles=roles,
             area_code='0030' if item.username == '余飞' else '',
             signuped=item.signuped,
             lsignined=item.lsignined,
