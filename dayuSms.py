@@ -17,10 +17,18 @@ def sendmsg(mobile, content, isyzm):
 
     if isinstance(mobile, unicode):
         mobile = mobile.encode('utf8')
-    if isinstance(content, unicode):
-        content = content.encode('utf8')
+    tmp_content = content
+    content = []
+    for c in tmp_content:
+        if isinstance(c, unicode):
+            c = c.encode('utf8')
+        content.append(c)
     if isinstance(isyzm, unicode):
         isyzm = isyzm.encode('utf8')
+
+    fp = open('/imgData/nginx/server_log/msg_log.txt', 'a')
+    fp.write('mobile=%s, content=%s, isyzm=%s\n'%(mobile, content, isyzm))
+    fp.close()
 
     try:#vcodeNew
         if isyzm == 'vcode': #验证码
@@ -31,6 +39,7 @@ def sendmsg(mobile, content, isyzm):
             req.sms_template_code = "SMS_35895219"
             req.sms_free_sign_name = "车装甲网络科技"
         elif isyzm == 'changePrice': #修改价格
+            logging.error(u'修改价格，发送短信 %s' % str(content))
             req.sms_param = "{\"InsuranceOrderId\":\"%s\", \"Insurer\":\"%s\", \"Price\":\"%s\", \"Remarks\":\"%s\"}"%(content[0], content[1], content[2], content[3])
             req.sms_template_code = "SMS_25095450"
         elif isyzm == 'paySuccess': #支付成功
@@ -69,12 +78,12 @@ def sendmsg(mobile, content, isyzm):
         req.rec_num = mobile
         resp = req.getResponse()
     except Exception, e:
-        print 'send error' + e.message
+        print 'send msg error:' + str(e)
 
 
 if __name__ == '__main__':
-    sendmsg(u'18189279823'.encode("utf8"), u'2234'.encode("utf8"), u'vcode'.encode("utf8"))  #13239109398  18189279823 {"alias":["18189279823","13239109398"]}
-
+    # sendmsg(u'18189279823'.encode("utf8"), u'2234'.encode("utf8"), u'vcode'.encode("utf8"))  #13239109398  18189279823 {"alias":["18189279823","13239109398"]}
+    sendmsg('13389202687', ['U1285D0604I9764', '修改价格', '修改成1分', '6666'], 'changePrice')
 
 
 
