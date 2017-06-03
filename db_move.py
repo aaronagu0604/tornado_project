@@ -1786,18 +1786,17 @@ def update_store_address():
     new_store = New_Store.select()
     for store in new_store:
         if store.addresses.count() == 0:
-            old_store = Old_Score.get(Old_Store.mobile == store.mobile)
             try:
-                province = New_Area.get(New_Area.code == old_store.area_code[:4])
+                province = New_Area.get(New_Area.code == store.area_code[:4])
             except Exception:
                 province = ''
 
             try:
-                city = New_Area.get(New_Area.code == old_store.area_code[4:8])
+                city = New_Area.get(New_Area.code == store.area_code[4:8])
             except Exception:
                 city = ''
             try:
-                region = New_Area.get(New_Area.code == old_store.area_code[8:12])
+                region = New_Area.get(New_Area.code == store.area_code[8:12])
             except Exception:
                 region = ''
 
@@ -1806,9 +1805,9 @@ def update_store_address():
                 province=province,
                 city=city,
                 region=region,
-                address=old_store.address,
-                name=old_store.linkman,
-                mobile=old_store.mobile,
+                address=store.address,
+                name=store.linkman,
+                mobile=store.mobile,
                 is_default=0,
                 created=0,  # 旧的没有，设置默认值：0
                 create_by=1
@@ -1868,12 +1867,12 @@ if __name__ == '__main__':
     # move_block()
     # move_blockitem()
     # move_blockitemarea()
-    move_carbrand()
-    move_carbrandfactor()
-    move_car()
-    move_caritemgroup()
-    move_carsk()
-    move_caritem()
+    # move_carbrand()
+    # move_carbrandfactor()
+    # move_car()
+    # move_caritemgroup()
+    # move_carsk()
+    # move_caritem()
     # move_lubeexchange()
     # init_jingxiaoshang()
     # move_feedback()
