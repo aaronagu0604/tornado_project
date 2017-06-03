@@ -1783,20 +1783,21 @@ def update_store_po():
             item.save()
 
 def update_store_address():
+    New_StoreAddress.delete().where(New_StoreAddress.id >= 369).execute()
     new_store = New_Store.select()
     for store in new_store:
         if store.addresses.count() == 0:
             try:
-                province = New_Area.get(New_Area.code == store.area_code[:4])
+                province = New_Area.get(New_Area.code == store.area_code[:4]).name
             except Exception:
                 province = ''
 
             try:
-                city = New_Area.get(New_Area.code == store.area_code[4:8])
+                city = New_Area.get(New_Area.code == store.area_code[4:8]).name
             except Exception:
                 city = ''
             try:
-                region = New_Area.get(New_Area.code == store.area_code[8:12])
+                region = New_Area.get(New_Area.code == store.area_code[8:12]).name
             except Exception:
                 region = ''
 
