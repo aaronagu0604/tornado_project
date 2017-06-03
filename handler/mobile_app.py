@@ -476,23 +476,21 @@ class MobileHomeHandler(MobileBaseHandler):
 
     def get_brand(self, area_code):
         items = []
-        ft = (Product.category == 1) & (ProductRelease.active == 1) & (StoreProductPrice.active == 1) & (StoreProductPrice.price > 0)
-        if len(area_code) == 12:  # 门店注册地到区县，可以买发布到该省、市、和该区县的
-            ft &= (((db.fn.Length(StoreProductPrice.area_code) == 4) & (StoreProductPrice.area_code == area_code[:4])) |
-                   ((db.fn.Length(StoreProductPrice.area_code) == 8) & (StoreProductPrice.area_code == area_code[:8])) |
-                   (StoreProductPrice.area_code == area_code))
-        elif len(area_code) == 8:  # 门店注册地到市级，可以买发布到该省、市，和该市以下所有区县
-            tmp_area = area_code + '%'
-            ft &= (((db.fn.Length(StoreProductPrice.area_code) == 4) & (StoreProductPrice.area_code == area_code[:4])) |
-                   (StoreProductPrice.area_code % tmp_area))
-        elif len(area_code) == 4:  # 门店注册地是省
-            tmp_area = area_code + '%'
-            ft &= (StoreProductPrice.area_code % tmp_area)
+        ft = (Product.category == 1)
+        # if len(area_code) == 12:  # 门店注册地到区县，可以买发布到该省、市、和该区县的
+        #     ft &= (((db.fn.Length(StoreProductPrice.area_code) == 4) & (StoreProductPrice.area_code == area_code[:4])) |
+        #            ((db.fn.Length(StoreProductPrice.area_code) == 8) & (StoreProductPrice.area_code == area_code[:8])) |
+        #            (StoreProductPrice.area_code == area_code))
+        # elif len(area_code) == 8:  # 门店注册地到市级，可以买发布到该省、市，和该市以下所有区县
+        #     tmp_area = area_code + '%'
+        #     ft &= (((db.fn.Length(StoreProductPrice.area_code) == 4) & (StoreProductPrice.area_code == area_code[:4])) |
+        #            (StoreProductPrice.area_code % tmp_area))
+        # elif len(area_code) == 4:  # 门店注册地是省
+        #     tmp_area = area_code + '%'
+        #     ft &= (StoreProductPrice.area_code % tmp_area)
         spps = Brand.select(Brand.id.alias('id'), Brand.logo.alias('logo'),
                             Brand.name.alias('name'), Product.category.alias('cid')).\
-            join(Product, on=Product.brand == Brand.id).\
-            join(ProductRelease, on=ProductRelease.product == Product.id).\
-            join(StoreProductPrice, on=StoreProductPrice.product_release == ProductRelease.id).where(ft).tuples()
+            join(Product, on=Product.brand == Brand.id).where(ft).limit(4).tuples()
         blist = []
         for id, logo, name, cid in spps:
             if id not in blist:
