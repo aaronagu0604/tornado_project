@@ -2146,7 +2146,7 @@ class InsuranceOrderDelHandler(AdminBaseHandler):
                         store.save()
                         MoneyRecord.create(user=io.user, store=io.store, process_type=1, process_message=u'保险',
                                            process_log=u'卖保险返现所得', money=money, status=1, apply_time=now,
-                                           processing_time=now, processing_by=admin_user)
+                                           processing_time=now, processing_by=admin_user, type=5)
                     io.status = 3
                     io.save()
                     AdminUserLog.create(admin_user=self.get_admin_user(), created=now,

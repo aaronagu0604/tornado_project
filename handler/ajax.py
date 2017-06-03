@@ -539,7 +539,7 @@ class SaveIOPHandler(BaseHandler):
         groups = self.get_body_argument('groups', None)
         i_items = self.get_body_argument('i_items', None)
         send_msg = self.get_body_argument('send_msg', None)
-        print groups,i_items,send_msg
+        logging.error('/ajax/save_iop_data  %s,%s,%s----' % (groups, i_items, send_msg))
         if not (groups and i_items):
             result['msg'] = u'参数不全，保存失败'
             self.write(simplejson.dumps(result))
@@ -580,8 +580,8 @@ class SaveIOPHandler(BaseHandler):
             io.save()
             # 创建首页消息
             msg = Message.select().where(Message.store == io.store.id, Message.type == 'new_insurance_order_price',
-                                         Message.status == 0,Message.other_id == pid.id)
-            if msg.count()==0:
+                                         Message.status == 0, Message.other_id == pid.id)
+            if msg.count() == 0:
                 msg = Message()
                 msg.store = io.store
                 msg.type = 'new_insurance_order_price'
@@ -591,18 +591,16 @@ class SaveIOPHandler(BaseHandler):
                 msg.save()
                 # 进行极光推送
                 sms = {'apptype': 1, 'body': '您有新的报价单！', 'jpushtype': 'alias', 'alias': io.user.mobile,
-                       'extras':{'link':'czj://insurance_order_detail/%s' % io.id}}
+                       'extras':{'link': 'czj://insurance_order_detail/%s' % io.id}}
                 create_msg(simplejson.dumps(sms), 'jpush')
             admin_user = self.get_admin_user()
-            content = '%s进行报价：io.id:%d'%(admin_user.username,io.id)
+            content = '%s进行报价：io.id:%d'%(admin_user.username, io.id)
             if send_msg == '1':
-                io = InsuranceOrder.get(id=pid.insurance_order_id)
                 sms = {'mobile': io.store.mobile, 'signtype': '1', 'isyzm': 'changePrice',
                        'body': [io.ordernum, pid.insurance.name, groups['total_price'], groups['psummary']]}
                 create_msg(simplejson.dumps(sms), 'sms')  # 变更价格
-                '%s进行报价并发送短信：io.id:%d' % (admin_user.username, io.id)
+                logging.error('%s进行报价并发送短信：io.id:%d' % (admin_user.username, io.id))
             result['flag'] = 1
-
             AdminUserLog.create(admin_user=admin_user, created=now, content=content)
         else:
             result['msg'] = u'该方案已不可再更改'
@@ -660,7 +658,7 @@ class AppendRefundMoneyHandler(BaseHandler):
         self.write(simplejson.dumps(result))
 
 
-@route(r'/ajax/cancel_insurance_order', name='ajax_cancel_insurance_order')  # 保险订单完成（保单返佣）
+@route(r'/ajax/cancel_insurance_order', name='ajax_cancel_insurance_order')  # 取消保险订单
 class CancelInsuranceOrderHandler(BaseHandler):
     def post(self):
         result = {'flag': 0, 'msg': ''}

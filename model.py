@@ -298,7 +298,7 @@ class MoneyRecord(db.Model):
     user = ForeignKeyField(User, related_name='money_records', db_column='user_id')  # 用户
     store = ForeignKeyField(Store, related_name='money_records', db_column='store_id')  # 店铺
     process_type = IntegerField(default=0)  # 资金流动类型 1入账 2出账
-    type = IntegerField()  # 资金类别 # 1提现、2充值、3售出、4采购商品、5买保险、6退款、7补款
+    type = IntegerField()  # 资金类别 # 1提现、2充值、3售出、4采购商品、5买保险返现、6退款、7补款
     process_message = CharField(max_length=4, default='')  # 提现、充值、售出、采购、保险、退款
     process_log = CharField(max_length=255, default='')  # 资金流动
     in_num = CharField(max_length=32, default='')  # 在线充值订单号

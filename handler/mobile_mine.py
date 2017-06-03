@@ -1482,8 +1482,8 @@ class MobileWithdrawCashHandler(MobileBaseHandler):
             if bank_account.account_type == 0:
                 url = 'http://img.hb.aicdn.com/f36700ea3039da9f49d23c11ebf1be1aec12996a439da-5HoGoW_fw658'
                 for k, v in setting.bank_en.items():
-                    if v.find(bank_account.bank_name)>=0:
-                        url = 'https://apimg.alipay.com/combo.png?d=cashier&t=%s'%k
+                    if v.find(bank_account.bank_name) >= 0:
+                        url = 'https://apimg.alipay.com/combo.png?d=cashier&t=%s' % k
                 result['data']['items'].append({
                     'bank_id': bank_account.id,
                     'account_type': bank_account.account_type,
