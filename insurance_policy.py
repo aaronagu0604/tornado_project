@@ -6140,6 +6140,7 @@ def update_store_policy():
         insurace_area = InsuranceArea.select().where(
             InsuranceArea.area_code == store.area_code[:8] & InsuranceArea.active == 1)
         for item in insurace_area:
+            print store.name, item.insurance.name
             SSILubePolicy.create(store=store,
                                      insurance=item.insurance,
                                      cash=item.cash_policy,
@@ -6149,6 +6150,7 @@ def update_store_policy():
         insurace_area = InsuranceArea.select().where(
             InsuranceArea.area_code == store.area_code[:4] & InsuranceArea.active == 1)
         for item in insurace_area:
+            print store.name, item.insurance.name
             SSILubePolicy.create(store=store,
                                      insurance=item.insurance,
                                      cash=item.cash_policy,
