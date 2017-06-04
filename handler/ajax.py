@@ -551,6 +551,7 @@ class SaveIOPHandler(BaseHandler):
         now = int(time.time())
         if pid.response in [0,1] and io.status in [0,1]:
             pid.created = now
+            pid.insurance = groups['insurance']
             pid.admin_user = self.get_admin_user()
             pid.gift_policy = groups['gift_policy']
             pid.response = 1
