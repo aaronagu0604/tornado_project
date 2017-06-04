@@ -17,7 +17,7 @@ jQuery(function(){
             $(".mskelayBox").fadeIn(300); 
         }else{
 			var img_src = $(this).attr("src");
-	        var myurl="/user/showInsurancepic"+"?"+"img_src="+img_src;
+	        var myurl="/style/images"+"?"+"img_src="+img_src;
             window.location.assign(myurl);         
         }
     });
