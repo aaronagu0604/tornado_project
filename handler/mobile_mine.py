@@ -1018,12 +1018,17 @@ class MobileChangeInsuranceMethodHandler(MobileBaseHandler):
                 result['msg'] = '该订单不允许切换报价方案'
                 self.write(simplejson.dumps(result))
                 return
+            if iop.status == 0:
+                result['flag'] = 0
+                result['msg'] = '不允许切换到过期报价方案'
+                self.write(simplejson.dumps(result))
+                return
             if iop.insurance_order_id == int(io_id):
                 io.current_order_price = int(iop_id)
                 # 0待报价 1已核价/待支付 2已支付/待出单 3完成（已送积分/油） -1已删除(取消)
-                if iop.status == 0 or iop.response == 0:
+                if iop.response == 0:
                     io.status = 0
-                elif iop.status==1 and iop.response==1:
+                elif iop.response==1:
                     io.status = 1
 
                 io.save()
