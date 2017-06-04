@@ -607,6 +607,25 @@ class SaveIOPHandler(BaseHandler):
 
         self.write(simplejson.dumps(result))
 
+@route(r'/ajax/save_io_summary', name='ajax_save_io_summary')  # 保存报价后的方案
+class SaveIOSummaryHandler(BaseHandler):
+    def post(self):
+        result = {'flag': 0, 'msg': '', 'data': ''}
+        io_id = self.get_body_argument('io_id', None)
+        local_summary = self.get_body_argument('local_summary', None)
+
+        try:
+            io = InsuranceOrder.get(id=int(io_id))
+            io.local_summary = local_summary
+            io.save()
+            result['flag'] = 1
+            result['msg'] = '更新本地备注成功'
+        except Exception:
+            result['flag'] = 0
+            result['msg'] = '更新本地备注失败'
+
+        self.write(simplejson.dumps(result))
+
 
 @route(r'/ajax/append_refund_money', name='ajax_append_refund_money')  # 补退款
 class AppendRefundMoneyHandler(BaseHandler):

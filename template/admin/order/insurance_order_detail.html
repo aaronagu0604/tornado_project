@@ -240,9 +240,9 @@
                 <div class="row leftLine">
                     <div class="col-xs-3">本地备注：</div>
                     <div class="col-xs-6 rightTxt">
-                        <textarea class="form-control" id="summary" placeholder="添加本地备注...">{{o.cancelreason}}</textarea>
+                        <textarea class="form-control" id="summary" placeholder="添加本地备注...">{{o.local_summary}}</textarea>
                     </div>
-                    <div class="col-xs-3"><input type="button" data-id="{{o.id}}" class="btn btn-outline btn-primary btn-xs" value="本地备注" ></div>
+                    <div class="col-xs-3"><input type="button" data-id="{{o.id}}" onclick="save_io_summary({{o.id}})" class="btn btn-outline btn-primary btn-xs" value="本地备注" ></div>
                 </div>
                 </ul>
             </div>
@@ -1561,6 +1561,7 @@
     function get_gift_policy(pid, gift) {
         var program = document.getElementById(pid);
         var iid = $(program).find('select[name="insurance"]').val();   // 保险 ID
+        var gift = $(program).find('select[name="gift_policy"]').val();
         if(gift == 1){    // 返油
             // 根据获取 ID 获取元素
             var forceIPrice = $(program).find('input[name="forceIPrice"]').val();    // 交强
@@ -1992,6 +1993,7 @@
             $(program).find('span[name="check_result"]').text('正确！');
             var check = 1;
         }
+        get_gift_policy(program_id,1);
         if(operation == "msg"){
             if(check == 1){
                 var total = '';
@@ -2703,6 +2705,25 @@
             layer.alert('该订单状态下不可以补款，只有已支付或已完成的可以！')
         }
     }
+
+    //本地备注
+    function save_io_summary(io_id){
+        var local_summary = document.getElementById("localsummary").value;//对象是contents
+
+        $.post('/ajax/save_io_summary', {
+            _xsrf: xsrf,
+            local_summary: local_summary,
+            io_id: io_id
+        }, function (data) {
+            var obj = jQuery.parseJSON(data);
+            if (obj.flag == 1) {
+                layer.alert('保存本地备注成功!');
+            } else {
+                layer.alert(obj.msg);
+            }
+        });
+    }
+
     //===========================点击展开关闭效果====================================
     function openShutManager(thisObj, oTargetObj, gift){
         var targetObj = document.getElementById(oTargetObj);
@@ -2710,7 +2731,7 @@
             $($(thisObj).find('span')[0]).attr("class",'fa fa-plus fa-1x');
         } else {
             $($(thisObj).find('span')[0]).attr("class",'fa fa-minus fa-1x');
-            get_gift_policy(oTargetObj, gift);
+            //get_gift_policy(oTargetObj, gift);
         }
         $(targetObj).toggle();
     }
