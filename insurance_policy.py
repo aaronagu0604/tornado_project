@@ -6139,19 +6139,19 @@ def update_store_policy():
     stores = Store.select().where(Store.active == 1)
     for store in stores:
         insurace_area = InsuranceArea.select().where(
-            InsuranceArea.area_code == store.area_code[:8] & InsuranceArea.active == 1)
+            (InsuranceArea.area_code == store.area_code[:8]) & (InsuranceArea.active == 1))
         for item in insurace_area:
-            print '1---', store.name, item.insurance.name, store.area_code
+            print '1---', store.name, item.insurance.name, store.area_code[:8]
             SSILubePolicy.create(store=store,
                                      insurance=item.insurance,
                                      cash=item.cash_policy,
                                      dealer_store=item.dealer_store,
                                      lube=item.lube_policy)
 
-        insurace_area = InsuranceArea.select().where(
-            InsuranceArea.area_code == store.area_code[:4] & InsuranceArea.active == 1)
-        for item in insurace_area:
-            print '2---', store.name, item.insurance.name, store.area_code
+        insurace_area2 = InsuranceArea.select().where(
+            (InsuranceArea.area_code == store.area_code[:4]) & (InsuranceArea.active == 1))
+        for item in insurace_area2:
+            print '2---', store.name, item.insurance.name, store.area_code[:4]
             SSILubePolicy.create(store=store,
                                      insurance=item.insurance,
                                      cash=item.cash_policy,
