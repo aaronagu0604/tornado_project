@@ -6136,11 +6136,12 @@ def ShannXiYongAn():
 
 def update_store_policy():
     SSILubePolicy.delete().execute()
-    for store in Store.select().where(Store.active == 1):
+    stores = Store.select().where(Store.active == 1)
+    for store in stores:
         insurace_area = InsuranceArea.select().where(
             InsuranceArea.area_code == store.area_code[:8] & InsuranceArea.active == 1)
         for item in insurace_area:
-            print store.name, item.insurance.name, store.area_code
+            print '1---', store.name, item.insurance.name, store.area_code
             SSILubePolicy.create(store=store,
                                      insurance=item.insurance,
                                      cash=item.cash_policy,
@@ -6150,7 +6151,7 @@ def update_store_policy():
         insurace_area = InsuranceArea.select().where(
             InsuranceArea.area_code == store.area_code[:4] & InsuranceArea.active == 1)
         for item in insurace_area:
-            print store.name, item.insurance.name, store.area_code
+            print '2---', store.name, item.insurance.name, store.area_code
             SSILubePolicy.create(store=store,
                                      insurance=item.insurance,
                                      cash=item.cash_policy,
