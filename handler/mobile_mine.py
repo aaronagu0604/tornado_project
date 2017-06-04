@@ -562,10 +562,6 @@ class MobileInsuranceOrderHandler(MobileBaseHandler):
         for iop in iopselect:
             iop.status = 0
             iop.save()
-            io = InsuranceOrder.get(id=iop.insurance_order_id)
-            if io.status == 1:
-                io.status = 0
-                io.save()
 
     @require_auth
     def get(self):
