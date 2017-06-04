@@ -1843,8 +1843,41 @@ def update_insurance_order():
             item.current_order_price.save()
 
 
+
+def update_product_price():
+    for nsp in New_StoreProductPrice.select():
+        ops = Old_ProductStandard.select().join(Old_Store, on=(Old_Store.id == Old_ProductStandard.store)).\
+            join(Old_Product, on=(Old_Product.id == Old_ProductStandard.product)).\
+            where((Old_Store.mobile == nsp.store.mobile) & (Old_Product.name == nsp.product_release.product.name) &
+                  (Old_ProductStandard.area_code == nsp.area_code))
+        if ops.count() > 0:
+            print('new_id=%s, pf_price_%s, p=%s' % (nsp.id, ops[0].pf_price, nsp.price))
+            nsp.price = ops[0].pf_price
+            nsp.save()
+        else:
+            pass
+            # print('---%s----%s--' % (nsp.id, nsp.store.mobile))
+
+    for nsp in New_StoreProductPrice.select():
+        ops = Old_ProductStandard.select().join(Old_Store, on=(Old_Store.id == Old_ProductStandard.store)).\
+            join(Old_Product, on=(Old_Product.id == Old_ProductStandard.product)).\
+            where((Old_Store.mobile == '18738808268') & (Old_Product.name == nsp.product_release.product.name) &
+                  (Old_ProductStandard.area_code == nsp.area_code))
+        if ops.count() > 0:
+            print('new_id=%s, pf_price_%s, p=%s' % (nsp.id, ops[0].pf_price, nsp.price))
+            nsp.price = ops[0].pf_price
+            nsp.save()
+        else:
+            pass
+            # print('---%s----%s--' % (nsp.id, nsp.store.mobile))
+
+def select_price_mor_2000():
+    for n in New_StoreProductPrice.select().where((New_StoreProductPrice.price >= 1000) & (New_StoreProductPrice.active==1)):
+        print('--%s---%s---' % (n.id, n.price, n.store.name))
+
 if __name__ == '__main__':
     pass
+    select_price_mor_2000()
     # move_hotsearch()    # 热搜
     # move_delivery()   # 物流公司
     # move_bankcard()   # 银行卡
@@ -1897,7 +1930,7 @@ if __name__ == '__main__':
     # init_store_po()
     # update_store_po()
     # update_store_address()
-    update_insurance_order()
+    # update_insurance_order()
 
 
 

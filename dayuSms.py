@@ -15,21 +15,22 @@ def sendmsg(mobile, content, isyzm):
     req.sms_type = "normal"
     req.sms_free_sign_name = "车装甲"
 
+    fp = open('/imgData/nginx/server_log/msg_log.txt', 'a')
+    fp.write('send msg: mobile=%s, content=%s, isyzm=%s\n'%(mobile, content, isyzm))
+
     if isinstance(mobile, unicode):
         mobile = mobile.encode('utf8')
     tmp_content = content
-    content = []
-    for c in tmp_content:
-        if isinstance(c, unicode):
-            c = c.encode('utf8')
-        content.append(c)
+    if type(tmp_content) == type([]):
+        content = []
+        for c in tmp_content:
+            if isinstance(c, unicode):
+                c = c.encode('utf8')
+            content.append(c)
+    elif type(tmp_content) == type('') and isinstance(content, unicode):
+        content = content.encode('utf8')
     if isinstance(isyzm, unicode):
         isyzm = isyzm.encode('utf8')
-
-    fp = open('/imgData/nginx/server_log/msg_log.txt', 'a')
-    fp.write('mobile=%s, content=%s, isyzm=%s\n'%(mobile, content, isyzm))
-    fp.close()
-
     try:#vcodeNew
         if isyzm == 'vcode': #验证码
             req.sms_param = "{\"sms_code\":\"" +content+ "\"}"
@@ -80,6 +81,7 @@ def sendmsg(mobile, content, isyzm):
     except Exception, e:
         print 'send msg error:' + str(e)
 
+    fp.close()
 
 if __name__ == '__main__':
     # sendmsg(u'18189279823'.encode("utf8"), u'2234'.encode("utf8"), u'vcode'.encode("utf8"))  #13239109398  18189279823 {"alias":["18189279823","13239109398"]}

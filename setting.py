@@ -40,7 +40,7 @@ ORDERBEGIN = 145667520000
 admin_file_path = '/home/www/fileservice/data/image/'
 
 
-financeMobiles = '17791812996,18729368422'  # 王琳，吴静
+financeMobiles = '15249281270,18729368422,13319254206' #张怡，吴静, 张晓华 17791812996王琳
 serviceMobiles = '13323560933,13891949153'  # 余飞（银川），马玉霞，
 ShanXiIphone = '18503516282'  # 山西服务商保险支付成功短信
 
