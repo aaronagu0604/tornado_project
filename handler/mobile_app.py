@@ -1768,7 +1768,7 @@ class MobilNewInsuranceOrderHandler(MobileBaseHandler):
             order_price.thirdSpecialI = thirdSpecialI
             order_price.save()
 
-            order.ordernum = 'U' + str(user.id) + 'I' + str(order.id) + 'D' + time.strftime("%m%d", time.localtime())
+            order.ordernum = 'U' + str(user.id) + 'D' + time.strftime("%m%d", time.localtime()) + 'I' + str(order.id)
             order.current_order_price = order_price.id
             order.save()
             result['flag'] = 1
