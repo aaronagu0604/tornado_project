@@ -632,7 +632,7 @@ class Insurance(db.Model):
     id = PrimaryKeyField()
     name = CharField(max_length=32, default='')  # 名称
     eName = CharField(max_length=32, default='')  # 拼音简写
-    intro = CharField(max_length=128, default='')  # 简介
+    intro = CharField(max_length=255, default='')  # 简介
     logo = CharField(max_length=255, default='')  # logo
     hot = IntegerField(default=0)  # 热门品牌
     sort = IntegerField(default=1)  # 显示顺序
