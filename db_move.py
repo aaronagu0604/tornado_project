@@ -1873,7 +1873,7 @@ def update_product_price():
 
 def select_price_mor_2000():
     for n in New_StoreProductPrice.select().where((New_StoreProductPrice.price >= 1000) & (New_StoreProductPrice.active==1)):
-        print('--%s---%s---' % (n.id, n.price, n.store.name))
+        print('--%s---%s---%s' % (n.id, n.price, n.store.name))
 
 if __name__ == '__main__':
     pass
