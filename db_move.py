@@ -1827,6 +1827,22 @@ def auto_del_repeat_product_attr():
     print('delete repeat product attribute value: total num=%s, ProductAttributeValue id: %s' %
           (len(need_del_PAV), str(need_del_PAV)))
 
+def update_insurance_order():
+    insurance_orders = New_InsuranceOrder.select()
+    for item in insurance_orders:
+        try:
+            old = Old_InsuranceOrder.get(Old_InsuranceOrder.ordernum == item.ordernum)
+        except:
+            continue
+        if old.lasteditedby:
+            try:
+                admin = New_AdminUser.get(New_AdminUser.username == old.lasteditedby).id
+            except Exception:
+                admin = 1
+            item.current_order_price.admin_user = admin
+            item.current_order_price.save()
+
+
 if __name__ == '__main__':
     pass
     # move_hotsearch()    # 热搜
@@ -1880,8 +1896,8 @@ if __name__ == '__main__':
     # auto_del_repeat_product_attr()
     # init_store_po()
     # update_store_po()
-    update_store_address()
-
+    # update_store_address()
+    update_insurance_order()
 
 
 
