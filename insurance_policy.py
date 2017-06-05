@@ -6154,7 +6154,7 @@ def update_store_policy():
                   '003000050003', # 宁夏中卫市海原县
                   '002800080007' # 甘肃平凉市静宁县
                   ]
-        if (store.area_code in extras) or (store.address % '%'+'红寺堡'+'%'):
+        if (store.area_code in extras) or (store.address.find('红寺堡')>=0):
             insurace_area = InsuranceArea.select().where(
                 (InsuranceArea.area_code == '00300004') & (InsuranceArea.active == 1))
         else:
