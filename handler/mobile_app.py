@@ -1771,6 +1771,14 @@ class MobilNewInsuranceOrderHandler(MobileBaseHandler):
             result['flag'] = 1
             result['data']['order_id'] = order.id
             result['data']['order_price_id'] = order_price.id
+
+            # # 给保险订单管理人发短信 '亲，有人下单请去受理呦！订单号：%s 订单信息：%s'
+            # sms = {'mobile': mobiles, 'body': [order.ordernum, order.current_order_price.insurance.name], 'signtype': '1',
+            #        'isyzm': 'placeOrderSys'}
+            # create_msg(simplejson.dumps(sms), 'sms')
+            # 给客户发短信 content = u'您的订单已有客服美眉受理'
+            sms = {'mobile': order.mobile, 'body': '', 'signtype': '1', 'isyzm': 'placeOrderToStore'}
+            create_msg(simplejson.dumps(sms), 'sms')
         else:
             result['msg'] = u'输入参数异常'
         self.write(simplejson.dumps(result))
