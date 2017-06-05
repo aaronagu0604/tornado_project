@@ -418,7 +418,7 @@ class SalerProductHandler(AdminBaseHandler):
         pagesize = int(self.get_argument("pagesize", '20') if len(self.get_argument("pagesize", '20')) > 0 else '20')
         store = Store.get(id=store_id)
         keyword = self.get_argument("keyword", '')
-        ft = (ProductRelease.store == store_id)
+        ft = (ProductRelease.store == store_id)&(ProductRelease.active >-1)
         if len(keyword) > 0:
             try:
                 pid = int(keyword)

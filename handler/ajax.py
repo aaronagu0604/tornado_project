@@ -292,9 +292,10 @@ class AjaxSalerProductProcessAreas(BaseHandler):
                     p.active = 1
                     p.save()
                 elif flag == -1:
-                    query = StoreProductPrice.delete().where(StoreProductPrice.product_release == p)
+                    query = StoreProductPrice.update(active=-1).where(StoreProductPrice.product_release == p)
                     query.execute()
-                    p.delete_instance()
+                    p.active = -1
+                    p.save()
                 elif flag == 1:
                     p.price = item['price']
                     p.save()
