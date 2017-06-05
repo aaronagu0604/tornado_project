@@ -902,6 +902,7 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
                     'display_price': display_price,
                     'unit': p['unit'] if p['unit'] else '件',
                     'buy_count': p['buy_count'],
+                    "sale_count": "销量:%d" % p['buy_count'],
                     'cover': p['cover'],
                     'resume': p['resume'],
                     'storeName': p['sName'],
