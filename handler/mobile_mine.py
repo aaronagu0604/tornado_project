@@ -479,6 +479,7 @@ class MobileSubOrderDetailHandler(MobileBaseHandler):
         result['data']['ordernum'] = order.ordernum
         result['data']['score'] = suborder.score
         result['data']['order_type'] = order.order_type
+        result['data']['ordered'] = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(suborder.order.ordered))
 
         items = []
         total_price = 0.0
