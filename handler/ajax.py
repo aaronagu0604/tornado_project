@@ -1037,6 +1037,7 @@ class UpdateIOCardStatusHandler(BaseHandler):
             # 创建首页消息
             msg = Message.select().where(Message.store == io.store.id,Message.type == 'new_insurance_order_img',
                                          Message.status == 0, Message.other_id == io_id)
+            logging.info('msg count:%d'%msg.count())
             if img_status and msg.count() == 0:
                 msg = Message()
                 msg.store = io.store
