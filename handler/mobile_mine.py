@@ -1967,18 +1967,23 @@ class MobileLubePolicyHandler(MobileBaseHandler):
     @require_auth
     def get(self):
         area_code = self.get_store_area_code()
-        store = self.get_user().store
-        rows = SSILubePolicy.select().where((SSILubePolicy.store == store) &
+        user = self.get_user()
+        if user:
+            store = user.store
+            rows = SSILubePolicy.select().where((SSILubePolicy.store == store) &
                                             (SSILubePolicy.lube != ''))
-        policylist = []
-        for item in rows:
-            if len(item.lube) > 0:
-                policylist.append({
-                    'name': item.insurance.name,
-                    'lube': simplejson.loads(item.lube)
-                })
-        self.render('mobile/lube_protocol.html', policylist=policylist, area_code=area_code)
+        else:
+            rows = []
+        self.render('mobile/lube_protocol.html', insurances=rows, area_code=area_code)
 
+
+@route(r'/mobile/lubepolicy_detail/(\d+)', name='mobile_lube_policy_detail')  # 返油政策详情
+class MobileLubePolicyDetailHandler(MobileBaseHandler):
+    def get(self, id):
+        item = SSILubePolicy.get(id=id)
+        json = '{"detail":'+item.lube+',"insurance": {"name":"'+item.insurance.name+\
+               '","logo":"'+item.insurance.logo+'"}}'
+        self.write(json)
 
 # -----------------------------------------------------设置-------------------------------------------------------------
 @route(r'/mobile/mysetting', name='mobile_my_setting')  # 账户信息
