@@ -1600,6 +1600,9 @@
                     $(program).find('input[name="business_tax"]').val(obj.data.business_tax);    // 商业险税率
                     $(program).find('input[name="force_tax"]').val(obj.data.force_tax);    // 交强险税率
                     $(program).find('input[name="base_money"]').val(obj.data.base_money);    // 起兑金额
+
+                    var cash = business_price*(1-obj.data.business_tax/100)*obj.data.business_s/100 + forceIPrice*(1-obj.data.force_tax/100)*obj.data.force_s/100 - total_price*(ali_rateobj.data./100+obj.data.profit/100);
+                    $(program).find('input[name="cash"]').val(cash.toFixed(2));
                 }
                 else {
                     layer.alert(obj.msg);
@@ -2099,14 +2102,14 @@
 
                 $(program).find('textarea[name="psummary"]').val(total);
 
-                var business_s = $(program).find('input[name="business_s"]').val();    // 商业险返佣率
-                var force_s = $(program).find('input[name="force_s"]').val();    // 交强险返佣率
-                var ali_rate = $(program).find('input[name="ali_rate"]').val();    // 转账费率
-                var profit = $(program).find('input[name="profit"]').val();    // 利润率
-                var business_tax = $(program).find('input[name="business_tax"]').val();    // 商业险税率
-                var force_tax = $(program).find('input[name="force_tax"]').val();    // 交强险税率
-                var cash = total_business*(1-business_tax/100)*business_s/100 + forceIPrice*(1-force_tax/100)*force_s/100 - total_price*(ali_rate/100+profit/100);
-                $(program).find('input[name="cash"]').val(cash.toFixed(2));
+                //var business_s = $(program).find('input[name="business_s"]').val();    // 商业险返佣率
+                //var force_s = $(program).find('input[name="force_s"]').val();    // 交强险返佣率
+                //var ali_rate = $(program).find('input[name="ali_rate"]').val();    // 转账费率
+                //var profit = $(program).find('input[name="profit"]').val();    // 利润率
+                //var business_tax = $(program).find('input[name="business_tax"]').val();    // 商业险税率
+                //var force_tax = $(program).find('input[name="force_tax"]').val();    // 交强险税率
+                //var cash = total_business*(1-business_tax/100)*business_s/100 + forceIPrice*(1-force_tax/100)*force_s/100 - total_price*(ali_rate/100+profit/100);
+                //$(program).find('input[name="cash"]').val(cash.toFixed(2));
             } else {
                 layer.alert('保险金额有误');
             }
