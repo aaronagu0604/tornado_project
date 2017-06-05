@@ -1777,7 +1777,7 @@ class MobilNewInsuranceOrderHandler(MobileBaseHandler):
             #        'isyzm': 'placeOrderSys'}
             # create_msg(simplejson.dumps(sms), 'sms')
             # 给客户发短信 content = u'您的订单已有客服美眉受理'
-            sms = {'mobile': order.mobile, 'body': '', 'signtype': '1', 'isyzm': 'placeOrderToStore'}
+            sms = {'mobile': order.store.mobile, 'body': '', 'signtype': '1', 'isyzm': 'placeOrderToStore'}
             create_msg(simplejson.dumps(sms), 'sms')
         else:
             result['msg'] = u'输入参数异常'
