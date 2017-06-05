@@ -2261,24 +2261,27 @@ class InsuranceLube(AdminBaseHandler):
         self.render("admin/insurance/lube.html", item=item, iid=iid, area_code = area_code, sid=sid)
 
     def post(self):
-        exid = int(self.get_body_argument('exid', '0'))
+        exid = self.get_body_argument('exid', '0')
+        exid = int(exid) if exid else 0
         json = self.get_body_argument('json', '[]')
         area_code = self.get_body_argument('area_code', '0')
-        iid = int(self.get_argument('iid', 0))
-        sid = int(self.get_body_argument('sid', 0))
+        iid = self.get_argument('iid', 0)
+        iid = int(iid) if iid else 0
+        sid = self.get_body_argument('sid', 0)
+        sid = int(sid) if sid else 0
         if sid:
             lube_policy = SSILubePolicy.get((SSILubePolicy.store == sid) & (SSILubePolicy.insurance == iid))
             lube_policy.lube = json
             lube_policy.save()
             AdminUserLog.create(admin_user=self.get_admin_user(), created=int(time.time()),
-                                content='编辑保险返油返积分策略:ssip_id:%d'%lube_policy.id)
+                                content=u'编辑保险返油返积分策略:ssip_id:%d' % lube_policy.id)
             self.write(u'修改成功，请刷新！')
         else:
             item = InsuranceArea.get(id=exid)
             item.lube = json
             item.save()
             AdminUserLog.create(admin_user=self.get_admin_user(), created=int(time.time()),
-                                content='编辑保险返油策略:lp_id:%d' % item.id)
+                                content=u'编辑保险返油策略:lp_id:%d' % item.id)
             self.flash('保存成功')
             self.render("admin/insurance/lube.html", item=item, iid=iid, area_code=area_code)
 
