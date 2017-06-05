@@ -579,27 +579,28 @@ class SaveIOPHandler(BaseHandler):
             io.current_order_price = pid
             io.status = 1
             io.save()
-            # 创建首页消息
-            msg = Message.select().where(Message.store == io.store.id, Message.type == 'new_insurance_order_price',
-                                         Message.status == 0, Message.other_id == pid.id)
-            if msg.count() == 0:
-                msg = Message()
-                msg.store = io.store
-                msg.type = 'new_insurance_order_price'
-                msg.link = 'czj://insurance_order_detail/%d' % io.id
-                msg.other_id = pid.id
-                msg.content = '您有新的报价单'
-                msg.save()
-                # 进行极光推送
-                sms = {'apptype': 1, 'body': '您有新的报价单！', 'jpushtype': 'alias', 'alias': io.user.mobile,
-                       'extras':{'link': 'czj://insurance_order_detail/%s' % io.id}}
-                create_msg(simplejson.dumps(sms), 'jpush')
+
             admin_user = self.get_admin_user()
             content = '%s进行报价：io.id:%d'%(admin_user.username, io.id)
             if send_msg == '1':
                 sms = {'mobile': io.store.mobile, 'signtype': '1', 'isyzm': 'changePrice',
                        'body': [io.ordernum, pid.insurance.name, groups['total_price'], groups['psummary']]}
                 create_msg(simplejson.dumps(sms), 'sms')  # 变更价格
+                # 创建首页消息
+                msg = Message.select().where(Message.store == io.store.id, Message.type == 'new_insurance_order_price',
+                                             Message.status == 0, Message.other_id == pid.id)
+                if msg.count() == 0:
+                    msg = Message()
+                    msg.store = io.store
+                    msg.type = 'new_insurance_order_price'
+                    msg.link = 'czj://insurance_order_detail/%d' % io.id
+                    msg.other_id = pid.id
+                    msg.content = '您有新的报价单'
+                    msg.save()
+                    # 进行极光推送
+                    sms = {'apptype': 1, 'body': '您有新的报价单！', 'jpushtype': 'alias', 'alias': io.user.mobile,
+                           'extras': {'link': 'czj://insurance_order_detail/%s' % io.id}}
+                    create_msg(simplejson.dumps(sms), 'jpush')
                 logging.error('%s进行报价并发送短信：io.id:%d' % (admin_user.username, io.id))
             result['flag'] = 1
             AdminUserLog.create(admin_user=admin_user, created=now, content=content)
@@ -608,7 +609,7 @@ class SaveIOPHandler(BaseHandler):
 
         self.write(simplejson.dumps(result))
 
-@route(r'/ajax/save_io_summary', name='ajax_save_io_summary')  # 保存报价后的方案
+@route(r'/ajax/save_io_summary', name='ajax_save_io_summary')  # 保存本地备注
 class SaveIOSummaryHandler(BaseHandler):
     def post(self):
         result = {'flag': 0, 'msg': '', 'data': ''}
