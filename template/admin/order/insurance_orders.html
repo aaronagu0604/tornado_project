@@ -103,7 +103,7 @@
                     </td>
                     <td>{{o.store.name}}</td>
                     <td>{{Area.get_detailed_address(o.store.area_code)}}</td>
-                    <td>{{o.current_order_price.ordered|datetimeformat}}</td>
+                    <td>{{o.current_order_price.created|datetimeformat}}</td>
                     <td>{{o.pay_time|datetimeformat}}</td>
                     <td>{{o.current_order_price.insurance.name}}</td>
                     <td>{{o.current_order_price.total_price}}</td>
@@ -160,8 +160,8 @@
                         {% endif %}
                     </td>
                     <td>
-                        {{o.cancel_reason or ''}}
-                        {% if o.status==5 %}
+                        {{o.local_summary or ''}}
+                        {% if o.status==-1 %}
                         <div>取消原因：{{o.cancel_reason}}</div>
                         {%endif%}
                     </td>
