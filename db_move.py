@@ -1849,11 +1849,16 @@ def update_product_price():
         ops = Old_ProductStandard.select().join(Old_Store, on=(Old_Store.id == Old_ProductStandard.store)).\
             join(Old_Product, on=(Old_Product.id == Old_ProductStandard.product)).\
             where((Old_Store.mobile == nsp.store.mobile) & (Old_Product.name == nsp.product_release.product.name) &
-                  (Old_ProductStandard.area_code == nsp.area_code))
+                  (Old_ProductStandard.area_code == nsp.area_code)).order_by(Old_ProductStandard.id.desc())
         if ops.count() > 0:
-            print('new_id=%s, pf_price_%s, p=%s' % (nsp.id, ops[0].pf_price, nsp.price))
-            nsp.price = ops[0].pf_price
-            nsp.save()
+            # if ops[0].pf_price != nsp.price:
+            if ops.count() > 1:
+                for op in ops:
+                    if op.sale_status == 1 and op.is_sale == 1 and op.pf_price > 10 and op.pf_price != nsp.price:
+                        print('count=%s, new_id=%s,o_id=%s, pf_price_%s, new_p=%s' % (ops.count(), nsp.id, op.id, op.pf_price, nsp.price))
+                        # nsp.price = op.pf_price
+                        # nsp.save()
+                        break
         else:
             pass
             # print('---%s----%s--' % (nsp.id, nsp.store.mobile))
@@ -1862,22 +1867,118 @@ def update_product_price():
         ops = Old_ProductStandard.select().join(Old_Store, on=(Old_Store.id == Old_ProductStandard.store)).\
             join(Old_Product, on=(Old_Product.id == Old_ProductStandard.product)).\
             where((Old_Store.mobile == '18738808268') & (Old_Product.name == nsp.product_release.product.name) &
-                  (Old_ProductStandard.area_code == nsp.area_code))
+                  (Old_ProductStandard.area_code == nsp.area_code)).order_by(Old_ProductStandard.id.desc())
         if ops.count() > 0:
-            print('new_id=%s, pf_price_%s, p=%s' % (nsp.id, ops[0].pf_price, nsp.price))
-            nsp.price = ops[0].pf_price
-            nsp.save()
+            # if ops[0].pf_price != nsp.price:
+            ''' & (Old_ProductStandard.sale_status==1) &
+                  (Old_ProductStandard.is_sale == 1) & (Old_ProductStandard.pf_price > 10)'''
+            if ops.count() > 1:
+                for op in ops:
+                    if op.sale_status == 1 and op.is_sale == 1 and op.pf_price > 10 and op.pf_price != nsp.price:
+                        print('count=%s, new_id=%s,o_id=%s, pf_price_%s, new_p=%s' % (ops.count(), nsp.id, op.id, op.pf_price, nsp.price))
+                        # nsp.price = op.pf_price
+                        # nsp.save()
+                        break
         else:
             pass
             # print('---%s----%s--' % (nsp.id, nsp.store.mobile))
 
 def select_price_mor_2000():
-    for n in New_StoreProductPrice.select().where((New_StoreProductPrice.price >= 1000) & (New_StoreProductPrice.active==1)):
-        print('--%s---%s---%s----%s---' % (n.id, n.price, n.store.name, n.product_release.product.name))
+    ft = (New_StoreProductPrice.active == 1)
+    # ft = (New_Store.mobile == '15139455929')   # '18738808268'
+    ft &= (New_Category.id == 1)
+    for n in New_StoreProductPrice.select().join(New_ProductRelease, on=(New_ProductRelease.id == New_StoreProductPrice.product_release))\
+            .join(New_Store, on=(New_Store.id == New_StoreProductPrice.store))\
+            .join(New_Product, on=(New_Product.id == New_ProductRelease.product))\
+            .join(New_Category, on=(New_Product.category == New_Category.id)).where(ft):
+        #print('--%s---%s---%s----%s---' % (n.id, n.price, n.store.name, n.product_release.product.name))
+        ops = Old_ProductStandard.select().join(Old_Product, on=(Old_Product.id == Old_ProductStandard.product)).\
+            join(Old_Store, on=(Old_Store.id == Old_ProductStandard.store)).\
+            where((Old_ProductStandard.is_pass == 1) & (Old_ProductStandard.is_sale == 1) &
+                  (Old_ProductStandard.sale_status == 1) & (Old_Product.name == n.product_release.product.name) &
+                (Old_ProductStandard.area_code == n.area_code) & (Old_Store.mobile == n.store.mobile))
+        if ops.count() > 0:
+            for op in ops:
+                print('old_p: id=%s, price=%s' % (op.id, op.pf_price))
+                n.price = op.pf_price
+                n.active = 1
+                n.save()
+        else:
+            pass
+            # print('new_p: id=%s, price=%s' % (n.id, n.price))
+            # n.active = 0
+            # n.save()
+        #print('--------------------------------')
+
+def get_all_old_product_price():
+    opss = Old_ProductStandard.select(Old_Store.name, Old_Store.area_code, Old_Store.mobile, Old_Product.name,
+                                      Old_ProductStandard.area_code, Old_ProductStandard.pf_price).\
+        join(Old_Product, on=(Old_Product.id == Old_ProductStandard.product)).\
+        join(Old_Store, on=(Old_Store.id == Old_ProductStandard.store)).\
+        join(Old_PinPai, on=(Old_PinPai.id == Old_Product.pinpai)).\
+        where((Old_ProductStandard.is_pass == 1) & (Old_ProductStandard.sale_status == 1) & (Old_Product.is_index == 0) &
+              (Old_PinPai.id << [1,12,13,14,15,16,37,38,75,76,77])).\
+        order_by(Old_Store.id.asc(), Old_ProductStandard.area_code.asc(), Old_Product.name.asc()).tuples()
+    fp = open('products.csv', 'w')
+    fp.write(u'店铺名,店铺地区,店铺地区code,电话,商品名,发布地区,发布地区code,发布价格\n'.encode('gb18030'))
+    for ops in opss:
+        store_addr = Old_Area().get_detailed_address(ops[1])
+        release_area = Old_Area().get_detailed_address(ops[4])
+        string = (u'%s,%s,%s,%s,%s,%s,%s,%s\n' % (ops[0], store_addr, ops[1], ops[2], ops[3], release_area, ops[4], ops[5]))
+        print string
+        fp.write(string.encode('gb18030'))
+    fp.close()
+
+def get_all_new_product_price():
+    nspps = New_StoreProductPrice.select(New_Store.name, New_Store.area_code, New_Store.mobile, New_Product.name,
+                                             New_StoreProductPrice.area_code, New_StoreProductPrice.price). \
+        join(New_Store, on=(New_Store.id == New_StoreProductPrice.store)). \
+        join(New_ProductRelease, on=(New_ProductRelease.id == New_StoreProductPrice.product_release)).\
+        join(New_Product, on=(New_Product.id == New_ProductRelease.product)).\
+        where((New_StoreProductPrice.active == 1) & (New_Product.category == 1)).\
+        order_by(New_Store.id.asc(), New_StoreProductPrice.area_code.asc(), New_Product.name.asc()).tuples()
+    fp = open('products_new.csv', 'w')
+    fp.write(u'店铺名,店铺地区,店铺地区code,电话,商品名,发布地区,发布地区code,发布价格\n'.encode('gb18030'))
+    for ops in nspps:
+        store_addr = New_Area().get_detailed_address(ops[1])
+        release_area = New_Area().get_detailed_address(ops[4])
+        string = (u'%s,%s,%s,%s,%s,%s,%s,%s\n' % (ops[0], store_addr, ops[1], ops[2], ops[3], release_area, ops[4], ops[5]))
+        print string
+        fp.write(string.encode('gb18030'))
+    fp.close()
+
+
+def old_price():
+    ft = (Old_ProductStandard.pf_price >= 1000)
+    ft &= (Old_ProductStandard.sale_status==1)
+    for n in Old_ProductStandard.select().where(ft):
+        print('--%s---%s---%s----%s---' % (n.id, n.pf_price, n.store.name, n.product.name))
+
+
+def get_product_name_attr():
+    for np in New_Product.select().where(New_Product.category == 1):
+        attr = ''
+        p = False
+        for item in np.attributes:
+            attr += item.attribute_item.name + ','
+            if item.attribute_item.name in np.name:
+                if item.attribute_item.name == u'合成' and u'全合成' in np.name:
+                    p = True
+            elif item.attribute_item.name == u'其它':
+                pass
+            else:
+                p = True
+        if p:
+            print('id=%s, name=%s, attr=%s' % (np.id, np.name, attr))
+
 
 if __name__ == '__main__':
     pass
-    select_price_mor_2000()
+    # get_all_old_product_price()
+    # get_all_new_product_price()
+    get_product_name_attr()
+
+
     # move_hotsearch()    # 热搜
     # move_delivery()   # 物流公司
     # move_bankcard()   # 银行卡

@@ -490,7 +490,7 @@ class MobileHomeHandler(MobileBaseHandler):
         #     ft &= (StoreProductPrice.area_code % tmp_area)
         spps = Brand.select(Brand.id.alias('id'), Brand.logo.alias('logo'),
                             Brand.name.alias('name'), Product.category.alias('cid')).\
-            join(Product, on=Product.brand == Brand.id).where(ft).order_by(Brand.sort.desc()).tuples()
+            join(Product, on=Product.brand == Brand.id).where(ft).order_by(Brand.sort.desc(), Brand.id.asc()).tuples()
         blist = []
         for id, logo, name, cid in spps:
             if id not in blist:
