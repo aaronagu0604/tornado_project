@@ -22,22 +22,20 @@
                     <option value="1" {{status==1 and 'selected'}}>已通过</option>
                     <option value="2" {{status==2 and 'selected'}}>未通过</option>
                 </select>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <label class="num">地区：&nbsp;</label>
                 <select name="province" id="province" onchange="GetSubAreas(this.value, 'city', '')"
-                    style="height:28px;margin-left: -10px;margin-top: 10px;border-radius:4px;">
+                        style="height:28px;margin-left: -10px;margin-top: 10px;border-radius:4px;">
                     <option value="">--所有省份--</option>
                     {% for area in items %}
-                    <option value="{{area.code}}" {{ 'selected' if area.code==province else ''}}>
-                        {{area.name}}</option>
+                    <option value="{{area.code}}" {{ 'selected' if area.code==province else ''}}>{{area.name}}</option>
                     {% endfor %}
                 </select>
                 <select name="city" id="city" onchange="GetSubAreas(this.value, 'district', '')"
-                style="height:28px;margin-left: 10px;margin-top: 10px;border-radius:4px;">
+                        style="height:28px;margin-left: 10px;margin-top: 10px;border-radius:4px;">
                     <option value="">--所有城市--</option>
                 </select>
                 <select name="district" id="district"
-                    style="height:28px;margin-left: 10px;margin-top: 10px;border-radius:4px;">
+                        style="height:28px;margin-left: 10px;margin-top: 10px;border-radius:4px;">
                     <option value="">--所有区县--</option>
                 </select>
                 <div class="input-group custom-search-form">
@@ -50,14 +48,14 @@
                          <i class="fa fa-download"></i>
                      </button>
                  </span>
-             </div>
-         </form>
-    </div>
-</nav>
+                </div>
+            </form>
+        </div>
+    </nav>
 </div>
 <div class="row">
     <div class="panel panel-primary">
-    <div class="aa"></div>
+        <div class="aa"></div>
         <div class="mskelayBox">
             <div class="mske_html">
             </div>
@@ -70,35 +68,31 @@
         <div class="table-responsive">
             <table class="table table-hover" id="tb_vendor" cellpadding="0" cellspacing="0" border="0" style="text-align:center;">
                 <thead>
-                    <tr style="background:#528acb;color:#fff;text-align:center;height:38px;line-height:38px;">
-                        <th style="width:10%;text-align:center;">名称</th>
-                        <th style="width:15%;text-align:center;">图片</th>
-                        <th style="width:6%;text-align:center;">联系人</th>
-                        <th style="width:15%;text-align:center;">地址信息</th>
-                        <th style="width:10%;text-align:center;">积分/余额</th>
-                        <th style="width:8%;text-align:center;">账户状态</th>
-                        <th style="width:10%;text-align:center;">创建时间</th>
-                        <th style="width:10%;text-align:center;">操作</th>
-                    </tr>
-                    {% for store in stores %}
-                    <tr>
-                        <td><a href="/admin/store_detail/{{store.id}}">{{store.name}}</a></td>
-                        <td>
-                            <img class="preview" src="{{store.store_image}}" title="门店图片" width="80" height="60" />
-                            <img class="preview" src="{{store.license_image}}" title="营业执照" width="80" height="60" />
-                            <span class="hidden" style="diplay:none">
-                                <img id="example" class="img-modal"/>
-                            </span>
-                        </td>
-                        <td>
-                            {{store.linkman}}
-                        </td>
-                        <td>
-                            {{Area().get_detailed_address(store.area_code)}}<br />{{store.address}}
-                        </td>
-                        <td>积分：{{store.score}}<br />
+                <tr style="background:#528acb;color:#fff;text-align:center;height:38px;line-height:38px;">
+                    <th style="width:10%;text-align:center;">名称</th>
+                    <th style="width:15%;text-align:center;">图片</th>
+                    <th style="width:6%;text-align:center;">联系人</th>
+                    <th style="width:15%;text-align:center;">地址信息</th>
+                    <th style="width:10%;text-align:center;">积分/余额</th>
+                    <th style="width:8%;text-align:center;">账户状态</th>
+                    <th style="width:10%;text-align:center;">创建时间</th>
+                    <th style="width:10%;text-align:center;">操作</th>
+                </tr>
+                {% for store in stores %}
+                <tr>
+                    <td><a href="/admin/store_detail/{{store.id}}">{{store.name}}</a><br/>{{store.mobile}}</td>
+                    <td>
+                        <img class="preview" src="{{store.store_image}}" title="门店图片" width="80" height="60" />
+                        <img class="preview" src="{{store.license_image}}" title="营业执照" width="80" height="60" />
+                        <span class="hidden" style="diplay:none">
+                            <img id="example" class="img-modal"/>
+                        </span>
+                    </td>
+                    <td>{{store.linkman}}</td>
+                    <td>{{Area().get_detailed_address(store.area_code)}}<br />{{store.address}}</td>
+                    <td>积分：{{store.score}}<br />
                         余额：{{store.price}}</td>
-                        <td>
+                    <td>
                             <span id="check{{store.id}}">
                                 {% if store.active==0 %}
                                 <span style="color: red;">待审核</span><br>
@@ -108,32 +102,32 @@
                                 <span style="color: #f0ad4e;">未通过</span><br>
                                 {% endif %}
                             </span>
-                        </td>
-                        <td>{{store.created|dateformat}}</td>
-                        <td>
-                            {% if store.active==0 %}
-                            <button type="button" onclick="change_status({{store.id}}, 1)" id='bt_pass_{{store.id}}'
-                                    class="btn btn-xs btn-success" >
-                                通过
-                            </button>
-                            <button type="button" onclick="change_status({{store.id}}, 2)" id='bt_fail_{{store.id}}'
-                                    class="btn btn-xs btn-warning" >
-                                拒绝
-                            </button>
-                            {% elif store.active==1 %}
-                            <button type="button" onclick="change_status({{store.id}}, 2)" id='bt_fail_{{store.id}}'
-                                    class="btn btn-xs btn-warning" >
-                                拒绝
-                            </button>
-                            {% elif store.active==2 %}
-                            <button type="button" onclick="change_status({{store.id}}, 1)" id='bt_pass_{{store.id}}'
-                                    class="btn btn-xs btn-success" >
-                                通过
-                            </button>
-                            {% endif %}
-                        </td>
-                    </tr>
-                    {% endfor %}
+                    </td>
+                    <td>{{store.created|dateformat}}</td>
+                    <td>
+                        {% if store.active==0 %}
+                        <button type="button" onclick="change_status({{store.id}}, 1)" id='bt_pass_{{store.id}}'
+                                class="btn btn-xs btn-success" >
+                            通过
+                        </button>
+                        <button type="button" onclick="change_status({{store.id}}, 2)" id='bt_fail_{{store.id}}'
+                                class="btn btn-xs btn-warning" >
+                            拒绝
+                        </button>
+                        {% elif store.active==1 %}
+                        <button type="button" onclick="change_status({{store.id}}, 2)" id='bt_fail_{{store.id}}'
+                                class="btn btn-xs btn-warning" >
+                            拒绝
+                        </button>
+                        {% elif store.active==2 %}
+                        <button type="button" onclick="change_status({{store.id}}, 1)" id='bt_pass_{{store.id}}'
+                                class="btn btn-xs btn-success" >
+                            通过
+                        </button>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
                 </thead>
             </table>
             <div>
@@ -162,23 +156,23 @@
         $('#bt_export').bind('click', function () {
             var xsrf='{{handler.xsrf_token}}';
             $.post("/ajax/exportStore",
-            {
-                _xsrf: xsrf,
-                keyword: $("#keyword").val(),
-                province: $("#province").val(),
-                city: $("#city").val(),
-                district: $("#district").val(),
-                status: $("#status").val()
-            },
-            function (data) {
-                var obj = jQuery.parseJSON(data);
-                if (obj.flag == 1) {
-                    window.open("/upload/" + obj.msg);
-                }
-                else {
-                    alert('导出Excel失败');
-                }
-            });
+                {
+                    _xsrf: xsrf,
+                    keyword: $("#keyword").val(),
+                    province: $("#province").val(),
+                    city: $("#city").val(),
+                    district: $("#district").val(),
+                    status: $("#status").val()
+                },
+                function (data) {
+                    var obj = jQuery.parseJSON(data);
+                    if (obj.flag == 1) {
+                        window.open("/upload/" + obj.msg);
+                    }
+                    else {
+                        alert('导出Excel失败');
+                    }
+                });
         });
 
         $('#pageUl').twbsPagination({
@@ -189,7 +183,7 @@
             totalPages: {{totalpage}},
             startPage: {{page}},
             visiblePages: 8,
-            onPageClick: function (event, page) {
+                onPageClick: function (event, page) {
                 self.location="/admin/store?keyword={{keyword or ''}}&province={{province or ''}}&city={{city or ''}}&district={{district or ''}}&status={{status or '-1'}}&page="+page;
             }
         });
@@ -210,10 +204,10 @@
             alert(data.msg);
             if(data.flag==1){
                 location.reload();
-            } 
+            }
         });
     }
-    
+
     function GetSubAreas(parent_code,ddl_id, seleted_code) {
         if(parent_code.length == 0) {
             $("#city").html('');

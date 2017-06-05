@@ -158,8 +158,7 @@ class StoresHandler(AdminBaseHandler):
             province += '%'
             ft &= (Store.area_code % province)
         if keyword:
-            keyword2 = '%' + keyword + '%'
-            ft &= (Store.name % keyword2)
+            ft &= ((Store.name.contains(keyword)) | (Store.mobile.contains(keyword)))
         cfs = Store.select().where(ft).order_by(Store.created.desc())
         total = cfs.count()
         if total % pagesize > 0:
