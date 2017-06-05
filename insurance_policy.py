@@ -6150,8 +6150,9 @@ def update_store_policy():
     SSILubePolicy.delete().execute()
     stores = Store.select().where(Store.active == 1)
 
-    run_four_code = True
+
     for store in stores:
+        run_four_code = True
         insurace_area = InsuranceArea.select().where(
             (InsuranceArea.area_code == store.area_code[:8]) & (InsuranceArea.active == 1))
         for item in insurace_area:
