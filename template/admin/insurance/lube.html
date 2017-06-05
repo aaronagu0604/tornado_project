@@ -20,6 +20,7 @@
                 {% endfor %}
             </div>
             {%endif%}
+            {% if check != 'on' %}
             <div class="row">
                 <form action="/admin/insurance/lube" method="post" style="margin-top:10px;">
                     {{xsrf()}}
@@ -41,6 +42,7 @@
                 <div class="col-sm-12" style="margin-top: 5px;" id="giftGroup">
                 </div>
             </div>
+            {% endif %}
         </div>
     </div>
 </div>

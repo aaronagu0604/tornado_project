@@ -2246,6 +2246,7 @@ class InsuranceLube(AdminBaseHandler):
         iid = int(self.get_argument('iid', 0))
         area_code = self.get_argument('area_code', '0')
         sid = self.get_argument('sid', '')
+        check = self.get_argument('check', '')
         if sid:
             try:
                 lube_policy = SSILubePolicy.get((SSILubePolicy.store == sid) & (SSILubePolicy.insurance == iid)).lube
@@ -2258,13 +2259,13 @@ class InsuranceLube(AdminBaseHandler):
                 item = {'id': lube_policy.id, 'policy': lube_policy.lube_policy}
             except Exception, e:
                 item = {'id': '', 'policy': ''}
-        self.render("admin/insurance/lube.html", item=item, iid=iid, area_code = area_code, sid=sid)
+        self.render("admin/insurance/lube.html", item=item, iid=iid, area_code = area_code, sid=sid, check=check)
 
     def post(self):
         exid = self.get_body_argument('exid', '0')
         exid = int(exid) if exid else 0
         json = self.get_body_argument('json', '[]')
-        area_code = self.get_body_argument('area_code', '0')
+        # area_code = self.get_body_argument('area_code', '0')
         iid = self.get_argument('iid', 0)
         iid = int(iid) if iid else 0
         sid = self.get_body_argument('sid', 0)
@@ -2282,8 +2283,7 @@ class InsuranceLube(AdminBaseHandler):
             item.save()
             AdminUserLog.create(admin_user=self.get_admin_user(), created=int(time.time()),
                                 content=u'编辑保险返油策略:lp_id:%d' % item.id)
-            self.flash('保存成功')
-            self.render("admin/insurance/lube.html", item=item, iid=iid, area_code=area_code)
+            self.write(u'修改成功，请刷新！')
 
 
 @route(r'/admin/insurance_area', name='admin_insurance_area')  # 保险发布地域

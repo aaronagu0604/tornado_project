@@ -358,8 +358,7 @@ class MobileHomeHandler(MobileBaseHandler):
                 'img': store_insurance.insurance.logo,
                 'name': store_insurance.insurance.name,
                 'price': 0,
-                'link': 'czj://insurance/' + str(store_insurance.insurance.id) +
-                '/' + store_insurance.insurance.name
+                'link': 'czj://insurance/' + str(store_insurance.insurance.id) + '/' + store_insurance.insurance.name
             } for store_insurance in sorted_hots]
         else:
             insurances = self.application.memcachedb.get('insurances_no_login')
@@ -370,8 +369,7 @@ class MobileHomeHandler(MobileBaseHandler):
                                   'img': insurance.logo,
                                   'name': insurance.name,
                                   'price': 0,
-                                  'link': 'czj://insurance/' + str(insurance.id)
-                                          + '/' + insurance.name
+                                  'link': 'czj://insurance/' + str(insurance.id) + '/' + insurance.name
                               } for insurance in all]
                 self.application.memcachedb.set('insurances_no_login', insurances)
         result['data']['category'] = [{'title': u'保险业务', 'data': insurances[:8]}]
