@@ -1234,12 +1234,6 @@ def GuYuanRenBao():
     print '宁夏固原人保返油策略'
     InsuranceArea.create(area_code='00300004', insurance=13, lube_ok=1, dealer_store=1,
                          lube_policy=simplejson.dumps(lube), cash_ok=0, cash_policy='')
-    InsuranceArea.create(area_code='00280008', insurance=13, lube_ok=1, dealer_store=1,
-                         lube_policy=simplejson.dumps(lube), cash_ok=0, cash_policy='')
-    InsuranceArea.create(area_code='00300005', insurance=13, lube_ok=1, dealer_store=1,
-                         lube_policy=simplejson.dumps(lube), cash_ok=0, cash_policy='')
-    InsuranceArea.create(area_code='00300003', insurance=13, lube_ok=1, dealer_store=1,
-                         lube_policy=simplejson.dumps(lube), cash_ok=0, cash_policy='')
 
 # 宁夏固原平安返油策略
 def GuYuanPingAn():
@@ -1458,12 +1452,6 @@ def GuYuanPingAn():
     print '宁夏固原平安返油策略'
     InsuranceArea.create(area_code='00300004', insurance=7, lube_ok=1, dealer_store=1,
                          lube_policy=simplejson.dumps(lube), cash_ok=0, cash_policy='')
-    InsuranceArea.create(area_code='00280008', insurance=7, lube_ok=1, dealer_store=1,
-                         lube_policy=simplejson.dumps(lube), cash_ok=0, cash_policy='')
-    InsuranceArea.create(area_code='00300005', insurance=7, lube_ok=1, dealer_store=1,
-                         lube_policy=simplejson.dumps(lube), cash_ok=0, cash_policy='')
-    InsuranceArea.create(area_code='00300003', insurance=7, lube_ok=1, dealer_store=1,
-                         lube_policy=simplejson.dumps(lube), cash_ok=0, cash_policy='')
 
 # 宁夏银川人保返油策略
 def YinChuanRenBao():
@@ -1501,7 +1489,7 @@ def YinChuanRenBao():
                     "minprice": "2000",
                     "maxprice": "2499",
                     "driver": 1,
-                    "store": 6
+                    "store": 5
                 },
                 {
                     "name": "单商业险（2500-2999）",
@@ -1509,7 +1497,7 @@ def YinChuanRenBao():
                     "minprice": "2500",
                     "maxprice": "2999",
                     "driver": 1,
-                    "store": 8
+                    "store": 7
                 },
                 {
                     "name": "单商业险（3000-3499）",
@@ -1517,7 +1505,7 @@ def YinChuanRenBao():
                     "minprice": "3000",
                     "maxprice": "3499",
                     "driver": 2,
-                    "store": 9
+                    "store": 8
                 },
                 {
                     "name": "单商业险（3500-3999）",
@@ -1581,7 +1569,7 @@ def YinChuanRenBao():
                     "minprice": "2000",
                     "maxprice": "2499",
                     "driver": 3,
-                    "store": 7
+                    "store": 6
                 },
                 {
                     "name": "交强险+商业险（2500-2999）",
@@ -1589,7 +1577,7 @@ def YinChuanRenBao():
                     "minprice": "2500",
                     "maxprice": "2999",
                     "driver": 3,
-                    "store": 9
+                    "store": 8
                 },
                 {
                     "name": "交强险+商业险（3000-3499）",
@@ -1597,7 +1585,7 @@ def YinChuanRenBao():
                     "minprice": "3000",
                     "maxprice": "3499",
                     "driver": 3,
-                    "store": 11
+                    "store": 10
                 },
                 {
                     "name": "交强险+商业险（3500-3999）",
@@ -1682,6 +1670,11 @@ def YinChuanRenBao():
     print '宁夏银川人保返油策略'
     InsuranceArea.create(area_code='00300001', insurance=13, lube_ok=1, dealer_store=26,
                          lube_policy=simplejson.dumps(lube), cash_ok=0, cash_policy='')
+    InsuranceArea.create(area_code='00300003', insurance=13, lube_ok=1, dealer_store=26,
+                         lube_policy=simplejson.dumps(lube), cash_ok=0, cash_policy='')
+    InsuranceArea.create(area_code='00300005', insurance=13, lube_ok=1, dealer_store=26,
+                         lube_policy=simplejson.dumps(lube), cash_ok=0, cash_policy='')
+
 
 # 宁夏银川国寿财返油策略
 def YinChuanGuoShouCai():
@@ -1719,7 +1712,7 @@ def YinChuanGuoShouCai():
                     "minprice": "2000",
                     "maxprice": "2499",
                     "driver": 1,
-                    "store": 6
+                    "store": 5
                 },
                 {
                     "name": "单商业险（2500-2999）",
@@ -1727,7 +1720,7 @@ def YinChuanGuoShouCai():
                     "minprice": "2500",
                     "maxprice": "2999",
                     "driver": 1,
-                    "store": 8
+                    "store": 7
                 },
                 {
                     "name": "单商业险（3000-3499）",
@@ -1735,7 +1728,7 @@ def YinChuanGuoShouCai():
                     "minprice": "3000",
                     "maxprice": "3499",
                     "driver": 2,
-                    "store": 9
+                    "store": 8
                 },
                 {
                     "name": "单商业险（3500-3999）",
@@ -1799,7 +1792,7 @@ def YinChuanGuoShouCai():
                     "minprice": "2000",
                     "maxprice": "2499",
                     "driver": 3,
-                    "store": 7
+                    "store": 6
                 },
                 {
                     "name": "交强险+商业险（2500-2999）",
@@ -1807,7 +1800,7 @@ def YinChuanGuoShouCai():
                     "minprice": "2500",
                     "maxprice": "2999",
                     "driver": 3,
-                    "store": 9
+                    "store": 8
                 },
                 {
                     "name": "交强险+商业险（3000-3499）",
@@ -1815,7 +1808,7 @@ def YinChuanGuoShouCai():
                     "minprice": "3000",
                     "maxprice": "3499",
                     "driver": 3,
-                    "store": 11
+                    "store": 10
                 },
                 {
                     "name": "交强险+商业险（3500-3999）",
@@ -1899,6 +1892,10 @@ def YinChuanGuoShouCai():
     ]
     print '宁夏银川国寿财返油策略'
     InsuranceArea.create(area_code='00300001', insurance=11, lube_ok=1, dealer_store=26,
+                         lube_policy=simplejson.dumps(lube), cash_ok=0, cash_policy='')
+    InsuranceArea.create(area_code='00300003', insurance=11, lube_ok=1, dealer_store=26,
+                         lube_policy=simplejson.dumps(lube), cash_ok=0, cash_policy='')
+    InsuranceArea.create(area_code='00300005', insurance=11, lube_ok=1, dealer_store=26,
                          lube_policy=simplejson.dumps(lube), cash_ok=0, cash_policy='')
 
 # 陕西人保返油、返现策略
@@ -6153,8 +6150,16 @@ def update_store_policy():
 
     for store in stores:
         run_four_code = True
-        insurace_area = InsuranceArea.select().where(
-            (InsuranceArea.area_code == store.area_code[:8]) & (InsuranceArea.active == 1))
+        extras = ['003000030003', # 宁夏吴忠市同心县
+                  '003000050003', # 宁夏中卫市海原县
+                  '002800080007' # 甘肃平凉市静宁县
+                  ]
+        if (store.area_code in extras) or (store.address % '%红寺堡%'):
+            insurace_area = InsuranceArea.select().where(
+                (InsuranceArea.area_code == '00300004') & (InsuranceArea.active == 1))
+        else:
+            insurace_area = InsuranceArea.select().where(
+                (InsuranceArea.area_code == store.area_code[:8]) & (InsuranceArea.active == 1))
         for item in insurace_area:
             run_four_code = False
             print '1---', store.name, item.insurance.name, store.area_code[:8]
