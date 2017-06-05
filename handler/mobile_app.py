@@ -317,7 +317,6 @@ class MobileHomeHandler(MobileBaseHandler):
     """
 
     def get(self):
-        logging.error('----mobile_home')
         result = {'flag': 0, 'msg': '', "data": {}}
         area_code = self.get_store_area_code()
         user = self.get_user()
@@ -348,8 +347,6 @@ class MobileHomeHandler(MobileBaseHandler):
             tmp_code = tmp_code[0: -4]
         banners += self.get_banner('')
         banners += self.get_banner(None)
-        # if len(banners) == 0:
-        #     banners += self.get_banner(self.get_default_area_code())
         result['data']['banner'] = banners
 
         # 保险
@@ -377,7 +374,7 @@ class MobileHomeHandler(MobileBaseHandler):
                                           + '/' + insurance.name
                               } for insurance in all]
                 self.application.memcachedb.set('insurances_no_login', insurances)
-        result['data']['category'] = [{'title': u'保险业务', 'data': insurances}]
+        result['data']['category'] = [{'title': u'保险业务', 'data': insurances[:8]}]
 
         # 热门分类
         # tmp_code = area_code

@@ -1621,7 +1621,6 @@ class ProductOrdersHandler(AdminBaseHandler):
             ft &= (Order.ordered > time.mktime(begin)) & (Order.ordered < time.mktime(end))
 
         q = Order.select().join(Store, on=(Store.id == Order.buyer_store)).join(SubOrder, on=(SubOrder.order == Order.id)).where(ft).order_by(Order.ordered.desc())
-        print q,dir(q)
         total = q.count()
         if total % pagesize > 0:
             totalpage = total / pagesize + 1

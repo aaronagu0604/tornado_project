@@ -227,8 +227,8 @@ class MobilPurchaseOrderHandler(MobileBaseHandler):
                 'price': o.total_price,
                 'score': o.total_score,
                 'status': o.status,
-                'ordered': time.strftime('%Y-%m-%d %H-%M-%S', time.localtime(o.ordered)),
-                'deadline': time.strftime('%Y-%m-%d %H-%M-%S', time.localtime(o.ordered + setting.PRODUCT_ORDER_TIME_OUT))
+                'ordered': time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(o.ordered)),
+                'deadline': time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(o.ordered + setting.PRODUCT_ORDER_TIME_OUT))
             })
         return result
 
@@ -352,11 +352,9 @@ class MobileReceiveOrderHandler(MobileBaseHandler):
             salestore = sub_orders[0].saler_store
             salestore.price += sub_orders[0].price
             salestore.save()
-            # 1提现、2充值、3售出、4采购、5保险、6退款
             now = int(time.time())
             MoneyRecord.create(user=salestore.users[0], store=salestore, process_type=1, type=3, process_message='售出',
-                               process_log='售出',
-                               money=sub_orders[0].price, status=1, apply_time=now)
+                               process_log='售出', money=sub_orders[0].price, status=1, apply_time=now)
             if len(set([sub_order.status for sub_order in sub_orders])) == 1:
                 sub_orders[0].order.status = 3
                 sub_orders[0].order.save()
@@ -429,8 +427,8 @@ class MobileSellOrderHandler(MobileBaseHandler):
                 'score': int(totalprice),
                 'status': so.status,
                 'items': items,
-                'ordered': time.strftime('%Y-%m-%d %H-%M-%S', time.localtime(so.order.ordered)),
-                'deadline': time.strftime('%Y-%m-%d %H-%M-%S', time.localtime(so.order.ordered + setting.PRODUCT_ORDER_TIME_OUT))
+                'ordered': time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(so.order.ordered)),
+                'deadline': time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(so.order.ordered + setting.PRODUCT_ORDER_TIME_OUT))
             })
         return result
 
@@ -2245,7 +2243,7 @@ class MobileVersionHandler(MobileBaseHandler):
         """
     def get(self, client):
         order_str = MobileUpdate.updatedtime.desc()
-        ft = (MobileUpdate.state == 1) & (MobileUpdate.client == client)
+        ft = (MobileUpdate.client == client)
         q = MobileUpdate.select().where(ft)
         lists = q.order_by(order_str).limit(1)
         result = {'version': '', 'baseUrl': '', 'isForce': 'false', 'flag':0, 'releaseNotes':''}

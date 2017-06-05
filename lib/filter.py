@@ -8,10 +8,10 @@ def datetimeformat(value, fmt='%Y-%m-%d %H:%M:%S'):
     return time.strftime(fmt, time.localtime(value)) if value > 0 else '--'
 
 def timeformat(value, fmt='%H:%M:%S'):
-    return time.strftime(fmt, time.localtime(value))
+    return time.strftime(fmt, time.localtime(value)) if value > 0 else '--'
 
 def dateformat(value, fmt='%Y-%m-%d'):
-    return time.strftime(fmt, time.localtime(value))
+    return time.strftime(fmt, time.localtime(value)) if value > 0 else '--'
 
 def rightformat(value):
     return value[-5:]
