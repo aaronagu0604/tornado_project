@@ -601,7 +601,7 @@ class SaveIOPHandler(BaseHandler):
                     sms = {'apptype': 1, 'body': '您有新的报价单！', 'jpushtype': 'alias', 'alias': io.user.mobile,
                            'extras': {'link': 'czj://insurance_order_detail/%s' % io.id}}
                     create_msg(simplejson.dumps(sms), 'jpush')
-                logging.error('%s进行报价并发送短信：io.id:%d' % (admin_user.username, io.id))
+                logging.info('%s进行报价并发送短信：io.id:%d' % (admin_user.username, io.id))
             result['flag'] = 1
             AdminUserLog.create(admin_user=admin_user, created=now, content=content)
         else:
