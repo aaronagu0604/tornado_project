@@ -338,7 +338,7 @@ def ShanXiRenBao():
                          lube_policy=simplejson.dumps(lube), cash_ok=0, cash_policy='')
 
 
-# 周口人保返油策略
+# 河南周口人保返油策略
 def ZhouKouRenBao():
     lube = [
         {
@@ -353,15 +353,15 @@ def ZhouKouRenBao():
                     "store": 1
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（1300-1399）",
                     "flag": 2,
                     "minprice": "1300",
-                    "maxprice": "1300",
+                    "maxprice": "1399",
                     "driver": 1,
                     "store": 2
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（1400-1599）",
                     "flag": 2,
                     "minprice": "1300",
                     "maxprice": "1599",
@@ -369,7 +369,7 @@ def ZhouKouRenBao():
                     "store": 2
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（1600-1799）",
                     "flag": 2,
                     "minprice": "1600",
                     "maxprice": "1799",
@@ -377,7 +377,7 @@ def ZhouKouRenBao():
                     "store": 3
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（1800-1999）",
                     "flag": 2,
                     "minprice": "1800",
                     "maxprice": "1999",
@@ -385,7 +385,7 @@ def ZhouKouRenBao():
                     "store": 3
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（2000-2299）",
                     "flag": 2,
                     "minprice": "2000",
                     "maxprice": "2299",
@@ -393,7 +393,7 @@ def ZhouKouRenBao():
                     "store": 4
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（2300-2499）",
                     "flag": 2,
                     "minprice": "2300",
                     "maxprice": "2499",
@@ -401,7 +401,7 @@ def ZhouKouRenBao():
                     "store": 5
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（2500-2799）",
                     "flag": 2,
                     "minprice": "2500",
                     "maxprice": "2799",
@@ -409,7 +409,7 @@ def ZhouKouRenBao():
                     "store": 6
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（2800-2999）",
                     "flag": 2,
                     "minprice": "2800",
                     "maxprice": "2999",
@@ -417,7 +417,7 @@ def ZhouKouRenBao():
                     "store": 7
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（3000-3299）",
                     "flag": 2,
                     "minprice": "3000",
                     "maxprice": "3299",
@@ -425,7 +425,7 @@ def ZhouKouRenBao():
                     "store": 8
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（3300-3499）",
                     "flag": 2,
                     "minprice": "3300",
                     "maxprice": "3499",
@@ -433,7 +433,7 @@ def ZhouKouRenBao():
                     "store": 9
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（3500-3799）",
                     "flag": 2,
                     "minprice": "3500",
                     "maxprice": "3799",
@@ -441,7 +441,7 @@ def ZhouKouRenBao():
                     "store": 10
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（3800-3999）",
                     "flag": 2,
                     "minprice": "3800",
                     "maxprice": "3999",
@@ -449,7 +449,7 @@ def ZhouKouRenBao():
                     "store": 11
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（4000-4299）",
                     "flag": 2,
                     "minprice": "4000",
                     "maxprice": "4299",
@@ -457,7 +457,7 @@ def ZhouKouRenBao():
                     "store": 12
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（4300-4499）",
                     "flag": 2,
                     "minprice": "4300",
                     "maxprice": "4499",
@@ -465,7 +465,7 @@ def ZhouKouRenBao():
                     "store": 13
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（4500-4799）",
                     "flag": 2,
                     "minprice": "4500",
                     "maxprice": "4799",
@@ -473,7 +473,7 @@ def ZhouKouRenBao():
                     "store": 14
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（4800-4999）",
                     "flag": 2,
                     "minprice": "4800",
                     "maxprice": "4999",
@@ -481,7 +481,7 @@ def ZhouKouRenBao():
                     "store": 15
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（5000-5299）",
                     "flag": 2,
                     "minprice": "5000",
                     "maxprice": "5299",
@@ -489,7 +489,7 @@ def ZhouKouRenBao():
                     "store": 16
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（5300-5599）",
                     "flag": 2,
                     "minprice": "5300",
                     "maxprice": "5599",
@@ -497,7 +497,7 @@ def ZhouKouRenBao():
                     "store": 17
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（5600-5999）",
                     "flag": 2,
                     "minprice": "5600",
                     "maxprice": "5999",
@@ -697,7 +697,7 @@ def ZhouKouRenBao():
     InsuranceArea.create(area_code='00160016', insurance=13, lube_ok=1, dealer_store=8,
                          lube_policy=simplejson.dumps(lube), cash_ok=0, cash_policy='')
 
-# 周口大地返油策略
+# 河南周口大地返油策略
 def ZhouKouDaDi():
     lube = [
         {
@@ -712,7 +712,7 @@ def ZhouKouDaDi():
                     "store": 1
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（1300-1399）",
                     "flag": 2,
                     "minprice": "1300",
                     "maxprice": "1399",
@@ -720,7 +720,7 @@ def ZhouKouDaDi():
                     "store": 2
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（1400-1699）",
                     "flag": 2,
                     "minprice": "1400",
                     "maxprice": "1699",
@@ -728,7 +728,7 @@ def ZhouKouDaDi():
                     "store": 2
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（1700-1899）",
                     "flag": 2,
                     "minprice": "1700",
                     "maxprice": "1899",
@@ -736,7 +736,7 @@ def ZhouKouDaDi():
                     "store": 3
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（1900-2199）",
                     "flag": 2,
                     "minprice": "1900",
                     "maxprice": "2199",
@@ -744,7 +744,7 @@ def ZhouKouDaDi():
                     "store": 3
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（2200-2499）",
                     "flag": 2,
                     "minprice": "2200",
                     "maxprice": "2499",
@@ -752,7 +752,7 @@ def ZhouKouDaDi():
                     "store": 4
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（2500-2699）",
                     "flag": 2,
                     "minprice": "2500",
                     "maxprice": "2699",
@@ -760,7 +760,7 @@ def ZhouKouDaDi():
                     "store": 5
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（2700-2999）",
                     "flag": 2,
                     "minprice": "2700",
                     "maxprice": "2999",
@@ -768,7 +768,7 @@ def ZhouKouDaDi():
                     "store": 6
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（3000-3299）",
                     "flag": 2,
                     "minprice": "3000",
                     "maxprice": "3299",
@@ -776,7 +776,7 @@ def ZhouKouDaDi():
                     "store": 7
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（3300-3499）",
                     "flag": 2,
                     "minprice": "3300",
                     "maxprice": "3499",
@@ -784,7 +784,7 @@ def ZhouKouDaDi():
                     "store": 8
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（3500-3799）",
                     "flag": 2,
                     "minprice": "3500",
                     "maxprice": "3799",
@@ -792,7 +792,7 @@ def ZhouKouDaDi():
                     "store": 9
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（3800-4099）",
                     "flag": 2,
                     "minprice": "3800",
                     "maxprice": "4099",
@@ -800,7 +800,7 @@ def ZhouKouDaDi():
                     "store": 10
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（4100-4299）",
                     "flag": 2,
                     "minprice": "4100",
                     "maxprice": "4299",
@@ -808,7 +808,7 @@ def ZhouKouDaDi():
                     "store": 11
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（4300-4599）",
                     "flag": 2,
                     "minprice": "4300",
                     "maxprice": "4599",
@@ -816,7 +816,7 @@ def ZhouKouDaDi():
                     "store": 12
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（4600-4899）",
                     "flag": 2,
                     "minprice": "4600",
                     "maxprice": "4899",
@@ -824,7 +824,7 @@ def ZhouKouDaDi():
                     "store": 13
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（4900-5099）",
                     "flag": 2,
                     "minprice": "4900",
                     "maxprice": "5099",
@@ -832,10 +832,10 @@ def ZhouKouDaDi():
                     "store": 14
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（5100-5999）",
                     "flag": 2,
                     "minprice": "5100",
-                    "maxprice": "5399",
+                    "maxprice": "5999",
                     "driver": 3,
                     "store": 15
                 },
@@ -960,7 +960,7 @@ def ZhouKouDaDi():
                     "store": 16
                 },
                 {
-                    "name": "交强险+商业险（5100-5399）",
+                    "name": "交强险+商业险（5100-5999）",
                     "flag": 3,
                     "minprice": "5100",
                     "maxprice": "5399",
@@ -1032,7 +1032,7 @@ def GuYuanRenBao():
                     "store": 1
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（1200-1499）",
                     "flag": 2,
                     "minprice": "1200",
                     "maxprice": "1499",
@@ -1040,7 +1040,7 @@ def GuYuanRenBao():
                     "store": 2
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（1500-1999）",
                     "flag": 2,
                     "minprice": "1500",
                     "maxprice": "1999",
@@ -1048,7 +1048,7 @@ def GuYuanRenBao():
                     "store": 3
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（2000-2499）",
                     "flag": 2,
                     "minprice": "2000",
                     "maxprice": "2499",
@@ -1056,7 +1056,7 @@ def GuYuanRenBao():
                     "store": 5
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（2500-2999）",
                     "flag": 2,
                     "minprice": "2500",
                     "maxprice": "2999",
@@ -1064,7 +1064,7 @@ def GuYuanRenBao():
                     "store": 7
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（3000-3499）",
                     "flag": 2,
                     "minprice": "3000",
                     "maxprice": "3499",
@@ -1072,7 +1072,7 @@ def GuYuanRenBao():
                     "store": 8
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（3500-3999）",
                     "flag": 2,
                     "minprice": "3500",
                     "maxprice": "3999",
@@ -1080,7 +1080,7 @@ def GuYuanRenBao():
                     "store": 10
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（4000-4499）",
                     "flag": 2,
                     "minprice": "4000",
                     "maxprice": "4499",
@@ -1088,7 +1088,7 @@ def GuYuanRenBao():
                     "store": 11
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（4500-4999）",
                     "flag": 2,
                     "minprice": "4500",
                     "maxprice": "4999",
@@ -1096,7 +1096,7 @@ def GuYuanRenBao():
                     "store": 13
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（5000-5499）",
                     "flag": 2,
                     "minprice": "5000",
                     "maxprice": "5499",
@@ -1104,7 +1104,7 @@ def GuYuanRenBao():
                     "store": 15
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（5500-5999）",
                     "flag": 2,
                     "minprice": "5500",
                     "maxprice": "5999",
@@ -1234,6 +1234,12 @@ def GuYuanRenBao():
     print '宁夏固原人保返油策略'
     InsuranceArea.create(area_code='00300004', insurance=13, lube_ok=1, dealer_store=1,
                          lube_policy=simplejson.dumps(lube), cash_ok=0, cash_policy='')
+    InsuranceArea.create(area_code='00280008', insurance=13, lube_ok=1, dealer_store=1,
+                         lube_policy=simplejson.dumps(lube), cash_ok=0, cash_policy='')
+    InsuranceArea.create(area_code='00300005', insurance=13, lube_ok=1, dealer_store=1,
+                         lube_policy=simplejson.dumps(lube), cash_ok=0, cash_policy='')
+    InsuranceArea.create(area_code='00300003', insurance=13, lube_ok=1, dealer_store=1,
+                         lube_policy=simplejson.dumps(lube), cash_ok=0, cash_policy='')
 
 # 宁夏固原平安返油策略
 def GuYuanPingAn():
@@ -1250,7 +1256,7 @@ def GuYuanPingAn():
                     "store": 1
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（1200-1499）",
                     "flag": 2,
                     "minprice": "1200",
                     "maxprice": "1499",
@@ -1258,7 +1264,7 @@ def GuYuanPingAn():
                     "store": 2
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（1500-1999）",
                     "flag": 2,
                     "minprice": "1500",
                     "maxprice": "1999",
@@ -1266,7 +1272,7 @@ def GuYuanPingAn():
                     "store": 3
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（2000-2499）",
                     "flag": 2,
                     "minprice": "2000",
                     "maxprice": "2499",
@@ -1274,7 +1280,7 @@ def GuYuanPingAn():
                     "store": 5
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（2500-2999）",
                     "flag": 2,
                     "minprice": "2500",
                     "maxprice": "2999",
@@ -1282,7 +1288,7 @@ def GuYuanPingAn():
                     "store": 7
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（3000-3499）",
                     "flag": 2,
                     "minprice": "3000",
                     "maxprice": "3499",
@@ -1290,7 +1296,7 @@ def GuYuanPingAn():
                     "store": 8
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（3500-3999）",
                     "flag": 2,
                     "minprice": "3500",
                     "maxprice": "3999",
@@ -1298,7 +1304,7 @@ def GuYuanPingAn():
                     "store": 10
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（4000-4499）",
                     "flag": 2,
                     "minprice": "4000",
                     "maxprice": "4499",
@@ -1306,7 +1312,7 @@ def GuYuanPingAn():
                     "store": 11
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（4500-4999）",
                     "flag": 2,
                     "minprice": "4500",
                     "maxprice": "4999",
@@ -1314,7 +1320,7 @@ def GuYuanPingAn():
                     "store": 13
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（5000-5499）",
                     "flag": 2,
                     "minprice": "5000",
                     "maxprice": "5499",
@@ -1322,7 +1328,7 @@ def GuYuanPingAn():
                     "store": 15
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（5500-5999）",
                     "flag": 2,
                     "minprice": "5500",
                     "maxprice": "5999",
@@ -1452,6 +1458,12 @@ def GuYuanPingAn():
     print '宁夏固原平安返油策略'
     InsuranceArea.create(area_code='00300004', insurance=7, lube_ok=1, dealer_store=1,
                          lube_policy=simplejson.dumps(lube), cash_ok=0, cash_policy='')
+    InsuranceArea.create(area_code='00280008', insurance=7, lube_ok=1, dealer_store=1,
+                         lube_policy=simplejson.dumps(lube), cash_ok=0, cash_policy='')
+    InsuranceArea.create(area_code='00300005', insurance=7, lube_ok=1, dealer_store=1,
+                         lube_policy=simplejson.dumps(lube), cash_ok=0, cash_policy='')
+    InsuranceArea.create(area_code='00300003', insurance=7, lube_ok=1, dealer_store=1,
+                         lube_policy=simplejson.dumps(lube), cash_ok=0, cash_policy='')
 
 # 宁夏银川人保返油策略
 def YinChuanRenBao():
@@ -1465,10 +1477,10 @@ def YinChuanRenBao():
                     "minprice": "",
                     "maxprice": "",
                     "driver": 1,
-                    "store": 0
+                    "store": 1
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（1200-1499）",
                     "flag": 2,
                     "minprice": "1200",
                     "maxprice": "1499",
@@ -1476,7 +1488,7 @@ def YinChuanRenBao():
                     "store": 2
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（1500-1999）",
                     "flag": 2,
                     "minprice": "1500",
                     "maxprice": "1999",
@@ -1484,7 +1496,7 @@ def YinChuanRenBao():
                     "store": 3
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（2000-2499）",
                     "flag": 2,
                     "minprice": "2000",
                     "maxprice": "2499",
@@ -1492,7 +1504,7 @@ def YinChuanRenBao():
                     "store": 6
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（2500-2999）",
                     "flag": 2,
                     "minprice": "2500",
                     "maxprice": "2999",
@@ -1500,7 +1512,7 @@ def YinChuanRenBao():
                     "store": 8
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（3000-3499）",
                     "flag": 2,
                     "minprice": "3000",
                     "maxprice": "3499",
@@ -1508,7 +1520,7 @@ def YinChuanRenBao():
                     "store": 9
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（3500-3999）",
                     "flag": 2,
                     "minprice": "3500",
                     "maxprice": "3999",
@@ -1516,7 +1528,7 @@ def YinChuanRenBao():
                     "store": 10
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（4000-4499）",
                     "flag": 2,
                     "minprice": "4000",
                     "maxprice": "4499",
@@ -1524,7 +1536,7 @@ def YinChuanRenBao():
                     "store": 11
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（4500-4999）",
                     "flag": 2,
                     "minprice": "4500",
                     "maxprice": "4999",
@@ -1532,7 +1544,7 @@ def YinChuanRenBao():
                     "store": 13
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（5000-5499）",
                     "flag": 2,
                     "minprice": "5000",
                     "maxprice": "5499",
@@ -1540,7 +1552,7 @@ def YinChuanRenBao():
                     "store": 15
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（5500-5999）",
                     "flag": 2,
                     "minprice": "5500",
                     "maxprice": "5999",
@@ -1683,10 +1695,10 @@ def YinChuanGuoShouCai():
                     "minprice": "",
                     "maxprice": "",
                     "driver": 1,
-                    "store": 0
+                    "store": 1
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（1200-1499）",
                     "flag": 2,
                     "minprice": "1200",
                     "maxprice": "1499",
@@ -1694,7 +1706,7 @@ def YinChuanGuoShouCai():
                     "store": 2
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（1500-1999）",
                     "flag": 2,
                     "minprice": "1500",
                     "maxprice": "1999",
@@ -1702,7 +1714,7 @@ def YinChuanGuoShouCai():
                     "store": 3
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（2000-2499）",
                     "flag": 2,
                     "minprice": "2000",
                     "maxprice": "2499",
@@ -1710,7 +1722,7 @@ def YinChuanGuoShouCai():
                     "store": 6
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（2500-2999）",
                     "flag": 2,
                     "minprice": "2500",
                     "maxprice": "2999",
@@ -1718,7 +1730,7 @@ def YinChuanGuoShouCai():
                     "store": 8
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（3000-3499）",
                     "flag": 2,
                     "minprice": "3000",
                     "maxprice": "3499",
@@ -1726,7 +1738,7 @@ def YinChuanGuoShouCai():
                     "store": 9
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（3500-3999）",
                     "flag": 2,
                     "minprice": "3500",
                     "maxprice": "3999",
@@ -1734,7 +1746,7 @@ def YinChuanGuoShouCai():
                     "store": 10
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（4000-4499）",
                     "flag": 2,
                     "minprice": "4000",
                     "maxprice": "4499",
@@ -1742,7 +1754,7 @@ def YinChuanGuoShouCai():
                     "store": 11
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（4500-4999）",
                     "flag": 2,
                     "minprice": "4500",
                     "maxprice": "4999",
@@ -1750,7 +1762,7 @@ def YinChuanGuoShouCai():
                     "store": 13
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（5000-5499）",
                     "flag": 2,
                     "minprice": "5000",
                     "maxprice": "5499",
@@ -1758,7 +1770,7 @@ def YinChuanGuoShouCai():
                     "store": 15
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（5500-5999）",
                     "flag": 2,
                     "minprice": "5500",
                     "maxprice": "5999",
@@ -1904,7 +1916,7 @@ def ShannXiRenBao():
                     "store": 1
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（1500-1999）",
                     "flag": 2,
                     "minprice": "1500",
                     "maxprice": "1999",
@@ -1912,7 +1924,7 @@ def ShannXiRenBao():
                     "store": 3
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（2000-2499）",
                     "flag": 2,
                     "minprice": "2000",
                     "maxprice": "2499",
@@ -1920,7 +1932,7 @@ def ShannXiRenBao():
                     "store": 5
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（2500-2999）",
                     "flag": 2,
                     "minprice": "2500",
                     "maxprice": "2999",
@@ -1928,7 +1940,7 @@ def ShannXiRenBao():
                     "store": 6
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（3000-3499）",
                     "flag": 2,
                     "minprice": "3000",
                     "maxprice": "3499",
@@ -1936,7 +1948,7 @@ def ShannXiRenBao():
                     "store": 7
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（3500-3999）",
                     "flag": 2,
                     "minprice": "3500",
                     "maxprice": "3999",
@@ -1944,7 +1956,7 @@ def ShannXiRenBao():
                     "store": 9
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（4000-4499）",
                     "flag": 2,
                     "minprice": "4000",
                     "maxprice": "4499",
@@ -1952,7 +1964,7 @@ def ShannXiRenBao():
                     "store": 9
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（4500-4999）",
                     "flag": 2,
                     "minprice": "4500",
                     "maxprice": "4999",
@@ -1960,7 +1972,7 @@ def ShannXiRenBao():
                     "store": 11
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（5000-5499）",
                     "flag": 2,
                     "minprice": "5000",
                     "maxprice": "5499",
@@ -1968,7 +1980,7 @@ def ShannXiRenBao():
                     "store": 12
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（5500-5999）",
                     "flag": 2,
                     "minprice": "5500",
                     "maxprice": "5999",
@@ -2114,7 +2126,7 @@ def ShannXiRenBao():
                     "store": 1
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（1500-1999）",
                     "flag": 2,
                     "minprice": "1500",
                     "maxprice": "1999",
@@ -2122,7 +2134,7 @@ def ShannXiRenBao():
                     "store": 3
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（2000-2499）",
                     "flag": 2,
                     "minprice": "2000",
                     "maxprice": "2499",
@@ -2130,7 +2142,7 @@ def ShannXiRenBao():
                     "store": 5
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（2500-2999）",
                     "flag": 2,
                     "minprice": "2500",
                     "maxprice": "2999",
@@ -2138,7 +2150,7 @@ def ShannXiRenBao():
                     "store": 6
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（3000-3499）",
                     "flag": 2,
                     "minprice": "3000",
                     "maxprice": "3499",
@@ -2146,7 +2158,7 @@ def ShannXiRenBao():
                     "store": 7
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（3500-3999）",
                     "flag": 2,
                     "minprice": "3500",
                     "maxprice": "3999",
@@ -2154,7 +2166,7 @@ def ShannXiRenBao():
                     "store": 9
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（4000-4499）",
                     "flag": 2,
                     "minprice": "4000",
                     "maxprice": "4499",
@@ -2162,7 +2174,7 @@ def ShannXiRenBao():
                     "store": 9
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（4500-4999）",
                     "flag": 2,
                     "minprice": "4500",
                     "maxprice": "4999",
@@ -2170,7 +2182,7 @@ def ShannXiRenBao():
                     "store": 11
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（5000-5499）",
                     "flag": 2,
                     "minprice": "5000",
                     "maxprice": "5499",
@@ -2178,7 +2190,7 @@ def ShannXiRenBao():
                     "store": 12
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（5500-5999）",
                     "flag": 2,
                     "minprice": "5500",
                     "maxprice": "5999",
@@ -2376,7 +2388,7 @@ def ShannXiZhongHuaLianHe():
                     "store": 1
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（1500-1999）",
                     "flag": 2,
                     "minprice": "1500",
                     "maxprice": "1999",
@@ -2384,7 +2396,7 @@ def ShannXiZhongHuaLianHe():
                     "store": 3
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（2000-2499）",
                     "flag": 2,
                     "minprice": "2000",
                     "maxprice": "2499",
@@ -2392,7 +2404,7 @@ def ShannXiZhongHuaLianHe():
                     "store": 5
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（2500-2999）",
                     "flag": 2,
                     "minprice": "2500",
                     "maxprice": "2999",
@@ -2400,7 +2412,7 @@ def ShannXiZhongHuaLianHe():
                     "store": 6
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（3000-3499）",
                     "flag": 2,
                     "minprice": "3000",
                     "maxprice": "3499",
@@ -2408,7 +2420,7 @@ def ShannXiZhongHuaLianHe():
                     "store": 7
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（3500-3999）",
                     "flag": 2,
                     "minprice": "3500",
                     "maxprice": "3999",
@@ -2416,7 +2428,7 @@ def ShannXiZhongHuaLianHe():
                     "store": 9
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（4000-4499）",
                     "flag": 2,
                     "minprice": "4000",
                     "maxprice": "4499",
@@ -2424,7 +2436,7 @@ def ShannXiZhongHuaLianHe():
                     "store": 9
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（4500-4999）",
                     "flag": 2,
                     "minprice": "4500",
                     "maxprice": "4999",
@@ -2432,7 +2444,7 @@ def ShannXiZhongHuaLianHe():
                     "store": 11
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（5000-5499）",
                     "flag": 2,
                     "minprice": "5000",
                     "maxprice": "5499",
@@ -2440,7 +2452,7 @@ def ShannXiZhongHuaLianHe():
                     "store": 12
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（5500-5999）",
                     "flag": 2,
                     "minprice": "5500",
                     "maxprice": "5999",
@@ -2586,7 +2598,7 @@ def ShannXiZhongHuaLianHe():
                     "store": 1
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（1500-1999）",
                     "flag": 2,
                     "minprice": "1500",
                     "maxprice": "1999",
@@ -2594,7 +2606,7 @@ def ShannXiZhongHuaLianHe():
                     "store": 3
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（2000-2499）",
                     "flag": 2,
                     "minprice": "2000",
                     "maxprice": "2499",
@@ -2602,7 +2614,7 @@ def ShannXiZhongHuaLianHe():
                     "store": 5
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（2500-2999）",
                     "flag": 2,
                     "minprice": "2500",
                     "maxprice": "2999",
@@ -2610,7 +2622,7 @@ def ShannXiZhongHuaLianHe():
                     "store": 6
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（3000-3499）",
                     "flag": 2,
                     "minprice": "3000",
                     "maxprice": "3499",
@@ -2618,7 +2630,7 @@ def ShannXiZhongHuaLianHe():
                     "store": 7
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（3500-3999）",
                     "flag": 2,
                     "minprice": "3500",
                     "maxprice": "3999",
@@ -2626,7 +2638,7 @@ def ShannXiZhongHuaLianHe():
                     "store": 9
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（4000-4499）",
                     "flag": 2,
                     "minprice": "4000",
                     "maxprice": "4499",
@@ -2634,7 +2646,7 @@ def ShannXiZhongHuaLianHe():
                     "store": 9
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（4500-4999）",
                     "flag": 2,
                     "minprice": "4500",
                     "maxprice": "4999",
@@ -2642,7 +2654,7 @@ def ShannXiZhongHuaLianHe():
                     "store": 11
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（5000-5499）",
                     "flag": 2,
                     "minprice": "5000",
                     "maxprice": "5499",
@@ -2650,7 +2662,7 @@ def ShannXiZhongHuaLianHe():
                     "store": 12
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（5500-5999）",
                     "flag": 2,
                     "minprice": "5500",
                     "maxprice": "5999",
@@ -2848,7 +2860,7 @@ def ShannXiPingAn():
                     "store": 1
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（1500-1999）",
                     "flag": 2,
                     "minprice": "1500",
                     "maxprice": "1999",
@@ -2856,7 +2868,7 @@ def ShannXiPingAn():
                     "store": 3
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（2000-2499）",
                     "flag": 2,
                     "minprice": "2000",
                     "maxprice": "2499",
@@ -2864,7 +2876,7 @@ def ShannXiPingAn():
                     "store": 5
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（2500-2999）",
                     "flag": 2,
                     "minprice": "2500",
                     "maxprice": "2999",
@@ -2872,7 +2884,7 @@ def ShannXiPingAn():
                     "store": 6
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（3000-3499）",
                     "flag": 2,
                     "minprice": "3000",
                     "maxprice": "3499",
@@ -2880,7 +2892,7 @@ def ShannXiPingAn():
                     "store": 7
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（3500-3999）",
                     "flag": 2,
                     "minprice": "3500",
                     "maxprice": "3999",
@@ -2888,7 +2900,7 @@ def ShannXiPingAn():
                     "store": 9
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（4000-4499）",
                     "flag": 2,
                     "minprice": "4000",
                     "maxprice": "4499",
@@ -2896,7 +2908,7 @@ def ShannXiPingAn():
                     "store": 9
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（4500-4999）",
                     "flag": 2,
                     "minprice": "4500",
                     "maxprice": "4999",
@@ -2904,7 +2916,7 @@ def ShannXiPingAn():
                     "store": 11
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（5000-5499）",
                     "flag": 2,
                     "minprice": "5000",
                     "maxprice": "5499",
@@ -2912,7 +2924,7 @@ def ShannXiPingAn():
                     "store": 12
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（5500-5999）",
                     "flag": 2,
                     "minprice": "5500",
                     "maxprice": "5999",
@@ -3058,7 +3070,7 @@ def ShannXiPingAn():
                     "store": 1
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（1500-1999）",
                     "flag": 2,
                     "minprice": "1500",
                     "maxprice": "1999",
@@ -3066,7 +3078,7 @@ def ShannXiPingAn():
                     "store": 3
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（2000-2499）",
                     "flag": 2,
                     "minprice": "2000",
                     "maxprice": "2499",
@@ -3074,7 +3086,7 @@ def ShannXiPingAn():
                     "store": 5
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（2500-2999）",
                     "flag": 2,
                     "minprice": "2500",
                     "maxprice": "2999",
@@ -3082,7 +3094,7 @@ def ShannXiPingAn():
                     "store": 6
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（3000-3499）",
                     "flag": 2,
                     "minprice": "3000",
                     "maxprice": "3499",
@@ -3090,7 +3102,7 @@ def ShannXiPingAn():
                     "store": 7
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（3500-3999）",
                     "flag": 2,
                     "minprice": "3500",
                     "maxprice": "3999",
@@ -3098,7 +3110,7 @@ def ShannXiPingAn():
                     "store": 9
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（4000-4499）",
                     "flag": 2,
                     "minprice": "4000",
                     "maxprice": "4499",
@@ -3106,7 +3118,7 @@ def ShannXiPingAn():
                     "store": 9
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（4500-4999）",
                     "flag": 2,
                     "minprice": "4500",
                     "maxprice": "4999",
@@ -3114,7 +3126,7 @@ def ShannXiPingAn():
                     "store": 11
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（5000-5499）",
                     "flag": 2,
                     "minprice": "5000",
                     "maxprice": "5499",
@@ -3122,7 +3134,7 @@ def ShannXiPingAn():
                     "store": 12
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（5500-5999）",
                     "flag": 2,
                     "minprice": "5500",
                     "maxprice": "5999",
@@ -3320,7 +3332,7 @@ def ShannXiAnSheng():
                     "store": 1
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（1500-1999）",
                     "flag": 2,
                     "minprice": "1500",
                     "maxprice": "1999",
@@ -3328,7 +3340,7 @@ def ShannXiAnSheng():
                     "store": 3
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（2000-2499）",
                     "flag": 2,
                     "minprice": "2000",
                     "maxprice": "2499",
@@ -3336,7 +3348,7 @@ def ShannXiAnSheng():
                     "store": 5
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（2500-2999）",
                     "flag": 2,
                     "minprice": "2500",
                     "maxprice": "2999",
@@ -3344,7 +3356,7 @@ def ShannXiAnSheng():
                     "store": 6
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（3000-3499）",
                     "flag": 2,
                     "minprice": "3000",
                     "maxprice": "3499",
@@ -3352,7 +3364,7 @@ def ShannXiAnSheng():
                     "store": 7
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（3500-3999）",
                     "flag": 2,
                     "minprice": "3500",
                     "maxprice": "3999",
@@ -3360,7 +3372,7 @@ def ShannXiAnSheng():
                     "store": 9
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（4000-4499）",
                     "flag": 2,
                     "minprice": "4000",
                     "maxprice": "4499",
@@ -3368,7 +3380,7 @@ def ShannXiAnSheng():
                     "store": 9
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（4500-4999）",
                     "flag": 2,
                     "minprice": "4500",
                     "maxprice": "4999",
@@ -3376,7 +3388,7 @@ def ShannXiAnSheng():
                     "store": 11
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（5000-5499）",
                     "flag": 2,
                     "minprice": "5000",
                     "maxprice": "5499",
@@ -3384,7 +3396,7 @@ def ShannXiAnSheng():
                     "store": 12
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（5500-5999）",
                     "flag": 2,
                     "minprice": "5500",
                     "maxprice": "5999",
@@ -3530,7 +3542,7 @@ def ShannXiAnSheng():
                     "store": 1
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（1500-1999）",
                     "flag": 2,
                     "minprice": "1500",
                     "maxprice": "1999",
@@ -3538,7 +3550,7 @@ def ShannXiAnSheng():
                     "store": 3
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（2000-2499）",
                     "flag": 2,
                     "minprice": "2000",
                     "maxprice": "2499",
@@ -3546,7 +3558,7 @@ def ShannXiAnSheng():
                     "store": 5
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（2500-2999）",
                     "flag": 2,
                     "minprice": "2500",
                     "maxprice": "2999",
@@ -3554,7 +3566,7 @@ def ShannXiAnSheng():
                     "store": 6
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（3000-2499）",
                     "flag": 2,
                     "minprice": "3000",
                     "maxprice": "3499",
@@ -3562,7 +3574,7 @@ def ShannXiAnSheng():
                     "store": 7
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（3500-3999）",
                     "flag": 2,
                     "minprice": "3500",
                     "maxprice": "3999",
@@ -3570,7 +3582,7 @@ def ShannXiAnSheng():
                     "store": 9
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（4000-4499）",
                     "flag": 2,
                     "minprice": "4000",
                     "maxprice": "4499",
@@ -3578,7 +3590,7 @@ def ShannXiAnSheng():
                     "store": 9
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（4500-4999）",
                     "flag": 2,
                     "minprice": "4500",
                     "maxprice": "4999",
@@ -3586,7 +3598,7 @@ def ShannXiAnSheng():
                     "store": 11
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（5000-5499）",
                     "flag": 2,
                     "minprice": "5000",
                     "maxprice": "5499",
@@ -3594,7 +3606,7 @@ def ShannXiAnSheng():
                     "store": 12
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（5500-5999）",
                     "flag": 2,
                     "minprice": "5500",
                     "maxprice": "5999",
@@ -3792,7 +3804,7 @@ def ShannXiTianAn():
                     "store": 1
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（1500-1999）",
                     "flag": 2,
                     "minprice": "1500",
                     "maxprice": "1999",
@@ -3800,7 +3812,7 @@ def ShannXiTianAn():
                     "store": 3
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（2000-2499）",
                     "flag": 2,
                     "minprice": "2000",
                     "maxprice": "2499",
@@ -3808,7 +3820,7 @@ def ShannXiTianAn():
                     "store": 5
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（2500-2999）",
                     "flag": 2,
                     "minprice": "2500",
                     "maxprice": "2999",
@@ -3816,7 +3828,7 @@ def ShannXiTianAn():
                     "store": 6
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（3000-3499）",
                     "flag": 2,
                     "minprice": "3000",
                     "maxprice": "3499",
@@ -3824,7 +3836,7 @@ def ShannXiTianAn():
                     "store": 7
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（3500-3999）",
                     "flag": 2,
                     "minprice": "3500",
                     "maxprice": "3999",
@@ -3832,7 +3844,7 @@ def ShannXiTianAn():
                     "store": 9
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（4000-4499）",
                     "flag": 2,
                     "minprice": "4000",
                     "maxprice": "4499",
@@ -3840,7 +3852,7 @@ def ShannXiTianAn():
                     "store": 9
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（4500-4999）",
                     "flag": 2,
                     "minprice": "4500",
                     "maxprice": "4999",
@@ -3848,7 +3860,7 @@ def ShannXiTianAn():
                     "store": 11
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（5000-5499）",
                     "flag": 2,
                     "minprice": "5000",
                     "maxprice": "5499",
@@ -3856,7 +3868,7 @@ def ShannXiTianAn():
                     "store": 12
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（5500-5999）",
                     "flag": 2,
                     "minprice": "5500",
                     "maxprice": "5999",
@@ -4002,7 +4014,7 @@ def ShannXiTianAn():
                     "store": 1
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（1500-1999）",
                     "flag": 2,
                     "minprice": "1500",
                     "maxprice": "1999",
@@ -4010,7 +4022,7 @@ def ShannXiTianAn():
                     "store": 3
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（2000-2499）",
                     "flag": 2,
                     "minprice": "2000",
                     "maxprice": "2499",
@@ -4018,7 +4030,7 @@ def ShannXiTianAn():
                     "store": 5
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（2500-2999）",
                     "flag": 2,
                     "minprice": "2500",
                     "maxprice": "2999",
@@ -4026,7 +4038,7 @@ def ShannXiTianAn():
                     "store": 6
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（3000-3499）",
                     "flag": 2,
                     "minprice": "3000",
                     "maxprice": "3499",
@@ -4034,7 +4046,7 @@ def ShannXiTianAn():
                     "store": 7
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（3500-3999）",
                     "flag": 2,
                     "minprice": "3500",
                     "maxprice": "3999",
@@ -4042,7 +4054,7 @@ def ShannXiTianAn():
                     "store": 9
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（4000-4499）",
                     "flag": 2,
                     "minprice": "4000",
                     "maxprice": "4499",
@@ -4050,7 +4062,7 @@ def ShannXiTianAn():
                     "store": 9
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（4500-4999）",
                     "flag": 2,
                     "minprice": "4500",
                     "maxprice": "4999",
@@ -4058,7 +4070,7 @@ def ShannXiTianAn():
                     "store": 11
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（5000-5499）",
                     "flag": 2,
                     "minprice": "5000",
                     "maxprice": "5499",
@@ -4066,7 +4078,7 @@ def ShannXiTianAn():
                     "store": 12
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（5500-5999）",
                     "flag": 2,
                     "minprice": "5500",
                     "maxprice": "5999",
@@ -4263,7 +4275,7 @@ def ShannXiTaiPingYang():
                     "store": 1
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（1500-1999）",
                     "flag": 2,
                     "minprice": "1500",
                     "maxprice": "1999",
@@ -4271,7 +4283,7 @@ def ShannXiTaiPingYang():
                     "store": 3
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（2000-2499）",
                     "flag": 2,
                     "minprice": "2000",
                     "maxprice": "2499",
@@ -4279,7 +4291,7 @@ def ShannXiTaiPingYang():
                     "store": 5
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（2500-2999）",
                     "flag": 2,
                     "minprice": "2500",
                     "maxprice": "2999",
@@ -4287,7 +4299,7 @@ def ShannXiTaiPingYang():
                     "store": 6
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（3000-3499）",
                     "flag": 2,
                     "minprice": "3000",
                     "maxprice": "3499",
@@ -4295,7 +4307,7 @@ def ShannXiTaiPingYang():
                     "store": 7
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（3500-3999）",
                     "flag": 2,
                     "minprice": "3500",
                     "maxprice": "3999",
@@ -4303,7 +4315,7 @@ def ShannXiTaiPingYang():
                     "store": 9
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（4000-4499）",
                     "flag": 2,
                     "minprice": "4000",
                     "maxprice": "4499",
@@ -4311,7 +4323,7 @@ def ShannXiTaiPingYang():
                     "store": 9
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（4500-4999）",
                     "flag": 2,
                     "minprice": "4500",
                     "maxprice": "4999",
@@ -4319,7 +4331,7 @@ def ShannXiTaiPingYang():
                     "store": 11
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（5000-5499）",
                     "flag": 2,
                     "minprice": "5000",
                     "maxprice": "5499",
@@ -4327,7 +4339,7 @@ def ShannXiTaiPingYang():
                     "store": 12
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（5500-5999）",
                     "flag": 2,
                     "minprice": "5500",
                     "maxprice": "5999",
@@ -4473,7 +4485,7 @@ def ShannXiTaiPingYang():
                     "store": 1
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（1500-1999）",
                     "flag": 2,
                     "minprice": "1500",
                     "maxprice": "1999",
@@ -4481,7 +4493,7 @@ def ShannXiTaiPingYang():
                     "store": 3
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（2000-2499）",
                     "flag": 2,
                     "minprice": "2000",
                     "maxprice": "2499",
@@ -4489,7 +4501,7 @@ def ShannXiTaiPingYang():
                     "store": 5
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（2500-2999）",
                     "flag": 2,
                     "minprice": "2500",
                     "maxprice": "2999",
@@ -4497,7 +4509,7 @@ def ShannXiTaiPingYang():
                     "store": 6
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（3000-3499）",
                     "flag": 2,
                     "minprice": "3000",
                     "maxprice": "3499",
@@ -4505,7 +4517,7 @@ def ShannXiTaiPingYang():
                     "store": 7
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（3500-3999）",
                     "flag": 2,
                     "minprice": "3500",
                     "maxprice": "3999",
@@ -4513,7 +4525,7 @@ def ShannXiTaiPingYang():
                     "store": 9
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（4000-4499）",
                     "flag": 2,
                     "minprice": "4000",
                     "maxprice": "4499",
@@ -4521,7 +4533,7 @@ def ShannXiTaiPingYang():
                     "store": 9
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（4500-4999）",
                     "flag": 2,
                     "minprice": "4500",
                     "maxprice": "4999",
@@ -4529,7 +4541,7 @@ def ShannXiTaiPingYang():
                     "store": 11
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（5000-5499）",
                     "flag": 2,
                     "minprice": "5000",
                     "maxprice": "5499",
@@ -4537,7 +4549,7 @@ def ShannXiTaiPingYang():
                     "store": 12
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（5500-5999）",
                     "flag": 2,
                     "minprice": "5500",
                     "maxprice": "5999",
@@ -4735,7 +4747,7 @@ def ShannXiDaDi():
                     "store": 1
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（1500-1999）",
                     "flag": 2,
                     "minprice": "1500",
                     "maxprice": "1999",
@@ -4743,7 +4755,7 @@ def ShannXiDaDi():
                     "store": 3
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（2000-2499）",
                     "flag": 2,
                     "minprice": "2000",
                     "maxprice": "2499",
@@ -4751,7 +4763,7 @@ def ShannXiDaDi():
                     "store": 5
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（2500-2999）",
                     "flag": 2,
                     "minprice": "2500",
                     "maxprice": "2999",
@@ -4759,7 +4771,7 @@ def ShannXiDaDi():
                     "store": 6
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（3000-3499）",
                     "flag": 2,
                     "minprice": "3000",
                     "maxprice": "3499",
@@ -4767,7 +4779,7 @@ def ShannXiDaDi():
                     "store": 7
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（3500-3999）",
                     "flag": 2,
                     "minprice": "3500",
                     "maxprice": "3999",
@@ -4775,7 +4787,7 @@ def ShannXiDaDi():
                     "store": 9
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（4000-4499）",
                     "flag": 2,
                     "minprice": "4000",
                     "maxprice": "4499",
@@ -4783,7 +4795,7 @@ def ShannXiDaDi():
                     "store": 9
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（4500-4999）",
                     "flag": 2,
                     "minprice": "4500",
                     "maxprice": "4999",
@@ -4791,7 +4803,7 @@ def ShannXiDaDi():
                     "store": 11
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（5000-5499）",
                     "flag": 2,
                     "minprice": "5000",
                     "maxprice": "5499",
@@ -4799,7 +4811,7 @@ def ShannXiDaDi():
                     "store": 12
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（5500-5999）",
                     "flag": 2,
                     "minprice": "5500",
                     "maxprice": "5999",
@@ -4945,7 +4957,7 @@ def ShannXiDaDi():
                     "store": 1
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（1500-1999）",
                     "flag": 2,
                     "minprice": "1500",
                     "maxprice": "1999",
@@ -4953,7 +4965,7 @@ def ShannXiDaDi():
                     "store": 3
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（2000-2499）",
                     "flag": 2,
                     "minprice": "2000",
                     "maxprice": "2499",
@@ -4961,7 +4973,7 @@ def ShannXiDaDi():
                     "store": 5
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（2500-2999）",
                     "flag": 2,
                     "minprice": "2500",
                     "maxprice": "2999",
@@ -4969,7 +4981,7 @@ def ShannXiDaDi():
                     "store": 6
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（3000-3499）",
                     "flag": 2,
                     "minprice": "3000",
                     "maxprice": "3499",
@@ -4977,7 +4989,7 @@ def ShannXiDaDi():
                     "store": 7
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（3500-3999）",
                     "flag": 2,
                     "minprice": "3500",
                     "maxprice": "3999",
@@ -4985,7 +4997,7 @@ def ShannXiDaDi():
                     "store": 9
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（4000-4499）",
                     "flag": 2,
                     "minprice": "4000",
                     "maxprice": "4499",
@@ -4993,7 +5005,7 @@ def ShannXiDaDi():
                     "store": 9
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（4500-4999）",
                     "flag": 2,
                     "minprice": "4500",
                     "maxprice": "4999",
@@ -5001,7 +5013,7 @@ def ShannXiDaDi():
                     "store": 11
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（5000-5499）",
                     "flag": 2,
                     "minprice": "5000",
                     "maxprice": "5499",
@@ -5009,7 +5021,7 @@ def ShannXiDaDi():
                     "store": 12
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（5500-5999）",
                     "flag": 2,
                     "minprice": "5500",
                     "maxprice": "5999",
@@ -5207,7 +5219,7 @@ def ShannXiTaiPing():
                     "store": 1
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（1500-1999）",
                     "flag": 2,
                     "minprice": "1500",
                     "maxprice": "1999",
@@ -5215,7 +5227,7 @@ def ShannXiTaiPing():
                     "store": 3
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（2000-2499）",
                     "flag": 2,
                     "minprice": "2000",
                     "maxprice": "2499",
@@ -5223,7 +5235,7 @@ def ShannXiTaiPing():
                     "store": 5
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（2500-2999）",
                     "flag": 2,
                     "minprice": "2500",
                     "maxprice": "2999",
@@ -5231,7 +5243,7 @@ def ShannXiTaiPing():
                     "store": 6
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（3000-3499）",
                     "flag": 2,
                     "minprice": "3000",
                     "maxprice": "3499",
@@ -5239,7 +5251,7 @@ def ShannXiTaiPing():
                     "store": 7
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（3500-3999）",
                     "flag": 2,
                     "minprice": "3500",
                     "maxprice": "3999",
@@ -5247,7 +5259,7 @@ def ShannXiTaiPing():
                     "store": 9
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（4000-4499）",
                     "flag": 2,
                     "minprice": "4000",
                     "maxprice": "4499",
@@ -5255,7 +5267,7 @@ def ShannXiTaiPing():
                     "store": 9
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（4500-4999）",
                     "flag": 2,
                     "minprice": "4500",
                     "maxprice": "4999",
@@ -5263,7 +5275,7 @@ def ShannXiTaiPing():
                     "store": 11
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（5000-5499）",
                     "flag": 2,
                     "minprice": "5000",
                     "maxprice": "5499",
@@ -5271,7 +5283,7 @@ def ShannXiTaiPing():
                     "store": 12
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（5500-5999）",
                     "flag": 2,
                     "minprice": "5500",
                     "maxprice": "5999",
@@ -5417,7 +5429,7 @@ def ShannXiTaiPing():
                     "store": 1
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（1500-1999）",
                     "flag": 2,
                     "minprice": "1500",
                     "maxprice": "1999",
@@ -5425,7 +5437,7 @@ def ShannXiTaiPing():
                     "store": 3
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（2000-2499）",
                     "flag": 2,
                     "minprice": "2000",
                     "maxprice": "2499",
@@ -5433,7 +5445,7 @@ def ShannXiTaiPing():
                     "store": 5
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（2500-2999）",
                     "flag": 2,
                     "minprice": "2500",
                     "maxprice": "2999",
@@ -5441,7 +5453,7 @@ def ShannXiTaiPing():
                     "store": 6
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（3000-3499）",
                     "flag": 2,
                     "minprice": "3000",
                     "maxprice": "3499",
@@ -5449,7 +5461,7 @@ def ShannXiTaiPing():
                     "store": 7
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（3500-3999）",
                     "flag": 2,
                     "minprice": "3500",
                     "maxprice": "3999",
@@ -5457,7 +5469,7 @@ def ShannXiTaiPing():
                     "store": 9
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（4000-4499）",
                     "flag": 2,
                     "minprice": "4000",
                     "maxprice": "4499",
@@ -5465,7 +5477,7 @@ def ShannXiTaiPing():
                     "store": 9
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（4500-4999）",
                     "flag": 2,
                     "minprice": "4500",
                     "maxprice": "4999",
@@ -5473,7 +5485,7 @@ def ShannXiTaiPing():
                     "store": 11
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（5000-5499）",
                     "flag": 2,
                     "minprice": "5000",
                     "maxprice": "5499",
@@ -5481,7 +5493,7 @@ def ShannXiTaiPing():
                     "store": 12
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（5500-5999）",
                     "flag": 2,
                     "minprice": "5500",
                     "maxprice": "5999",
@@ -5678,7 +5690,7 @@ def ShannXiYongAn():
                     "store": 1
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（1500-1999）",
                     "flag": 2,
                     "minprice": "1500",
                     "maxprice": "1999",
@@ -5686,7 +5698,7 @@ def ShannXiYongAn():
                     "store": 3
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（2000-2499）",
                     "flag": 2,
                     "minprice": "2000",
                     "maxprice": "2499",
@@ -5694,7 +5706,7 @@ def ShannXiYongAn():
                     "store": 5
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（2500-2999）",
                     "flag": 2,
                     "minprice": "2500",
                     "maxprice": "2999",
@@ -5702,7 +5714,7 @@ def ShannXiYongAn():
                     "store": 6
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（3000-3499）",
                     "flag": 2,
                     "minprice": "3000",
                     "maxprice": "3499",
@@ -5710,7 +5722,7 @@ def ShannXiYongAn():
                     "store": 7
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（3500-3999）",
                     "flag": 2,
                     "minprice": "3500",
                     "maxprice": "3999",
@@ -5718,7 +5730,7 @@ def ShannXiYongAn():
                     "store": 9
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（4000-4499）",
                     "flag": 2,
                     "minprice": "4000",
                     "maxprice": "4499",
@@ -5726,7 +5738,7 @@ def ShannXiYongAn():
                     "store": 9
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（4500-4999）",
                     "flag": 2,
                     "minprice": "4500",
                     "maxprice": "4999",
@@ -5734,7 +5746,7 @@ def ShannXiYongAn():
                     "store": 11
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（5000-5499）",
                     "flag": 2,
                     "minprice": "5000",
                     "maxprice": "5499",
@@ -5742,7 +5754,7 @@ def ShannXiYongAn():
                     "store": 12
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（5500-5999）",
                     "flag": 2,
                     "minprice": "5500",
                     "maxprice": "5999",
@@ -5888,7 +5900,7 @@ def ShannXiYongAn():
                     "store": 1
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（1500-1999）",
                     "flag": 2,
                     "minprice": "1500",
                     "maxprice": "1999",
@@ -5896,7 +5908,7 @@ def ShannXiYongAn():
                     "store": 3
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（2000-2499）",
                     "flag": 2,
                     "minprice": "2000",
                     "maxprice": "2499",
@@ -5904,7 +5916,7 @@ def ShannXiYongAn():
                     "store": 5
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（2500-2999）",
                     "flag": 2,
                     "minprice": "2500",
                     "maxprice": "2999",
@@ -5912,7 +5924,7 @@ def ShannXiYongAn():
                     "store": 6
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（3000-3499）",
                     "flag": 2,
                     "minprice": "3000",
                     "maxprice": "3499",
@@ -5920,7 +5932,7 @@ def ShannXiYongAn():
                     "store": 7
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（3500-3999）",
                     "flag": 2,
                     "minprice": "3500",
                     "maxprice": "3999",
@@ -5928,7 +5940,7 @@ def ShannXiYongAn():
                     "store": 9
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（4000-4499）",
                     "flag": 2,
                     "minprice": "4000",
                     "maxprice": "4499",
@@ -5936,7 +5948,7 @@ def ShannXiYongAn():
                     "store": 9
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（4500-4999）",
                     "flag": 2,
                     "minprice": "4500",
                     "maxprice": "4999",
@@ -5944,7 +5956,7 @@ def ShannXiYongAn():
                     "store": 11
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（5000-5499）",
                     "flag": 2,
                     "minprice": "5000",
                     "maxprice": "5499",
@@ -5952,7 +5964,7 @@ def ShannXiYongAn():
                     "store": 12
                 },
                 {
-                    "name": "单商业险",
+                    "name": "单商业险（5500-5999）",
                     "flag": 2,
                     "minprice": "5500",
                     "maxprice": "5999",
@@ -6137,26 +6149,29 @@ def ShannXiYongAn():
 def update_store_policy():
     SSILubePolicy.delete().execute()
     stores = Store.select().where(Store.active == 1)
+
+    run_four_code = True
     for store in stores:
         insurace_area = InsuranceArea.select().where(
             (InsuranceArea.area_code == store.area_code[:8]) & (InsuranceArea.active == 1))
         for item in insurace_area:
+            run_four_code = False
             print '1---', store.name, item.insurance.name, store.area_code[:8]
             SSILubePolicy.create(store=store,
                                      insurance=item.insurance,
                                      cash=item.cash_policy,
                                      dealer_store=item.dealer_store,
                                      lube=item.lube_policy)
-
-        insurace_area2 = InsuranceArea.select().where(
-            (InsuranceArea.area_code == store.area_code[:4]) & (InsuranceArea.active == 1))
-        for item in insurace_area2:
-            print '2---', store.name, item.insurance.name, store.area_code[:4]
-            SSILubePolicy.create(store=store,
-                                     insurance=item.insurance,
-                                     cash=item.cash_policy,
-                                     dealer_store=item.dealer_store,
-                                     lube=item.lube_policy)
+        if run_four_code:
+            insurace_area2 = InsuranceArea.select().where(
+                (InsuranceArea.area_code == store.area_code[:4]) & (InsuranceArea.active == 1))
+            for item in insurace_area2:
+                print '2---', store.name, item.insurance.name, store.area_code[:4]
+                SSILubePolicy.create(store=store,
+                                         insurance=item.insurance,
+                                         cash=item.cash_policy,
+                                         dealer_store=item.dealer_store,
+                                         lube=item.lube_policy)
 
 if __name__ == '__main__':
     InsuranceArea.delete().execute()
