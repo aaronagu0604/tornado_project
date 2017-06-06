@@ -245,7 +245,40 @@ class AjaxGetAllAreas(BaseHandler):
         type = self.get_argument('type',None)
         bi_id = self.get_argument('bi_id', 0)
         bi_id = int(bi_id) if bi_id else 0
-        a = yield self.get_all_area(type, bi_id)
+        if type == "blockitem":
+            a = yield self.get_all_area(type, bi_id)
+        else:
+            a = yield  self.get_service_area(type,bi_id)
+
+    @run_on_executor
+    def get_service_area(self, type, bi_id):
+        items = Area.select(Area.id.alias('id'), Area.pid.alias('pid'), Area.name.alias('name'),
+                            Area.code.alias('code')).dicts()
+        store = Store.get(id=bi_id)
+        bitems = [item.area.code for item in store.service_areas]
+        nodes = [{
+            'id': item['id'],
+            'pId': item['pid'] if item['pid'] else 0,
+            'name': item['name'],
+            'data': item['code'],
+            'target': '_top',
+            'click': '' if type == 'blockitem' else "pop('" + item[
+                'name'] + '-产品信息' + "', '" + '/admin/store_area_product?sid=' + str(1) + '&code=' + item[
+                                                        'code'] + "');",
+            'open': 'false',
+            'checked': 'true' if item['code'] in bitems else 'false'
+        } for item in items]
+        url = '/admin/store_area_product?sid=1'
+        nodes.insert(0, {
+            'id': 0,
+            'pId': -1,
+            'name': '全部',
+            'data': '',
+            'target': '_top',
+            'click': "pop('全部地域-产品信息', '" + url + "');",
+            'open': 'true'
+        })
+        self.write(simplejson.dumps(nodes))
 
     @run_on_executor
     def get_all_area(self,type,bi_id):
@@ -257,7 +290,7 @@ class AjaxGetAllAreas(BaseHandler):
                 'name': item['name'],
                 'data': item['code'],
                 'target': '_top',
-                'click': '' if type == 'blockitem' else "pop('" + item['name'] + '-产品信息' + "', '"+'/admin/store_area_product?sid=' + str(1) + '&code=' + item['code']+"');",
+                'click': '' ,#if type == 'blockitem' else "pop('" + item['name'] + '-产品信息' + "', '"+'/admin/store_area_product?sid=' + str(1) + '&code=' + item['code']+"');",
                 'open': 'false',
                 'checked': 'true' if item['code'] in bitems else 'false'
         } for item in items]
