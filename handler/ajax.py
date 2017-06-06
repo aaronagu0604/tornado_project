@@ -373,9 +373,16 @@ class AjaxSalerProductPriceProcessAreas(BaseHandler):
             for item in data:
                 query = ProductRelease.select().where((ProductRelease.product == item['id']) & (ProductRelease.store == sid))
                 if query.count() > 0:
+                    is_released = 0
                     for q in query:
-                        q.price = item['price']
+                        if q.active == 1:
+                            q.price = item['price']
+                            q.save()
+                            is_released = 1
+                            break
+                    if not is_released:
                         q.active = 1
+                        q.price = item['price']
                         q.save()
                 else:
                     p = ProductRelease()
@@ -388,7 +395,7 @@ class AjaxSalerProductPriceProcessAreas(BaseHandler):
         self.write(simplejson.dumps(result))
 
 
-@route(r'/ajax/product_release_publish/(\d+)', name='ajax_product_release_publish')  # 添加商品库
+@route(r'/ajax/product_release_publish/(\d+)', name='ajax_product_release_publish')  # 发布到各地区
 class AjaxProductReleasePublishAreas(BaseHandler):
     def post(self, sid):
         result = {'flag': 0, 'msg': '', 'data': 0}
@@ -400,17 +407,26 @@ class AjaxProductReleasePublishAreas(BaseHandler):
                                                          (StoreProductPrice.store == sid) &
                                                          (StoreProductPrice.area_code == item['code']))
                 if query.count() > 0:
+                    is_change = 0
                     for q in query:
-                        q.delete_instance()
-
-                p = StoreProductPrice()
-                p.product_release = item['id']
-                p.store = sid
-                p.price = item['price']
-                p.sort = item['sort']
-                p.created = int(time.time())
-                p.area_code = item['code']
-                p.save()
+                        if q.active == 1:
+                            q.price = item['price']
+                            q.sort = item['sort']
+                            q.save()
+                    if not is_change:
+                        q.active = 1
+                        q.price = item['price']
+                        q.sort = item['sort']
+                        q.save()
+                else:
+                    p = StoreProductPrice()
+                    p.product_release = item['id']
+                    p.store = sid
+                    p.price = item['price']
+                    p.sort = item['sort']
+                    p.created = int(time.time())
+                    p.area_code = item['code']
+                    p.save()
         result['flag'] = 1
         result['msg'] = '添加成功'
         self.write(simplejson.dumps(result))

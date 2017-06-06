@@ -9,84 +9,69 @@
     <script src="/style/js/jquery-1.11.1.min.js"></script>
     <script src="/style/js/bootstrap.min.js"></script>
     <script src="/style/js/jquery.twbsPagination.min.js"></script>
-<script type="text/javascript" src="/style/js/layer/layer.js"></script>
+    <script type="text/javascript" src="/style/js/layer/layer.js"></script>
 </head>
 <body>
 <div class="row" style="margin:5px 5px 0 5px;">
     <div class="panel panel-primary">
-    <div class="row">
+        <div class="row">
 
-        <div class="" style="float: left">
-           <span style="font-size:15px; padding-left:10px;">商品库</span> &nbsp;&nbsp;
-           <a class="btn btn-xs btn-outline btn-primary" href="#" onclick="checkChanged(1)">全选</a>
-           <a class="btn btn-xs btn-outline btn-primary" href="#" onclick="checkChanged(0)">取消全选</a>
+            <div class="" style="float: left">
+                <span style="font-size:15px; padding-left:10px;">商品库</span> &nbsp;&nbsp;
+                <a class="btn btn-xs btn-outline btn-primary" href="#" onclick="checkChanged(1)">全选</a>
+                <a class="btn btn-xs btn-outline btn-primary" href="#" onclick="checkChanged(0)">取消全选</a>
 
+            </div>
+            <div class="pull-right">
+                <form class="navbar-form navbar-left" action="" method="get">
+                    <input value="1" type="hidden" name="page">
+                    <input value="{{store_id}}" type="hidden" name="sid">
+                    <label class="num">每页显示条数：&nbsp;</label>
+                    <select class="form-control" id="status" name="pagesize">
+                        <option value="1" {{pagesize==1 and 'selected'}} >1</option>
+                        <option value="20" {{pagesize==20 and 'selected'}} >20</option>
+                        <option value="50" {{pagesize==50 and 'selected'}} >50</option>
+                        <option value="100" {{pagesize==100 and 'selected'}}>100</option>
+                        <option value="500" {{pagesize==500 and 'selected'}}>500</option>
+                    </select>
+                    <div class="input-group custom-search-form">
+                        <input type="text" id="price" class="form-control" style="width:180px;"
+                               value="" placeholder="整体改价">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="button" onclick="changePrice()">
+                                整体改价
+                            </button>
+                        </span></div>
+                    <div class="input-group custom-search-form">
+                        <input type="text" id="keyword" name="keyword" class="form-control" style="width:180px;"
+                               value="{{keyword}}" placeholder="按商品名称查找">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="submit">查找</button>
+                        </span>
+                    </div>
+                    <a class="btn btn-sm btn-outline btn-primary" href="#" onclick="process()">添加到经销商库</a>
+                </form>
+            </div>
         </div>
-        <div class="pull-right">
-            <form class="navbar-form navbar-left" action="" method="get">
-                <input value="1" type="hidden" name="page">
-                <input value="{{store_id}}" type="hidden" name="sid">
-                <label class="num">每页显示条数：&nbsp;</label>
-                <select class="form-control" id="status" name="pagesize">
-                    <option value="1" {{pagesize==1 and 'selected'}} >1</option>
-                    <option value="20" {{pagesize==20 and 'selected'}} >20</option>
-                    <option value="50" {{pagesize==50 and 'selected'}} >50</option>
-                    <option value="100" {{pagesize==100 and 'selected'}}>100</option>
-                    <option value="500" {{pagesize==500 and 'selected'}}>500</option>
-                </select>
-                <div class="input-group custom-search-form">
-                    <input type="text" id="price" class="form-control" style="width:180px;"
-                           value="" placeholder="整体改价">
-                    <span class="input-group-btn">
-                     <button class="btn btn-default" type="button" onclick="changePrice()">
-                         整体改价
-                     </button>
-                 </span>
-             </div>
-
-                
-                <div class="input-group custom-search-form">
-                    <input type="text" id="keyword" name="keyword" class="form-control" style="width:180px;"
-                           value="{{keyword}}" placeholder="按商品名称查找">
-                    <span class="input-group-btn">
-                     <button class="btn btn-default" type="submit">
-                         查找
-                     </button>
-                 </span>
-             </div>
-                <a class="btn btn-sm btn-outline btn-primary" href="#" onclick="process()">添加到经销商库</a>
-         </form>
-    </div>
-
-</div>
         <div class="table-responsive">
             <table class="table table-hover" id="tb_user" cellpadding="0" cellspacing="0" border="0" style="text-align:left;">
                 <thead>
-                    <tr>
-                        <th style="width:20%;text-align:left;">名称</th>
-                        <th style="width:10%;text-align:left;">品牌</th>
-                        <th style="width:10%;text-align:left;">分类</th>
-                        <th style="width:10%;text-align:left;">图片</th>
-                        <th style="width:20%;text-align:left;">指定价格</th>
-                    </tr>
-                    {% for p in products %}
-                    <tr>
-                        <td>
-                            <input type="checkbox" value="{{p.id}}"> {{p.name}}
-                        </td>
-                        <td>
-                            {{p.brand.name}}
-                        </td>
-                        <td>{{p.category.name}}</td>
-                        <td>
-                            <img class="preview" src="{{p.cover}}" title="图片" width="80" height="60" />
-                        </td>
-                        <td><input type="text" id="price{{p.id}}" class="form-control" style="width:100px;"
-                           value="0" ></td>
-                    </tr>
-                    {% endfor %}
+                <tr>
+                    <th style="width:20%;text-align:left;">名称</th>
+                    <th style="width:10%;text-align:left;">品牌</th>
+                    <th style="width:10%;text-align:left;">分类</th>
+                    <th style="width:10%;text-align:left;">图片</th>
+                    <th style="width:20%;text-align:left;">指定价格</th>
+                </tr>{% for p in products %}
+                <tr>
+                    <td><input type="checkbox" value="{{p.id}}"> {{p.name}}</td>
+                    <td>{{p.brand.name}}</td>
+                    <td>{{p.category.name}}</td>
+                    <td><img class="preview" src="{{p.cover}}" title="图片" width="80" height="60" /></td>
+                    <td><input type="text" id="price{{p.id}}" class="form-control" style="width:100px;" value="0" ></td>
+                </tr>
+                {% endfor %}
                 </thead>
-
             </table>
             <div>
                 <div class="col-sm-4">
@@ -106,11 +91,11 @@
 </body>
 </html>
 <script>
-function changePrice() {
-$("#tb_user input[type='text']").val($("#price").val());
-}
+    function changePrice() {
+        $("#tb_user input[type='text']").val($("#price").val());
+    }
 
-function checkChanged(flag)
+    function checkChanged(flag)
     {
         if(flag == 1) {
             $("#tb_user input[type='checkbox']").prop("checked",true);
@@ -123,10 +108,10 @@ function checkChanged(flag)
     function findAllSelectedData(){
         var data = [];
         $("#tb_user input[type='checkbox']:checked").each(function(){
-            var item = {};
-            item.id = this.value;
-            item.price = $("#price"+this.value).val();
-            data.push(item);
+                var item = {};
+                item.id = this.value;
+                item.price = $("#price"+this.value).val();
+                data.push(item);
             }
         );
         return data;
@@ -160,7 +145,7 @@ function checkChanged(flag)
             totalPages: {{totalpage}},
             startPage: {{page}},
             visiblePages: 8,
-            onPageClick: function (event, page) {
+                onPageClick: function (event, page) {
                 self.location="/admin/product_release_add/{{store_id}}?keyword={{keyword}}&pagesize={{pagesize}}&page="+page;
             }
         });

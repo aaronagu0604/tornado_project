@@ -404,35 +404,32 @@ class MobileSellOrderHandler(MobileBaseHandler):
             items = []
             totalprice = 0.0
             for soi in so.items:
-                try:
-                    totalprice += soi.price*soi.quantity
-                    items.append(
-                        {
-                            'product': soi.product.name,
-                            'cover': soi.product.cover,
-                            'id': soi.store_product_price.id,
-                            'price': soi.price,
-                            'quantity': soi.quantity,
-                            'attributes': [attribute.value for attribute in soi.product.attributes],
-                            'order_type': so.order.order_type
-                        }
-                    )
-                except Exception, e:
-                    logging.error('Error: store=%s, %s' % (soi.id, str(e)))
-                result.append({
-                    'id': so.order.id,
-                    'soid': so.id,
-                    'ordernum': so.order.ordernum,
-                    'saler_store': so.saler_store.name,
-                    'buyer_store': so.buyer_store.name,
-                    'order_type': so.order.order_type,
-                    'price': totalprice,
-                    'score': int(totalprice),
-                    'status': so.status,
-                    'items': items,
-                    'ordered': time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(so.order.ordered)),
-                    'deadline': time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(so.order.ordered + setting.PRODUCT_ORDER_TIME_OUT))
-                })
+                totalprice += soi.price*soi.quantity
+                items.append(
+                    {
+                        'product': soi.product.name,
+                        'cover': soi.product.cover,
+                        'id': soi.store_product_price.id,
+                        'price': soi.price,
+                        'quantity': soi.quantity,
+                        'attributes': [attribute.value for attribute in soi.product.attributes],
+                        'order_type': so.order.order_type
+                    }
+                )
+            result.append({
+                'id': so.order.id,
+                'soid': so.id,
+                'ordernum': so.order.ordernum,
+                'saler_store': so.saler_store.name,
+                'buyer_store': so.buyer_store.name,
+                'order_type': so.order.order_type,
+                'price': totalprice,
+                'score': int(totalprice),
+                'status': so.status,
+                'items': items,
+                'ordered': time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(so.order.ordered)),
+                'deadline': time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(so.order.ordered + setting.PRODUCT_ORDER_TIME_OUT))
+            })
 
         return result
 
