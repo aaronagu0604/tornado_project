@@ -589,8 +589,8 @@ class ProductPublishHandler(AdminBaseHandler):
         page = int(self.get_argument("page", '1') if len(self.get_argument("page", '1')) > 0 else '1')
         pagesize = int(self.get_argument("pagesize", '20') if len(self.get_argument("pagesize", '20')) > 0 else '20')
         keyword = self.get_argument("keyword", '')
-        codes = self.get_argument("codes", '')
-        codes = codes.split(',')
+        codestr = self.get_argument("codes", '')
+        codes = codestr.split(',')
         ft = ((ProductRelease.active == 1) & (Product.active == 1) & (ProductRelease.store == store_id))
         if len(keyword) > 0:
             keyword2 = '%' + keyword + '%'
@@ -604,7 +604,7 @@ class ProductPublishHandler(AdminBaseHandler):
             totalpage = total / pagesize if (total / pagesize) > 0 else 1
         cfs = cfs.order_by(ProductRelease.sort.asc()).paginate(page, pagesize)
         self.render('admin/user/saler_product_publish.html', products=cfs, total=total, page=page, codes=codes,
-                    pagesize=pagesize, totalpage=totalpage, keyword=keyword, store_id=store_id, Area=Area)
+                    pagesize=pagesize, totalpage=totalpage, keyword=keyword, store_id=store_id, Area=Area, codestr=codestr)
 
 
 @route(r'/admin/admin_user/(\d+)', name='admin_admin_user')  # 后台用户管理
