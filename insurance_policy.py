@@ -1674,7 +1674,8 @@ def YinChuanRenBao():
                          lube_policy=simplejson.dumps(lube), cash_ok=0, cash_policy='')
     InsuranceArea.create(area_code='00300005', insurance=13, lube_ok=1, dealer_store=26,
                          lube_policy=simplejson.dumps(lube), cash_ok=0, cash_policy='')
-
+    InsuranceArea.create(area_code='00300002', insurance=13, lube_ok=1, dealer_store=26,
+                         lube_policy=simplejson.dumps(lube), cash_ok=0, cash_policy='')
 
 # 宁夏银川国寿财返油策略
 def YinChuanGuoShouCai():
@@ -1896,6 +1897,8 @@ def YinChuanGuoShouCai():
     InsuranceArea.create(area_code='00300003', insurance=11, lube_ok=1, dealer_store=26,
                          lube_policy=simplejson.dumps(lube), cash_ok=0, cash_policy='')
     InsuranceArea.create(area_code='00300005', insurance=11, lube_ok=1, dealer_store=26,
+                         lube_policy=simplejson.dumps(lube), cash_ok=0, cash_policy='')
+    InsuranceArea.create(area_code='00300002', insurance=11, lube_ok=1, dealer_store=26,
                          lube_policy=simplejson.dumps(lube), cash_ok=0, cash_policy='')
 
 # 陕西人保返油、返现策略
