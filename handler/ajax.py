@@ -371,7 +371,8 @@ class AjaxSalerProductPriceProcessAreas(BaseHandler):
         data = simplejson.loads(json)
         if data and len(data) > 0:
             for item in data:
-                query = ProductRelease.select().where((ProductRelease.product == item['id']) & (ProductRelease.store == sid))
+                query = ProductRelease.select().where((ProductRelease.product == item['id']) &
+                                                      (ProductRelease.store == sid))
                 if query.count() > 0:
                     is_released = 0
                     for q in query:
@@ -405,7 +406,9 @@ class AjaxProductReleasePublishAreas(BaseHandler):
             for item in data:
                 query = StoreProductPrice.select().where((StoreProductPrice.product_release == item['id']) &
                                                          (StoreProductPrice.store == sid) &
-                                                         (StoreProductPrice.area_code == item['code']))
+                                                         (StoreProductPrice.area_code == item['code'])).\
+                    order_by(StoreProductPrice.created.asc())
+
                 if query.count() > 0:
                     is_change = 0
                     for q in query:
