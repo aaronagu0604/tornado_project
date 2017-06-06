@@ -1258,7 +1258,9 @@ class EditAdHandler(AdminBaseHandler):
             if self.request.files:
                 datetime = time.strftime('%Y%m%d%H%M%S', time.localtime(time.time()))  # 获取当前时间作为图片名称
                 filename = str(datetime) + ".jpg"
-                with open(setting.admin_file_path + 'image/ad/' + filename, "wb") as f:
+                import os
+                logging.error(os.path.isdir('upload/ad/'))
+                with open('upload/ad/' + filename, "wb") as f:
                     f.write(self.request.files["file"][0]["body"])
                 imgurl = postRequest(open(filename, 'rb'))
                 print 'imgurl=', imgurl
