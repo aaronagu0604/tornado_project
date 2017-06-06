@@ -2355,7 +2355,7 @@ def ShannXiRenBao():
     # 汉中
     InsuranceArea.create(area_code='00270007', insurance=13, lube_ok=1,
                          dealer_store=15,
-                         lube_policy=simplejson.dumps(lubex5), cash_ok=1,
+                         lube_policy=simplejson.dumps(lube), cash_ok=1,
                          cash_policy=simplejson.dumps(cash))
 
     # 安康
@@ -2827,7 +2827,7 @@ def ShannXiZhongHuaLianHe():
     # 汉中
     InsuranceArea.create(area_code='00270007', insurance=1, lube_ok=1,
                          dealer_store=15,
-                         lube_policy=simplejson.dumps(lubex5), cash_ok=1,
+                         lube_policy=simplejson.dumps(lube), cash_ok=1,
                          cash_policy=simplejson.dumps(cash))
 
     # 安康
@@ -3299,7 +3299,7 @@ def ShannXiPingAn():
     # 汉中
     InsuranceArea.create(area_code='00270007', insurance=7, lube_ok=1,
                          dealer_store=15,
-                         lube_policy=simplejson.dumps(lubex5), cash_ok=1,
+                         lube_policy=simplejson.dumps(lube), cash_ok=1,
                          cash_policy=simplejson.dumps(cash))
 
     # 安康
@@ -3771,7 +3771,7 @@ def ShannXiAnSheng():
     # 汉中
     InsuranceArea.create(area_code='00270007', insurance=15, lube_ok=1,
                          dealer_store=15,
-                         lube_policy=simplejson.dumps(lubex5), cash_ok=1,
+                         lube_policy=simplejson.dumps(lube), cash_ok=1,
                          cash_policy=simplejson.dumps(cash))
 
     # 安康
@@ -4243,7 +4243,7 @@ def ShannXiTianAn():
     # 汉中
     InsuranceArea.create(area_code='00270007', insurance=9, lube_ok=1,
                          dealer_store=15,
-                         lube_policy=simplejson.dumps(lubex5), cash_ok=1,
+                         lube_policy=simplejson.dumps(lube), cash_ok=1,
                          cash_policy=simplejson.dumps(cash))
 
     # 安康
@@ -4714,7 +4714,7 @@ def ShannXiTaiPingYang():
     # 汉中
     InsuranceArea.create(area_code='00270007', insurance=12, lube_ok=1,
                          dealer_store=15,
-                         lube_policy=simplejson.dumps(lubex5), cash_ok=1,
+                         lube_policy=simplejson.dumps(lube), cash_ok=1,
                          cash_policy=simplejson.dumps(cash))
 
     # 安康
@@ -5186,7 +5186,7 @@ def ShannXiDaDi():
     # 汉中
     InsuranceArea.create(area_code='00270007', insurance=10, lube_ok=1,
                          dealer_store=15,
-                         lube_policy=simplejson.dumps(lubex5), cash_ok=1,
+                         lube_policy=simplejson.dumps(lube), cash_ok=1,
                          cash_policy=simplejson.dumps(cash))
 
     # 安康
@@ -5658,7 +5658,7 @@ def ShannXiTaiPing():
     # 汉中
     InsuranceArea.create(area_code='00270007', insurance=6, lube_ok=1,
                          dealer_store=15,
-                         lube_policy=simplejson.dumps(lubex5), cash_ok=1,
+                         lube_policy=simplejson.dumps(lube), cash_ok=1,
                          cash_policy=simplejson.dumps(cash))
 
     # 安康
@@ -6129,7 +6129,7 @@ def ShannXiYongAn():
     # 汉中
     InsuranceArea.create(area_code='00270007', insurance=8, lube_ok=1,
                          dealer_store=15,
-                         lube_policy=simplejson.dumps(lubex5), cash_ok=1,
+                         lube_policy=simplejson.dumps(lube), cash_ok=1,
                          cash_policy=simplejson.dumps(cash))
 
     # 安康
