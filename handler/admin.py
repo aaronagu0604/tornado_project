@@ -2177,6 +2177,11 @@ class InsuranceList(AdminBaseHandler):
         self.render("admin/insurance/index.html", insurances=insurances, active='insurance',
                     areas=areas, Area=Area, iid=iid)
 
+def update_area_policy(insurance_area):
+    # 修改使用了改基础规则的店铺的所有规则
+    stores = Store.select().where((Store.active == 1) & (Store.insurance_policy_code == insurance_area.code))
+    stores.store_policy.update(lube = insurance_area.lube,cash = insurance_area.cash).where(SSILubePolicy.insurance == insurance_area.id).execute()
+
 
 @route(r'/admin/insurance/score', name='admin_insurance_score')  # 保险返积分策略
 class InsuranceScore(AdminBaseHandler):
@@ -2236,6 +2241,7 @@ class InsuranceScore(AdminBaseHandler):
             item = InsuranceArea.get(id=exid)
             item.cash_policy = cash
             item.save()
+            update_area_policy(item)
             AdminUserLog.create(admin_user=self.get_admin_user(), created=int(time.time()),
                                 content='编辑返积分策略:ise_id:%d'%exid)
             self.flash('保存成功')
@@ -2285,6 +2291,7 @@ class InsuranceLube(AdminBaseHandler):
             item.save()
             AdminUserLog.create(admin_user=self.get_admin_user(), created=int(time.time()),
                                 content=u'编辑保险返油策略:lp_id:%d' % item.id)
+            update_area_policy(item)
             self.write(u'修改成功，请刷新！')
 
 

@@ -2794,12 +2794,12 @@ def ShannXiZhongHuaLianHe():
 
     cash = {
         "ar": 0,
-        "ber": 25.0,
-        "ber2": 25.0,
+        "ber": 28.0,
+        "ber2": 28.0,
         "bm": 0,
         "btr": 0,
-        "fer": 25.0,
-        "fer2": 25.0,
+        "fer": 28.0,
+        "fer2": 28.0,
         "ftr": 0,
         "pr": 0
     }
@@ -3270,8 +3270,8 @@ def ShannXiPingAn():
         "ber2": 23.0,
         "bm": 0,
         "btr": 0,
-        "fer": 23.0,
-        "fer2": 23.0,
+        "fer": 21.0,
+        "fer2": 21.0,
         "ftr": 0,
         "pr": 0
     }
@@ -3738,12 +3738,12 @@ def ShannXiAnSheng():
 
     cash = {
         "ar": 0,
-        "ber": 27.0,
-        "ber2": 27.0,
+        "ber": 31.0,
+        "ber2": 31.0,
         "bm": 0,
         "btr": 0,
-        "fer": 27.0,
-        "fer2": 27.0,
+        "fer": 31.0,
+        "fer2": 31.0,
         "ftr": 0,
         "pr": 0
     }
@@ -6096,12 +6096,12 @@ def ShannXiYongAn():
 
     cash = {
         "ar": 0,
-        "ber": 28.0,
-        "ber2": 28.0,
+        "ber": 30.0,
+        "ber2": 30.0,
         "bm": 0,
         "btr": 0,
-        "fer": 28.0,
-        "fer2": 28.0,
+        "fer": 30.0,
+        "fer2": 30.0,
         "ftr": 0,
         "pr": 0
     }
@@ -6157,9 +6157,13 @@ def update_store_policy():
         if (store.area_code in extras) or (store.address.find('红寺堡')>=0):
             insurace_area = InsuranceArea.select().where(
                 (InsuranceArea.area_code == '00300004') & (InsuranceArea.active == 1))
+            store.insurance_policy_code = '00300004'
+            store.save()
         else:
             insurace_area = InsuranceArea.select().where(
                 (InsuranceArea.area_code == store.area_code[:8]) & (InsuranceArea.active == 1))
+            store.insurance_policy_code = store.area_code[:8]
+            store.save()
         for item in insurace_area:
             run_four_code = False
             print '1---', store.name, item.insurance.name, store.area_code[:8]
@@ -6171,6 +6175,8 @@ def update_store_policy():
         if run_four_code:
             insurace_area2 = InsuranceArea.select().where(
                 (InsuranceArea.area_code == store.area_code[:4]) & (InsuranceArea.active == 1))
+            store.insurance_policy_code = store.area_code[:4]
+            store.save()
             for item in insurace_area2:
                 print '2---', store.name, item.insurance.name, store.area_code[:4]
                 SSILubePolicy.create(store=store,

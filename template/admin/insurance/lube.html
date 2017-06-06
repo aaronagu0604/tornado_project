@@ -57,7 +57,7 @@
                 var html = '<div class="panel panel-default" name="gift_item"> <div class="panel-heading"> <h3 class="panel-title" style="height:20px;">';
                 html += '<span class="pull-left">' + groups[i].gift + '</span>';
                 html += '<span class="pull-right" > <a href="#" style="font-size:8px;" onclick="removeGroup(this)">删除组</a>';
-                html += '<a href="#" style="font-size:8px; margin:0px 20px;" onclick="addLine(this)">增加行</a>';
+                html += '<a href="#" style="font-size:8px; margin:0px 20px;" onclick="addLine(this)">增加行</a></span></h3></div><table class="table">';
                 //html += '<a href="#" style="font-size:8px;" onclick="removeLine(this)">减少行</a></span></h3></div><table class="table">';
                 html += '<th>显示文本</th><th>起始价格</th><th>上限价格</th><th>车主礼品数</th><th>门店礼品数</th><th>所购险种</th> ';
                 for(var j=0; j<groups[i].items.length; j++) {
@@ -69,9 +69,10 @@
                     html+='<td><select class="form-control">' + getOption("1",groups[i].items[j].flag) +
                         getOption('2',groups[i].items[j].flag) +
                         getOption('3',groups[i].items[j].flag) +
-                        '</select> </td> </tr>';
+                        '</select> </td> ';
+                    html += '<td><a href="#" style="font-size:8px;" onclick="removeLine(this)">减少行</a></td></tr>';
                 }
-                html += '<a href="#" style="font-size:8px;" onclick="removeLine(this)">减少行</a></span></h3></div><table class="table">';
+
                 html+='</table> </div>';
                 $('#giftGroup').append(html);
             }
@@ -134,7 +135,9 @@
     }
 
     function removeLine(obj) {
-        $(obj).parent().parent().parent().parent().find('table tr').last().remove();
+        var line = $(obj).parent().parent();
+        console.log(line);
+        line.remove();
     }
 
     function saveData() {
