@@ -1392,7 +1392,6 @@ class MobileNewOrderHandler(MobileBaseHandler):
                 self.write(simplejson.dumps(result))
                 return
             now = int(time.time())
-            order_now = int(time.time() * 100)
             order = Order()
             order.user = user
             order.buyer_store = user.store
@@ -1411,7 +1410,7 @@ class MobileNewOrderHandler(MobileBaseHandler):
             order.order_type = order_type
             order.total_price = total_price if order_type == 1 else 0
             order.total_score = total_price if order_type == 2 else 0
-            order.ordernum = 'U' + str(user.id) + 'S' + str(order_now - setting.ORDERBEGIN)
+            order.ordernum = 'U' + str(user.id) + 'D' + time.strftime('%m%d', now)
             if order_type == 2 and payment == 5:    # 积分支付
                 if user.store.score < total_price:
                     result['msg'] = u"您的积分不足"
@@ -1422,6 +1421,8 @@ class MobileNewOrderHandler(MobileBaseHandler):
                     user.store.save()
                     order.status = 1
                     order.pay_time = now
+                    order.save()
+                    order.ordernum += 'S%s' % order.id
                     order.save()
                     # 积分消费记录
                     score_record = ScoreRecord()
@@ -1445,6 +1446,8 @@ class MobileNewOrderHandler(MobileBaseHandler):
                     order.status = 1
                     order.pay_time = now
                     order.save()
+                    order.ordernum += 'S%s' % order.id
+                    order.save()
                     # 资金类别 # 1提现、2充值、3售出、4采购、5保险、6退款
                     money_record = MoneyRecord()
                     money_record.user = user
@@ -1459,6 +1462,8 @@ class MobileNewOrderHandler(MobileBaseHandler):
                     money_record.save()
             else:
                 order.status = 0
+                order.save()
+                order.ordernum += 'S%s' % order.id
                 order.save()
             sppids = []
             for item in items:
@@ -1484,12 +1489,12 @@ class MobileNewOrderHandler(MobileBaseHandler):
             result['data']['order_id'] = order.id
             result['data']['payment'] = payment
             result['data']['pay_info'] = pay_order(payment, total_price, order.ordernum, u'车装甲普通商品')
-            if payment in [1,2,3]:
+            if payment in [1, 2, 3]:
                 if result['data']['pay_info']:
                     result['flag'] = 1
                 else:
                     result['msg'] = u'订单支付失败'
-            elif payment in [4,5]:
+            elif payment in [4, 5]:
                 result['flag'] = 1
                 result['msg'] = '支付成功'
             if is_shop_cart == '1':
