@@ -1971,12 +1971,20 @@ def get_product_name_attr():
         if p:
             print('id=%s, name=%s, attr=%s' % (np.id, np.name, attr))
 
+def get_hanzhong():
+    area_code = '00270007' + '%'
+    fp = open('store_mobile.txt', 'w')
+    mobiles = ''
+    for s in New_Store.select().where((New_Store.active == 1) & (New_Store.area_code % area_code)):
+        mobiles += s.mobile + ','
+    fp.write(mobiles.strip(','))
+    fp.close()
+
 
 if __name__ == '__main__':
     pass
     # get_all_old_product_price()
     # get_all_new_product_price()
-    get_product_name_attr()
 
 
     # move_hotsearch()    # 热搜

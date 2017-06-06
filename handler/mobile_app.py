@@ -1292,8 +1292,7 @@ class MobileOrderBaseHandler(MobileBaseHandler):
                         'price': product_price.price,
                         'score': product_price.score,
                         'img': product_price.product_release.product.cover,
-                        'attributes': [attribute.value for attribute in
-                                       product_price.product_release.product.attributes]
+                        'attributes': [attribute.value for attribute in product_price.product_release.product.attributes]
                     }
                     if product_price.store.id not in stores:
                         result['data']['store'].append({
@@ -1345,7 +1344,10 @@ class MobileNewOrderHandler(MobileBaseHandler):
                 for p in item['products']:
                     spp = StoreProductPrice.get(id=p['sppid'])
                     if order_type == 1:
-                        db_store_price += (spp.price * int(p['quantity']))
+                        if spp.price == 0:
+                            return False, spp.product_release.product.name + u'价格不可为0'
+                        else:
+                            db_store_price += (spp.price * int(p['quantity']))
                     elif order_type == 2:
                         db_store_price += (spp.score * int(p['quantity']))
                     else:
@@ -1353,6 +1355,8 @@ class MobileNewOrderHandler(MobileBaseHandler):
                 if db_store_price != float(item['price']):
                     return False, u'store价格有误'
                 db_total_price += db_store_price
+            if total_price == db_total_price and total_price == 0:
+                return False, u'商品价格错误'
             if total_price != db_total_price:
                 return False, u'总价有误'
         except Exception, e:
@@ -1851,6 +1855,11 @@ class MobilePayOrderHandler(MobileBaseHandler):
             elif 'I' in order_number:  # 保险订单
                 order_T = 'insurance'
                 order = InsuranceOrder.get(ordernum=order_number)
+                if order.current_order_price.status == 0:
+                    result['msg'] = u'订单已过期，请重新报价'
+                    self.write(simplejson.dumps(result))
+                    self.finish()
+                    return
                 ordernum = order.ordernum
                 log = u'车装甲保单'
                 if order.status == 1:
@@ -1917,7 +1926,6 @@ class MobilePayOrderHandler(MobileBaseHandler):
 
         else:
             result['msg'] = u"传入参数异常"
-        logging.info(simplejson.dumps(result))
         self.write(simplejson.dumps(result))
         self.finish()
 

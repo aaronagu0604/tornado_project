@@ -20,7 +20,6 @@
                 {% endfor %}
             </div>
             {%endif%}
-            {% if check != 'on' %}
             <div class="row">
                 <form action="/admin/insurance/lube" method="post" style="margin-top:10px;">
                     {{xsrf()}}
@@ -29,6 +28,7 @@
                     <input type="hidden" name="sid" value="{{sid}}">
                     <input type="hidden" name="json" id="json" value='{{item['policy']}}'>
                     <input type="hidden" name="area_code" value="{{area_code}}">
+                    {% if check != 'on' %}
                     <div class="col-sm-12">
                         <input class="btn btn-primary" type="submit" value="保存" onclick="javascript:return saveData();"/>
                         <select name="province" id="gift" style="height:28px;margin-left: 10px;margin-top: 10px;border-radius:4px;">
@@ -38,11 +38,10 @@
                         </select>
                         <input class="btn btn-primary" type="button" value="增加礼品组" onclick="addGroup()"/>
                     </div>
+                    {% endif %}
                 </form>
-                <div class="col-sm-12" style="margin-top: 5px;" id="giftGroup">
-                </div>
+                <div class="col-sm-12" style="margin-top: 5px;" id="giftGroup"></div>
             </div>
-            {% endif %}
         </div>
     </div>
 </div>

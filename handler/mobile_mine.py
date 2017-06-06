@@ -127,7 +127,7 @@ class MobilStorePopularizeHandler(MobileBaseHandler):
     @apiSampleRequest /mobile/storepopularize
     """
     def act_insurance(self, pop, uid, storeName, addr1, addr2, mobile, now):
-        pic = os.path.join(settings['upload_path'], "store_popularize/%s_%d.jpeg"%(pop['activity'],uid))
+        pic = os.path.join(settings['upload_path'], "store_popularize/%s_%d.jpeg" % (pop['activity'], uid))
         newPic_name = pic.split('/')[-1]
         if not os.path.exists(pic):
             ttfont = ImageFont.truetype(setting.typeface, pop['wordSize'])
@@ -404,32 +404,36 @@ class MobileSellOrderHandler(MobileBaseHandler):
             items = []
             totalprice = 0.0
             for soi in so.items:
-                totalprice += soi.price*soi.quantity
-                items.append(
-                    {
-                        'product': soi.product.name,
-                        'cover': soi.product.cover,
-                        'id': soi.store_product_price.id,
-                        'price': soi.price,
-                        'quantity': soi.quantity,
-                        'attributes': [attribute.value for attribute in soi.product.attributes],
-                        'order_type': so.order.order_type
-                    }
-                )
-            result.append({
-                'id': so.order.id,
-                'soid': so.id,
-                'ordernum': so.order.ordernum,
-                'saler_store': so.saler_store.name,
-                'buyer_store': so.buyer_store.name,
-                'order_type': so.order.order_type,
-                'price': totalprice,
-                'score': int(totalprice),
-                'status': so.status,
-                'items': items,
-                'ordered': time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(so.order.ordered)),
-                'deadline': time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(so.order.ordered + setting.PRODUCT_ORDER_TIME_OUT))
-            })
+                try:
+                    totalprice += soi.price*soi.quantity
+                    items.append(
+                        {
+                            'product': soi.product.name,
+                            'cover': soi.product.cover,
+                            'id': soi.store_product_price.id,
+                            'price': soi.price,
+                            'quantity': soi.quantity,
+                            'attributes': [attribute.value for attribute in soi.product.attributes],
+                            'order_type': so.order.order_type
+                        }
+                    )
+                except Exception, e:
+                    logging.error('Error: store=%s, %s' % (soi.id, str(e)))
+                result.append({
+                    'id': so.order.id,
+                    'soid': so.id,
+                    'ordernum': so.order.ordernum,
+                    'saler_store': so.saler_store.name,
+                    'buyer_store': so.buyer_store.name,
+                    'order_type': so.order.order_type,
+                    'price': totalprice,
+                    'score': int(totalprice),
+                    'status': so.status,
+                    'items': items,
+                    'ordered': time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(so.order.ordered)),
+                    'deadline': time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(so.order.ordered + setting.PRODUCT_ORDER_TIME_OUT))
+                })
+
         return result
 
     @require_auth
@@ -440,7 +444,8 @@ class MobileSellOrderHandler(MobileBaseHandler):
         try:
             result['data'] = self.productOrderSearch(type, index)
             result['flag'] = 1
-        except Exception:
+        except Exception, e:
+            logging.error('Error: /mobile/sellorder %s' % str(e))
             result['msg'] = '系统错误'
         self.write(simplejson.dumps(result))
 
@@ -554,13 +559,16 @@ class MobileInsuranceOrderHandler(MobileBaseHandler):
     """
     def dead_insurance_order_price(self,store):
         now = int(time.time())
-        iopselect = InsuranceOrderPrice.select().join(InsuranceOrder,
-                                                      on=(InsuranceOrderPrice.insurance_order_id==InsuranceOrder.id)). \
+        iopselect = InsuranceOrderPrice.select().join(InsuranceOrder, on=(InsuranceOrderPrice.insurance_order_id==InsuranceOrder.id)). \
             where(InsuranceOrder.store == store.id,InsuranceOrder.status << [0,1],InsuranceOrderPrice.created+setting.deadlineTime<now)
 
         for iop in iopselect:
             iop.status = 0
             iop.save()
+            # io = InsuranceOrder.get(id=iop.insurance_order_id)
+            # io.status = -1
+            # io.cancel_reason = u'过期取消'
+            # io.cancel_time = int(time.time())
 
     @require_auth
     def get(self):

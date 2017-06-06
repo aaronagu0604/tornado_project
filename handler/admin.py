@@ -1212,56 +1212,56 @@ class EditAdHandler(AdminBaseHandler):
     def show_ad(self, aid):
         items = Area.select().where(Area.pid >> None)
         aid = int(aid)
-        try:
-            ad = BlockItem.get(id=aid)
-        except:
-            self.flash("此广告不存在")
-            self.redirect("/admin/advertisement")
-            return
+        if aid > 0:
+            try:
+                ad = BlockItem.get(id=aid)
+            except:
+                self.flash("此广告不存在")
+                self.redirect("/admin/advertisement")
+                return
         blocks = Block.select()
         self.render('admin/App/ad_e.html', items=items, ad=ad, active='ads', blocks=blocks)
 
     def post(self, aid):
         aid = int(aid)
-        url = self.get_argument("url", None)
-        imgalt = self.get_argument("imgalt", None)
-        sort = int(self.get_argument("sort", 1))
-        type = int(self.get_argument("sel_type", 0))
-        province_code = self.get_argument("province_code", None)
-        city_code = self.get_argument("city_code", None)
+        ad_name = self.get_argument("ad_name", None)
+        ad_link = self.get_argument("ad_link", None)
+        product_id = self.get_argument("product_id", None)
+        block_item = self.get_argument("block_item", None)
         remark = self.get_argument("remark", None)
-        adsize = self.get_argument("adsize", None)
-        status = int(self.get_argument("status", 0))
-        try:
-            ad = Ad.get(id=aid)
-        except:
-            self.flash("此广告不存在")
+        sort = self.get_argument("sort", 1)
+        sort = int(sort) if sort else 1
+        active = int(self.get_argument("active", 0))
+        if aid == 0:
+            ad = BlockItem
+        elif aid > 0:
+            try:
+                ad = BlockItem.get(id=aid)
+            except:
+                self.flash("此广告不存在")
+                self.redirect("/admin/ads")
+                return
+        else:
+            self.flash("广告ID错误")
             self.redirect("/admin/ads")
             return
-
-        ad.url = url
-        ad.imgalt = imgalt
-        ad.sort = sort
-        ad.atype = type
+        ad.block = block_item
+        ad.name = ad_name
+        ad.link = 'czj://%s/%s' % (ad_link, product_id)
         ad.remark = remark
-        ad.flag = status
-        ad.adsize = adsize
+        ad.sort = sort
+        ad.remark = remark
+        ad.active = active
         try:
-            if province_code != '' and city_code != '':
-                ad.city = city_code
-                ad.city_code = ad.city.code
             if self.request.files:
                 datetime = time.strftime('%Y%m%d%H%M%S', time.localtime(time.time()))  # 获取当前时间作为图片名称
                 filename = str(datetime) + ".jpg"
                 with open('upload/ad/' + filename, "wb") as f:
                     f.write(self.request.files["file"][0]["body"])
                 imgurl = postRequest(open(filename, 'rb'))
-                ad.picurl = imgurl if not imgurl else ''
-            ad.validate()
+                ad.img = imgurl if imgurl else ''
             ad.save()
-            AdminUserLog.create(admin_user=self.get_admin_user(),
-                                created=int(time.time()),
-                                content='编辑广告: ad_id:%d'%aid)
+            AdminUserLog.create(admin_user=self.get_admin_user(), created=int(time.time()), content='编辑广告: ad_id:%d' % aid)
             self.flash(u"广告修改成功")
             self.redirect("/admin/ads")
             return

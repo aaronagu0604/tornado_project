@@ -6,9 +6,7 @@
 <div class="row">
     <nav>
         <div class="navbar-header">
-            <a class="navbar-brand" href="#">
-                修改广告
-            </a>
+            <a class="navbar-brand" href="#">修改广告</a>
         </div>
     </nav>
 </div>
@@ -43,7 +41,7 @@
                             <label class="control-label" style="margin-top:7px;">广告名称</label>
                         </div>
                         <div class=" col-md-11">
-                            <input type="text" class="form-control"  name="imgalt" value="{{ad.name}}" style="width:480px;" />
+                            <input type="text" class="form-control"  name="ad_name" value="{{ad.name}}" style="width:480px;" />
                         </div>
                     </div>
 
@@ -66,8 +64,7 @@
                             <label class="control-label" style="margin-top:7px;">产品ID</label>
                         </div>
                         <div class=" col-md-11">
-                            <input type="text" class="form-control"  name="imgalt" value="{{ad.imgalt}}" style="width:480px;" />
-                            <!--<a href="#" class="btn btn-xs btn-success" onclick="ad_link()">获取</a>-->
+                            <input type="text" class="form-control"  name="product_id" value="" style="width:480px;" />
                         </div>
                     </div>
 
@@ -76,7 +73,7 @@
                             <label class="control-label" style="margin-top:7px;">广告位置</label>
                         </div>
                         <div  class=" col-md-4">
-                            <select class="form-control" name="sel_type" id="sel_type" style="width:230px;">
+                            <select class="form-control" name="block_item" id="sel_type" style="width:230px;">
                                 {% for at in blocks %}
                                 <option value="{{at.id}}" {{ at.id == ad.block.id and 'selected' or '' }}>{{at.name}}</option>
                                 {% endfor %}
@@ -106,7 +103,7 @@
                             <label class="control-label" style="margin-top:11px;">是否启用</label>
                         </div>
                         <div class=" col-md-4">
-                            <input type="checkbox" class="form-control" style="width:20px; text-align: left;" value="1"  name="status" {% if ad.active == 1 %}checked="checked"{%endif%} />
+                            <input type="checkbox" class="form-control" style="width:20px; text-align: left;" value="1"  name="active" {% if ad.active == 1 %}checked="checked"{%endif%} />
                         </div>
                     </div>
                     <div class="form-group has-success row">
@@ -117,12 +114,12 @@
                             <input type="file" class="form-control" name="file" style="width:480px;">
                         </div>
                         <div class=" col-md-7">
-                            <img src="{{ad.picurl}}"  height="100">
+                            <img src="{{ad.img}}"  height="100">
                         </div>
                     </div>
                     <div class="form-group has-success">
                         <a class="btn btn-outline btn-warning btn-sm" href="/admin/ads" style="padding:7px 28px;border:1px solid #438bca;color:#438bca;border-radius:4px;font-size:16px;margin-right:30px;">取消</a>
-                        <input type="submit" name="sub" value="保存" class="btn btn-outline btn-primary btn-sm" style="width:90px;height:32px;background:#438bca;color:#fff;border-radius:4px;border:none;font-size:16px;">
+                        <input type="submit" value="保存" class="btn btn-outline btn-primary btn-sm" style="width:90px;height:32px;background:#438bca;color:#fff;border-radius:4px;border:none;font-size:16px;">
                     </div>
                 </form>
             </div>

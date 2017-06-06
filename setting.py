@@ -37,7 +37,7 @@ presentToB = u'修理厂'
 
 ORDERBEGIN = 145667520000
 
-admin_file_path = '/home/www/fileservice/data/image/'
+admin_file_path = '/imgData/'
 
 
 financeMobiles = '15249281270,18729368422,13319254206' #张怡，吴静, 张晓华 17791812996王琳
@@ -80,21 +80,21 @@ popularizePIC = [{
     'phoneWidth': 96,
     'phoneHeight': 1140
 },{
-    'activity': 'repairCar',
+    'activity': '5-12',
     'area_code': '00',
-    'basePicPath': '/home/www/workspace/eofan/src/upload/popularizePIC/repairCar.png',
-    'PicPath': '/home/www/workspace/eofan/src/upload/popularizePIC/repairCar',
-    'wordSize':30,
-    'wordColour': (255, 255, 255),
+    'basePicPath': '/home/www/workspace/eofan/src/upload/popularizePIC/5-12.png',
+    'PicPath': '/home/www/workspace/eofan/src/upload/popularizePIC/5-12',
+    'wordSize':40,
+    'wordColour': (0,0,0),
     'storeWidth': 96,
-    'storeHeight': 924,
+    'storeHeight': 925,
     'addrWidth': 96,
-    'addrHeight': 1016,
-    'addr2tab':25,
-    'addr2Width': 182,
-    'addr2Height': 1057,
+    'addrHeight': 1020,
+    'addr2tab':16,
+    'addr2Width': 96,
+    'addr2Height': 1062,
     'phoneWidth': 96,
-    'phoneHeight': 1133
+    'phoneHeight': 1140
 }
 ]
 
