@@ -243,14 +243,14 @@ class AjaxGetAllAreas(BaseHandler):
     @coroutine
     def get(self):
         type = self.get_argument('type',None)
-        bi_id = int(self.get_argument('bi_id',0))
-        a = yield self.get_all_area(type,bi_id)
+        bi_id = self.get_argument('bi_id', 0)
+        bi_id = int(bi_id) if bi_id else 0
+        a = yield self.get_all_area(type, bi_id)
 
     @run_on_executor
     def get_all_area(self,type,bi_id):
         items = Area.select(Area.id.alias('id'), Area.pid.alias('pid'), Area.name.alias('name'), Area.code.alias('code')).dicts()
         bitems = [item.area_code for item in BlockItemArea.select().where(BlockItemArea.block_item == bi_id)]
-        print bitems
         nodes = [{
                 'id': item['id'],
                 'pId': item['pid'] if item['pid'] else 0,
@@ -271,7 +271,6 @@ class AjaxGetAllAreas(BaseHandler):
             'click': "pop('全部地域-产品信息', '" + url + "');",
             'open': 'true'
         })
-        print nodes
         self.write(simplejson.dumps(nodes))
 
 

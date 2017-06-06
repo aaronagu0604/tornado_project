@@ -34,14 +34,14 @@
                     {% endfor %}
                 </div>
                 {%endif%}
-                <form action="" method="post" enctype="multipart/form-data">
+                <form  method="post" action="/admin/edit_ad/{{ad.id or 0}}" enctype="multipart/form-data">
                     {{xsrf()}}
                     <div class="form-group has-success row">
                         <div class=" col-md-1" style="width:100%;">
                             <label class="control-label" style="margin-top:7px;">广告名称</label>
                         </div>
                         <div class=" col-md-11">
-                            <input type="text" class="form-control"  name="ad_name" value="{{ad.name}}" style="width:480px;" />
+                            <input type="text" class="form-control"  name="ad_name" value="{{ad.name or ''}}" style="width:480px;" />
                         </div>
                     </div>
 
@@ -75,7 +75,7 @@
                         <div  class=" col-md-4">
                             <select class="form-control" name="block_item" id="sel_type" style="width:230px;">
                                 {% for at in blocks %}
-                                <option value="{{at.id}}" {{ at.id == ad.block.id and 'selected' or '' }}>{{at.name}}</option>
+                                <option value="{{at.id}}" {% if ad %} {{ at.id == ad.block.id and 'selected' or '' }} {% endif %}>{{at.name}}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -95,7 +95,7 @@
                             <label class="control-label" style="margin-top:7px;">排序</label>
                         </div>
                         <div class=" col-md-4">
-                            <input type="text" class="form-control"  name="sort" value="{{ad.sort}}" style="width:480px;" />
+                            <input type="text" class="form-control"  name="sort" value="{{ad.sort or ''}}" style="width:480px;" />
                         </div>
                     </div>
                     <div class="form-group has-success row">
@@ -114,11 +114,11 @@
                             <input type="file" class="form-control" name="file" style="width:480px;">
                         </div>
                         <div class=" col-md-7">
-                            <img src="{{ad.img}}"  height="100">
+                            <img src="{{ad.img or ''}}"  height="100">
                         </div>
                     </div>
                     <div class="form-group has-success">
-                        <a class="btn btn-outline btn-warning btn-sm" href="/admin/ads" style="padding:7px 28px;border:1px solid #438bca;color:#438bca;border-radius:4px;font-size:16px;margin-right:30px;">取消</a>
+                        <a class="btn btn-outline btn-warning btn-sm" href="/admin/advertisement" style="padding:7px 28px;border:1px solid #438bca;color:#438bca;border-radius:4px;font-size:16px;margin-right:30px;">取消</a>
                         <input type="submit" value="保存" class="btn btn-outline btn-primary btn-sm" style="width:90px;height:32px;background:#438bca;color:#fff;border-radius:4px;border:none;font-size:16px;">
                     </div>
                 </form>
@@ -134,6 +134,35 @@
 <script src="/style/js/jquery.twbsPagination.min.js"></script>
 <script>
     var xsrf='{{handler.xsrf_token}}';
+    $(document).ready(function() {
+        var setting = {
+            async: {
+                enable: true,
+                type:"get",
+                contentType: "application/json",
+                url:"/ajax/area_tree?type=blockitem&bi_id={{ad.id or 0}}",
+                dataFilter: filter
+            },
+            data: {
+                simpleData: {
+                    enable: true
+                }
+            },
+            check: {
+                enable: true
+            },
+        };
+
+        function filter(treeId, parentNode, childNodes) {
+            if (!childNodes) return null;
+            for (var i=0, l=childNodes.length; i<l; i++) {
+                childNodes[i].name = childNodes[i].name.replace(/\.n/g, '.');
+            }
+            return childNodes;
+        }
+        $.fn.zTree.init($("#treeDemo"), setting);
+    });
+
     function publish() {
         var zTree = $.fn.zTree.getZTreeObj("treeDemo");
         var nodes = zTree.getCheckedNodes(true);
@@ -164,58 +193,29 @@
             }
         }
         if(codes.length > 0) {
-             $.ajax({
-             url : "/admin/block_item_publish",
-             type : "post",
-             data : {'ad_id':{{ad.id}},
-                     'codes':codes.toString(),
-                     '_xsrf':xsrf},
-             dataType : "text",
-             success : function(result) {
-               if (result.falg=1) {
-                 layer.alert('发布成功');
-               } else {
-                 layer.alert('发布失败'+result);
-               }
-             },
-             error:function(result){
-               layer.alert('Error:'+result['msg']);
-             }
-            })
+            $.ajax({
+                url : "/admin/block_item_publish",
+                type : "post",
+                data : {'ad_id':{{ad.id or 0}},
+            'codes':codes.toString(),
+                '_xsrf':xsrf},
+            dataType : "text",
+                success : function(result) {
+                if (result.falg=1) {
+                    layer.alert('发布成功');
+                } else {
+                    layer.alert('发布失败'+result);
+                }
+            },
+            error:function(result){
+                layer.alert('Error:'+result['msg']);
+            }
+        })
         }
         else {
             layer.alert('请选择要发布的地区');
         }
     }
-    $(document).ready(function() {
-        var setting = {
-            async: {
-                enable: true,
-                type:"get",
-                contentType: "application/json",
-                url:"/ajax/area_tree?type=blockitem&bi_id={{ad.id}}",
-                dataFilter: filter
-            },
-            data: {
-                simpleData: {
-                    enable: true
-                }
-            },
-            check: {
-                enable: true
-            },
-        };
-
-        function filter(treeId, parentNode, childNodes) {
-            if (!childNodes) return null;
-            for (var i=0, l=childNodes.length; i<l; i++) {
-                childNodes[i].name = childNodes[i].name.replace(/\.n/g, '.');
-            }
-            return childNodes;
-        }
-        $.fn.zTree.init($("#treeDemo"), setting);
-    });
-
     function ad_link() {
         var ad_link = document.getElementById('ad_link').value;
         if (ad_link == 'activity'){

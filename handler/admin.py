@@ -1212,6 +1212,8 @@ class EditAdHandler(AdminBaseHandler):
     def show_ad(self, aid):
         items = Area.select().where(Area.pid >> None)
         aid = int(aid)
+        if aid == 0:
+            ad = ''
         if aid > 0:
             try:
                 ad = BlockItem.get(id=aid)
@@ -1233,7 +1235,7 @@ class EditAdHandler(AdminBaseHandler):
         sort = int(sort) if sort else 1
         active = int(self.get_argument("active", 0))
         if aid == 0:
-            ad = BlockItem
+            ad = BlockItem()
         elif aid > 0:
             try:
                 ad = BlockItem.get(id=aid)
@@ -1256,20 +1258,20 @@ class EditAdHandler(AdminBaseHandler):
             if self.request.files:
                 datetime = time.strftime('%Y%m%d%H%M%S', time.localtime(time.time()))  # 获取当前时间作为图片名称
                 filename = str(datetime) + ".jpg"
-                with open('upload/ad/' + filename, "wb") as f:
+                with open(setting.admin_file_path + 'image/ad/' + filename, "wb") as f:
                     f.write(self.request.files["file"][0]["body"])
                 imgurl = postRequest(open(filename, 'rb'))
+                print 'imgurl=', imgurl
                 ad.img = imgurl if imgurl else ''
             ad.save()
             AdminUserLog.create(admin_user=self.get_admin_user(), created=int(time.time()), content='编辑广告: ad_id:%d' % aid)
             self.flash(u"广告修改成功")
-            self.redirect("/admin/ads")
-            return
         except Exception, ex:
             self.flash(str(ex))
-            self.redirect("/admin/editad/" + str(aid))
+            self.redirect("/admin/edit_ad/" + str(aid))
+            return
 
-        self.render('admin/ad/editad.html', ad=ad, active='ads')
+        self.redirect('/admin/advertisement')
 
 
 @route(r'/admin/block_item_publish', name='admin_block_item_publish')  # 经销商发布商品到地区
