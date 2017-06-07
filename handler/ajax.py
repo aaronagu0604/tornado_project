@@ -542,7 +542,7 @@ class GetActiveScoreHandler(BaseHandler):
     def get_score_policy(self, sid, iid, force, business):
         result = {'score_num': 0, 'lube_num': 0, 'lube_name': ''}
         score = SSILubePolicy.get((SSILubePolicy.store == sid) & (SSILubePolicy.insurance == iid)).score
-        score_policy = simplejson.loads(simplejson.dumps(score))
+        score_policy = simplejson.loads(score)
         if force and business:
             result['score_num'] = business * score_policy['frc_bns']['score_rate']
             result['lube_num'] = score_policy['frc_bns']['lube_num']
@@ -573,6 +573,8 @@ class GetActiveScoreHandler(BaseHandler):
                 'lube_name': u'X5特'
             }
         }
+        {"force": {"lube_num": 2, "score_rate": 0, "lube_name": "X5\u7279"}, "frc_bns": {"lube_num": 2, "score_rate": 1, "lube_name": "X5\u7279"}, "business": {"lube_num": 0, "score_rate": 1, "lube_name": ""}}
+
         '''
         result = {'flag': 0, 'msg': '', "data": {"score_num": 0, "lube_num": 2}}
         pid = self.get_argument('pid', None)
