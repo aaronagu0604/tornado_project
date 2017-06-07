@@ -687,6 +687,7 @@ class MobileInsuranceOrderDetailHandler(MobileBaseHandler):
         if insuranceorder.current_order_price.gift_policy == 1:
             gift_policy = '油品'
             commission = str(insuranceorder.current_order_price.driver_lube_num+insuranceorder.current_order_price.store_lube_num) + u'桶'
+        gift_summary = ''
         if insuranceorder.current_order_price.gift_policy == 3:
             lubenum = insuranceorder.current_order_price.driver_lube_num+insuranceorder.current_order_price.store_lube_num
             scorenum = insuranceorder.current_order_price.score
@@ -970,7 +971,7 @@ class MobileInsuranceMethodHandler(MobileBaseHandler):
 
             if subjoinprice:
                 subjoinprice = str(subjoinprice)
-
+            gift_summary = ''
             if iop.gift_policy == 1:
                 gift_policy = '油品'
                 gift_summary = iop.store_lube_type
