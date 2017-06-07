@@ -99,6 +99,10 @@
                                 <input type="text" tag="price" name="price_{{p.id}}" class="form-control" style="width:100px;"
                                 value="{{p.price}}" placeholder="价格" code={{code}}>
                             </td>
+                            <td style="width:10%;text-align:left;">
+                                <input type="text" tag="score" name="price_{{p.id}}" class="form-control" style="width:100px;"
+                                value="{{p.price}}" placeholder="积分" code={{code}}>
+                            </td>
                             <td style="width:8%;text-align:left;">
                                 <input type="text" tag="sort" name="sort_{{p.id}}" class="form-control" style="width:60px;"
                                 value="{{p.sort}}" placeholder="排序" code={{code}}></td>
@@ -158,15 +162,13 @@
     function findAllSelectedData(){
         var data = [];
         $("#tb_user input[type='checkbox']:checked").each(function(){
-            var key = this.value;
-            $("#tb_user tr[name='tr_"+key+"']").each(function(){
-                var item = {};
-                item.id = key;
-                item.price = $(this).find('input').first().val();
-                item.sort = $(this).find('input').last().val();
-                item.code = $(this).attr('code');
-                data.push(item);
-            });
+            var item = {};
+            item.id = this.value;
+            item.price = $("#price_"+this.value).val();
+            item.score = $("#score_"+this.value).val();
+            item.sort = $("#sort_"+this.value).val();
+            data.push(item);
+            }
         });
         return data;
     }

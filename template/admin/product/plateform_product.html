@@ -47,9 +47,9 @@
             <table class="table table-hover" id="tb_users" cellpadding="0" cellspacing="0" border="0" style="text-align:center;">
                 <thead>
                 <tr style="background:#528acb;color:#fff;text-align:center;height:38px;line-height:38px;">
+
                     <th style="width:20%;text-align:center;">商品图片</th>
                     <th style="width:30%;text-align:center;">商品名称</th>
-                    <th style="width:30%;text-align:center;">发布店铺</th>
                     <th style="width:20%;text-align:center;">基本信息</th>
                     <th style="width:30%;text-align:center;">操作</th>
                 </tr>
@@ -58,31 +58,28 @@
                 {% for p in products %}
                         <tr>
                             <td>
-                                <img src="{{ p.product_release.product.cover }}" width="80" height="80" />
+                                <img src="{{ p.cover }}" width="80" height="80" />
                             </td>
                             <td>
-                                <h4>{{ p.product_release.product.name }}</h4>
+                                <h4>{{ p.name }}</h4>
                                 <p>
                                 <div>
-                                    品牌：{{ p.product_release.product.brand.name }} |
+                                    品牌：{{ p.brand.name }} |
                                     <font style="color:#6d6d6d;">创建时间：</font>
-                                    <span style="color:#6d6d6d;">{{p.product_release.product.created | datetimeformat}}</span>
+                                    <span style="color:#6d6d6d;">{{p.created | datetimeformat}}</span>
                                 </div>
                                 </p>
                             </td>
                             <td>
-                                {{p.store.name}}
-                            </td>
-                            <td>
                                 <p>编号：{{ p.id }}</p>
                                 {% if is_score == 0 %}
-                                <p><div>规格参数：{% for attribute in p.product_release.product.attributes %} {{ attribute.value }} {% endfor %}</div></p>
+                                <p><div>规格参数：{% for attribute in p.attributes %} {{ attribute.value }} {% endfor %}</div></p>
                                 {% endif %}
                             </td>
                             <!--<td style="display: none;">-->
                             <!--</td>-->
                             <td>
-                                <p><a href="/admin/edit_product/{{p.product_release.product.id}}" class="btn btn-outline btn-primary btn-xs" style="padding:5px 3px;border:1px solid #3071A9;border-radius:4px;margin-right:5px;font-size:14px;color:#3071A9;">修改</a>
+                                <p><a href="/admin/edit_product/{{p.id}}" class="btn btn-outline btn-primary btn-xs" style="padding:5px 3px;border:1px solid #3071A9;border-radius:4px;margin-right:5px;font-size:14px;color:#3071A9;">修改</a>
                             </td>
                         </tr>
                 {% endfor %}

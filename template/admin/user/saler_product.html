@@ -71,6 +71,7 @@
                                 <th style="width:10%;text-align:center;">品牌</th>
                                 <th style="width:10%;text-align:center;">分类</th>
                                 <th style="width:13%;text-align:center;">售价</th>
+                                <th style="width:13%;text-align:center;">积分</th>
                                 <th style="width:10%;text-align:center;">状态</th>
                             </tr>
                             {% for p in products %}
@@ -89,6 +90,10 @@
                                 <td>
                                     <input type="text" id="price{{p.id}}" class="form-control" style="width:100px;"
                                            value="{{p.price}}" >
+                                </td>
+                                <td>
+                                    <input type="text" id="score{{p.id}}" class="form-control" style="width:100px;"
+                                           value="{{p.score and p.score or '0'}}" >
                                 </td>
                                 <td>
                                     {% if p.active==0 %}
@@ -192,6 +197,7 @@
                 var item = {};
                 item.id = this.value;
                 item.price = $("#price"+this.value).val();
+                item.score = $("#score"+this.value).val();
                 data.push(item);
             }
         );

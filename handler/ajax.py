@@ -330,6 +330,7 @@ class AjaxSalerProductProcessAreas(BaseHandler):
                     p.save()
                 elif flag == 1:
                     p.price = item['price']
+                    p.score = item['score']
                     p.save()
         result['flag'] = 1
         result['msg'] = '操作成功'
@@ -339,6 +340,7 @@ class AjaxSalerProductProcessAreas(BaseHandler):
 @route(r'/ajax/saler_product_price_process', name='ajax_saler_product_price_process')  # 处理已发布商品数据
 class AjaxSalerProductPriceProcessAreas(BaseHandler):
     def post(self):
+        print self.request.body
         result = {'flag': 0, 'msg': '', 'data': 0}
         json = self.get_body_argument("json", '[]')
         flag = int(self.get_body_argument("flag", -2))
@@ -356,6 +358,7 @@ class AjaxSalerProductPriceProcessAreas(BaseHandler):
                     p.delete_instance()
                 elif flag == 1:
                     p.price = item['price']
+                    p.score = item['score']
                     p.sort = item['sort']
                     p.save()
         result['flag'] = 1
@@ -419,6 +422,7 @@ class AjaxProductReleasePublishAreas(BaseHandler):
                     if not is_change:
                         q.active = 1
                         q.price = item['price']
+                        q.score = item['score']
                         q.sort = item['sort']
                         q.save()
                 else:
@@ -426,6 +430,7 @@ class AjaxProductReleasePublishAreas(BaseHandler):
                     p.product_release = item['id']
                     p.store = sid
                     p.price = item['price']
+                    p.score = item['score']
                     p.sort = item['sort']
                     p.created = int(time.time())
                     p.area_code = item['code']

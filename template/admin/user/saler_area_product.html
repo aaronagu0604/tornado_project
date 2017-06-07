@@ -56,14 +56,23 @@
             <table class="table table-hover" id="tb_user" cellpadding="0" cellspacing="0" border="0" style="text-align:left;">
                 <thead>
                     <tr>
+                        <th style="width:2%;text-align:left;">ID</th>
                         <th style="width:20%;text-align:left;">名称</th>
                         <th style="width:10%;text-align:left;">品牌</th>
                         <th style="width:10%;text-align:left;">分类</th>
-                        <th style="width:50%;text-align:left;">地域售价信息</th>
+                        <th style="width:5%;text-align:left;">地域</th>
+                        <th style="width:5%;text-align:left;">售价</th>
+                        <th style="width:5%;text-align:left;">积分</th>
+                        <th style="width:5%;text-align:left;">权重</th>
                         <th style="width:10%;text-align:left;">状态</th>
                     </tr>
+
                     {% for p in products %}
+
                     <tr>
+                        <td>
+                            {{p.id}}
+                        </td>
                         <td>
                             {{p.product_release.product.name}}
                         </td>
@@ -71,39 +80,23 @@
                             {{p.product_release.product.brand.name}}
                         </td>
                         <td>{{p.product_release.product.category.name}}</td>
-                        <td>
-                            <table class="table table-hover" cellpadding="0" cellspacing="0" border="0" style="text-align:center;">
-                <thead>
-                            {% for item in p.product_release.area_prices %}
 
-                            {% if item.area_code.startswith(code) %}
-                               <tr>
-                                   <td style="width:29%;text-align:left;">
-                                   <input type="checkbox" value="{{item.id}}">
-                                   {{Area().get_detailed_address(item.area_code)}}</td>
+                        <td style="width:5%;text-align:left;">
+                            <input type="checkbox" value="{{p.id}}">
+                            {{Area().get_detailed_address(p.area_code)}}</td>
                       
                         <td style="width:10%;text-align:left;">
-                            <input type="text" id="price{{item.id}}" class="form-control" style="width:100px;"
-                           value="{{item.price}}" placeholder="价格">
+                            <input type="text" id="price{{p.id}}" class="form-control" style="width:100px;"
+                           value="{{p.price}}" placeholder="价格">
+                            </td>
+                         <td style="width:10%;text-align:left;">
+                            <input type="text" id="score{{p.id}}" class="form-control" style="width:100px;"
+                           value="{{p.score}}" placeholder="积分">
                             </td>
                         <td style="width:8%;text-align:left;">
-                            <input type="text" id="sort{{item.id}}" class="form-control" style="width:60px;"
-                           value="{{item.sort}}" placeholder="排序"></td>
+                            <input type="text" id="sort{{p.id}}" class="form-control" style="width:60px;"
+                           value="{{p.product_release.sort}}" placeholder="排序"></td>
 
-                        <td style="width:10%;text-align:left;">
-                            {% if item.active==0 %}
-                                <span style="">下架</span>
-                                {% elif item.active==1 %}
-                                <span style="">正常</span>
-                                {% endif %}</td>
-
-                                   </tr>
-                            {% endif %}
-                            {% endfor %}
-                    </thead>
-
-            </table>
-                        </td>
                         <td>
                             {% if p.product_release.active==0 %}
                                 <span style="">下架</span>
@@ -112,6 +105,7 @@
                                 {% endif %}
                         </td>
                     </tr>
+
                     {% endfor %}
                 </thead>
 
@@ -150,6 +144,7 @@ function checkChanged(flag)
             var item = {};
             item.id = this.value;
             item.price = $("#price"+this.value).val();
+            item.score = $("#score"+this.value).val();
             item.sort = $("#sort"+this.value).val();
             data.push(item);
             }

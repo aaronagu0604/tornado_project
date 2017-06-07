@@ -113,7 +113,7 @@
                     </ul>
                     </li>
                     <li {% if active=='category' or active=='brand' or active=='product_n'  or
-                        active=='product_s' or active=='c_b' %}class="active"{% endif %}>
+                        active=='product_s' or active=='c_b' or active=='p_product' %}class="active"{% endif %}>
                         <a  href="#"><i class="fa fa-picture-o fa-fw"></i>&nbsp;&nbsp;&nbsp;商品管理
                             <span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
@@ -125,6 +125,9 @@
                             </li>
                             <li>
                                 <a {% if active=='c_b' %} class="active"{% endif %} href="/admin/category_brand">分类&品牌</a>
+                            </li>
+                            <li>
+                                <a {% if active=='p_product' %} class="active"{% endif %} href="/admin/plateform_product/0?status=1">平台商品</a>
                             </li>
                             <li>
                                 <a {% if active=='product_n' %} class="active"{% endif %} href="/admin/product/0?status=1">普通商品</a>

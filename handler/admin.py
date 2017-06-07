@@ -513,7 +513,7 @@ class SalerProductAreaPriceHandler(AdminBaseHandler):
         if len(keyword) > 0:
             keyword2 = '%' + keyword + '%'
             ft &= (Product.name % keyword2)
-        cfs = StoreProductPrice.select(StoreProductPrice.product_release).join(ProductRelease).join(Product).where(ft).\
+        cfs = StoreProductPrice.select().join(ProductRelease).join(Product).where(ft).\
             group_by(StoreProductPrice.product_release)
         total = cfs.count()
         if total % pagesize > 0:
@@ -567,7 +567,8 @@ class ProductReleaseAddHandler(AdminBaseHandler):
         page = int(self.get_argument("page", '1') if len(self.get_argument("page", '1')) > 0 else '1')
         pagesize = int(self.get_argument("pagesize", '20') if len(self.get_argument("pagesize", '20')) > 0 else '20')
         keyword = self.get_argument("keyword", '')
-        ft = (Product.active == 1)
+        hasproduct = [item.product.id for item in ProductRelease.select().where(ProductRelease.store == store_id)]
+        ft = (Product.active == 1) & ~(Product.id << hasproduct)
         if len(keyword) > 0:
             keyword2 = '%' + keyword + '%'
             ft &= (Product.name % keyword2)
@@ -596,7 +597,8 @@ class ProductPublishHandler(AdminBaseHandler):
             keyword2 = '%' + keyword + '%'
             ft &= (Product.name % keyword2)
 
-        cfs = ProductRelease.select(ProductRelease).join(Product).where(ft)
+        cfs = ProductRelease.select(). \
+            join(Product,on=(ProductRelease.product == Product.id)).where(ft)
         total = cfs.count()
         if total % pagesize > 0:
             totalpage = total / pagesize + 1
@@ -982,39 +984,82 @@ class CategoryBrandDelHandler(AdminBaseHandler):
             self.flash('删除失败：%s'% e.message)
         self.redirect('/admin/category_brand')
 
-
-@route(r'/admin/product/(\d+)', name='admin_product')  # 商品
-class ProductHandler(AdminBaseHandler):
+@route(r'/admin/plateform_product/(\d+)', name='admin_product')  # 商品
+class PlatefromProductHandler(AdminBaseHandler):
     def get(self, is_score):
         page = int(self.get_argument("page", '1'))
-        category = self.get_argument('category', None)
+        category = self.get_argument('category', 1)
         keyword = self.get_argument("keyword", None)
-        active = int(self.get_argument("status", -1))
+        active = int(self.get_argument("status", 1))
         pagesize = setting.ADMIN_PAGESIZE
         is_score = int(is_score)
         if active == -1:
-            ft = (Product.is_score == is_score)
+            ft = (Product.active << [-1,0,1])
         else:
-            ft = (Product.active == active) & (Product.is_score == is_score)
+            ft = (Product.active == active)
+
         if keyword:
             keyw = '%' + keyword + '%'
             ft = ft & (Product.name % keyw)
         print category
         if category:
             ft = ft & (Product.category == category)
-        products = Product.select().where(ft)
+        products = Product.select(). \
+            where(ft)
         total = products.count()
         if total % pagesize > 0:
             totalpage = total / pagesize + 1
         else:
             totalpage = total / pagesize
         products = products.order_by(Product.created.desc()).paginate(page, pagesize).aggregate_rows()
-        categories = Category.select()
+        categories = Category.select().where(Category.id == 1)
+        product_type = 'p_product'
+
+        self.render('admin/product/plateform_product.html', active=product_type, products=products, total=total, page=page,
+                    c_id=int(category) if category else '', pagesize=pagesize, totalpage=totalpage, keyword=keyword, status=active,
+                    categories=categories, is_score=is_score,pid=[])
+
+
+@route(r'/admin/product/(\d+)', name='admin_product')  # 商品
+class ProductHandler(AdminBaseHandler):
+    def get(self, is_score):
+        page = int(self.get_argument("page", '1'))
+        category = self.get_argument('category', 1)
+        keyword = self.get_argument("keyword", None)
+        active = int(self.get_argument("status", 1))
+        pagesize = setting.ADMIN_PAGESIZE
+        is_score = int(is_score)
+        if active == -1:
+            ft = (Product.active << [-1,0,1])
+        else:
+            ft = (Product.active == active) & (ProductRelease.active == active) & (StoreProductPrice.active == active)
+        if is_score==1:
+            ft &= (StoreProductPrice.score > 0)
+        else:
+            ft &= (StoreProductPrice.price > 0)
+        if keyword:
+            keyw = '%' + keyword + '%'
+            ft = ft & (Product.name % keyw)
+        print category
+        if category:
+            ft = ft & (Product.category == category)
+        products = StoreProductPrice.select(). \
+            join(Store, on=(Store.id == StoreProductPrice.store)). \
+            join(ProductRelease, on=(ProductRelease.id == StoreProductPrice.product_release)). \
+            join(Product, on=(Product.id == ProductRelease.product)). \
+            where(ft)
+        total = products.count()
+        if total % pagesize > 0:
+            totalpage = total / pagesize + 1
+        else:
+            totalpage = total / pagesize
+        products = products.order_by(StoreProductPrice.created.desc()).paginate(page, pagesize).aggregate_rows()
+        categories = Category.select().where(Category.id == 1)
         product_type = 'product_s' if is_score else 'product_n'
 
         self.render('admin/product/product.html', active=product_type, products=products, total=total, page=page,
                     c_id=int(category) if category else '', pagesize=pagesize, totalpage=totalpage, keyword=keyword, status=active,
-                    categories=categories, is_score=is_score)
+                    categories=categories, is_score=is_score,pid=[])
 
 
 @route(r'/admin/edit_product/(\d+)', name='admin_edit_product')  # 修改商品

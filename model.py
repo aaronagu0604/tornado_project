@@ -47,8 +47,8 @@ class Area(db.Model):
 
     @classmethod
     def get_detailed_address(cls, area_code):
-        area_code_len = len(area_code)
         try:
+            area_code_len = len(area_code)
             area = Area.get(code=area_code)
             if area_code_len == 12:
                 address = area.pid.pid.name + area.pid.name + area.name
@@ -474,6 +474,7 @@ class ProductRelease(db.Model):
     product = ForeignKeyField(Product, db_column='product_id')  # 所属商品
     store = ForeignKeyField(Store, related_name='products', db_column='store_id')  # 所属店铺
     price = FloatField()  # 原始销售价
+    score = IntegerField(default=0)  # 原始销售积分
     buy_count = IntegerField(default=0)  # 购买次数
     is_score = IntegerField(default=0)  # 是否可以用积分兑换 0不可积分兑换 1可以兑换
     sort = IntegerField(default=0)  # 排序
