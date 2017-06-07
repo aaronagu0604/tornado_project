@@ -544,7 +544,7 @@ class MobileHomeHandler(MobileBaseHandler):
             join(ProductRelease, on=(ProductRelease.product == Product.id)). \
             join(Store, on=(Store.id == ProductRelease.store)). \
             join(StoreProductPrice, on=(StoreProductPrice.product_release == ProductRelease.id)). \
-            where(ft, ProductRelease.is_score == 1).tuples()
+            where(ft, StoreProductPrice.score > 1).tuples()
         for id, name, cover, price, score, sname in spps:
             items.append({
                 'img': cover,
