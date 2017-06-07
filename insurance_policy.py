@@ -6203,7 +6203,8 @@ def update_store_policy():
                                      insurance=item.insurance,
                                      cash=item.cash_policy,
                                      dealer_store=item.dealer_store,
-                                     lube=item.lube_policy)
+                                     lube=item.lube_policy,
+                                     score = item.score_policy)
         if run_four_code:
             insurace_area2 = InsuranceArea.select().where(
                 (InsuranceArea.area_code == store.area_code[:4]) & (InsuranceArea.active == 1))
@@ -6215,7 +6216,8 @@ def update_store_policy():
                                          insurance=item.insurance,
                                          cash=item.cash_policy,
                                          dealer_store=item.dealer_store,
-                                         lube=item.lube_policy)
+                                         lube=item.lube_policy,
+                                         score = item.score_policy)
 
 if __name__ == '__main__':
     InsuranceArea.delete().execute()
