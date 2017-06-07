@@ -75,6 +75,7 @@
                             </td>
                             <td>
                                 <p>编号：{{ p.id }}</p>
+                                <p>价格/积分：{{ p.price}}/{{p.score }}</p>
                                 {% if is_score == 0 %}
                                 <p><div>规格参数：{% for attribute in p.product_release.product.attributes %} {{ attribute.value }} {% endfor %}</div></p>
                                 {% endif %}
