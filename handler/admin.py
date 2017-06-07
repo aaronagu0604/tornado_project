@@ -2183,19 +2183,26 @@ class InsuranceOrderDelHandler(AdminBaseHandler):
             now = int(time.time())
             if o_status == 2 and dispose == 'finish':  # 返现并创建记录
                 if io.status == 2:
+                    admin_user = self.get_admin_user()
                     iop = io.current_order_price
                     if iop.gift_policy == 2:    # 返现
                         money = iop.cash
-                        admin_user = self.get_admin_user()
                         store = io.store
                         store.price += money
                         store.save()
                         MoneyRecord.create(user=io.user, store=io.store, process_type=1, process_message=u'保险',
                                            process_log=u'卖保险返现所得', money=money, status=1, apply_time=now,
                                            processing_time=now, processing_by=admin_user, type=5)
+                    elif iop.gift_policy == 3 and iop.score > 0:    # 活动返积分
+                        score = iop.score
+                        store = io.store
+                        store.score += score
+                        store.save()
+                        ScoreRecord.create(user=io.user, store=io.store, ordernum=io.ordernum, type=3, process_type=1,
+                                           process_log=u'卖保险返现所得', score=score, created=now, status=1)
                     io.status = 3
                     io.save()
-                    AdminUserLog.create(admin_user=self.get_admin_user(), created=now,
+                    AdminUserLog.create(admin_user=admin_user, created=now,
                                         content=u'编辑保险订单状态: io_id:%d,status:%d' % (io.id, o_status))
                 else:
                     self.flash(u'该订单不是已支付状态，不能返佣！')

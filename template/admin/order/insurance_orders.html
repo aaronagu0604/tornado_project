@@ -122,12 +122,15 @@
                     </td>
                     <td>
                         {% if o.status == 2 %}
-                            {% if o.current_order_price.gift_policy == 2%}
+                            {% if o.current_order_price.gift_policy == 2 %}
                             <a href="/admin/insurance_dispose/{{o.id}}?o_status={{o.status}}&status={{status}}&page={{page}}&dispose=finish"
                                onclick="return confirm('确定现在返现？');" style="color:#990033;">{% if o.status == 2 %}* {% endif %}返现</a>
-                            {% elif o.current_order_price.gift_policy == 1%}
+                            {% elif o.current_order_price.gift_policy == 1 %}
                             <a href="/admin/insurance_dispose/{{o.id}}?o_status={{o.status}}&status={{status}}&page={{page}}&dispose=finish"
                                onclick="return confirm('确定现在送油？');" style="color:#00CC00;">{% if o.status == 2 %}* {% endif %}返油</a>
+                            {% elif o.current_order_price.gift_policy == 3 %}
+                            <a href="/admin/insurance_dispose/{{o.id}}?o_status={{o.status}}&status={{status}}&page={{page}}&dispose=finish"
+                               onclick="return confirm('确定现在返积分？');" style="color:#0071ceDD;">{% if o.status == 2 %}* {% endif %}返积分</a>
                             {% else %}
                             <div style="color:#000800;">无</div>
                             {% endif %}
@@ -136,6 +139,8 @@
                             <a href="#" onclick="return alert('该订单状态不能返佣');" style="color:#990033;">{% if o.status == 2 %}* {% endif %}返现</a>
                             {% elif o.current_order_price.gift_policy == 1 %}
                             <a href="" onclick="return alert('该订单状态不能返佣'); cansole;" style="color:#00CC00;">{% if o.status == 2 %}* {% endif %}返油</a>
+                            {% elif o.current_order_price.gift_policy == 3 %}
+                            <a href="" onclick="return alert('该订单状态不能返佣'); cansole;" style="color:#0071ceDD;">{% if o.status == 2 %}* {% endif %}返积分</a>
                             {% else %}
                             <div style="color:#000800;">无</div>
                             {% endif %}
