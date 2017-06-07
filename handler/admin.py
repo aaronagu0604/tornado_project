@@ -1258,23 +1258,19 @@ class EditAdHandler(AdminBaseHandler):
             if self.request.files:
                 datetime = time.strftime('%Y%m%d%H%M%S', time.localtime(time.time()))  # 获取当前时间作为图片名称
                 filename = str(datetime) + ".jpg"
-                import os
-                logging.error(os.path.isdir('upload/ad/'))
-                with open('upload/ad/' + filename, "wb") as f:
+                file_abspath = setting.admin_file_path + 'image/ad/' + filename
+                with open(file_abspath, "wb") as f:
                     f.write(self.request.files["file"][0]["body"])
-                imgurl = postRequest(open(filename, 'rb'))
-                print 'imgurl=', imgurl
-                ad.img = imgurl if imgurl else ''
+                ad.img = 'http://img.520czj.com/image/ad/' + filename
             ad.save()
+            aid = ad.id
             AdminUserLog.create(admin_user=self.get_admin_user(), created=int(time.time()), content='编辑广告: ad_id:%d' % aid)
-            self.flash(u"广告修改成功")
+            self.flash(u"广告修改成功，请发布到相应地区")
         except Exception, ex:
             self.flash(str(ex))
-            self.redirect("/admin/edit_ad/" + str(aid))
-            return
 
-        self.redirect('/admin/advertisement')
-
+        self.redirect("/admin/edit_ad/" + str(aid))
+        return
 
 @route(r'/admin/block_item_publish', name='admin_block_item_publish')  # 经销商发布商品到地区
 class BlockItemPublishHandler(AdminBaseHandler):
