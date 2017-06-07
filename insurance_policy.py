@@ -1901,6 +1901,22 @@ def YinChuanGuoShouCai():
     InsuranceArea.create(area_code='00300002', insurance=11, lube_ok=1, dealer_store=26,
                          lube_policy=simplejson.dumps(lube), cash_ok=0, cash_policy='')
 
+# 西安活动
+active = {
+            'force': {    # 单交强
+                'score_rate': 0,
+                'lube_num': 2
+            },
+            'business': {    # 单商业
+                'score_rate': 1,
+                'lube_num': 0
+            },
+            'frc_bns':{    # 交+商
+                'score_rate': 1,
+                'lube_num': 2
+            }
+        }
+
 # 陕西人保返油、返现策略
 def ShannXiRenBao():
     lube = [
@@ -2339,7 +2355,8 @@ def ShannXiRenBao():
     InsuranceArea.create(area_code='00270001', insurance=13, lube_ok=1,
                          dealer_store=15,
                          lube_policy=simplejson.dumps(lube), cash_ok=1,
-                         cash_policy=simplejson.dumps(cash))
+                         cash_policy=simplejson.dumps(cash),
+                         score = simplejson.dumps(active))
     # 宝鸡
     InsuranceArea.create(area_code='00270003', insurance=13, lube_ok=1,
                          dealer_store=15,
@@ -2811,7 +2828,8 @@ def ShannXiZhongHuaLianHe():
     InsuranceArea.create(area_code='00270001', insurance=1, lube_ok=1,
                          dealer_store=15,
                          lube_policy=simplejson.dumps(lube), cash_ok=1,
-                         cash_policy=simplejson.dumps(cash))
+                         cash_policy=simplejson.dumps(cash),
+                         score = simplejson.dumps(active))
     # 宝鸡
     InsuranceArea.create(area_code='00270003', insurance=1, lube_ok=1,
                          dealer_store=15,
@@ -3283,7 +3301,8 @@ def ShannXiPingAn():
     InsuranceArea.create(area_code='00270001', insurance=7, lube_ok=1,
                          dealer_store=15,
                          lube_policy=simplejson.dumps(lube), cash_ok=1,
-                         cash_policy=simplejson.dumps(cash))
+                         cash_policy=simplejson.dumps(cash),
+                         score = simplejson.dumps(active))
     # 宝鸡
     InsuranceArea.create(area_code='00270003', insurance=7, lube_ok=1,
                          dealer_store=15,
@@ -3755,7 +3774,8 @@ def ShannXiAnSheng():
     InsuranceArea.create(area_code='00270001', insurance=15, lube_ok=1,
                          dealer_store=15,
                          lube_policy=simplejson.dumps(lube), cash_ok=1,
-                         cash_policy=simplejson.dumps(cash))
+                         cash_policy=simplejson.dumps(cash),
+                         score = simplejson.dumps(active))
     # 宝鸡
     InsuranceArea.create(area_code='00270003', insurance=15, lube_ok=1,
                          dealer_store=15,
@@ -4258,7 +4278,8 @@ def ShannXiTianAn():
     InsuranceArea.create(area_code='00270010', insurance=9, lube_ok=1,
                          dealer_store=15,
                          lube_policy=simplejson.dumps(lube), cash_ok=1,
-                         cash_policy=simplejson.dumps(cash))
+                         cash_policy=simplejson.dumps(cash),
+                         score = simplejson.dumps(active))
 
 # 陕西太平洋返油、返现策略
 def ShannXiTaiPingYang():
@@ -4698,7 +4719,8 @@ def ShannXiTaiPingYang():
     InsuranceArea.create(area_code='00270001', insurance=12, lube_ok=1,
                          dealer_store=15,
                          lube_policy=simplejson.dumps(lube), cash_ok=1,
-                         cash_policy=simplejson.dumps(cash))
+                         cash_policy=simplejson.dumps(cash),
+                         score = simplejson.dumps(active))
     # 宝鸡
     InsuranceArea.create(area_code='00270003', insurance=12, lube_ok=1,
                          dealer_store=15,
@@ -5170,7 +5192,8 @@ def ShannXiDaDi():
     InsuranceArea.create(area_code='00270001', insurance=10, lube_ok=1,
                          dealer_store=15,
                          lube_policy=simplejson.dumps(lube), cash_ok=1,
-                         cash_policy=simplejson.dumps(cash))
+                         cash_policy=simplejson.dumps(cash),
+                         score = simplejson.dumps(active))
     # 宝鸡
     InsuranceArea.create(area_code='00270003', insurance=10, lube_ok=1,
                          dealer_store=15,
@@ -5642,7 +5665,8 @@ def ShannXiTaiPing():
     InsuranceArea.create(area_code='00270001', insurance=6, lube_ok=1,
                          dealer_store=15,
                          lube_policy=simplejson.dumps(lube), cash_ok=1,
-                         cash_policy=simplejson.dumps(cash))
+                         cash_policy=simplejson.dumps(cash),
+                         score = simplejson.dumps(active))
     # 宝鸡
     InsuranceArea.create(area_code='00270003', insurance=6, lube_ok=1,
                          dealer_store=15,
@@ -6113,7 +6137,8 @@ def ShannXiYongAn():
     InsuranceArea.create(area_code='00270001', insurance=8, lube_ok=1,
                          dealer_store=15,
                          lube_policy=simplejson.dumps(lube), cash_ok=1,
-                         cash_policy=simplejson.dumps(cash))
+                         cash_policy=simplejson.dumps(cash),
+                         score = simplejson.dumps(active))
     # 宝鸡
     InsuranceArea.create(area_code='00270003', insurance=8, lube_ok=1,
                          dealer_store=15,

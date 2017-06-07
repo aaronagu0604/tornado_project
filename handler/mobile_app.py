@@ -1561,7 +1561,7 @@ class MobilInsuranceOrderBaseHandler(MobileBaseHandler):
         store_policies = SSILubePolicy.select().where(SSILubePolicy.store == store)
         for sp in store_policies:
             rake_back = []
-            if sp.lube:
+            if sp.lube and (sp.store.area_code.find('00270001')<0):
                 rake_back.append({
                     'name': "油品",
                     'type': 1,
@@ -1574,6 +1574,13 @@ class MobilInsuranceOrderBaseHandler(MobileBaseHandler):
                     'type': 2,
                     'link': "",
                     'link_str': "奖励现金将存入个人余额"
+                })
+            if sp.score and (sp.store.area_code.find('00270001')>=0):
+                rake_back.append({
+                    'name': "积分",
+                    'type': 3,
+                    'link': "",
+                    'link_str': "积分与消费金额按1比1换算(交强险与车船税除外)"
                 })
             insurance_list.append({
                 'id': sp.insurance.id,
