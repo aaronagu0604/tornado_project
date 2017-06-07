@@ -147,11 +147,11 @@
                         {% endif %}
                     </td>
                     <td>
-                        <!--# 支付方式  1支付宝  2微信 3银联 4余额 5积分-->
+                        <!--# 支付方式  1支付宝  2微信 3银联 4余额 5积分 6支付宝二维码 7微信二维码-->
                         {% if o.status==2 or o.status==3 %}
-                            {% if o.payment==1 %}
+                            {% if o.payment==1 or o.payment==6 %}
                             支付宝
-                            {% elif o.payment==2 %}
+                            {% elif o.payment==2 or o.payment==7 %}
                             微信
                             {% elif o.payment==3 %}
                             银联

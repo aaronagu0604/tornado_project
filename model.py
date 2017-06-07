@@ -547,7 +547,7 @@ class Order(db.Model):
     delivery_address = CharField(max_length=128, null=True)  # 邮寄接收详细地址
 
     order_type = IntegerField(default=1)  # 付款方式 1金钱订单 2积分订单
-    payment = IntegerField(default=0)  # 支付方式  1支付宝  2微信 3银联 4余额 5积分
+    payment = IntegerField(default=0)  # 支付方式  1支付宝  2微信 3银联 4余额 5积分 6支付宝二维码 7微信二维码
     total_price = FloatField(default=0.0)  # 价格，实际所有子订单商品价格之和
     total_score = IntegerField(default=0)  # 积分
     pay_balance = FloatField(default=0.0)  # 余额支付金额
@@ -868,7 +868,7 @@ class InsuranceOrder(db.Model):
     dcfstatus = IntegerField(default=0)  # 是否需要重新上传：0不需要1需要
     drive_card_back = CharField(max_length=255, null=True)  # 行驶证副本
     dcbstatus = IntegerField(default=0)  # 是否需要重新上传：0不需要1需要
-    payment = IntegerField(default=1)  # 付款方式  1支付宝  2微信 3银联 4余额
+    payment = IntegerField(default=1)  # 付款方式  1支付宝  2微信 3银联 4余额 5积分 6支付宝二维码 7微信二维码
     ordered = IntegerField(default=0)  # 下单时间
 
     delivery_to = CharField(max_length=255)  # 保单邮寄接收人名称
@@ -1095,7 +1095,7 @@ class HotSearch(db.Model):
 class PaymentNotify(db.Model):
     id = PrimaryKeyField()
     content = CharField(max_length=2048)   # 支付通知内容
-    payment = IntegerField(default=1)  # 通知来源  1支付宝  2微信 3银联
+    payment = IntegerField(default=1)  # 通知来源  1支付宝  2微信 3银联 4余额 5积分 6支付宝二维码 7微信二维码
     notify_time = IntegerField(default=0)  # 通知时间
     notify_type = IntegerField(default=0)  # 通知类型 1同步 2异步
     function_type = IntegerField(default=0)  # 功能类型 1购买 2充值

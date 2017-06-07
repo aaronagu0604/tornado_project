@@ -127,9 +127,9 @@
                         {% endif %}
                     </td>
                     <td>
-                        {% if o.payment==1 %}
+                        {% if o.payment==1 or o.payment==6 %}
                         支付宝
-                        {% elif o.payment==2 %}
+                        {% elif o.payment==2 or o.payment==7 %}
                         微信
                         {% elif o.payment==3 %}
                         银联
