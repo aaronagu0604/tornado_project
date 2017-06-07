@@ -418,7 +418,7 @@ class MobileHomeHandler(MobileBaseHandler):
         # 积分商品
         tmp_code = area_code
         score_product = self.get_score_product(tmp_code)
-        while len(score_product) == 0 and len(tmp_code) > 4:
+        while user and len(score_product) == 0 and len(tmp_code) > 4:
             tmp_code = tmp_code[0: -4]
             score_product = self.get_score_product(tmp_code)
         if len(score_product) == 0:
