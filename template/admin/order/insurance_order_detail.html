@@ -1104,14 +1104,17 @@
                                             <div>
                                                 <div class="row" id="{{program['pid']}}3" {% if 3 != program['gift_policy'] %}  style="display: none" {% endif %}>
                                                     <div class="col-xs-6">
+                                                        <div class="col-xs-6 leftTxt"><span>油品型号：</span></div>
+                                                        <div class="col-xs-6 rightTxt"><input name="lube_name" {% if isG %} disabled="disabled" {% endif %} value="{{program['store_lube_type']}}" class="form-control"/></div>
+                                                    </div>
+                                                    <div class="col-xs-6">
                                                         <div class="col-xs-6 leftTxt"><span>返油数量：</span></div>
-                                                        <div class="col-xs-6 rightTxt"><input name="lube_num" {% if isG %} disabled="disabled" {% endif %} value="{{program['driver_lube_type']}}" class="form-control"/></div>
+                                                        <div class="col-xs-6 rightTxt"><input name="lube_num" {% if isG %} disabled="disabled" {% endif %} value="{{program['store_lube_num']}}" class="form-control"/></div>
                                                     </div>
                                                     <div class="col-xs-6">
                                                         <div class="col-xs-6 leftTxt"><span>积分数量：</span></div>
-                                                        <div class="col-xs-6 rightTxt"><input name="score_num" {% if isG %} disabled="disabled" {% endif %} value="{{program['driver_lube_num']}}" class="form-control"/></div>
+                                                        <div class="col-xs-6 rightTxt"><input name="score_num" {% if isG %} disabled="disabled" {% endif %} value="{{program['score']}}" class="form-control"/></div>
                                                     </div>
-                                                    <div class="col-xs-6"></div>
                                                     <div class="col-xs-6">
                                                         <div class="col-xs-6"></div>
                                                         <div class="col-xs-6">
@@ -1646,6 +1649,7 @@
             $.get("/ajax/get_active_score", {pid: pid, iid: iid, force: forceIPrice, business: business_price}, function (data) {
                 var obj = jQuery.parseJSON(data);
                 if (obj.flag == 1) {
+                    $(program).find('input[name="lube_name"]').val(obj.data.lube_name);
                     $(program).find('input[name="lube_num"]').val(obj.data.lube_num);
                     $(program).find('input[name="score_num"]').val(obj.data.score_num);
                 }
@@ -2667,12 +2671,15 @@
         var insurance_price = $(program).find('input[name="insurance_price"]').val();    // 保险总额
         var gift_policy = $(program).find('select[name="gift_policy"]').val();   // 返佣方式
 
-        var driveroiltype = $(program).find('input[name="driveroiltype"]').val();
-        var driveroilnum = $(program).find('input[name="driveroilnum"]').val();
+        var driveroiltype = $(program).find('input[name="driveroiltype"]').val(); // 车主油品
+        var driveroilnum = $(program).find('input[name="driveroilnum"]').val();  //车主油品数
         var storeoiltype = $(program).find('input[name="storeoiltype"]').val();
         var storeoilnum = $(program).find('input[name="storeoilnum"]').val();
-
         var cash = $(program).find('input[name="cash"]').val();    // 积分
+        var score_num = $(program).find('input[name="score_num"]').val();    // 积分
+        var lube_num = $(program).find('input[name="lube_num"]').val();    // 油品数量
+        var lube_name = $(program).find('input[name="lube_name"]').val();    // 油品型号
+
         var psummary = $(program).find('textarea[name="psummary"]').val();    // 短信
         var force_rate = $(program).find('input[name="force_rate"]').val();    // 交强险折扣
         var business_rate = $(program).find('input[name="business_rate"]').val();    // 商业险折扣
@@ -2687,11 +2694,14 @@
         groups['total_price'] = insurance_price;
         groups['force_rate'] = force_rate;
         groups['business_rate'] = business_rate;
-        groups['driveroiltype'] = driveroiltype
-        groups['driveroilnum'] = driveroilnum
-        groups['storeoiltype'] = storeoiltype
-        groups['storeoilnum'] = storeoilnum
+        groups['driveroiltype'] = driveroiltype;
+        groups['driveroilnum'] = driveroilnum;
+        groups['storeoiltype'] = storeoiltype;
+        groups['storeoilnum'] = storeoilnum;
         groups['cash'] = cash;
+        groups['score_num'] = score_num;
+        groups['lube_name'] = lube_name;
+        groups['lube_num'] = lube_num;
         groups['psummary'] = psummary;
         $.post('/ajax/save_iop_data', {_xsrf:xsrf, i_items:JSON.stringify(i_items), groups:JSON.stringify(groups), send_msg:send_msg}, function (data) {
             HiddenLoading();

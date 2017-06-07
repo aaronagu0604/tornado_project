@@ -540,14 +540,16 @@ class GetScoreRateHandler(BaseHandler):
 @route(r'/ajax/get_active_score', name='ajax_get_active_score')  # 获取返积分（活动）
 class GetActiveScoreHandler(BaseHandler):
     def get_score_policy(self, sid, iid, force, business):
-        result = {'score_num': 0, 'lube_num': 0}
+        result = {'score_num': 0, 'lube_num': 0, 'lube_name': ''}
         score = SSILubePolicy.get((SSILubePolicy.store == sid) & (SSILubePolicy.insurance == iid)).score
-        score_policy = simplejson.loads(score)
+        score_policy = simplejson.loads(simplejson.dumps(score))
         if force and business:
             result['score_num'] = business * score_policy['frc_bns']['score_rate']
             result['lube_num'] = score_policy['frc_bns']['lube_num']
+            result['lube_name'] = score_policy['frc_bns']['lube_name'].encode('utf-8')
         elif force:
             result['lube_num'] = score_policy['frc_bns']['lube_num']
+            result['lube_name'] = score_policy['frc_bns']['lube_name'].encode('utf-8')
         elif business:
             result['score_num'] = business * score_policy['frc_bns']['score_rate']
         return result
@@ -557,30 +559,35 @@ class GetActiveScoreHandler(BaseHandler):
         data = {
             'force': {    # 单交强
                 'score_rate': 0,
-                'lube_num': 2
+                'lube_num': 2,
+                'lube_name': u'X5特'
             },
             'business': {    # 单商业
                 'score_rate': 1,
-                'lube_num': 0
+                'lube_num': 0,
+                'lube_name': ''
             },
             'frc_bns':{    # 交+商
                 'score_rate': 1,
-                'lube_num': 2
+                'lube_num': 2,
+                'lube_name': u'X5特'
             }
         }
         '''
-        result = {'flag': 0, 'msg': '', "data": {}}
+        result = {'flag': 0, 'msg': '', "data": {"score_num": 0, "lube_num": 2}}
         pid = self.get_argument('pid', None)
         iid = self.get_argument('iid', None)
-        force = self.get_argument('force', None)
+        force = self.get_argument('force', 0)
+        force = float(force) if force else 0
         business = self.get_argument('business', None)
+        business = float(business) if business else 0
         try:
             iop = InsuranceOrderPrice.get(id=pid)
             io = InsuranceOrder.get(id=iop.insurance_order_id)
             result['data'] = self.get_score_policy(io.store.id, iid, force, business)
             result['flag'] = 1
         except Exception, e:
-            result['msg'] = u'系统错误%s' % str(e)
+            result['msg'] = u'该门店没有配置返积分活动规则'
 
         self.write(simplejson.dumps(result))
 
@@ -644,7 +651,6 @@ class SaveIOPHandler(BaseHandler):
         groups = self.get_body_argument('groups', None)
         i_items = self.get_body_argument('i_items', None)
         send_msg = self.get_body_argument('send_msg', None)
-        logging.error('/ajax/save_iop_data  %s,%s,%s----' % (groups, i_items, send_msg))
         if not (groups and i_items):
             result['msg'] = u'参数不全，保存失败'
             self.write(simplejson.dumps(result))
@@ -661,13 +667,17 @@ class SaveIOPHandler(BaseHandler):
             pid.gift_policy = groups['gift_policy']
             pid.response = 1
             pid.status = 1
-            if groups['gift_policy'] == '2':
+            if groups['gift_policy'] == '2':    # 返现
                 pid.cash = groups['cash']
-            else:
+            elif groups['gift_policy'] == '1':    # 返油
                 pid.driver_lube_type = groups['driveroiltype']   # 返车主油品型号
                 pid.driver_lube_num = groups['driveroilnum']  # 返车主油品数量
                 pid.store_lube_type = groups['storeoiltype']   # 返修理厂油品型号
                 pid.store_lube_num = groups['storeoilnum']
+            elif groups['gift_policy'] == '3':    # 活动返积分/油
+                pid.score = groups['score_num']
+                pid.store_lube_num = groups['lube_num']    # 返的油给修理厂
+                pid.store_lube_type = groups['lube_name']
 
             pid.total_price = groups['total_price']
             pid.force_price = groups['force_price']

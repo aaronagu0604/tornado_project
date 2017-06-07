@@ -1804,6 +1804,7 @@ class InsuranceOrderDetailHandler(AdminBaseHandler):
                 'store_lube_type': program.store_lube_type,   # 返修理厂油品型号
                 'store_lube_num': program.store_lube_num,
                 'cash': program.cash,
+                'score': program.score,
                 'total_price': program.total_price,
                 'force_price': program.force_price,
                 'business_price': program.business_price,

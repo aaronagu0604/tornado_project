@@ -762,7 +762,7 @@ class InsuranceOrderPrice(db.Model):
     status = IntegerField(default=1)  # 状态 0已过期, 1有效
     read = IntegerField(default=0)  # 状态 0未读, 1已读
     gift_policy = IntegerField(default=0)  # 礼品策略 1反油， 2反现金，3返积分
-    score = IntegerField(default=0)  # 卖的这单保险可以获取多少现金
+    score = IntegerField(default=0)  # 卖的这单保险可以获取多少积分
     driver_lube_type = CharField(default='')    # 返车主油品型号
     driver_lube_num = IntegerField(default=0)  # 返车主油品数量
     store_lube_type = CharField(default='')    # 返修理厂油品型号
