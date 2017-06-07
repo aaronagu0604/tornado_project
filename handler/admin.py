@@ -610,7 +610,8 @@ class ProductPublishHandler(AdminBaseHandler):
 @route(r'/admin/admin_user/(\d+)', name='admin_admin_user')  # 后台用户管理
 class AdminUserHandler(AdminBaseHandler):
     def get(self, admin_id):
-        page = int(self.get_body_argument("page", '1'))
+        page = self.get_argument("page", '1')
+        page = int(page) if page else 1
         pagesize = setting.ADMIN_PAGESIZE
         try:
             qadminuser = AdminUser.select()
@@ -633,7 +634,7 @@ class AdminUserHandler(AdminBaseHandler):
             ivs = qadminuser.order_by(AdminUser.id.desc()).paginate(page, pagesize)
             items = Area.select().where(Area.pid >> None)
 
-            self.render("admin/user/admin_user.html",ivs=ivs, adminUser=adminUser, total=total, page=page,
+            self.render("admin/user/admin_user.html", ivs=ivs, adminUser=adminUser, total=total, page=page,
                         pagesize=pagesize, totalpage=totalpage, active='admin_user', items=items, Area=Area,
                         default_province=default_province, default_city=default_city, default_district=default_district)
         except Exception, e:
