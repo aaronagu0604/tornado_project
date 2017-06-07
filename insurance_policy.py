@@ -1905,14 +1905,17 @@ def YinChuanGuoShouCai():
 active = {
             'force': {    # 单交强
                 'score_rate': 0,
+                'lube_name': 'X5特',
                 'lube_num': 2
             },
             'business': {    # 单商业
                 'score_rate': 1,
+                'lube_name': '',
                 'lube_num': 0
             },
             'frc_bns':{    # 交+商
                 'score_rate': 1,
+                'lube_name': 'X5特',
                 'lube_num': 2
             }
         }
