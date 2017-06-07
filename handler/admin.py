@@ -1318,6 +1318,7 @@ class EditAdHandler(AdminBaseHandler):
         self.redirect("/admin/edit_ad/" + str(aid))
         return
 
+
 @route(r'/admin/block_item_publish', name='admin_block_item_publish')  # 经销商发布商品到地区
 class BlockItemPublishHandler(AdminBaseHandler):
     def post(self):
@@ -2313,7 +2314,7 @@ class InsuranceLube(AdminBaseHandler):
                 item = {'id': lube_policy.id, 'policy': lube_policy.lube_policy}
             except Exception, e:
                 item = {'id': '', 'policy': ''}
-        self.render("admin/insurance/lube.html", item=item, iid=iid, area_code = area_code, sid=sid, check=check)
+        self.render("admin/insurance/lube.html", item=item, iid=iid, area_code=area_code, sid=sid, check=check)
 
     def post(self):
         exid = self.get_body_argument('exid', '0')

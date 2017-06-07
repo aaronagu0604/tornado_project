@@ -487,7 +487,7 @@ class WebAppCarItemListHandler(BaseHandler):
 
 
 @route(r'/ajax/get_score_rate', name='ajax_get_score_rate')  # 获取返现比率
-class WebAppCarItemListHandler(BaseHandler):
+class GetScoreRateHandler(BaseHandler):
     def get_return_cash(self, sid, iid):
         try:
             cash = SSILubePolicy.get((SSILubePolicy.store == sid) & (SSILubePolicy.insurance == iid)).cash
@@ -533,6 +533,54 @@ class WebAppCarItemListHandler(BaseHandler):
             result['flag'] = 1
         except Exception, e:
             result['msg'] = u'系统错误%s'%str(e)
+
+        self.write(simplejson.dumps(result))
+
+
+@route(r'/ajax/get_active_score', name='ajax_get_active_score')  # 获取返积分（活动）
+class GetActiveScoreHandler(BaseHandler):
+    def get_score_policy(self, sid, iid, force, business):
+        result = {'score_num': 0, 'lube_num': 0}
+        score = SSILubePolicy.get((SSILubePolicy.store == sid) & (SSILubePolicy.insurance == iid)).score
+        score_policy = simplejson.loads(score)
+        if force and business:
+            result['score_num'] = business * score_policy['frc_bns']['score_rate']
+            result['lube_num'] = score_policy['frc_bns']['lube_num']
+        elif force:
+            result['lube_num'] = score_policy['frc_bns']['lube_num']
+        elif business:
+            result['score_num'] = business * score_policy['frc_bns']['score_rate']
+        return result
+
+    def get(self):
+        '''
+        data = {
+            'force': {    # 单交强
+                'score_rate': 0,
+                'lube_num': 2
+            },
+            'business': {    # 单商业
+                'score_rate': 1,
+                'lube_num': 0
+            },
+            'frc_bns':{    # 交+商
+                'score_rate': 1,
+                'lube_num': 2
+            }
+        }
+        '''
+        result = {'flag': 0, 'msg': '', "data": {}}
+        pid = self.get_argument('pid', None)
+        iid = self.get_argument('iid', None)
+        force = self.get_argument('force', None)
+        business = self.get_argument('business', None)
+        try:
+            iop = InsuranceOrderPrice.get(id=pid)
+            io = InsuranceOrder.get(id=iop.insurance_order_id)
+            result['data'] = self.get_score_policy(io.store.id, iid, force, business)
+            result['flag'] = 1
+        except Exception, e:
+            result['msg'] = u'系统错误%s' % str(e)
 
         self.write(simplejson.dumps(result))
 

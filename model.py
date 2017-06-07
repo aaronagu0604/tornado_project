@@ -662,6 +662,8 @@ class InsuranceArea(db.Model):
     lube_policy = TextField(default='')  # 返油政策的json串
     cash_ok = IntegerField(default=1)  # 开通反现
     cash_policy = TextField(default='')  # 返现政策的json串
+    score_ok = IntegerField(default=1)  # 开通积分
+    score_policy = TextField(default='')  # 返积分政策的json串
     sort = IntegerField(default=1)  # 显示顺序
     active = IntegerField(default=1)  # 状态 0删除 1有效
 
@@ -759,7 +761,7 @@ class InsuranceOrderPrice(db.Model):
     response = IntegerField(default=0)  # 0未报价 1已经报价 2不可再修改 -1关闭
     status = IntegerField(default=1)  # 状态 0已过期, 1有效
     read = IntegerField(default=0)  # 状态 0未读, 1已读
-    gift_policy = IntegerField(default=0)  # 礼品策略 1反油， 2反现金
+    gift_policy = IntegerField(default=0)  # 礼品策略 1反油， 2反现金，3返积分
     score = IntegerField(default=0)  # 卖的这单保险可以获取多少现金
     driver_lube_type = CharField(default='')    # 返车主油品型号
     driver_lube_num = IntegerField(default=0)  # 返车主油品数量
@@ -1031,6 +1033,7 @@ class SSILubePolicy(db.Model):
     dealer_store = ForeignKeyField(Store, related_name='dealer_store_policy', db_column='dealer_store_id')  # 经销商
     cash = TextField(default='')  # 返现政策的json串  # 返现政策
     lube = TextField(default='')  # 返油政策的json串  # 返油政策
+    score = TextField(default='')  # 返油政策的json串  # 返积分政策
 
     class Meta:
         db_table = "tb_store_gift_policy"
