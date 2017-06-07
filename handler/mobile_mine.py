@@ -685,8 +685,23 @@ class MobileInsuranceOrderDetailHandler(MobileBaseHandler):
         if 'subjoinprice' in iList.keys():
             iList['subjoinprice'] = str(iList['subjoinprice'])
         if insuranceorder.current_order_price.gift_policy == 1:
+            gift_policy = '油品'
             commission = str(insuranceorder.current_order_price.driver_lube_num+insuranceorder.current_order_price.store_lube_num) + u'桶'
+        if insuranceorder.current_order_price.gift_policy == 3:
+            lubenum = insuranceorder.current_order_price.driver_lube_num+insuranceorder.current_order_price.store_lube_num
+            scorenum = insuranceorder.current_order_price.score
+            if lubenum and scorenum:
+                gift_policy = '积分&油品'
+                gift_summary = insuranceorder.current_order_price.store_lube_type
+            elif lubenum:
+                gift_policy = '油品'
+                gift_summary = insuranceorder.current_order_price.store_lube_type
+            else:
+                gift_summary = ''
+                gift_policy = '积分'
+            commission = str(insuranceorder.current_order_price.driver_lube_num+insuranceorder.current_order_price.store_lube_num) + u'桶' +str(insuranceorder.current_order_price.score) + '分'
         elif insuranceorder.current_order_price.gift_policy == 2:
+            gift_policy = '现金'
             commission = str(insuranceorder.current_order_price.cash) + u'元'
         else:
             commission = u'无'
@@ -705,11 +720,11 @@ class MobileInsuranceOrderDetailHandler(MobileBaseHandler):
             'paytype': insuranceorder.payment,
             'deadlinewarning': deadlineWarning,
             'commission': commission,
-            'gift_summary': u'',
+            'gift_summary': gift_summary,
             'is_append': 1 if insuranceorder.current_order_price.append_refund_status == 1 and insuranceorder.current_order_price.append_refund_num > 0 else 0,
             'append_num':  insuranceorder.current_order_price.append_refund_num,
             'append_reason': insuranceorder.current_order_price.append_refund_reason,
-            'gift_policy': u'油品' if insuranceorder.current_order_price.gift_policy == 1 else u'现金',
+            'gift_policy': gift_policy,
             'store_name': insuranceorder.store.name,
             'store_addr': Area.get_detailed_address(insuranceorder.store.area_code) + insuranceorder.store.address,
             'mobile': insuranceorder.store.mobile,
@@ -957,9 +972,16 @@ class MobileInsuranceMethodHandler(MobileBaseHandler):
                 subjoinprice = str(subjoinprice)
 
             if iop.gift_policy == 1:
+                gift_policy = '油品'
+                gift_summary = iop.store_lube_type
                 commission = u'%s桶'%str(iop.driver_lube_num+iop.store_lube_num)
             elif iop.gift_policy == 2:
+                gift_policy = '现金'
                 commission = u'¥%s'%str(iop.cash)
+            elif iop.gift_policy == 3:
+                gift_policy = '积分'
+                gift_summary = iop.store_lube_type
+                commission = u'%s桶%s分'%(str(iop.store_lube_num),str(iop.score))
             else:
                 commission = u'待计算'
 
@@ -975,8 +997,8 @@ class MobileInsuranceMethodHandler(MobileBaseHandler):
                 'mainprice': mainprice,
                 'subjoin': subjoin,
                 'subjoinprice': subjoinprice,
-                'gift_policy': u'油品' if iop.gift_policy == 1 else u'现金',
-                'gift_summary': '',
+                'gift_policy': gift_policy,
+                'gift_summary': gift_summary,
                 'score': iop.score,
                 'commission': commission,
                 'total_price': iop.total_price,
