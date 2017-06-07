@@ -105,7 +105,7 @@
                         <br><span style="color: red;">({{o.buyer_store.name}})</span>
                     </td>
                     <td>
-                        <br><span style="color:#ff5231;">{{Area.get_detailed_address(o.buyer_store.area_code)+o.buyer_store.address}}</span>
+                        <span>{{Area.get_detailed_address(o.buyer_store.area_code)+o.buyer_store.address}}</span>
                     </td>
                     <td>
                         {% if o.status==0 %}
