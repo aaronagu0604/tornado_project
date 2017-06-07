@@ -241,6 +241,14 @@ class StoreBankAccount(db.Model):
         else:
             return False
 
+    @staticmethod
+    def get_bank_name(account):
+        try:
+            bank_name = StoreBankAccount.get(bank_account=account).bank_name
+        except Exception, e:
+            bank_name = u'获取失败'
+        return bank_name
+
     class Meta:
         db_table = 'tb_store_bank_accounts'
 

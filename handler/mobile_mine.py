@@ -1611,9 +1611,11 @@ class MobileBindBankCardHandler(MobileBaseHandler):
         for sba in sbas:
             result['data'].append({
                 'bank_id': sba.id,
-                'bank_name': sba.bank_name,
-                'bank_account': sba.bank_account[-5:],
-                'bank_pic': 'http://img.520czj.com/image/2017/03/30/server1_20170330105157qZLrVyRADMFhYHzQKtEGdmPs.jpg'
+                'bank_name': sba.bank_name if sba.bank_name else '',
+                'bank_truename': sba.bank_truename if sba.bank_truename else '',
+                'bank_account': '%s****%s'%(sba.bank_account[:5], sba.bank_account[-5:]) if sba.bank_account else '',
+                'bank_branch_name': sba.bank_branch_name if sba.bank_branch_name else '',
+                'bank_pic': 'http://img.520czj.com/image/bank_pic/yinlian.png'
             })
         self.write(simplejson.dumps(result))
 

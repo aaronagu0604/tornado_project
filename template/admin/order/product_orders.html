@@ -89,7 +89,7 @@
                 <thead>
                 <tr style="background:#528acb;color:#fff;text-align:center;height:38px;line-height:38px;">
                     <th style="width:5%;text-align:center;">订单号</th>
-                    <th style="width:5%;text-align:center;">修理厂</th>
+                    <th style="width:5%;text-align:center;">修理厂地址</th>
                     <th style="width:5%;text-align:center;">订单状态</th>
                     <th style="width:10%;text-align:center;">支付方式</th>
                     <th style="width:5%;text-align:center;">金额/积分</th>
@@ -105,8 +105,7 @@
                         <br><span style="color: red;">({{o.buyer_store.name}})</span>
                     </td>
                     <td>
-                        <a href="/admin/user/{{o.user.id}}" target="_blank">{{o.user.truename}}</a>
-                        <br><span style="color:#ff5231;">第{{o.order_count}}单</span>
+                        <br><span style="color:#ff5231;">{{Area.get_detailed_address(o.buyer_store.area_code)+o.buyer_store.address}}</span>
                     </td>
                     <td>
                         {% if o.status==0 %}
@@ -138,9 +137,7 @@
                         余额
                         {% endif %}
                     </td>
-                    <td style="color:#ff5231;">
-                        {{o.total_price}}
-                    </td>
+                    <td style="color:#ff5231;">{{o.total_price}}</td>
                     <td>{{o.ordered | dateformat}}</td>
                     <td>{{o.pay_time | dateformat}}</td>
                 </tr>
@@ -168,19 +165,18 @@
 <script src="/style/js/jquery.twbsPagination.min.js"></script>
 <script>
     $(document).ready(function() {
-
         $('#pageUl').twbsPagination({
             first:'首页',
             prev:'上一页',
             next:'下一页',
             last:'尾页',
             totalPages: {{totalpage}},
-        startPage: {{page}},
-        visiblePages: 8,
-            onPageClick: function (event, page) {
-            self.location="/admin/product_orders?archive={{archive}}&status={{status}}&begin_date={{begin_date or ''}}&end_date={{end_date or ''}}&keyword={{keyword or ''}}&order_type={{order_type}}&page="+page;
-        }
-    });
-})
+            startPage: {{page}},
+            visiblePages: 8,
+                onPageClick: function (event, page) {
+                self.location="/admin/product_orders?archive={{archive}}&status={{status}}&begin_date={{begin_date or ''}}&end_date={{end_date or ''}}&keyword={{keyword or ''}}&order_type={{order_type}}&page="+page;
+            }
+        });
+    })
 </script>
 {% endblock %}

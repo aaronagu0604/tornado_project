@@ -57,13 +57,13 @@
                     </td>
                     <td>
                         {% if a.out_account_type == 0 %}
-                        银联
+                        {{StoreBankAccount.get_bank_name(a.out_account_account)}}
                         {%elif a.out_account_type == 1 %}
                         支付宝
                         {%endif%}
                     </td>
                     <td>{{a.out_account_account}}</td>
-                    <td>{{a.out_account_truename}}</td>
+                    <td>{{a.out_account_truename}}<br />{{a.store.mobile}}</td>
                     <td>{{a.money}}</td>
                     <td data-id="{{a.id}}" class="status" style="cursor: pointer;">
                         {% if a.status == 0 %}

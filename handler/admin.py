@@ -1428,7 +1428,7 @@ class WithdrawHandler(AdminBaseHandler):
         lists = uq.order_by(MoneyRecord.apply_time.desc()).paginate(page, pagesize)
         self.render('/admin/finance/withdraw.html', lists=lists, total=total, page=page, pagesize=pagesize,
                     totalpage=totalpage, active='withdraw', keyword=key, begindate=begindate, enddate=enddate,
-                    status=status)
+                    status=status, StoreBankAccount=StoreBankAccount)
 
 @route(r'/admin/export_insurance_success', name='admin_export_insurance_success')  # 导出出单明细
 class ExportInsuranceSuccessHandler(AdminBaseHandler):
@@ -1632,7 +1632,7 @@ class ProductOrdersHandler(AdminBaseHandler):
             active = 'p_order'
         self.render('admin/order/product_orders.html', orders=orders, total=total, page=page, pagesize=pagesize,
                     totalpage=totalpage, status=status, active=active, begin_date=begin_date, end_date=end_date,
-                    keyword=keyword, order_type=order_type, archive=archive)
+                    keyword=keyword, order_type=order_type, archive=archive, Area=Area)
 
 
 @route(r'/admin/product_order/(\d+)', name='admin_product_order_detail')  # 订单详情
