@@ -1822,6 +1822,7 @@ class MobilePayOrderHandler(MobileBaseHandler):
         user.store.save()
         order.status += 1
         order.pay_time = now
+        order.payment = 4    # 余额支付
         order.save()
         if order_T == 'product':
             for so in order.sub_orders:
@@ -1856,6 +1857,8 @@ class MobilePayOrderHandler(MobileBaseHandler):
             if 'S' in order_number:  # 普通商品订单
                 order_T = 'product'
                 order = Order.get(ordernum=order_number)
+                order.payment = payment
+                order.save()
                 ordernum = order.ordernum
                 if order.status != 0:
                     result['msg'] = u'该订单不可支付'
@@ -1874,11 +1877,13 @@ class MobilePayOrderHandler(MobileBaseHandler):
                     return
                 ordernum = order.ordernum
                 log = u'车装甲保单'
-                if order.status == 1:
+                if order.status == 1:    # 保单支付
+                    order.payment = payment
+                    order.save()
                     total_price = order.current_order_price.total_price
                     order_type = 1
                     log += u'支付'
-                elif order.status in [2, 3] and order.current_order_price.append_refund_status == 1:
+                elif order.status in [2, 3] and order.current_order_price.append_refund_status == 1:    # 保单补款
                     total_price = order.current_order_price.append_refund_num
                     order_type = 1
                     ordernum = ordernum + 'A' + str(now)[5:10]
