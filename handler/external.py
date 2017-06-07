@@ -35,12 +35,11 @@ class showInsurance(BaseHandler):
                 if iValue:
                     dictI.append(u"交强险: 交强险")
             elif i.style == u'商业险-主险' and iValue != 'false' and iValue:
-                dictI.append(u'商业险-主险:' + i.name + u'(%s)'%iValue)
+                dictI.append(u'商业险-主险：' + i.name + u'(%s)'%iValue)
             elif i.style == u'商业险-附加险' and iValue != 'false' and iValue:
-                dictI.append(u'商业险-附加险:' + i.name + u'(%s)' % iValue)
+                dictI.append(u'商业险-附加险：' + i.name + u'(%s)' % iValue)
 
-        self.render('admin/user/showInsurance.html', o=o,
-                    dictI=dictI, addr=addr)
+        self.render('admin/user/showInsurance.html', o=o, dictI=dictI, addr=addr)
 
 
 

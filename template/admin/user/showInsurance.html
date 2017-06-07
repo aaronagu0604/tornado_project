@@ -55,7 +55,14 @@
         <div class="row species">
             <p>保险信息</p>
             <div class="col-xs-12 col-sm-6 col-md-6">品牌：<img src="{{o.current_order_price.insurance.logo}}" /><span>{{o.current_order_price.insurance.name}}</span></div>
-            <div class="col-xs-12 col-sm-6 col-md-6 price">保险价格：<span>{{o.current_order_price.total_price}}</span>元</div>
+            <div class="col-xs-12 col-sm-6 col-md-6 price">保单总价：<span>{{o.current_order_price.total_price}}</span>元</div>
+            {% if o.current_order_price.force_price > 0 %}
+            <div class="col-xs-12 col-sm-6 col-md-6 price">交强总价：<span>{{o.current_order_price.force_price}}</span>元</div>
+            <div class="col-xs-12 col-sm-6 col-md-6 price">车船税：<span>{{o.current_order_price.vehicle_tax_price}}</span>元</div>
+            {% endif %}
+            {% if o.current_order_price.business_price > 0 %}
+            <div class="col-xs-12 col-sm-6 col-md-6 price">商业总价：<span>{{o.current_order_price.business_price}}</span>元</div>
+            {% endif %}
             <div class="col-xs-12 col-sm-12 col-md-12">备注：{{o.local_summary}}</div>
             <div class="aa"></div>
             <div class="mskelayBox">
