@@ -2198,8 +2198,9 @@ class InsuranceOrderDelHandler(AdminBaseHandler):
                         store = io.store
                         store.score += score
                         store.save()
+                        process_log = u'卖保险返积分所得，订单号：%s' % io.ordernum
                         ScoreRecord.create(user=io.user, store=io.store, ordernum=io.ordernum, type=3, process_type=1,
-                                           process_log=u'卖保险返现所得', score=score, created=now, status=1)
+                                           process_log=process_log, score=score, created=now, status=1)
                     io.status = 3
                     io.save()
                     AdminUserLog.create(admin_user=admin_user, created=now,
