@@ -1580,7 +1580,7 @@ class MobilInsuranceOrderBaseHandler(MobileBaseHandler):
                     'name': "积分",
                     'type': 3,
                     'link': "",
-                    'link_str': "积分与消费金额按1比1换算(交强险与车船税除外)"
+                    'link_str': "积分金额按1比1(交强与车船除外)"
                 })
             insurance_list.append({
                 'id': sp.insurance.id,
