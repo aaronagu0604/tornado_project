@@ -580,9 +580,9 @@ class GetActiveScoreHandler(BaseHandler):
         pid = self.get_argument('pid', None)
         iid = self.get_argument('iid', None)
         force = self.get_argument('force', 0)
-        force = float(force) if force else 0
+        force = int(force) if force else 0
         business = self.get_argument('business', None)
-        business = float(business) if business else 0
+        business = int(business) if business else 0
         try:
             iop = InsuranceOrderPrice.get(id=pid)
             io = InsuranceOrder.get(id=iop.insurance_order_id)
