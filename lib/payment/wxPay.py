@@ -371,6 +371,9 @@ class Qrcode_pub(Wxpay_client_pub):
 
     def getPrepayId(self, out_trade_no, body, total_fee):
         """获取prepay_id"""
+        logging.info(out_trade_no)
+        logging.info(body)
+        logging.info(total_fee)
         self.parameters["out_trade_no"] = out_trade_no
         self.parameters["body"] = body
         self.parameters["total_fee"] = total_fee
