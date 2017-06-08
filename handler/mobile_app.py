@@ -189,7 +189,7 @@ class MobileRegHandler(MobileBaseHandler):
         province = self.get_body_argument("province", None)
         city = self.get_body_argument("city", None)
         district = self.get_body_argument("district", None)
-        address = self.get_body_argument("address", None)
+        address = self.get_body_argument("address", '')
         legalPerson = self.get_body_argument("legalPerson", None)
         licenseCode = self.get_body_argument("licenseCode", None)
         licensePic = self.get_body_argument("licensePic", None)
@@ -217,9 +217,9 @@ class MobileRegHandler(MobileBaseHandler):
             user.store = sid.id
             user.token = setting.user_token_prefix + str(uuid.uuid4())
             user.save()
-            province_name = Area.get(code=province)
-            city_name = Area.get(code=city)
-            district_name = Area.get(code=district)
+            province_name = Area.get(code=province).name
+            city_name = Area.get(code=city).name
+            district_name = Area.get(code=district).name
             StoreAddress.create(store=sid.id, province=province_name, city=city_name, region=district_name, street='',
                                 address=address, name=legalPerson, mobile=mobile, created=now, create_by=user.id)
             self.application.memcachedb.set(user.token, str(user.id), setting.user_expire)
@@ -231,7 +231,7 @@ class MobileRegHandler(MobileBaseHandler):
             result['flag'] = 1
             result['msg'] = u'注册成功'
         except Exception, ex:
-            result['msg'] = ex.message
+            result['msg'] = u'请验证信息是否完整！%s' % str(ex)
         self.write(simplejson.dumps(result))
 
 
@@ -1243,6 +1243,8 @@ class MobileOrderBaseHandler(MobileBaseHandler):
     @require_auth
     def get(self):
         user = self.get_user()
+        # try:
+        #     store = user.store
         result = {'flag': 0, 'msg': '', 'data': {'address': {}, 'store': []}}
         try:
             spp_dicts = simplejson.loads(self.get_argument('spp_dicts'))
