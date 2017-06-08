@@ -12,7 +12,7 @@
         $('#bt_export').bind('click', function () {
             var sql = {'begin_date':'{{begin_date}}', 'end_date':'{{end_date}}'};
             var xsrf='{{handler.xsrf_token}}';
-            $.post("/ajax/orders/export_insurance_success",
+            $.post("/ajax/orders/export_insurance_three",
                 {
                     sql: JSON.stringify(sql),
                     _xsrf: xsrf

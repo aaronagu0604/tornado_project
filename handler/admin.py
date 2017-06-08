@@ -1511,7 +1511,7 @@ class ExportInsuranceSuccessHandler(AdminBaseHandler):
                     totalpage=totalpage, active=active, begin_date=begin_date, end_date=end_date,
                     archive=archive)
 
-@route(r'/admin/export_insurance_three', name='admin_export_insurance_three')  # 导出出单明细
+@route(r'/admin/export_insurance_three', name='admin_export_insurance_three')  # 首三单统计
 class ExportInsuranceThreeHandler(AdminBaseHandler):
     def get(self):
         archive = self.get_argument("archive", '')
