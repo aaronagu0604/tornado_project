@@ -893,6 +893,12 @@ class InsuranceOrder(db.Model):
     trade_no = CharField(max_length=64, default='')  # 支付宝/微信交易号
     user_del = IntegerField(default=0)  # 用户端不显示
 
+    @classmethod
+    def buy_count(cls,io_id):
+        i = InsuranceOrder.get(id=io_id)
+        io = InsuranceOrder.select().where((InsuranceOrder.id < io_id) & (InsuranceOrder.store == i.store.id) & (InsuranceOrder.status == 3))
+        return io.count()+1
+
     def change_status(self, status):
         if self.status == status:
             return

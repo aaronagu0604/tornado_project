@@ -4,7 +4,7 @@
 {% endblock %}
 {% block content %}
 
-<script language="javascript" type="text/javascript" src="/style/js/jquery.min.js"></script>
+<script language="javascript" type="text/javascript" src="/style/js/jquery-1.11.1.min.js"></script>
 <script language="javascript" type="text/javascript" src="/style/js/My97DatePicker/WdatePicker.js"></script>
 
 <SCRIPT LANGUAGE="javascript">
@@ -12,15 +12,16 @@
         $('#bt_export').bind('click', function () {
             var sql = {'begin_date':'{{begin_date}}', 'end_date':'{{end_date}}'};
             var xsrf='{{handler.xsrf_token}}';
-            $.post("/ajax/orders/export_insurance_three",
+            $.post("/ajax/export_insurance_three",
                 {
                     sql: JSON.stringify(sql),
                     _xsrf: xsrf
                 },
                 function (data) {
                     var obj = jQuery.parseJSON(data);
-                    if (obj.err == 0) {
+                    if (obj.flag == 1) {
                         alert('生成成功，点击下载连接，下载数据文件！');
+                        console.log(obj.msg);
                         window.open("/upload/" + obj.msg);
                     }
                     else {
@@ -33,7 +34,7 @@
 <div class="row">
     <nav>
         <div>
-            <a class="navbar-brand" href="#">出单明细</a>
+            <a class="navbar-brand" href="#">首三单统计</a>
         </div>
         <div class="pull-right">
             <form class="navbar-form navbar-left" action="" >
@@ -90,25 +91,15 @@
                     <th style="width:5%;text-align:center;">联系电话</th>
                     <th style="width:5%;text-align:center;">地区</th>
                     <th style="width:10%;text-align:center;">门店</th>
-                    <th style="width:5%;text-align:center;">保险名称</th>
-                    <th style="width:5%;text-align:center;">车牌</th>
-                    <th style="width:5%;text-align:center;">车主</th>
-                    <th style="width:5%;text-align:center;">险种</th>
-                    <th style="width:5%;text-align:center;">经办人</th>
-                    <th style="width:5%;text-align:center;">登记人</th>
-                    <th style="width:5%;text-align:center;">金额</th>
-                    <th style="width:5%;text-align:center;">交强</th>
-                    <th style="width:5%;text-align:center;">车船</th>
-                    <th style="width:5%;text-align:center;">商业</th>
-                    <th style="width:5%;text-align:center;">快递</th>
-                    <th style="width:5%;text-align:center;">型号</th>
                     <th style="width:5%;text-align:center;">返佣</th>
+                    <th style="width:5%;text-align:center;">型号</th>
                     <th style="width:5%;text-align:center;">数量(桶)</th>
+                    <th style="width:5%;text-align:center;">积分</th>
+                    <th style="width:5%;text-align:center;">返现</th>
                     <th style="width:5%;text-align:center;">订单号</th>
-                    <th style="width:5%;text-align:center;">备注1</th>
-                    <th style="width:5%;text-align:center;">备注2</th>
-                    <th style="width:5%;text-align:center;">领油日期</th>
-                    <th style="width:5%;text-align:center;">领取人</th>
+                    <th style="width:5%;text-align:center;">单次</th>
+                    <th style="width:5%;text-align:center;">险种</th>
+                    <th style="width:5%;text-align:center;">金额</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -118,12 +109,24 @@
                         <span style="color:#ff5231;">{{o.id}}</span>
                     </td>
                     <td>{{o.deal_time|datetimeformat}}</td>
-                    <td>{{o.delivery_tel}}</td>
-                    <td>{{o.delivery_region}}</td>
+                    <td>{{o.store.mobile}}</td>
+                    <td>{{o.delivery_province+o.delivery_city+o.delivery_region}}</td>
                     <td>{{o.store.name}}</td>
-                    <td>{{o.current_order_price.insurance.name}}</td>
-                    <td>/</td>
-                    <td>/</td>
+                    <td>
+                        {% if o.current_order_price.gift_policy == 2 %}
+                        返现
+                        {% elif o.current_order_price.gift_policy == 1 %}
+                        返油
+                        {% else %}
+                        混合
+                        {% endif %}
+                    </td>
+                    <td>{{o.current_order_price.store_lube_type}}</td>
+                    <td>{{o.current_order_price.store_lube_num + o.current_order_price.driver_lube_num}}</td>
+                    <td>{{o.current_order_price.score}}</td>
+                    <td>{{o.current_order_price.cash}}</td>
+                    <td>{{o.ordernum}}</td>
+                    <td>{{InsuranceOrder.buy_count(o.id)}}</td>
                     <td>
                         {% if o.current_order_price.force_price > 0 %}
                         交强
@@ -135,36 +138,7 @@
                         ，商业
                         {% endif %}
                     </td>
-                    <td>{{o.current_order_price.admin_user.name}}</td>
-                    <td>登记人</td>
-                    <td>{{o.total_price}}</td>
-                    <td>{{o.current_order_price.force_price}}</td>
-                    <td>{{o.current_order_price.vehicle_tax_price}}</td>
-                    <td>{{o.current_order_price.business_price}}</td>
-                    <td>
-                        {% if o.deliver_company %}
-                        <span>{{o.deliver_company}}</span>
-                        <br><span>({{o.deliver_num}})</span>
-                        {% else %}
-                        <span>/</span>
-                        {% endif %}
-                    </td>
-                    <td>型号</td>
-                    <td>
-                        {% if o.current_order_price.gift_policy == 2 %}
-                        佣金返积分
-                        {% elif o.current_order_price.gift_policy == 1 %}
-                        佣金返油
-                        {% else %}
-                        无
-                        {% endif %}
-                    </td>
-                    <td>{{o.current_order_price.score}}</td>
-                    <td>{{o.ordernum}}</td>
-                    <td>{{o.local_summary}}</td>
-                    <td>备注2</td>
-                    <td>领油日期</td>
-                    <td>领取人</td>
+                    <td>{{o.current_order_price.total_price}}</td>
                 </tr>
                 {% endfor %}
                 </tbody>
