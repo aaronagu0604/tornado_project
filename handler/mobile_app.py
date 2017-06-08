@@ -187,8 +187,16 @@ class MobileRegHandler(MobileBaseHandler):
         referee = self.get_body_argument("referee", None)
         companyName = self.get_body_argument("companyName", None)
         province = self.get_body_argument("province", None)
-        city = self.get_body_argument("city", None)
-        district = self.get_body_argument("district", None)
+        city_tmp = self.get_body_argument("city", '')
+        district_tmp = self.get_body_argument("district", None)
+        if len(city_tmp) == 12:
+            district = city_tmp
+        else:
+            city = city_tmp
+        if len(district_tmp) == 8:
+            city = district_tmp
+        else:
+            district = district_tmp
         address = self.get_body_argument("address", '')
         legalPerson = self.get_body_argument("legalPerson", None)
         licenseCode = self.get_body_argument("licenseCode", None)
