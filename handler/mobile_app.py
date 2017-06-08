@@ -1226,7 +1226,7 @@ def pay_order(payment, total_price, ordernum, log):
 
 
 @route(r'/mobile/orderbase', name='mobile_order_base')  # 创建订单前的获取数据
-class MobileOrderBaseHandler(MobileBaseHandler):;
+class MobileOrderBaseHandler(MobileBaseHandler):
     """
     @apiGroup order
     @apiVersion 1.0.0
