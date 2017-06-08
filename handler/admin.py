@@ -1261,17 +1261,20 @@ class EditAdHandler(AdminBaseHandler):
         if aid == 0:
             ad = ''
             ad_type = ''
+            i_id = 0
         if aid > 0:
             try:
                 ad = BlockItem.get(id=aid)
                 ad_type = ad.link.split('/')[2]
+                i_id = int(ad.link.split('/')[-1])
             except:
                 self.flash("此广告不存在")
                 self.redirect("/admin/advertisement")
                 return
         blocks = Block.select()
         insurances = Insurance.select().where(Insurance.active == 1)
-        self.render('admin/App/ad_e.html', items=items, ad=ad, active='ads', blocks=blocks, ad_type=ad_type, insurances=insurances)
+        self.render('admin/App/ad_e.html', items=items, ad=ad, active='ads', blocks=blocks, ad_type=ad_type,
+                    insurances=insurances, i_id=i_id)
 
     def post(self, aid):
         aid = int(aid)
@@ -1314,7 +1317,7 @@ class EditAdHandler(AdminBaseHandler):
             ad.save()
             aid = ad.id
             AdminUserLog.create(admin_user=self.get_admin_user(), created=int(time.time()), content='编辑广告: ad_id:%d' % aid)
-            self.flash(u"广告修改成功，请发布到相应地区")
+            self.flash(u"广告修改成功，请在左侧将广告发布到相应地区")
         except Exception, ex:
             self.flash(str(ex))
 
