@@ -159,6 +159,12 @@
                             <span class="fa arrow"></span>
                         </a>
                         <ul class="nav nav-second-level">
+                            <li>
+                                <a {% if active=='i_order' %}class="active"{% endif %} href="/admin/insurance_orders">保险订单</a>
+                            </li>
+                            <li>
+                                <a {% if active=='i_order_a' %}class="active"{% endif %} href="/admin/insurance_orders?archive=1">保险订单归档</a>
+                            </li>
                             {% if admin.roles!='W' %}
                             <li>
                                 <a {% if active=='p_order' %}class="active"{% endif %} href="/admin/product_orders">商品订单</a>
@@ -167,12 +173,6 @@
                                 <a {% if active=='p_order_a' %}class="active"{% endif %} href="/admin/product_orders?archive=1&status=-2">商品订单归档</a>
                             </li>
                             {% endif %}
-                            <li>
-                                <a {% if active=='i_order' %}class="active"{% endif %} href="/admin/insurance_orders">保险订单</a>
-                            </li>
-                            <li>
-                                <a {% if active=='i_order_a' %}class="active"{% endif %} href="/admin/insurance_orders?archive=1">保险订单归档</a>
-                            </li>
                         </ul>
                     </li>
                     {% if admin.roles!='W' %}
