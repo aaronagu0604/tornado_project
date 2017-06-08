@@ -2373,7 +2373,7 @@ def ShannXiRenBao():
     # 渭南
     InsuranceArea.create(area_code='00270005', insurance=13, lube_ok=1,
                          dealer_store=15,
-                         lube_policy=simplejson.dumps(lubex5), cash_ok=1,
+                         lube_policy=simplejson.dumps(lube), cash_ok=1,
                          cash_policy=simplejson.dumps(cash))
     # 汉中
     InsuranceArea.create(area_code='00270007', insurance=13, lube_ok=1,
@@ -2846,7 +2846,7 @@ def ShannXiZhongHuaLianHe():
     # 渭南
     InsuranceArea.create(area_code='00270005', insurance=1, lube_ok=1,
                          dealer_store=15,
-                         lube_policy=simplejson.dumps(lubex5), cash_ok=1,
+                         lube_policy=simplejson.dumps(lube), cash_ok=1,
                          cash_policy=simplejson.dumps(cash))
     # 汉中
     InsuranceArea.create(area_code='00270007', insurance=1, lube_ok=1,
@@ -3319,7 +3319,7 @@ def ShannXiPingAn():
     # 渭南
     InsuranceArea.create(area_code='00270005', insurance=7, lube_ok=1,
                          dealer_store=15,
-                         lube_policy=simplejson.dumps(lubex5), cash_ok=1,
+                         lube_policy=simplejson.dumps(lube), cash_ok=1,
                          cash_policy=simplejson.dumps(cash))
     # 汉中
     InsuranceArea.create(area_code='00270007', insurance=7, lube_ok=1,
@@ -3792,7 +3792,7 @@ def ShannXiAnSheng():
     # 渭南
     InsuranceArea.create(area_code='00270005', insurance=15, lube_ok=1,
                          dealer_store=15,
-                         lube_policy=simplejson.dumps(lubex5), cash_ok=1,
+                         lube_policy=simplejson.dumps(lube), cash_ok=1,
                          cash_policy=simplejson.dumps(cash))
     # 汉中
     InsuranceArea.create(area_code='00270007', insurance=15, lube_ok=1,
@@ -4265,7 +4265,7 @@ def ShannXiTianAn():
     # 渭南
     InsuranceArea.create(area_code='00270005', insurance=9, lube_ok=1,
                          dealer_store=15,
-                         lube_policy=simplejson.dumps(lubex5), cash_ok=1,
+                         lube_policy=simplejson.dumps(lube), cash_ok=1,
                          cash_policy=simplejson.dumps(cash))
     # 汉中
     InsuranceArea.create(area_code='00270007', insurance=9, lube_ok=1,
@@ -4738,7 +4738,7 @@ def ShannXiTaiPingYang():
     # 渭南
     InsuranceArea.create(area_code='00270005', insurance=12, lube_ok=1,
                          dealer_store=15,
-                         lube_policy=simplejson.dumps(lubex5), cash_ok=1,
+                         lube_policy=simplejson.dumps(lube), cash_ok=1,
                          cash_policy=simplejson.dumps(cash))
     # 汉中
     InsuranceArea.create(area_code='00270007', insurance=12, lube_ok=1,
@@ -5211,7 +5211,7 @@ def ShannXiDaDi():
     # 渭南
     InsuranceArea.create(area_code='00270005', insurance=10, lube_ok=1,
                          dealer_store=15,
-                         lube_policy=simplejson.dumps(lubex5), cash_ok=1,
+                         lube_policy=simplejson.dumps(lube), cash_ok=1,
                          cash_policy=simplejson.dumps(cash))
     # 汉中
     InsuranceArea.create(area_code='00270007', insurance=10, lube_ok=1,
@@ -5684,7 +5684,7 @@ def ShannXiTaiPing():
     # 渭南
     InsuranceArea.create(area_code='00270005', insurance=6, lube_ok=1,
                          dealer_store=15,
-                         lube_policy=simplejson.dumps(lubex5), cash_ok=1,
+                         lube_policy=simplejson.dumps(lube), cash_ok=1,
                          cash_policy=simplejson.dumps(cash))
     # 汉中
     InsuranceArea.create(area_code='00270007', insurance=6, lube_ok=1,
@@ -6156,7 +6156,7 @@ def ShannXiYongAn():
     # 渭南
     InsuranceArea.create(area_code='00270005', insurance=8, lube_ok=1,
                          dealer_store=15,
-                         lube_policy=simplejson.dumps(lubex5), cash_ok=1,
+                         lube_policy=simplejson.dumps(lube), cash_ok=1,
                          cash_policy=simplejson.dumps(cash))
     # 汉中
     InsuranceArea.create(area_code='00270007', insurance=8, lube_ok=1,
