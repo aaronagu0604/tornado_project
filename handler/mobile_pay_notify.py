@@ -21,13 +21,19 @@ from model import *
 def change_order_status(ordernum, trade_no):
     is_insurance_order = False
     try:
+        is_wx_qrcode_pay = ordernum.find('WXQRCODE')
+        if is_wx_qrcode_pay >=0:
+            ordernum = ordernum[:is_wx_qrcode_pay]
+        is_wx_app_pay = ordernum.find('WX')
+        if is_wx_app_pay >= 0:
+            ordernum = ordernum[:is_wx_app_pay]
         ordernum_list = ordernum.split('A')
         if len(ordernum_list) == 1:    # 订单（普通商品、保单）支付回调
             if 'I' in ordernum:    # 保单
                 order = InsuranceOrder.get(ordernum=ordernum)
                 order.change_status(2)
                 is_insurance_order = True
-            else:    # 普通商品订单
+            else:  # 普通商品订单
                 order = Order.get(ordernum=ordernum)
                 order.status = 1
                 for sub_order in order.sub_orders:
