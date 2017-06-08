@@ -1251,10 +1251,12 @@ class MobileOrderBaseHandler(MobileBaseHandler):
     @require_auth
     def get(self):
         user = self.get_user()
-        # try:
-        #     store = user.store
         result = {'flag': 0, 'msg': '', 'data': {'address': {}, 'store': []}}
         try:
+            if user.store.active != 1:
+                result['msg'] = u'您尚未通过审核，暂不能购买商品'
+                self.write(simplejson.dumps(result))
+                return
             spp_dicts = simplejson.loads(self.get_argument('spp_dicts'))
             spp_dicts = {int(spp_dict['sppid']): int(spp_dict['quantity']) for spp_dict in spp_dicts}
         except Exception, e:
@@ -1631,6 +1633,10 @@ class MobilInsuranceOrderBaseHandler(MobileBaseHandler):
         result = {'flag': 0, 'msg': '', "data": {}}
         user = self.get_user()
         try:
+            if user.store.active != 1:
+                result['msg'] = u'您尚未通过审核，暂不能购买保险'
+                self.write(simplejson.dumps(result))
+                return
             sda = self.get_store_delivery_address(user.store)
             result['data']['delivery_to'] = sda['delivery_to']
             result['data']['delivery_tel'] = sda['delivery_tel']
