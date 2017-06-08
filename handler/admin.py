@@ -1754,19 +1754,14 @@ class InsuranceOrderHandler(AdminBaseHandler):
                 ft = (InsuranceOrder.status << [3, -1])
             else:
                 ft = (InsuranceOrder.status == status)
-            if keyword:
-                keyw = '%' + keyword + '%'
-                ft = (InsuranceOrder.ordernum % keyw)
         else:
             status = int(status) if status else 0
             if status == -2:
                 ft = (InsuranceOrder.status << [0, 1, 2])
             else:
                 ft = (InsuranceOrder.status == status)
-            if keyword:
-                keyw = '%' + keyword + '%'
-                ft = (InsuranceOrder.ordernum % keyw) & (InsuranceOrder.status << [0, 1, 2])
-                status = -2
+        if keyword:
+            ft &= ((InsuranceOrder.ordernum.contains(keyword)) | (Store.mobile.contains(keyword)))
         if begin_date and end_date:
             begin = time.strptime(begin_date, "%Y-%m-%d")
             end = time.strptime((end_date + " 23:59:59"), "%Y-%m-%d %H:%M:%S")
