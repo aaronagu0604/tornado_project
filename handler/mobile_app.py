@@ -231,6 +231,7 @@ class MobileRegHandler(MobileBaseHandler):
             result['flag'] = 1
             result['msg'] = u'注册成功'
         except Exception, ex:
+            result['flag'] = 0
             result['msg'] = ex.message
         self.write(simplejson.dumps(result))
 

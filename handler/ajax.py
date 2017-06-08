@@ -544,14 +544,14 @@ class GetActiveScoreHandler(BaseHandler):
         score = SSILubePolicy.get((SSILubePolicy.store == sid) & (SSILubePolicy.insurance == iid)).score
         score_policy = simplejson.loads(score)
         if force and business:
-            result['score_num'] = business * score_policy['frc_bns']['score_rate']
+            result['score_num'] = int(business * score_policy['frc_bns']['score_rate'])
             result['lube_num'] = score_policy['frc_bns']['lube_num']
             result['lube_name'] = score_policy['frc_bns']['lube_name'].encode('utf-8')
         elif force:
             result['lube_num'] = score_policy['frc_bns']['lube_num']
             result['lube_name'] = score_policy['frc_bns']['lube_name'].encode('utf-8')
         elif business:
-            result['score_num'] = business * score_policy['frc_bns']['score_rate']
+            result['score_num'] = int(business * score_policy['frc_bns']['score_rate'])
         return result
 
     def get(self):
@@ -580,9 +580,9 @@ class GetActiveScoreHandler(BaseHandler):
         pid = self.get_argument('pid', None)
         iid = self.get_argument('iid', None)
         force = self.get_argument('force', 0)
-        force = int(force) if force else 0
+        force = float(force) if force else 0
         business = self.get_argument('business', None)
-        business = int(business) if business else 0
+        business = float(business) if business else 0
         try:
             iop = InsuranceOrderPrice.get(id=pid)
             io = InsuranceOrder.get(id=iop.insurance_order_id)

@@ -50,16 +50,16 @@
                             <label class="control-label" style="margin-top:7px;">广告类型</label>
                         </div>
                         <div  class=" col-md-4">
-                            <select class="form-control" name="ad_link" id="ad_link" onchange="change_ad_type(self.value)" style="width:230px;">
-                                <option value="activity">活动图</option>
-                                <option value="product">商品导购</option>
-                                <option value="insurance">保险导购</option>
-                                <option value="lube">返油政策</option>
+                            <select class="form-control" name="ad_link" id="ad_link" onchange="change_ad_type(this.value)" style="width:230px;">
+                                <option value="activity" {% if ad_type=="activity" %} selected {% endif %}>活动图</option>
+                                <option value="product" {% if ad_type=="product" %} selected {% endif %}>商品导购</option>
+                                <option value="insurance" {% if ad_type=="insurance" %} selected {% endif %}>保险导购</option>
+                                <option value="lube" {% if ad_type=="lube" %} selected {% endif %}>返油政策</option>
                             </select>
                         </div>
                     </div>
 
-                    <div class="form-group has-success row">
+                    <div id="product_id_0" class="form-group has-success row" style="{% if ad_type == "insurance" %}display: none {% endif %}">
                         <div class=" col-md-1" style="width:100%;">
                             <label class="control-label" style="margin-top:7px;">产品ID</label>
                         </div>
@@ -68,12 +68,16 @@
                         </div>
                     </div>
 
-                    <div class="form-group has-success row" type="hidden">
+                    <div id="product_id_1" class="form-group has-success row" style="{% if ad_type != "insurance" %} display: none {% endif %}">
                         <div class=" col-md-1" style="width:100%;">
                             <label class="control-label" style="margin-top:7px;">产品ID</label>
                         </div>
-                        <div class=" col-md-11">
-                            <input type="text" class="form-control"  name="product_id" value="" style="width:480px;" />
+                        <div  class=" col-md-4">
+                            <select class="form-control" name="product_id" style="width:230px;">
+                                {% for i in insurances %}
+                                <option value="{{i.id}}" {% if i_id=="{{i.id}}" %} selected {% endif %}>{{i.name}}</option>
+                                {% endfor %}
+                            </select>
                         </div>
                     </div>
 
@@ -252,8 +256,14 @@
         });
     }
     function change_ad_type(ad_type) {
+        product_id_0 = document.getElementById(product_id_0);
+        product_id_1 = document.getElementById(product_id_1);
         if(ad_type == "insurance"){
-
+            product_id_0.style.display="none";
+            product_id_1.sytle.display="";
+        } else {
+            product_id_1.style.display="none";
+            product_id_0.sytle.display="";
         }
     }
 </script>

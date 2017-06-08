@@ -1059,7 +1059,7 @@ class ProductHandler(AdminBaseHandler):
 
         self.render('admin/product/product.html', active=product_type, products=products, total=total, page=page,
                     c_id=int(category) if category else '', pagesize=pagesize, totalpage=totalpage, keyword=keyword, status=active,
-                    categories=categories, is_score=is_score,pid=[])
+                    categories=categories, is_score=is_score,pid=[], Area=Area)
 
 
 @route(r'/admin/edit_product/(\d+)', name='admin_edit_product')  # 修改商品
@@ -1260,15 +1260,18 @@ class EditAdHandler(AdminBaseHandler):
         aid = int(aid)
         if aid == 0:
             ad = ''
+            ad_type = ''
         if aid > 0:
             try:
                 ad = BlockItem.get(id=aid)
+                ad_type = ad.link.split('/')[2]
             except:
                 self.flash("此广告不存在")
                 self.redirect("/admin/advertisement")
                 return
         blocks = Block.select()
-        self.render('admin/App/ad_e.html', items=items, ad=ad, active='ads', blocks=blocks)
+        insurances = Insurance.select().where(Insurance.active == 1)
+        self.render('admin/App/ad_e.html', items=items, ad=ad, active='ads', blocks=blocks, ad_type=ad_type, insurances=insurances)
 
     def post(self, aid):
         aid = int(aid)
