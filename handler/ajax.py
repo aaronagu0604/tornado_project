@@ -620,8 +620,8 @@ class GetGiftOilHandler(BaseHandler):
             role = None
             for item in policylist:
                 for p in item['items']:
-                    minprice = int(p['minprice']) if p['minprice'] else 0
-                    maxprice = int(p['maxprice']) if p['maxprice'] else 9999999
+                    minprice = float(p['minprice']) if p['minprice'] else 0
+                    maxprice = float(p['maxprice']) if p['maxprice'] else 9999999
                     if (flag == int(p['flag'])) and (minprice <= businesstotal) and (businesstotal <= maxprice):
                         role = p
                         role['oiltype'] = item['gift']
