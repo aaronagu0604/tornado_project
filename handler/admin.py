@@ -2278,6 +2278,7 @@ class InsuranceScore(AdminBaseHandler):
         iid = int(self.get_argument('iid', 0))
         area_code = self.get_argument('area_code', '0')
         sid = self.get_argument('sid', '')
+        item_id = 0
         if sid:
             try:
                 item = simplejson.loads(SSILubePolicy.get((SSILubePolicy.store == sid) & (SSILubePolicy.insurance == iid)).cash)
@@ -2285,11 +2286,14 @@ class InsuranceScore(AdminBaseHandler):
                 item = {'ber': '', 'ber2': '', 'btr': '', 'fer': '', 'fer2': '', 'ftr': '', 'ar': '', 'pr': '', 'bm': ''}
         else:
             try:
-                item = simplejson.loads(InsuranceArea.get((InsuranceArea.insurance == iid) & (InsuranceArea.area_code == area_code)).cash_policy)
+                ia = InsuranceArea.get((InsuranceArea.insurance == iid) & (InsuranceArea.area_code == area_code))
+                item_id = ia.id
+                item = simplejson.loads(ia.cash_policy)
             except Exception, e:
                 item = {'ber': '', 'ber2': '', 'btr': '', 'fer': '', 'fer2': '', 'ftr': '', 'ar': '', 'pr': '', 'bm': ''}
 
-        self.render("admin/insurance/score.html", item=item, active='insurance', iid=iid, area_code=area_code, sid=sid)
+        self.render("admin/insurance/score.html", item=item, active='insurance', iid=iid, area_code=area_code,
+                    sid=sid, item_id=item_id)
 
     def post(self):
         exid = int(self.get_body_argument('exid', '0'))
@@ -2297,16 +2301,15 @@ class InsuranceScore(AdminBaseHandler):
         business_exchange_rate = float(self.get_body_argument('business_exchange_rate', '0'))
         business_exchange_rate2 = float(self.get_body_argument('business_exchange_rate2', '0'))
         business_tax_rate = float(self.get_body_argument('business_tax_rate', '0'))
-
         force_exchange_rate = float(self.get_body_argument('force_exchange_rate', '0'))
         force_exchange_rate2 = float(self.get_body_argument('force_exchange_rate2', '0'))
         force_tax_rate = float(self.get_body_argument('force_tax_rate', '0'))
-
         ali_rate = float(self.get_body_argument('ali_rate', '0'))
         profit_rate = float(self.get_body_argument('profit_rate', '0'))
-        area_code = self.get_body_argument('area_code', '0')
-        iid = int(self.get_argument('iid', 0))
-        sid = int(self.get_argument('sid', 0))
+        iid = self.get_argument('iid', '')
+        iid = int(iid) if iid else 0
+        sid = self.get_argument('sid', '')
+        sid = int(sid) if sid else 0
 
         cash = simplejson.dumps({
             'ber': business_exchange_rate,
@@ -2333,8 +2336,7 @@ class InsuranceScore(AdminBaseHandler):
             update_area_policy(item)
             AdminUserLog.create(admin_user=self.get_admin_user(), created=int(time.time()),
                                 content='编辑返积分策略:ise_id:%d'%exid)
-            self.flash('保存成功')
-            self.render("admin/insurance/score.html", item=item, active='insurance')
+            self.write(u'修改成功，请刷新网页查看')
 
 
 @route(r'/admin/insurance/lube', name='admin_insurance_lube')  # 保险返油策略

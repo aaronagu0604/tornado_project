@@ -23,7 +23,7 @@
             </div>
             {%endif%}
             <form action="/admin/insurance/score" method="post">
-                <input type="hidden" name="exid" value="{{item.id or '0'}}">
+                <input type="hidden" name="exid" value="{{item_id}}">
                 <input type="hidden" name="iid" value="{{iid}}">
                 <input type="hidden" name="sid" value="{{sid}}">
                 <input type="hidden" name="area_code" value="{{area_code}}">
