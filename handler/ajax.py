@@ -1034,7 +1034,8 @@ class InsuranceExportHandler(BaseHandler):
 class InsuranceThreeHandler(BaseHandler):
     # 导出网站交易明细
     def export_trade_list(self,data, fname):
-        f = open('upload/' + fname, 'w')
+
+        f = open('/home/www/workspace/czj/upload/' + fname, 'w')
         try:
             f.write(u'序号,出保单日期,联系电话,地区,门店,返佣,型号,数量（桶）,积分,返现,订单号,单次,险种,金额 \n'.encode(
                     'gb18030'))
