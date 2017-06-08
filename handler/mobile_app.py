@@ -1226,7 +1226,7 @@ def pay_order(payment, total_price, ordernum, log):
 
 
 @route(r'/mobile/orderbase', name='mobile_order_base')  # 创建订单前的获取数据
-class MobileOrderBaseHandler(MobileBaseHandler):
+class MobileOrderBaseHandler(MobileBaseHandler):;
     """
     @apiGroup order
     @apiVersion 1.0.0
@@ -1573,7 +1573,7 @@ class MobilInsuranceOrderBaseHandler(MobileBaseHandler):
                     'name': "现金",
                     'type': 2,
                     'link': "",
-                    'link_str': "奖励现金将存入个人余额"
+                    'link_str': "奖励金将存入余额"
                 })
             if sp.score and (sp.store.area_code.find('00270001')>=0):
                 rake_back.append({
