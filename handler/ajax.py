@@ -1061,7 +1061,7 @@ class InsuranceThreeHandler(BaseHandler):
                 line = str(s.id) + u',' + \
                     u'%s' % time.strftime('%Y-%m-%d', time.localtime(s.deal_time)) + u',' + \
                     s.store.mobile + u',' + \
-                    str(s.delivery_province and s.delivery_province or ''+s.delivery_city and s.delivery_city or ''+s.delivery_region and s.delivery_region or '')+ u',' + \
+                    Area.get_detailed_address(s.store.area_code)+ u',' + \
                     s.store.name + u',' + \
                     gift + u',' + \
                     str(s.current_order_price.store_lube_type and s.current_order_price.store_lube_type or '') + u',' + \
