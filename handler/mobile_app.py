@@ -1559,9 +1559,19 @@ class MobilInsuranceOrderBaseHandler(MobileBaseHandler):
     def get_store_policies(self, store):
         insurance_list = []
         store_policies = SSILubePolicy.select().where(SSILubePolicy.store == store)
+        insurance_active = [1,8,12,10,6,9]
         for sp in store_policies:
             rake_back = []
-            if sp.lube and (sp.store.area_code.find('00270001')<0):
+            hasoil = True
+            if sp.score and (sp.store.area_code.find('00270001')>=0) and (sp.insurance.id in insurance_active):
+                hasoil = False
+                rake_back.append({
+                    'name': "积分",
+                    'type': 3,
+                    'link': "",
+                    'link_str': "积分金额1:1(交强、车船除外)"
+                })
+            if sp.lube and hasoil:
                 rake_back.append({
                     'name': "油品",
                     'type': 1,
@@ -1575,13 +1585,7 @@ class MobilInsuranceOrderBaseHandler(MobileBaseHandler):
                     'link': "",
                     'link_str': "奖励金将存入余额"
                 })
-            if sp.score and (sp.store.area_code.find('00270001')>=0):
-                rake_back.append({
-                    'name': "积分",
-                    'type': 3,
-                    'link': "",
-                    'link_str': "积分金额1:1(交强、车船除外)"
-                })
+
             insurance_list.append({
                 'id': sp.insurance.id,
                 'name': sp.insurance.name,

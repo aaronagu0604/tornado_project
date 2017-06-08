@@ -1511,6 +1511,39 @@ class ExportInsuranceSuccessHandler(AdminBaseHandler):
                     totalpage=totalpage, active=active, begin_date=begin_date, end_date=end_date,
                     archive=archive)
 
+@route(r'/admin/export_insurance_three', name='admin_export_insurance_three')  # 导出出单明细
+class ExportInsuranceThreeHandler(AdminBaseHandler):
+    def get(self):
+        archive = self.get_argument("archive", '')
+        page = int(self.get_argument("page", 1))
+        status = int(self.get_argument("status", 0))
+        keyword = self.get_argument("keyword", '')
+        begin_date = self.get_argument("begin_date", '')
+        end_date = self.get_argument("end_date", '')
+        order_type = int(self.get_argument("order_type", 1))
+        pagesize = setting.ADMIN_PAGESIZE
+
+        ft = (InsuranceOrder.status == 3)
+
+        if begin_date and end_date:
+            begin = time.strptime(begin_date, "%Y-%m-%d")
+            end = time.strptime((end_date + " 23:59:59"), "%Y-%m-%d %H:%M:%S")
+            ft &= (InsuranceOrder.ordered > time.mktime(begin)) & (InsuranceOrder.ordered < time.mktime(end))
+
+        q = InsuranceOrder.select().join(Store).where(ft).order_by(InsuranceOrder.ordered.asc())
+        total = q.count()
+        if total % pagesize > 0:
+            totalpage = total / pagesize + 1
+        else:
+            totalpage = total / pagesize
+        orders = q.paginate(page, pagesize)
+        if archive:
+            active = 'insurancesuccess'
+        else:
+            active = 'insurancesuccess'
+        self.render('admin/order/export_insurance_success.html', orders=orders, total=total, page=page, pagesize=pagesize,
+                    totalpage=totalpage, active=active, begin_date=begin_date, end_date=end_date,
+                    archive=archive)
 
 @route(r'/admin/export_trade_list', name='admin_export_trade_list')  # 导出出单明细
 class ExportTradeListHandler(AdminBaseHandler):
