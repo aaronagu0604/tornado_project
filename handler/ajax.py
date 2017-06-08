@@ -611,24 +611,21 @@ class GetGiftOilHandler(BaseHandler):
             policylist = simplejson.loads(policy.lube)
             if forcetotal and businesstotal:
                 flag = 3
-                totalprice = forcetotal + businesstotal
             elif forcetotal:
                 flag = 1
-                totalprice = forcetotal
             elif businesstotal:
                 flag = 2
-                totalprice = businesstotal
             else:
                 flag = 0
-                totalprice = 0
             role = None
             for item in policylist:
                 for p in item['items']:
-                    min_price = (int(p['minprice']) <= totalprice) if p['minprice'] else True
-                    max_price = (totalprice <= int(p['maxprice'])) if p['maxprice'] else True
-                    if min_price and max_price and (flag == int(p['flag'])):
+                    minprice = int(p['minprice']) if p['minprice'] else 0
+                    maxprice = int(p['maxprice']) if p['maxprice'] else 9999999
+                    if (flag == int(p['flag'])) and (minprice <= businesstotal) and (businesstotal <= maxprice):
                         role = p
                         role['oiltype'] = item['gift']
+                        break
             if role:
                 result['data']['driveroiltype'] = role['oiltype']
                 result['data']['driveroilnum'] = role['driver']
