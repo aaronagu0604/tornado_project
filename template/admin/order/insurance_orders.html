@@ -64,7 +64,7 @@
                     <input type="text" name="begin_date" id="begin_date" value="{{begin_date}}" class="Wdate form-control"  onClick="WdatePicker()" style="width:110px; height: 34px;margin-right:5px;border:1px solid #ccc;border-radius:4px;" placeholder="开始日期"/>
                     <input type="hidden" name="statuscheck" id="statuscheck" class="form-control" value="">
                     <input type="text" name="end_date" id="end_date" value="{{end_date}}" class="Wdate form-control" onClick="WdatePicker()" style="width:110px; height:34px;margin-right:5px;border:1px solid #ccc;border-radius:4px;" placeholder="截止日期"/>
-                    <input type="text" name="keyword" class="form-control" placeholder="订单号" value="{{keyword or ''}}" style="width:145px;height:34px;border:1px solid #ccc;border-bottom-left-radius:4px;border-top-left-radius:4px;" />
+                    <input type="text" name="keyword" class="form-control" placeholder="订单号/手机号" value="{{keyword or ''}}" style="width:145px;height:34px;border:1px solid #ccc;border-bottom-left-radius:4px;border-top-left-radius:4px;" />
                     <span class="input-group-btn">
                 <button class="btn btn-default" type="submit">
                      <i class="fa fa-search"></i>
@@ -102,7 +102,7 @@
                         <a href="/admin/insurance_order/{{o.id}}?state={{state}}&status={{status}}&page={{page}}">{{o.ordernum}}</a>
                     </td>
                     <td>{{o.store.name}}</td>
-                    <td>{{Area.get_detailed_address(o.store.area_code)}}
+                    <td>{{Area.get_detailed_address(o.store.area_code)}}<br/>
                         ({{o.store.legal_person}}/{{o.store.mobile}})
                     </td>
                     <td>{{o.current_order_price.created|datetimeformat}}</td>
