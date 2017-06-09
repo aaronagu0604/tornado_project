@@ -1286,12 +1286,12 @@ class OCRHandler(BaseHandler):
             request.add_header('Authorization', 'APPCODE ' + appcode)
             # 根据API的要求，定义相对应的Content - Type
             request.add_header('Content-Type', 'application/json; charset=UTF-8')
-            import ssl
-            ctx = ssl.create_default_context()
-            ctx.check_hostname = False
-            ctx.verify_mode = ssl.CERT_NONE
+            # import ssl
+            # ctx = ssl.create_default_context()
+            # ctx.check_hostname = False
+            # ctx.verify_mode = ssl.CERT_NONE
 
-            response = urllib2.urlopen(request, context=ctx)
+            response = urllib2.urlopen(request)#, context=ctx)
             ocrresult = response.read()
             logging.info(simplejson.loads(ocrresult)['outputs'][0]['outputValue']['dataValue'])
             return simplejson.loads(ocrresult)['outputs'][0]['outputValue']['dataValue']
@@ -1320,12 +1320,12 @@ class OCRHandler(BaseHandler):
             request.add_header('Authorization', 'APPCODE ' + appcode)
             # 根据API的要求，定义相对应的Content - Type
             request.add_header('Content-Type', 'application/json; charset=UTF-8')
-            import ssl
-            ctx = ssl.create_default_context()
-            ctx.check_hostname = False
-            ctx.verify_mode = ssl.CERT_NONE
+            # import ssl
+            # ctx = ssl.create_default_context()
+            # ctx.check_hostname = False
+            # ctx.verify_mode = ssl.CERT_NONE
 
-            response = urllib2.urlopen(request, context=ctx)
+            response = urllib2.urlopen(request)#, context=ctx)
             ocrresult = response.read()
             logging.info(simplejson.loads(ocrresult)['outputs'][0]['outputValue']['dataValue'])
 
@@ -1344,37 +1344,38 @@ class OCRHandler(BaseHandler):
                 img_data = urllib2.urlopen(request).read()
                 ocrresult = self.ali_idcard_ocr(img_data)
 
-                result['id_card_front'] = ocrresult
+                result['id_card_front'] = simplejson.loads(ocrresult)
             if io.id_card_back:
                 request = urllib2.Request(io.id_card_back)
                 img_data = urllib2.urlopen(request).read()
                 ocrresult = self.ali_idcard_ocr(img_data, False)
-                result['id_card_back'] =ocrresult
+                result['id_card_back'] =simplejson.loads(ocrresult)
 
             if isone==0 and io.id_card_front_owner:
                 request = urllib2.Request(io.id_card_front_owner)
                 img_data = urllib2.urlopen(request).read()
                 ocrresult = self.ali_idcard_ocr(img_data)
 
-                result['id_card_front_owner'] = ocrresult
+                result['id_card_front_owner'] = simplejson.loads(ocrresult)
             if isone==0 and io.id_card_back_owner:
                 request = urllib2.Request(io.id_card_back_owner)
                 img_data = urllib2.urlopen(request).read()
                 ocrresult = self.ali_idcard_ocr(img_data,False)
 
-                result['id_card_back_owner'] = ocrresult
+                result['id_card_back_owner'] = simplejson.loads(ocrresult)
 
             if io.drive_card_front:
                 request = urllib2.Request(io.drive_card_front)
                 img_data = urllib2.urlopen(request).read()
                 ocrresult = self.ali_drive_ocr(img_data)
 
-                result['drive_card_front'] = ocrresult
+                result['drive_card_front'] = simplejson.loads(ocrresult)
         except Exception,e:
             import traceback
             logging.error(traceback.format_exc())
             result['flag'] = 1
             result['msg'] = 'ocr 识别失败:%s'%e
+        print simplejson.dumps(result)
         self.write(simplejson.dumps(result))
 
 
