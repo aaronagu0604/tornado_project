@@ -1296,7 +1296,7 @@ class OCRHandler(BaseHandler):
             logging.info(simplejson.loads(ocrresult)['outputs'][0]['outputValue']['dataValue'])
             return simplejson.loads(ocrresult)['outputs'][0]['outputValue']['dataValue']
         except Exception:
-            return simplejson.loads([])
+            return []
 
     def ali_drive_ocr(self,imgdata):
         content = base64.b64encode(buffer(imgdata))
@@ -1331,7 +1331,7 @@ class OCRHandler(BaseHandler):
 
             return simplejson.loads(ocrresult)['outputs'][0]['outputValue']['dataValue']
         except:
-            return simplejson.loads([])
+            return []
     @run_on_executor
     def insuranceorderocr(self,io_id,isone):
         if not io_id:
