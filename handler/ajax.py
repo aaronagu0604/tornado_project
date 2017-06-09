@@ -1293,7 +1293,7 @@ class OCRHandler(BaseHandler):
 
             response = urllib2.urlopen(request, context=ctx)
             ocrresult = response.read()
-            logging.info(ocrresult)
+            logging.info(simplejson.loads(ocrresult)['outputs'][0]['outputValue']['dataValue'])
             return simplejson.loads(ocrresult)['outputs'][0]['outputValue']['dataValue']
         except Exception:
             return simplejson.loads([])
@@ -1327,7 +1327,7 @@ class OCRHandler(BaseHandler):
 
             response = urllib2.urlopen(request, context=ctx)
             ocrresult = response.read()
-            logging.info(ocrresult)
+            logging.info(simplejson.loads(ocrresult)['outputs'][0]['outputValue']['dataValue'])
 
             return simplejson.loads(ocrresult)['outputs'][0]['outputValue']['dataValue']
         except:
