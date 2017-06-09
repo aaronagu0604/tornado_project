@@ -18,6 +18,7 @@ import random
 from payqrcode import postRequest
 import urllib2
 import base64
+import traceback
 
 @route(r'/ajax/GetSubAreas', name='ajax_GetSubAreas')  # 获取下级区域
 class AjaxGetSubAreas(BaseHandler):
@@ -1296,7 +1297,8 @@ class OCRHandler(BaseHandler):
             logging.info(simplejson.loads(ocrresult)['outputs'][0]['outputValue']['dataValue'])
             return simplejson.loads(ocrresult)['outputs'][0]['outputValue']['dataValue']
         except Exception:
-            return []
+            traceback.print_exc()
+            return simplejson.dumps([])
 
     def ali_drive_ocr(self,imgdata):
         content = base64.b64encode(buffer(imgdata))
@@ -1331,7 +1333,8 @@ class OCRHandler(BaseHandler):
 
             return simplejson.loads(ocrresult)['outputs'][0]['outputValue']['dataValue']
         except:
-            return []
+            traceback.print_exc()
+            return simplejson.dumps([])
     @run_on_executor
     def insuranceorderocr(self,io_id,isone):
         if not io_id:
