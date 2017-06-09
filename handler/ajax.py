@@ -1262,26 +1262,26 @@ class OCRHandler(BaseHandler):
         host = 'https://dm-51.data.aliyun.com'
         path = '/rest/160601/ocr/ocr_idcard.json'
         appcode = '09e511b3e4bd4aaca8a704ad91c582f4'
-
-        url = host + path
-        post_data = {
-            'inputs': [
-                {
-                    'image': {
-                        'dataType': 50,
-                        'dataValue': content
-                    },
-                    'configure': {
-                        'dataType': 50,
-                        'dataValue': simplejson.dumps({
-                            'side': 'face' if isfront else 'back'
-                        })
-                    }
-                }
-            ]
-        }
-        #print 'parameters',post_data
         try:
+            url = host + path
+            post_data = {
+                'inputs': [
+                    {
+                        'image': {
+                            'dataType': 50,
+                            'dataValue': content
+                        },
+                        'configure': {
+                            'dataType': 50,
+                            'dataValue': simplejson.dumps({
+                                'side': 'face' if isfront else 'back'
+                            })
+                        }
+                    }
+                ]
+            }
+            #print 'parameters',post_data
+
             request = urllib2.Request(url, simplejson.dumps(post_data))
             request.add_header('Authorization', 'APPCODE ' + appcode)
             # 根据API的要求，定义相对应的Content - Type
@@ -1303,19 +1303,19 @@ class OCRHandler(BaseHandler):
         host = 'https://dm-53.data.aliyun.com'
         path = '/rest/160601/ocr/ocr_vehicle.json'
         appcode = '09e511b3e4bd4aaca8a704ad91c582f4'
-
-        url = host + path
-        post_data = {
-            'inputs': [
-                {
-                    'image': {
-                        'dataType': 50,
-                        'dataValue': content
-                    }
-                }
-            ]
-        }
         try:
+            url = host + path
+            post_data = {
+                'inputs': [
+                    {
+                        'image': {
+                            'dataType': 50,
+                            'dataValue': content
+                        }
+                    }
+                ]
+            }
+
             request = urllib2.Request(url, simplejson.dumps(post_data))
             request.add_header('Authorization', 'APPCODE ' + appcode)
             # 根据API的要求，定义相对应的Content - Type
