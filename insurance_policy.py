@@ -6399,6 +6399,11 @@ def ShanXiYongAn():
                 "driver": 3,
                 "store": 23
             },
+        ]
+    },
+    {
+        "gift": "ZIC X9",
+        "items": [
             {
                 "name": "商业险12500以上",
                 "flag": 3,
@@ -6406,7 +6411,7 @@ def ShanXiYongAn():
                 "maxprice": "",
                 "driver": 3,
                 "store": 24
-            },
+            }
         ]
     }
     ]
