@@ -1344,32 +1344,32 @@ class OCRHandler(BaseHandler):
                 img_data = urllib2.urlopen(request).read()
                 ocrresult = self.ali_idcard_ocr(img_data)
 
-                result['id_card_front'] = simplejson.loads(ocrresult)
+                result['id_card_front'] = ocrresult
             if io.id_card_back:
                 request = urllib2.Request(io.id_card_back)
                 img_data = urllib2.urlopen(request).read()
                 ocrresult = self.ali_idcard_ocr(img_data, False)
-                result['id_card_back'] = simplejson.loads(ocrresult)
+                result['id_card_back'] =ocrresult
 
             if isone==0 and io.id_card_front_owner:
                 request = urllib2.Request(io.id_card_front_owner)
                 img_data = urllib2.urlopen(request).read()
                 ocrresult = self.ali_idcard_ocr(img_data)
 
-                result['id_card_front_owner'] = simplejson.loads(ocrresult)
+                result['id_card_front_owner'] = ocrresult
             if isone==0 and io.id_card_back_owner:
                 request = urllib2.Request(io.id_card_back_owner)
                 img_data = urllib2.urlopen(request).read()
                 ocrresult = self.ali_idcard_ocr(img_data,False)
 
-                result['id_card_back_owner'] = simplejson.loads(ocrresult)
+                result['id_card_back_owner'] = ocrresult
 
             if io.drive_card_front:
                 request = urllib2.Request(io.drive_card_front)
                 img_data = urllib2.urlopen(request).read()
                 ocrresult = self.ali_drive_ocr(img_data)
 
-                result['drive_card_front'] = simplejson.loads(ocrresult)
+                result['drive_card_front'] = ocrresult
         except Exception,e:
             import traceback
             logging.error(traceback.format_exc())
