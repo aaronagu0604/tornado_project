@@ -1,38 +1,39 @@
 <!DOCTYPE html>
-<html>
+<html class="pixel-ratio-3 retina ios ios-9 ios-9-1 ios-gt-8 ios-gt-7 ios-gt-6">
 <head>
     <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <link rel="icon" type="image/png" href="/style/favicon.ico"/>
     <link rel="stylesheet" href="//cdn.bootcss.com/weui/1.1.1/style/weui.min.css">
     <link rel="stylesheet" href="//cdn.bootcss.com/jquery-weui/1.0.1/css/jquery-weui.min.css">
     {% block css %}{% endblock %}
 </head>
-<body>
-<div class="">
-    这是首页：轮播广告、热门保险。
+<body ontouchstart>
+<div class>
+    <!--这是首页：轮播广告、热门保险。-->
     {% block content %}&nbsp;{% endblock %}
-</div>
-<!--底部导航栏-->
-<div class="weui-tabbar">
-    <a href="javascript:;" class="weui-tabbar__item weui-bar__item--on">
-      <div class="weui-tabbar__icon">
-        <img src="../../style/images/jiahao.png" alt="">
-      </div>
-      <p class="weui-tabbar__label">首页</p>
-    </a>
-    <a href="javascript:;" class="weui-tabbar__item">
-      <div class="weui-tabbar__icon">
-        <img src="../../style/images/logo.png" alt="">
-      </div>
-      <p class="weui-tabbar__label">分类</p>
-    </a>
-    <a href="javascript:;" class="weui-tabbar__item">
-      <div class="weui-tabbar__icon">
-        <img src="../../style/images/jiahao.png" alt="">
-      </div>
-      <p class="weui-tabbar__label">个人中心</p>
-    </a>
-  </div>
+    <!--底部导航栏-->
+    <div class="weui-tabbar">
+        <a href="/index" class="weui-tabbar__item weui-bar__item--on">
+          <div class="weui-tabbar__icon">
+            <img src="../../style/images/jiahao.png" alt="">
+          </div>
+          <p class="weui-tabbar__label">首页</p>
+        </a>
+        <a href="/mine" class="weui-tabbar__item">
+          <div class="weui-tabbar__icon">
+            <img src="../../style/images/logo.png" alt="">
+          </div>
+          <p class="weui-tabbar__label">分类</p>
+        </a>
+        <a href="mine" class="weui-tabbar__item">
+          <div class="weui-tabbar__icon">
+            <img src="../../style/images/jiahao.png" alt="">
+          </div>
+          <p class="weui-tabbar__label">个人中心</p>
+        </a>
+    </div>
 </div>
 <script src="//cdn.bootcss.com/jquery/1.11.0/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/jquery-weui/1.0.1/js/jquery-weui.min.js"></script>

@@ -1,6 +1,38 @@
 {% extends "weixin/foot_nav_tab.html" %}
+{% block css %}
+<link rel="stylesheet" href="/style/mobile/swiper3.07.min.css">
+<style>
+    .swiper-container {
+    width: 100%;
+    height: 10rem;
+    }
+
+    .swiper-container img {
+    display: block;
+    width: 100%;
+    }
+</style>
+{% endblock %}
 {% block content %}
-这是首页：轮播广告、热门保险。
+<div class="swiper-container swiper-container-horizontal">
+  <div class="swiper-wrapper">
+    <div class="swiper-slide">
+        <img src="//gqianniu.alicdn.com/bao/uploaded/i4//tfscom/i1/TB1n3rZHFXXXXX9XFXXXXXXXXXX_!!0-item_pic.jpg_320x320q60.jpg" alt="">
+    </div>
+    <div class="swiper-slide">
+        <img src="//gqianniu.alicdn.com/bao/uploaded/i4//tfscom/i4/TB10rkPGVXXXXXGapXXXXXXXXXX_!!0-item_pic.jpg_320x320q60.jpg" alt="">
+    </div>
+    <div class="swiper-slide">
+        <img src="//gqianniu.alicdn.com/bao/uploaded/i4//tfscom/i1/TB1kQI3HpXXXXbSXFXXXXXXXXXX_!!0-item_pic.jpg_320x320q60.jpg" alt="">
+    </div>
+  </div>
+</div>
 {% endblock %}
 {% block js %}
+<script>
+    $(".swiper-container").swiper({
+    loop: true,
+    autoplay: 1500
+    });
+</script>
 {% endblock %}
