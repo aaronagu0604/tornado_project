@@ -43,6 +43,7 @@ class Signature(BaseHandler):
         self.write('signature error')
 
 
+
 @route(r'/index', name='wx_index')  # 后台首页
 class IndexHandler(BaseHandler):
     def get(self):

@@ -1971,3 +1971,95 @@ class BaoDaiBaoNotifyHandler(BaseHandler):
 
         return simplejson.dumps(result)
 
+@route(r'/ajax/weixin_menu', name='ajax_weixin_menu')  # 报价回调函数
+class WeiXinMenuHandler(BaseHandler):
+    def check_xsrf_cookie(self):
+        pass
+
+    def get(self):
+        result = {'flag': 1, 'msg': ''}
+        menu = '''{
+                "button":[
+                {
+                   "name":"新时代",
+                   "sub_button":[
+                    {
+                       "type":"view",
+                       "name":"微官网",
+                       "url":"%s"
+                    },
+                    {
+                       "type":"view",
+                       "name":"核销系统",
+                       "url":"%s"
+                    }]
+                 },
+
+                 {
+                   "name":"粉丝福利",
+                   "sub_button":[
+                    {
+                       "type":"view",
+                       "name":"限时团购",
+                       "url":"%s"
+                    },
+                    {
+                       "type":"view",
+                       "name":"每天特价菜",
+                       "url":"%s"
+                    },
+                    {
+                       "type":"view",
+                       "name":"钻石超值欢唱劵",
+                       "url":"%s"
+                    },
+                    {
+                       "type":"view",
+                       "name":"海王星套餐",
+                       "url":"%s"
+                    },
+                    {
+                       "type":"view",
+                       "name":"足疗特享",
+                       "url":"%s"
+                    }]
+                 },
+
+                 {
+                   "name":"在线订房",
+                   "sub_button":[
+                    {
+                       "type":"view",
+                       "name":"特价房专区",
+                       "url":"%s"
+                    },
+                    {
+                       "type":"view",
+                       "name":"新时代广场店",
+                       "url":"%s"
+                    },
+                    {
+                       "type":"view",
+                       "name":"锦绣清江505店",
+                       "url":"%s"
+                    },
+                    {
+                       "type":"view",
+                       "name":"宜昌猇亭店",
+                       "url":"%s"
+                    }]
+                  }
+                ]}'''
+
+        try:
+            url_menu_create = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=" + self.gen_access_token()
+            res = simplejson.loads(urllib2.urlopen(url_menu_create, menu.encode('utf-8')).read())
+            if res['errcode'] == 0:
+                result['msg'] = '创建微信菜单成功'
+            else:
+                result['msg'] = '创建微信菜单失败'
+        except Exception, e:
+            result['msg'] = '创建微信菜单失败'
+
+
+        simplejson.dumps(result)
