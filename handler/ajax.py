@@ -816,6 +816,48 @@ class CancelInsuranceOrderHandler(BaseHandler):
         self.write(simplejson.dumps(result))
 
 
+@route(r'/ajax/change_io_info', name='ajax_change_io_info')    # 修改订单状态
+class ChangeIOInfo(BaseHandler):
+    def post(self):
+        result = {'flag': 0, 'msg': '', 'data': ''}
+        oid = self.get_body_argument('oid', '')
+        status = self.get_body_argument('status', '')
+        if oid and status:
+            oid = int(oid)
+            status = int(status)
+            try:
+                oi = InsuranceOrder.get(id=oid)
+                oi.status = status
+                oi.save()
+                if oi.status == 0:
+                    bef_status = u'待报价'
+                elif oi.status == 1:
+                    bef_status = u'待支付'
+                elif oi.status == 2:
+                    bef_status = u'待出单'
+                elif oi.status == 3:
+                    bef_status = u'完成'
+                elif oi.status == -1:
+                    bef_status = u'已删除'
+                if status == 0:
+                    now_status = u'待报价'
+                elif status == 1:
+                    now_status = u'待支付'
+                elif status == 2:
+                    now_status = u'待出单'
+                elif status == 3:
+                    now_status = u'完成'
+                elif status == -1:
+                    now_status = u'已删除'
+                now = int(time.time())
+                AdminUserLog.create(admin_user=self.get_admin_user(), created=now,
+                                    content=u'保单%s，由%s修改为%s' % (oi.ordernum, bef_status, now_status))
+                result['flag'] = 1
+            except Exception, e:
+                result['msg'] = u'修改失败：%s' % str(e)
+            self.write(simplejson.dumps(result))
+
+
 @route(r'/ajax/new_program/(\d+)', name='ajax_new_program')  # 新建保险方案
 class NewProgram(BaseHandler):
     def post(self, oid):
