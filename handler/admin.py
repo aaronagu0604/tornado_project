@@ -882,15 +882,15 @@ class BrandHandler(AdminBaseHandler):
 class EditBrandHandler(AdminBaseHandler):
     def get(self, id):
         id = int(id)
-        brand_category = None
+        brand = None
         if id != 0:
             try:
-                brand_category = BrandCategory.get(brand=id)
+                brand = Brand.get(id=id)
             except Exception, e:
                 self.flash('Error: %s' % str(e))
                 self.redirect("/admin/brand")
                 return
-        self.render('admin/product/brand_edit.html', brand_category=brand_category, active='brand')
+        self.render('admin/product/brand_edit.html', brand=brand, active='brand')
 
     def post(self, brand_id):
         id = int(brand_id)
@@ -915,7 +915,7 @@ class EditBrandHandler(AdminBaseHandler):
                 file_abspath = setting.admin_file_path + 'image/brand/' + filename
                 with open(file_abspath, "wb") as f:
                     f.write(self.request.files["file"][0]["body"])
-                ad.logo = setting.imgDoman + filename
+                ad.logo = setting.imgDoman + 'brand/' + filename
             ad.name = name
             ad.engname = engname
             ad.pinyin = pinyin

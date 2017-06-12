@@ -14,37 +14,37 @@
             {{xsrf()}}
             <div class="form-group has-success">
             <p><label class="control-label">品牌名称</label></p>
-            <input type="text" class="form-control"  name="name" value="{{ brand_category.brand.name if brand_category else '' }}" onblur="GetPinYin(this.value);" style="width:480px;">
+            <input type="text" class="form-control"  name="name" value="{{ brand.name if brand else '' }}" onblur="GetPinYin(this.value);" style="width:480px;">
             </div>
             <div class="form-group has-success">
             <p><label class="control-label">英文名称</label></p>
-            <input type="text" class="form-control"  name="engname" value="{{ brand_category.brand.engname if brand_category else '' }}" style="width:480px;">
+            <input type="text" class="form-control"  name="engname" value="{{ brand.engname if brand else '' }}" style="width:480px;">
             </div>
             <div class="form-group has-success">
             <p><label class="control-label">中文拼音</label></p>
-            <input type="text" class="form-control"  name="pinyin" value="{{ brand_category.brand.pinyin if brand_category else '' }}" style="width:480px;">
+            <input type="text" class="form-control"  name="pinyin" value="{{ brand.pinyin if brand else '' }}" style="width:480px;">
             </div>
 
             <div class="form-group has-success">
             <p><label class="control-label">排序</label></p>
-            <input type="text" class="form-control"  name="sort" value="{{ brand_category.brand.sort if brand_category else '' }}" style="width:480px;">
+            <input type="text" class="form-control"  name="sort" value="{{ brand.sort if brand else '' }}" style="width:480px;">
             </div>
             <div class="form-group has-success">
             <p><label class="control-label">品牌Logo</label></p>
             <input type="file" class="form-control"  name="file" style="width:480px;">
-            <img src="{{ brand_category.brand.logo if brand_category else '' }}"  height="200">
+            <img src="{{ brand.logo if brand else '' }}"  height="200">
             </div>
 
             <div class="form-group has-success">
             <p><label class="control-label">品牌简介</label></p>
-            <input type="text" class="form-control"  name="intro" value="{{ brand_category.brand.intro if brand_category else '' }}" style="width:480px;height:120px;">
+            <input type="text" class="form-control"  name="intro" value="{{ brand.intro if brand else '' }}" style="width:480px;height:120px;">
             </div>
 
             <div>
-                <th><input type="checkbox" name="hot" {% if brand_category and brand_category.brand.hot==1 %} checked='true' {%endif%}>是否热点</th>
+                <th><input type="checkbox" name="hot" {% if brand and brand.hot==1 %} checked='true' {%endif%}>是否热点</th>
             </div>
             <div>
-                <th><input type="checkbox" name="active" {% if brand_category and brand_category.brand.active==1 %} checked='true' {%endif%}>是否启用</th>
+                <th><input type="checkbox" name="active" {% if brand and brand.active==1 %} checked='true' {%endif%}>是否启用</th>
             </div>
             <br>
             <div class="form-group has-success">
