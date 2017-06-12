@@ -24,13 +24,13 @@ class RootHandler(BaseHandler):
 @route(r'/signature', name='wx signature')
 class Signature(BaseHandler):
     def get(self):
-        self.token = 'wxczjplateform'
+        token = 'wxczjplateform'
         signature = self.get_argument('signature')
         timestamp = self.get_argument('timestamp')
         nonce = self.get_argument('nonce')
         echostr = self.get_argument('echostr')
 
-        keylist = [self.token, timestamp, nonce]
+        keylist = [token, timestamp, nonce]
         keylist.sort()
         sha1 = hashlib.sha1()
         map(sha1.update, keylist)
