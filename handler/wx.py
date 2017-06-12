@@ -38,6 +38,7 @@ class Signature(BaseHandler):
 
         if hashcode == signature:
             self.write(echostr)
+            return
 
         self.write('signature error')
 
