@@ -2058,7 +2058,7 @@ class MobilInsuranceOrderQuoteInfoHandler(MobileBaseHandler):
                 data['damageIPlus'] =True if getattr(iop,'damageIPlus') == '1' else False
                 data['thirdDutyI'] =getattr(iop,'thirdDutyI')
                 data['thirdDutyIPlus'] =True if getattr(iop,'thirdDutyIPlus') == '1' else False
-                data['driverDutyI'] =getattr(iop,'thirdDutyI')
+                data['driverDutyI'] =getattr(iop,'driverDutyI')
                 data['driverDutyIPlus'] =True if getattr(iop,'driverDutyIPlus') == '1' else False
                 data['passengerDutyI'] =getattr(iop,'passengerDutyI')
                 data['passengerDutyIPlus'] = True if getattr(iop,'passengerDutyIPlus') == '1' else False
