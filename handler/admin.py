@@ -885,8 +885,9 @@ class EditBrandHandler(AdminBaseHandler):
         brand_category = None
         if id != 0:
             try:
-                brand_category = BrandCategory.get(brand = id)
-            except:
+                brand_category = BrandCategory.get(brand=id)
+            except Exception, e:
+                self.flash('Error: %s' % str(e))
                 self.redirect("/admin/brand")
                 return
         self.render('admin/product/brand_edit.html', brand_category=brand_category, active='brand')
@@ -902,20 +903,19 @@ class EditBrandHandler(AdminBaseHandler):
         active = self.get_argument("active", None)
 
         try:
-            content = ''
             if id == 0:
                 ad = Brand()
-                content = '添加品牌: brand_id:%d'%ad.id
+                content = '添加品牌: brand_id:'
             else:
                 ad = Brand.get(id=id)
-                content = '编辑品牌: brand_id:%d'%id
+                content = '编辑品牌: brand_id:%d' % id
             if self.request.files:
                 datetime = time.strftime('%Y%m%d%H%M%S', time.localtime(time.time()))  # 获取当前时间作为图片名称
                 filename = str(datetime) + ".jpg"
-                file_path = setting.admin_file_path + 'brand'
-                with open(file_path + filename, "wb") as f:
+                file_abspath = setting.admin_file_path + 'image/brand/' + filename
+                with open(file_abspath, "wb") as f:
                     f.write(self.request.files["file"][0]["body"])
-                ad.logo = file_path + filename
+                ad.logo = setting.imgDoman + filename
             ad.name = name
             ad.engname = engname
             ad.pinyin = pinyin
@@ -924,9 +924,11 @@ class EditBrandHandler(AdminBaseHandler):
             ad.active = 1 if active else 0
             ad.hot = 1 if hot else 0
             ad.save()
+            content += str(ad.id)
             AdminUserLog.create(admin_user=self.get_admin_user(), created=int(time.time()), content=content)
         except Exception, e:
-            logging.info('Error: %s'%e.message)
+            self.flash('Error: %s' % str(e))
+            logging.info('Error: %s' % str(e))
         self.redirect("/admin/brand")
 
 
@@ -1260,15 +1262,17 @@ class EditAdHandler(AdminBaseHandler):
     def show_ad(self, aid):
         items = Area.select().where(Area.pid >> None)
         aid = int(aid)
-        if aid == 0:
-            ad = ''
-            ad_type = ''
-            i_id = 0
+        ad = ''
+        ad_type = ''
+        i_id = 0
         if aid > 0:
             try:
                 ad = BlockItem.get(id=aid)
-                ad_type = ad.link.split('/')[2]
-                i_id = int(ad.link.split('/')[-1])
+                if ad.link.startswith('http'):
+                    pass
+                elif ad.link.startswith('czj'):
+                    ad_type = ad.link.split('/')[2]
+                    i_id = int(ad.link.split('/')[-1])
             except:
                 self.flash("此广告不存在")
                 self.redirect("/admin/advertisement")
@@ -1315,7 +1319,7 @@ class EditAdHandler(AdminBaseHandler):
                 file_abspath = setting.admin_file_path + 'image/ad/' + filename
                 with open(file_abspath, "wb") as f:
                     f.write(self.request.files["file"][0]["body"])
-                ad.img = 'http://img.520czj.com/image/ad/' + filename
+                ad.img = setting.imgDoman + 'ad/' + filename
             ad.save()
             aid = ad.id
             AdminUserLog.create(admin_user=self.get_admin_user(), created=int(time.time()), content='编辑广告: ad_id:%d' % aid)

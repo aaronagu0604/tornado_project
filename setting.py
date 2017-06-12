@@ -29,6 +29,7 @@ MQEXCHANGENAME = 'czj_exchange'
 MQQUEUENAME = 'czj_queue'
 MQROUTINGKEY = 'czj_routing_key'
 
+imgDoman = 'http://img.520czj.com/image/'
 domanName = 'http://api.dev.test.520czj.com'
 baseUrl = domanName + '/mobile/'
 
@@ -64,6 +65,22 @@ def get_help_center_remark(area_code):
 
 typeface = '/home/www/workspace/eofan/src/simsun.ttc'
 popularizePIC = [{
+    'activity': '6-12',
+    'area_code': '00',
+    'basePicPath': '/imgData/upload/popularizePIC/6-12.png',
+    'PicPath': '/imgData/upload/popularizePIC/6-12',
+    'wordSize': 40,
+    'wordColour': (220,175,0),
+    'storeWidth': 96,
+    'storeHeight': 925,
+    'addrWidth': 96,
+    'addrHeight': 1020,
+    'addr2tab':16,
+    'addr2Width': 96,
+    'addr2Height': 1062,
+    'phoneWidth': 96,
+    'phoneHeight': 1140
+},{
     'activity': '6-5',
     'area_code': '00',
     'basePicPath': '/imgData/upload/popularizePIC/6-5.png',
