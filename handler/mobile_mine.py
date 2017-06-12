@@ -142,7 +142,6 @@ class MobilStorePopularizeHandler(MobileBaseHandler):
 
         return setting.domanName + '/upload/store_popularize/' + newPic_name
 
-
     @require_auth
     def get(self):
         user = self.get_user()
@@ -164,7 +163,6 @@ class MobilStorePopularizeHandler(MobileBaseHandler):
                     addr2 = addr[pop['addr2tab']:]
                 else:
                     addr1 = addr
-
                 if area_limits == 1:
                     picPath = self.act_insurance(pop, user.id, storeName, addr1, addr2, mobile, now)
                     result['data'].append(picPath)

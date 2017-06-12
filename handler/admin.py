@@ -20,6 +20,7 @@ class RootHandler(AdminBaseHandler):
     def get(self):
         self.redirect('/admin')
 
+
 @route(r'/admin', name='admin_index')  # 后台首页
 class IndexHandler(AdminBaseHandler):
     def get(self):
@@ -984,7 +985,7 @@ class CategoryBrandDelHandler(AdminBaseHandler):
             self.flash('删除失败：%s'% e.message)
         self.redirect('/admin/category_brand')
 
-@route(r'/admin/plateform_product/(\d+)', name='admin_product')  # 商品
+@route(r'/admin/plateform_product/(\d+)', name='admin_plateform_product')  # 商品
 class PlatefromProductHandler(AdminBaseHandler):
     def get(self, is_score):
         page = int(self.get_argument("page", '1'))
