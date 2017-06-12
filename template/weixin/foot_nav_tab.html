@@ -1,21 +1,43 @@
-<!--底部导航栏-->
-<div class="weui_tabbar" style="position:fixed;z-index:999;max-width:640px;">
-    <a href="$makeUrl('/index')" class="foot weui_tabbar_item weui_bar_item_on" id="home">
-        <p class="icon-style" align="center">
-            <span class="iconfont icon-shouye"></span>
-        </p>
-        <p class="weui_tabbar_label">首页</p>
-    </a>
-    <a href="$makeUrl('/category_list',{'category':'3'})" class="weui_tabbar_item" id="category">
-        <p class="icon-style" align="center">
-            <span class="icon iconfont icon-fenlei"></span>
-        </p>
-    <p class="weui_tabbar_label">分类</p>
-    </a>
-    <a href="$makeUrl('/member_center')" class="weui_tabbar_item" id="me">
-        <p class="icon-style" align="center">
-            <span class="iconfont icon-huiyuanzhongxin"></span>
-        </p>
-        <p class="weui_tabbar_label">会员中心</p>
-    </a>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="icon" type="image/png" href="/style/favicon.ico"/>
+    <link rel="stylesheet" href="//cdn.bootcss.com/weui/1.1.1/style/weui.min.css">
+    <link rel="stylesheet" href="//cdn.bootcss.com/jquery-weui/1.0.1/css/jquery-weui.min.css">
+    {% block css %}{% endblock %}
+</head>
+<body>
+<div class="">
+    这是首页：轮播广告、热门保险。
+    {% block content %}&nbsp;{% endblock %}
 </div>
+<!--底部导航栏-->
+<div class="weui-tabbar">
+    <a href="javascript:;" class="weui-tabbar__item weui-bar__item--on">
+      <div class="weui-tabbar__icon">
+        <img src="../../style/images/jiahao.png" alt="">
+      </div>
+      <p class="weui-tabbar__label">首页</p>
+    </a>
+    <a href="javascript:;" class="weui-tabbar__item">
+      <div class="weui-tabbar__icon">
+        <img src="../../style/images/logo.png" alt="">
+      </div>
+      <p class="weui-tabbar__label">分类</p>
+    </a>
+    <a href="javascript:;" class="weui-tabbar__item">
+      <div class="weui-tabbar__icon">
+        <img src="../../style/images/jiahao.png" alt="">
+      </div>
+      <p class="weui-tabbar__label">个人中心</p>
+    </a>
+  </div>
+</div>
+<script src="//cdn.bootcss.com/jquery/1.11.0/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/jquery-weui/1.0.1/js/jquery-weui.min.js"></script>
+<script src="//cdn.bootcss.com/jquery-weui/1.0.1/js/swiper.min.js"></script>
+<script src="//cdn.bootcss.com/jquery-weui/1.0.1/js/city-picker.min.js"></script>
+{% block js %}{% endblock %}
+</body>
+</html>
