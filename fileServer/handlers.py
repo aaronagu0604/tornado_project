@@ -60,27 +60,24 @@ class UploadImageHandler(BaseHandler):
         result['data'] = ''
         result['msg'] = ''
         try:
-            # logging.info('start upload image')
             is_admin = self.get_body_argument('is_admin', None)
             meta = self.request.files['file'][0]
             suffix = meta['filename'].split('.')[-1]
-            # logging.info('file suffix: ' + suffix)
             fullname, arr, filename = self.get_full_file_name('image', suffix)
             while os.path.exists(fullname):
                 logging.info('已经存在文件：' + fullname)
                 fullname, arr, filename = self.get_full_file_name('image', suffix)
-
             f = open(fullname, 'wb')
             f.write(meta['body'])
             f.close()
             result['data'] = setting.openHost+'/'+arr[0]+'/'+arr[1]+'/'+arr[2]+'/'+arr[3]+'/' + filename
             result['flag'] = 1
         except Exception, e:
-            logging.info('upload image failing: ' + e.message)
+            logging.info('Error: upload image failing,%s' % str(e))
             result['flag'] = 0
             result['msg'] = 'fail in upload image'
         if is_admin:
-            self.redirect('http://127.0.0.1:8890/admin/upload_pic?data=%s' % result['data'])
+            self.redirect('%s/admin/upload_pic?data=%s' % (setting.domanName, result['data']))
         else:
             self.write(simplejson.dumps(result))
 
