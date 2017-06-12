@@ -17,12 +17,12 @@ from concurrent.futures import ThreadPoolExecutor
 from lib.mqhelper import create_msg
 import hashlib
 @route(r'/', name='wx root')
-class RootHandler(AdminBaseHandler):
+class RootHandler(BaseHandler):
     def get(self):
         self.redirect('/index')
 
 @route(r'/signature', name='wx signature')
-class Signature(AdminBaseHandler):
+class Signature(BaseHandler):
     def get(self):
         self.token = 'wxczjplateform'
         signature = self.get_argument('signature')
