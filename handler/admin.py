@@ -1286,7 +1286,8 @@ class EditAdHandler(AdminBaseHandler):
         aid = int(aid)
         ad_name = self.get_argument("ad_name", None)
         ad_link = self.get_argument("ad_link", None)
-        product_id = self.get_argument("product_id", None)
+        product_id = self.get_argument("product_id", '')
+        ad_link_url = self.get_argument("ad_link_url", '')
         block_item = self.get_argument("block_item", None)
         remark = self.get_argument("remark", None)
         sort = self.get_argument("sort", 1)
@@ -1307,7 +1308,10 @@ class EditAdHandler(AdminBaseHandler):
             return
         ad.block = block_item
         ad.name = ad_name
-        ad.link = 'czj://%s/%s' % (ad_link, product_id)
+        if ad_link == 'insurance':
+            ad.link = 'czj://%s/%s' % (ad_link, product_id)
+        else:
+            ad.link = ad_link_url
         ad.remark = remark
         ad.sort = sort
         ad.remark = remark
