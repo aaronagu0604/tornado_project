@@ -1106,6 +1106,7 @@ class EditProductHandler(AdminBaseHandler):
         active = self.get_body_argument('active', '')
         category_attributes = simplejson.loads(self.get_body_argument('category_attributes', None))
         hd_pic = self.get_body_argument('hd_pic', None)
+        pintro = self.get_body_argument('pintro',None)
         content = ''
         if pid == '0':
             product = Product()
@@ -1118,7 +1119,7 @@ class EditProductHandler(AdminBaseHandler):
         product.category = category
         product.resume = resume
         product.unit = unit
-        product.intro = 'intro'
+        product.intro = pintro
         product.is_score = 1 if is_score else 0
         product.hot = 1 if hot else 0
         product.active = 1 if active else 0

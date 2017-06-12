@@ -257,7 +257,7 @@
             startPage: {{page}},
             visiblePages: 8,
             onPageClick: function (event, page) {
-                self.location="/admin/saler_product/{{s.id}}?&pagesize={{pagesize}}&page="+page;
+                self.location="/admin/saler_product/{{s.id}}?pagesize={{pagesize}}&keyword={{keyword}}&page="+page;
             }
         });
     });
