@@ -1,29 +1,20 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>{{insurance.name}}</title>
-    <link rel="icon" type="image/png" href="/style/favicon.ico"/>
-    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <link rel="stylesheet" href="//g.alicdn.com/msui/sm/0.6.2/css/sm.min.css">
-</head>
-<body>
-<div class="page-group">
-    <div class="page">
-        <div class="content">
-            <div align="center" style="padding-top: 2rem;">
-                <img style="height:5rem" src="{{insurance.logo}}">
-            </div>
-            <div class="content-padded">
-                <p style="margin:0.8rem">{{insurance.intro}}</p>
-            </div>
-        </div>
-    </div>
+<div class="weui_tabbar" style="position:fixed;z-index:999;max-width:640px;">
+    <a href="$makeUrl('/index')" class="foot weui_tabbar_item weui_bar_item_on" id="home">
+        <p class="icon-style" align="center">
+            <span class="iconfont icon-shouye"></span>
+        </p>
+        <p class="weui_tabbar_label">首页</p>
+    </a>
+    <a href="$makeUrl('/category_list',{'category':'3'})" class="weui_tabbar_item" id="category">
+        <p class="icon-style" align="center">
+            <span class="icon iconfont icon-fenlei"></span>
+        </p>
+    <p class="weui_tabbar_label">分类</p>
+    </a>
+    <a href="$makeUrl('/member_center')" class="weui_tabbar_item" id="me">
+        <p class="icon-style" align="center">
+            <span class="iconfont icon-huiyuanzhongxin"></span>
+        </p>
+        <p class="weui_tabbar_label">会员中心</p>
+    </a>
 </div>
-<script type='text/javascript' src='//g.alicdn.com/sj/lib/zepto/zepto.min.js' charset='utf-8'></script>
-<script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm.min.js' charset='utf-8'></script>
-</body>
-</html>
