@@ -1987,9 +1987,9 @@ class MobileToolsHandler(MobileBaseHandler):
 @route(r'/mobile/insurance_order_quote_info', name='insurance_order_quote_info')  # 查询保险报价信息
 class MobilInsuranceOrderQuoteInfoHandler(MobileBaseHandler):
     """
-    @apiGroup order
+    @apiGroup app
     @apiVersion 1.0.0
-    @api {post} /mobile/newinsuranceorder 04. 创建保险订单
+    @api {post} /mobile/newinsuranceorder 99. 报价参数
     @apiDescription app  创建保险订单
 
     @apiHeader {String} token 用户登录凭证
