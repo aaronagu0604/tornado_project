@@ -1971,95 +1971,64 @@ class BaoDaiBaoNotifyHandler(BaseHandler):
 
         return simplejson.dumps(result)
 
-@route(r'/ajax/weixin_menu', name='ajax_weixin_menu')  # 报价回调函数
+@route(r'/ajax/weixin_menu', name='ajax_weixin_menu')  # 生成微信菜单
 class WeiXinMenuHandler(BaseHandler):
     def check_xsrf_cookie(self):
         pass
+
+    def get_access_token(self):
+        self.weixin_app_id = 'wxf23313db028ab4bc'
+        self.weixin_secret = '8d75a7fa77dc0e5b2dc3c6dd551d87d6'
+        self.url_access_token = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s" % (
+        self.weixin_app_id, self.weixin_secret)
+        return simplejson.loads(urllib2.urlopen(self.url_access_token).read())["access_token"]
 
     def get(self):
         result = {'flag': 1, 'msg': ''}
         menu = '''{
                 "button":[
                 {
-                   "name":"新时代",
+                   "name":"首页",
                    "sub_button":[
                     {
                        "type":"view",
                        "name":"微官网",
-                       "url":"%s"
-                    },
-                    {
-                       "type":"view",
-                       "name":"核销系统",
-                       "url":"%s"
+                       "url":"http://wx.dev.520czj.com/index"
                     }]
                  },
 
                  {
-                   "name":"粉丝福利",
+                   "name":"热门车险",
                    "sub_button":[
                     {
                        "type":"view",
-                       "name":"限时团购",
-                       "url":"%s"
-                    },
-                    {
-                       "type":"view",
-                       "name":"每天特价菜",
-                       "url":"%s"
-                    },
-                    {
-                       "type":"view",
-                       "name":"钻石超值欢唱劵",
-                       "url":"%s"
-                    },
-                    {
-                       "type":"view",
-                       "name":"海王星套餐",
-                       "url":"%s"
-                    },
-                    {
-                       "type":"view",
-                       "name":"足疗特享",
-                       "url":"%s"
+                       "name":"人保",
+                       "url":"http://wx.dev.520czj.com/insurance/1"
                     }]
                  },
 
                  {
-                   "name":"在线订房",
+                   "name":"...",
                    "sub_button":[
                     {
                        "type":"view",
-                       "name":"特价房专区",
-                       "url":"%s"
-                    },
-                    {
-                       "type":"view",
-                       "name":"新时代广场店",
-                       "url":"%s"
-                    },
-                    {
-                       "type":"view",
-                       "name":"锦绣清江505店",
-                       "url":"%s"
-                    },
-                    {
-                       "type":"view",
-                       "name":"宜昌猇亭店",
-                       "url":"%s"
+                       "name":"个人中心",
+                       "url":"http://wx.dev.520czj.com/mine"
                     }]
                   }
                 ]}'''
 
         try:
-            url_menu_create = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=" + self.gen_access_token()
+            url_menu_create = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=" + self.get_access_token()
+            print url_menu_create
             res = simplejson.loads(urllib2.urlopen(url_menu_create, menu.encode('utf-8')).read())
+            print res
             if res['errcode'] == 0:
                 result['msg'] = '创建微信菜单成功'
             else:
                 result['msg'] = '创建微信菜单失败'
         except Exception, e:
+            traceback.print_exc()
             result['msg'] = '创建微信菜单失败'
 
-
-        simplejson.dumps(result)
+        self.write(result['msg'])
