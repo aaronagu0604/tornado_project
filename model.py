@@ -932,6 +932,20 @@ class InsuranceOrder(db.Model):
         db_table = 'tb_insurance_orders'
 
 
+# 补退款
+class AppendRefundMoney(db.Model):
+    id = PrimaryKeyField()
+    insurance_order = ForeignKeyField(InsuranceOrder, related_name='append_refunds')
+    type = IntegerField(default=0)  # 补退款状态 0无需补退款 1待补款
+    status = IntegerField(default=0)  # 补退款状态 0无需补退款 1待补款
+    amount = FloatField(default=0.0)  # 补退款金额
+    reason = CharField(max_length=128)  # 补退款原因
+    created = IntegerField(default=0)  # 补退款时间
+
+    class Meta:
+        db_table = 'tb_insurance_order_arm'
+
+
 # 车主信息表
 class UserCarInfo(db.Model):
     id = PrimaryKeyField()
