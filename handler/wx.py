@@ -60,6 +60,11 @@ class InsuranceHandler(BaseHandler):
     def get(self,id):
         self.render('weixin/activer.html')
 
+@route(r'/category', name='wx_category')  # 后台首页
+class CategoryHandler(BaseHandler):
+    def get(self):
+        self.render('weixin/category.html')
+
 @route(r'/insurance_order_base', name='wx_insurance_order_base')  # 后台首页
 class InsuranceOrderBaseHandler(BaseHandler):
     def get(self):
