@@ -153,6 +153,6 @@ class IncomeRecordListHandler(BaseHandler):
         data = [{
             'name': str(i),
             'price': i
-        } for i in range(5)]
+        } for i in range(20)]
         result['data'] = data
         self.write(simplejson.dumps(result))
