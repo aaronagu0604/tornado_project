@@ -111,6 +111,11 @@ class MineHandler(BaseHandler):
     def get(self):
         self.render('weixin/mine.html')
 
+@route(r'/bound_mobile', name='wx_bound_mobile')  # 绑定手机号
+class BoundMobileHandler(BaseHandler):
+    def get(self):
+        self.render('weixin/bound_mobile.html')
+
 @route(r'/rake_back_setting', name='wx_rake_back_setting')  # 后台首页
 class RakeBackSettingHandler(BaseHandler):
     def get(self):
