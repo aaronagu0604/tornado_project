@@ -3,6 +3,10 @@
 <title>上传个人信息</title>
 <link rel="stylesheet" href="/style/mobile/swiper3.07.min.css">
 <style>
+    .parent {
+        padding: 0.5rem;
+        background-color: #F1F1F1;
+    }
 
     .weui-row {
         background-color: #FFFFFF;
@@ -32,19 +36,21 @@
         background-color: #FFFFFF;
         margin-top: 0.5rem;
     }
-    .owner{
+
+    .owner {
         display: none;
     }
 
 </style>
 {% endblock %}
 {% block content %}
-<div style="padding: 0.5rem;background-color: #F1F1F1">
+<div class="parent">
+    <br/>
+    <br/>
     <div class="weui-row">
         <div class="weui-col-60">
             <img src="../../style/wximg/id_card.png">
         </div>
-
         <div class="weui-col-40">
             <a href="javascript:;" class="weui-btn  weui-btn-mini weui-btn_primary" id="id_card">选择</a>
             <p>
@@ -116,7 +122,7 @@
         <div class="weui-cell__bd">
             车主同被保险人
         </div>
-        <div class="weui-cell__ft" >
+        <div class="weui-cell__ft">
             <input class="weui-switch" type="checkbox" checked="checked" id="switch_owner"/>
         </div>
     </div>
@@ -172,7 +178,7 @@
     $(document).on("click", "#switch_owner", function () {
         if ($('#switch_owner').is(':checked')) {
             $(".owner").hide();
-        }else{
+        } else {
             $(".owner").show();
         }
     })
