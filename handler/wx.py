@@ -144,4 +144,4 @@ class UserIncomeHandler(BaseHandler):
 @route(r'/user_income_record', name='wx_user_income_record')  # 后台首页
 class UserIncomeRecordHandler(BaseHandler):
     def get(self):
-        self.render('weixin/user_income_recod.html')
+        self.render('weixin/user_income_record.html')
