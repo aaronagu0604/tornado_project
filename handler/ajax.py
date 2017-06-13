@@ -665,8 +665,8 @@ class SaveIOPHandler(BaseHandler):
             pid.insurance = groups['insurance']
             pid.admin_user = self.get_admin_user()
             pid.gift_policy = groups['gift_policy']
-            pid.response = 1
-            pid.status = 1
+            # pid.response = 1
+            # pid.status = 1
             if groups['gift_policy'] == '2':    # 返现
                 pid.cash = groups['cash']
             elif groups['gift_policy'] == '1':    # 返油
@@ -691,13 +691,19 @@ class SaveIOPHandler(BaseHandler):
                 pid.__dict__['_data'][item] = i_items[item]
             pid.save()
 
-            io.current_order_price = pid
-            io.status = 1
-            io.save()
+            # io.current_order_price = pid
+            # io.status = 1
+            # io.save()
 
             admin_user = self.get_admin_user()
             content = '%s进行报价：io.id:%d'%(admin_user.username, io.id)
             if send_msg == '1':
+                pid.response = 1
+                pid.status = 1
+                pid.save()
+                io.current_order_price = pid
+                io.status = 1
+                io.save()
                 sms = {'mobile': io.store.mobile, 'signtype': '1', 'isyzm': 'changePrice',
                        'body': [io.ordernum, pid.insurance.name, groups['total_price'], groups['psummary']]}
                 create_msg(simplejson.dumps(sms), 'sms')  # 变更价格
