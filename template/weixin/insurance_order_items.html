@@ -3,6 +3,9 @@
 <title>选择保险内容</title>
 <link rel="stylesheet" href="/style/mobile/swiper3.07.min.css">
 <style>
+    .insurance {
+        width: 50%;
+    }
 
 </style>
 {% endblock %}
@@ -17,12 +20,193 @@
         </div>
     </div>
 
-    <div >
-        <div >
-          交强险
-        </div>
-        <p>交强险</p>
+    <div>
         <div>
+            交强险
+        </div>
+        <div class="weui-cell weui-cell_switch">
+            <div class="insurance">
+                交强险
+            </div>
+            <div class="weui-cell__ft">
+                <input class="weui-switch" type="checkbox"/>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <div style="padding-left: 10px">
+            商业险—主险
+        </div>
+        <div class="weui-cells weui-cells_checkbox">
+            <div class="weui-cell weui-cell_switch">
+                <div class="insurance">
+                    车辆损失险
+                </div>
+                <div class="weui-cell__ft">
+                    <input class="weui-switch" type="checkbox"/>
+                </div>
+                <label class="weui-cell weui-check__label" for="damageIPlus"
+                       style="padding-left: 0px;padding-right: 0px;margin-top: 0px;">
+                    <div class="weui-cell__hd">
+                        <input type="checkbox" class="weui-check" id="damageIPlus"/>
+                        <i class="weui-icon-checked"></i>
+                    </div>
+                    <div>
+                        不计免赔
+                    </div>
+                </label>
+            </div>
+            <div class="weui-cell weui-cell_switch">
+                <div class="insurance">
+                    第三者责任险
+                </div>
+                <div class="weui-cell__ft">
+                    <input class="weui-switch" type="checkbox"/>
+                </div>
+                <label class="weui-cell weui-check__label" for="thirdDutyIPlus"
+                       style="padding-left: 0px;padding-right: 0px">
+                    <div class="weui-cell__hd">
+                        <input type="checkbox" class="weui-check" id="thirdDutyIPlus"/>
+                        <i class="weui-icon-checked"></i>
+                    </div>
+                    <div>
+                        不计免赔
+                    </div>
+                </label>
+            </div>
+            <div class="weui-cell weui-cell_switch">
+                <div class="insurance">
+                    车上人员险(司机)
+                </div>
+                <div class="weui-cell__ft">
+                    <input class="weui-switch" type="checkbox"/>
+                </div>
+                <label class="weui-cell weui-check__label" for="driverDutyIPlus"
+                       style="padding-left: 0px;padding-right: 0px">
+                    <div class="weui-cell__hd">
+                        <input type="checkbox" class="weui-check" id="driverDutyIPlus"/>
+                        <i class="weui-icon-checked"></i>
+                    </div>
+                    <div>
+                        不计免赔
+                    </div>
+                </label>
+            </div>
+            <div class="weui-cell weui-cell_switch">
+                <div class="insurance">
+                    车上人员险(乘客)
+                </div>
+                <div class="weui-cell__ft">
+                    <input class="weui-switch" type="checkbox"/>
+                </div>
+                <label class="weui-cell weui-check__label" for="passengerDutyIPlus"
+                       style="padding-left: 0px;padding-right: 0px">
+                    <div class="weui-cell__hd">
+                        <input type="checkbox" class="weui-check" id="passengerDutyIPlus"/>
+                        <i class="weui-icon-checked"></i>
+                    </div>
+                    <div>
+                        不计免赔
+                    </div>
+                </label>
+            </div>
+            <div class="weui-cell weui-cell_switch">
+                <div class="insurance">
+                    全车盗抢险
+                </div>
+                <div class="weui-cell__ft">
+                    <input class="weui-switch" type="checkbox"/>
+                </div>
+                <label class="weui-cell weui-check__label" for="robbingIPlus"
+                       style="padding-left: 0px;padding-right: 0px">
+                    <div class="weui-cell__hd">
+                        <input type="checkbox" class="weui-check" id="robbingIPlus"/>
+                        <i class="weui-icon-checked"></i>
+                    </div>
+                    <div>
+                        不计免赔
+                    </div>
+                </label>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div>
+            商业险—附加险
+        </div>
+        <div class="weui-cells weui-cells_checkbox">
+            <div class="weui-cell weui-cell_switch">
+                <div class="insurance">
+                    玻璃单独破碎险
+                </div>
+                <div class="weui-cell__ft">
+                    <input class="weui-switch" type="checkbox"/>
+                </div>
+
+            </div>
+            <div class="weui-cell weui-cell_switch">
+                <div class="insurance">
+                    车身划痕损失险
+                </div>
+                <div class="weui-cell__ft">
+                    <input class="weui-switch" type="checkbox"/>
+                </div>
+                <label class="weui-cell weui-check__label" for="scratchIPlus"
+                       style="padding-left: 0px;padding-right: 0px">
+                    <div class="weui-cell__hd">
+                        <input type="checkbox" class="weui-check" id="scratchIPlus"/>
+                        <i class="weui-icon-checked"></i>
+                    </div>
+                    <div>
+                        不计免赔
+                    </div>
+                </label>
+            </div>
+            <div class="weui-cell weui-cell_switch">
+                <div class="insurance">
+                    自燃损失险
+                </div>
+                <div class="weui-cell__ft">
+                    <input class="weui-switch" type="checkbox"/>
+                </div>
+                <label class="weui-cell weui-check__label" for="fireDamageIPlus"
+                       style="padding-left: 0px;padding-right: 0px">
+                    <div class="weui-cell__hd">
+                        <input type="checkbox" class="weui-check" id="fireDamageIPlus"/>
+                        <i class="weui-icon-checked"></i>
+                    </div>
+                    <div>
+                        不计免赔
+                    </div>
+                </label>
+            </div>
+            <div class="weui-cell weui-cell_switch">
+                <div class="insurance">
+                    发动机涉水损失险
+                </div>
+                <div class="weui-cell__ft">
+                    <input class="weui-switch" type="checkbox"/>
+                </div>
+                <label class="weui-cell weui-check__label" for="wadeIPlus" style="padding-left: 0px;padding-right: 0px">
+                    <div class="weui-cell__hd">
+                        <input type="checkbox" class="weui-check" id="wadeIPlus"/>
+                        <i class="weui-icon-checked"></i>
+                    </div>
+                    <div>
+                        不计免赔
+                    </div>
+                </label>
+            </div>
+            <div class="weui-cell weui-cell_switch">
+                <div class="insurance">
+                    无法找到第三方险
+                </div>
+                <div class="weui-cell__ft">
+                    <input class="weui-switch" type="checkbox"/>
+                </div>
+
+            </div>
 
         </div>
     </div>
