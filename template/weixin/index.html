@@ -30,30 +30,16 @@
 </div>
 <h4>推荐车险</h4>
 <div class="weui-grids">
-  <a href="/insurance/1" class="weui-grid js_grid">
-    <div class="weui-grid__icon">
-      <img src="//gqianniu.alicdn.com/bao/uploaded/i4//tfscom/i1/TB1n3rZHFXXXXX9XFXXXXXXXXXX_!!0-item_pic.jpg_320x320q60.jpg" alt="">
-    </div>
-    <p class="weui-grid__label">
-      保险公司1
-    </p>
-  </a>
-  <a href="/insurance/1" class="weui-grid js_grid">
-    <div class="weui-grid__icon">
-      <img src="//gqianniu.alicdn.com/bao/uploaded/i4//tfscom/i1/TB1n3rZHFXXXXX9XFXXXXXXXXXX_!!0-item_pic.jpg_320x320q60.jpg" alt="">
-    </div>
-    <p class="weui-grid__label">
-      保险公司1
-    </p>
-  </a>
-  <a href="/insurance/1" class="weui-grid js_grid">
-    <div class="weui-grid__icon">
-      <img src="//gqianniu.alicdn.com/bao/uploaded/i4//tfscom/i1/TB1n3rZHFXXXXX9XFXXXXXXXXXX_!!0-item_pic.jpg_320x320q60.jpg" alt="">
-    </div>
-    <p class="weui-grid__label">
-      保险公司1
-    </p>
-  </a>
+  {% for item in insurance %}
+    <a href="/insurance/{{item.id}}" class="weui-grid js_grid">
+      <div class="weui-grid__icon">
+        <img src="{{item.logo}}" alt="">
+      </div>
+      <p class="weui-grid__label">
+        {{item.name}}
+      </p>
+    </a>
+  {% endfor %}
 </div>
 <h4>热门活动</h4>
 <div class="weui-grids">

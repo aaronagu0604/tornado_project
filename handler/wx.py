@@ -42,12 +42,11 @@ class Signature(BaseHandler):
 
         self.write('signature error')
 
-
-
 @route(r'/index', name='wx_index')  # 后台首页
 class IndexHandler(BaseHandler):
     def get(self):
-        self.render('weixin/index.html')
+        insurance = Insurance.select().where(Insurance.active == 1,Insurance.hot == 1)[:3]
+        self.render('weixin/index.html',insurance=insurance)
 
 @route(r'/insurance/(\d+)', name='wx_insurance')  # 后台首页
 class InsuranceHandler(BaseHandler):
