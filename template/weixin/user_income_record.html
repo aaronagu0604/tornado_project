@@ -112,7 +112,7 @@
        }
 
        function down() {
-           jQuery.getJSON("income_record_list", {
+           jQuery.getJSON("/income_record_list", {
               'offset': offset,
               'type': -1
            },function(data) {
@@ -121,11 +121,9 @@
       }
 
 
-      $(document.body).pullToRefresh().on("pull-to-refresh", function() {
-        setTimeout(function() {
-          $("#time").text(new Date);
+      $('.weui-tab__bd-item').pullToRefresh().on("pull-to-refresh", function() {
+          down();
           $(document.body).pullToRefreshDone();
-        }, 2000);
       });
 
 </script>
