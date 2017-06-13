@@ -150,4 +150,9 @@ class UserIncomeRecordHandler(BaseHandler):
 class IncomeRecordListHandler(BaseHandler):
     def get(self):
         result = {'flag':1,'msg':'','data':[]}
+        data = [{
+            'name': str(i),
+            'price': i
+        } for i in range(5)]
+        result['data'] = data
         self.write(simplejson.dumps(result))
