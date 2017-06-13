@@ -56,6 +56,11 @@ class InsuranceHandler(BaseHandler):
         insurance = Insurance.get(id = i_id)
         self.render('weixin/insurance.html',insurance=insurance)
 
+@route(r'/activer/(\d+)', name='wx_activer')  # 后台首页
+class InsuranceHandler(BaseHandler):
+    def get(self,id):
+        self.render('weixin/activer.html')
+
 @route(r'/insurance_order_base', name='wx_insurance_order_base')  # 后台首页
 class InsuranceOrderBaseHandler(BaseHandler):
     def get(self):
@@ -64,7 +69,7 @@ class InsuranceOrderBaseHandler(BaseHandler):
 @route(r'/insurance_order_items', name='wx_insurance_order_items')  # 后台首页
 class InsuranceOrderItemsHandler(BaseHandler):
     def get(self):
-        self.render('weixin/insurance_order_base.html')
+        self.render('weixin/insurance_order_items.html')
 
 @route(r'/insurance_order_new', name='wx_insurance_order_new')  # 后台首页
 class InsuranceOrderNewHandler(BaseHandler):
