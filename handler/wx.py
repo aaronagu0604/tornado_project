@@ -145,3 +145,9 @@ class UserIncomeHandler(BaseHandler):
 class UserIncomeRecordHandler(BaseHandler):
     def get(self):
         self.render('weixin/user_income_record.html')
+
+@route(r'/income_record_list', name='api_income_record_list')  # 后台首页
+class IncomeRecordListHandler(BaseHandler):
+    def get(self):
+        result = {'flag':1,'msg':'','data':[]}
+        self.write(simplejson.dumps(result))

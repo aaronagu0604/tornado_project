@@ -1,19 +1,138 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <link rel="icon" type="image/png" href="/style/favicon.ico"/>
-    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <link rel="stylesheet" href="//g.alicdn.com/msui/sm/0.6.2/css/sm.min.css">
-</head>
-<body>
-<div class="page-group">
-    收入明细页面
+<!--收支明细页面-->
+{% extends "weixin/none_foot_nav_tab.html" %}
+{% block css %}
+<title>收支明细</title>
+<style>
+
+</style>
+{% endblock %}
+{% block content %}
+<div class="weui-tab">
+    <div class="weui-navbar">
+        <div class="weui-navbar__item weui-navbar__item--on" href="#tab1">
+          收入
+        </div>
+        <div class="weui-navbar__item" href="#tab2">
+          支出
+        </div>
+        <div class="weui-navbar__item" href="#tab3">
+          全部
+        </div>
+    </div>
+    <div class="weui-tab__bd">
+        <div id="tab1" class="weui-tab__bd-item weui-tab__bd-item--active weui-pull-to-refresh">
+            <div class="weui-pull-to-refresh__layer">
+                <div class='weui-pull-to-refresh__arrow'></div>
+                <div class='weui-pull-to-refresh__preloader'></div>
+                <div class="down">下拉刷新</div>
+                <div class="up">释放刷新</div>
+                <div class="refresh">正在刷新</div>
+                <div class="list">
+                    <span id="time">下拉我试试</span>
+                </div>
+            </div>
+        </div>
+        <div id="tab2" class="weui-tab__bd-item weui-pull-to-refresh">
+            <div class="weui-pull-to-refresh__layer">
+                <div class='weui-pull-to-refresh__arrow'></div>
+                <div class='weui-pull-to-refresh__preloader'></div>
+                <div class="down">下拉刷新</div>
+                <div class="up">释放刷新</div>
+                <div class="refresh">正在刷新</div>
+                <div class="list">
+                    <span id="time">下拉我试试</span>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab3" class="weui-tab__bd-item weui-pull-to-refresh">
+            <div class="weui-pull-to-refresh__layer">
+                <div class='weui-pull-to-refresh__arrow'></div>
+                <div class='weui-pull-to-refresh__preloader'></div>
+                <div class="down">下拉刷新</div>
+                <div class="up">释放刷新</div>
+                <div class="refresh">正在刷新</div>
+            </div>
+            <div class="list">
+                <span id="time">下拉我试试</span>
+            </div>
+        </div>
+    </div>
 </div>
-<script type='text/javascript' src='//g.alicdn.com/sj/lib/zepto/zepto.min.js' charset='utf-8'></script>
-<script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm.min.js' charset='utf-8'></script>
-</body>
-</html>
+{% endblock %}
+{% block js %}
+<script src="../lib/fastclick.js"></script>
+<script>
+  $(function() {
+    FastClick.attach(document.body);
+  });
+</script>
+<script>
+    var page = 1,offset = 1;
+    var loading = false; //上拉状态标记
+    var toend = false; //数据加载完标记
+
+    function up() {
+        jQuery.getJSON("/income_record_list", {
+            'page': page,
+            'type': -1
+	    },
+        function(data) {
+             if (data.length < 10) {
+                 toend = true;
+             }
+            for (var i = 0; i < data.length; i++) {
+                var str ="";
+                for(m in data[i].keywords){
+                    str +='<span class="jdyd_padding3">'+data[i].keywords[m]+'</span>';
+                }
+                jQuery("#list").append('<a href="/product_details?product_id='+data[i].id+'" class="weui_media_box weui_media_appmsg jdyd-padding">' +
+                     '<div class="weui_media_hd">' +
+                     '<img style="height:100%;" class="weui_media_appmsg_thumb" src="data:images/jpeg;base64,'+data[i].thumbnail+'">' +
+                     '</div>' +
+                     '<div class="weui_media_bd jdyd_padding1">' +
+                     '<h4 class="weui_media_title">'+data[i].name+'</h4>' +
+                     '<p class="weui_media_desc jdyd_padding2">' + str +
+                     '</p>' +
+                     '<p class="weui_media_desc jdyd_padding5">' +
+                     '<i class="iconfont icon-liaotian iconsize"></i>' +data[i].product_comment_count+
+                     '<span class="jdyd_discount">￥'+data[i].discount+'</span>' + '<span class="jdyd_price">原价:'+data[i].price+'</span>' +
+                     '</p>' +
+                     '</div>' +
+                     '</a>');
+                if (data[i].id > offset) {
+                           offset = data[i].id;
+                        }
+                    };
+                    if (toend) {
+                        jQuery(document.body).destroyInfinite();
+                    }
+                    if (data.length == 10) {
+                        page++;
+                    }
+                    loading = false;
+               });
+       setTimeout(function() {
+           jQuery(".weui-infinite-scroll").hide()
+         }, 1000);
+       }
+
+       function down() {
+           jQuery.getJSON("income_record_list", {
+              'offset': offset,
+              'type': -1
+           },function(data) {
+               $("#list").append('<p>收入记录一</p>');
+	       })
+      }
+
+
+      $(document.body).pullToRefresh().on("pull-to-refresh", function() {
+        setTimeout(function() {
+          $("#time").text(new Date);
+          $(document.body).pullToRefreshDone();
+        }, 2000);
+      });
+
+</script>
+{% endblock %}
