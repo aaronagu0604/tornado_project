@@ -22,6 +22,9 @@
     .weui-cell {
         background-color: #FFFFFF;
     }
+    .goto_next{
+        margin: 20px;
+    }
 </style>
 {% endblock %}
 {% block content %}
@@ -218,7 +221,10 @@
             </div>
         </div>
     </div>
-    <a href="/insurance_order_new" class="weui-btn weui-btn_primary">下一步</a>
+    <div class="goto_next">
+          <a href="/insurance_order_new" class="weui-btn weui-btn_primary">下一步</a>
+    </div>
+
 </div>
 
 {% endblock %}
