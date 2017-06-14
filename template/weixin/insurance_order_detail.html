@@ -33,18 +33,25 @@
         display: inline-block;
         float: right;
     }
+    .a_history{
+        color: gray;
+        font-size: 15px;
+    }
+
 </style>
 {% endblock %}
 {% block content %}
 <div class="bd">
     <div class="page__bd">
-        <div class="weui-cells_-title">保险明细</div>
+        <div class="weui-cells__title">保险明细</div>
         <div class="weui-cells">
             <div class="weui-cell">
                 <div class="weui-cell__bd">
                     <p>保险明细</p>
                 </div>
-                <div class="weui-cell__ft">全部方案</div>
+                <div class="weui-cell__ft">
+                    <a class="a_history" href="/insurance_order_price">历史方案></a>
+                </div>
             </div>
             <div class="weui-cell">
                 <div class="weui-cell__bd">
@@ -68,7 +75,7 @@
 
             </div>
         </div>
-        <div class="weui-cells_-title">保险明细</div>
+        <div class="weui-cells__title">保险明细</div>
         <div class="weui-cell">
             <div class="weui-col-60">
                 <img class="img_card" src="../../style/wximg/id_card.png">
