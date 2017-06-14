@@ -3,26 +3,63 @@
 <title>选择收货地址、返佣方式</title>
 <link rel="stylesheet" href="/style/mobile/swiper3.07.min.css">
 <style>
+    .parent {
+        background-color: #F1F1F1;
+    }
 
+    .weui-cells__title {
+        font-size: 17px;
+        color: #000;
+        background-color: #FFFFFF;
+    }
+
+    .default-addr {
+        padding-left: 35px;
+        padding-right: 20px;
+        padding-bottom: 10px;
+    }
+
+    .write-addr {
+        padding-left: 25px;
+        padding-right: 10px;
+        padding-bottom: 10px;
+    }
+
+    .gift_policy {
+        background-color: #F1F1F1;
+        padding-top: 20px;
+    }
 </style>
 {% endblock %}
 {% block content %}
 <div>
+    <div class="weui-cells__title">
+        地址选择
+    </div>
+
     <div class="weui-cells weui-cells_checkbox">
         <label class="weui-cell weui-check__label" for="default_addr">
             <div class="weui-cell__hd">
-                <input type="checkbox" class="weui-check" id="default_addr"/>
+                <input type="checkbox" class="weui-check" checked="checked" id="default_addr"/>
                 <i class="weui-icon-checked"></i>
             </div>
             <div>
                 默认地址
             </div>
         </label>
-        <div>
-
-            <p>
+        <div class="default-addr">
+            <div class="weui-row">
+                <div class="weui-row-50">
+                    长孙
+                </div>
+                <div class="weui-row-50">
+                    13289269257
+                </div>
+            </div>
+            <div class="weui-row">
                 陕西省，西安市
-            </p>
+            </div>
+
         </div>
         <label class="weui-cell weui-check__label" for="write_addr">
             <div class="weui-cell__hd">
@@ -33,6 +70,46 @@
                 填写地址
             </div>
         </label>
+        <div class="write-addr">
+            <div class="weui-cell">
+                <div class="weui-label">收货人</div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input" type="input" placeholder="请输入收货人姓名">
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-label">联系电话</div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input" type="input" placeholder="请输入收货人电话">
+                </div>
+            </div>
+
+            <div class="weui-cell weui-cell_access">
+                <div class="weui-cell__bd">
+                    所在地区
+                </div>
+                <div class="weui-cell__ft">
+                    请选择
+                </div>
+            </div>
+            <div class="weui-cells__title">
+                详细地址
+            </div>
+            <div class="weui-cells weui-cells_form">
+                <div class="weui-cell">
+                    <div class="weui-cell__bd">
+                        <textarea class="weui-textarea" placeholder="请输入详细地址" rows="3"></textarea>
+                        <div class="weui-textarea-counter"><span>0</span>/200</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="gift_policy">
+        <div>
+            <p>选择优惠方式</p>
+        </div>
     </div>
     <a href="/mine" class="weui-btn weui-btn_primary">完成</a>
 </div>
@@ -40,6 +117,28 @@
 {% endblock %}
 {% block js %}
 <script>
-
+    $(document).ready(function () {
+        if ($('#write_addr').is(':checked')) {
+            $(".write-addr").show();
+        } else {
+            $(".write-addr").hide();
+        }
+    });
+    $(document).on("click", "#write_addr", function () {
+        if ($('#write_addr').is(':checked')) {
+            $(".write-addr").show();
+            $("#default-addr").attr("checked", false);
+        } else {
+            $(".write-addr").hide();
+            $("#default-addr").attr("checked", true);
+        }
+    })
+    $(document).on("click", "#default-addr", function () {
+        if ($('#default-addr').is(':checked')) {
+            $("#write-addr").attr("checked", false);
+        } else {
+            $("#write-addr").attr("checked", true);
+        }
+    })
 </script>
 {% endblock %}

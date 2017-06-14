@@ -9,9 +9,14 @@
 
     .parent {
         background-color: #F1F1F1;
+        height: 100%;
     }
 
     .insurance_parent {
+        background-color: #FFFFFF;
+    }
+
+    .insurance_main_plus {
         background-color: #FFFFFF;
     }
 
@@ -24,7 +29,7 @@
     }
 
     .goto_next {
-        background-color: #F1F1F1;
+        background-color: #FFFFFF;
         padding: 20px;
     }
 </style>
@@ -64,7 +69,7 @@
                     车辆损失险
                 </div>
                 <div class="weui-cell__ft">
-                    <input class="weui-switch" type="checkbox"/>
+                    <input class="weui-switch" type="checkbox" id="damageI"/>
                 </div>
                 <label class="weui-row" for="damageIPlus">
                     <div class="weui-cell__hd">
@@ -146,7 +151,7 @@
             </div>
         </div>
     </div>
-    <div class="insurance_parent">
+    <div class="insurance_main_plus">
         <div class="weui-cells weui-cells_checkbox">
             <div class="insurance_parent-main">
                 商业险—附加险
@@ -229,6 +234,19 @@
 {% endblock %}
 {% block js %}
 <script>
-
+    $(document).ready(function () {
+        if ($('#damageI').is(':checked')) {
+            $(".insurance_main_plus").show();
+        } else {
+            $(".insurance_main_plus").hide();
+        }
+    });
+    $(document).on("click", "#damageI", function () {
+        if ($('#damageI').is(':checked')) {
+            $(".insurance_main_plus").show();
+        } else {
+            $(".insurance_main_plus").hide();
+        }
+    })
 </script>
 {% endblock %}
