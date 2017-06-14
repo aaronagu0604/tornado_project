@@ -101,52 +101,52 @@ class PayDetailHandler(BaseHandler):
     def get(self):
         self.render('weixin/pay_detail.html')
 
-@route(r'/login', name='wx_login')  # 后台首页
+@route(r'/login', name='wx_login')  # html 登录
 class LoginHandler(BaseHandler):
     def get(self):
-        self.render('weixin/Login.html')
+        self.render('weixin/login.html')
 
-@route(r'/mine', name='wx_mine')  # 后台首页
+@route(r'/mine', name='wx_mine')  # html 会员中心
 class MineHandler(BaseHandler):
     def get(self):
         self.render('weixin/mine.html')
 
-@route(r'/bound_mobile', name='wx_bound_mobile')  # 绑定手机号
+@route(r'/bound_mobile', name='wx_bound_mobile')  # html 绑定手机号
 class BoundMobileHandler(BaseHandler):
     def get(self):
         self.render('weixin/bound_mobile.html')
 
-@route(r'/rake_back_setting', name='wx_rake_back_setting')  # 后台首页
+@route(r'/rake_back_setting', name='wx_rake_back_setting')  # html 返佣配置
 class RakeBackSettingHandler(BaseHandler):
     def get(self):
         self.render('weixin/rake_back_setting.html')
 
-@route(r'/user_address', name='wx_user_address')  # 后台首页
+@route(r'/user_address', name='wx_user_address')  # html 收货地址
 class UserAddressHandler(BaseHandler):
     def get(self):
         self.render('weixin/user_address.html')
 
-@route(r'/user_address_detail', name='wx_user_address_detail')  # 后台首页
+@route(r'/user_address_detail', name='wx_user_address_detail')  # html 编辑地址
 class UserAddressDetailHandler(BaseHandler):
     def get(self):
         self.render('weixin/user_address_detail.html')
 
-@route(r'/user_childrens', name='wx_user_childrens')  # 后台首页
+@route(r'/user_childrens', name='wx_user_childrens')  # 我的下线
 class UserChildrensHandler(BaseHandler):
     def get(self):
         self.render('weixin/user_childrens.html')
 
-@route(r'/user_income', name='wx_user_income')  # 后台首页
+@route(r'/user_income', name='wx_user_income')  # html 收入
 class UserIncomeHandler(BaseHandler):
     def get(self):
         self.render('weixin/user_income.html')
 
-@route(r'/user_income_record', name='wx_user_income_record')  # 后台首页
+@route(r'/user_income_record', name='wx_user_income_record')  # html 收入明细
 class UserIncomeRecordHandler(BaseHandler):
     def get(self):
         self.render('weixin/user_income_record.html')
 
-@route(r'/income_record_list', name='api_income_record_list')  # 后台首页
+@route(r'/income_record_list', name='api_income_record_list')  # api 收入明细
 class IncomeRecordListHandler(BaseHandler):
     def get(self):
         result = {'flag':1,'msg':'','data':[]}
