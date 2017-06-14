@@ -78,7 +78,7 @@ class InsuranceOrderItemsHandler(BaseHandler):
 @route(r'/insurance_order_new', name='wx_insurance_order_new')  # 后台首页
 class InsuranceOrderNewHandler(BaseHandler):
     def get(self):
-        self.render('weixin/insurance_order_New.html')
+        self.render('weixin/insurance_order_new.html')
 
 @route(r'/insurance_orders', name='wx_insurance_orders')  # 后台首页
 class InsuranceOrdersHandler(BaseHandler):
