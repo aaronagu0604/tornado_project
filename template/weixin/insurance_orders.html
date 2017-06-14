@@ -1,34 +1,167 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <link rel="icon" type="image/png" href="/style/favicon.ico"/>
-    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <link rel="stylesheet" href="//g.alicdn.com/msui/sm/0.6.2/css/sm.min.css">
-</head>
-<body>
-
-<div >
-    保险订单列表页面
-</div>
-<div class="weui-cells">
-    <a class="weui-cell weui-cell_access" href="/insurance_order_detail">
-        <div class="weui-cell__bd">
-            <p>订单详情</p>
-        </div>
-        <div class="weui-cell__ft">
-        </div>
+<!--订单列表页面-->
+{% extends "weixin/none_foot_nav_tab.html" %}
+{% block css %}
+<title>订单列表</title>
+<style>
+    p{
+        font-size: 16px;
+        color: gray;
+    }
+    .time{
+        margin-top: 5px;
+    }
+    .tel{
+        margin-bottom: 5px;
+    }
+    .statue{
+        display: inline-block;float: right;color: red;
+    }
+    hr{
+        height:0.3px;border:none;border-top:1px solid #e7e7e7;
+    }
+    /*.cell_div{*/
+        /*background-color: red;*/
+        /*!*display: inline-block;*!*/
+    /*}*/
+</style>
+{% endblock %}
+{% block content %}
+<!-- body 顶部加上如下代码 -->
+<div class="weui-navbar">
+    <a href="/user_income_record?type=in" class="weui-navbar__item weui-navbar__item--on">
+        <div>全部</div>
     </a>
+    <a href="/user_income_record?type=out" class="weui-navbar__item">
+        <div>待核价</div>
+    </a>
+    <a href="/user_income_record?type=all" class="weui-navbar__item">
+        <div>待付款</div>
+    </a>
+    <a href="/user_income_record?type=in" class="weui-navbar__item weui-navbar__item--on">
+        <div>已付款</div>
+    </a>
+    <a href="/user_income_record?type=out" class="weui-navbar__item">
+        <div>已完成</div>
+    </a>
+
+</div>
+<div class="weui-pull-to-refresh__layer">
+    <div class="weui-pull-to-refresh__arrow"></div>
+    <div class="weui-pull-to-refresh__preloader"></div>
+    <div class="down">下拉刷新</div>
+    <div class="up">释放刷新</div>
+    <div class="refresh">正在刷新</div>
 </div>
 
+<div id="list" class="weui-cells">
+    <!--<div class="weui-cell">-->
+    <!--<div class="weui-cell__bd">-->
+    <!--<p>标题文字</p>-->
+    <!--</div>-->
+    <!--<div class="weui-cell__ft">说明文字</div>-->
+    <!--</div>-->
+</div>
 
+<div class="weui-loadmore">
+    <i class="weui-loading"></i>
+    <span class="weui-loadmore__tips">正在加载</span>
+</div>
+{% endblock %}
+{% block js %}
+<script>
+    var page = 1,offset = 1;
+    var loading = false; //上拉状态标记
+    var toend = false; //数据加载完标记
 
-<script src="//cdn.bootcss.com/jquery/1.11.0/jquery.min.js"></script>
-<script src="//cdn.bootcss.com/jquery-weui/1.0.1/js/jquery-weui.min.js"></script>
-<script type='text/javascript' src='//g.alicdn.com/sj/lib/zepto/zepto.min.js' charset='utf-8'></script>
-<script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm.min.js' charset='utf-8'></script>
-</body>
-</html>
+    function down() {
+        jQuery.getJSON("/income_record_list", {
+            'offset': 1,
+            'type': 1
+        },function(data) {
+            var data = data.data
+            console.log(data);
+            for (var i = data.length; i > 0; i--) {
+                var str ="";
+                jQuery("#list").append(
+                        '<hr/>'+
+                        '<div class="cell_div">'+
+                        '<p style="display: inline-block">'+'订单编号:U1285D068I9963'+ '</p> '+'<p class="statue">'+'待付款'+ '</p> '+ '</div> '+
+                        '<a class="weui-cell cell_a" href="/insurance_order_detail"> ' +
+                        '<div class="weui-cell__bd"> ' +
+                        '<p >'+'保险公司:人保车险'+ '</p> '+
+                        '<p>'+'寄送人:车装甲'+ '</p> '+
+                        '<p>'+'陕西省西安市新城区'+ '</p> ' +
+                        '</div>' +
+                        '<div class="weui-cell__ft">'
+                        +'<p class="time">'+'2017-06-08'+ '</p> '
+                        +'<p class="tel">'+'13389202678'+ '</p> ' +
+                        '</div> ' +
+                        '</a>'+
+                        '<p>'+'订单金额:1020'+ '</p> ');
+            };
+        })
+    }
+    function up() {
+        jQuery.getJSON("/income_record_list", {
+            'offset': 1,
+            'type': 1
+        },function(data) {
+            var data = data.data
+
+            if (data.length < 10) {
+                toend = true;
+            }
+            for (var i = data.length; i > 0; i--) {
+                var str ="";
+                jQuery("#list").append(
+                        '<hr/>'+
+                        '<div class="cell_div">'+
+                        '<p style="display: inline-block">'+'订单编号:U1285D068I9963'+ '</p> '+'<p class="statue">'+'待付款'+ '</p> '+ '</div> '+
+                        '<a class="weui-cell cell_a" href="/insurance_order_detail"> ' +
+                            '<div class="weui-cell__bd"> ' +
+                               '<p >'+'保险公司:人保车险'+ '</p> '+
+                               '<p>'+'寄送人:车装甲'+ '</p> '+
+                               '<p>'+'陕西省西安市新城区'+ '</p> ' +
+                            '</div>' +
+                            '<div class="weui-cell__ft">'
+                                +'<p class="time">'+'2017-06-08'+ '</p> '
+                                +'<p class="tel">'+'13389202678'+ '</p> ' +
+                            '</div> ' +
+                        '</a>'+
+                       '<p>'+'订单金额:1020'+ '</p> ')
+                        ;
+            };
+            if (toend) {
+                console.log(toend);
+                $(document.body).destroyInfinite();
+            }
+            if (data.length == 10) {
+                page++;
+            }
+            loading = false;
+        })
+        setTimeout(function() {
+            jQuery(".weui-infinite-scroll").hide()
+        }, 1000);
+    }
+    $(function() {
+        up();
+    });
+    $(document.body).pullToRefresh().on("pull-to-refresh", function() {
+        //清空现有数据
+        $('.list').empty();
+        //加载新数据
+        down();
+        //重置下拉状态
+        $(document.body).pullToRefreshDone();
+    });
+
+    $(document.body).infinite().on("infinite", function() {
+        if (loading) return;
+        loading = true;
+        jQuery(".weui-infinite-scroll").show();
+        up();
+    });
+
+</script>
+{% endblock %}

@@ -1,31 +1,42 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <link rel="icon" type="image/png" href="/style/favicon.ico"/>
-    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <link rel="stylesheet" href="//g.alicdn.com/msui/sm/0.6.2/css/sm.min.css">
-</head>
-<body>
-<div >
-    保险订单详情页面
+<!--订单详情页面-->
+{% extends "weixin/none_foot_nav_tab.html" %}
+{% block css %}
+<title>订单详情</title>
+<style>
+    p{
+        font-size: 16px;
+        color: gray;
+    }
+    .time{
+        margin-top: 5px;
+    }
+    .tel{
+        margin-bottom: 5px;
+    }
+    .statue{
+        display: inline-block;float: right;color: red;
+    }
+    hr{
+        height:0.3px;border:none;border-top:1px solid #e7e7e7;
+    }
+    /*.cell_div{*/
+    /*background-color: red;*/
+    /*!*display: inline-block;*!*/
+    /*}*/
+</style>
+{% endblock %}
+{% block content %}
+<div class="bd">
+    <div class="page__bd">
+        <div class="weui-cells_-title">保险明细</div>
+        <div class="weui-cells">
+            <div class="weui-cell"></div>
+        </div>
+    </div>
 </div>
+{% endblock %}
 
-<div class="weui-cells">
-    <a class="weui-cell weui-cell_access" href="/insurance_order_price">
-        <div class="weui-cell__bd">
-            <p>订单历史方案</p>
-        </div>
-        <div class="weui-cell__ft">
-        </div>
-    </a>
-</div>
-<script src="//cdn.bootcss.com/jquery/1.11.0/jquery.min.js"></script>
-<script src="//cdn.bootcss.com/jquery-weui/1.0.1/js/jquery-weui.min.js"></script>
-<script type='text/javascript' src='//g.alicdn.com/sj/lib/zepto/zepto.min.js' charset='utf-8'></script>
-<script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm.min.js' charset='utf-8'></script>
-</body>
-</html>
+{% block js %}
+
+
+{% endblock %}
