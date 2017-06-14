@@ -660,13 +660,11 @@ class SaveIOPHandler(BaseHandler):
         pid = InsuranceOrderPrice.get(id=int(groups['pid']))
         io = InsuranceOrder.get(id=pid.insurance_order_id)
         now = int(time.time())
-        if pid.response in [0,1,2] and io.status in [0,1,2,3]:
+        if pid.response in [0, 1, 2] and io.status in [0, 1, 2, 3]:
             pid.created = now
             pid.insurance = groups['insurance']
             pid.admin_user = self.get_admin_user()
             pid.gift_policy = groups['gift_policy']
-            # pid.response = 1
-            # pid.status = 1
             if groups['gift_policy'] == '2':    # 返现
                 pid.cash = groups['cash']
             elif groups['gift_policy'] == '1':    # 返油
@@ -690,11 +688,6 @@ class SaveIOPHandler(BaseHandler):
             for item in i_items:
                 pid.__dict__['_data'][item] = i_items[item]
             pid.save()
-
-            # io.current_order_price = pid
-            # io.status = 1
-            # io.save()
-
             admin_user = self.get_admin_user()
             content = '%s进行报价：io.id:%d'%(admin_user.username, io.id)
             if send_msg == '1':
@@ -722,13 +715,13 @@ class SaveIOPHandler(BaseHandler):
                     sms = {'apptype': 1, 'body': '您有新的报价单！', 'jpushtype': 'alias', 'alias': io.user.mobile,
                            'extras': {'link': 'czj://insurance_order_detail/%s' % io.id}}
                     create_msg(simplejson.dumps(sms), 'jpush')
-                logging.info('%s进行报价并发送短信：io.id:%d' % (admin_user.username, io.id))
             result['flag'] = 1
             AdminUserLog.create(admin_user=admin_user, created=now, content=content)
         else:
             result['msg'] = u'该方案已不可再更改'
 
         self.write(simplejson.dumps(result))
+
 
 @route(r'/ajax/save_io_summary', name='ajax_save_io_summary')  # 保存本地备注
 class SaveIOSummaryHandler(BaseHandler):

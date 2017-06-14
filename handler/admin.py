@@ -227,6 +227,7 @@ class StoreDetailHandler(AdminBaseHandler):
         license_code = self.get_argument('license_code', '')
         linkman = self.get_argument('linkman', '')
         mobile = self.get_argument('mobile', '')
+        insurance_policy_code = self.get_argument('policy_code', '')
 
         area_code = province
         if district and not district == '':
@@ -244,9 +245,9 @@ class StoreDetailHandler(AdminBaseHandler):
         store.license_code = license_code
         store.linkman = linkman
         store.mobile = mobile
+        store.insurance_policy_code = insurance_policy_code
         store.save()
-        AdminUserLog.create(admin_user=self.get_admin_user(),
-                            created=int(time.time()),
+        AdminUserLog.create(admin_user=self.get_admin_user(), created=int(time.time()),
                             content='编辑经销商: store_id:%d'%store.id)
         self.flash(u"保存成功")
         self.redirect("/admin/store_detail/" + str(store_id))

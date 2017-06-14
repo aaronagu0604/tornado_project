@@ -59,20 +59,25 @@ def change_order_status(ordernum, trade_no):
 def send_new_insurance_order_msg(mobile, storeName, area_code, ordernum, iName, payment, LubeOrScore, summary, price):
         mobiles = setting.financeMobiles
         if payment == 1:
-            paymentV = '支付宝'
+            paymentV = u'支付宝'
         elif payment == 2:
-            paymentV = '微信支付'
+            paymentV = u'微信支付'
         elif payment == 3:
-            paymentV = '银联支付'
+            paymentV = u'银联支付'
         elif payment == 4:
-            paymentV = '余额支付'
+            paymentV = u'余额支付'
         else:
-            paymentV = '其它方式支付'
+            paymentV = u'其它方式支付'
 
-        if LubeOrScore == 2:
-            gift = u'返佣返积分'
+        if LubeOrScore == 1:
+            gift = u'返油'
+        elif LubeOrScore == 2:
+            gift = u'返现'
+        elif LubeOrScore == 3:
+            gift = u'返积分'
         else:
-            gift = u'返佣返油'
+            gift = u'其它'
+
         addrs = Area().get_detailed_address(area_code)
         # to 客户
         sms = {'mobile': mobile, 'body': [storeName, addrs, ordernum, iName, paymentV, gift, summary],
