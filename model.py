@@ -1291,6 +1291,15 @@ class Message(db.Model):
         db_table = 'tb_message'
 
 
+class JPush(db.Model):
+    id = PrimaryKeyField()
+    intro = TextField(default='')
+    active = IntegerField(default=1)    # 0失效，1有效
+
+    class Meta:
+        db_table = 'tb_jpush'
+
+
 def init_db():
     from lib.util import find_subclasses
 

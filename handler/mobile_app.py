@@ -2086,3 +2086,22 @@ class MobilInsuranceOrderQuoteInfoHandler(MobileBaseHandler):
             result['msg'] = '查询失败:%s'%e
 
         self.write(simplejson.dumps(result))
+
+
+@route(r'/mobile/jpush/(\d+)', name='jpush')  # 极光推送
+class MobilJPushHandler(MobileBaseHandler):
+    """
+    @apiGroup app
+    @apiVersion 1.0.0
+    @api {post} /mobile/jpush 极光推送
+    @apiDescription app  极光推送点击后新页面
+
+    @apiHeader {String} token 用户登录凭证
+
+    @apiParam {String} id_card_front 身份证正面
+    @apiSampleRequest /mobile/jpush
+    """
+
+    def get(self, jid):
+        self.render('webapp/jpush.html')
+

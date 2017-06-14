@@ -94,3 +94,9 @@ class WebAppDetailHandler(BaseHandler):
     def get(self, id):
         carItem = CarItem.get(id=id)
         self.render("webapp/detail.html", car=carItem)
+
+
+
+
+
+
