@@ -4,6 +4,7 @@
 from handler import BaseHandler
 from lib.route import route
 from model import *
+import time
 
 
 @route(r'/user/showInsurance/(\d+)')  # 保单展示
