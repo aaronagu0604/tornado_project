@@ -695,7 +695,8 @@ class SaveIOPHandler(BaseHandler):
                 pid.status = 1
                 pid.save()
                 io.current_order_price = pid
-                io.status = 1
+                if io.status < 2:
+                    io.status = 1
                 io.save()
                 sms = {'mobile': io.store.mobile, 'signtype': '1', 'isyzm': 'changePrice',
                        'body': [io.ordernum, pid.insurance.name, groups['total_price'], groups['psummary']]}
