@@ -1,0 +1,57 @@
+{% extends "layout/admin.html" %}
+{% block content %}
+<link href="/style/css/store_bigimg.css" rel="stylesheet">
+<script type="text/javascript" src="/style/js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="/style/js/bigimg.js"></script>
+
+<div class="mskeLayBg"></div>
+<div class="row">
+    <ol class="breadcrumb">
+        <li><a href="/admin/products">活动管理</a></li>
+    </ol>
+</div>
+<div class="row">
+    <form class="form-horizontal" role="form" action="/admin/edit_jpush/{{p.id|default('0')}}" method="post">
+        {{xsrf()}}
+        <div class="panel panel-default">
+            <h3 class="panel-title" style="width:100%;height:38px;line-height:38px;background:#528acb;color:#fff;padding-left:15px;border-top-left-radius:4px;border-top-right-radius:4px;">基本信息</h3>
+
+            <div class="panel-body">
+                <div class="form-group">
+                    <label class="col-sm-1 control-label">名称</label>
+                    <div class="col-sm-6">
+                        <input class="form-control txtName" name="name" id="pname" type="text" placeholder="名称不能为空"
+                               value="{{ p.title }}" required style="width:480px;">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-1 control-label">详细介绍</label>
+                    <div class="col-sm-10">
+                        <textarea class="form-control" rows="10" id="pintro" name="pintro" id="pintro">{{ p.intro }}</textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <th><input id="checkbox2" style="visibility:visible;" type="checkbox" name="active" {% if p.active==1 %} checked='true' {%endif%}>是否启用</th>
+        </div>
+        <button type="submit"
+                style="width:90px;height:32px;background:#528acb;color:#fff;border:none;font-size:14px;border-radius:4px;margin-bottom:30px;">保存</button>
+
+    </form>
+</div>
+{% endblock %}
+{% block js %}
+<script src="/style/xheditor/xheditor-1.2.2.min.js"></script>
+<script src="/style/xheditor/xheditor_lang/zh-cn.js"></script>
+<script src="/style/js/jquery_ocupload.js?v=1"></script>
+<script type="text/javascript" src="/style/js/layer/layer.js"></script>
+<script language="javascript" type="text/javascript" src="/style/js/My97DatePicker/WdatePicker.js"></script>
+<script>
+    $('#pintro').xheditor({tools:'Source,Fullscreen,Img', html5Upload:false, upImgUrl:"/ajax/upload",upImgExt:"jpg,gif,png"});
+</script>
+{% endblock %}
+
+
+
+

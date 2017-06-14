@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="icon" type="image/png" href="/style/favicon.ico"/>
+    <title>{{article.title}}</title>
+    <link rel="stylesheet" href="/style/mobile/sm.css">
+    <link rel="stylesheet" href="/style/mobile/style.css">
+    <style>
+        img {
+            width:94%;
+            margin-left:3%;
+            margin-right:3%;
+        }
+    </style>
+</head>
+
+<body>
+<div class="page">
+    <header class="bar bar-nav">
+        <div class="buttons-tab">
+            <a href="#tab1" id="ctab1" class="tab-link active button">活动详情</a>
+        </div>
+    </header>
+    <div class="content" style="background-color: #ededed;">
+        <div class="tabs">
+            <div id="tab1" class="tab active">
+                <p class="p_detail">
+                    {{article.intro}}
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+<script type='text/javascript' src='//g.alicdn.com/sj/lib/zepto/zepto.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm.min.js' charset='utf-8'></script>
+</body>
+</html>
+

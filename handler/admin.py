@@ -1178,6 +1178,72 @@ class DelPicHandler(AdminBaseHandler):
 
 
 # --------------------------------------------------------App管理-------------------------------------------------------
+@route(r'/admin/jpush', name='admin_jpush')  # 商品
+class JpushHandler(AdminBaseHandler):
+    def get(self):
+        page = int(self.get_argument("page", '1'))
+        keyword = self.get_argument("keyword", '')
+        active = int(self.get_argument("status", 1))
+        pagesize = setting.ADMIN_PAGESIZE
+
+        if active == -1:
+            ft = (JPush.active << [-1,0,1])
+        else:
+            ft = (JPush.active == active)
+
+        if keyword:
+            keyw = '%' + keyword + '%'
+            ft = ft & (JPush.title % keyw)
+
+        jpush = JPush.select().where(ft)
+        total = jpush.count()
+        if total % pagesize > 0:
+            totalpage = total / pagesize + 1
+        else:
+            totalpage = total / pagesize
+        jpush = jpush.order_by(JPush.id.desc()).paginate(page, pagesize).aggregate_rows()
+
+        jpush_type = 'jpush'
+
+        self.render('admin/App/jpush.html', active=jpush_type, jpush=jpush, total=total, page=page,
+                    pagesize=pagesize, totalpage=totalpage, keyword=keyword, status=active,
+                    pid=[])
+
+
+@route(r'/admin/edit_jpush/(\d+)', name='admin_edit_jpush')  # 修改商品
+class EditJpushHandler(AdminBaseHandler):
+    def get(self, pid):
+        pid = int(pid)
+        try:
+            jpush = JPush.get(id=pid)
+        except Exception:
+            jpush = None
+        jpush_type = 'jpush'
+        self.render('admin/App/jpush_edit.html', active=jpush_type, p=jpush)
+
+    def post(self, pid):
+        name = self.get_body_argument('name', None)
+        active = self.get_body_argument('active', '')
+        pintro = self.get_body_argument('pintro',None)
+
+        if pid == '0':
+            jpush = JPush()
+            jpush.active = 1
+        else:
+            jpush = JPush.get(id=pid)
+            jpush.active = 1 if active else 0
+        jpush.title = name
+        jpush.intro = pintro
+        jpush.active = 1 if active else 0
+        jpush.save()
+
+        if pid == '0':
+            content = '添加活动:p_id%d' % jpush.id
+        else:
+            content = '编辑活动:p_id%s' % pid
+        AdminUserLog.create(admin_user=self.get_admin_user(), created=int(time.time()), content=content)
+        self.redirect('/admin/edit_jpush/%s'%pid)
+
 @route(r'/admin/block', name='admin_block')
 class BlockHandler(AdminBaseHandler):
     def get(self):
@@ -2495,7 +2561,8 @@ class UploadPicHandler(AdminBaseHandler):
 class SendMsgHandler(AdminBaseHandler):
     def get(self):
         items = Area.select().where(Area.pid >> None)
-        self.render('admin/sysSetting/send_msg.html', active='msg', items=items)
+        articles = JPush.select().where(JPush.active == 1)
+        self.render('admin/sysSetting/send_msg.html', active='msg', items=items,articles=articles)
 
     def post(self):
         content_log = {}
@@ -2509,7 +2576,8 @@ class SendMsgHandler(AdminBaseHandler):
         city = self.get_body_argument('city_code', '')
         district = self.get_body_argument('district_code', '')
         get_mobile = self.get_body_argument('get_mobile', '')
-
+        article = self.get_body_argument('article_id',0)
+        print article,type(article)
         if district:
             area_code = district + '%'
         elif city:
@@ -2531,7 +2599,10 @@ class SendMsgHandler(AdminBaseHandler):
         if sms_type == 0:
             if is_users == 'all_user':
                 content_log['content'] = u'为用户 所有用户 推送极光消息，消息内容：' + content
-                create_msg(simplejson.dumps({'body': content, 'jpushtype':'tags', 'tags':['all'], 'extras': {'link':''}}), 'jpush')
+                link = ''
+                if int(article):
+                    link = 'http://admin.520czj.com/user/showarticle/%s' % article
+                create_msg(simplejson.dumps({'body': content, 'jpushtype':'tags', 'tags':['all'], 'extras': {'link':link}}), 'jpush')
                 AdminUserLog.create(admin_user=self.get_admin_user(),
                                     created=int(time.time()),
                                     content= u'为用户 所有用户 推送极光消息，消息内容：' + content)
@@ -2540,8 +2611,11 @@ class SendMsgHandler(AdminBaseHandler):
                 if number:
                     content_log['content'] = u'为用户 ' + number + u' 推送极光消息，消息内容：' + content
                     num = number.split(',')
+                    link = ''
+                    if int(article):
+                        link = 'http://admin.520czj.com/user/showarticle/%s' % article
                     for n in num:
-                        sms = {'apptype': 1, 'body': content, 'jpushtype':'alias', 'alias': n, 'extras':{'link':''}}
+                        sms = {'apptype': 1, 'body': content, 'jpushtype':'alias', 'alias': n, 'extras':{'link':link}}
                         create_msg(simplejson.dumps(sms), 'jpush')
                     AdminUserLog.create(admin_user=self.get_admin_user(),
                                         created=int(time.time()),
@@ -2558,8 +2632,11 @@ class SendMsgHandler(AdminBaseHandler):
                     tags = [city]
                 if district != '0':
                     tags = [district]
+                link = ''
+                if int(article):
+                    link = 'http://admin.dev.520czj.com/user/showarticle/%s'%article
 
-                create_msg(simplejson.dumps({'body': content, 'jpushtype': 'tags', 'tags': tags, 'extras':{'link':''}}),
+                create_msg(simplejson.dumps({'body': content, 'jpushtype': 'tags', 'tags': tags, 'extras':{'link':link}}),
                            'jpush')
                 AdminUserLog.create(admin_user=self.get_admin_user(),
                                     created=int(time.time()),

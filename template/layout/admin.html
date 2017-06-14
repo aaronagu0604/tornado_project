@@ -96,7 +96,7 @@
                         </li>
                     </ul>
                     </li>
-                    <li {% if active=='block' or active=='ads' or active=='hot_search' %} class="active" {%endif %}>
+                    <li {% if active=='block' or active=='ads' or active=='jpush' or active=='hot_search' %} class="active" {%endif %}>
                     <a  href="#"><i class="fa fa-briefcase fa-fw"></i>&nbsp;&nbsp;&nbsp;App管理
                         <span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level">
@@ -109,7 +109,9 @@
                         <li>
                             <a {% if active=='hot_search' %}class="active"{% endif %} href="/admin/hot_search">热门搜索</a>
                         </li>
-
+                        <li>
+                            <a {% if active=='jpush' %} class="active"{% endif %} href="/admin/jpush">活动内容</a>
+                        </li>
                     </ul>
                     </li>
                     <li {% if active=='category' or active=='brand' or active=='product_n'  or

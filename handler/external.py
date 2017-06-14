@@ -4,7 +4,6 @@
 from handler import BaseHandler
 from lib.route import route
 from model import *
-import time
 
 
 @route(r'/user/showInsurance/(\d+)')  # 保单展示
@@ -41,6 +40,15 @@ class showInsurance(BaseHandler):
 
         self.render('admin/user/showInsurance.html', o=o, dictI=dictI, addr=addr)
 
+@route(r'/user/showarticle/(\d+)')  # 活动详情展示
+class showArticle(BaseHandler):
+    def get(self, a_id):
+        a_id = int(a_id) if a_id else 0
+        try:
+            article = JPush.get(id=a_id)
+            self.render('admin/user/showArticle.html', article=article)
+        except Exception:
+            self.write('活动不存在，或者已下线')
 
 
 

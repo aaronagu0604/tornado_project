@@ -65,10 +65,20 @@
                 </div>
 
                 <div class="form-group has-success">
+                    <div class="articles" style="margin-left:10px;">
+                        <select name="article_id" id="article_id" style="height:28px;margin-left: -10px;margin-top: 10px;border-radius:4px;" >
+                            <option value="0">--请选择活动文章，不需要可以不选--</option>
+                            {% for article in articles %}
+                            <option value="{{article.id}}">{{article.title}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group has-success">
                     <input type="submit" name="sub" value="提 交" class="btn btn-outline btn-primary btn-sm">
                     <input type="submit" name="get_mobile" value="获取手机号" class="btn btn-outline btn-primary btn-sm">
                 </div>
-
             </form>
 
         </div>
