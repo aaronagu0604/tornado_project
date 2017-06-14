@@ -7,22 +7,32 @@
         font-size: 16px;
         color: gray;
     }
-    .time{
-        margin-top: 5px;
+    .weui-col-60 {
+        /*align-content: center;*/
+        /*algin: center;*/
+        height: 125px;
+        width: 100px;
+        margin-left: 30px;
     }
-    .tel{
-        margin-bottom: 5px;
+    .img_card{
+        height: 80px;
+        width: 100px;
     }
-    .statue{
-        display: inline-block;float: right;color: red;
+    .p_card{
+        width: 100px;
+        text-align:center;
+        font-size: 16px;
     }
     hr{
         height:0.3px;border:none;border-top:1px solid #e7e7e7;
     }
-    /*.cell_div{*/
-    /*background-color: red;*/
-    /*!*display: inline-block;*!*/
-    /*}*/
+    .moblie{
+         display: inline-block;
+     }
+    .tel{
+        display: inline-block;
+        float: right;
+    }
 </style>
 {% endblock %}
 {% block content %}
@@ -30,8 +40,78 @@
     <div class="page__bd">
         <div class="weui-cells_-title">保险明细</div>
         <div class="weui-cells">
-            <div class="weui-cell"></div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>保险明细</p>
+                </div>
+                <div class="weui-cell__ft">全部方案</div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>人保车险</p>
+                </div>
+                <div class="weui-cell__ft">￥1234</div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>提交时间</p>
+                </div>
+                <div class="weui-cell__ft">2017-06-08</div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>积分</p>
+                </div>
+                <div class="weui-cell__ft">303</div>
+            </div>
+            <div id="insrue_detail">
+
+            </div>
         </div>
+        <div class="weui-cells_-title">保险明细</div>
+        <div class="weui-cell">
+            <div class="weui-col-60">
+                <img class="img_card" src="../../style/wximg/id_card.png">
+                <p class="p_card">身份证正面</p>
+                <p class="p_card">(被保险人)</p>
+            </div>
+            <div class="weui-col-60">
+                <img class="img_card" src="../../style/wximg/id_card.png">
+                <p class="p_card">身份证背面</p>
+                <p class="p_card">(被保险人)</p>
+            </div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-col-60">
+                <img class="img_card" src="../../style/wximg/id_card.png">
+                <p class="p_card">行驶证</p>
+            </div>
+            <div class="weui-col-60">
+                <img class="img_card" src="../../style/wximg/id_card.png">
+                <p class="p_card">行驶证副本</p>
+            </div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-col-60">
+                <img class="img_card" src="../../style/wximg/id_card.png">
+                <p class="p_card">身份证正面</p>
+            </div>
+            <div class="weui-col-60">
+                <img class="img_card" src="../../style/wximg/id_card.png">
+                <p class="p_card">身份证背面</p>
+            </div>
+        </div>
+
+        <a class="weui-cell" href="#">
+            <div>
+                <!--<img src="../../style/wximg/id_card.png">-->
+                <div>
+                    <p class="moblie">收货人:测试ios</p>
+                    <p class="tel">13389202687</p>
+                </div>
+                <p>陕西省 西安市 新城区 测试地址</p>
+            </div>
+        </a>
     </div>
 </div>
 {% endblock %}
