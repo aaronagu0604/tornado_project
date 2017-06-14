@@ -22,9 +22,11 @@
         algin: center;
         height: 100%;
     }
-    .weui-col-40{
+
+    .weui-col-40 {
         margin: auto;
     }
+
     .weui-row img {
         width: 100%;
         height: 100%;
@@ -39,9 +41,6 @@
         margin-top: 0.5rem;
     }
 
-    .owner {
-        display: none;
-    }
 
 </style>
 {% endblock %}
@@ -172,6 +171,13 @@
 {% endblock %}
 {% block js %}
 <script>
+    $(document).ready(function () {
+        if ($('#switch_owner').is(':checked')) {
+            $(".owner").hide();
+        } else {
+            $(".owner").show();
+        }
+    });
     $(document).on("click", "#next", function () {
         document.location.href = "insurance_order_items"
     })
