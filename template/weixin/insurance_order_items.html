@@ -7,10 +7,25 @@
         width: 50%;
     }
 
+    .parent {
+        background-color: #F1F1F1;
+    }
+
+    .insurance_parent {
+        margin-top: 0.5rem;
+        background-color: #FFFFFF;
+    }
+    .insurance_parent-main{
+        padding: 10px;
+        margin-bottom: 1px;
+    }
+    .weui-cell {
+        background-color: #FFFFFF;
+    }
 </style>
 {% endblock %}
 {% block content %}
-<div>
+<div class="parent">
     <div class="weui-cell weui-cell_access">
         <div class="weui-cell__bd">
             保险公司
@@ -19,11 +34,11 @@
             太平保险
         </div>
     </div>
+    <div class="insurance_parent">
 
-    <div>
-        <div>
+        <p class="insurance_parent-main">
             交强险
-        </div>
+        </p>
         <div class="weui-cell weui-cell_switch">
             <div class="insurance">
                 交强险
@@ -34,8 +49,8 @@
         </div>
     </div>
 
-    <div>
-        <div style="padding-left: 10px">
+    <div class="insurance_parent">
+        <div class="insurance_parent-main">
             商业险—主险
         </div>
         <div class="weui-cells weui-cells_checkbox">
@@ -46,7 +61,7 @@
                 <div class="weui-cell__ft">
                     <input class="weui-switch" type="checkbox"/>
                 </div>
-                <label class="weui-row" for="damageIPlus" >
+                <label class="weui-row" for="damageIPlus">
                     <div class="weui-cell__hd">
                         <input type="checkbox" class="weui-check" id="damageIPlus"/>
                         <i class="weui-icon-checked"></i>
@@ -126,8 +141,8 @@
             </div>
         </div>
     </div>
-    <div>
-        <div>
+   <div class="insurance_parent">
+        <div class="insurance_parent-main">
             商业险—附加险
         </div>
         <div class="weui-cells weui-cells_checkbox">
@@ -181,7 +196,7 @@
                 <div class="weui-cell__ft">
                     <input class="weui-switch" type="checkbox"/>
                 </div>
-                <label class="weui-row" for="wadeIPlus" >
+                <label class="weui-row" for="wadeIPlus">
                     <div class="weui-cell__hd">
                         <input type="checkbox" class="weui-check" id="wadeIPlus"/>
                         <i class="weui-icon-checked"></i>
