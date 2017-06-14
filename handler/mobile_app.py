@@ -219,7 +219,7 @@ class MobileRegHandler(MobileBaseHandler):
             sid = Store.create(store_type=int(store_type), admin_code=referee, admin_user=admin_user, name=companyName,
                                area_code=district, address=address, legal_person=legalPerson, license_code=licenseCode,
                                license_image=licensePic, store_image=storePic, lng='0', lat='0', pay_password='',
-                               intro='', linkman=legalPerson, mobile=mobile, created=now)
+                               intro='', linkman=legalPerson, mobile=mobile, created=now, insurance_policy_code=city)
             user.signuped = now
             user.lsignined = now
             user.store = sid.id
