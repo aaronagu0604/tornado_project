@@ -1,5 +1,5 @@
 <!--收支明细页面-->
-{% extends "weixin/foot_nav_tab.html" %}
+{% extends "weixin/none_foot_nav_tab.html" %}
 {% block css %}
 <title>收支明细</title>
 <style>
@@ -94,7 +94,7 @@
     $(function() {
           up();
       });
-    $('#weui-pull-to-refresh').pullToRefresh().on("pull-to-refresh", function() {
+    $(document.body).pullToRefresh().on("pull-to-refresh", function() {
         //清空现有数据
         $('.list').empty();
         //加载新数据
