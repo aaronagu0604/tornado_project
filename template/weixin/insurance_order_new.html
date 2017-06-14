@@ -11,6 +11,10 @@
         font-size: 17px;
         color: #000;
         background-color: #FFFFFF;
+        margin-top: 5px;
+        margin-bottom: 1px;
+        padding-top: 10px;
+        padding-bottom: 10px;
     }
 
     .default-addr {
@@ -26,13 +30,27 @@
     }
 
     .gift_policy {
-        background-color: #F1F1F1;
-        padding-top: 20px;
+        background-color: #FFFFFF;
+        margin-top: 5px;
     }
+
+    .weui-col-50 {
+        margin: auto 0;
+    }
+
+    .weui-cell weui-check__label {
+        padding: 0px;
+    }
+
+    .goto_next {
+        background-color: #FFFFFF;
+        padding: 20px;
+    }
+
 </style>
 {% endblock %}
 {% block content %}
-<div>
+<div class="parent">
     <div class="weui-cells__title">
         地址选择
     </div>
@@ -107,11 +125,39 @@
     </div>
 
     <div class="gift_policy">
-        <div>
+        <div class="weui-cells__title">
             <p>选择优惠方式</p>
         </div>
+        <div class="weui-cells weui-cells_checkbox">
+            <div class="weui-row">
+                <div class="weui-col-50">
+                    <label class="weui-cell weui-check__label" for="gift_policy_01">
+                        <div class="weui-cell__hd">
+                            <input type="checkbox" class="weui-check" checked="checked" id="gift_policy_01"/>
+                            <i class="weui-icon-checked"></i>
+                        </div>
+                        <div>
+                            返油
+                        </div>
+                    </label>
+                </div>
+                <div class="weui-col-50">
+                    <label class="weui-cell weui-check__label" for="gift_policy_02">
+                        <div class="weui-cell__hd">
+                            <input type="checkbox" class="weui-check" checked="checked" id="gift_policy_02"/>
+                            <i class="weui-icon-checked"></i>
+                        </div>
+                        <div>
+                            返现
+                        </div>
+                    </label>
+                </div>
+            </div>
+        </div>
     </div>
-    <a href="/mine" class="weui-btn weui-btn_primary">完成</a>
+    <div class="goto_next">
+        <a href="/mine" class="weui-btn weui-btn_primary">完成</a>
+    </div>
 </div>
 
 {% endblock %}
