@@ -3,19 +3,43 @@
 <title>选择收货地址、返佣方式</title>
 <link rel="stylesheet" href="/style/mobile/swiper3.07.min.css">
 <style>
-    .swiper-container {
-    width: 100%;
-    height: 10rem;
-    }
 
-    .swiper-container img {
-    display: block;
-    width: 100%;
-    }
 </style>
 {% endblock %}
 {% block content %}
-<a href="/mine" class="weui-btn weui-btn_primary">完成</a>
+<div>
+    <br/>
+    <div class="weui-cells weui-cells_checkbox">
+        <label class="weui-cell weui-check__label" for="default_addr">
+            <div class="weui-cell__hd">
+                <input type="checkbox" class="weui-check" id="default_addr"/>
+                <i class="weui-icon-checked"></i>
+            </div>
+            <div>
+                默认地址
+            </div>
+        </label>
+        <div>
+            <div>
+
+            </div>
+            <p>
+                陕西省，西安市
+            </p>
+        </div>
+        <label class="weui-cell weui-check__label" for="write_addr">
+            <div class="weui-cell__hd">
+                <input type="checkbox" class="weui-check" id="write_addr"/>
+                <i class="weui-icon-checked"></i>
+            </div>
+            <div>
+                填写地址
+            </div>
+        </label>
+    </div>
+    <a href="/mine" class="weui-btn weui-btn_primary">完成</a>
+</div>
+
 {% endblock %}
 {% block js %}
 <script>
