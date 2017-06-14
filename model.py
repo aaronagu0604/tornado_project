@@ -1293,6 +1293,7 @@ class Message(db.Model):
 
 class JPush(db.Model):
     id = PrimaryKeyField()
+    title = CharField(default='')
     intro = TextField(default='')
     active = IntegerField(default=1)    # 0失效，1有效
 
