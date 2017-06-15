@@ -28,7 +28,7 @@ def set_device_info(regist_id, tags=[], alias=None):
 @ apiParam {list} tags 推送标记列表
 @ apiParam {String} body 消息文本
 '''
-def send_users_base_tags(tags, body, extras = {'link':''}):
+def send_users_base_tags(tags, body, images='', extras = {'link':''}):
     _jpush = jpush.JPush(setting.jpush_key, setting.jpush_secret)
     push = _jpush.create_push()
     push.audience = jpush.audience()
@@ -36,7 +36,7 @@ def send_users_base_tags(tags, body, extras = {'link':''}):
     push.platform = jpush.all_
 
     if extras:
-        extras['images'] = 'http://img.520czj.com/image/2017/06/14/server1_20170614183100ZXblpHizGkcRAITaVEfKLOSU.jpg'
+        extras['images'] = images
         ios_msg = jpush.ios(alert=body, badge="+1", sound="a.caf", content_available=True,mutable_content=True,extras=extras)
         android_msg = jpush.android(alert=body, style=3,big_pic_path='http://img.520czj.com/image/2017/06/14/server1_20170614113710SKeIRfjQrkTEXPvUwpBytWac.jpg',extras=extras)
     else:
@@ -56,7 +56,7 @@ def send_users_base_tags(tags, body, extras = {'link':''}):
 @ apiParam {String} alias 用户别名
 @ apiParam {String} body 消息文本
 '''
-def send_users_base_alias(alias, body, extras = {'link':''}):
+def send_users_base_alias(alias, body, images='', extras = {'link':''}):
     _jpush = jpush.JPush(setting.jpush_key, setting.jpush_secret)
     push = _jpush.create_push()
     alias1 = {"alias": [alias]}
@@ -65,7 +65,7 @@ def send_users_base_alias(alias, body, extras = {'link':''}):
     )
 
     if extras:
-        extras['images'] = 'http://img.520czj.com/image/2017/06/14/server1_20170614183100ZXblpHizGkcRAITaVEfKLOSU.jpg'
+        extras['images'] = images
         ios_msg = jpush.ios(alert=body, badge="+1", sound="a.caf", content_available=True,mutable_content=True,extras=extras)
         android_msg = jpush.android(alert=body, style=3,big_pic_path='http://img.520czj.com/image/2017/06/14/server1_20170614113710SKeIRfjQrkTEXPvUwpBytWac.jpg',extras=extras)
     else:
@@ -75,7 +75,7 @@ def send_users_base_alias(alias, body, extras = {'link':''}):
 
     push.platform = jpush.all_
     push.options = {
-        "apns_production": False
+        "apns_production": True
     }
     result = push.send()
     print result.payload
@@ -85,7 +85,7 @@ def send_users_base_alias(alias, body, extras = {'link':''}):
 @ apiParam {String} reg_id 注册ID
 @ apiParam {String} body 消息文本
 '''
-def send_users_base_regid(reg_id, body, extras = None):
+def send_users_base_regid(reg_id, body, images='', extras = None):
     _jpush = jpush.JPush(setting.jpush_key, setting.jpush_secret)
     push = _jpush.create_push()
     alias1 = {"registration_id": [reg_id]}
@@ -93,7 +93,7 @@ def send_users_base_regid(reg_id, body, extras = None):
         alias1
     )
     if extras:
-        extras['images'] = 'http://img.520czj.com/image/2017/06/14/server1_20170614183100ZXblpHizGkcRAITaVEfKLOSU.jpg'
+        extras['images'] = images
         ios_msg = jpush.ios(alert=body, badge="+1", sound="a.caf", content_available=True,mutable_content=True,extras=extras)
         android_msg = jpush.android(alert=body, style=3,big_pic_path='http://img.520czj.com/image/2017/06/14/server1_20170614113710SKeIRfjQrkTEXPvUwpBytWac.jpg',extras=extras)
     else:
