@@ -3,13 +3,31 @@
 {% block css %}
 <title>订单列表</title>
 <style>
+    .row_contain{
+        width: 200%;
+    }
+    .row_container{
+        margin-right: 10px;
+    }
     p{
-        font-size: 16px;
+        font-size: 0.8rem;
         color: gray;
         display: inline-block;
     }
-    .time {
+    .title{
+        font-size: 0.9rem;
+        color: black;
+        display: inline-block;
+    }
+    .row_right{
         float: right;
+    }
+    hr{
+        height:0.3px;
+        border:none;
+        border-top:1px solid #e7e7e7;
+        width: 220%;
+        margin-top: 5px;
     }
     .money{
         float: right;
@@ -17,149 +35,70 @@
     .contain_head{
         width: 180%;
     }
-    hr{
-        height:1px;border:none;border-top:1px solid #e7e7e7;
-    }
-    /*.cell_div{*/
-    /*background-color: red;*/
-    /*!*display: inline-block;*!*/
-    /*}*/
+
+
 </style>
 {% endblock %}
 {% block content %}
 
-<div class="weui-pull-to-refresh__layer">
-    <div class="weui-pull-to-refresh__arrow"></div>
-    <div class="weui-pull-to-refresh__preloader"></div>
-    <div class="down">下拉刷新</div>
-    <div class="up">释放刷新</div>
-    <div class="refresh">正在刷新</div>
+
+<div class="bd">
+    <div class="page__bd">
+    <div id="list" class="weui-cells weui-cells_checkbox">
+        <div class="weui-cell">
+            <div class="row_container">
+            <div class="row_contain">
+                <!--<div id="list" class="weui-cells weui-cells_checkbox">-->
+              <label class="weui-cell weui-check__label" for="s11">
+                    <div class="weui-cell__hd">
+                        <input type="checkbox" name="checkbox1" class="weui-check" id="s11">
+                        <i class="weui-icon-checked"></i>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <p class="row_right">待付款</p>
+                    </div>
+              </label>
+
+            <!--</div>-->
+            </div>
+            <hr>
+                <div class="row_contain">
+                    <div>
+                        <div>
+                        <p>提交时间</p>
+                        <p class="row_right">2017-06-29 </p>
+                        </div>
+                        <div>
+                        <p> 现金 </p>
+                        <p class="row_right">200</p>
+                        </div>
+                    </div>
+                    <div>
+                        <p class="title">交强险</p>
+                        <div>
+                            <p>车船税</p>
+                            <p class="row_right">234</p>
+                        </div>
+                        <p class="title">商业险(主险)</p>
+                        <div>
+                            <p>车辆损失险</p>
+                            <p class="row_right">1234</p>
+                        </div>
+                        <p class="title">商业险(附加险)</p>
+                        <div>
+                            <p>玻璃单独损失险</p>
+                            <p class="row_right">134</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
 </div>
 
-<div id="list" class="weui-cells weui-cells_checkbox">
 
-</div>
-
-<div class="weui-loadmore">
-    <i class="weui-loading"></i>
-    <span class="weui-loadmore__tips">正在加载</span>
-</div>
 {% endblock %}
 {% block js %}
-<script>
-    var page = 1,offset = 1;
-    var loading = false; //上拉状态标记
-    var toend = false; //数据加载完标记
 
-    function down() {
-        jQuery.getJSON("/income_record_list", {
-            'offset': 1,
-            'type': 1
-        },function(data) {
-            var data = data.data;
-            console.log(data);
-            for (var i = data.length; i > 0; i--) {
-                var str ="";
-                jQuery("#list").append(
-//                        '<hr/>'+
-                        '<div class="weui-cell">'+
-                        '<i class="weui-icon-checked">'+'</i>'+
-                        '<div>'+
-                        '<p>'+ '提交时间'+ '</p>'+
-                        '<p>'+ '2017-06-29'+ '</p>'+
-                        '<p>'+ '现金'+ '</p>'+
-                        '<p>'+ '200'+ '</p>'+
-                        '</div>'+
-                        '<div class="weui-cells__title">'+'交强险'+'</div>'+
-                        '<div class="weui-cells__title">'+'商业险(主险)'+'</div>'+
-                        '<div class="weui-cells__title">'+'商业险(附加险)'+'</div>'+
-                        '</div>');
-            };
-
-//            for (var i = data.length; i > 0; i--) {
-//                var str ="";
-                jQuery("#list").append(
-//                        '<hr/>'+
-                        '<div class="weui-cell">'+
-                        '<i class="weui-icon-checked">'+'</i>'+
-                        '<div>'+
-                        '<p>'+ '提交时间'+ '</p>'+
-                        '<p>'+ '2017-06-29'+ '</p>'+
-                        '<p>'+ '现金'+ '</p>'+
-                        '<p>'+ '200'+ '</p>'+
-                        '</div>'+
-                        '<div class="weui-cells__title">'+'交强险'+'</div>'+
-                        '<div class="weui-cells__title">'+'商业险(主险)'+'</div>'+
-                        '<div class="weui-cells__title">'+'商业险(附加险)'+'</div>'+
-                        '</div>');
-//            };
-        })
-    }
-    function up() {
-        jQuery.getJSON("/income_record_list", {
-            'offset': 1,
-            'type': 1
-        },function(data) {
-            var data = data.data;
-
-            if (data.length < 10) {
-                toend = true;
-            }
-            for (var i = data.length; i > 0; i--) {
-                var str ="";
-                jQuery("#list").append(
-                        '<div class="weui-cell">'+
-                        '<i class="weui-icon-checked">'+'</i>'+
-                        '<div>'+
-                        '<div class="contain_head">'+
-                        '<p>'+ '提交时间'+ '</p>'+
-                        '<p class="time">'+ '2017-06-29'+ '</p>'+
-                        '</div>'+
-                        '<div class="contain_head">'+
-                        '<p>'+ '现金'+ '</p>'+
-                        '<p class="money">'+ '200'+ '</p>'+
-                        '</div>'+
-                        '<div>'+
-                        '<div class="weui-cells__title">'+'交强险'+'</div>'+
-                        '<div class="weui-cells__title">'+'商业险(主险)'+'</div>'+
-                        '<div class="weui-cells__title">'+'商业险(附加险)'+'</div>'+
-                        '</div>'+
-                        '</div>'+
-
-                        '</div>');
-                ;
-            };
-            if (toend) {
-                console.log(toend);
-                $(document.body).destroyInfinite();
-            }
-            if (data.length == 10) {
-                page++;
-            }
-            loading = false;
-        })
-        setTimeout(function() {
-            jQuery(".weui-infinite-scroll").hide()
-        }, 1000);
-    }
-    $(function() {
-        up();
-    });
-    $(document.body).pullToRefresh().on("pull-to-refresh", function() {
-        //清空现有数据
-        $('.list').empty();
-        //加载新数据
-        down();
-        //重置下拉状态
-        $(document.body).pullToRefreshDone();
-    });
-
-    $(document.body).infinite().on("infinite", function() {
-        if (loading) return;
-        loading = true;
-        jQuery(".weui-infinite-scroll").show();
-        up();
-    });
-
-</script>
 {% endblock %}
