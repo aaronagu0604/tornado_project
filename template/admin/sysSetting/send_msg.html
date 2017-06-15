@@ -101,6 +101,7 @@
                 <tr >
                     <th style="width:15%;text-align:center;">编号</th>
                     <th style="width:15%;text-align:center;">图片</th>
+                    <th style="width:15%;text-align:center;">活动html</th>
                     <th style="width:15%;text-align:center;">内容</th>
                     <th style="width:15%;text-align:center;">操作</th>
                 </tr>
@@ -113,6 +114,9 @@
                     </td>
                     <td align=center>
                         <img src="{{item.img_url}}"  height="80">
+                    </td>
+                    <td align=center >
+                        <span>{{item.jpush_active.id or '---'}}/{{item.jpush_active.title or '---'}}</span>
                     </td>
                     <td align=center >
                         <span>{{item.content}}</span>
