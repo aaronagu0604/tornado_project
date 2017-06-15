@@ -1320,7 +1320,8 @@ class JPushPlan(db.Model):
     id = PrimaryKeyField()
     title = CharField(default='')    # 标题
     type = IntegerField()    # 推送类别 1
-    time = CharField(max_length=64)    # 推送时间（例：10:30十点半推送）
+    start_time = CharField(max_length=64)    # 推送起始时间
+    end_time = CharField(max_length=64)    # 推送结束时间
     rate = CharField(max_length=64)    # 推送频率（例：0每天，1,2,5,7周一二五七，2017-8-8只2017年八月八号一天）
     intro = ForeignKeyField(JPushMsg, db_column='intro')
     active = IntegerField(default=1)    # 0失效，1有效
@@ -1328,6 +1329,21 @@ class JPushPlan(db.Model):
     class Meta:
         db_table = 'tb_jpush_plan'
 
+
+# 待推送队列
+class JPushRecord(db.Model):
+    id = PrimaryKeyField()
+    title = CharField(default='')    # 标题
+    type = IntegerField()    # 推送类别 1
+    start_time = IntegerField()    # 推送起始时间 2017-5-6 9:30
+    end_time = IntegerField()    # 推送结束时间  2017-5-6 10:30
+    created = IntegerField()    # 创建时间
+    intro = ForeignKeyField(JPushMsg, db_column='intro')
+    check = IntegerField(default=0)    # 0未审核，1已审核
+    send = IntegerField(default=0)    # 0未发送，1已发送
+
+    class Meta:
+        db_table = 'tb_jpush_record'
 
 def init_db():
     from lib.util import find_subclasses
