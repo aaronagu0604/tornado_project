@@ -83,7 +83,8 @@ class JPushSearch():
         for plan in JPushPlan.select().where(JPushPlan.active == 1):
             store = []
             if plan.type == 1:    # 新注册用户jpush 计划
-                store = self.new_store()
+                # store = self.new_store()
+                store = [{'id':1, 'name': '小毛汽修', 'mobile': '110'}]
                 this_plan_key = 'plan_1'
             elif plan.type == 2:    # 经常出单用户（返油）jpush计划
                 store = io_lube_store
@@ -101,6 +102,7 @@ class JPushSearch():
                 pass
             if store:
                 plan_keys.append(this_plan_key)
+                print('this_plan_key=%s, value=%s' % (this_plan_key, str(store)))
                 memcachedb.set(this_plan_key, {
                     'title': plan.title,
                     'time': plan.time,
@@ -110,6 +112,7 @@ class JPushSearch():
                     'store': store
                 })
         memcachedb.set('plan_keys', plan_keys)
+        print('--plan_keys: %s--' % str(plan_keys))
 
 if __name__ == '__main__':
     jpush = JPushSearch()
