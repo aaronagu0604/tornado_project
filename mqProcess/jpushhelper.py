@@ -59,7 +59,11 @@ def send_users_base_tags(tags, body, images='', extras = {'link':''}):
 def send_users_base_alias(alias, body, images='', extras = {'link':''}):
     _jpush = jpush.JPush(setting.jpush_key, setting.jpush_secret)
     push = _jpush.create_push()
-    alias1 = {"alias": [alias]}
+    if isinstance(alias,list):
+        alias = alias
+    else:
+        alias = [alias]
+    alias1 = {"alias": alias}
     push.audience = jpush.audience(
         alias1
     )
