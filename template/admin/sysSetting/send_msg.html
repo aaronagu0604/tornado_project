@@ -10,9 +10,10 @@
     </nav>
 </div>
 <div class="row">
+    <div class="col-xs-6">
     <div class="panel panel-primary">
         <div class="panel-body">
-
+            <h4>测试/发送</h4>
             {%set messages=handler.get_flashed_messages() %}
             {%if messages%}
             <div class="msg" style="color:red;">
@@ -27,8 +28,8 @@
 
                 <div class="form-group has-success">
                     <input type="radio" id="jpush" name="sms_type" checked value="0" /><label for="jpush" style="margin-right:20px;">极光</label>
-                    <input type="radio" id="sms" name="sms_type" checked value="1" /><label for="sms" style="margin-right:20px;">短信</label>
-                    <input type="radio" id="site" name="sms_type" value="2" /><label for="site">站内</label>
+                    <!--<input type="radio" id="sms" name="sms_type" value="1" /><label for="sms" style="margin-right:20px;">短信</label>-->
+                    <!--<input type="radio" id="site" name="sms_type" value="2" /><label for="site">站内</label>-->
                 </div>
                 <div class="form-group has-success">
                     <input type="radio" id="is_all_users" name="is_users" value="all_user" /><label for="is_all_users" style="margin-right:20px;">所有注册用户</label>
@@ -54,14 +55,17 @@
                     <p><label class="control-label">手机号码（逗号分割）</label></p>
                     <input type="text" name="number" id="number" class="form-control" value=""  required  placeholder="手机号码" style="width:480px;"/>
                 </div>
-
+                 <div class="form-group has-success" id="images">
+                    <p><label class="control-label">图片网址</label></p>
+                    <input type="text" id="img_url" name="image_url" class="form-control" value="" maxlength="100"  placeholder="请输入图片网址：http://img.520czj.com..." style="width:480px;"/>
+                </div>
                 <div class="form-group has-success" id="title">
                     <!--<p><label class="control-label">标题</label></p>-->
                     <!--<input type="text" name="title" class="form-control" value="" maxlength="100"  placeholder="标题" title="请输入标题" style="width:480px;"/>-->
                 </div>
                 <div class="form-group has-success">
                     <p><label class="control-label">内容（短信不超过60字符/条）</label></p>
-                    <textarea name="content" value="" required rows="10" cols="30" style="width:480px;border-radius:4px;border-color:#3C763D;padding:10px;"></textarea>
+                    <textarea id="textarea" name="content" value="" required rows="10" cols="30" style="width:480px;border-radius:4px;border-color:#3C763D;padding:10px;"></textarea>
                 </div>
 
                 <div class="form-group has-success">
@@ -74,22 +78,84 @@
                         </select>
                     </div>
                 </div>
-
+                <div class="form-group has-success">
+                    <input type="radio" id="send" name="send_type" checked value="0" /><label for="send" style="margin-right:20px;">立即发送</label>
+                    <input type="radio" id="save" name="send_type" value="1" /><label for="save" style="margin-right:20px;">保存消息</label>
+                    <!--<input type="radio" id="site" name="sms_type" value="2" /><label for="site">站内</label>-->
+                </div>
                 <div class="form-group has-success">
                     <input type="submit" name="sub" value="提 交" class="btn btn-outline btn-primary btn-sm">
-                    <input type="submit" name="get_mobile" value="获取手机号" class="btn btn-outline btn-primary btn-sm">
+                    <!--<input type="submit" name="get_mobile" value="获取手机号" class="btn btn-outline btn-primary btn-sm">-->
                 </div>
             </form>
 
         </div>
     </div>
-
+    </div>
+    <div class="col-xs-6">
+        <div class="panel panel-primary">
+            <div class="panel-body">
+                <h4>现有消息</h4>
+                <table class="table table-hover" id="tb_users" cellpadding="0" cellspacing="0" border="0" style="text-align:center;width:100%;">
+                <thead>
+                <tr >
+                    <th style="width:15%;text-align:center;">编号</th>
+                    <th style="width:15%;text-align:center;">图片</th>
+                    <th style="width:15%;text-align:center;">内容</th>
+                    <th style="width:15%;text-align:center;">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for item in jpushmsg %}
+                <tr>
+                    <td align=center onclick="setjpushmsg('{{item.img_url}}','{{item.content}}',{{item.jpush_active.id}});">
+                        <span style="color: blue">{{item.id}}</span>
+                    </td>
+                    <td align=center>
+                        <img src="{{item.img_url}}"  height="80">
+                    </td>
+                    <td align=center >
+                        <span>{{item.content}}</span>
+                    </td>
+                    <td align=center >
+                        <!--<button type="button" onclick="change_status({{item.id}}, 1)" id='bt_pass_{{store.id}}'-->
+                                <!--class="btn btn-xs btn-success" >-->
+                            <!--启用-->
+                        <!--</button>-->
+                        <button type="button" onclick="change_status({{item.id}}, 2)" class="btn btn-xs btn-warning" >
+                            下线
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            </div>
+        </div>
+    </div>
 </div>
 
 {% endblock %}
 
 {% block js %}
 <script>
+    function setjpushmsg(imgurl,title,article){
+        $('#img_url').val(imgurl);
+        $('#textarea').val(title);
+        $('#article_id').val(article);
+    }
+
+    var xsrf='{{handler.xsrf_token}}';
+    function change_status(id, state_type){
+        $.post("/ajax/jpushmsg_status", { _xsrf:xsrf,id: id, state_type:state_type }, function (data) {
+            data = jQuery.parseJSON(data);
+            alert(data.msg);
+            if(data.flag==1){
+                location.reload();
+            }
+        });
+    }
+
     $(function(){
         $(".area").hide();
         $("input:radio[name='is_users']").click(function(){

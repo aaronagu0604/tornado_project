@@ -38,7 +38,7 @@ def send_users_base_tags(tags, body, images='', extras = {'link':''}):
     if extras:
         extras['images'] = images
         ios_msg = jpush.ios(alert=body, badge="+1", sound="a.caf", content_available=True,mutable_content=True,extras=extras)
-        android_msg = jpush.android(alert=body, style=3,big_pic_path='http://img.520czj.com/image/2017/06/14/server1_20170614113710SKeIRfjQrkTEXPvUwpBytWac.jpg',extras=extras)
+        android_msg = jpush.android(alert=body, style=3,big_pic_path=images,extras=extras)
     else:
         ios_msg = jpush.ios(alert=body, badge="+1", sound="a.caf", content_available=True,mutable_content=True)
         android_msg = jpush.android(alert=body)
@@ -67,7 +67,7 @@ def send_users_base_alias(alias, body, images='', extras = {'link':''}):
     if extras:
         extras['images'] = images
         ios_msg = jpush.ios(alert=body, badge="+1", sound="a.caf", content_available=True,mutable_content=True,extras=extras)
-        android_msg = jpush.android(alert=body, style=3,big_pic_path='http://img.520czj.com/image/2017/06/14/server1_20170614113710SKeIRfjQrkTEXPvUwpBytWac.jpg',extras=extras)
+        android_msg = jpush.android(alert=body, style=3,big_pic_path=images,extras=extras)
     else:
         ios_msg = jpush.ios(alert=body, badge="+1", sound="a.caf", content_available=True,mutable_content=True)
         android_msg = jpush.android(alert=body)
@@ -95,7 +95,7 @@ def send_users_base_regid(reg_id, body, images='', extras = None):
     if extras:
         extras['images'] = images
         ios_msg = jpush.ios(alert=body, badge="+1", sound="a.caf", content_available=True,mutable_content=True,extras=extras)
-        android_msg = jpush.android(alert=body, style=3,big_pic_path='http://img.520czj.com/image/2017/06/14/server1_20170614113710SKeIRfjQrkTEXPvUwpBytWac.jpg',extras=extras)
+        android_msg = jpush.android(alert=body, style=3,big_pic_path=images,extras=extras)
     else:
         ios_msg = jpush.ios(alert=body, badge="+1", sound="a.caf", content_available=True,mutable_content=True)
         android_msg = jpush.android(alert=body)

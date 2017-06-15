@@ -36,9 +36,9 @@ with rabbitpy.Connection(url) as conn:
                         pushcontent = simplejson.loads(message.body)
                         try:
                             if pushcontent['jpushtype'] == 'alias':
-                                send_users_base_alias(pushcontent['alias'],pushcontent['body'],pushcontent['extras'])
+                                send_users_base_alias(pushcontent['alias'],pushcontent['body'],pushcontent['images'],pushcontent['extras'])
                             else:
-                                send_users_base_tags(pushcontent['tags'],pushcontent['body'],pushcontent['extras'])
+                                send_users_base_tags(pushcontent['tags'],pushcontent['body'],pushcontent['images'],pushcontent['extras'])
                         except Exception, e:
                             logging.error(e.message)
                     elif message.properties['message_type'] == 'pay_success':    # 支付成功

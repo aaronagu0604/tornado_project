@@ -1301,6 +1301,18 @@ class JPushActive(db.Model):
     class Meta:
         db_table = 'tb_jpush_active'
 
+# 极光推送内容
+class JPushMsg(db.Model):
+    id = PrimaryKeyField()
+    title = CharField(default='')
+    content = TextField(default='')
+    img_url = CharField(default='')
+    jpush_active = ForeignKeyField(JPushActive, db_column='jpush_active_id')
+    active = IntegerField(default=1)  # 0失效，1有效
+
+    class Meta:
+        db_table = 'tb_jpush_msg'
+
 
 # 极光推送计划
 class JPushPlan(db.Model):
@@ -1309,7 +1321,7 @@ class JPushPlan(db.Model):
     type = IntegerField()    # 推送类别 1
     time = CharField(max_length=64)    # 推送时间（例：10:30十点半推送）
     rate = CharField(max_length=64)    # 推送频率（例：0每天，1,2,5,7周一二五七，2017-8-8只2017年八月八号一天）
-    intro = ForeignKeyField(JPushActive, db_column='jpush_id')
+    intro = ForeignKeyField(JPushMsg, db_column='jpush_msg_id')
     active = IntegerField(default=1)    # 0失效，1有效
 
     class Meta:

@@ -2562,7 +2562,8 @@ class SendMsgHandler(AdminBaseHandler):
     def get(self):
         items = Area.select().where(Area.pid >> None)
         articles = JPushActive.select().where(JPushActive.active == 1)
-        self.render('admin/sysSetting/send_msg.html', active='msg', items=items,articles=articles)
+        jpushmsg = JPushMsg.select().where(JPushMsg.active == 1)
+        self.render('admin/sysSetting/send_msg.html', active='msg', items=items,articles=articles,jpushmsg=jpushmsg)
 
     def post(self):
         content_log = {}
@@ -2577,6 +2578,8 @@ class SendMsgHandler(AdminBaseHandler):
         district = self.get_body_argument('district_code', '')
         get_mobile = self.get_body_argument('get_mobile', '')
         article = self.get_body_argument('article_id',0)
+        img_url = self.get_body_argument('image_url', '')
+        send_type = self.get_body_argument('send_type', 0)
         print article,type(article)
         if district:
             area_code = district + '%'
@@ -2597,51 +2600,59 @@ class SendMsgHandler(AdminBaseHandler):
             return
         # 极光推送
         if sms_type == 0:
-            if is_users == 'all_user':
-                content_log['content'] = u'为用户 所有用户 推送极光消息，消息内容：' + content
-                link = ''
-                if int(article):
-                    link = 'http://admin.520czj.com/user/showarticle/%s' % article
-                create_msg(simplejson.dumps({'body': content, 'jpushtype':'tags', 'tags':['all'], 'extras': {'link':link}}), 'jpush')
-                AdminUserLog.create(admin_user=self.get_admin_user(),
-                                    created=int(time.time()),
-                                    content= u'为用户 所有用户 推送极光消息，消息内容：' + content)
-                self.flash("推送成功")
-            elif is_users == 'user':
-                if number:
-                    content_log['content'] = u'为用户 ' + number + u' 推送极光消息，消息内容：' + content
-                    num = number.split(',')
+            send_type = int(send_type) if send_type else 0
+            if send_type == 0:
+                if is_users == 'all_user':
+                    content_log['content'] = u'为用户 所有用户 推送极光消息，消息内容：' + content
                     link = ''
                     if int(article):
                         link = 'http://admin.520czj.com/user/showarticle/%s' % article
-                    for n in num:
-                        sms = {'apptype': 1, 'body': content, 'jpushtype':'alias', 'alias': n, 'extras':{'link':link}}
-                        create_msg(simplejson.dumps(sms), 'jpush')
+                    create_msg(simplejson.dumps({'body': content, 'jpushtype':'tags', 'tags':['all'], 'images':img_url, 'extras': {'link':link}}), 'jpush')
                     AdminUserLog.create(admin_user=self.get_admin_user(),
                                         created=int(time.time()),
-                                        content= u'为用户 ' + number + u' 推送极光消息，消息内容：' + content)
+                                        content= u'为用户 所有用户 推送极光消息，消息内容：' + content)
                     self.flash("推送成功")
-                else:
-                    self.flash("请输入电话号码！")
-            elif is_users == 'group_user':
-                content_log['content'] = u'为用户组 ' + str(user_type) + u' 推送极光消息，消息内容：' + content
-                tags = []
-                if province != '0':
-                    tags = [province]
-                if city != '0':
-                    tags = [city]
-                if district != '0':
-                    tags = [district]
-                link = ''
-                if int(article):
-                    link = 'http://admin.dev.520czj.com/user/showarticle/%s'%article
+                elif is_users == 'user':
+                    if number:
+                        content_log['content'] = u'为用户 ' + number + u' 推送极光消息，消息内容：' + content
+                        num = number.split(',')
+                        link = ''
+                        if int(article):
+                            link = 'http://admin.520czj.com/user/showarticle/%s' % article
+                        for n in num:
+                            sms = {'apptype': 1, 'body': content, 'jpushtype':'alias', 'alias': n, 'images':img_url, 'extras':{'link':link}}
+                            create_msg(simplejson.dumps(sms), 'jpush')
+                        AdminUserLog.create(admin_user=self.get_admin_user(),
+                                            created=int(time.time()),
+                                            content= u'为用户 ' + number + u' 推送极光消息，消息内容：' + content)
+                        self.flash("推送成功")
+                    else:
+                        self.flash("请输入电话号码！")
+                elif is_users == 'group_user':
+                    content_log['content'] = u'为用户组 ' + str(user_type) + u' 推送极光消息，消息内容：' + content
+                    tags = []
+                    if province != '0':
+                        tags = [province]
+                    if city != '0':
+                        tags = [city]
+                    if district != '0':
+                        tags = [district]
+                    link = ''
+                    if int(article):
+                        link = 'http://admin.dev.520czj.com/user/showarticle/%s'%article
 
-                create_msg(simplejson.dumps({'body': content, 'jpushtype': 'tags', 'tags': tags, 'extras':{'link':link}}),
-                           'jpush')
-                AdminUserLog.create(admin_user=self.get_admin_user(),
-                                    created=int(time.time()),
-                                    content=u'为用户组 ' + str(user_type) + u' 推送极光消息，消息内容：' + content)
-                self.flash("推送成功")
+                    create_msg(simplejson.dumps({'body': content, 'jpushtype': 'tags', 'tags': tags, 'images':img_url, 'extras':{'link':link}}),
+                               'jpush')
+                    AdminUserLog.create(admin_user=self.get_admin_user(),
+                                        created=int(time.time()),
+                                        content=u'为用户组 ' + str(user_type) + u' 推送极光消息，消息内容：' + content)
+                    self.flash("推送成功")
+            else:
+                jpush = JPushMsg()
+                jpush.content = content
+                jpush.img_url = img_url
+                jpush.jpush_active = int(article)
+                jpush.save()
         # 短信
         elif sms_type == 1:
             if is_users and content:

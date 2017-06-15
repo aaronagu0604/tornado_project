@@ -714,7 +714,7 @@ class SaveIOPHandler(BaseHandler):
                     msg.save()
                     # 进行极光推送
                     sms = {'apptype': 1, 'body': '您有新的报价单！', 'jpushtype': 'alias', 'alias': io.user.mobile,
-                           'extras': {'link': 'czj://insurance_order_detail/%s' % io.id}}
+                           'images':'', 'extras': {'link': 'czj://insurance_order_detail/%s' % io.id}}
                     create_msg(simplejson.dumps(sms), 'jpush')
             result['flag'] = 1
             AdminUserLog.create(admin_user=admin_user, created=now, content=content)
@@ -1286,7 +1286,7 @@ class UpdateIOCardStatusHandler(BaseHandler):
                 # 进行极光推送
                 io.user.mobile
                 sms = {'apptype': 1, 'body': '您有保险订单图片审核未通过，需要重新上传！', 'jpushtype': 'alias', 'alias': io.user.mobile,
-                       'extras':{'link':'czj://insurance_order_detail/%s' % io_id}}
+                       'images':'', 'extras':{'link':'czj://insurance_order_detail/%s' % io_id}}
                 create_msg(simplejson.dumps(sms), 'jpush')
         except Exception,e:
             result['flag'] = 0
@@ -2032,3 +2032,29 @@ class WeiXinMenuHandler(BaseHandler):
             result['msg'] = '创建微信菜单失败'
 
         self.write(result['msg'])
+
+@route(r'/ajax/jpushmsg_status', name='ajax_jpushmsg_status')  # 极光消息状态变更
+class JPushMSGStatusHandler(BaseHandler):
+
+    def check_xsrf_cookie(self):
+        pass
+
+    def post(self):
+        result = {'flag': 1, 'msg': '保存成功', 'data': ''}
+        id = int(self.get_body_argument('id',0))
+        state_type = self.get_body_argument('state_type', None)
+
+
+        if not (id and state_type):
+            result['flag'] = 0
+            result['msg'] = u'参数不全'
+            self.write(simplejson.dumps(result))
+            return
+        try:
+            jpushmsg = JPushMsg.get(id=int(id))
+            jpushmsg.active = 0
+            jpushmsg.save()
+        except Exception,e:
+            result['flag'] = 0
+            result['msg'] = '更新状态失败：%s'%e
+        self.write(simplejson.dumps(result))
