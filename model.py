@@ -1322,7 +1322,7 @@ class JPushPlan(db.Model):
     type = IntegerField()    # 推送类别 1
     time = CharField(max_length=64)    # 推送时间（例：10:30十点半推送）
     rate = CharField(max_length=64)    # 推送频率（例：0每天，1,2,5,7周一二五七，2017-8-8只2017年八月八号一天）
-    intro = ForeignKeyField(JPushMsg, db_column='jpush_msg_id')
+    intro = ForeignKeyField(JPushMsg)
     active = IntegerField(default=1)    # 0失效，1有效
 
     class Meta:
