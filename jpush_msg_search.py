@@ -83,7 +83,7 @@ class JPushSearch():
         for plan in JPushPlan.select().where(JPushPlan.active == 1):
             store = []
             if plan.type == 1:    # 新注册用户jpush 计划
-                store = self.new_user()
+                store = self.new_store()
                 this_plan_key = 'plan_1'
             elif plan.type == 2:    # 经常出单用户（返油）jpush计划
                 store = io_lube_store
