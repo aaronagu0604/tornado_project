@@ -1,11 +1,30 @@
 {% extends "weixin/foot_nav_tab.html" %}
 {% block css %}
 <title>我的界面</title>
-
+<style>
+#myinfo {
+    width:100%;
+}
+#userhead {
+    position:absolute;
+    left:2rem;
+    top:2rem;
+    width:4rem;
+}
+#
+</style>
 {% endblock %}
 {% block content %}
-<div class="page-group">
-    个人中心页面
+<div style="height:8rem;background:url('../../style/wximg/zhanghubeijing.jpg');" class="weui-flex">
+    <!--<img  id="myinfo" src="../../style/wximg/zhanghubeijing.jpg"/>-->
+    <div class="weui-flex__item">
+        <img id="userhead" src="../../style/wximg/img_mine_head.png"/>
+    </div>
+    <div id="userfront" class="weui-flex__item">
+        <p>心灵鸡汤</p>
+        <p>13289269257</p>
+        <p>门店 <span>已审核</span></p>
+    </div>
 </div>
 <div class="weui-cells">
     <a class="weui-cell weui-cell_access" href="/insurance_orders">
@@ -64,11 +83,3 @@
 
 </script>
 {% endblock %}
-
-
-<!--<script type='text/javascript' src='//g.alicdn.com/sj/lib/zepto/zepto.min.js' charset='utf-8'></script>-->
-<!--<script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm.min.js' charset='utf-8'></script>-->
-<!--<script type='text/javascript' src='//g.alicdn.com/sj/lib/zepto/zepto.min.js' charset='utf-8'></script>-->
-<!--<script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm.min.js' charset='utf-8'></script>-->
-<!--</body>-->
-<!--</html>-->
