@@ -2299,7 +2299,7 @@ class InsuranceOrderDelHandler(AdminBaseHandler):
                         store.price += money
                         store.save()
                         MoneyRecord.create(user=io.user, store=io.store, process_type=1, process_message=u'保险',
-                                           process_log=u'卖保险返现所得', money=money, status=1, apply_time=now,
+                                           process_log=u'卖保险返现所得，订单号：%s' % io.ordernum, money=money, status=1, apply_time=now,
                                            processing_time=now, processing_by=admin_user, type=5)
                     elif iop.gift_policy == 3 and iop.score > 0:    # 活动返积分
                         score = iop.score
