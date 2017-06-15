@@ -31,9 +31,9 @@ class JPushSearch():
         io_cash_store = []
         for s in self.all_stores:
             io_lube_count = InsuranceOrder.select().join(InsuranceOrderPrice).\
-                where((Store.active == 1) & (InsuranceOrder.store == s) & (InsuranceOrderPrice.gift_policy == 1)).count()
+                where((InsuranceOrder.store == s) & (InsuranceOrderPrice.gift_policy == 1)).count()
             io_cash_count = InsuranceOrder.select().join(InsuranceOrderPrice).\
-                where((Store.active == 1) & (InsuranceOrder.store == s) & (InsuranceOrderPrice.gift_policy == 2)).count()
+                where((InsuranceOrder.store == s) & (InsuranceOrderPrice.gift_policy == 2)).count()
             if io_lube_count >= io_cash_count:
                 io_lube_store.append({
                     'id': s.id,
