@@ -2740,8 +2740,11 @@ class CheckJPushHandler(AdminBaseHandler):
     def get(self):
         plan_keys = self.application.memcachedb.get('plan_keys')
         plan_lists = []
+        print('---%s---' % plan_keys)
         if plan_keys:
             plans_dict = self.application.memcachedb.get_multi(plan_keys)
+            print self.application.memcachedb.get('plan_keys')
+            print plans_dict
             plan_lists = plans_dict.items()
 
         self.render('admin/sysSetting/jpush_plan.html', active='jp_plan', plan_lists=plan_lists)
