@@ -117,7 +117,7 @@
                     所在地区
                 </div>
                 <div class="weui-cell__ft">
-                    请选择
+                   <input class="weui-input" id="start" type="text",value="请选择">
                 </div>
             </div>
             <div class="weui-cells__title">
@@ -195,5 +195,10 @@
             $(".write-addr").hide();
         }
     })
+    $("#start").cityPicker({
+        onChange:function (picker,values,displayValues) {
+            console.log(values,displayValues)
+        }
+    });
 </script>
 {% endblock %}
