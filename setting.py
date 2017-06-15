@@ -50,6 +50,7 @@ PRODUCT_ORDER_TIME_OUT = 60 * 60 * 24 * 3  # 普通订单超时时间
 
 user_expire = 60 * 60 * 24 * 10  # 用户登录token保留时间， 默认保留10天
 user_token_prefix = "mt:"  # 用户登录token的前缀
+jpush_plan_expire = 60 * 60 * 24 * 2    # jpush 计划在memcach里保留时间2天
 
 CASH_MIN_MONEY = 0  # 积分兑现最小金额
 CASH_RATE = 1.0  # 积分兑现比率 money = score * cashRate

@@ -1187,21 +1187,21 @@ class JpushHandler(AdminBaseHandler):
         pagesize = setting.ADMIN_PAGESIZE
 
         if active == -1:
-            ft = (JPush.active << [-1,0,1])
+            ft = (JPushActive.active << [-1,0,1])
         else:
-            ft = (JPush.active == active)
+            ft = (JPushActive.active == active)
 
         if keyword:
             keyw = '%' + keyword + '%'
-            ft = ft & (JPush.title % keyw)
+            ft = ft & (JPushActive.title % keyw)
 
-        jpush = JPush.select().where(ft)
+        jpush = JPushActive.select().where(ft)
         total = jpush.count()
         if total % pagesize > 0:
             totalpage = total / pagesize + 1
         else:
             totalpage = total / pagesize
-        jpush = jpush.order_by(JPush.id.desc()).paginate(page, pagesize).aggregate_rows()
+        jpush = jpush.order_by(JPushActive.id.desc()).paginate(page, pagesize).aggregate_rows()
 
         jpush_type = 'jpush'
 
@@ -1215,7 +1215,7 @@ class EditJpushHandler(AdminBaseHandler):
     def get(self, pid):
         pid = int(pid)
         try:
-            jpush = JPush.get(id=pid)
+            jpush = JPushActive.get(id=pid)
         except Exception:
             jpush = None
         jpush_type = 'jpush'
@@ -1227,10 +1227,10 @@ class EditJpushHandler(AdminBaseHandler):
         pintro = self.get_body_argument('pintro',None)
 
         if pid == '0':
-            jpush = JPush()
+            jpush = JPushActive()
             jpush.active = 1
         else:
-            jpush = JPush.get(id=pid)
+            jpush = JPushActive.get(id=pid)
             jpush.active = 1 if active else 0
         jpush.title = name
         jpush.intro = pintro
@@ -2561,7 +2561,7 @@ class UploadPicHandler(AdminBaseHandler):
 class SendMsgHandler(AdminBaseHandler):
     def get(self):
         items = Area.select().where(Area.pid >> None)
-        articles = JPush.select().where(JPush.active == 1)
+        articles = JPushActive.select().where(JPushActive.active == 1)
         self.render('admin/sysSetting/send_msg.html', active='msg', items=items,articles=articles)
 
     def post(self):

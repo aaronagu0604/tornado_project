@@ -6235,7 +6235,7 @@ def ShanXiYongAn():
                 "store": 2
             },
             {
-                "name": "商业险+商业险（1200-1399）",
+                "name": "交强险+商业险（1200-1399）",
                 "flag": 3,
                 "minprice": "1200",
                 "maxprice": "1399",
@@ -6243,7 +6243,7 @@ def ShanXiYongAn():
                 "store": 4
             },
             {
-                "name": "商业险+商业险（1400-1599）",
+                "name": "交强险+商业险（1400-1599）",
                 "flag": 3,
                 "minprice": "1400",
                 "maxprice": "1599",
@@ -6251,7 +6251,7 @@ def ShanXiYongAn():
                 "store": 5
             },
             {
-                "name": "商业险+商业险（1600-1899）",
+                "name": "交强险+商业险（1600-1899）",
                 "flag": 3,
                 "minprice": "1600",
                 "maxprice": "1899",
@@ -6259,7 +6259,7 @@ def ShanXiYongAn():
                 "store": 6
             },
             {
-                "name": "商业险+商业险（1900-2099）",
+                "name": "交强险+商业险（1900-2099）",
                 "flag": 3,
                 "minprice": "1900",
                 "maxprice": "2099",
@@ -6267,7 +6267,7 @@ def ShanXiYongAn():
                 "store": 7
             },
             {
-                "name": "商业险+商业险（2100-2299）",
+                "name": "交强险+商业险（2100-2299）",
                 "flag": 3,
                 "minprice": "2100",
                 "maxprice": "2299",
@@ -6275,7 +6275,7 @@ def ShanXiYongAn():
                 "store": 8
             },
             {
-                "name": "商业险+商业险（2300-2499）",
+                "name": "交强险+商业险（2300-2499）",
                 "flag": 3,
                 "minprice": "2300",
                 "maxprice": "2499",
@@ -6283,7 +6283,7 @@ def ShanXiYongAn():
                 "store": 9
             },
             {
-                "name": "商业险+商业险（2500-2799）",
+                "name": "交强险+商业险（2500-2799）",
                 "flag": 3,
                 "minprice": "2500",
                 "maxprice": "2799",
@@ -6291,7 +6291,7 @@ def ShanXiYongAn():
                 "store": 10
             },
             {
-                "name": "商业险+商业险（2800-2999）",
+                "name": "交强险+商业险（2800-2999）",
                 "flag": 3,
                 "minprice": "2800",
                 "maxprice": "2999",
@@ -6299,7 +6299,7 @@ def ShanXiYongAn():
                 "store": 11
             },
             {
-                "name": "商业险+商业险（3000-3199）",
+                "name": "交强险+商业险（3000-3199）",
                 "flag": 3,
                 "minprice": "3000",
                 "maxprice": "3199",
@@ -6307,7 +6307,7 @@ def ShanXiYongAn():
                 "store": 12
             },
             {
-                "name": "商业险+商业险（3200-3499）",
+                "name": "交强险+商业险（3200-3499）",
                 "flag": 3,
                 "minprice": "3200",
                 "maxprice": "3499",
@@ -6315,7 +6315,7 @@ def ShanXiYongAn():
                 "store": 13
             },
             {
-                "name": "商业险+商业险（3500-3699）",
+                "name": "交强险+商业险（3500-3699）",
                 "flag": 3,
                 "minprice": "3500",
                 "maxprice": "3699",
@@ -6323,7 +6323,7 @@ def ShanXiYongAn():
                 "store": 14
             },
             {
-                "name": "商业险+商业险（3700-3899）",
+                "name": "交强险+商业险（3700-3899）",
                 "flag": 3,
                 "minprice": "3700",
                 "maxprice": "3899",
@@ -6331,7 +6331,7 @@ def ShanXiYongAn():
                 "store": 15
             },
             {
-                "name": "商业险+商业险（3900-4099）",
+                "name": "交强险+商业险（3900-4099）",
                 "flag": 3,
                 "minprice": "3900",
                 "maxprice": "4099",
@@ -6339,7 +6339,7 @@ def ShanXiYongAn():
                 "store": 16
             },
             {
-                "name": "商业险+商业险（4100-4399）",
+                "name": "交强险+商业险（4100-4399）",
                 "flag": 3,
                 "minprice": "4100",
                 "maxprice": "4399",
@@ -6347,7 +6347,7 @@ def ShanXiYongAn():
                 "store": 17
             },
             {
-                "name": "商业险+商业险（4400-4599）",
+                "name": "交强险+商业险（4400-4599）",
                 "flag": 3,
                 "minprice": "4400",
                 "maxprice": "4599",
@@ -6355,7 +6355,7 @@ def ShanXiYongAn():
                 "store": 18
             },
             {
-                "name": "商业险+商业险（4600-4799）",
+                "name": "交强险+商业险（4600-4799）",
                 "flag": 3,
                 "minprice": "4600",
                 "maxprice": "4799",
@@ -6363,7 +6363,7 @@ def ShanXiYongAn():
                 "store": 19
             },
             {
-                "name": "商业险+商业险（4800-4999）",
+                "name": "交强险+商业险（4800-4999）",
                 "flag": 3,
                 "minprice": "4800",
                 "maxprice": "4999",
@@ -6371,7 +6371,7 @@ def ShanXiYongAn():
                 "store": 20
             },
             {
-                "name": "商业险+商业险（5000-5399）",
+                "name": "交强险+商业险（5000-5399）",
                 "flag": 3,
                 "minprice": "5000",
                 "maxprice": "5399",
@@ -6379,12 +6379,165 @@ def ShanXiYongAn():
                 "store": 21
             },
             {
-                "name": "商业险+商业险（5400-5999）",
+                "name": "交强险+商业险（5400-5999）",
                 "flag": 3,
                 "minprice": "5400",
                 "maxprice": "5999",
                 "driver": 3,
                 "store": 22
+            },
+            # 单商业
+            {
+                "name": "单商业险（1200-1399）",
+                "flag": 2,
+                "minprice": "1200",
+                "maxprice": "1399",
+                "driver": 2,
+                "store": 3
+            },
+            {
+                "name": "单商业险（1400-1599）",
+                "flag": 2,
+                "minprice": "1400",
+                "maxprice": "1599",
+                "driver": 3,
+                "store": 3
+            },
+            {
+                "name": "单商业险（1600-1899）",
+                "flag": 2,
+                "minprice": "1600",
+                "maxprice": "1899",
+                "driver": 3,
+                "store": 4
+            },
+            {
+                "name": "单商业险（1900-2099）",
+                "flag": 2,
+                "minprice": "1900",
+                "maxprice": "2099",
+                "driver": 3,
+                "store": 5
+            },
+            {
+                "name": "单商业险（2100-2299）",
+                "flag": 2,
+                "minprice": "2100",
+                "maxprice": "2299",
+                "driver": 3,
+                "store": 6
+            },
+            {
+                "name": "单商业险（2300-2499）",
+                "flag": 2,
+                "minprice": "2300",
+                "maxprice": "2499",
+                "driver": 3,
+                "store": 7
+            },
+            {
+                "name": "单商业险（2500-2799）",
+                "flag": 2,
+                "minprice": "2500",
+                "maxprice": "2799",
+                "driver": 3,
+                "store": 8
+            },
+            {
+                "name": "单商业险（2800-2999）",
+                "flag": 2,
+                "minprice": "2800",
+                "maxprice": "2999",
+                "driver": 3,
+                "store": 9
+            },
+            {
+                "name": "单商业险（3000-3199）",
+                "flag": 2,
+                "minprice": "3000",
+                "maxprice": "3199",
+                "driver": 3,
+                "store": 10
+            },
+            {
+                "name": "单商业险（3200-3499）",
+                "flag": 2,
+                "minprice": "3200",
+                "maxprice": "3499",
+                "driver": 3,
+                "store": 11
+            },
+            {
+                "name": "单商业险（3500-3699）",
+                "flag": 2,
+                "minprice": "3500",
+                "maxprice": "3699",
+                "driver": 3,
+                "store": 12
+            },
+            {
+                "name": "单商业险（3700-3899）",
+                "flag": 2,
+                "minprice": "3700",
+                "maxprice": "3899",
+                "driver": 3,
+                "store": 13
+            },
+            {
+                "name": "单商业险（3900-4099）",
+                "flag": 2,
+                "minprice": "3900",
+                "maxprice": "4099",
+                "driver": 3,
+                "store": 14
+            },
+            {
+                "name": "单商业险（4100-4399）",
+                "flag": 2,
+                "minprice": "4100",
+                "maxprice": "4399",
+                "driver": 3,
+                "store": 15
+            },
+            {
+                "name": "单商业险（4400-4599）",
+                "flag": 2,
+                "minprice": "4400",
+                "maxprice": "4599",
+                "driver": 3,
+                "store": 16
+            },
+            {
+                "name": "单商业险（4600-4799）",
+                "flag": 2,
+                "minprice": "4600",
+                "maxprice": "4799",
+                "driver": 3,
+                "store": 17
+            },
+            {
+                "name": "单商业险（4800-4999）",
+                "flag": 2,
+                "minprice": "4800",
+                "maxprice": "4999",
+                "driver": 3,
+                "store": 18
+            },
+            {
+                "name": "单商业险（5000-5399）",
+                "flag": 2,
+                "minprice": "5000",
+                "maxprice": "5399",
+                "driver": 3,
+                "store": 19
+            },
+            {
+                "name": "单商业险（5400-5999）",
+                "flag": 2,
+                "minprice": "5400",
+                "maxprice": "5999",
+                "driver": 3,
+                "store": 20
             }
         ]
     },
@@ -6392,12 +6545,20 @@ def ShanXiYongAn():
         "gift": "ZIC X7",
         "items": [
             {
-                "name": "商业险（6000-12499）",
+                "name": "交强险+商业险（6000-12499）",
                 "flag": 3,
                 "minprice": "6000",
                 "maxprice": "12499",
                 "driver": 3,
                 "store": 23
+            },
+            {
+                "name": "单商业险（6000-12499）",
+                "flag": 2,
+                "minprice": "6000",
+                "maxprice": "12499",
+                "driver": 3,
+                "store": 21
             },
         ]
     },
@@ -6405,16 +6566,25 @@ def ShanXiYongAn():
         "gift": "ZIC X9",
         "items": [
             {
-                "name": "商业险12500以上",
+                "name": "交强险+商业险12500以上",
                 "flag": 3,
                 "minprice": "12500",
                 "maxprice": "",
                 "driver": 3,
                 "store": 24
+            },
+            {
+                "name": "单商业险12500以上",
+                "flag": 2,
+                "minprice": "12500",
+                "maxprice": "",
+                "driver": 3,
+                "store": 22
             }
         ]
     }
     ]
+
     print '永安山西返油策略'
     InsuranceArea.create(area_code='0004', insurance=8, lube_ok=1, dealer_store=4,
                         lube_policy=simplejson.dumps(lube),cash_ok=0, cash_policy='')
