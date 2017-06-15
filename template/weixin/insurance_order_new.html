@@ -113,11 +113,11 @@
             </div>
 
             <div class="weui-cell weui-cell_access">
-                <div class="weui-cell__bd">
-                    所在地区
+                <div class="weui-cell__hd">
+                    所在地区&#8195&#8195
                 </div>
-                <div class="weui-cell__ft">
-                   <input class="weui-input" id="start" type="text",value="请选择">
+                <div class="weui-cell__bd">
+                    <input class="weui-input" id="start" type="text" ,value="请选择">
                 </div>
             </div>
             <div class="weui-cells__title">
@@ -196,8 +196,8 @@
         }
     })
     $("#start").cityPicker({
-        onChange:function (picker,values,displayValues) {
-            console.log(values,displayValues)
+        onChange: function (picker, values, displayValues) {
+            console.log(values, displayValues)
         }
     });
 </script>
