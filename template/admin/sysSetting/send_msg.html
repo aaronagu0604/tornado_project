@@ -67,11 +67,16 @@
                     <p><label class="control-label">内容（短信不超过60字符/条）</label></p>
                     <textarea id="textarea" name="content" value="" required rows="10" cols="30" style="width:480px;border-radius:4px;border-color:#3C763D;padding:10px;"></textarea>
                 </div>
-                <div class="form-group has-success">
+                 <div class="form-group has-success">
+                    <input type="radio" id="static" name="link_type" checked value="0" onclick="update_link_status(0)"/><label for="send" style="margin-right:20px;">静态模板</label>
+                    <input type="radio" id="active" name="link_type" value="1" onclick="update_link_status(1)"/><label for="save" style="margin-right:20px;">动态模板</label>
+                    <!--<input type="radio" id="site" name="sms_type" value="2" /><label for="site">站内</label>-->
+                </div>
+                <div class="form-group has-success" style="display: none" id="div_link_url">
                     <p><label class="control-label">动态link网址</label></p>
                     <input type="text" id="active_url" name="active_url" class="form-control" value="" maxlength="240"  placeholder="请输入link网址：http://img.520czj.com..." style="width:480px;"/>
                 </div>
-                <div class="form-group has-success">
+                <div class="form-group has-success" id="div_link_article">
                     <div class="articles" style="margin-left:10px;">
                         <select name="article_id" id="article_id" style="height:28px;margin-left: -10px;margin-top: 10px;border-radius:4px;" >
                             <option value="0">--请选择活动文章，不需要可以不选--</option>
@@ -151,7 +156,19 @@
         $('#textarea').val(title);
         $('#article_id').val(article);
     }
-
+    function update_link_status(status){
+        if (status == 0) {
+            var targetObj = document.getElementById('div_link_url');
+            targetObj.style.display="none";
+            var targetObj = document.getElementById('div_link_article');
+            targetObj.style.display="";
+        } else {
+            var targetObj = document.getElementById('div_link_url');
+            targetObj.style.display="";
+            var targetObj = document.getElementById('div_link_article');
+            targetObj.style.display="none";
+        }
+    }
     var xsrf='{{handler.xsrf_token}}';
     function change_status(id, state_type){
         $.post("/ajax/jpushmsg_status", { _xsrf:xsrf,id: id, state_type:state_type }, function (data) {
