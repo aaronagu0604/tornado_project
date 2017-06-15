@@ -41,6 +41,15 @@
         margin-top: 0.5rem;
     }
 
+    .name {
+        font-size: 14px;
+        margin-top: 10px;
+    }
+
+    .alias {
+        font-size: 14px;
+        color: #f5a929;
+    }
 
 </style>
 {% endblock %}
@@ -52,11 +61,30 @@
         </div>
         <div class="weui-col-40">
             <a href="javascript:;" class="weui-btn weui-btn_plain-primary" id="id_card">选择</a>
-            <p>
+            <p class="name">
                 被保人身份证<br/>
-                正面
+                (正面)
             </p>
-            <p>
+            <p class="alias">
+                企业用户请上传<br/>
+                组织机构代码证
+            </p>
+
+
+        </div>
+    </div>
+    <div class="weui-row">
+        <div class="weui-col-60">
+            <img src="../../style/wximg/id_card.png">
+        </div>
+
+        <div class="weui-col-40">
+            <a href="javascript:;" class="weui-btn  weui-btn_plain-primary" id="id_card_back">选择</a>
+            <p class="name">
+                被保人身份证<br/>
+                (反面)
+            </p>
+            <p class="alias">
                 企业用户请上传<br/>
                 组织机构代码证
             </p>
@@ -70,31 +98,12 @@
 
         <div class="weui-col-40">
             <a href="javascript:;" class="weui-btn  weui-btn_plain-primary" id="drive_card">选择</a>
-            <p>
-                被保人身份证<br/>
-                正面
+            <p class="name">
+                行驶证
             </p>
-            <p>
-                企业用户请上传<br/>
-                组织机构代码证
-            </p>
-
-        </div>
-    </div>
-    <div class="weui-row">
-        <div class="weui-col-60">
-            <img src="../../style/wximg/id_card.png">
-        </div>
-
-        <div class="weui-col-40">
-            <a href="javascript:;" class="weui-btn  weui-btn_plain-primary" id="id_card_back">选择</a>
-            <p>
-                被保人身份证<br/>
-                正面
-            </p>
-            <p>
-                企业用户请上传<br/>
-                组织机构代码证
+            <p class="alias">
+                新车用户请上传<br/>
+                购买发票
             </p>
 
         </div>
@@ -106,14 +115,15 @@
 
         <div class="weui-col-40">
             <a href="javascript:;" class="weui-btn weui-btn_plain-primary" id="drive_card_back">选择</a>
-            <p>
-                被保人身份证<br/>
-                正面
+            <p class="name">
+                行驶证(副本)
+
             </p>
-            <p>
-                企业用户请上传<br/>
-                组织机构代码证
+            <p class="alias">
+                新车用户请上传<br/>
+                购买发票
             </p>
+
 
         </div>
     </div>
@@ -133,14 +143,11 @@
 
             <div class="weui-col-40">
                 <a href="javascript:;" class="weui-btn  weui-btn_plain-primary" id="id_card_front_owner">选择</a>
-                <p>
-                    被保人身份证<br/>
-                    正面
+                <p class="name">
+                    车主身份证<br/>
+                    (正面)
                 </p>
-                <p>
-                    企业用户请上传<br/>
-                    组织机构代码证
-                </p>
+
 
             </div>
         </div>
@@ -151,14 +158,11 @@
 
             <div class="weui-col-40">
                 <a href="javascript:;" class="weui-btn  weui-btn_plain-primary" id="id_card_back_owner">选择</a>
-                <p>
-                    被保人身份证<br/>
-                    正面
+                <p class="name">
+                    车主身份证<br/>
+                    (反面)
                 </p>
-                <p>
-                    企业用户请上传<br/>
-                    组织机构代码证
-                </p>
+
 
             </div>
         </div>
@@ -177,16 +181,50 @@
         } else {
             $(".owner").show();
         }
+
+        $(document).on("click", "#next", function () {
+            document.location.href = "insurance_order_items"
+        })
+        $(document).on("click", "#switch_owner", function () {
+            if ($('#switch_owner').is(':checked')) {
+                $(".owner").hide();
+            } else {
+                $(".owner").show();
+            }
+        })
+
+        $(document).on("click", "#id_card", function () {
+            $.actions({title: "选择图片", actions: [{text: "相机",}, {text: "相册",}]});
+        })
+        $(document).on("click", "#id_card_back", function () {
+            $.actions({title: "选择图片", actions: [{text: "相机",}, {text: "相册",}]});
+        })
+
+        $(document).on("click", "#drive_card", function () {
+            $.actions({title: "选择图片", actions: [{text: "相机",}, {text: "相册",}]});
+        })
+        $(document).on("click", "#drive_card_back", function () {
+            $.actions({title: "选择图片", actions: [{text: "相机",}, {text: "相册",}]});
+        })
+
+        $(document).on("click", "#id_card_front_owner", function () {
+            $.actions({
+                title: "选择图片", actions: [{
+                    text: "相机",  onclick: function () {
+
+                    }
+                }, {
+                    text: "相册", onclick: function () {
+
+                    }
+                }]
+            });
+        })
+        $(document).on("click", "#id_card_back_owner", function () {
+            $.actions({title: "选择图片", actions: [{text: "相机",}, {text: "相册",}]});
+        })
     });
-    $(document).on("click", "#next", function () {
-        document.location.href = "insurance_order_items"
-    })
-    $(document).on("click", "#switch_owner", function () {
-        if ($('#switch_owner').is(':checked')) {
-            $(".owner").hide();
-        } else {
-            $(".owner").show();
-        }
-    })
+
+
 </script>
 {% endblock %}

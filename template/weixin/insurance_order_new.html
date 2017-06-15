@@ -47,6 +47,11 @@
         padding: 20px;
     }
 
+    .weui-cells weui-cells_checkbox hr {
+        margin-left: 10px;
+        margin-right: 10px;
+        background-color: #F1F1F1;
+    }
 
 </style>
 {% endblock %}
@@ -55,17 +60,19 @@
     <div class="weui-cells__title">
         地址选择
     </div>
-    <div class="weui-cells weui-cells_checkbox">
+
+    <div class="weui-cells weui-cells_radio">
         <label class="weui-cell weui-check__label" for="default_addr">
+
             <div class="weui-cell__hd">
-                <input type="checkbox" class="weui-check" checked="checked" id="default_addr"/>
+                <input type="radio" name="radio1" checked="checked" id="default_addr">
                 <i class="weui-icon-checked"></i>
             </div>
-            <div>
-                默认地址
+            <div class="weui-cell__bd">
+                <p> 默认地址</p>
             </div>
         </label>
-        <hr/>
+
         <div class="default-addr">
             <div class="weui-row">
                 <div class="weui-row-50">
@@ -81,15 +88,16 @@
 
         </div>
         <label class="weui-cell weui-check__label" for="write_addr">
+
             <div class="weui-cell__hd">
-                <input type="checkbox" class="weui-check" id="write_addr"/>
+                <input type="radio" name="radio1" id="write_addr">
                 <i class="weui-icon-checked"></i>
             </div>
-            <div>
-                填写地址
+            <div class="weui-cell__bd">
+                <p> 填写地址</p>
             </div>
         </label>
-        <hr/>
+
         <div class="write-addr">
             <div class="weui-cell">
                 <div class="weui-label">收货人</div>
@@ -124,33 +132,36 @@
                 </div>
             </div>
         </div>
+
     </div>
+
 
     <div class="gift_policy">
         <div class="weui-cells__title">
             <p>选择优惠方式</p>
         </div>
-        <div class="weui-cells weui-cells_checkbox">
+        <div class="weui-cells weui-cells_radio">
             <div class="weui-row">
                 <div class="weui-col-50">
                     <label class="weui-cell weui-check__label" for="gift_policy_01">
+
                         <div class="weui-cell__hd">
-                            <input type="checkbox" class="weui-check" checked="checked" id="gift_policy_01"/>
+                            <input type="radio" name="radio2" id="gift_policy_01">
                             <i class="weui-icon-checked"></i>
                         </div>
-                        <div>
-                            返油
+                        <div class="weui-cell__bd">
+                            <p> 返油</p>
                         </div>
                     </label>
                 </div>
                 <div class="weui-col-50">
                     <label class="weui-cell weui-check__label" for="gift_policy_02">
                         <div class="weui-cell__hd">
-                            <input type="checkbox" class="weui-check" checked="checked" id="gift_policy_02"/>
+                            <input type="radio" name="radio2" id="gift_policy_02">
                             <i class="weui-icon-checked"></i>
                         </div>
-                        <div>
-                            返现
+                        <div class="weui-cell__bd">
+                            <p> 返现</p>
                         </div>
                     </label>
                 </div>
@@ -175,17 +186,13 @@
     $(document).on("click", "#write_addr", function () {
         if ($('#write_addr').is(':checked')) {
             $(".write-addr").show();
-            $("#default-addr").attr("checked", false);
         } else {
             $(".write-addr").hide();
-            $("#default-addr").attr("checked", true);
         }
     })
-    $(document).on("click", "#default-addr", function () {
-        if ($('#default-addr').is(':checked')) {
-            $("#write-addr").attr("checked", false);
-        } else {
-            $("#write-addr").attr("checked", true);
+    $(document).on("click", "#default_addr", function () {
+        if ($('#default_addr').is(':checked')) {
+            $(".write-addr").hide();
         }
     })
 </script>
