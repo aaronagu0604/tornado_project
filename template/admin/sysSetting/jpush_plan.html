@@ -1,0 +1,213 @@
+{% extends "layout/admin.html" %}
+{% block content %}
+<div class="row">
+    <nav>
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">推送任务</a>
+        </div>
+    </nav>
+</div>
+<div class="row">
+    <div class="col-xs-6">
+    <div class="panel panel-primary">
+        <div class="panel-body">
+            <h4>创建任务</h4>
+            {%set messages=handler.get_flashed_messages() %}
+            {%if messages%}
+            <div class="msg" style="color:red;">
+                {% for type, msg in messages%}
+                <span>{{msg}}</span>
+                {% endfor %}
+            </div>
+            {%endif%}
+            <form action="" method="post" enctype="multipart/form-data">
+                {{xsrf()}}
+                 <div class="form-group has-success" id="images">
+                    <p><label class="col-sm-4 control-label">plan标题</label></p>
+                    <input type="text" id="img_url" name="image_url" class="form-control" value="" maxlength="100"  placeholder="B计划" class="col-sm-8"/>
+                 </div>
+                <div class="form-group has-success">
+                    <p><label class="col-sm-4 control-label">类型</label></p>
+                    <input type="text" name="image_url" class="form-control" value="" maxlength="100"  placeholder="B计划" class="col-sm-8"/>
+                </div>
+                <div class="form-group has-success">
+                    <p><label class="col-sm-4 control-label">频率</label></p>
+                    <input type="text" name="image_url" class="form-control" value="" maxlength="100"  placeholder="B计划" class="col-sm-8"/>
+                </div>
+                 <div class="form-group has-success">
+                    <p><label class="col-sm-4 control-label">时间</label></p>
+                    <input type="text" name="image_url" class="form-control" value="" maxlength="100"  placeholder="B计划" class="col-sm-8">
+                 </div>
+                <div class="form-group has-success">
+                    <div class="articles" style="margin-left:10px;">
+                        <select name="article_id" id="article_id" style="height:28px;margin-left: -10px;margin-top: 10px;border-radius:4px;" >
+                            <option value="0">--请选择活动文章，不需要可以不选--</option>
+                            {% for article in articles %}
+                            <option value="{{article.id}}">{{article.title}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group has-success">
+                    <input type="checkbox" id="save" name="send_type" value="1" /><label for="save" style="margin-right:20px;">启用</label>
+                </div>
+                <div class="form-group has-success">
+                    <input type="submit" name="sub" value="提 交" class="btn btn-outline btn-primary btn-sm">
+                </div>
+            </form>
+        </div>
+    </div>
+    </div>
+    <div class="col-xs-6">
+        <div class="panel panel-primary">
+            <div class="panel-body">
+                <h4>审核发送</h4>
+                <table class="table table-hover" id="tb_users" cellpadding="0" cellspacing="0" border="0" style="text-align:center;width:100%;">
+                <thead>
+                <tr >
+                    <th style="width:15%;text-align:center;">标题</th>
+                    <th style="width:15%;text-align:center;">类型</th>
+                    <th style="width:15%;text-align:center;">频率</th>
+                    <th style="width:15%;text-align:center;">时间</th>
+                    <th style="width:15%;text-align:center;">客户</th>
+                    <th style="width:15%;text-align:center;">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for key, plan in plan_lists %}
+                <tr>
+                    <td align=center>
+                        <span style="color: blue">{{plan['title']}}</span>
+                    </td>
+                    <td align=center>
+                        <span style="color: blue">{{plan['type']}}</span>
+                    </td>
+                    <td align=center >
+                        <span style="color: blue">{{plan['rate']}}</span>
+                    </td>
+                    <td align=center >
+                        <span style="color: blue">{{plan['time']}}</span>
+                    </td>
+                    <td align=center>
+                        <button type="button" onclick="change_status({{item.id}}, 2)" class="btn btn-xs btn-warning" >
+                            查看
+                        </button>
+                    </td>
+                    <td align=center >
+                        <button type="button" onclick="change_status({{item.id}}, 2)" class="btn btn-xs btn-warning" >
+                            通过
+                        </button>
+                        <button type="button" onclick="change_status({{item.id}}, 2)" class="btn btn-xs btn-warning" >
+                            取消
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script>
+    function setjpushmsg(imgurl,title,article){
+        $('#img_url').val(imgurl);
+        $('#textarea').val(title);
+        $('#article_id').val(article);
+    }
+
+    var xsrf='{{handler.xsrf_token}}';
+    function change_status(id, state_type){
+        $.post("/ajax/jpushmsg_status", { _xsrf:xsrf,id: id, state_type:state_type }, function (data) {
+            data = jQuery.parseJSON(data);
+            alert(data.msg);
+            if(data.flag==1){
+                location.reload();
+            }
+        });
+    }
+
+    $(function(){
+        $(".area").hide();
+        $("input:radio[name='is_users']").click(function(){
+            var v = $("input:radio[name='is_users']:checked").val();
+            if(v == "all_user"){
+                $("#number").val('');
+                $("#number").prop("readonly","readonly");
+                $(".area").hide();
+                $("input:radio[name='user_type']").attr("checked",false);
+            }else if(v == "group_user"){
+                $("#number").val('');
+                $("#number").prop("readonly","readonly");
+                $(".area").show();
+            }
+            else{
+                $("#number").val('');
+                $("#number").removeAttr("readonly");
+                $("input:radio[name='user_type']").attr("checked",false);
+                $(".area").hide();
+            }
+        });
+
+
+        $("input:radio[name='sms_type']").click(function(){
+            var v = $("input:radio[name='sms_type']:checked").val();
+            if(v == "2"){
+                $("#title").show();
+            }
+            else{
+                $("#title").hide();
+            }
+        });
+    });
+
+
+    function province_change(id, default_id){
+//    var id = $(obj).val();
+        $("#district_code > option").remove();
+        $("#district_code").append("<option value=\"0\">--请选择区县--</option>");
+        $("#city_code > option").remove();
+        $("#city_code").append("<option value=\"0\">--请选择城市--</option>");
+        if(id > 0){
+            GetSubAreas(id, "city_code", default_id);
+        }
+    }
+    function city_change(id, default_id){
+//    var id = $(obj).val();
+        $("#district_code > option").remove();
+        $("#district_code").append("<option value=\"0\">--请选择区县--</option>");
+        if(id > 0){
+            GetSubAreas(id, "district_code", default_id);
+        }
+    }
+    function GetSubAreas(id,ddl_id, default_id) {
+//    alert(default_id);
+        $.get("/ajax/GetSubAreas", { pcode: id,  t: Math.random() }, function (data) {
+            data = jQuery.parseJSON(data);
+            if(data.flag==1){
+                for(var i=0; i< data.data.length; i++){
+                    if(default_id.length>0){
+                        if(data.data[i]["code"]==default_id){
+                            $("#" + ddl_id).append("<option value=\"" + data.data[i]["code"] + "\" selected>" + data.data[i]["name"] + "</option>");
+                        }
+                        else{
+                            $("#" + ddl_id).append("<option value=\"" + data.data[i]["code"] + "\">" + data.data[i]["name"] + "</option>");
+                        }
+                    }
+                    else {
+                        $("#" + ddl_id).append("<option value=\"" + data.data[i]["code"] + "\">" + data.data[i]["name"] + "</option>");
+                    }
+                }
+            }
+            else{
+                alert(data.msg)
+            }
+        });
+    }
+
+</script>
+{% endblock %}

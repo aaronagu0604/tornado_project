@@ -1301,13 +1301,14 @@ class JPushActive(db.Model):
     class Meta:
         db_table = 'tb_jpush_active'
 
+
 # 极光推送内容
 class JPushMsg(db.Model):
     id = PrimaryKeyField()
     title = CharField(default='')
     content = TextField(default='')
     img_url = CharField(default='')
-    jpush_active = ForeignKeyField(JPushActive, db_column='jpush_active_id',null=True)
+    jpush_active = ForeignKeyField(JPushActive, db_column='jpush_active_id', null=True)
     active = IntegerField(default=1)  # 0失效，1有效
 
     class Meta:
@@ -1326,7 +1327,6 @@ class JPushPlan(db.Model):
 
     class Meta:
         db_table = 'tb_jpush_plan'
-
 
 
 def init_db():

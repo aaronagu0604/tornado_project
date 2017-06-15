@@ -2735,6 +2735,18 @@ class SendMsgHandler(AdminBaseHandler):
         self.redirect('/admin/send_msg')
 
 
+@route(r'/admin/check_jpush', name='admin_check_jpush')  # 推送计划
+class CheckJPushHandler(AdminBaseHandler):
+    def get(self):
+        plan_keys = self.application.memcachedb.get('plan_keys')
+        plan_lists = []
+        if plan_keys:
+            plans_dict = self.application.memcachedb.get_multi(plan_keys)
+            plan_lists = plans_dict.items()
+
+        self.render('admin/sysSetting/jpush_plan.html', active='jp_plan', plan_lists=plan_lists)
+
+
 @route(r'/admin/log', name='admin_log')  # 系统日志
 class LogHandler(AdminBaseHandler):
     def get(self):

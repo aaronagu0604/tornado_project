@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 # coding=utf8
 
-from model import JPushPlan, User, Store, InsuranceOrder, InsuranceOrderPrice
+import time
+import simplejson
+from model import JPushMsg
 from bootloader import memcachedb
 from lib.mqhelper import create_msg
-import time
 
 
 class JPushSend():
@@ -31,7 +32,15 @@ class JPushSend():
         plans_dict = memcachedb.get_multi(plan_keys)
         for key, plan in plans_dict.items():
             if plan.admin_check == 1 and self.check_time(plan.time, plan.rate):
-                # create_msg('', 'jpush')
+                link = 'http://admin.520czj.com/user/showarticle/%d' % plan['intro']
+                mobiles = [m['mobile'] for m in plan['store']]
+                j = 0
+                jpush_msg = JPushMsg.get(id=plan['intro'])
+                while j*1000 < len(mobiles):
+                    sms = {'apptype': 1, 'body': jpush_msg.content, 'jpushtype': 'alias', 'extras': {'link': link},
+                           'alias': mobiles[j*1000:(j+1)*1000], 'images': jpush_msg.img_url}
+                    create_msg(simplejson.dumps(sms), 'jpush')
+                    j += 1
                 memcachedb.delete(key)
                 plan_keys.remove(key)
                 memcachedb.replace('plan_keys', plan_keys)
