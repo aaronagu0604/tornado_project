@@ -108,7 +108,7 @@
                 <tbody>
                 {% for item in jpushmsg %}
                 <tr>
-                    <td align=center onclick="setjpushmsg('{{item.img_url}}','{{item.content}}',{{item.jpush_active.id}});">
+                    <td align=center onclick="setjpushmsg('{{item.img_url}}','{{item.content}}',{{item.jpush_active.id and item.jpush_active.id or 0}});">
                         <span style="color: blue">{{item.id}}</span>
                     </td>
                     <td align=center>

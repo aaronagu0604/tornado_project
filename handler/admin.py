@@ -2648,10 +2648,11 @@ class SendMsgHandler(AdminBaseHandler):
                                         content=u'为用户组 ' + str(user_type) + u' 推送极光消息，消息内容：' + content)
                     self.flash("推送成功")
             else:
+                article = int(article)
                 jpush = JPushMsg()
                 jpush.content = content
                 jpush.img_url = img_url
-                jpush.jpush_active = int(article)
+                jpush.jpush_active = article if article else None
                 jpush.save()
         # 短信
         elif sms_type == 1:
