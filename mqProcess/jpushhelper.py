@@ -36,10 +36,11 @@ def send_users_base_tags(tags, body, extras = {'link':''}):
     push.platform = jpush.all_
 
     if extras:
-        ios_msg = jpush.ios(alert=body, badge="+1", sound="a.caf", extras=extras)
-        android_msg = jpush.android(alert=body, extras=extras)
+        extras['images'] = 'http://img.520czj.com/image/2017/06/14/server1_20170614183100ZXblpHizGkcRAITaVEfKLOSU.jpg'
+        ios_msg = jpush.ios(alert=body, badge="+1", sound="a.caf", content_available=True,mutable_content=True,extras=extras)
+        android_msg = jpush.android(alert=body, style=3,big_pic_path='http://img.520czj.com/image/2017/06/14/server1_20170614113710SKeIRfjQrkTEXPvUwpBytWac.jpg',extras=extras)
     else:
-        ios_msg = jpush.ios(alert=body, badge="+1", sound="a.caf")
+        ios_msg = jpush.ios(alert=body, badge="+1", sound="a.caf", content_available=True,mutable_content=True)
         android_msg = jpush.android(alert=body)
     push.notification = jpush.notification(alert=body, android=android_msg, ios=ios_msg)
     push.options = {
@@ -64,16 +65,17 @@ def send_users_base_alias(alias, body, extras = {'link':''}):
     )
 
     if extras:
-        ios_msg = jpush.ios(alert=body, badge="+1", sound="a.caf", extras=extras)
-        android_msg = jpush.android(alert=body, extras=extras)
+        extras['images'] = 'http://img.520czj.com/image/2017/06/14/server1_20170614183100ZXblpHizGkcRAITaVEfKLOSU.jpg'
+        ios_msg = jpush.ios(alert=body, badge="+1", sound="a.caf", content_available=True,mutable_content=True,extras=extras)
+        android_msg = jpush.android(alert=body, style=3,big_pic_path='http://img.520czj.com/image/2017/06/14/server1_20170614113710SKeIRfjQrkTEXPvUwpBytWac.jpg',extras=extras)
     else:
-        ios_msg = jpush.ios(alert=body, badge="+1", sound="a.caf")
+        ios_msg = jpush.ios(alert=body, badge="+1", sound="a.caf", content_available=True,mutable_content=True)
         android_msg = jpush.android(alert=body)
     push.notification = jpush.notification(alert=body, android=android_msg, ios=ios_msg)
 
     push.platform = jpush.all_
     push.options = {
-        "apns_production": True
+        "apns_production": False
     }
     result = push.send()
     print result.payload
@@ -91,10 +93,11 @@ def send_users_base_regid(reg_id, body, extras = None):
         alias1
     )
     if extras:
-        ios_msg = jpush.ios(alert=body, badge="+1", sound="a.caf", extras=extras)
-        android_msg = jpush.android(alert=body, extras=extras)
+        extras['images'] = 'http://img.520czj.com/image/2017/06/14/server1_20170614183100ZXblpHizGkcRAITaVEfKLOSU.jpg'
+        ios_msg = jpush.ios(alert=body, badge="+1", sound="a.caf", content_available=True,mutable_content=True,extras=extras)
+        android_msg = jpush.android(alert=body, style=3,big_pic_path='http://img.520czj.com/image/2017/06/14/server1_20170614113710SKeIRfjQrkTEXPvUwpBytWac.jpg',extras=extras)
     else:
-        ios_msg = jpush.ios(alert=body, badge="+1", sound="a.caf")
+        ios_msg = jpush.ios(alert=body, badge="+1", sound="a.caf", content_available=True,mutable_content=True)
         android_msg = jpush.android(alert=body)
     push.notification = jpush.notification(alert=body, android=android_msg, ios=ios_msg)
 
