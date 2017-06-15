@@ -1308,7 +1308,8 @@ class JPushMsg(db.Model):
     title = CharField(default='')
     content = TextField(default='')
     img_url = CharField(default='')
-    static = IntegerField(default=0) # 消息模板
+    link_type = IntegerField(default=0) # 消息模板类型：0静态 1动态
+    active_url = CharField(default='',max_length=240) # 动态模板link地址
     jpush_active = ForeignKeyField(JPushActive, db_column='jpush_active_id', null=True)
     active = IntegerField(default=1)  # 0失效，1有效
 
