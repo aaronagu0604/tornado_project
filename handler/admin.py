@@ -2330,6 +2330,7 @@ class InsuranceOrderDelHandler(AdminBaseHandler):
 class InsuranceList(AdminBaseHandler):
     def get(self):
         iid = int(self.get_argument('iid', 0))
+        items = Area.select().where(Area.pid >> None)
         insurances = Insurance.select().where(Insurance.active == 1)
         ft = InsuranceArea.active == 1
         if iid > 0:
@@ -2337,7 +2338,51 @@ class InsuranceList(AdminBaseHandler):
         areas = InsuranceArea.select().where(ft)
 
         self.render("admin/insurance/index.html", insurances=insurances, active='insurance',
-                    areas=areas, Area=Area, iid=iid)
+                    areas=areas, Area=Area, iid=iid,items=items)
+
+    def post(self):
+        iid = self.get_body_argument('insurance',0)
+        province = self.get_body_argument('province_code',None)
+        city = self.get_body_argument('city_code',None)
+        district = self.get_body_argument('district_code',None)
+        lube_ok = self.get_body_argument('lube_ok', '')
+        cash_ok = self.get_body_argument('cash_ok', '')
+        score_ok = self.get_body_argument('score_ok', '')
+
+        if int(iid) == 0:
+            self.write('没有选择保险公司！')
+            return
+
+        area_code = province
+        if city:
+            area_code = city
+        if district:
+            area_code = district
+        if not area_code:
+            self.write('没有选择发布区域！')
+            return
+        if not (lube_ok or cash or score_ok):
+            self.write('没有选择支持政策！')
+            return
+        print area_code,province,city,district
+        insuranceareas = InsuranceArea.select().where(InsuranceArea.insurance == iid,InsuranceArea.area_code==area_code)
+        if insuranceareas.count():
+            self.write('不能重复添加！')
+            return
+        ia = InsuranceArea()
+        ia.insurance = int(iid)
+        ia.area_code = area_code
+        ia.dealer_store = 1
+        ia.lube_ok = 1 if lube_ok else 0
+        ia.lube_policy = ''
+        ia.cash_ok = 1 if cash_ok else 0
+        ia.cash_policy = ''
+        ia.score_ok = 0 #1 if score_ok else 0
+        ia.score_policy = ''
+        ia.save()
+        self.redirect('/admin/insurance')
+
+
 
 def update_area_policy(insurance_area):
     # 修改使用了改基础规则的店铺的所有规则
@@ -2756,14 +2801,7 @@ class SendMsgHandler(AdminBaseHandler):
 @route(r'/admin/check_jpush', name='admin_check_jpush')  # 推送计划
 class CheckJPushHandler(AdminBaseHandler):
     def get(self):
-        plan_keys = self.application.memcachedb.get('plan_keys')
-        plan_lists = []
-        print('---%s---' % plan_keys)
-        if plan_keys:
-            plans_dict = self.application.memcachedb.get_multi(plan_keys)
-            print self.application.memcachedb.get('plan_keys')
-            print plans_dict
-            plan_lists = plans_dict.items()
+        plan_lists = JPushRecord.select()
 
         self.render('admin/sysSetting/jpush_plan.html', active='jp_plan', plan_lists=plan_lists)
 

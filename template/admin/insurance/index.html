@@ -47,6 +47,8 @@
 		</div>
 		<div class="panel panel-primary">
 			<div class="table-responsive">
+				<form action="" method="post">
+            	{{xsrf()}}
 				<table class="table table-hover" style="text-align:center;">
 					<thead>
 					<tr style="background:#528ACB;color:#fff;">
@@ -56,6 +58,45 @@
 						<th style="text-align:center;">返积分</th>
 					</tr>
 					</thead>
+
+					<tr>
+                        <td style="color:#438bca;">
+                            <select class="form-control" name="insurance" id="sel_type" style="width:130px; margin:0 auto;">
+                                <option value="0" >--请选择--</option>
+                                {% for c in insurances %}
+                                <option value="{{c.id}}">{{c.name}}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                        <td>
+							<select name="province_code" id="province_code" onchange="province_change(this.value,0)" data-default="{{default_province}}" style="height:28px;margin-left: -10px;margin-top: 10px;border-radius:4px;" >
+								<option value="">--请选择省份--</option>
+								{% for area in items %}
+								<option value="{{area.code}}" {{area.code==default_province and 'selected' or ''}}>{{area.name}}</option>
+								{% endfor %}
+							</select>
+							<select name="city_code" id="city_code" onchange="city_change(this.value,0)" data-default="{{default_city}}" style="height:28px;margin-left: 10px;margin-top: 10px;border-radius:4px;" >
+								<option value="">--请选择城市--</option>
+							</select>
+							<select name="district_code" id="district_code" data-default="{{default_district}}" style="height:28px;margin-left: 10px;margin-top: 10px;border-radius:4px;">
+								<option value="">--请选择区县--</option>
+							</select>
+                        </td>
+						<td>
+							<div>
+								<th><input id="lube_ok" style="visibility:visible;" type="checkbox" name="lube_ok">开通返油</th>
+							</div>
+							<div>
+								<th><input id="cash_ok" style="visibility:visible;" type="checkbox" name="cash_ok">开通返现</th>
+							</div>
+							<!--<div>-->
+								<!--<th><input id="score_ok" style="visibility:visible;" type="checkbox" name="score_ok">开通活动</th>-->
+							<!--</div>-->
+						</td>
+                        <td>
+                            <input type="submit" value="发布新区域" style="padding:4px 5px;border:1px solid #438bca;color:#438bca;border-radius:4px;font-size:12px;text-decoration:none;">
+                        </td>
+                    </tr>
 					<tbody>
 					{% for r in areas %}
 					<tr>
@@ -79,6 +120,7 @@
 					{% endfor %}
 					</tbody>
 				</table>
+					</form>
 			</div>
 		</div>
 	</div>
@@ -88,7 +130,6 @@
 {% block js %}
 <script type="text/javascript" src="/style/js/layer/layer.js"></script>
 <script type="text/javascript">
-
     function pop(title, iid, area_code, type) {
         var url = '/admin/insurance/'+type+'?iid='+iid+'&area_code='+area_code;
         layer.open({
@@ -100,6 +141,47 @@
             content: url
         });
     }
-
+	function province_change(id, default_id){
+//    var id = $(obj).val();
+        $("#district_code > option").remove();
+        $("#district_code").append("<option value=\"0\">--请选择区县--</option>");
+        $("#city_code > option").remove();
+        $("#city_code").append("<option value=\"0\">--请选择城市--</option>");
+        if(id > 0){
+            GetSubAreas(id, "city_code", default_id);
+        }
+    }
+    function city_change(id, default_id){
+//    var id = $(obj).val();
+        $("#district_code > option").remove();
+        $("#district_code").append("<option value=\"0\">--请选择区县--</option>");
+        if(id > 0){
+            GetSubAreas(id, "district_code", default_id);
+        }
+    }
+    function GetSubAreas(id,ddl_id, default_id) {
+//    alert(default_id);
+        $.get("/ajax/GetSubAreas", { pcode: id,  t: Math.random() }, function (data) {
+            data = jQuery.parseJSON(data);
+            if(data.flag==1){
+                for(var i=0; i< data.data.length; i++){
+                    if(default_id.length>0){
+                        if(data.data[i]["code"]==default_id){
+                            $("#" + ddl_id).append("<option value=\"" + data.data[i]["code"] + "\" selected>" + data.data[i]["name"] + "</option>");
+                        }
+                        else{
+                            $("#" + ddl_id).append("<option value=\"" + data.data[i]["code"] + "\">" + data.data[i]["name"] + "</option>");
+                        }
+                    }
+                    else {
+                        $("#" + ddl_id).append("<option value=\"" + data.data[i]["code"] + "\">" + data.data[i]["name"] + "</option>");
+                    }
+                }
+            }
+            else{
+                alert(data.msg)
+            }
+        });
+    }
 </script>
 {% endblock %}

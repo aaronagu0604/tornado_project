@@ -67,37 +67,35 @@
                 <tr >
                     <th style="width:15%;text-align:center;">标题</th>
                     <th style="width:15%;text-align:center;">类型</th>
-                    <th style="width:15%;text-align:center;">频率</th>
-                    <th style="width:15%;text-align:center;">时间</th>
-                    <th style="width:15%;text-align:center;">客户</th>
+                    <th style="width:15%;text-align:center;">开始时间</th>
+                    <th style="width:15%;text-align:center;">结束时间</th>
+                    <th style="width:15%;text-align:center;">JPushMSG</th>
                     <th style="width:15%;text-align:center;">操作</th>
                 </tr>
                 </thead>
                 <tbody>
-                {% for key, plan in plan_lists %}
+                {% for plan in plan_lists %}
                 <tr>
                     <td align=center>
-                        <span style="color: blue">{{plan['title']}}</span>
+                        <span style="color: blue">{{plan.title}}</span>
                     </td>
                     <td align=center>
-                        <span style="color: blue">{{plan['type']}}</span>
+                        <span style="color: blue">{{plan.type}}</span>
                     </td>
                     <td align=center >
-                        <span style="color: blue">{{plan['rate']}}</span>
+                        <span style="color: blue">{{plan.start_time|datetimeformat}}</span>
                     </td>
                     <td align=center >
-                        <span style="color: blue">{{plan['time']}}</span>
+                        <span style="color: blue">{{plan.start_time|datetimeformat}}</span>
                     </td>
                     <td align=center>
-                        <button type="button" onclick="change_status({{item.id}}, 2)" class="btn btn-xs btn-warning" >
-                            查看
-                        </button>
+                        <span style="color: blue">{{plan.intro.title}}</span>
                     </td>
                     <td align=center >
-                        <button type="button" onclick="change_status({{item.id}}, 2)" class="btn btn-xs btn-warning" >
+                        <button type="button" onclick="change_status({{plan.id}}, 2)" class="btn btn-xs btn-warning" >
                             通过
                         </button>
-                        <button type="button" onclick="change_status({{item.id}}, 2)" class="btn btn-xs btn-warning" >
+                        <button type="button" onclick="change_status({{plan.id}}, 2)" class="btn btn-xs btn-warning" >
                             取消
                         </button>
                     </td>
