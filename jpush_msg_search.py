@@ -19,8 +19,8 @@ class JPushSearch():
         else:
             check_rate = False
         now_time = time.strftime('%Y-%m-%d', time.localtime())
-        start_time = time.mktime(time.strptime('%Y-%m-%d %H:%M', now_time + ' ' + start_time))
-        end_time = time.mktime(time.strptime('%Y-%m-%d %H:%M', now_time + ' ' + end_time))
+        start_time = time.mktime(time.strptime(now_time + ' ' + start_time,'%Y-%m-%d %H:%M'))
+        end_time = time.mktime(time.strptime(now_time + ' ' + end_time,'%Y-%m-%d %H:%M'))
 
         if check_rate:
             return start_time, end_time
@@ -34,7 +34,8 @@ class JPushSearch():
         for plan in JPushPlan.select().where(JPushPlan.active == 1):
             start_time, end_time = self.get_time(plan.start_time, plan.end_time, plan.rate)
             if start_time:
-                JPushRecord.create(title=plan.title, start_time=start_time, end_time=end_time, created=created,
+                print plan.start_time,plan.end_time
+                JPushRecord.create(title=plan.title, type=plan.type,start_time=start_time, end_time=end_time, created=created,
                                    intro=plan.intro, check=0, send=0)
 
 

@@ -22,7 +22,7 @@ class JPushSend():
         return store
 
     # 经常下保单的门店（条件：一个月内下过保单的门店，返佣返油多的就是经常返油）
-    def often_create_io_store(self):
+    def often_create_io_store(self,type='lube'):
         io_lube_store = []
         io_cash_store = []
         for s in self.all_stores:
@@ -44,7 +44,10 @@ class JPushSend():
                     'mobile': s.mobile,
                     'area_code': s.area_code
                 })
-        return io_lube_store, io_cash_store
+        if type == 'lube':
+            return io_lube_store
+        else:
+            return io_cash_store
 
     # 活动推送
     def active(self):
@@ -58,7 +61,7 @@ class JPushSend():
             mobile = []
             if msg.type == 1:  # 新注册用户jpush 计划
                 # mobile = self.new_store()
-                mobile = [1, 2, 555]
+                mobile = ['13289269257']
             elif msg.type == 2:  # 经常出单用户（返油）jpush计划
                 mobile = self.often_create_io_store('lube')
             elif msg.type == 3:  # 经常出单用户（返现）jpush计划
@@ -72,17 +75,24 @@ class JPushSend():
             elif msg.type == 7:
                 pass
             if msg.intro.static:
-                link = 'http://admin.520czj.com/user/showarticle/%d' % msg.intro.id
+                link = ''
+                if msg.intro.jpush_active:
+                    link = 'http://admin.520czj.com/user/showarticle/%d' % msg.intro.jpush_active.id
+
                 j = 0
                 jpush_msg = JPushMsg.get(id=msg.intro.id)
                 while j*1000 < len(mobile):
                     sms = {'apptype': 1, 'body': jpush_msg.content, 'jpushtype': 'alias', 'extras': {'link': link},
                            'alias': mobile[j*1000:(j+1)*1000], 'images': jpush_msg.img_url}
+                    print sms
                     create_msg(simplejson.dumps(sms), 'jpush')
                     j += 1
             else:    # 动态url
                 pass
 
+if __name__ == '__main__':
+    jpush = JPushSend()
+    jpush.get_checked_msg()
 
 
 
