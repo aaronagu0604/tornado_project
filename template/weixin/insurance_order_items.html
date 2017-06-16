@@ -33,19 +33,21 @@
         padding: 20px;
     }
 
-    .btn_coverage {
-        width: 50px;
-        height: 30px;
-        border: 1px solid #F1F1F1;
-        border-radius: 10px;
-
-        align-content: center;
+    .weui-switch_insurance {
+        position: relative;
+        width: 52px;
+        height: 32px;
+        border: 1px solid #dfdfdf;
+        outline: 0;
+        border-radius: 16px;
+        box-sizing: border-box;
+        background-color: #FFFFFF;
+        -webkit-transition: background-color .1s, border .1s;
+        transition: background-color .1s, border .1s;
+        text-align: center;
+        font-size: 14px;
     }
 
-    .btn_coverage input {
-        margin-top: 3px;
-        margin-left: 3px;
-    }
 
 </style>
 {% endblock %}
@@ -101,10 +103,7 @@
                     第三者责任险
                 </div>
                 <div class="weui-cell__ft">
-                    <div class="btn_coverage">
-                        <input class="weui-input" id="thirdDutyI" type="text" value="不投"/>
-                    </div>
-
+                    <input class="weui-switch_insurance " id="thirdDutyI" type="text" value="不投"/>
                 </div>
                 <label class="weui-row" for="thirdDutyIPlus">
                     <div class="weui-cell__hd">
@@ -121,9 +120,8 @@
                     车上人员险(司机)
                 </div>
                 <div class="weui-cell__ft">
-                    <div class="btn_coverage">
-                        <input class="weui-input" id="driverDutyI" type="text" value="不投"/>
-                    </div>
+
+                    <input class="weui-switch_insurance" id="driverDutyI" type="text" value="不投"/>
 
                 </div>
                 <label class="weui-row" for="driverDutyIPlus">
@@ -141,10 +139,7 @@
                     车上人员险(乘客)
                 </div>
                 <div class="weui-cell__ft">
-
-                    <div class="btn_coverage">
-                        <input class="weui-input" id="passengerDutyI" type="text" value="不投"/>
-                    </div>
+                    <input class="weui-switch_insurance " id="passengerDutyI" type="text" value="不投"/>
                 </div>
                 <label class="weui-row" for="passengerDutyIPlus">
                     <div class="weui-cell__hd">
@@ -279,7 +274,8 @@
         cols: [{
             textAlign: 'center',
             values: ['太平保险', '人寿保险', '人保车险']
-        }]
+        }],
+
     });
     $("#thirdDutyI").picker({
         title: "选择保额",
@@ -288,6 +284,10 @@
             values: ['不投', '10万', '20万', '30万']
         }
         ],
+        onchange: function () {
+            $("#insurance_name").removeClass("btn_coverage").addClass("btn_coverage_green");
+            $("#damageIPlus").attr("checked", true);
+        }
     });
     $("#driverDutyI").picker({
         title: "选择保额",
