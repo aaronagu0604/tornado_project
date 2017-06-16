@@ -762,6 +762,10 @@ class AppendRefundMoneyHandler(BaseHandler):
             return
         try:
             ar_num = float(ar_num)
+            if ar_num< 0.001 and admin_user.username != '吴静':
+                result['msg'] = u'退款请联系吴静处理。您没有权限处理。'
+                self.write(simplejson.dumps(result))
+                return
             io = InsuranceOrder.get(current_order_price=pid)
             iop = InsuranceOrderPrice.get(id=pid)
             if iop.append_refund_status != int(ar_status):

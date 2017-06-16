@@ -570,7 +570,10 @@ class ProductReleaseAddHandler(AdminBaseHandler):
         pagesize = int(self.get_argument("pagesize", '20') if len(self.get_argument("pagesize", '20')) > 0 else '20')
         keyword = self.get_argument("keyword", '')
         hasproduct = [item.product.id for item in ProductRelease.select().where(ProductRelease.store == store_id)]
-        ft = (Product.active == 1) & ~(Product.id << hasproduct)
+        if hasproduct:
+            ft = (Product.active == 1) & ~(Product.id << hasproduct)
+        else:
+            ft = (Product.active == 1)
         if len(keyword) > 0:
             keyword2 = '%' + keyword + '%'
             ft &= (Product.name % keyword2)
