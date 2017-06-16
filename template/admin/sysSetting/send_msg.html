@@ -1,7 +1,8 @@
 {% extends "layout/admin.html" %}
+{% block css %}
+<link href="/style/css/jquery-ui.css" rel="stylesheet">
+{% endblock%}
 {% block content %}
-
-
 <div class="row">
     <nav>
         <div class="navbar-header">
@@ -87,9 +88,14 @@
                     </div>
                 </div>
                 <div class="form-group has-success">
-                    <input type="radio" id="send" name="send_type" checked value="0" /><label for="send" style="margin-right:20px;">立即发送</label>
-                    <input type="radio" id="save" name="send_type" value="1" /><label for="save" style="margin-right:20px;">保存消息</label>
+                    <input type="radio" id="send" name="send_type" onclick="update_send_div(0)" checked value="0" /><label for="send" style="margin-right:20px;">立即发送</label>
+                    <input type="radio" id="save" name="send_type" onclick="update_send_div(0)" value="1" /><label for="save" style="margin-right:20px;">保存消息</label>
+                    <input type="radio" id="settime" name="send_type" onclick="update_send_div(1)" value="2" /><label for="send" style="margin-right:20px;">定时发送</label>
                     <!--<input type="radio" id="site" name="sms_type" value="2" /><label for="site">站内</label>-->
+                </div>
+                <div id="settime_date_picker" style="display: none" class="form-group has-success">
+                    <input type="text" name="begin_date" id="begin_date" value="{{begin_date}}" style="width:110px; height: 34px;margin-right:5px;border:1px solid #ccc;border-radius:4px;" placeholder="开始日期"/>
+                    <input type="text" name="end_date" id="end_date" value="{{end_date}}" style="width:110px; height:34px;margin-right:5px;border:1px solid #ccc;border-radius:4px;" placeholder="截止日期"/>
                 </div>
                 <div class="form-group has-success">
                     <input type="submit" name="sub" value="提 交" class="btn btn-outline btn-primary btn-sm">
@@ -150,7 +156,13 @@
 {% endblock %}
 
 {% block js %}
+<script src="/style/js/DateTimePicker/jquery.ui.datepicker-zh-CN.js"></script>
+<script src="/style/js/DateTimePicker/jquery-ui-1.10.4.custom.min.js"></script>
+<script src="/style/js/DateTimePicker/jquery-ui-timepicker-addon.js"></script>
+<script src="/style/js/DateTimePicker/jquery-ui-timepicker-zh-CN.js"></script>
 <script>
+    $( "input[name='begin_date'],input[name='end_date']" ).datetimepicker();
+
     function setjpushmsg(imgurl,title,article){
         $('#img_url').val(imgurl);
         $('#textarea').val(title);
@@ -167,6 +179,19 @@
             targetObj.style.display="";
             var targetObj = document.getElementById('div_link_article');
             targetObj.style.display="none";
+        }
+    }
+
+    function update_send_div(status){
+        console.log(status)
+        if (status == 0) {
+            console.log('set none');
+            var targetObj = document.getElementById('settime_date_picker');
+            targetObj.style.display="none";
+        } else {
+            console.log('set ""');
+            var targetObj = document.getElementById('settime_date_picker');
+            targetObj.style.display="";
         }
     }
     var xsrf='{{handler.xsrf_token}}';

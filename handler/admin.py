@@ -2580,6 +2580,8 @@ class SendMsgHandler(AdminBaseHandler):
         article = self.get_body_argument('article_id',0)
         img_url = self.get_body_argument('image_url', '')
         send_type = self.get_body_argument('send_type', 0)
+        begin_date = self.get_body_argument('begin_date', 0)
+        end_date = self.get_body_argument('end_date', 0)
         print article,type(article)
         if district:
             area_code = district + '%'
@@ -2647,6 +2649,13 @@ class SendMsgHandler(AdminBaseHandler):
                                         created=int(time.time()),
                                         content=u'为用户组 ' + str(user_type) + u' 推送极光消息，消息内容：' + content)
                     self.flash("推送成功")
+            elif send_type == 1:
+                article = int(article)
+                jpush = JPushMsg()
+                jpush.content = content
+                jpush.img_url = img_url
+                jpush.jpush_active = article if article else None
+                jpush.save()
             else:
                 article = int(article)
                 jpush = JPushMsg()
@@ -2654,6 +2663,15 @@ class SendMsgHandler(AdminBaseHandler):
                 jpush.img_url = img_url
                 jpush.jpush_active = article if article else None
                 jpush.save()
+
+                jr = JPushRecord()
+                jr.title = '管理员：%s设置的定时推送任务'%self.get_admin_user().username  # 标题
+                jr.type = 1  # 推送类别 1
+                jr.start_time =  time.mktime(time.strptime(begin_date, "%Y-%m-%d %H:%M"))  # 推送起始时间 2017-5-6 9:30
+                jr.end_time =  time.mktime(time.strptime(end_date, "%Y-%m-%d %H:%M"))  # 推送结束时间  2017-5-6 10:30
+                jr.created = int(time.time())
+                jr.intro = jpush
+                jr.save()
         # 短信
         elif sms_type == 1:
             if is_users and content:
