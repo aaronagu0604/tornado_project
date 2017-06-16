@@ -32,6 +32,16 @@
         background-color: #FFFFFF;
         padding: 20px;
     }
+
+    .btn_coverage {
+        width: 50px;
+        height: 30px;
+        border: 1px solid #353535;
+        border-radius: 10px;
+        padding-left: 5px;
+        text-align: center;
+    }
+
 </style>
 {% endblock %}
 {% block content %}
@@ -41,7 +51,7 @@
             保险公司
         </div>
         <div class="weui-cell__ft">
-            太平保险
+            <input class="weui-input" id="insurance_name" type="text" value="太平保险">
         </div>
     </div>
     <div class="insurance_parent">
@@ -86,7 +96,10 @@
                     第三者责任险
                 </div>
                 <div class="weui-cell__ft">
-                    <input class="weui-switch" type="checkbox"/>
+                    <div class="btn_coverage">
+                        <input class="weui-input" id="thirdDutyI" type="text" value="不投"/>
+                    </div>
+
                 </div>
                 <label class="weui-row" for="thirdDutyIPlus">
                     <div class="weui-cell__hd">
@@ -103,7 +116,10 @@
                     车上人员险(司机)
                 </div>
                 <div class="weui-cell__ft">
-                    <input class="weui-switch" type="checkbox"/>
+                    <div class="btn_coverage">
+                        <input class="weui-input" id="driverDutyI" type="text" value="不投"/>
+                    </div>
+
                 </div>
                 <label class="weui-row" for="driverDutyIPlus">
                     <div class="weui-cell__hd">
@@ -120,7 +136,10 @@
                     车上人员险(乘客)
                 </div>
                 <div class="weui-cell__ft">
-                    <input class="weui-switch" type="checkbox"/>
+
+                    <div class="btn_coverage">
+                        <input class="weui-input" id="passengerDutyI" type="text" value="不投"/>
+                    </div>
                 </div>
                 <label class="weui-row" for="passengerDutyIPlus">
                     <div class="weui-cell__hd">
@@ -137,7 +156,7 @@
                     全车盗抢险
                 </div>
                 <div class="weui-cell__ft">
-                    <input class="weui-switch" type="checkbox"/>
+                    <input class="weui-switch" id="robbingI" type="checkbox"/>
                 </div>
                 <label class="weui-row" for="robbingIPlus">
                     <div class="weui-cell__hd">
@@ -170,7 +189,7 @@
                     车身划痕损失险
                 </div>
                 <div class="weui-cell__ft">
-                    <input class="weui-switch" type="checkbox"/>
+                    <input class="weui-switch" id="scratchI" type="checkbox"/>
                 </div>
                 <label class="weui-row" for="scratchIPlus">
                     <div class="weui-cell__hd">
@@ -187,7 +206,7 @@
                     自燃损失险
                 </div>
                 <div class="weui-cell__ft">
-                    <input class="weui-switch" type="checkbox"/>
+                    <input class="weui-switch" id="fireDamageI" type="checkbox"/>
                 </div>
                 <label class="weui-row" for="fireDamageIPlus">
                     <div class="weui-cell__hd">
@@ -204,7 +223,7 @@
                     发动机涉水损失险
                 </div>
                 <div class="weui-cell__ft">
-                    <input class="weui-switch" type="checkbox"/>
+                    <input class="weui-switch" id="wadeI" type="checkbox"/>
                 </div>
                 <label class="weui-row" for="wadeIPlus">
                     <div class="weui-cell__hd">
@@ -246,6 +265,79 @@
             $(".insurance_main_plus").show();
         } else {
             $(".insurance_main_plus").hide();
+            $("#damageIPlus").attr("checked", false);
+        }
+    })
+
+    $("#insurance_name").picker({
+        title: "选择保险公司",
+        cols: [{
+            textAlign: 'center',
+            values: ['太平保险', '人寿保险', '人保车险']
+        }]
+    });
+    $("#thirdDutyI").picker({
+        title: "选择保额",
+        cols: [{
+            textAlign: 'center',
+            values: ['不投', '10万', '20万','30万']
+        }
+        ],
+    });
+      $("#driverDutyI").picker({
+        title: "选择保额",
+        cols: [{
+            textAlign: 'center',
+            values: ['不投', '10万', '20万','30万']
+        }
+        ],
+    });
+        $("#passengerDutyI").picker({
+        title: "选择保额",
+        cols: [{
+            textAlign: 'center',
+            values: ['不投', '10万', '20万','30万']
+        }
+        ],
+    });
+    $(document).on("click", "#damageIPlus", function () {
+        if (!$('#damageI').is(':checked')) {
+            $("#damageIPlus").attr("checked", false);
+        }
+    })
+    $(document).on("click", "#thirdDutyIPlus", function () {
+        if (!$('#thirdDutyI').is(':checked')) {
+            $("#thirdDutyIPlus").attr("checked", false);
+        }
+    })
+    $(document).on("click", "#driverDutyIPlus", function () {
+        if (!$('#driverDutyI').is(':checked')) {
+            $("#driverDutyIPlus").attr("checked", false);
+        }
+    })
+    $(document).on("click", "#passengerDutyIPlus", function () {
+        if (!$('#passengerDutyI').is(':checked')) {
+            $("#passengerDutyIPlus").attr("checked", false);
+        }
+    })
+    $(document).on("click", "#robbingIPlus", function () {
+        if (!$('#robbingI').is(':checked')) {
+            $("#robbingIPlus").attr("checked", false);
+        }
+    })
+    $(document).on("click", "#scratchIPlus", function () {
+        if (!$('#scratchI').is(':checked')) {
+            $("#scratchIPlus").attr("checked", false);
+        }
+    })
+    $(document).on("click", "#fireDamageIPlus", function () {
+        if (!$('#fireDamageI').is(':checked')) {
+            $("#fireDamageIPlus").attr("checked", false);
+        }
+    })
+    $(document).on("click", "#wadeIPlus", function () {
+        if (!$('#wadeI').is(':checked')) {
+            $("#wadeIPlus").attr("checked", false);
         }
     })
 </script>
