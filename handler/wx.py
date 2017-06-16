@@ -45,8 +45,9 @@ class Signature(BaseHandler):
 @route(r'/index', name='wx_index')  # 后台首页
 class IndexHandler(BaseHandler):
     def get(self):
-        insurance = Insurance.select().where(Insurance.active == 1,Insurance.hot == 1)[:3]
-        self.render('weixin/index.html',insurance=insurance)
+        # insurance = Insurance.select().where(Insurance.active == 1,Insurance.hot == 1)[:3]
+        # self.render('weixin/index.html',insurance=insurance)
+        self.render('weixin/index.html')
 
 @route(r'/insurance/(\d+)', name='wx_insurance')  # 后台首页
 class InsuranceHandler(BaseHandler):

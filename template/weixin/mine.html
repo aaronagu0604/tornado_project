@@ -2,79 +2,151 @@
 {% block css %}
 <title>我的界面</title>
 <style>
-#myinfo {
+    .weui-content {
+    background: #f5f5f5;
+}
+    .user-name {
+    color: #fff;
+    font-weight: 600;
+    font-size: 16px;
+}
+    .user-grade {
+    color: #FC0;
+    margin: 2px 0;
+    font-size: 13px;
+}
+.wy-center-top {
     width:100%;
+    overflow:hidden;
+    background:url(../../style/wximg/zhanghubeijing.jpg) no-repeat;
+    background-size:cover;
 }
-#userhead {
-    margin-left:10%;
-    width:4rem;
+
+.center-alloder {
+    padding: 0;
+    font-size: 14px;
+    color: #333;
 }
-#
+.wy-cell {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+}
+.center-list-icon {
+    width: 20px;
+    height: auto;
+}
+.center-list-txt {
+    font-size: 14px;
+    color: #333;
+    line-height: 20px;
+}
+
+.weui-panel__hd {
+    padding: 10px 15px 10px 10px;
+}
+.weui-panel__hd:after {
+    left: 10px;
+}
+
+.center-ordersModule{text-align:center; display:block; padding:10px 0; position:relative;}
+.center-ordersModule .imgicon{display:inline-block; height:24px; text-align:center; margin-bottom:5px;}
+.center-ordersModule .imgicon img{height:24px; width:auto;}
+.center-ordersModule .name{font-size:12px; color:#333;}
 </style>
 {% endblock %}
 {% block content %}
-<div style="height:8rem;background:url('../../style/wximg/zhanghubeijing.jpg');" class="weui-flex">
-    <!--<img  id="myinfo" src="../../style/wximg/zhanghubeijing.jpg"/>-->
-    <div>
-        <img id="userhead" src="../../style/wximg/img_mine_head.png"/>
+<div class='weui-content'>
+    <div class="wy-center-top">
+    <div class="weui-media-box weui-media-box_appmsg">
+      <div class="weui-media-box__hd"><img class="weui-media-box__thumb radius" src="./../style/wximg/img_mine_head.png" alt=""></div>
+      <div class="weui-media-box__bd">
+        <h4 class="weui-media-box__title user-name">132****9257</h4>
+        <p class="user-grade">门店：西安金倍利嘉</p>
+      </div>
     </div>
-    <div id="userfront" class="weui-flex__item">
-        <div style="margin-top:2rem;">心灵鸡汤</div>
-        <p>13289269257</p>
-        <p>门店 <span>已审核</span></p>
+  </div>
+
+<div class="weui-panel weui-panel_access">
+    <div class="weui-panel__hd">
+      <a href="#" class="weui-cell weui-cell_access center-alloder">
+        <div class="weui-cell__bd wy-cell">
+          <div class="weui-cell__hd"><img src="./../style/wximg/category.png" alt="" class="center-list-icon"></div>
+          <div class="weui-cell__bd weui-cell_primary"><p class="center-list-txt">全部订单</p></div>
+        </div>
+        <span class="weui-cell__ft"></span>
+      </a>
     </div>
-</div>
-<div class="weui-cells">
-    <a class="weui-cell weui-cell_access" href="/insurance_orders">
-        <div class="weui-cell__bd">
-            <p>订单列表</p>
+    <div class="weui-panel__bd">
+      <div class="weui-flex">
+        <div class="weui-flex__item">
+          <a href="#" class="center-ordersModule">
+            <span class="weui-badge" style="position: absolute;top:5px;right:10px; font-size:10px;">2</span>
+            <div class="imgicon"><img src="./../style/wximg/category.png" /></div>
+            <div class="name">待核价</div>
+          </a>
         </div>
-        <div class="weui-cell__ft">
+        <div class="weui-flex__item">
+          <a href="#" class="center-ordersModule">
+            <span class="weui-badge" style="position: absolute;top:5px;right:10px; font-size:10px;">1</span>
+            <div class="imgicon"><img src="./../style/wximg/category.png" /></div>
+            <div class="name">待支付</div>
+          </a>
         </div>
-    </a>
-    <a class="weui-cell weui-cell_access" href="/bound_mobile">
-        <div class="weui-cell__bd">
-            <p>绑定手机号</p>
+        <div class="weui-flex__item">
+          <a href="#" class="center-ordersModule">
+            <div class="imgicon"><img src="./../style/wximg/category.png" /></div>
+            <div class="name">待出单</div>
+          </a>
         </div>
-        <div class="weui-cell__ft">
+        <div class="weui-flex__item">
+          <a href="#" class="center-ordersModule">
+            <span class="weui-badge" style="position: absolute;top:5px;right:10px; font-size:10px;">2</span>
+            <div class="imgicon"><img src="./../style/wximg/category.png" /></div>
+            <div class="name">已完成</div>
+          </a>
         </div>
-    </a>
-    <a class="weui-cell weui-cell_access" href="/user_childrens">
-        <div class="weui-cell__bd">
-            <p>下线列表</p>
+      </div>
+    </div>
+  </div>
+<div class="weui-panel">
+        <div class="weui-panel__bd">
+          <div class="weui-media-box weui-media-box_small-appmsg">
+            <div class="weui-cells">
+              <a class="weui-cell weui-cell_access" href="record.html">
+                <div class="weui-cell__hd"><img src="./../style/wximg/mine.png" alt="" class="center-list-icon"></div>
+                <div class="weui-cell__bd weui-cell_primary">
+                  <p class="center-list-txt">收货地址</p>
+                </div>
+                <span class="weui-cell__ft"></span>
+              </a>
+              <a class="weui-cell weui-cell_access" href="shoucang.html">
+                <div class="weui-cell__hd"><img src="./../style/wximg/mine.png" alt="" class="center-list-icon"></div>
+                <div class="weui-cell__bd weui-cell_primary">
+                  <p class="center-list-txt">联系客服</p>
+                </div>
+                <span class="weui-cell__ft"></span>
+              </a>
+              <a class="weui-cell weui-cell_access" href="address_list.html">
+                <div class="weui-cell__hd"><img src="./../style/wximg/mine.png" alt="" class="center-list-icon"></div>
+                <div class="weui-cell__bd weui-cell_primary">
+                  <p class="center-list-txt">修改密码</p>
+                </div>
+                <span class="weui-cell__ft"></span>
+              </a>
+              <a class="weui-cell weui-cell_access" href="card.html">
+                <div class="weui-cell__hd"><img src="./../style/wximg/mine.png" alt="" class="center-list-icon"></div>
+                <div class="weui-cell__bd weui-cell_primary">
+                  <p class="center-list-txt">退出登陆</p>
+                </div>
+                <span class="weui-cell__ft"></span>
+              </a>
+
+            </div>
+          </div>
         </div>
-        <div class="weui-cell__ft">
-        </div>
-    </a>
-    <a class="weui-cell weui-cell_access" href="/rake_back_setting">
-        <div class="weui-cell__bd">
-            <p>返佣配置</p>
-        </div>
-        <div class="weui-cell__ft">
-        </div>
-    </a>
-    <a class="weui-cell weui-cell_access" href="/user_income">
-        <div class="weui-cell__bd">
-            <p>我的收入</p>
-        </div>
-        <div class="weui-cell__ft">
-        </div>
-    </a>
-    <a class="weui-cell weui-cell_access" href="/user_income_record">
-        <div class="weui-cell__bd">
-            <p>收入明细</p>
-        </div>
-        <div class="weui-cell__ft">
-        </div>
-    </a>
-    <a class="weui-cell weui-cell_access" href="/user_address">
-        <div class="weui-cell__bd">
-            <p>我的收货地址</p>
-        </div>
-        <div class="weui-cell__ft">
-        </div>
-    </a>
-</div>
+      </div>
+    </div>
 {% endblock %}
 {% block js %}
 <script>
