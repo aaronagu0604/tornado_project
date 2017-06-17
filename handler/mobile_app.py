@@ -1364,8 +1364,11 @@ class MobileNewOrderHandler(MobileBaseHandler):
                         db_store_price += (spp.score * int(p['quantity']))
                     else:
                         return False, u'入参错误 order_type'
-                if db_store_price != float(item['price']):
-                    return False, u'store价格有误'
+                app_price = round(float(item['price']), 2)
+                db_store_price = round(db_store_price, 2)
+                if not app_price == db_store_price:
+                    logging.info('%s, %s' % (db_store_price, app_price))
+                    return False, u'store价格有误！暂不能支付'
                 db_total_price += db_store_price
             if total_price == db_total_price and total_price == 0:
                 return False, u'商品价格错误'
