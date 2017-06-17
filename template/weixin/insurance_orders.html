@@ -18,11 +18,15 @@
     }
     hr{
         height:0.3px;border:none;border-top:1px solid #e7e7e7;
+        margin-top: 10px;
     }
-    /*.cell_div{*/
-        /*background-color: red;*/
-        /*!*display: inline-block;*!*/
-    /*}*/
+    .cell_div{
+        margin-top: 15px;
+        margin-bottom: 15px;
+    }
+    .row_front{
+        margin-left: 10px;
+    }
 </style>
 {% endblock %}
 {% block content %}
@@ -85,7 +89,7 @@
                 jQuery("#list").append(
                         '<hr/>'+
                         '<div class="cell_div">'+
-                        '<p style="display: inline-block">'+'订单编号:U1285D068I9963'+ '</p> '+'<p class="statue">'+'待付款'+ '</p> '+ '</div> '+
+                        '<p class="row_front" style="display: inline-block">'+'订单编号:U1285D068I9963'+ '</p> '+'<p class="statue">'+'待付款'+ '</p> '+ '</div> '+
                         '<a class="weui-cell cell_a" href="/insurance_order_detail"> ' +
                         '<div class="weui-cell__bd"> ' +
                         '<p >'+'保险公司:人保车险'+ '</p> '+
@@ -97,7 +101,7 @@
                         +'<p class="tel">'+'13389202678'+ '</p> ' +
                         '</div> ' +
                         '</a>'+
-                        '<p>'+'订单金额:1020'+ '</p> ');
+                        '<p class="price row_front">'+'订单金额:1020'+ '</p> ');
             };
         })
     }
@@ -116,7 +120,7 @@
                 jQuery("#list").append(
                         '<hr/>'+
                         '<div class="cell_div">'+
-                        '<p style="display: inline-block">'+'订单编号:U1285D068I9963'+ '</p> '+'<p class="statue">'+'待付款'+ '</p> '+ '</div> '+
+                        '<p class="row_front" style="display: inline-block">'+'订单编号:U1285D068I9963'+ '</p> '+'<p class="statue">'+'待付款'+ '</p> '+ '</div> '+
                         '<a class="weui-cell cell_a" href="/insurance_order_detail"> ' +
                             '<div class="weui-cell__bd"> ' +
                                '<p >'+'保险公司:人保车险'+ '</p> '+
@@ -128,7 +132,7 @@
                                 +'<p class="tel">'+'13389202678'+ '</p> ' +
                             '</div> ' +
                         '</a>'+
-                       '<p>'+'订单金额:1020'+ '</p> ')
+                       '<p class="price row_front">'+'订单金额:1020'+ '</p> ')
                         ;
             };
             if (toend) {
