@@ -349,12 +349,12 @@ class MobileReceiveOrderHandler(MobileBaseHandler):
             sub_orders[0].receiving_time = now
             sub_orders[0].save()
             # 收完货，把该订单的钱同步给销售方
-            salestore = sub_orders[0].saler_store
-            salestore.price += sub_orders[0].price
-            salestore.save()
-            process_log = u'订单号：%s' % sub_orders[0].order.ordernum
-            MoneyRecord.create(user=salestore.users[0], store=salestore, process_type=1, type=3, process_message='售出',
-                               process_log=process_log, money=sub_orders[0].price, status=1, apply_time=now)
+            # salestore = sub_orders[0].saler_store
+            # salestore.price += sub_orders[0].price
+            # salestore.save()
+            # process_log = u'订单号：%s' % sub_orders[0].order.ordernum
+            # MoneyRecord.create(user=salestore.users[0], store=salestore, process_type=1, type=3, process_message='售出',
+            #                    process_log=process_log, money=sub_orders[0].price, status=1, apply_time=now)
             if len(set([sub_order.status for sub_order in sub_orders])) == 1:
                 sub_orders[0].order.status = 3
                 sub_orders[0].order.save()
