@@ -1490,6 +1490,7 @@ class MobileNewOrderHandler(MobileBaseHandler):
                 sub_order.score = item['price'] if order_type == 2 else 0
                 sub_order.status = order.status
                 sub_order.save()
+                storeProductNames = ''
                 for product in item['products']:
                     sppids.append(product['sppid'])
                     spp = StoreProductPrice.get(id=product['sppid'])
@@ -1501,6 +1502,11 @@ class MobileNewOrderHandler(MobileBaseHandler):
                     order_item.quantity = product['quantity']
                     order_item.price = spp.price if order_type == 1 else spp.score
                     order_item.save()
+                    storeProductNames += spp.product_release.product.name
+                # 给经销商发短信
+                sms = {'mobile': sub_order.saler_store.mobile, 'body': u'订单号：%s 所购商品：%s' % (order.ordernum, storeProductNames),
+                       'signtype': '1', 'isyzm': 'placeOrderToServer'}  # 有客户下单请查看
+                create_msg(simplejson.dumps(sms), 'sms')  # 下单
             result['data']['order_id'] = order.id
             result['data']['payment'] = payment
             result['data']['pay_info'] = pay_order(payment, total_price, order.ordernum, u'车装甲普通商品')
@@ -1514,6 +1520,7 @@ class MobileNewOrderHandler(MobileBaseHandler):
                 result['msg'] = '支付成功'
             if is_shop_cart == '1':
                 ShopCart.delete().where(ShopCart.store == user.store, ShopCart.store_product_price << sppids).execute()
+
         else:
             result['msg'] = u"传入参数异常"
         self.write(simplejson.dumps(result))
@@ -1810,7 +1817,7 @@ class MobilNewInsuranceOrderHandler(MobileBaseHandler):
             result['data']['order_id'] = order.id
             result['data']['order_price_id'] = order_price.id
 
-            # # 给保险订单管理人发短信 '亲，有人下单请去受理呦！订单号：%s 订单信息：%s'
+            # # 给保险订单管理人发短信 '亲，有人下单请去受理呦！订单号：%s 订单信息：%s' 客服反映不需要
             # sms = {'mobile': mobiles, 'body': [order.ordernum, order.current_order_price.insurance.name], 'signtype': '1',
             #        'isyzm': 'placeOrderSys'}
             # create_msg(simplejson.dumps(sms), 'sms')

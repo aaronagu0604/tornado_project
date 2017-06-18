@@ -22,7 +22,7 @@ def change_order_status(ordernum, trade_no):
     is_insurance_order = False
     try:
         is_wx_qrcode_pay = ordernum.find('WXQRCODE')
-        if is_wx_qrcode_pay >=0:
+        if is_wx_qrcode_pay >= 0:
             ordernum = ordernum[:is_wx_qrcode_pay]
         is_wx_app_pay = ordernum.find('WX')
         if is_wx_app_pay >= 0:
@@ -84,7 +84,7 @@ def send_new_insurance_order_msg(mobile, storeName, area_code, ordernum, iName, 
                'signtype': '1', 'isyzm': 'paySuccess'}
         create_msg(simplejson.dumps(sms), 'sms')
         # to 财务
-        summary = u'订单总额 %s, 客户 %s'%(price, mobile)
+        summary = u'订单总额 %s, 客户 %s' % (price, mobile)
         sms = {'mobile': mobiles, 'body': [storeName, addrs, ordernum, iName, paymentV, gift, summary],
                'signtype': '1', 'isyzm': 'paySuccess'}
         create_msg(simplejson.dumps(sms), 'sms')
@@ -235,7 +235,7 @@ class MobileUPayCallbackHandler(RequestHandler):
                     create_msg(simplejson.dumps({'payment': 3, 'order_id': ps['orderId']}), 'pay_success')
                     if is_insurance_order and order:
                         send_new_insurance_order_msg(order.delivery_tel, order.store.name, order.store.area_code,
-                                                     order.ordernum, order.insurance.name, order.payment,
+                                                     order.ordernum, order.current_order_price.insurance.name, order.payment,
                                                      order.current_order_price.gift_policy, order.sms_content,
                                                      order.current_order_price.total_price)
                     result['return_code'] = 'SUCCESS'

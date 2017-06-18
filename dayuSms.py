@@ -69,7 +69,7 @@ def sendmsg(mobile, content, isyzm):
         elif isyzm == 'checkStoreDecline': #申请入驻审核 不通过
             req.sms_param = ""
             req.sms_template_code = "SMS_25225457"
-        elif isyzm == 'placeOrderToServer': #普通商品下单通知卖家
+        elif isyzm == 'placeOrderToServer':    # 普通商品下单通知卖家
             req.sms_param = "{\"product\":\"%s\"}"%content
             req.sms_template_code = "SMS_25985258"
         elif isyzm == 'accountNotice':  #已经给您的${bankName}尾号为${bankNum}的银行卡汇款，将于两小时内到账，请注意查收。

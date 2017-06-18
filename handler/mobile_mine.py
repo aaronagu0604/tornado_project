@@ -344,9 +344,7 @@ class MobileReceiveOrderHandler(MobileBaseHandler):
             return
         sub_orders = SubOrder.select().join(Order).where((SubOrder.buyer_store == user.store) & (SubOrder.id == soid) & (SubOrder.status == 2))
         if sub_orders.count() > 0:
-            now = int(time.time())
             sub_orders[0].status = 3
-            sub_orders[0].receiving_time = now
             sub_orders[0].save()
             # 收完货，把该订单的钱同步给销售方
             # salestore = sub_orders[0].saler_store
@@ -684,11 +682,14 @@ class MobileInsuranceOrderDetailHandler(MobileBaseHandler):
             iList['mainprice'] = str(iList['mainprice'])
         if 'subjoinprice' in iList.keys():
             iList['subjoinprice'] = str(iList['subjoinprice'])
+        gift_summary = ''
         if insuranceorder.current_order_price.gift_policy == 1:
             gift_policy = '油品'
             commission = str(insuranceorder.current_order_price.driver_lube_num+insuranceorder.current_order_price.store_lube_num) + u'桶'
-        gift_summary = ''
-        if insuranceorder.current_order_price.gift_policy == 3:
+        elif insuranceorder.current_order_price.gift_policy == 2:
+            gift_policy = '现金'
+            commission = str(insuranceorder.current_order_price.cash) + u'元'
+        elif insuranceorder.current_order_price.gift_policy == 3:
             lubenum = insuranceorder.current_order_price.driver_lube_num+insuranceorder.current_order_price.store_lube_num
             scorenum = insuranceorder.current_order_price.score
             if lubenum and scorenum:
@@ -701,10 +702,8 @@ class MobileInsuranceOrderDetailHandler(MobileBaseHandler):
                 gift_summary = ''
                 gift_policy = '积分'
             commission = str(insuranceorder.current_order_price.driver_lube_num+insuranceorder.current_order_price.store_lube_num) + u'桶' +str(insuranceorder.current_order_price.score) + '分'
-        elif insuranceorder.current_order_price.gift_policy == 2:
-            gift_policy = '现金'
-            commission = str(insuranceorder.current_order_price.cash) + u'元'
         else:
+            gift_policy = u'其它'
             commission = u'无'
         result["flag"] = 1
         deadlineWarning = ''
