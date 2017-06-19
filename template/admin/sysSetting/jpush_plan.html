@@ -78,6 +78,7 @@
                     <th style="width:15%;text-align:center;">开始时间</th>
                     <th style="width:15%;text-align:center;">结束时间</th>
                     <th style="width:15%;text-align:center;">JPushMSG</th>
+                    <th style="width:15%;text-align:center;">测试环境</th>
                     <th style="width:15%;text-align:center;">操作</th>
                 </tr>
                 </thead>
@@ -98,6 +99,9 @@
                     </td>
                     <td align=center>
                         <span style="color: blue">{{plan.intro.id}}/{{plan.intro.title or '---'}}/{{plan.intro.link_type}}</span>
+                    </td>
+                    <td align=center >
+                        <span style="color: blue">{{plan.istest==1 and '是' or '否'}}</span>
                     </td>
                     <td align=center >
                         <button type="button" onclick="change_status({{plan.id}}, 1)" class="btn btn-xs btn-warning" >
@@ -128,6 +132,7 @@
                     <th style="width:15%;text-align:center;">开始时间</th>
                     <th style="width:15%;text-align:center;">结束时间</th>
                     <th style="width:15%;text-align:center;">JPushMSG</th>
+                    <th style="width:15%;text-align:center;">测试环境</th>
                     <th style="width:15%;text-align:center;">操作</th>
                 </tr>
                 </thead>
@@ -155,6 +160,9 @@
                     </td>
                     <td align=center>
                         <span style="color: blue">{{plan.intro.id}}/{{plan.intro.content}}</span>
+                    </td>
+                    <td align=center >
+                        <span style="color: blue">{{plan.istest==1 and '是' or '否'}}</span>
                     </td>
                      <td align=center >
                         <button type="button" onclick="cancle_plan_status({{plan.id}})" class="btn btn-xs btn-warning" >

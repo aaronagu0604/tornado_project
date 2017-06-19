@@ -2669,8 +2669,7 @@ class SendMsgHandler(AdminBaseHandler):
                         num = number.split(',')
                         link = ''
                         if int(article):
-                            link = 'http://192.168.0.113:8890/user/showarticle/%s' % article
-                            #link = 'http://admin.520czj.com/user/showarticle/%s' % article
+                            link = 'http://admin.520czj.com/user/showarticle/%s' % article
                         for n in num:
                             sms = {'apptype': 1, 'body': content, 'jpushtype':'alias', 'alias': n, 'images':img_url, 'extras':{'link':link}}
                             create_msg(simplejson.dumps(sms), 'jpush')
