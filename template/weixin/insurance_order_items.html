@@ -103,7 +103,7 @@
                     第三者责任险
                 </div>
                 <div class="weui-cell__ft">
-                    <input class="weui-switch_insurance " checked="checked" id="thirdDutyI" type="text" value="不投"/>
+                    <input class="weui-switch_insurance " id="thirdDutyI" type="text" value="不投"/>
                 </div>
                 <label class="weui-row" for="thirdDutyIPlus">
                     <div class="weui-cell__hd">
@@ -188,8 +188,9 @@
                 <div class="insurance">
                     车身划痕损失险
                 </div>
+
                 <div class="weui-cell__ft">
-                    <input class="weui-switch" id="scratchI" type="checkbox"/>
+                    <input class="weui-switch_insurance " id="scratchI" type="text" value="不投"/>
                 </div>
                 <label class="weui-row" for="scratchIPlus">
                     <div class="weui-cell__hd">
@@ -288,8 +289,8 @@
         onClose: function () {
             if ($('#thirdDutyI').val() != "不投") {
                 $('#thirdDutyI').css("background-color", "#04be02").css("color", "#ffffff")
-            }else{
-              $('#thirdDutyI').css("background-color", "#ffffff").css("color", "#262626")
+            } else {
+                $('#thirdDutyI').css("background-color", "#ffffff").css("color", "#262626")
             }
         }
     });
@@ -303,8 +304,8 @@
         onClose: function () {
             if ($('#driverDutyI').val() != "不投") {
                 $('#driverDutyI').css("background-color", "#04be02").css("color", "#ffffff")
-            }else{
-              $('#driverDutyI').css("background-color", "#ffffff").css("color", "#262626")
+            } else {
+                $('#driverDutyI').css("background-color", "#ffffff").css("color", "#262626")
             }
         }
     });
@@ -318,8 +319,23 @@
         onClose: function () {
             if ($('#passengerDutyI').val() != "不投") {
                 $('#passengerDutyI').css("background-color", "#04be02").css("color", "#ffffff")
-            }else{
-              $('#passengerDutyI').css("background-color", "#ffffff").css("color", "#262626")
+            } else {
+                $('#passengerDutyI').css("background-color", "#ffffff").css("color", "#262626")
+            }
+        }
+    });
+    $("#scratchI").picker({
+        title: "选择保额",
+        cols: [{
+            textAlign: 'center',
+            values: ['不投', '10万', '20万', '30万']
+        }
+        ],
+        onClose: function () {
+            if ($('#scratchI').val() != "不投") {
+                $('#scratchI').css("background-color", "#04be02").css("color", "#ffffff")
+            } else {
+                $('#scratchI').css("background-color", "#ffffff").css("color", "#262626")
             }
         }
     });
@@ -332,6 +348,12 @@
         console.log($('#thirdDutyI').val());
         if ($('#thirdDutyI').val() == "不投") {
             $("#thirdDutyIPlus").attr("checked", false);
+        }
+    })
+    $(document).on("click", "#scratchIPlus", function () {
+        console.log($('#scratchI').val());
+        if ($('#scratchI').val() == "不投") {
+            $("#scratchIPlus").attr("checked", false);
         }
     })
     $(document).on("click", "#driverDutyIPlus", function () {
@@ -348,11 +370,6 @@
     $(document).on("click", "#robbingIPlus", function () {
         if (!$('#robbingI').is(':checked')) {
             $("#robbingIPlus").attr("checked", false);
-        }
-    })
-    $(document).on("click", "#scratchIPlus", function () {
-        if (!$('#scratchI').is(':checked')) {
-            $("#scratchIPlus").attr("checked", false);
         }
     })
     $(document).on("click", "#fireDamageIPlus", function () {
