@@ -58,27 +58,27 @@
 						<th style="text-align:center;">返积分</th>
 					</tr>
 					</thead>
-
+					<tbody>
 					<tr>
                         <td style="color:#438bca;">
-                            <select class="form-control" name="insurance" id="sel_type" style="width:130px; margin:0 auto;">
+                            <select class="form-control" name="insurance" id="sel_type">
                                 <option value="0" >--请选择--</option>
                                 {% for c in insurances %}
                                 <option value="{{c.id}}">{{c.name}}</option>
                                 {% endfor %}
                             </select>
                         </td>
-                        <td>
-							<select name="province_code" id="province_code" onchange="province_change(this.value,0)" data-default="{{default_province}}" style="height:28px;margin-left: -10px;margin-top: 10px;border-radius:4px;" >
+					<td>
+							<select name="province_code" id="province_code" onchange="province_change(this.value,0)" data-default="{{default_province}}">
 								<option value="">--请选择省份--</option>
 								{% for area in items %}
 								<option value="{{area.code}}" {{area.code==default_province and 'selected' or ''}}>{{area.name}}</option>
 								{% endfor %}
 							</select>
-							<select name="city_code" id="city_code" onchange="city_change(this.value,0)" data-default="{{default_city}}" style="height:28px;margin-left: 10px;margin-top: 10px;border-radius:4px;" >
+							<select name="city_code" id="city_code" onchange="city_change(this.value,0)" data-default="{{default_city}}">
 								<option value="">--请选择城市--</option>
 							</select>
-							<select name="district_code" id="district_code" data-default="{{default_district}}" style="height:28px;margin-left: 10px;margin-top: 10px;border-radius:4px;">
+							<select name="district_code" id="district_code" data-default="{{default_district}}">
 								<option value="">--请选择区县--</option>
 							</select>
                         </td>
@@ -89,15 +89,14 @@
 							<div>
 								<th><input id="cash_ok" style="visibility:visible;" type="checkbox" name="cash_ok">开通返现</th>
 							</div>
-							<!--<div>-->
-								<!--<th><input id="score_ok" style="visibility:visible;" type="checkbox" name="score_ok">开通活动</th>-->
-							<!--</div>-->
+							<div>
+								<th><input id="score_ok" style="visibility:visible;" type="checkbox" name="score_ok">开通活动</th>
+							</div>
 						</td>
                         <td>
                             <input type="submit" value="发布新区域" style="padding:4px 5px;border:1px solid #438bca;color:#438bca;border-radius:4px;font-size:12px;text-decoration:none;">
                         </td>
                     </tr>
-					<tbody>
 					{% for r in areas %}
 					<tr>
 						<td>{{r.insurance.name}}</td>

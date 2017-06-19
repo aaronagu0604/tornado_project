@@ -46,7 +46,7 @@ class showArticle(BaseHandler):
     def get(self, a_id):
         a_id = int(a_id) if a_id else 0
         try:
-            article = JPush.get(id=a_id)
+            article = JPushActive.get(id=a_id)
             self.render('admin/user/showArticle.html', article=article)
         except Exception:
             self.write('活动不存在，或者已下线')

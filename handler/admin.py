@@ -2364,10 +2364,10 @@ class InsuranceList(AdminBaseHandler):
         if not area_code:
             self.write('没有选择发布区域！')
             return
-        if not (lube_ok or cash or score_ok):
+        if not (lube_ok or cash_ok or score_ok):
             self.write('没有选择支持政策！')
             return
-        print area_code,province,city,district
+
         insuranceareas = InsuranceArea.select().where(InsuranceArea.insurance == iid,InsuranceArea.area_code==area_code)
         if insuranceareas.count():
             self.write('不能重复添加！')
@@ -2380,7 +2380,7 @@ class InsuranceList(AdminBaseHandler):
         ia.lube_policy = ''
         ia.cash_ok = 1 if cash_ok else 0
         ia.cash_policy = ''
-        ia.score_ok = 0 #1 if score_ok else 0
+        ia.score_ok = 1 if score_ok else 0
         ia.score_policy = ''
         ia.save()
         self.redirect('/admin/insurance')
@@ -2668,7 +2668,8 @@ class SendMsgHandler(AdminBaseHandler):
                         num = number.split(',')
                         link = ''
                         if int(article):
-                            link = 'http://admin.520czj.com/user/showarticle/%s' % article
+                            link = 'http://192.168.0.113:8890/user/showarticle/%s' % article
+                            #link = 'http://admin.520czj.com/user/showarticle/%s' % article
                         for n in num:
                             sms = {'apptype': 1, 'body': content, 'jpushtype':'alias', 'alias': n, 'images':img_url, 'extras':{'link':link}}
                             create_msg(simplejson.dumps(sms), 'jpush')
@@ -2804,10 +2805,40 @@ class SendMsgHandler(AdminBaseHandler):
 @route(r'/admin/check_jpush', name='admin_check_jpush')  # 推送计划
 class CheckJPushHandler(AdminBaseHandler):
     def get(self):
-        plan_lists = JPushRecord.select()
+        record_lists = JPushRecord.select().where(JPushRecord.check == 0,JPushRecord.send == 0)
+        msgs = JPushMsg.select().where(JPushMsg.active == 1)
+        plan_lists = JPushPlan.select().where(JPushPlan.active == 1)
+        plan_type = {
+            1:'新注册用户jpush 计划',
+            2:'经常出单用户（返油）jpush计划',
+            3:'经常出单用户（返现）jpush计划'
+        }
+        self.render('admin/sysSetting/jpush_plan.html', active='jp_plan',
+                    record_lists=record_lists,msgs=msgs,plan_type=plan_type,
+                    plan_lists = plan_lists)
 
-        self.render('admin/sysSetting/jpush_plan.html', active='jp_plan', plan_lists=plan_lists)
-
+    def post(self):
+        title = self.get_body_argument('tile','')
+        plan_type = self.get_body_argument('plan_type', '')
+        rate = self.get_body_argument('rate', '')
+        start_time = self.get_body_argument('start_time', '')
+        end_time = self.get_body_argument('end_time', '')
+        intro = self.get_body_argument('intro','')
+        intro = int(intro) if intro else 0
+        active = self.get_body_argument('active', '')
+        if not (title and plan_type and rate and start_time and end_time and intro and active):
+            self.write('参数不完整，请重新填写')
+        print intro
+        jp = JPushPlan()
+        jp.title = title
+        jp.type = plan_type
+        jp.rate = rate
+        jp.start_time = start_time
+        jp.end_time = end_time
+        jp.intro = intro
+        jp.active = 1 if active else 0
+        jp.save()
+        self.redirect('/admin/check_jpush')
 
 @route(r'/admin/log', name='admin_log')  # 系统日志
 class LogHandler(AdminBaseHandler):

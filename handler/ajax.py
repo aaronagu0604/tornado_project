@@ -2046,7 +2046,7 @@ class JPushMSGStatusHandler(BaseHandler):
     def post(self):
         result = {'flag': 1, 'msg': '保存成功', 'data': ''}
         id = int(self.get_body_argument('id',0))
-        state_type = self.get_body_argument('state_type', None)
+        state_type = self.get_body_argument('state_type', 0)
 
 
         if not (id and state_type):
@@ -2055,9 +2055,33 @@ class JPushMSGStatusHandler(BaseHandler):
             self.write(simplejson.dumps(result))
             return
         try:
-            jpushmsg = JPushMsg.get(id=int(id))
-            jpushmsg.active = 0
+            jpushmsg = JPushRecord.get(id=int(id))
+            jpushmsg.check = int(state_type) if state_type == '1' else -1
             jpushmsg.save()
+        except Exception,e:
+            result['flag'] = 0
+            result['msg'] = '更新状态失败：%s'%e
+        self.write(simplejson.dumps(result))
+
+@route(r'/ajax/cancle_plan_status', name='ajax_cancle_plan_status')  # 极光消息状态变更
+class CanclePlanStatusHandler(BaseHandler):
+
+    def check_xsrf_cookie(self):
+        pass
+
+    def post(self):
+        result = {'flag': 1, 'msg': '保存成功', 'data': ''}
+        id = int(self.get_body_argument('id',0))
+
+        if not (id):
+            result['flag'] = 0
+            result['msg'] = u'参数不全'
+            self.write(simplejson.dumps(result))
+            return
+        try:
+            jp = JPushPlan.get(id=int(id))
+            jp.active = 0
+            jp.save()
         except Exception,e:
             result['flag'] = 0
             result['msg'] = '更新状态失败：%s'%e

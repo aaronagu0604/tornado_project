@@ -10,6 +10,7 @@ class JPushSearch():
         localtime = time.localtime()
         week = time.strftime('%w', localtime)
         date = time.strftime('%Y-%m-%d', localtime)
+        print week,date
         if '0' == rate:
             check_rate = True
         elif week in rate.split(','):
@@ -21,7 +22,7 @@ class JPushSearch():
         now_time = time.strftime('%Y-%m-%d', time.localtime())
         start_time = time.mktime(time.strptime(now_time + ' ' + start_time,'%Y-%m-%d %H:%M'))
         end_time = time.mktime(time.strptime(now_time + ' ' + end_time,'%Y-%m-%d %H:%M'))
-
+        print start_time,end_time
         if check_rate:
             return start_time, end_time
         else:

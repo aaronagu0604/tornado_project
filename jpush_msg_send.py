@@ -55,8 +55,10 @@ class JPushSend():
 
     def get_checked_msg(self):
         now = time.time()
+        print now
         need_send_msgs = JPushRecord.select().where((JPushRecord.start_time <= now) & (now <= JPushRecord.end_time) &
-                                                    (JPushRecord.check == 1) & (JPushRecord.send == 1))
+                                                    (JPushRecord.check == 1) & (JPushRecord.send == 0))
+        print need_send_msgs.count()
         for msg in need_send_msgs:
             mobile = []
             if msg.type == 1:  # 新注册用户jpush 计划
@@ -74,19 +76,23 @@ class JPushSend():
                 pass
             elif msg.type == 7:
                 pass
-            if msg.intro.static:
+            print mobile,msg.intro.link_type
+            if msg.intro.link_type==0:
                 link = ''
                 if msg.intro.jpush_active:
                     link = 'http://admin.520czj.com/user/showarticle/%d' % msg.intro.jpush_active.id
 
                 j = 0
                 jpush_msg = JPushMsg.get(id=msg.intro.id)
+                print j*1000 < len(mobile)
                 while j*1000 < len(mobile):
                     sms = {'apptype': 1, 'body': jpush_msg.content, 'jpushtype': 'alias', 'extras': {'link': link},
                            'alias': mobile[j*1000:(j+1)*1000], 'images': jpush_msg.img_url}
                     print sms
                     create_msg(simplejson.dumps(sms), 'jpush')
                     j += 1
+                msg.send = 1
+                msg.save()
             else:    # 动态url
                 pass
 

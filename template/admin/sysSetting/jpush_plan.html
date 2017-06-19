@@ -24,32 +24,40 @@
                 {{xsrf()}}
                  <div class="form-group has-success" id="images">
                     <p><label class="col-sm-4 control-label">plan标题</label></p>
-                    <input type="text" id="img_url" name="image_url" class="form-control" value="" maxlength="100"  placeholder="B计划" class="col-sm-8"/>
+                    <input type="text" id="title" name="title" class="form-control" value="" maxlength="100"  placeholder="B计划" class="col-sm-8"/>
                  </div>
                 <div class="form-group has-success">
-                    <p><label class="col-sm-4 control-label">类型</label></p>
-                    <input type="text" name="image_url" class="form-control" value="" maxlength="100"  placeholder="B计划" class="col-sm-8"/>
-                </div>
-                <div class="form-group has-success">
-                    <p><label class="col-sm-4 control-label">频率</label></p>
-                    <input type="text" name="image_url" class="form-control" value="" maxlength="100"  placeholder="B计划" class="col-sm-8"/>
-                </div>
-                 <div class="form-group has-success">
-                    <p><label class="col-sm-4 control-label">时间</label></p>
-                    <input type="text" name="image_url" class="form-control" value="" maxlength="100"  placeholder="B计划" class="col-sm-8">
-                 </div>
-                <div class="form-group has-success">
-                    <div class="articles" style="margin-left:10px;">
-                        <select name="article_id" id="article_id" style="height:28px;margin-left: -10px;margin-top: 10px;border-radius:4px;" >
-                            <option value="0">--请选择活动文章，不需要可以不选--</option>
-                            {% for article in articles %}
-                            <option value="{{article.id}}">{{article.title}}</option>
+                    <div class="jpush_type" style="margin-left:10px;">
+                        <select name="plan_type" id="plan_type" style="height:28px;margin-left: -10px;margin-top: 10px;border-radius:4px;" >
+                            {% for k,v in plan_type.items() %}
+                            <option value="{{k}}">{{v}}</option>
                             {% endfor %}
                         </select>
                     </div>
                 </div>
                 <div class="form-group has-success">
-                    <input type="checkbox" id="save" name="send_type" value="1" /><label for="save" style="margin-right:20px;">启用</label>
+                    <p><label class="col-sm-4 control-label">频率</label></p>
+                    <input type="text" name="rate" id="rate" class="form-control" value="" maxlength="100"  placeholder="例0每天,1-7每周对应星期" class="col-sm-8"/>
+                </div>
+                 <div class="form-group has-success">
+                    <p><label class="col-sm-4 control-label">起始时间</label></p>
+                    <input type="text" name="start_time" id="start_time" class="form-control" value="" maxlength="100"  placeholder="例00:00" class="col-sm-8">
+                 </div>
+                <div class="form-group has-success">
+                    <p><label class="col-sm-4 control-label">结束时间</label></p>
+                    <input type="text" name="end_time" id="end_time" class="form-control" value="" maxlength="100"  placeholder="例23:00" class="col-sm-8">
+                 </div>
+                <div class="form-group has-success">
+                    <div class="msg" style="margin-left:10px;">
+                        <select name="intro" id="intro" style="height:28px;margin-left: -10px;margin-top: 10px;border-radius:4px;" >
+                            {% for msg in msgs %}
+                            <option value="{{msg.id}}">{{msg.content}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group has-success">
+                    <input type="checkbox" id="active" name="active" value="1" /><label for="active" style="margin-right:20px;">启用</label>
                 </div>
                 <div class="form-group has-success">
                     <input type="submit" name="sub" value="提 交" class="btn btn-outline btn-primary btn-sm">
@@ -74,7 +82,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                {% for plan in plan_lists %}
+                {% for plan in record_lists %}
                 <tr>
                     <td align=center>
                         <span style="color: blue">{{plan.title}}</span>
@@ -86,16 +94,70 @@
                         <span style="color: blue">{{plan.start_time|datetimeformat}}</span>
                     </td>
                     <td align=center >
-                        <span style="color: blue">{{plan.start_time|datetimeformat}}</span>
+                        <span style="color: blue">{{plan.end_time|datetimeformat}}</span>
                     </td>
                     <td align=center>
                         <span style="color: blue">{{plan.intro.title}}</span>
                     </td>
                     <td align=center >
-                        <button type="button" onclick="change_status({{plan.id}}, 2)" class="btn btn-xs btn-warning" >
+                        <button type="button" onclick="change_status({{plan.id}}, 1)" class="btn btn-xs btn-warning" >
                             通过
                         </button>
-                        <button type="button" onclick="change_status({{plan.id}}, 2)" class="btn btn-xs btn-warning" >
+                        <button type="button" onclick="change_status({{plan.id}}, 0)" class="btn btn-xs btn-warning" >
+                            拒绝
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-12">
+        <div class="panel panel-primary">
+            <div class="panel-body">
+                <h4>推送计划</h4>
+                <table class="table table-hover" id="tb_users" cellpadding="0" cellspacing="0" border="0" style="text-align:center;width:100%;">
+                <thead>
+                <tr >
+                    <th style="width:15%;text-align:center;">编号</th>
+                    <th style="width:15%;text-align:center;">标题</th>
+                    <th style="width:15%;text-align:center;">类型</th>
+                    <th style="width:15%;text-align:center;">频率</th>
+                    <th style="width:15%;text-align:center;">开始时间</th>
+                    <th style="width:15%;text-align:center;">结束时间</th>
+                    <th style="width:15%;text-align:center;">JPushMSG</th>
+                    <th style="width:15%;text-align:center;">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for plan in plan_lists %}
+                <tr>
+                    <td align=center >
+                        <!--onclick="set_plan_detail('{{plan.title}}',{{plan.type}},'{{plan.rate}}','{{plan.start_time}}','{{plan.end_time}}',{{plan.intro.id}})">-->
+                        <span style="color: blue">{{plan.id}}</span>
+                    </td>
+                    <td align=center>
+                        <span style="color: blue">{{plan.title}}</span>
+                    </td>
+                    <td align=center>
+                        <span style="color: blue">{{plan_type[plan.type]}}</span>
+                    </td>
+                    <td align=center >
+                        <span style="color: blue">{{plan.rate}}</span>
+                    </td>
+                    <td align=center >
+                        <span style="color: blue">{{plan.start_time}}</span>
+                    </td>
+                    <td align=center >
+                        <span style="color: blue">{{plan.end_time}}</span>
+                    </td>
+                    <td align=center>
+                        <span style="color: blue">{{plan.intro.id}}/{{plan.intro.content}}</span>
+                    </td>
+                     <td align=center >
+                        <button type="button" onclick="cancle_plan_status({{plan.id}})" class="btn btn-xs btn-warning" >
                             取消
                         </button>
                     </td>
@@ -112,10 +174,14 @@
 
 {% block js %}
 <script>
-    function setjpushmsg(imgurl,title,article){
-        $('#img_url').val(imgurl);
-        $('#textarea').val(title);
-        $('#article_id').val(article);
+    function set_plan_detail(title,type,rate,start_time,end_time,intro,active){
+        $('#title').val(title);
+        $('#plan_type').val(type);
+        $('#rate').val(rate);
+        $('#start_time').val(start_time);
+        $('#end_time').val(end_time);
+        $('#intro').val(intro);
+        $('#active').val(active);
     }
 
     var xsrf='{{handler.xsrf_token}}';
@@ -128,7 +194,15 @@
             }
         });
     }
-
+    function cancle_plan_status(id){
+        $.post("/ajax/cancle_plan_status", { _xsrf:xsrf,id: id}, function (data) {
+            data = jQuery.parseJSON(data);
+            alert(data.msg);
+            if(data.flag==1){
+                location.reload();
+            }
+        });
+    }
     $(function(){
         $(".area").hide();
         $("input:radio[name='is_users']").click(function(){
