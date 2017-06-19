@@ -66,10 +66,10 @@ def get_help_center_remark(area_code):
 
 typeface = '/home/www/workspace/eofan/src/simsun.ttc'
 popularizePIC = [{
-    'activity': '6-12',
+    'activity': '6-19',
     'area_code': '00',
-    'basePicPath': '/imgData/upload/popularizePIC/6-12.png',
-    'PicPath': '/imgData/upload/popularizePIC/6-12',
+    'basePicPath': '/imgData/upload/popularizePIC/6-19.png',
+    'PicPath': '/imgData/upload/popularizePIC/6-19',
     'wordSize': 40,
     'wordColour': (220,175,0),
     'storeWidth': 96,
