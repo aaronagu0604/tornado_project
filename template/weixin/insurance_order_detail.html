@@ -26,15 +26,33 @@
     .weui-col-60 p {
         text-align: center;
     }
-    .car_conten {
-        margin-left: 1.5rem;
-        height:2rem;
-        width:100%;
+    .wy-insurance-img-block {
+        text-align: center;
     }
-    .car_con {
-        margin-left: 1.5rem;
-        width:100%;
+    .wy-insurance-img-block img {
+        height: 100px;
+        width: auto;
     }
+    .wy-insurance-img-block p {
+        padding: 0;
+        margin: 0;
+        font-size: 13px;
+        line-height: 17px;
+    }
+
+    .wy-insurance-img-block .display_block {
+            position: relative;
+    width: 100%;
+    }
+
+    .wy-insurance-img-block .display_block img {
+            width: 25px;
+    position: absolute;
+    height: 25px;
+    right: 20px;
+    top: 4px;
+    }
+
     .car_contens {
         margin-left: 1.5rem;
         height:2rem;
@@ -92,49 +110,69 @@
             </div>
         </div>
         <div class="weui-cells__title">证件图片</div>
-        <div class="weui-cell">
-            <div class="weui-col-60">
+        <div class="weui-flex wy-insurance-img-block">
+            <div class="weui-flex__item">
                 <div>
                     <img class="img_card" src="../../style/wximg/id_card.png">
                 </div>
-                <div class="car_con">
-                    <span class="p_card">身份证正面</span>
-                </div>
-                <div class="car_conten">
-                    <span class="p_card">(被保险人)</span>
-                    <img class="btn_1" src="../../style/wximg/btn_photo_upload.png">
-                </div>
-                
-            </div>
-            <div class="weui-col-60">
-                <div>
-                    <img class="img_card" src="../../style/wximg/id_card.png">
-                </div>
-                <div class="car_con">
-                    <span class="p_card">身份证反面</span>
-                </div>
-                <div class="car_conten">
+                <div class="display_block">
+                    <div>
+                <p>
+                    <span>身份证正面</span>
+                </p>
+                <p>
                     <span>(被保险人)</span>
-                    <img src="../../style/wximg/btn_photo_upload.png">
+                </p>
+                        </div>
+                    <img class="btn_1" src="../../style/wximg/btn_photo_upload.png">
+                    </div>
+            </div>
+             <div class="weui-flex__item">
+                <div>
+                    <img class="img_card" src="../../style/wximg/id_card.png">
                 </div>
+                <div class="display_block">
+                    <div>
+                <p>
+                    <span>身份证反面</span>
+                </p>
+                <p>
+                    <span>(被保险人)</span>
+                </p>
+                        </div>
+                    <img class="btn_1" src="../../style/wximg/btn_photo_upload.png">
+                    </div>
             </div>
         </div>
-        <div class="weui-cell">
-            <div class="weui-col-60">
-                <img class="img_card" src="../../style/wximg/id_card.png">
-                <div class="car_contens">
-                    <span class="p_card">行驶证</span>
-                    <img class="btn_1" src="../../style/wximg/btn_photo_upload.png">
+        <div class="weui-flex wy-insurance-img-block">
+            <div class="weui-flex__item">
+                <div>
+                    <img class="img_card" src="../../style/wximg/id_card.png">
                 </div>
+                <div class="display_block">
+                    <div>
+                <p>
+                    <span>行驶证</span>
+                </p>
+                        </div>
+                    <img class="btn_1" src="../../style/wximg/btn_photo_upload.png">
+                    </div>
             </div>
-            <div class="weui-col-60">
-                <img class="img_card" src="../../style/wximg/id_card.png">
-                <div class="car_contens">
-                    <span class="p_card">行驶证副本</span>
-                    <img class="btn_1" src="../../style/wximg/btn_photo_upload.png">
+             <div class="weui-flex__item">
+                <div>
+                    <img class="img_card" src="../../style/wximg/id_card.png">
                 </div>
+                <div class="display_block">
+                    <div>
+                <p>
+                    <span>行驶证副本</span>
+                </p>
+                        </div>
+                    <img class="btn_1" src="../../style/wximg/btn_photo_upload.png">
+                    </div>
             </div>
         </div>
+
         <div class="weui-cell">
             <div class="weui-col-60">
                 <img class="img_card" src="../../style/wximg/id_card.png">
