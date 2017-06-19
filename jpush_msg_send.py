@@ -55,10 +55,10 @@ class JPushSend():
 
     def get_checked_msg(self):
         now = time.time()
-        print now
+
         need_send_msgs = JPushRecord.select().where((JPushRecord.start_time <= now) & (now <= JPushRecord.end_time) &
                                                     (JPushRecord.check == 1) & (JPushRecord.send == 0))
-        print need_send_msgs.count()
+
         for msg in need_send_msgs:
             mobile = []
             if msg.type == 1:  # 新注册用户jpush 计划
