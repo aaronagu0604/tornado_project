@@ -2839,7 +2839,7 @@ class CheckJPushHandler(AdminBaseHandler):
         intro = self.get_body_argument('intro','')
         intro = int(intro) if intro else 0
         istest = self.get_body_argument('istest', '')
-        if not (title and plan_type and rate and start_time and end_time and intro and active):
+        if not (title and plan_type and rate and start_time and end_time and intro and istest):
             self.write('参数不完整，请重新填写')
         print intro
         jp = JPushPlan()
