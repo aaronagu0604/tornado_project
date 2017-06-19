@@ -71,7 +71,7 @@ popularizePIC = [{
     'basePicPath': '/imgData/upload/popularizePIC/6-19.png',
     'PicPath': '/imgData/upload/popularizePIC/6-19',
     'wordSize': 40,
-    'wordColour': (220,175,0),
+    'wordColour': (61,75,84),
     'storeWidth': 96,
     'storeHeight': 925,
     'addrWidth': 96,
