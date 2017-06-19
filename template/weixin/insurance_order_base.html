@@ -66,7 +66,11 @@
             <img src="../../style/wximg/id_card.png">
         </div>
         <div class="weui-col-40">
-            <a href="javascript:;" class="weui-btn weui-btn_mini  weui-btn_plain-primary" id="id_card">选择</a>
+            <a href="javascript:;" class="weui-btn weui-btn_mini  weui-btn_plain-primary"
+               id="id_card">
+                选择
+                <input type="file" class="weui-uploader__input" accept="image/*">
+            </a>
             <p class="name">
                 被保人身份证<br/>
                 (正面)
@@ -85,7 +89,8 @@
         </div>
 
         <div class="weui-col-40">
-            <a href="javascript:;" class="weui-btn weui-btn_mini  weui-btn_plain-primary" id="id_card_back">选择</a>
+            <a href="javascript:;" class="weui-btn weui-btn_mini  weui-btn_plain-primary"
+               id="id_card_back">选择</a>
             <p class="name">
                 被保人身份证<br/>
                 (反面)
@@ -103,7 +108,8 @@
         </div>
 
         <div class="weui-col-40">
-            <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_plain-primary" id="drive_card">选择</a>
+            <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_plain-primary"
+               id="drive_card">选择</a>
             <p class="name">
                 行驶证
             </p>
@@ -120,7 +126,8 @@
         </div>
 
         <div class="weui-col-40">
-            <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_plain-primary" id="drive_card_back">选择</a>
+            <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_plain-primary"
+               id="drive_card_back">选择</a>
             <p class="name">
                 行驶证(副本)
 
@@ -148,7 +155,8 @@
             </div>
 
             <div class="weui-col-40">
-                <a href="javascript:;" class="weui-btn weui-btn_mini  weui-btn_plain-primary" id="id_card_front_owner">选择</a>
+                <a href="javascript:;" class="weui-btn weui-btn_mini  weui-btn_plain-primary"
+                   id="id_card_front_owner">选择</a>
                 <p class="name">
                     车主身份证<br/>
                     (正面)
@@ -164,6 +172,7 @@
 
             <div class="weui-col-40">
                 <a href="javascript:;" class="weui-btn weui-btn_mini  weui-btn_plain-primary"
+
                    id="id_card_back_owner">选择</a>
                 <p class="name">
                     车主身份证<br/>
@@ -188,48 +197,46 @@
         } else {
             $(".owner").show();
         }
+    });
+    $(document).on("click", "#next", function () {
+        document.location.href = "insurance_order_items"
+    })
+    $(document).on("click", "#switch_owner", function () {
+        if ($('#switch_owner').is(':checked')) {
+            $(".owner").hide();
+        } else {
+            $(".owner").show();
+        }
+    })
+  /*  $(document).on("click", "#id_card", function () {
+        $.actions({title: "选择图片", actions: [{text: "相机",}, {text: "相册",}]});
+    })*/
+    $(document).on("click", "#id_card_back", function () {
+        $.actions({title: "选择图片", actions: [{text: "相机",}, {text: "相册",}]});
+    })
 
-        $(document).on("click", "#next", function () {
-            document.location.href = "insurance_order_items"
-        })
-        $(document).on("click", "#switch_owner", function () {
-            if ($('#switch_owner').is(':checked')) {
-                $(".owner").hide();
-            } else {
-                $(".owner").show();
-            }
-        })
+    $(document).on("click", "#drive_card", function () {
+        $.actions({title: "选择图片", actions: [{text: "相机",}, {text: "相册",}]});
+    })
+    $(document).on("click", "#drive_card_back", function () {
+        $.actions({title: "选择图片", actions: [{text: "相机",}, {text: "相册",}]});
+    })
 
-        $(document).on("click", "#id_card", function () {
-            $.actions({title: "选择图片", actions: [{text: "相机",}, {text: "相册",}]});
-        })
-        $(document).on("click", "#id_card_back", function () {
-            $.actions({title: "选择图片", actions: [{text: "相机",}, {text: "相册",}]});
-        })
+    $(document).on("click", "#id_card_front_owner", function () {
+        $.actions({
+            title: "选择图片", actions: [{
+                text: "相机", onclick: function () {
 
-        $(document).on("click", "#drive_card", function () {
-            $.actions({title: "选择图片", actions: [{text: "相机",}, {text: "相册",}]});
-        })
-        $(document).on("click", "#drive_card_back", function () {
-            $.actions({title: "选择图片", actions: [{text: "相机",}, {text: "相册",}]});
-        })
+                }
+            }, {
+                text: "相册", onclick: function () {
 
-        $(document).on("click", "#id_card_front_owner", function () {
-            $.actions({
-                title: "选择图片", actions: [{
-                    text: "相机", onclick: function () {
-
-                    }
-                }, {
-                    text: "相册", onclick: function () {
-
-                    }
-                }]
-            });
-        })
-        $(document).on("click", "#id_card_back_owner", function () {
-            $.actions({title: "选择图片", actions: [{text: "相机",}, {text: "相册",}]});
-        })
+                }
+            }]
+        });
+    })
+    $(document).on("click", "#id_card_back_owner", function () {
+        $.actions({title: "选择图片", actions: [{text: "相机",}, {text: "相册",}]});
     });
 
 </script>
