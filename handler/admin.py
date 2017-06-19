@@ -2818,7 +2818,7 @@ class CheckJPushHandler(AdminBaseHandler):
                     plan_lists = plan_lists)
 
     def post(self):
-        title = self.get_body_argument('tile','')
+        title = self.get_body_argument('title','')
         plan_type = self.get_body_argument('plan_type', '')
         rate = self.get_body_argument('rate', '')
         start_time = self.get_body_argument('start_time', '')
