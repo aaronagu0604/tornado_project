@@ -60,7 +60,11 @@
 {% endblock %}
 {% block content %}
 <div class="parent">
-
+    <div class="weui-row">
+        <div class="weui-uploader__input-box">
+            <input id="uploaderInput" class="weui-uploader__input" type="file" accept="image/*" multiple="">
+        </div>
+    </div>
     <div class="weui-row">
         <div class="weui-col-60">
             <img src="../../style/wximg/id_card.png">
@@ -190,6 +194,8 @@
 
 {% endblock %}
 {% block js %}
+<script type="text/javascript" src="../../js/common.js"></script>
+<script type="text/javascript" src="../../js/utitls.js"></script>
 <script>
     $(document).ready(function () {
         if ($('#switch_owner').is(':checked')) {
@@ -208,11 +214,15 @@
             $(".owner").show();
         }
     })
-  /*  $(document).on("click", "#id_card", function () {
-        $.actions({title: "选择图片", actions: [{text: "相机",}, {text: "相册",}]});
-    })*/
+    /*  $(document).on("click", "#id_card", function () {
+     $.actions({title: "选择图片", actions: [{text: "相机",}, {text: "相册",}]});
+     })*/
     $(document).on("click", "#id_card_back", function () {
-        $.actions({title: "选择图片", actions: [{text: "相机",}, {text: "相册",}]});
+        $.actions({
+            title: "选择图片",
+            actions: [{text: "相机",}, {text: "相册",}],
+
+        });
     })
 
     $(document).on("click", "#drive_card", function () {
@@ -226,11 +236,11 @@
         $.actions({
             title: "选择图片", actions: [{
                 text: "相机", onclick: function () {
-
+                    galleryImg("#id_card_front_owner");
                 }
             }, {
                 text: "相册", onclick: function () {
-
+                    galleryImg("#id_card_front_owner");
                 }
             }]
         });
@@ -238,6 +248,23 @@
     $(document).on("click", "#id_card_back_owner", function () {
         $.actions({title: "选择图片", actions: [{text: "相机",}, {text: "相册",}]});
     });
+
+    //相册选取图片
+    function galleryImg(divid) {
+        plus.gallery.pick(function (p) {
+            //alert(p);//file:///storage/emulated/0/DCIM/Camera/IMG_20160704_112620.jpg
+            plus.io.resolveLocalFileSystemURL(p, function (entry) {
+                compressImage(entry.toLocalURL(), entry.name, divid);
+            }, function (e) {
+                plus.nativeUI.toast("读取拍照文件错误：" + e.message);
+            });
+        }, function (e) {
+        }, {
+            filename: "_doc/camera/",
+            filter: "image"
+        });
+    }
+
 
 </script>
 {% endblock %}
