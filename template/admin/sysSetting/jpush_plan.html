@@ -97,7 +97,7 @@
                         <span style="color: blue">{{plan.end_time|datetimeformat}}</span>
                     </td>
                     <td align=center>
-                        <span style="color: blue">{{plan.intro.title}}</span>
+                        <span style="color: blue">{{plan.intro.id}}/{{plan.intro.title or '---'}}/{{plan.intro.link_type}}</span>
                     </td>
                     <td align=center >
                         <button type="button" onclick="change_status({{plan.id}}, 1)" class="btn btn-xs btn-warning" >
@@ -158,7 +158,7 @@
                     </td>
                      <td align=center >
                         <button type="button" onclick="cancle_plan_status({{plan.id}})" class="btn btn-xs btn-warning" >
-                            取消
+                            下线
                         </button>
                     </td>
                 </tr>
