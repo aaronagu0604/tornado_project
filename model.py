@@ -1341,6 +1341,7 @@ class JPushRecord(db.Model):
     start_time = IntegerField()    # 推送起始时间 2017-5-6 9:30
     end_time = IntegerField()    # 推送结束时间  2017-5-6 10:30
     created = IntegerField()    # 创建时间
+    jpush_user = TextField(default='') # 推送目标群体
     intro = ForeignKeyField(JPushMsg, db_column='intro')
     check = IntegerField(default=0)    # 0未审核，1已审核
     send = IntegerField(default=0)    # 0未发送，1已发送

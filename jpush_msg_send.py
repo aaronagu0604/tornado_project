@@ -61,12 +61,17 @@ class JPushSend():
 
         for msg in need_send_msgs:
             mobile = []
+            jpush_type = None
+
             if msg.type == 1:  # 新注册用户jpush 计划
                 # mobile = self.new_store()
+                jpush_type = 'alias'
                 mobile = ['13289269257']
             elif msg.type == 2:  # 经常出单用户（返油）jpush计划
+                jpush_type = 'alias'
                 mobile = self.often_create_io_store('lube')
             elif msg.type == 3:  # 经常出单用户（返现）jpush计划
+                jpush_type = 'alias'
                 mobile = self.often_create_io_store('cash')
             elif msg.type == 4:
                 pass
@@ -76,6 +81,16 @@ class JPushSend():
                 pass
             elif msg.type == 7:
                 pass
+            elif msg.type == 10001: # 所有用户
+                jpush_type = 'tags'
+                mobile = [item for item in msg.jpush_user.split(',') if item]
+            elif msg.type == 10002: # 按区域发送
+                jpush_type = 'tags'
+                mobile = [item for item in msg.jpush_user.split(',') if item]
+            elif msg.type == 10003: # 指定用户
+                jpush_type = 'alias'
+                mobile = [item for item in msg.jpush_user.split(',') if item]
+
             print mobile,msg.intro.link_type
             if msg.intro.link_type==0:
                 link = ''
@@ -86,8 +101,8 @@ class JPushSend():
                 jpush_msg = JPushMsg.get(id=msg.intro.id)
                 print j*1000 < len(mobile)
                 while j*1000 < len(mobile):
-                    sms = {'apptype': 1, 'body': jpush_msg.content, 'jpushtype': 'alias', 'extras': {'link': link},
-                           'alias': mobile[j*1000:(j+1)*1000], 'images': jpush_msg.img_url}
+                    sms = {'apptype': 1, 'body': jpush_msg.content, 'jpushtype': jpush_type, 'extras': {'link': link},
+                           jpush_type: mobile[j*1000:(j+1)*1000], 'images': jpush_msg.img_url}
                     print sms
                     create_msg(simplejson.dumps(sms), 'jpush')
                     j += 1

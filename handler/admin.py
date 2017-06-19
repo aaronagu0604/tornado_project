@@ -2706,6 +2706,7 @@ class SendMsgHandler(AdminBaseHandler):
                 jpush.jpush_active = article if article else None
                 jpush.save()
             else:
+                jpush_type = {'all_user':10001,'group_user':10002,'user':10003}
                 article = int(article)
                 jpush = JPushMsg()
                 jpush.content = content
@@ -2715,7 +2716,18 @@ class SendMsgHandler(AdminBaseHandler):
 
                 jr = JPushRecord()
                 jr.title = '管理员：%s设置的定时推送任务'%self.get_admin_user().username  # 标题
-                jr.type = 1  # 推送类别 1
+                jr.type = jpush_type[is_users]  # 推送类别 1
+                if is_users == 'all_user':
+                    jr.jpush_user = 'all'
+                elif is_users == 'group_user':
+                    if province != '0':
+                        jr.jpush_user = province
+                    if city != '0':
+                        jr.jpush_user = city
+                    if district != '0':
+                        jr.jpush_user = district
+                elif is_users == 'user':
+                    jr.jpush_user = number
                 jr.start_time =  time.mktime(time.strptime(begin_date, "%Y-%m-%d %H:%M"))  # 推送起始时间 2017-5-6 9:30
                 jr.end_time =  time.mktime(time.strptime(end_date, "%Y-%m-%d %H:%M"))  # 推送结束时间  2017-5-6 10:30
                 jr.created = int(time.time())
