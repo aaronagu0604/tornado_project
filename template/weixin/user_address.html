@@ -1,138 +1,49 @@
 {% extends "weixin/none_foot_nav_tab.html" %}
 {% block css %}
-<title>收货地址界面</title>
+<title>地址管理</title>
 <style>
-    p{
-        font-size: 16px;
-        color: gray;
-        margin-top: 5px;
-        /*margin-left: 10px;*/
-    }
-    .cell_div{
-        /*margin-top: 15px;*/
-        /*margin-bottom: 15px;*/
-    }
-    .cell_a{
-        margin-top: 15px;
-    }
-    .weui-cell__ft{
-        height: 50px;
-    }
-    hr{
-        height:0.3px;border:none;border-top:1px solid #e7e7e7;
-    }
-    .defult{
-        line-height: 18px;
-    }
+
+.address-list-box{position:relative;}
+.weui-media-box__desc.address-txt{-webkit-line-clamp:10;}
+.address-edit{width:24px; height:24px; display:block; position:absolute; right:15px; top:15px; background:url(./style/wximg/icon-edit.png) no-repeat; background-size:24px;}
+.address-box .weui-panel__bd{border-bottom:10px solid #f5f5f5;}
+.default-add{color:#fff; padding:0 5px; font-size:13px; margin-top:5px; display:inline-block; background:#e21323;}
+
 
 </style>
 {% endblock %}
 {% block content %}
-<!-- body 顶部加上如下代码 -->
-
-<div class="weui-pull-to-refresh__layer">
-    <div class="weui-pull-to-refresh__arrow"></div>
-    <div class="weui-pull-to-refresh__preloader"></div>
-    <div class="down">下拉刷新</div>
-    <div class="up">释放刷新</div>
-    <div class="refresh">正在刷新</div>
+<div class="weui-content">
+  <div class="weui-panel address-box">
+    <div class="weui-panel__bd">
+      <div class="weui-media-box weui-media-box_text address-list-box">
+        <a href="/user_address_detail" class="address-edit"></a>
+        <h4 class="weui-media-box__title"><span>陈四无</span>&nbsp;&nbsp;<span>18912343850</span></h4>
+        <p class="weui-media-box__desc address-txt">陕西省 西安市 未央区</p>
+          <p class="weui-media-box__desc address-txt">洋河新区电商产业园2楼</p>
+        <span class="default-add">默认地址</span>
+      </div>
+    </div>
+    <div class="weui-panel__bd">
+      <div class="weui-media-box weui-media-box_text address-list-box">
+        <a href="/user_address_detail" class="address-edit"></a>
+        <h4 class="weui-media-box__title"><span>张三</span>&nbsp;&nbsp;<span>18912343850</span></h4>
+          <p class="weui-media-box__desc address-txt">陕西省 西安市 灞桥区</p>
+        <p class="weui-media-box__desc address-txt">电商产业园2楼</p>
+      </div>
+    </div>
+  </div>
+  <div class="weui-btn-area">
+    <a class="weui-btn weui-btn_primary" href="/user_address_detail" id="showTooltips">添加收货地址</a>
+  </div>
 </div>
 
-<div id="list" class="weui-cells">
-
-</div>
-<div class="weui-btn-area">
-    <a href="/user_address_detail" class="weui-btn weui-btn_primary">添加收货地址</a>
-</div>
-
-<div class="weui-loadmore">
-    <i class="weui-loading"></i>
-    <span class="weui-loadmore__tips">正在加载</span>
-</div>
 {% endblock %}
 {% block js %}
 <script>
     var page = 1,offset = 1;
     var loading = false; //上拉状态标记
     var toend = false; //数据加载完标记
-
-    function down() {
-        jQuery.getJSON("/income_record_list", {
-            'offset': 1,
-            'type': 1
-        },function(data) {
-            var data = data.data
-            console.log(data);
-            for (var i = data.length; i > 0; i--) {
-                var str ="";
-                jQuery("#list").append(
-                        '<a class="weui-cell cell_a" href="#"> ' +
-                        '<div class="cell_div weui-cell__bd">'+
-                        '<p style="display: inline-block">'+'收货人:车装甲'+ '</p> '+
-                        '<p>'+'陕西省西安市新城区'+ '</p> ' +
-                        '</div>'+
-                        '<div class="weui-cell__ft">'+
-                        '<p >'+'13389202687'+ '</p> '+
-                        '</div>'+
-                        '</a>');
-            };
-        })
-    }
-    function up() {
-        jQuery.getJSON("/income_record_list", {
-            'offset': 1,
-            'type': 1
-        },function(data) {
-            var data = data.data
-
-            if (data.length < 10) {
-                toend = true;
-            }
-            for (var i = data.length; i > 0; i--) {
-                var str ="";
-                jQuery("#list").append(
-//                        '<hr/>'+
-                        '<a class="weui-cell cell_a" href="/user_address_detail"> ' +
-                        '<div class="cell_div weui-cell__bd">'+
-                        '<p style="display: inline-block">'+'收货人:车装甲'+ '</p> '+
-                        '<p>'+'陕西省西安市新城区'+ '</p> ' +
-                        '</div>'+
-                        '<div class="weui-cell__ft">'+
-                        '<p>'+'13389202687'+ '</p> '+
-                        '</div>'+
-                        '</a>');
-            };
-            if (toend) {
-                console.log(toend);
-                $(document.body).destroyInfinite();
-            }
-            if (data.length == 10) {
-                page++;
-            }
-            loading = false;
-        })
-        setTimeout(function() {
-            jQuery(".weui-infinite-scroll").hide()
-        }, 1000);
-    }
-    $(function() {
-        up();
-    });
-    $(document.body).pullToRefresh().on("pull-to-refresh", function() {
-        //清空现有数据
-        $('.list').empty();
-        //加载新数据
-        down();
-        //重置下拉状态
-        $(document.body).pullToRefreshDone();
-    });
-
-    $(document.body).infinite().on("infinite", function() {
-        if (loading) return;
-        loading = true;
-        jQuery(".weui-infinite-scroll").show();
-        up();
-    });
 
 </script>
 {% endblock %}
