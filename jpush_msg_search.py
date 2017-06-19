@@ -34,6 +34,11 @@ class JPushSearch():
         created = int(time.time())
         for plan in JPushPlan.select().where(JPushPlan.active == 1):
             start_time, end_time = self.get_time(plan.start_time, plan.end_time, plan.rate)
+            jrs = JPushRecord.select().where(JPushRecord.start_time == start_time,
+                                             JPushRecord.end_time==end_time,
+                                             JPushRecord.intro == plan.intro.id).count()
+            if jrs >= 1:
+                continue
             if start_time:
                 print plan.start_time,plan.end_time
                 JPushRecord.create(title=plan.title, type=plan.type,start_time=start_time, end_time=end_time, created=created,
