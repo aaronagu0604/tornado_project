@@ -14,7 +14,10 @@
         margin-bottom: 5px;
     }
     .statue{
-        display: inline-block;float: right;color: red;
+        display: inline-block;float: right;
+    }
+    .statue_p{
+        margin-right: 1rem;color: red;
     }
     hr{
         height:0.3px;border:none;border-top:1px solid #e7e7e7;
@@ -26,29 +29,47 @@
     }
     .row_front{
         margin-left: 10px;
+        color: black;
+    }
+    .price{
+        margin-top: 10px;
+        /*margin-bottom: 10px;*/
+    }
+    .row_bottom{
+        /*background-color: #0a8ddf;*/
+    }
+    .weui-btn{
+        /*margin-right: 1rem;*/
+        margin-left: 1rem;
+        /*mso-row-margin-right: 1rem;*/
+    }
+    .row_p{
+        font-size: 16px;
+        margin-top: 6px;
+        line-height: 22px;
     }
 </style>
 {% endblock %}
 {% block content %}
 <!-- body 顶部加上如下代码 -->
-<div class="weui-navbar">
-    <a href="/user_income_record?type=in" class="weui-navbar__item weui-navbar__item--on">
-        <div>全部</div>
-    </a>
-    <a href="/user_income_record?type=out" class="weui-navbar__item">
-        <div>待核价</div>
-    </a>
-    <a href="/user_income_record?type=all" class="weui-navbar__item">
-        <div>待付款</div>
-    </a>
-    <a href="/user_income_record?type=in" class="weui-navbar__item weui-navbar__item--on">
-        <div>已付款</div>
-    </a>
-    <a href="/user_income_record?type=out" class="weui-navbar__item">
-        <div>已完成</div>
-    </a>
+<!--<div class="weui-navbar">-->
+    <!--<a href="/user_income_record?type=in" class="weui-navbar__item weui-navbar__item&#45;&#45;on">-->
+        <!--<div>全部</div>-->
+    <!--</a>-->
+    <!--<a href="/user_income_record?type=out" class="weui-navbar__item">-->
+        <!--<div>待核价</div>-->
+    <!--</a>-->
+    <!--<a href="/user_income_record?type=all" class="weui-navbar__item">-->
+        <!--<div>待付款</div>-->
+    <!--</a>-->
+    <!--<a href="/user_income_record?type=in" class="weui-navbar__item weui-navbar__item&#45;&#45;on">-->
+        <!--<div>已付款</div>-->
+    <!--</a>-->
+    <!--<a href="/user_income_record?type=out" class="weui-navbar__item">-->
+        <!--<div>已完成</div>-->
+    <!--</a>-->
 
-</div>
+<!--</div>-->
 <div class="weui-pull-to-refresh__layer">
     <div class="weui-pull-to-refresh__arrow"></div>
     <div class="weui-pull-to-refresh__preloader"></div>
@@ -57,14 +78,19 @@
     <div class="refresh">正在刷新</div>
 </div>
 
-<div id="list" class="weui-cells">
-    <!--<div class="weui-cell">-->
-    <!--<div class="weui-cell__bd">-->
-    <!--<p>标题文字</p>-->
-    <!--</div>-->
-    <!--<div class="weui-cell__ft">说明文字</div>-->
-    <!--</div>-->
-</div>
+<!--<div class="weui-panel">-->
+<!--<div id="list" class="weui-cells">-->
+
+<!--</div>-->
+    <div id="list" class="weui-cells">
+        <!--<div class="weui-cell">-->
+            <!--<div class="weui-cell__bd">-->
+                <!--<p>标题文字</p>-->
+            <!--</div>-->
+            <!--<div class="weui-cell__ft">说明文字</div>-->
+        <!--</div>-->
+    </div>
+<!--</div>-->
 
 <div class="weui-loadmore">
     <i class="weui-loading"></i>
@@ -87,21 +113,35 @@
             for (var i = data.length; i > 0; i--) {
                 var str ="";
                 jQuery("#list").append(
-                        '<hr/>'+
+//                        '<hr/>'+
                         '<div class="cell_div">'+
-                        '<p class="row_front" style="display: inline-block">'+'订单编号:U1285D068I9963'+ '</p> '+'<p class="statue">'+'待付款'+ '</p> '+ '</div> '+
+                        '<p class="row_front" style="display: inline-block">'+'订单编号:U1285D068I9963'+
+                        '</p> '+
+                        '<div class="statue">'+
+                        '<p class="statue_p">'+'待付款'+ '</p> '+
+                        '</div> '+
+                        '</div> '+
                         '<a class="weui-cell cell_a" href="/insurance_order_detail"> ' +
                         '<div class="weui-cell__bd"> ' +
-                        '<p >'+'保险公司:人保车险'+ '</p> '+
-                        '<p>'+'寄送人:车装甲'+ '</p> '+
-                        '<p>'+'陕西省西安市新城区'+ '</p> ' +
+                        '<p class="row_p">'+'保险公司:人保车险'+ '</p> '+
+                        '<p class="row_p">'+'寄送人:车装甲'+ '</p> '+
+                        '<p class="row_p">'+'陕西省西安市新城区'+ '</p> ' +
                         '</div>' +
-                        '<div class="weui-cell__ft">'
-                        +'<p class="time">'+'2017-06-08'+ '</p> '
-                        +'<p class="tel">'+'13389202678'+ '</p> ' +
+                        '<div class="weui-cell__ft">'+
+                        '<p class="time row_p">'+'2017-06-08'+ '</p> '+
+                        '<p class="tel row_p">'+'13389202678'+ '</p> ' +
+                        '<p class="tel row_p" style="color: white">'+'.'+ '</p> ' +
                         '</div> ' +
                         '</a>'+
-                        '<p class="price row_front">'+'订单金额:1020'+ '</p> ');
+                        '<hr/>'+
+                        '<p class="price row_front">'+'订单金额:1020'+ '</p> '+
+                        '<div class="row_bottom">'+
+                        '<a href="javascript:;" id="soon_pay" class="weui-btn weui-btn_mini weui-btn_primary">'+
+                        '立即支付'+'</a>'+
+                        '<a href="javascript:;" id="code_pay" class="weui-btn weui-btn_mini weui-btn_default">'+
+                        '扫码支付'+'</a>'+
+                        '</div>'+
+                        '<hr/>');
             };
         })
     }
@@ -110,7 +150,7 @@
             'offset': 1,
             'type': 1
         },function(data) {
-            var data = data.data
+            var data = data.data;
 
             if (data.length < 10) {
                 toend = true;
@@ -118,22 +158,36 @@
             for (var i = data.length; i > 0; i--) {
                 var str ="";
                 jQuery("#list").append(
-                        '<hr/>'+
+//                        '<hr/>'+
                         '<div class="cell_div">'+
-                        '<p class="row_front" style="display: inline-block">'+'订单编号:U1285D068I9963'+ '</p> '+'<p class="statue">'+'待付款'+ '</p> '+ '</div> '+
+                        '<p class="row_front" style="display: inline-block">'+'订单编号:U1285D068I9963'+
+                        '</p> '+
+                        '<div class="statue">'+
+                        '<p class="statue_p">'+'待付款'+ '</p> '+
+                        '</div> '+
+                        '</div> '+
                         '<a class="weui-cell cell_a" href="/insurance_order_detail"> ' +
-                            '<div class="weui-cell__bd"> ' +
-                               '<p >'+'保险公司:人保车险'+ '</p> '+
-                               '<p>'+'寄送人:车装甲'+ '</p> '+
-                               '<p>'+'陕西省西安市新城区'+ '</p> ' +
-                            '</div>' +
-                            '<div class="weui-cell__ft">'
-                                +'<p class="time">'+'2017-06-08'+ '</p> '
-                                +'<p class="tel">'+'13389202678'+ '</p> ' +
-                            '</div> ' +
+                        '<div class="weui-cell__bd"> ' +
+                        '<p class="row_p">'+'保险公司:人保车险'+ '</p> '+
+                        '<p class="row_p">'+'寄送人:车装甲'+ '</p> '+
+                        '<p class="row_p">'+'陕西省西安市新城区'+ '</p> ' +
+                        '</div>' +
+                        '<div class="weui-cell__ft">'+
+                        '<p class="time row_p">'+'2017-06-08'+ '</p> '+
+                        '<p class="tel row_p">'+'13389202678'+ '</p> ' +
+                        '<p class="tel row_p" style="color: white">'+'.'+ '</p> ' +
+                        '</div> ' +
                         '</a>'+
-                       '<p class="price row_front">'+'订单金额:1020'+ '</p> ')
-                        ;
+                        '<hr/>'+
+                        '<p class="price row_front">'+'订单金额:1020'+ '</p> '+
+                        '<div class="row_bottom">'+
+                        '<a href="javascript:;" id="soon_pay" class="weui-btn weui-btn_mini weui-btn_primary">'+
+                        '立即支付'+'</a>'+
+                        '<a href="javascript:;" id="code_pay" class="weui-btn weui-btn_mini weui-btn_default">'+
+                        '扫码支付'+'</a>'+
+                        '</div>'+
+                        '<hr/>');
+
             };
             if (toend) {
                 console.log(toend);
@@ -166,6 +220,34 @@
         jQuery(".weui-infinite-scroll").show();
         up();
     });
+
+    $(document).on("click", "#soon_pay", function () {
+        $.actions({
+            title: "支付方式", actions: [{
+                text: "微信", onclick: function () {
+                    galleryImg("#id_card_front_owner");
+                }
+            }, {
+                text: "支付宝", onclick: function () {
+                    galleryImg("#id_card_front_owner");
+                }
+            }]
+        });
+    })
+
+    $(document).on("click", "#code_pay", function () {
+        $.actions({
+            title: "扫码支付", actions: [{
+                text: "微信扫码", onclick: function () {
+                    galleryImg("#id_card_front_owner");
+                }
+            }, {
+                text: "支付宝扫码", onclick: function () {
+                    galleryImg("#id_card_front_owner");
+                }
+            }]
+        });
+    })
 
 </script>
 {% endblock %}
