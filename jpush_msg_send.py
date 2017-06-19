@@ -12,7 +12,9 @@ class JPushSend():
     def __init__(self):
         self.all_stores = Store.select().where(Store.active == 1)
 
-    def new_store(self):
+    def new_store(self,istest=0):
+        if istest:
+            return ['13289269257']
         now = int(time.time())
         start_time = now - 604800
         store = []
@@ -22,7 +24,9 @@ class JPushSend():
         return store
 
     # 经常下保单的门店（条件：一个月内下过保单的门店，返佣返油多的就是经常返油）
-    def often_create_io_store(self,type='lube'):
+    def often_create_io_store(self,type='lube',istest=0):
+        if istest:
+            return ['13289269257']
         io_lube_store = []
         io_cash_store = []
         for s in self.all_stores:
@@ -64,15 +68,14 @@ class JPushSend():
             jpush_type = None
 
             if msg.type == 1:  # 新注册用户jpush 计划
-                # mobile = self.new_store()
                 jpush_type = 'alias'
-                mobile = ['13289269257']
+                mobile = self.new_store(msg.istest)
             elif msg.type == 2:  # 经常出单用户（返油）jpush计划
                 jpush_type = 'alias'
-                mobile = self.often_create_io_store('lube')
+                mobile = self.often_create_io_store('lube',msg.istest)
             elif msg.type == 3:  # 经常出单用户（返现）jpush计划
                 jpush_type = 'alias'
-                mobile = self.often_create_io_store('cash')
+                mobile = self.often_create_io_store('cash',msg.istest)
             elif msg.type == 4:
                 pass
             elif msg.type == 5:

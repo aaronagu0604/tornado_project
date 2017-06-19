@@ -2630,6 +2630,7 @@ class SendMsgHandler(AdminBaseHandler):
         send_type = self.get_body_argument('send_type', 0)
         begin_date = self.get_body_argument('begin_date', 0)
         end_date = self.get_body_argument('end_date', 0)
+        istest = self.get_body_argument('istest','')
         print article,type(article)
         if district:
             area_code = district + '%'
@@ -2732,6 +2733,7 @@ class SendMsgHandler(AdminBaseHandler):
                 jr.end_time =  time.mktime(time.strptime(end_date, "%Y-%m-%d %H:%M"))  # 推送结束时间  2017-5-6 10:30
                 jr.created = int(time.time())
                 jr.intro = jpush
+                jr.istest = 1 if istest else 0
                 jr.save()
         # 短信
         elif sms_type == 1:
@@ -2837,7 +2839,7 @@ class CheckJPushHandler(AdminBaseHandler):
         end_time = self.get_body_argument('end_time', '')
         intro = self.get_body_argument('intro','')
         intro = int(intro) if intro else 0
-        active = self.get_body_argument('active', '')
+        istest = self.get_body_argument('istest', '')
         if not (title and plan_type and rate and start_time and end_time and intro and active):
             self.write('参数不完整，请重新填写')
         print intro
@@ -2848,7 +2850,7 @@ class CheckJPushHandler(AdminBaseHandler):
         jp.start_time = start_time
         jp.end_time = end_time
         jp.intro = intro
-        jp.active = 1 if active else 0
+        jp.istest = 1 if istest else 0
         jp.save()
         self.redirect('/admin/check_jpush')
 

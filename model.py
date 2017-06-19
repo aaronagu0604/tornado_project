@@ -1328,6 +1328,7 @@ class JPushPlan(db.Model):
     rate = CharField(max_length=64)    # 推送频率（例：0每天，1,2,5,7周一二五七，2017-8-8只2017年八月八号一天）
     intro = ForeignKeyField(JPushMsg, db_column='intro')
     active = IntegerField(default=1)    # 0失效，1有效
+    istest = IntegerField(default=0)  # 0生成环境 1测试环境
 
     class Meta:
         db_table = 'tb_jpush_plan'
@@ -1345,6 +1346,7 @@ class JPushRecord(db.Model):
     intro = ForeignKeyField(JPushMsg, db_column='intro')
     check = IntegerField(default=0)    # 0未审核，1已审核
     send = IntegerField(default=0)    # 0未发送，1已发送
+    istest = IntegerField(default=0)  # 0生成环境 1测试环境
 
     class Meta:
         db_table = 'tb_jpush_record'
