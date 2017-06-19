@@ -247,21 +247,6 @@
         $.actions({title: "选择图片", actions: [{text: "相机",}, {text: "相册",}]});
     });
 
-    //相册选取图片
-    function galleryImg(divid) {
-        plus.gallery.pick(function (p) {
-            //alert(p);//file:///storage/emulated/0/DCIM/Camera/IMG_20160704_112620.jpg
-            plus.io.resolveLocalFileSystemURL(p, function (entry) {
-                compressImage(entry.toLocalURL(), entry.name, divid);
-            }, function (e) {
-                plus.nativeUI.toast("读取拍照文件错误：" + e.message);
-            });
-        }, function (e) {
-        }, {
-            filename: "_doc/camera/",
-            filter: "image"
-        });
-    }
 
 
 </script>
