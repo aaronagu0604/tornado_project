@@ -157,3 +157,14 @@ class IncomeRecordListHandler(BaseHandler):
         } for i in range(20)]
         result['data'] = data
         self.write(simplejson.dumps(result))
+
+@route(r'/demo_insurance_list', name='wx_demo_insurance_list')
+class UserIncomeRecord11Handler(BaseHandler):
+    def get(self):
+        demo = []
+        item1 = {"values":1, "displayValues":"中华联合"}
+        item2 = {"values":2, "displayValues":"平安"}
+        demo.append(item1)
+        demo.append(item2)
+        self.write(simplejson.dumps(demo))
+        self.finish()

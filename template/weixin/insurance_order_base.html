@@ -206,6 +206,10 @@
         }
     });
     $(document).on("click", "#next", function () {
+        var insurance = {};
+        insurance.id=1;
+        insurance.id_card_front = "http://www.baidu.com";
+        window.localStorage.setItem("insurance",JSON.stringify(insurance));
         document.location.href = "insurance_order_items"
     })
     $(document).on("click", "#switch_owner", function () {

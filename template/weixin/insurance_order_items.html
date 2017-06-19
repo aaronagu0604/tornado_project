@@ -249,7 +249,7 @@
         </div>
     </div>
     <div class="goto_next">
-        <a href="/insurance_order_new" class="weui-btn weui-btn_primary">下一步</a>
+        <a href="#" id="next" class="weui-btn weui-btn_primary">下一步</a>
     </div>
 </div>
 
@@ -262,6 +262,35 @@
         } else {
             $(".insurance_main_plus").hide();
         }
+        $("#next").bind("click", function () {
+            var insurance = JSON.parse(window.localStorage.getItem("insurance"));
+            insurance.addressID = 1;
+            window.localStorage.setItem("insurance",JSON.stringify(insurance));
+            document.location.href = "insurance_order_new";
+        });
+        $.ajax(
+            {
+                url: "/demo_insurance_list",
+                type:'GET',
+                success: function(data){
+                    var insurance_list = JSON.parse(data);
+                    var insurance = JSON.parse(window.localStorage.getItem("insurance"));
+            insurance.insurance_list = insurance_list;
+            window.localStorage.setItem("insurance",JSON.stringify(insurance));
+            var displayValues = [];
+            for (var i=0; i<insurance_list.length; i++) {
+                displayValues.push(insurance_list[i].displayValues);
+                    }
+                    $("#insurance_name").picker({
+                    title: "选择保险公司",
+                    cols: [{
+                        textAlign: 'center',
+                        values: displayValues
+                    }]
+
+                });
+                    }
+            });
     });
     $(document).on("click", "#damageI", function () {
         if ($('#damageI').is(':checked')) {
@@ -271,14 +300,7 @@
             $("#damageIPlus").attr("checked", false);
         }
     });
-    $("#insurance_name").picker({
-        title: "选择保险公司",
-        cols: [{
-            textAlign: 'center',
-            values: ['太平保险', '人寿保险', '人保车险']
-        }],
 
-    });
     $("#thirdDutyI").picker({
         title: "选择保额",
         cols: [{
