@@ -52,7 +52,7 @@
                         <div id="product_id_1" class="col-md-4">
                             <select class="form-control" name="setting_id">
                                 {% for pa in pas %}
-                                <option value="{{pa.id}}" {% if pa.id==pap.setting.id %} selected {% endif %}>{{pa.name}}</option>
+                                <option value="{{pa.id}}" {% if pap and pa.id==pap.setting.id %} selected {% endif %}>{{pa.name}}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -170,11 +170,12 @@
             }
         }
         if(codes.length > 0) {
+            console.log({{pap.id}});
             $.ajax({
                 url: "/admin/promotion_ambassador_publish",
                 type: "post",
                 dataType: "text",
-                data: {'pip_id':{{pap.id or 0}}, 'codes':codes.toString(), '_xsrf':xsrf},
+                data: {'pap_id':{{pap.id}}, 'codes':codes.toString(), '_xsrf':xsrf},
                 success : function(result) {
                     if (result.falg=1) {
                         layer.alert('发布成功');
@@ -186,8 +187,7 @@
                     layer.alert('Error:'+result['msg']);
                 }
             })
-        }
-        else {
+        } else {
             layer.alert('请选择要发布的地区');
         }
     }

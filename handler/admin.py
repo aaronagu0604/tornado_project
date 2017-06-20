@@ -2921,6 +2921,7 @@ class EditPAHandler(AdminBaseHandler):
     def show_ad(self, pap_id):
         items = Area.select().where(Area.pid >> None)
         pap_id = int(pap_id)
+        pap = None
         if pap_id > 0:
             try:
                 pap = PromotionAmbassadorPic.get(id=pap_id)
@@ -2958,14 +2959,15 @@ class EditPAHandler(AdminBaseHandler):
         pap.wordColour = wordColour
         pap.sort = sort
         pap.active = active
+        pap.created = int(time.time())
         try:
             if self.request.files:
                 datetime = time.strftime('%Y%m%d%H%M%S', time.localtime(time.time()))  # 获取当前时间作为图片名称
                 filename = str(datetime) + ".jpg"
-                file_abspath = setting.admin_file_path + 'upload/popularizePIC/' + filename
+                file_abspath = setting.admin_file_path + 'image/store_popularize/' + filename
                 with open(file_abspath, "wb") as f:
                     f.write(self.request.files["file"][0]["body"])
-                pap.picAP = setting.domanName + '/upload/store_popularize/' + filename
+                pap.picAP = setting.imgDoman + 'store_popularize/' + filename
             pap.save()
             AdminUserLog.create(admin_user=self.get_admin_user(), created=int(time.time()), content=u'编辑推广大使活动图: pap_id:%d' % pap.id)
             self.flash(u"推广大使活动修改成功，请在左侧将广告发布到相应地区")
@@ -2980,8 +2982,9 @@ class EditPAHandler(AdminBaseHandler):
 class PromotionAmbassadorPublishHandler(AdminBaseHandler):
     def post(self):
         result = {'flag': 0, 'msg': '发布成功', "data": []}
-        pap_id = int(self.get_argument('pap_id', 0))
-        codes = self.get_argument('codes', None)
+        pap_id = int(self.get_body_argument('pap_id', 0))
+        codes = self.get_body_argument('codes', None)
+        print('-----------codes=%s, pap=%s' % (codes, pap_id))
         if codes:
             codes = codes.split(',')
         if not (codes and pap_id):
@@ -2989,6 +2992,7 @@ class PromotionAmbassadorPublishHandler(AdminBaseHandler):
             self.write(simplejson.dumps(result))
             return
         PromotionAmbassadorArea.delete().where(PromotionAmbassadorArea.pa_pic == pap_id).execute()
+        print('-----------codes=%s, pap=%s' % (codes, pap_id))
         PromotionAmbassadorArea.insert_many([{
             'area_code': item,
             'pa_pic': pap_id
