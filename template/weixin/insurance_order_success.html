@@ -1,26 +1,42 @@
-<!--保险公司详情页面-->
+<!--保险订单创建完成-->
 {% extends "weixin/none_foot_nav_tab.html" %}
 {% block css %}
-<title>保险公司详情</title>
+<title>保险订单创建完成</title>
 <style>
-a {
-    width: 80%;
-}
+    .weui-col-50 {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    .weui-msg__desc {
+        color: #00A73B;
+    }
 </style>
 {% endblock %}
 {% block content %}
-    <div align="center" style="padding-top: 2rem;">
-        <img style="height:5rem" src="{{insurance.logo}}">
+<div class="weui-msg">
+    <div class="weui-msg__icon-area"><i class="weui-icon-success weui-icon_msg"></i></div>
+    <div class="weui-msg__text-area">
+        <h2 class="weui-msg__title">操作成功</h2>
+        <p class="weui-msg__desc">您的资料提交成功，客服正在为您核算...</p>
     </div>
-    <div class="content-padded">
-        <p style="margin:0.8rem">{{insurance.intro}}</p>
+    <div class="weui-row">
+        <div class="weui-col-50">
+            <a href="javascript:;" id="back" class="weui-btn weui-btn_plain-default">返回</a>
+        </div>
+        <div class="weui-col-50">
+            <a href="javascript:;" id="check" class="weui-btn weui-btn_primary">查看</a>
+        </div>
     </div>
-    <div>
-        <a href="/insurance_order_base" class="weui-btn weui-btn_primary">车险报价</a>
-    </div>
+</div>
 {% endblock %}
 {% block js %}
 <script>
-
+     $(document).on("click", "#back", function () {
+          document.location.href = "/index"
+    });
+      $(document).on("click", "#check", function () {
+          document.location.href = "/insurance_order_detail"
+    });
 </script>
 {% endblock %}

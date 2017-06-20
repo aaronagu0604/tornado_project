@@ -185,7 +185,7 @@
         </div>
     </div>
     <div class="goto_next">
-        <a href="/mine" class="weui-btn weui-btn_primary">完成</a>
+        <a href="#" onclick="gotoNext()" class="weui-btn weui-btn_primary">完成</a>
     </div>
 </div>
 
@@ -203,6 +203,16 @@
             $("#write_addr_img").attr('src', "../../style/wximg/duihao_gray.png");
         }
 
+        if ($('#gift_policy_01').is(':checked')) {
+            $("#gift_policy_01_img").attr('src', "../../style/wximg/duihao_green.png");
+        } else {
+            $("#gift_policy_01_img").attr('src', "../../style/wximg/duihao_gray.png");
+        }
+        if ($('#gift_policy_02').is(':checked')) {
+            $("#gift_policy_02_img").attr('src', "../../style/wximg/duihao_green.png");
+        } else {
+            $("#gift_policy_02_img").attr('src', "../../style/wximg/duihao_gray.png");
+        }
     });
     $(document).on("click", "#write_addr", function () {
         if ($('#write_addr').is(':checked')) {
@@ -234,7 +244,7 @@
             $("#gift_policy_02_img").attr('src', "../../style/wximg/duihao_green.png");
         }
     });
-    $(document).bind("click", "#gift_policy_01", function () {
+    $(document).on("click", "#gift_policy_02", function () {
         if ($('#gift_policy_02').is(':checked')) {
             $("#gift_policy_02_img").attr('src', "../../style/wximg/duihao_green.png");
             $("#gift_policy_01_img").attr('src', "../../style/wximg/duihao_gray.png");
@@ -244,6 +254,13 @@
         }
     });
 
+    function gotoNext() {
+        if (!$('#gift_policy_01').is(':checked') && !$('#gift_policy_02').is(':checked')) {
+            $.toast("请选择优惠方式", "text");
+        } else {
+            document.location.href = "insurance_order_success";
+        }
+    }
     $("#start").cityPicker({
         onChange: function (picker, values, displayValues) {
             console.log(values, displayValues)
