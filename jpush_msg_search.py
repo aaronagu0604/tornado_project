@@ -44,7 +44,7 @@ class JPushSearch():
             if start_time:
                 print plan.start_time,plan.end_time
                 JPushRecord.create(title=plan.title, type=plan.type,start_time=start_time, end_time=end_time, created=created,
-                                   intro=plan.intro, check=0, send=0, istest = plan.istest)
+                                   intro=plan.intro.id, check=0, send=0, istest = plan.istest)
 
 
 if __name__ == '__main__':
