@@ -4,15 +4,14 @@
 <title>订单列表</title>
 <style>
     .row_contain{
-        width: 200%;
-    }
-    .row_container{
-        margin-right: 10px;
+        /*margin-top : 10px;*/
     }
     p{
-        font-size: 0.8rem;
+        font-size: 18px;
         color: gray;
         display: inline-block;
+        line-height: 26px;
+        margin-top: 3px;
     }
     .title{
         font-size: 0.9rem;
@@ -28,71 +27,71 @@
         border-top:1px solid #e7e7e7;
         width: 220%;
         margin-top: 5px;
+        margin-bottom: 10px;
     }
-    .money{
-        float: right;
+    .detail_content{
+        background-color: #f5f6f7;
+        margin-top: 8px;
+        padding:5px 15px 10px 15px;
     }
-    .contain_head{
-        width: 180%;
+    .row_container{
+        alignment: center;
+        background-image: url("../../style/wximg/img_expired.png");
+        background-repeat: no-repeat;
     }
-
+    .list-box{position:relative;}
+    .address-box {border-bottom:10px solid #f5f5f5;}
 
 </style>
 {% endblock %}
 {% block content %}
 
+<div  class="weui-content">
+    <div id="list" class="weui-panel address-box">
+        <div class="weui-panel__bd">
+        <div class="weui-media-box weui-media-box_text list-box">
+            <div class="row_container" >
+                    <div id="sss" class=" weui-cells_checkbox">
+                    <label class="weui-cell weui-check__label" for="s11">
+                        <div class="weui-media-box__hd">
+                            <input type="checkbox" name="checkbox1" class="weui-check" id="s11">
+                            <i class="weui-icon-checked"></i>
+                        </div>
+                        <div class="weui-cell__bd">
+                            <p class="row_right">待付款</p>
+                        </div>
+                    </label>
 
-<div class="bd">
-    <div class="page__bd">
-    <div id="list" class="weui-cells weui-cells_checkbox">
-        <div class="weui-cell">
-            <div class="row_container">
-            <div class="row_contain">
-                <!--<div id="list" class="weui-cells weui-cells_checkbox">-->
-              <label class="weui-cell weui-check__label" for="s11">
-                    <div class="weui-cell__hd">
-                        <input type="checkbox" name="checkbox1" class="weui-check" id="s11">
-                        <i class="weui-icon-checked"></i>
-                    </div>
-                    <div class="weui-cell__bd">
-                        <p class="row_right">待付款</p>
-                    </div>
-              </label>
-
-            <!--</div>-->
+                </div>
+                <hr>
+                <div>
+                    <p>提交时间</p>
+                    <p class="row_right">2017-06-29 </p>
+                </div>
             </div>
-            <hr>
-                <div class="row_contain">
-                    <div>
-                        <div>
-                        <p>提交时间</p>
-                        <p class="row_right">2017-06-29 </p>
-                        </div>
-                    </div>
-                    <div>
-                        <p class="title">交强险</p>
-                        <div>
-                            <p>车船税</p>
-                            <p class="row_right">234</p>
-                        </div>
-                        <p class="title">商业险(主险)</p>
-                        <div>
-                            <p>车辆损失险</p>
-                            <p class="row_right">1234</p>
-                        </div>
-                        <p class="title">商业险(附加险)</p>
-                        <div>
-                            <p>玻璃单独损失险</p>
-                            <p class="row_right">134</p>
-                        </div>
-                    </div>
+        </div>
+        </div>
+        <div class="row_contain">
+            <div class="detail_content">
+                <p class="title">交强险</p>
+                <div>
+                    <p>车船税</p>
+                    <p class="row_right">￥1234</p>
+                </div>
+                <p class="title">商业险(主险)</p>
+                <div>
+                    <p>车辆损失险</p>
+                    <p class="row_right">￥1234</p>
+                </div>
+                <p class="title">商业险(附加险)</p>
+                <div>
+                    <p>玻璃单独损失险</p>
+                    <p class="row_right">￥1234</p>
                 </div>
             </div>
         </div>
     </div>
-    </div>
 </div>
-
 
 {% endblock %}
 {% block js %}

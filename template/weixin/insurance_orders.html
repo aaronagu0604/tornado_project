@@ -37,16 +37,25 @@
     }
     .row_bottom{
         /*background-color: #0a8ddf;*/
+        position: relative;
+        /*height: 40px;*/
     }
     .weui-btn{
-        /*margin-right: 1rem;*/
-        margin-left: 1rem;
-        /*mso-row-margin-right: 1rem;*/
+        margin-left: 10px;
+    }
+    #code_pay{
+        background-color: #FFA602;
+        color: white;
     }
     .row_p{
         font-size: 16px;
         margin-top: 6px;
         line-height: 22px;
+    }
+    .list-box{position:relative;}
+    .address-box .weui-panel__bd{border-bottom:10px solid #f5f5f5;}
+    .address-box{
+        /*border-top:10px solid #f5f5f5;*/
     }
 </style>
 {% endblock %}
@@ -78,19 +87,41 @@
     <div class="refresh">正在刷新</div>
 </div>
 
-<!--<div class="weui-panel">-->
-<!--<div id="list" class="weui-cells">-->
-
-<!--</div>-->
-    <div id="list" class="weui-cells">
-        <!--<div class="weui-cell">-->
-            <!--<div class="weui-cell__bd">-->
-                <!--<p>标题文字</p>-->
+    <div  class="weui-content">
+        <div id="list" class="weui-panel address-box">
+            <!--<div class="weui-panel__bd">-->
+                <!--<div class="weui-media-box weui-media-box_text list-box">-->
+                    <!--<div class="cell_div">-->
+                    <!--<p class="row_front" style="display: inline-block">订单编号:U1285D068I9963-->
+                        <!--</p>-->
+                    <!--<div class="statue">-->
+                        <!--<p class="statue_p">待付款</p>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                    <!--<a class="weui-cell cell_a" href="/insurance_order_detail">-->
+                    <!--<div class="weui-cell__bd">-->
+                        <!--<p class="row_p">保险公司:人保车险</p>-->
+                        <!--<p class="row_p">寄送人:车装甲</p>-->
+                        <!--<p class="row_p">陕西省西安市新城区</p>-->
+                        <!--</div>-->
+                    <!--<div class="weui-cell__ft">-->
+                        <!--<p class="time row_p">2017-06-08</p>-->
+                        <!--<p class="tel row_p">13389202678</p>-->
+                        <!--<p class="tel row_p" style="color: white">.</p>-->
+                        <!--</div>-->
+                    <!--</a>-->
+                    <!--<hr/>-->
+                    <!--<p class="price row_front">订单金额:1020</p>-->
+                    <!--<div class="row_bottom button_sp_area">-->
+                    <!--<a href="javascript:;" id="soon_pay" class="weui-btn weui-btn_mini weui-btn_primary">-->
+                        <!--立即支付</a>-->
+                    <!--<a href="javascript:;" id="code_pay" class="weui-btn weui-btn_mini weui-btn_default">-->
+                        <!--扫码支付</a>-->
+                    <!--</div>-->
+                <!--</div>-->
             <!--</div>-->
-            <!--<div class="weui-cell__ft">说明文字</div>-->
-        <!--</div>-->
+        </div>
     </div>
-<!--</div>-->
 
 <div class="weui-loadmore">
     <i class="weui-loading"></i>
@@ -158,35 +189,37 @@
             for (var i = data.length; i > 0; i--) {
                 var str ="";
                 jQuery("#list").append(
-//                        '<hr/>'+
-                        '<div class="cell_div">'+
-                        '<p class="row_front" style="display: inline-block">'+'订单编号:U1285D068I9963'+
-                        '</p> '+
-                        '<div class="statue">'+
-                        '<p class="statue_p">'+'待付款'+ '</p> '+
-                        '</div> '+
-                        '</div> '+
-                        '<a class="weui-cell cell_a" href="/insurance_order_detail"> ' +
-                        '<div class="weui-cell__bd"> ' +
-                        '<p class="row_p">'+'保险公司:人保车险'+ '</p> '+
-                        '<p class="row_p">'+'寄送人:车装甲'+ '</p> '+
-                        '<p class="row_p">'+'陕西省西安市新城区'+ '</p> ' +
-                        '</div>' +
-                        '<div class="weui-cell__ft">'+
-                        '<p class="time row_p">'+'2017-06-08'+ '</p> '+
-                        '<p class="tel row_p">'+'13389202678'+ '</p> ' +
-                        '<p class="tel row_p" style="color: white">'+'.'+ '</p> ' +
-                        '</div> ' +
-                        '</a>'+
-                        '<hr/>'+
-                        '<p class="price row_front">'+'订单金额:1020'+ '</p> '+
-                        '<div class="row_bottom">'+
-                        '<a href="javascript:;" id="soon_pay" class="weui-btn weui-btn_mini weui-btn_primary">'+
-                        '立即支付'+'</a>'+
-                        '<a href="javascript:;" id="code_pay" class="weui-btn weui-btn_mini weui-btn_default">'+
-                        '扫码支付'+'</a>'+
-                        '</div>'+
-                        '<hr/>');
+                        '<div class="weui-panel__bd">'+
+                            '<div class="weui-media-box weui-media-box_text list-box">'+
+                                '<div class="cell_div">'+
+                                    '<p class="row_front" style="display: inline-block">'+'订单编号:U1285D068I9963'+
+                                    '</p>'+
+                                    '<div class="statue">'+
+                                        '<p class="statue_p">'+'待付款'+'</p>'+
+                                    '</div>'+
+                                '</div>'+
+                                '<a class="weui-cell cell_a" href="/insurance_order_detail">'+
+                                    '<div class="weui-cell__bd">'+
+                                        '<p class="row_p">保险公司:人保车险</p>'+
+                                        '<p class="row_p">寄送人:车装甲</p>'+
+                                        '<p class="row_p">陕西省西安市新城区</p>'+
+                                    '</div>'+
+                                    '<div class="weui-cell__ft">'+
+                                        '<p class="time row_p">2017-06-08</p>'+
+                                        '<p class="tel row_p">13389202678</p>'+
+                                        '<p class="tel row_p" style="color: white">.</p>'+
+                                    '</div>'+
+                                '</a>'+
+                                '<hr/>'+
+                                '<p class="price row_front">订单金额:1020</p>'+
+                                '<div class="row_bottom button_sp_area">'+
+                                    '<a href="javascript:;" id="soon_pay" class="weui-btn weui-btn_mini weui-btn_primary">'+
+                                        '立即支付'+'</a>'+
+                                    '<a href="javascript:;" id="code_pay" class="weui-btn weui-btn_mini weui-btn_default">'+
+                                        '扫码支付'+'</a>'+
+                                '</div>'+
+                            '</div>'+
+                        '</div>');
 
             };
             if (toend) {

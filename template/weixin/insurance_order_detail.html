@@ -41,42 +41,47 @@
     }
 
     .wy-insurance-img-block .display_block {
-            position: relative;
-    width: 100%;
+        position: relative;
+        width: 100%;
     }
 
-    .wy-insurance-img-block .display_block img {
-            width: 25px;
-    position: absolute;
-    height: 25px;
-    right: 20px;
-    top: 4px;
+    .wy-insurance-img-block .display_block .btn_2 {
+        width: 25px;
+        position: absolute;
+        height: 25px;
+        right: 20px;
+        top: 4px;
     }
 
-    .car_contens {
-        margin-left: 1.5rem;
-        height:2rem;
-        width:100%;
+    .wy-insurance-img-block .display_block .btn_1 {
+        width: 25px;
+        position: absolute;
+        height: 25px;
+        right: 20px;
+        top: 1px;
     }
-    .car_conten img{
-        position:absolute;
-        width:1rem;
-        height: 1rem;
-        top:7.2rem;
-        margin-left: 4px;
-    }
-    .car_contens img{
-        position:absolute;
-        width:1rem;
-        height: 1rem;
-        top:6.0rem;
-        margin-left: 4px;
-    }
-    .row_bottom{
-        margin-left: 1rem;
+    .wy-insurance-img-block .display_block .single_line{
+        padding: 0;
+        margin: 0;
+        font-size: 13px;
+        line-height: 25px;
     }
     p{
         color: black;
+    }
+    .order_remind{
+        background-color: #f39b00;
+        text-align: center;
+        color: white;
+    }
+    .list-box{position:relative;}
+    .address-box .weui-panel__bd{border-bottom:10px solid #f5f5f5;}
+    .address-box{
+        border-top:10px solid #f5f5f5;
+    }
+    #soon_pay{
+        background-color: #FFA602;
+        color: white;
     }
 </style>
 {% endblock %}
@@ -109,7 +114,8 @@
 
             </div>
         </div>
-        <div class="weui-cells__title">证件图片</div>
+        <div class="weui-cells__title">证件信息</div>
+        <p class="order_remind">图片不符合要求,请重新上传</p>
         <div class="weui-flex wy-insurance-img-block">
             <div class="weui-flex__item">
                 <div>
@@ -124,7 +130,7 @@
                     <span>(被保险人)</span>
                 </p>
                         </div>
-                    <img class="btn_1" src="../../style/wximg/btn_photo_upload.png">
+                    <img class="btn_2" src="../../style/wximg/btn_photo_upload.png">
                     </div>
             </div>
              <div class="weui-flex__item">
@@ -133,14 +139,14 @@
                 </div>
                 <div class="display_block">
                     <div>
-                <p>
-                    <span>身份证反面</span>
-                </p>
-                <p>
-                    <span>(被保险人)</span>
-                </p>
+                        <p>
+                            <span>身份证反面</span>
+                        </p>
+                        <p>
+                            <span>(被保险人)</span>
+                        </p>
                         </div>
-                    <img class="btn_1" src="../../style/wximg/btn_photo_upload.png">
+                    <img class="btn_2" src="../../style/wximg/btn_photo_upload.png">
                     </div>
             </div>
         </div>
@@ -151,7 +157,7 @@
                 </div>
                 <div class="display_block">
                     <div>
-                <p>
+                <p class="single_line">
                     <span>行驶证</span>
                 </p>
                         </div>
@@ -164,7 +170,7 @@
                 </div>
                 <div class="display_block">
                     <div>
-                <p>
+                <p class="single_line">
                     <span>行驶证副本</span>
                 </p>
                         </div>
@@ -173,48 +179,88 @@
             </div>
         </div>
 
-        <div class="weui-cell">
-            <div class="weui-col-60">
-                <img class="img_card" src="../../style/wximg/id_card.png">
-                <div class="car_contens">
-                    <span class="p_card">身份证正面</span>
+        <div class="weui-flex wy-insurance-img-block">
+            <div class="weui-flex__item">
+                <div>
+                    <img class="img_card" src="../../style/wximg/id_card.png">
+                </div>
+                <div class="display_block">
+                    <div>
+                        <p class="single_line">
+                            <span>身份证正面</span>
+                        </p>
+                    </div>
                     <img class="btn_1" src="../../style/wximg/btn_photo_upload.png">
                 </div>
             </div>
-            <div class="weui-col-60">
-                <img class="img_card" src="../../style/wximg/id_card.png">
-                <div class="car_contens">
-                    <span class="p_card">身份证背面</span>
+            <div class="weui-flex__item">
+                <div>
+                    <img class="img_card" src="../../style/wximg/id_card.png">
+                </div>
+                <div class="display_block">
+                    <div>
+                        <p class="single_line">
+                            <span>身份证背面</span>
+                        </p>
+                    </div>
                     <img class="btn_1" src="../../style/wximg/btn_photo_upload.png">
                 </div>
             </div>
         </div>
 
-        <a class="weui-cell" href="#">
-            <div>
-                <div>
-                    <p class="moblie">收货人:测试ios</p>
-                    <p class="tel">13389202687</p>
+        <div class="weui-panel address-box">
+            <div class="weui-panel__bd">
+                <div class="weui-media-box weui-media-box_text list-box">
+                    <div>
+                        <p class="moblie">收货人:测试ios</p>
+                        <p class="tel">13389202687</p>
+                    </div>
+                    <p>陕西省 西安市 新城区 测试地址</p>
                 </div>
-                <p>陕西省 西安市 新城区 测试地址</p>
             </div>
-        </a>
-    </div>
-</div>
-<div>
+            <div class="weui-panel__bd">
+                <div class="weui-media-box weui-media-box_text list-box">
+                    <a  id="soon_pay" class="weui-btn weui-btn_mini  weui-btn_default" >立即支付</a>
+                    <a  id="code_pay" class="weui-btn weui-btn_mini  weui-btn_primary" >扫码支付</a>
+                    <a href="/insurance_order_items" class="weui-btn weui-btn_mini  weui-btn_default" >重新报价</a>
+                </div>
+            </div>
+        </div>
 
-</div>
-    <div class="row_bottom">
-        <a href="" class="weui-btn weui-btn_mini  weui-btn_default" >立即支付</a>
-        <a href="" class="weui-btn weui-btn_mini  weui-btn_default" >扫码支付</a>
-        <a href="/insurance_order_items" class="weui-btn weui-btn_mini  weui-btn_default" >重新报价</a>
     </div>
+</div>
 
 {% endblock %}
 
 {% block js %}
 <script>
+    $(document).on("click", "#soon_pay", function () {
+        $.actions({
+            title: "支付方式", actions: [{
+                text: "微信", onclick: function () {
+                    galleryImg("#id_card_front_owner");
+                }
+            }, {
+                text: "支付宝", onclick: function () {
+                    galleryImg("#id_card_front_owner");
+                }
+            }]
+        });
+    })
 
+    $(document).on("click", "#code_pay", function () {
+        $.actions({
+            title: "扫码支付", actions: [{
+                text: "微信扫码", onclick: function () {
+                    galleryImg("#id_card_front_owner");
+                }
+            }, {
+                text: "支付宝扫码", onclick: function () {
+                    galleryImg("#id_card_front_owner");
+                }
+            }]
+        });
+    })
 </script>
 
 {% endblock %}
