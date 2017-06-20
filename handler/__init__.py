@@ -10,6 +10,7 @@ import logging
 import functools
 
 
+
 class MobilePageNotFoundHandler(RequestHandler):
     def get(self):
         self.set_status(404)

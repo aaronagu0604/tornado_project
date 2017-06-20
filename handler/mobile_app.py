@@ -2096,6 +2096,3 @@ class MobilInsuranceOrderQuoteInfoHandler(MobileBaseHandler):
             result['msg'] = '查询失败:%s'%e
 
         self.write(simplejson.dumps(result))
-
-
-

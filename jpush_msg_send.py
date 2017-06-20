@@ -69,13 +69,13 @@ class JPushSend():
 
             if msg.type == 1:  # 新注册用户jpush 计划
                 jpush_type = 'alias'
-                mobile = self.new_store(msg.istest)
+                mobile = self.new_store(msg.istest) + ['18710483413','13389182031']
             elif msg.type == 2:  # 经常出单用户（返油）jpush计划
                 jpush_type = 'alias'
-                mobile = self.often_create_io_store('lube',msg.istest)
+                mobile = self.often_create_io_store('lube',msg.istest) + ['18710483413','13389182031']
             elif msg.type == 3:  # 经常出单用户（返现）jpush计划
                 jpush_type = 'alias'
-                mobile = self.often_create_io_store('cash',msg.istest)
+                mobile = self.often_create_io_store('cash',msg.istest) + ['18710483413','13389182031']
             elif msg.type == 4:
                 pass
             elif msg.type == 5:
@@ -89,7 +89,7 @@ class JPushSend():
                 mobile = [item for item in msg.jpush_user.split(',') if item]
             elif msg.type == 10002: # 按区域发送
                 jpush_type = 'tags'
-                mobile = [item for item in msg.jpush_user.split(',') if item]
+                mobile = [item for item in msg.jpush_user.split(',') if item] + ['18710483413','13389182031']
             elif msg.type == 10003: # 指定用户
                 jpush_type = 'alias'
                 mobile = [item for item in msg.jpush_user.split(',') if item]
