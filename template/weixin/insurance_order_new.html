@@ -73,8 +73,9 @@
         <label class="weui-cell weui-check__label" for="default_addr">
 
             <div class="weui-cell__hd">
-                <input type="radio" name="radio1" checked="checked" id="default_addr">
-                <i class="weui-icon-checked"></i>
+                <img src="../../style/wximg/duihao_gray.png" id="default_addr_img"/>
+                <input type="radio" name="radio1" style="display: none" checked="checked" id="default_addr">
+
             </div>
             <div class="weui-cell__bd">
                 <p> 默认地址</p>
@@ -100,8 +101,9 @@
         <label class="weui-cell weui-check__label" for="write_addr">
 
             <div class="weui-cell__hd">
-                <input type="radio" name="radio1" id="write_addr">
-                <i class="weui-icon-checked"></i>
+                <img src="../../style/wximg/duihao_gray.png" id="write_addr_img"/>
+                <input type="radio" name="radio1" style="display: none" id="write_addr">
+
             </div>
             <div class="weui-cell__bd">
                 <p> 填写地址</p>
@@ -146,8 +148,6 @@
         </div>
 
     </div>
-
-
     <div class="gift_policy">
         <div class="weui-cells__title">
             <p>选择优惠方式</p>
@@ -191,20 +191,34 @@
     $(document).ready(function () {
         if ($('#write_addr').is(':checked')) {
             $(".write-addr").show();
+            $("#default_addr_img").attr('src', "../../style/wximg/duihao_gray.png");
+            $("#write_addr_img").attr('src', "../../style/wximg/duihao_green.png");
         } else {
             $(".write-addr").hide();
+            $("#default_addr_img").attr('src', "../../style/wximg/duihao_green.png");
+            $("#write_addr_img").attr('src', "../../style/wximg/duihao_gray.png");
         }
+
     });
     $(document).on("click", "#write_addr", function () {
         if ($('#write_addr').is(':checked')) {
             $(".write-addr").show();
+            $("#default_addr_img").attr('src', "../../style/wximg/duihao_gray.png");
+            $("#write_addr_img").attr('src', "../../style/wximg/duihao_green.png");
         } else {
             $(".write-addr").hide();
+            $("#default_addr_img").attr('src', "../../style/wximg/duihao_green.png");
+            $("#write_addr_img").attr('src', "../../style/wximg/duihao_gray.png");
         }
     })
     $(document).on("click", "#default_addr", function () {
         if ($('#default_addr').is(':checked')) {
             $(".write-addr").hide();
+            $("#default_addr_img").attr('src', "../../style/wximg/duihao_green.png");
+            $("#write_addr_img").attr('src', "../../style/wximg/duihao_gray.png");
+        } else {
+            $("#default_addr_img").attr('src', "../../style/wximg/duihao_gray.png");
+            $("#write_addr_img").attr('src', "../../style/wximg/duihao_green.png");
         }
     })
     $("#start").cityPicker({

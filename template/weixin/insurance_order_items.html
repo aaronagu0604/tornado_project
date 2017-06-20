@@ -48,7 +48,7 @@
         font-size: 14px;
     }
 
-    #insurance_name{
+    #insurance_name {
         text-align: right;
     }
 
@@ -74,7 +74,7 @@
                     交强险
                 </div>
                 <div class="weui-cell__ft">
-                    <input class="weui-switch" type="checkbox"/>
+                    <input class="weui-switch" id="forceI" type="checkbox"/>
                 </div>
             </div>
         </div>
@@ -258,17 +258,6 @@
 {% block js %}
 <script>
     $(document).ready(function () {
-        if ($('#damageI').is(':checked')) {
-            $(".insurance_main_plus").show();
-        } else {
-            $(".insurance_main_plus").hide();
-        }
-        $("#next").bind("click", function () {
-            var insurance = JSON.parse(window.localStorage.getItem("insurance"));
-            insurance.addressID = 1;
-            window.localStorage.setItem("insurance", JSON.stringify(insurance));
-            document.location.href = "insurance_order_new";
-        });
         $.ajax(
             {
                 url: "/demo_insurance_list",
@@ -293,17 +282,54 @@
                 error: function (data) {
                     $.toast("网络异常", "text");
                 }
-
             });
-    });
 
-    $(document).on("click", "#damageI", function () {
         if ($('#damageI').is(':checked')) {
             $(".insurance_main_plus").show();
         } else {
             $(".insurance_main_plus").hide();
-            $("#damageIPlus").attr("checked", false);
         }
+        if ($('#thirdDutyI').val() != "不投") {
+            $('#thirdDutyI').css("background-color", "#04be02").css("color", "#ffffff")
+        } else {
+            $('#thirdDutyI').css("background-color", "#ffffff").css("color", "#262626");
+            $("#thirdDutyIPlus").prop("checked", false);
+        }
+        if ($('#driverDutyI').val() != "不投") {
+            $('#driverDutyI').css("background-color", "#04be02").css("color", "#ffffff");
+        } else {
+            $('#driverDutyI').css("background-color", "#ffffff").css("color", "#262626");
+            $("#driverDutyIPlus").prop("checked", false);
+        }
+        if ($('#passengerDutyI').val() != "不投") {
+            $('#passengerDutyI').css("background-color", "#04be02").css("color", "#ffffff");
+        } else {
+            $('#passengerDutyI').css("background-color", "#ffffff").css("color", "#262626");
+            $("#passengerDutyIPlus").prop("checked", false);
+        }
+        if ($('#scratchI').val() != "不投") {
+            $('#scratchI').css("background-color", "#04be02").css("color", "#ffffff");
+        } else {
+            $('#scratchI').css("background-color", "#ffffff").css("color", "#262626");
+            $("#scratchIPlus").prop("checked", false);
+        }
+        $("#next").bind("click", function () {
+            var insurance = JSON.parse(window.localStorage.getItem("insurance"));
+            insurance.addressID = 1;
+            window.localStorage.setItem("insurance", JSON.stringify(insurance));
+            if (!$('#forceI').is(':checked')
+                && !$('#damageI').is(':checked')
+                && $('#thirdDutyI').val() == "不投"
+                && $('#driverDutyI').val() == "不投"
+                && $('#passengerDutyI').val() == "不投"
+                && !$('#robbingI').is(':checked')) {
+                $.toast("请选择险种", "text");
+            } else {
+
+                document.location.href = "insurance_order_new";
+            }
+        });
+
     });
 
     $("#thirdDutyI").picker({
@@ -313,14 +339,17 @@
             values: ['不投', '10万', '20万', '30万']
         }
         ],
-
         onClose: function () {
             if ($('#thirdDutyI').val() != "不投") {
-                $('#thirdDutyI').css("background-color", "#04be02").css("color", "#ffffff")
+                $('#thirdDutyI').css("background-color", "#04be02").css("color", "#ffffff");
+                $("#thirdDutyIPlus").prop("checked", true);
+                console.log($('#thirdDutyIPlus').is(':checked'));
             } else {
-                $('#thirdDutyI').css("background-color", "#ffffff").css("color", "#262626")
-                $("#thirdDutyIPlus").attr("checked", false);
+                $('#thirdDutyI').css("background-color", "#ffffff").css("color", "#262626");
+                $("#thirdDutyIPlus").prop("checked", false);
+
             }
+
         }
     });
     $("#driverDutyI").picker({
@@ -332,10 +361,12 @@
         ],
         onClose: function () {
             if ($('#driverDutyI').val() != "不投") {
-                $('#driverDutyI').css("background-color", "#04be02").css("color", "#ffffff")
+                $('#driverDutyI').css("background-color", "#04be02").css("color", "#ffffff");
+                $("#driverDutyIPlus").prop("checked", true);
+
             } else {
                 $('#driverDutyI').css("background-color", "#ffffff").css("color", "#262626");
-                $("#driverDutyIPlus").attr("checked", false);
+                $("#driverDutyIPlus").prop("checked", false);
             }
         }
     });
@@ -348,10 +379,11 @@
         ],
         onClose: function () {
             if ($('#passengerDutyI').val() != "不投") {
-                $('#passengerDutyI').css("background-color", "#04be02").css("color", "#ffffff")
+                $('#passengerDutyI').css("background-color", "#04be02").css("color", "#ffffff");
+                $("#passengerDutyIPlus").prop("checked", true);
             } else {
                 $('#passengerDutyI').css("background-color", "#ffffff").css("color", "#262626");
-                $("#passengerDutyIPlus").attr("checked", false);
+                $("#passengerDutyIPlus").prop("checked", false);
             }
         }
     });
@@ -365,69 +397,86 @@
         onClose: function () {
             if ($('#scratchI').val() != "不投") {
                 $('#scratchI').css("background-color", "#04be02").css("color", "#ffffff");
+                $("#scratchIPlus").prop("checked", true);
             } else {
                 $('#scratchI').css("background-color", "#ffffff").css("color", "#262626");
-                $("#scratchIPlus").attr("checked", false);
+                $("#scratchIPlus").prop("checked", false);
             }
+        }
+    });
+
+    $(document).on("click", "#damageI", function () {
+        if ($('#damageI').is(':checked')) {
+            $(".insurance_main_plus").show();
+            $("#damageIPlus").prop("checked", true);
+        } else {
+            $(".insurance_main_plus").hide();
+            $("#damageIPlus").prop("checked", false);
         }
     });
     $(document).on("click", "#robbingI", function () {
         if (!$('#robbingI').is(':checked')) {
-            $("#robbingIPlus").attr("checked", false);
+            $("#robbingIPlus").prop("checked", false);
+        } else {
+            $("#robbingIPlus").prop("checked", true);
         }
     });
-
     $(document).on("click", "#fireDamageI", function () {
         if (!$('#fireDamageI').is(':checked')) {
-            $("#fireDamageIPlus").attr("checked", false);
+            $("#fireDamageIPlus").prop("checked", false);
+        } else {
+            $("#fireDamageIPlus").prop("checked", true);
         }
     });
     $(document).on("click", "#wadeI", function () {
         if (!$('#wadeI').is(':checked')) {
-            $("#wadeIPlus").attr("checked", false);
+            $("#wadeIPlus").prop("checked", false);
+        } else {
+            $("#wadeIPlus").prop("checked", true);
         }
     });
+
     $(document).on("click", "#damageIPlus", function () {
         if (!$('#damageI').is(':checked')) {
-            $("#damageIPlus").attr("checked", false);
+            $("#damageIPlus").prop("checked", false);
         }
     });
     $(document).on("click", "#thirdDutyIPlus", function () {
         console.log($('#thirdDutyI').val());
         if ($('#thirdDutyI').val() == "不投") {
-            $("#thirdDutyIPlus").attr("checked", false);
+            $("#thirdDutyIPlus").prop("checked", false);
         }
     });
     $(document).on("click", "#driverDutyIPlus", function () {
         if ($('#driverDutyI').val() == "不投") {
-            $("#driverDutyIPlus").attr("checked", false);
+            $("#driverDutyIPlus").prop("checked", false);
         }
 
     });
     $(document).on("click", "#passengerDutyIPlus", function () {
         if ($('#passengerDutyI').val() == "不投") {
-            $("#passengerDutyIPlus").attr("checked", false);
+            $("#passengerDutyIPlus").prop("checked", false);
         }
     });
     $(document).on("click", "#robbingIPlus", function () {
         if (!$('#robbingI').is(':checked')) {
-            $("#robbingIPlus").attr("checked", false);
+            $("#robbingIPlus").prop("checked", false);
         }
     });
     $(document).on("click", "#scratchIPlus", function () {
         console.log($('#scratchI').val());
         if ($('#scratchI').val() == "不投") {
-            $("#scratchIPlus").attr("checked", false);
+            $("#scratchIPlus").prop("checked", false);
         }
     });
     $(document).on("click", "#fireDamageIPlus", function () {
         if (!$('#fireDamageI').is(':checked')) {
-            $("#fireDamageIPlus").attr("checked", false);
+            $("#fireDamageIPlus").prop("checked", false);
         }
     });
     $(document).on("click", "#wadeIPlus", function () {
         if (!$('#wadeI').is(':checked')) {
-            $("#wadeIPlus").attr("checked", false);
+            $("#wadeIPlus").prop("checked", false);
         }
     });
 </script>

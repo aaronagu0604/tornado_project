@@ -191,9 +191,6 @@
 
 {% endblock %}
 {% block js %}
-<script type="text/javascript" src="../../js/common.js"></script>
-<script type="text/javascript" src="../../js/utitls.js"></script>
-<script type="text/javascript" src="../../js/jweixin-1.2.0.js"></script>
 <script>
     $(document).ready(function () {
         if ($('#switch_owner').is(':checked')) {
@@ -224,7 +221,7 @@
         } else {
             $(".owner").show();
         }
-    })
+    });
     /*  $(document).on("click", "#id_card", function () {
      $.actions({title: "选择图片", actions: [{text: "相机",}, {text: "相册",}]});
      })*/
@@ -237,14 +234,14 @@
                 var localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
             }
         });
-    })
+    });
 
     $(document).on("click", "#drive_card", function () {
         $.actions({title: "选择图片", actions: [{text: "相机",}, {text: "相册",}]});
-    })
+    });
     $(document).on("click", "#drive_card_back", function () {
         $.actions({title: "选择图片", actions: [{text: "相机",}, {text: "相册",}]});
-    })
+    });
 
     $(document).on("click", "#id_card_front_owner", function () {
         $.actions({
@@ -258,7 +255,7 @@
                 }
             }]
         });
-    })
+    });
     $(document).on("click", "#id_card_back_owner", function () {
         $.actions({title: "选择图片", actions: [{text: "相机",}, {text: "相册",}]});
     });
