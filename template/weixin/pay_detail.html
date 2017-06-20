@@ -1,19 +1,41 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <link rel="icon" type="image/png" href="/style/favicon.ico"/>
-    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <link rel="stylesheet" href="//g.alicdn.com/msui/sm/0.6.2/css/sm.min.css">
-</head>
-<body>
-<div class="page-group">
-    支付详情页面
-</div>
-<script type='text/javascript' src='//g.alicdn.com/sj/lib/zepto/zepto.min.js' charset='utf-8'></script>
-<script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm.min.js' charset='utf-8'></script>
-</body>
-</html>
+<!--保险公司详情页面-->
+{% extends "weixin/none_foot_nav_tab.html" %}
+{% block css %}
+<title>支付详情</title>
+<style>
+a {
+    width: 80%;
+}
+</style>
+{% endblock %}
+{% block content %}
+    <div>
+        <a href="#" class="weui-btn weui-btn_primary" onclick="pay">立即支付</a>
+    </div>
+{% endblock %}
+{% block js %}
+<script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script>
+wx.config({
+    debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+    appId: '{{ret["appid"]}}', // 必填，公众号的唯一标识
+    timestamp: '{{ret["timeStamp"]}}', // 必填，生成签名的时间戳
+    nonceStr: '{{ret["nonceStr"]}}', // 必填，生成签名的随机串
+    signature: '{{ret["signature"]}}',// 必填，签名，见附录1
+    jsApiList: ['chooseWXPay'] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+});
+
+function pay() {
+wx.chooseWXPay({
+    timestamp: '{{payinfo["timestamp"]}}', // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符
+    nonceStr: '{{payinfo["noncestr"]}}', // 支付签名随机串，不长于 32 位
+    package: '{{payinfo["prepayid"]}}', // 统一支付接口返回的prepay_id参数值，提交格式如：prepay_id=***）
+    signType: 'MD5', // 签名方式，默认为'SHA1'，使用新版支付需传入'MD5'
+    paySign: '{{payinfo["sign"]}}', // 支付签名
+    success: function (res) {
+        // 支付成功后的回调函数
+    }
+});
+}
+</script>
+{% endblock %}
