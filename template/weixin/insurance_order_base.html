@@ -72,7 +72,8 @@
             <a href="javascript:;" class="weui-btn weui-btn_mini  weui-btn_plain-primary"
                id="id_card">
                 选择
-                <input type="file" id="id_card_file" onchange="loadImag(this.id,$('#id_card_img'))" class="weui-uploader__input" accept="image/*">
+                <input type="file" id="id_card_file"
+                       class="weui-uploader__input" accept="image/*">
             </a>
             <p class="name">
                 被保人身份证<br/>
@@ -244,16 +245,16 @@
         $.actions({title: "选择图片", actions: [{text: "相机",}, {text: "相册",}]});
     });
 
-    function loadImag(fileId,imgId) {
-        var input = document.getElementById(fileId);
-        if (typeof FileReader === 'undefined') {
-            input.setAttribute('disabled', 'disabled');
-            $.toast("抱歉，你的浏览器不支持 FileReader", "text");
-        } else {
-            input.addEventListener('change', readFile(imgId), false);
-        }
+
+    var id_card_file = document.getElementById("id_card_file");
+    if (typeof FileReader === 'undefined') {
+        id_card_file.setAttribute('disabled', 'disabled');
+        $.toast("抱歉，你的浏览器不支持 FileReader", "text");
+    } else {
+        id_card_file.addEventListener('change', readFile($("#id_card_img")), false);
     }
-    function readFile(imgId) {
+
+    function readFile(img) {
         var file = this.files[0];
         if (!/image\/\w+/.test(file.type)) {
             alert("请确保文件为图像类型");
@@ -263,7 +264,7 @@
         reader.readAsDataURL(file);
 
         reader.onload = function (e) {
-            $(imgId).attr('src', this.result);
+            img.attr('src', this.result);
         }
     }
 </script>
