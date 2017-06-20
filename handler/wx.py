@@ -81,6 +81,11 @@ class InsuranceOrderNewHandler(BaseHandler):
     def get(self):
         self.render('weixin/insurance_order_new.html')
 
+@route(r'/insurance_order_success', name='wx_insurance_order_success')  # 后台首页
+class InsuranceOrderSuccessHandler(BaseHandler):
+    def get(self):
+        self.render('weixin/insurance_order_success.html')
+
 @route(r'/insurance_orders', name='wx_insurance_orders')  # 后台首页
 class InsuranceOrdersHandler(BaseHandler):
     def get(self):

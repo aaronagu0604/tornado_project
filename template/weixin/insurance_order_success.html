@@ -1,0 +1,26 @@
+<!--保险公司详情页面-->
+{% extends "weixin/none_foot_nav_tab.html" %}
+{% block css %}
+<title>保险公司详情</title>
+<style>
+a {
+    width: 80%;
+}
+</style>
+{% endblock %}
+{% block content %}
+    <div align="center" style="padding-top: 2rem;">
+        <img style="height:5rem" src="{{insurance.logo}}">
+    </div>
+    <div class="content-padded">
+        <p style="margin:0.8rem">{{insurance.intro}}</p>
+    </div>
+    <div>
+        <a href="/insurance_order_base" class="weui-btn weui-btn_primary">车险报价</a>
+    </div>
+{% endblock %}
+{% block js %}
+<script>
+
+</script>
+{% endblock %}
