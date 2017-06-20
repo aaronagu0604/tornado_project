@@ -34,42 +34,25 @@
                     {% endfor %}
                 </div>
                 {%endif%}
-                <form  method="post" action="/admin/edit_ad/{{ad.id or 0}}" enctype="multipart/form-data">
+                <form  method="post" action="/admin/edit_pa/{{pap.id or 0}}" enctype="multipart/form-data">
                     {{xsrf()}}
                     <div class="form-group has-success row">
                         <div class="col-md-4" style="width:100%;">
-                            <label class="control-label" style="margin-top:7px;">广告名称</label>
+                            <label class="control-label" style="margin-top:7px;">活动名称</label>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" class="form-control"  name="ad_name" value="{{ad.name or ''}}" style="width:480px;" />
+                            <input type="text" class="form-control"  name="name" value="{{pap.name or ''}}" style="width:480px;" />
                         </div>
                     </div>
 
                     <div class="form-group has-success row">
                         <div class="col-md-4" style="width:100%;">
-                            <label class="control-label" style="margin-top:7px;">广告类型</label>
+                            <label class="control-label" style="margin-top:7px;">配置demo</label>
                         </div>
-                        <div class="col-md-8">
-                            <select class="form-control" name="ad_link" id="ad_link" onchange="change_ad_type(this.value)" style="width:230px;">
-                                <option value="activity" {% if ad_type=="activity" %} selected {% endif %}>活动图</option>
-                                <option value="product" {% if ad_type=="product" %} selected {% endif %}>商品导购</option>
-                                <option value="insurance" {% if ad_type=="insurance" %} selected {% endif %}>保险导购</option>
-                                <option value="lube" {% if ad_type=="lube" %} selected {% endif %}>返油政策</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group has-success row">
-                        <div class="col-md-4" style="width:100%;">
-                            <label class="control-label" style="margin-top:7px;">链接</label>
-                        </div>
-                        <div id="product_id_0" class="col-md-4" style="{% if ad_type == "insurance" %}display: none {% endif %}">
-                            <input type="text" class="form-control"  name="ad_link_url" value="{{ad.link or ''}}"/>
-                        </div>
-                        <div id="product_id_1" class="col-md-4" style="{% if ad_type != "insurance" %} display: none {% endif %}">
-                            <select class="form-control" name="product_id">
-                                {% for i in insurances %}
-                                <option value="{{i.id}}" {% if i_id==i.id %} selected {% endif %}>{{i.name}}</option>
+                        <div id="product_id_1" class="col-md-4">
+                            <select class="form-control" name="setting_id">
+                                {% for pa in pas %}
+                                <option value="{{pa.id}}" {% if pa.id==pap.setting.id %} selected {% endif %}>{{pa.name}}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -77,23 +60,10 @@
 
                     <div class="form-group has-success row">
                         <div class="col-md-4" style="width:100%;">
-                            <label class="control-label" style="margin-top:7px;">广告位置</label>
-                        </div>
-                        <div  class="col-md-4">
-                            <select class="form-control" name="block_item" id="sel_type">
-                                {% for at in blocks %}
-                                <option value="{{at.id}}" {% if ad %} {{ at.id == ad.block.id and 'selected' or '' }} {% endif %}>{{at.name}}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group has-success row">
-                        <div class="col-md-4" style="width:100%;">
-                            <label class="control-label" style="margin-top:7px;">备注</label>
+                            <label class="control-label" style="margin-top:7px;">字体色彩（RGB格式）</label>
                         </div>
                         <div class=" col-md-8">
-                            <input type="text" class="form-control"  name="remark" value="{{ad.remark or ''}}" style="width:480px;" >
+                            <input type="text" class="form-control"  name="wordColour" value="{{pap.wordColour or ''}}" style="width:480px;" >
                         </div>
                     </div>
 
@@ -102,7 +72,7 @@
                             <label class="control-label" style="margin-top:7px;">排序</label>
                         </div>
                         <div class=" col-md-4">
-                            <input type="text" class="form-control"  name="sort" value="{{ad.sort or ''}}" style="width:480px;" />
+                            <input type="text" class="form-control"  name="sort" value="{{pap.sort or ''}}" style="width:480px;" />
                         </div>
                     </div>
                     <div class="form-group has-success row">
@@ -110,18 +80,18 @@
                             <label class="control-label" style="margin-top:11px;">是否启用</label>
                         </div>
                         <div class=" col-md-4">
-                            <input type="checkbox" class="form-control" style="width:20px; text-align: left;" value="1"  name="active" {% if ad.active == 1 %}checked="checked"{%endif%} />
+                            <input type="checkbox" class="form-control" style="width:20px; text-align: left;" value="1"  name="active" {% if pap.active == 1 %}checked="checked"{%endif%} />
                         </div>
                     </div>
                     <div class="form-group has-success row">
                         <div class=" col-md-1" style="width:100%;">
-                            <label class="control-label" style="margin-top:7px;">banner图片</label>
+                            <label class="control-label" style="margin-top:7px;">推广底图</label>
                         </div>
                         <div class=" col-md-4">
                             <input type="file" class="form-control" name="file" style="width:480px;">
                         </div>
                         <div class=" col-md-7">
-                            <img src="{{ad.img or ''}}"  height="100">
+                            <img src="{{pap.picAP or ''}}"  height="100">
                         </div>
                     </div>
                     <div class="form-group has-success">
@@ -147,7 +117,7 @@
                 enable: true,
                 type:"get",
                 contentType: "application/json",
-                url:"/ajax/area_tree?type=blockitem&bi_id={{ad.id or 0}}",
+                url:"/ajax/area_tree?type=blockitem&bi_id={{pap.id or 0}}",
                 dataFilter: filter
             },
             data: {
@@ -201,20 +171,18 @@
         }
         if(codes.length > 0) {
             $.ajax({
-                url : "/admin/block_item_publish",
-                type : "post",
-                data : {'ad_id':{{ad.id or 0}},
-                'codes':codes.toString(),
-                '_xsrf':xsrf},
-                dataType : "text",
-                    success : function(result) {
+                url: "/admin/promotion_ambassador_publish",
+                type: "post",
+                dataType: "text",
+                data: {'pip_id':{{pap.id or 0}}, 'codes':codes.toString(), '_xsrf':xsrf},
+                success : function(result) {
                     if (result.falg=1) {
                         layer.alert('发布成功');
                     } else {
                         layer.alert('发布失败'+result);
                     }
                 },
-                error:function(result){
+                error: function(result){
                     layer.alert('Error:'+result['msg']);
                 }
             })

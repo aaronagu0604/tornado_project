@@ -1405,7 +1405,7 @@ class EditAdHandler(AdminBaseHandler):
         return
 
 
-@route(r'/admin/block_item_publish', name='admin_block_item_publish')  # 经销商发布商品到地区
+@route(r'/admin/block_item_publish', name='admin_block_item_publish')  # 广告图到地区
 class BlockItemPublishHandler(AdminBaseHandler):
     def post(self):
         result = {'flag': 0, 'msg': '发布成功', "data": []}
@@ -2853,6 +2853,7 @@ class CheckJPushHandler(AdminBaseHandler):
         jp.save()
         self.redirect('/admin/check_jpush')
 
+
 @route(r'/admin/log', name='admin_log')  # 系统日志
 class LogHandler(AdminBaseHandler):
     def get(self):
@@ -2900,6 +2901,187 @@ class PasswordHandler(AdminBaseHandler):
 
 
 # ----------------------------------------------------------其它--------------------------------------------------------
+@route(r'/admin/promotion_ambassador', name='admin_promotion_ambassador')  # 推广大使配置
+class PromotionAmbassadorHandler(AdminBaseHandler):
+    def get(self):
+        pas = PromotionAmbassadorPic.select().order_by(PromotionAmbassadorPic.created)
+        items = Area.select().where(Area.pid >> None).order_by(Area.spell, Area.sort)
+        self.render('admin/App/pas.html', pas=pas, active='pa', items=items)
+
+
+@route(r'/admin/edit_pa/(\d+)', name='admin_pa_edit')
+class EditPAHandler(AdminBaseHandler):
+    executor = ThreadPoolExecutor(20)
+    @asynchronous
+    @coroutine
+    def get(self, aid):
+        a = yield self.show_ad(aid)
+
+    @run_on_executor
+    def show_ad(self, pap_id):
+        items = Area.select().where(Area.pid >> None)
+        pap_id = int(pap_id)
+        if pap_id > 0:
+            try:
+                pap = PromotionAmbassadorPic.get(id=pap_id)
+            except:
+                self.flash("此推广活动不存在")
+                self.redirect("/admin/promotion_ambassador")
+                return
+        pas = PromotionAmbassador.select()
+        self.render('admin/App/pa_edit.html', items=items, pas=pas, active='pa', pap=pap)
+
+    def post(self, pap_id):
+        pap_id = int(pap_id)
+        name = self.get_argument("name", None)
+        setting_id = self.get_argument("setting_id", '')
+        wordColour = self.get_argument("wordColour", '')
+        sort = self.get_argument("sort", 1)
+        sort = int(sort) if sort else 1
+        active = int(self.get_argument("active", 0))
+
+        if pap_id == 0:
+            pap = PromotionAmbassadorPic()
+        elif pap_id > 0:
+            try:
+                pap = PromotionAmbassadorPic.get(id=pap_id)
+            except:
+                self.flash("此推广大使活动图不存在")
+                self.redirect("/admin/promotion_ambassador")
+                return
+        else:
+            self.flash("此推广大使活动图不存在")
+            self.redirect("/admin/promotion_ambassador")
+            return
+        pap.setting = setting_id
+        pap.name = name
+        pap.wordColour = wordColour
+        pap.sort = sort
+        pap.active = active
+        try:
+            if self.request.files:
+                datetime = time.strftime('%Y%m%d%H%M%S', time.localtime(time.time()))  # 获取当前时间作为图片名称
+                filename = str(datetime) + ".jpg"
+                file_abspath = setting.admin_file_path + 'upload/popularizePIC/' + filename
+                with open(file_abspath, "wb") as f:
+                    f.write(self.request.files["file"][0]["body"])
+                pap.picAP = setting.domanName + '/upload/store_popularize/' + filename
+            pap.save()
+            AdminUserLog.create(admin_user=self.get_admin_user(), created=int(time.time()), content=u'编辑推广大使活动图: pap_id:%d' % pap.id)
+            self.flash(u"推广大使活动修改成功，请在左侧将广告发布到相应地区")
+        except Exception, ex:
+            self.flash(str(ex))
+
+        self.redirect("/admin/edit_pa/" + str(pap.id))
+        return
+
+
+@route(r'/admin/promotion_ambassador_publish', name='admin_promotion_ambassador_publish')  # 推广大使图发布到地区
+class PromotionAmbassadorPublishHandler(AdminBaseHandler):
+    def post(self):
+        result = {'flag': 0, 'msg': '发布成功', "data": []}
+        pap_id = int(self.get_argument('pap_id', 0))
+        codes = self.get_argument('codes', None)
+        if codes:
+            codes = codes.split(',')
+        if not (codes and pap_id):
+            result['msg'] = u'参数不匹配'
+            self.write(simplejson.dumps(result))
+            return
+        PromotionAmbassadorArea.delete().where(PromotionAmbassadorArea.pa_pic == pap_id).execute()
+        PromotionAmbassadorArea.insert_many([{
+            'area_code': item,
+            'pa_pic': pap_id
+        } for item in codes]).execute()
+        result['flag'] = 1
+        self.write(simplejson.dumps(result))
+
+
+@route(r'/admin/switch_pa/(\d+)', name='admin_switch_pa')
+class SwitchPAHandler(AdminBaseHandler):
+    executor = ThreadPoolExecutor(20)
+    @asynchronous
+    @coroutine
+    def get(self, aid):
+        a = yield self.show_ad(aid)
+
+    @run_on_executor
+    def show_ad(self, aid):
+        items = Area.select().where(Area.pid >> None)
+        aid = int(aid)
+        ad = ''
+        ad_type = ''
+        i_id = 0
+        if aid > 0:
+            try:
+                ad = BlockItem.get(id=aid)
+                if ad.link.startswith('http'):
+                    pass
+                elif ad.link.startswith('czj'):
+                    ad_type = ad.link.split('/')[2]
+                    i_id = int(ad.link.split('/')[-1])
+            except:
+                self.flash("此广告不存在")
+                self.redirect("/admin/advertisement")
+                return
+        blocks = Block.select()
+        insurances = Insurance.select().where(Insurance.active == 1)
+        self.render('admin/App/ad_e.html', items=items, ad=ad, active='ads', blocks=blocks, ad_type=ad_type,
+                    insurances=insurances, i_id=i_id)
+
+    def post(self, aid):
+        aid = int(aid)
+        ad_name = self.get_argument("ad_name", None)
+        ad_link = self.get_argument("ad_link", None)
+        product_id = self.get_argument("product_id", '')
+        ad_link_url = self.get_argument("ad_link_url", '')
+        block_item = self.get_argument("block_item", None)
+        remark = self.get_argument("remark", None)
+        sort = self.get_argument("sort", 1)
+        sort = int(sort) if sort else 1
+        active = int(self.get_argument("active", 0))
+        if aid == 0:
+            ad = BlockItem()
+        elif aid > 0:
+            try:
+                ad = BlockItem.get(id=aid)
+            except:
+                self.flash("此广告不存在")
+                self.redirect("/admin/ads")
+                return
+        else:
+            self.flash("广告ID错误")
+            self.redirect("/admin/ads")
+            return
+        ad.block = block_item
+        ad.name = ad_name
+        if ad_link == 'insurance':
+            ad.link = 'czj://%s/%s' % (ad_link, product_id)
+        else:
+            ad.link = ad_link_url
+        ad.remark = remark
+        ad.sort = sort
+        ad.remark = remark
+        ad.active = active
+        try:
+            if self.request.files:
+                datetime = time.strftime('%Y%m%d%H%M%S', time.localtime(time.time()))  # 获取当前时间作为图片名称
+                filename = str(datetime) + ".jpg"
+                file_abspath = setting.admin_file_path + 'image/ad/' + filename
+                with open(file_abspath, "wb") as f:
+                    f.write(self.request.files["file"][0]["body"])
+                ad.img = setting.imgDoman + 'ad/' + filename
+            ad.save()
+            aid = ad.id
+            AdminUserLog.create(admin_user=self.get_admin_user(), created=int(time.time()), content='编辑广告: ad_id:%d' % aid)
+            self.flash(u"广告修改成功，请在左侧将广告发布到相应地区")
+        except Exception, ex:
+            self.flash(str(ex))
+
+        self.redirect("/admin/edit_ad/" + str(aid))
+        return
+
+
 @route(r'/admin/gift_area', name='admin_area')  # 积分区域管理
 class AreaHandler(AdminBaseHandler):
     def get(self):

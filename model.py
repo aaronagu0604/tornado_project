@@ -10,6 +10,7 @@ from lib.util import vmobile
 import re
 import setting
 
+
 # 地区表
 class Area(db.Model):
     id = PrimaryKeyField()
@@ -1350,6 +1351,53 @@ class JPushRecord(db.Model):
 
     class Meta:
         db_table = 'tb_jpush_record'
+
+
+# 推广大使配置
+class PromotionAmbassador(db.Model):
+    id = PrimaryKeyField()
+    name = CharField()
+    picPath = CharField(default='/imgData/upload/popularizePIC/')
+    wordSize = IntegerField()
+    storeWidth = IntegerField()
+    storeHeight = IntegerField()
+    addrWidth = IntegerField()
+    addrHeight = IntegerField()
+    addr2tab = IntegerField()
+    addr2Width = IntegerField()
+    addr2Height = IntegerField()
+    phoneWidth = IntegerField()
+    phoneHeight = IntegerField()
+
+    class Meta:
+        db_table = 'tb_promotion_ambassador'
+
+
+# 推广大使图片
+class PromotionAmbassadorPic(db.Model):
+    id = PrimaryKeyField()
+    name = CharField()
+    setting = ForeignKeyField(PromotionAmbassador, db_column='setting')
+    picAP = CharField()
+    area_code = CharField(default='00')
+    wordColour = CharField(default='0,0,0')
+    created = CharField()
+    sort = IntegerField()
+    active = IntegerField(default=1)    # 0失效，1有效
+
+    class Meta:
+        db_table = 'tb_promotion_ambassador_pic'
+
+
+# 推广大使发布地区
+class PromotionAmbassadorArea(db.Model):
+    id = PrimaryKeyField()
+    pa_pic = ForeignKeyField(PromotionAmbassadorPic, db_column='pa_pic')  # 广告ID
+    area_code = CharField(max_length=50)  # 发布地区的code
+
+    class Meta:
+        db_table = 'tb_promotion_ambassador_area'
+
 
 def init_db():
     from lib.util import find_subclasses
