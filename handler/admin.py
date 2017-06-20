@@ -2690,7 +2690,7 @@ class SendMsgHandler(AdminBaseHandler):
                         tags = [district]
                     link = ''
                     if int(article):
-                        link = 'http://admin.dev.520czj.com/user/showarticle/%s'%article
+                        link = 'http://admin.520czj.com/user/showarticle/%s'%article
 
                     create_msg(simplejson.dumps({'body': content, 'jpushtype': 'tags', 'tags': tags, 'images':img_url, 'extras':{'link':link}}),
                                'jpush')
