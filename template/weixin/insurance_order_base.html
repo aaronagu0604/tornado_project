@@ -59,6 +59,34 @@
         padding: 20px;
     }
 
+    .file {
+        position: relative;
+        display: inline-block;
+        background: #FFFFFF;
+        border: 1px solid #1aad19;
+        border-radius: 4px;
+        padding: 4px 12px;
+        overflow: hidden;
+        color: #1aad19;
+        text-decoration: none;
+        text-indent: 0;
+        line-height: 20px;
+    }
+
+    .file input {
+        position: absolute;
+        font-size: 100px;
+        right: 0;
+        top: 0;
+        opacity: 0;
+    }
+
+    .file:hover {
+        background: #FFFFFF;
+        border-color: #1aad19;
+        color: #1aad19;
+        text-decoration: none;
+    }
 
 </style>
 {% endblock %}
@@ -69,12 +97,11 @@
             <img src="../../style/wximg/id_card.png" id="id_card_img">
         </div>
         <div class="weui-col-40">
-            <div onclick="setinput('#id_card_file');" class="weui-btn weui-btn_mini  weui-btn_plain-primary"
-               id="id_card">
+            <a href="javascript:;" class="file" id="id_card">
                 选择
                 <input type="file" id="id_card_file" onchange="loadingImg(this,'id_card_img')"
-                       style="display:None" accept="image/*">
-            </div>
+                       value="选择" accept="image/*">
+            </a>
             <p class="name">
                 被保人身份证<br/>
                 (正面)
@@ -91,10 +118,12 @@
         </div>
 
         <div class="weui-col-40">
-            <a href="#" class="weui-btn weui-btn_mini  weui-btn_plain-primary"
-               id="id_card_back">选择</a>
-             <input type="file" id="id_card_back_file" onchange="loadingImg(this,'id_card_back_img')"
-                       style="display:None" accept="image/*">
+            <a href="javascript:;" class="file"
+               id="id_card_back">
+                选择
+                <input type="file" id="id_card_back_file" onchange="loadingImg(this,'id_card_back_img')"
+                       accept="image/*">
+            </a>
             <p class="name">
                 被保人身份证<br/>
                 (反面)
@@ -112,10 +141,12 @@
         </div>
 
         <div class="weui-col-40">
-            <a href="#" class="weui-btn weui-btn_mini weui-btn_plain-primary"
-               id="drive_card">选择</a>
-             <input type="file" id="drive_card_file" onchange="loadingImg(this,'drive_card_img')"
-                       style="display:None" accept="image/*">
+            <a href="javascript:;" class="file"
+               id="drive_card">
+                选择
+                <input type="file" id="drive_card_file" onchange="loadingImg(this,'drive_card_img')"
+                       accept="image/*">
+            </a>
             <p class="name">
                 行驶证
             </p>
@@ -132,10 +163,12 @@
         </div>
 
         <div class="weui-col-40">
-            <a href="#" class="weui-btn weui-btn_mini weui-btn_plain-primary"
-               id="drive_card_back">选择</a>
-              <input type="file" id="drive_card_back_file" onchange="loadingImg(this,'drive_card_back_img')"
-                       style="display:None" accept="image/*">
+            <a href="javascript:;" class="file"
+               id="drive_card_back">
+                选择
+                <input type="file" id="drive_card_back_file" onchange="loadingImg(this,'drive_card_back_img')"
+                       accept="image/*">
+            </a>
             <p class="name">
                 行驶证(副本)
 
@@ -163,10 +196,13 @@
             </div>
 
             <div class="weui-col-40">
-                <a href="#" class="weui-btn weui-btn_mini  weui-btn_plain-primary"
-                   id="id_card_front_owner">选择</a>
-                   <input type="file" id="id_card_front_owner_file" onchange="loadingImg(this,'id_card_front_owner_img')"
-                       style="display:None" accept="image/*">
+                <a href="javascript:;" class="file"
+                   id="id_card_front_owner">
+                    选择
+                    <input type="file" id="id_card_front_owner_file"
+                           onchange="loadingImg(this,'id_card_front_owner_img')"
+                           accept="image/*">
+                </a>
                 <p class="name">
                     车主身份证<br/>
                     (正面)
@@ -181,17 +217,16 @@
             </div>
 
             <div class="weui-col-40">
-                <a href="#" class="weui-btn weui-btn_mini  weui-btn_plain-primary"
-
-                   id="id_card_back_owner">选择</a>
-                 <input type="file" id="id_card_back_owner_file" onchange="loadingImg(this,'id_card_back_owner_img')"
-                       style="display:None" accept="image/*">
+                <a href="javascript:;" class="file"
+                   id="id_card_back_owner">
+                    选择
+                    <input type="file" id="id_card_back_owner_file" onchange="loadingImg(this,'id_card_back_owner_img')"
+                           accept="image/*">
+                </a>
                 <p class="name">
                     车主身份证<br/>
                     (反面)
                 </p>
-
-
             </div>
         </div>
     </div>
@@ -210,11 +245,6 @@
             $(".owner").show();
         }
     });
-    function setinput(a) {
-        console.log(a);
-        $(a).click();
-        return false;
-    }
     $(document).on("click", "#next", function () {
         var insurance = {};
         insurance.id = 1;
@@ -231,12 +261,12 @@
     });
 
 
-    function loadingImg(fileid, imgId) {
+    function loadingImg(fileId, imgId) {
         if (typeof FileReader === 'undefined') {
-           /* fileId.setAttribute('disabled', 'disabled');*/
+            /* fileId.setAttribute('disabled', 'disabled');*/
             $.toast("抱歉，你的浏览器不支持 FileReader", "text");
         } else {
-            var file = fileid.files[0];
+            var file = fileId.files[0];
             if (!/image\/\w+/.test(file.type)) {
                 alert("请确保文件为图像类型");
                 return false;
@@ -245,7 +275,6 @@
             reader.readAsDataURL(file);
 
             reader.onload = function (e) {
-                console.log(imgId);
                 $("#" + imgId).attr('src', this.result);
             };
         }
