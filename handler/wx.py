@@ -147,7 +147,7 @@ class PayDetailHandler(BaseHandler):
 
 @route(r'/wxapi/login', name='wx_api_login')  # html 登录
 class WXApiLoginHandler(BaseHandler):
-    def get_access_token(self,code):
+    def get_access_token_from_code(self,code):
         get_access_token_url = "https://api.weixin.qq.com/sns/oauth2/access_token"
         grant_type = "authorization_code"
         try:
@@ -171,10 +171,16 @@ class WXApiLoginHandler(BaseHandler):
             logging.error(traceback.format_exc())
             return {}
 
+    def get_access_token(self):
+        url_access_token = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s" % (
+        appid, secret)
+        return simplejson.loads(urllib2.urlopen(url_access_token).read())["access_token"]
+
     def get(self):
         code = self.get_argument('code','')
         state = self.get_argument('state','')
-        openid,access_token = self.get_access_token(code)
+        openid,_ = self.get_access_token_from_code(code)
+        access_token = self.get_access_token()
         userinfo = self.get_user_info(access_token,openid)
         logging.info({'url':'/wxapi/login','code':code,'openid':openid,'accesstoken':access_token,'userinfo':userinfo})
         if userinfo['subscribe']==1:
