@@ -165,7 +165,7 @@ class StoreExportHandler(BaseHandler):
 class StoreExportHandler(BaseHandler):
     # 导出Store的数据
     def export_stores(self, stores, file_name):
-        f = open('upload/' + file_name, 'w')
+        f = open('/home/www/workspace/czj/upload/' + file_name, 'w')
         try:
             line = ','.join([item.mobile for item in stores if item.mobile])
             f.write(line.encode('gb18030'))
