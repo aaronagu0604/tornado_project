@@ -14,7 +14,8 @@
         margin-top: 3px;
     }
     .title{
-        font-size: 0.9rem;
+        font-size: 20px;
+        line-height: 24px;
         color: black;
         display: inline-block;
     }
@@ -38,31 +39,40 @@
         alignment: center;
         background-image: url("../../style/wximg/img_expired.png");
         background-repeat: no-repeat;
+        background-position:center;
+        background-origin:content-box;
+    }
+    .weui-check__label{
+        -webkit-tap-highlight-color:rgba(0,0,0,0);
+        -webkit-user-select: none;
+        -moz-user-select: none;
     }
     .list-box{position:relative;}
-    .address-box {border-bottom:10px solid #f5f5f5;}
-
+    .row_bd {border-bottom:10px solid #e0e0e0;}
+    .weui-cells{
+        margin-top:0;
+    }
 </style>
 {% endblock %}
 {% block content %}
 
-<div  class="weui-content">
-    <div id="list" class="weui-panel address-box">
+<div  class="weui-cells weui-cells_radio">
+    <div id="list" class="weui-panel row-box">
+        <div class="row_bd">
         <div class="weui-panel__bd">
         <div class="weui-media-box weui-media-box_text list-box">
             <div class="row_container" >
-                    <div id="sss" class=" weui-cells_checkbox">
-                    <label class="weui-cell weui-check__label" for="s11">
-                        <div class="weui-media-box__hd">
-                            <input type="checkbox" name="checkbox1" class="weui-check" id="s11">
-                            <i class="weui-icon-checked"></i>
+                    <!--<div id="sss" class=" weui-cell weui-check__label">-->
+                    <label class="weui-cell weui-check__label" for="x11">
+                        <div class=" weui-cell__bd">
+                            <input type="radio" name="radio1" class="weui-check" id="x11" checked="checked">
+                            <span class="weui-icon-checked"></span>
                         </div>
-                        <div class="weui-cell__bd">
+                        <div class="weui-cell__ft">
                             <p class="row_right">待付款</p>
                         </div>
                     </label>
-
-                </div>
+                <!--</div>-->
                 <hr>
                 <div>
                     <p>提交时间</p>
@@ -90,7 +100,53 @@
                 </div>
             </div>
         </div>
+        </div>
+
+        <div class="row_bd">
+        <div class="weui-panel__bd">
+            <div class="weui-media-box weui-media-box_text list-box">
+                <div class="row_container" >
+                    <!--<div id="sss" class=" weui-cell weui-check__label">-->
+                    <label class="weui-cell weui-check__label" for="x12">
+                        <div class=" weui-cell__bd">
+                            <input type="radio" name="radio1" class="weui-check" id="x12">
+                            <span class="weui-icon-checked"></span>
+                        </div>
+                        <div class="weui-cell__ft">
+                            <p class="row_right">待付款</p>
+                        </div>
+                    </label>
+                    <!--</div>-->
+                    <hr>
+                    <div>
+                        <p>提交时间</p>
+                        <p class="row_right">2017-06-29 </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row_contain">
+            <div class="detail_content">
+                <p class="title">交强险</p>
+                <div>
+                    <p>车船税</p>
+                    <p class="row_right">￥1234</p>
+                </div>
+                <p class="title">商业险(主险)</p>
+                <div>
+                    <p>车辆损失险</p>
+                    <p class="row_right">￥1234</p>
+                </div>
+                <p class="title">商业险(附加险)</p>
+                <div>
+                    <p>玻璃单独损失险</p>
+                    <p class="row_right">￥1234</p>
+                </div>
+            </div>
+        </div>
     </div>
+    </div>
+
 </div>
 
 {% endblock %}
