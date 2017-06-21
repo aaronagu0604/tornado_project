@@ -4,7 +4,9 @@
 from handler import BaseHandler
 from lib.route import route
 from model import *
+import logging
 import simplejson
+import urllib
 import urllib2
 import time
 import string
@@ -140,10 +142,25 @@ class PayDetailHandler(BaseHandler):
         payinfo = UnifiedOrder_pub().getPrepayId(self.__create_nonce_str(), '车装甲微信测试付款', int(1 * 100))
         self.render('weixin/pay_detail.html',ret=ret,payinfo=payinfo)
 
+@route(r'/wxapi/login', name='wx_api_login')  # html 登录
+class WXApiLoginHandler(BaseHandler):
+    def get(self):
+        logging.info(self.request)
+        self.render('weixin/index.html')
+
 @route(r'/login', name='wx_login')  # html 登录
 class LoginHandler(BaseHandler):
     def get(self):
-        self.render('weixin/login.html')
+        wxlogin_url = "https://open.weixin.qq.com/connect/oauth2/authorize"
+        appid = 'wxf23313db028ab4bc'
+        redirect_uri = urllib.urlencode({'url': "http://wx.dev.520czj.com/wxapi/login"})
+        response_type = "code"
+        scope = "snsapi_userinfo"
+        state = "1"
+        end = "#wechat_redirect"
+        wx_url = wxlogin_url + "?appid=" + appid + "&redirect_uri=" + redirect_uri[4:] + \
+              "&response_type=" + response_type + "&scope=" + scope + "&state=" + state + end
+        self.render('weixin/login.html',wx_url=wx_url)
 
 @route(r'/mine', name='wx_mine')  # html 会员中心
 class MineHandler(BaseHandler):
