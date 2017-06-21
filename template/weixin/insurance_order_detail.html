@@ -91,6 +91,15 @@
     .address_detail{
         padding-left: 16px;
     }
+    .detail_content{
+        background-color: #f5f6f7;
+        margin-top: 8px;
+        padding:5px 15px 10px 15px;
+    }
+    .weui-flex__item{
+        color: gray;
+        margin: 5px;
+    }
 </style>
 {% endblock %}
 {% block content %}
@@ -118,8 +127,37 @@
                 </div>
                 <div class="weui-cell__ft">2017-06-08</div>
             </div>
-            <div id="insrue_detail">
+            <div class="detail_content">
+                <p class="title">交强险</p>
 
+                <div class="weui-flex">
+                    <div class="weui-flex__item">
+                        车船税
+                    </div>
+                    <div class="weui-flex__item" style="text-align: right;">
+                        ￥1234
+                    </div>
+                </div>
+                <p class="title">商业险(主险)</p>
+                <div class="weui-flex">
+                    <div class="weui-flex__item">
+                        车辆损失险
+                    </div>
+                    <div class="weui-flex__item" style="text-align: right;">
+                        ￥1234
+                    </div>
+                </div>
+
+                <p class="title">商业险(附加险)</p>
+
+                <div class="weui-flex">
+                    <div class="weui-flex__item">
+                        玻璃单独损失险
+                    </div>
+                    <div class="weui-flex__item" style="text-align: right;">
+                        ￥1234
+                    </div>
+                </div>
             </div>
         </div>
         <div class="weui-cells__title">证件信息</div>
