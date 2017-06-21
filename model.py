@@ -694,6 +694,7 @@ class InsuranceArea(db.Model):
                             'insurance': i.insurance,
                             'lube': i.lube_policy,
                             'cash': i.cash_policy,
+                            'score': i.score_policy,
                             'dealer_store': i.dealer_store
                         })
             else:
@@ -703,6 +704,8 @@ class InsuranceArea(db.Model):
                             r['cash'] = i.cash_policy
                         if i.lube_policy:
                             r['lube'] = i.lube_policy
+                        if i.score_policy:
+                            r['score'] = i.score_policy
         return result
 
     @classmethod
