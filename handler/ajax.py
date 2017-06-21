@@ -88,7 +88,7 @@ class StoreUpdateGradeHandler(BaseHandler):
                     for policy in policies:
                         SSILubePolicy.create(store=store, insurance=policy['insurance'], lube=policy['lube'],
                                              dealer_store=policy['dealer_store'], cash=policy['cash'],
-                                             cash = policy['cash'])
+                                             score = policy['score'])
 
                 create_msg(simplejson.dumps({'store': store.id, 'state': state}), 'audit_store')
             else:
