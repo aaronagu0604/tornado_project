@@ -11,6 +11,7 @@ import urllib2
 import time
 import string
 import random as rand
+import traceback
 from lib.payment.wxPay import UnifiedOrder_pub
 import hashlib
 
@@ -158,6 +159,7 @@ class WXApiLoginHandler(BaseHandler):
 
             return result['openid'], result['access_token']
         except Exception, e:
+            logging.error(traceback.format_exc())
             return '',''
     def get_user_info(self,access_token,openid):
         try:
@@ -165,6 +167,7 @@ class WXApiLoginHandler(BaseHandler):
             result = urllib.urlopen(url).read()
             return simplejson.loads(result)
         except Exception, e:
+            logging.error(traceback.format_exc())
             return {}
 
     def get(self):
@@ -172,7 +175,7 @@ class WXApiLoginHandler(BaseHandler):
         state = self.get_argument('state','')
         openid,access_token = self.get_access_token(code)
         userinfo = self.get_user_info(access_token,openid)
-        logging.info({'url':'/wxapi/login','code':code,'openid':openid,'userinfo':userinfo})
+        logging.info({'url':'/wxapi/login','code':code,'openid':openid,'accesstoken':access_token,'userinfo':userinfo})
         if userinfo['subscribe']==1:
             # 已经关注条个人中心
             self.redirect('/mine')
