@@ -241,7 +241,7 @@
                             </li>
                         </ul>
                     </li>
-                    <li {% if active=='jpush' or active=='msg' or active=='jp_plan'
+                    <li {% if active=='jpush' or active=='msg' or active=='store_mobile' or active=='jp_plan'
                          %}class="active"{% endif %}>
                         <a href="#"><i class="fa fa-bolt fa-fw"></i>&nbsp;&nbsp;&nbsp;极光推送
                             <span class="fa arrow"></span>
@@ -255,6 +255,9 @@
                             </li>
                             <li>
                                 <a {% if active=='jp_plan' %} class="active"{% endif %} href="/admin/check_jpush">推送任务</a>
+                            </li>
+                             <li>
+                                <a {% if active=='store_mobile' %} class="active"{% endif %} href="/admin/store_mobile">筛选手机号</a>
                             </li>
                         </ul>
                     </li>

@@ -2853,6 +2853,50 @@ class CheckJPushHandler(AdminBaseHandler):
         jp.save()
         self.redirect('/admin/check_jpush')
 
+@route(r'/admin/store_mobile', name='admin_store_mobile')  # 门店管理
+class StoresMobileHandler(AdminBaseHandler):
+    def get(self):
+        province = self.get_argument("province", '')
+        city = self.get_argument("city", '')
+        town = self.get_argument("district", '')
+        keyword = self.get_argument("keyword", '')
+        page = int(self.get_argument("page", '1') if len(self.get_argument("page", '1')) > 0 else '1')
+        pagesize = self.settings['admin_pagesize']
+        status = int(self.get_argument("status", '-1'))
+        default_province = ''
+        default_city = ''
+        default_district = ''
+
+        ft = (Store.store_type == 2)
+        if status >= 0:
+            ft &= (Store.active == status)
+        if town and town != '':
+            ft &= (Store.area_code == town)
+            default_province = town[:4]
+            default_city = town[:8]
+            default_district = town
+        elif city and city != '':
+            default_province = city[:4]
+            default_city = city
+            city += '%'
+            ft &= (Store.area_code % city)
+        elif province and province != '':
+            default_province = province
+            province += '%'
+            ft &= (Store.area_code % province)
+        if keyword:
+            ft &= ((Store.name.contains(keyword)) | (Store.mobile.contains(keyword)))
+        cfs = Store.select().where(ft).order_by(Store.created.desc())
+        total = cfs.count()
+        if total % pagesize > 0:
+            totalpage = total / pagesize + 1
+        else:
+            totalpage = total / pagesize if (total / pagesize) > 0 else 1
+        cfs = cfs.paginate(page, pagesize)
+        items = Area.select().where((Area.pid >> None) & (Area.is_delete == 0) & (Area.is_site == 1)).order_by(Area.spell, Area.sort)
+        self.render('/admin/sysSetting/get_store_user_mobile.html', stores=cfs, total=total, page=page, pagesize=pagesize,
+                    totalpage=totalpage, active='store_mobile', status=status, keyword=keyword, Area=Area, items=items,
+                    province=default_province, city=default_city, district=default_district)
 
 @route(r'/admin/log', name='admin_log')  # 系统日志
 class LogHandler(AdminBaseHandler):

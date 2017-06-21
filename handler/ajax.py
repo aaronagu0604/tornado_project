@@ -161,6 +161,51 @@ class StoreExportHandler(BaseHandler):
             result['msg'] = e.message
         self.write(simplejson.dumps(result))
 
+@route(r'/ajax/exportstoremoblie', name='ajax_store_moblie_export')  # 生成store mobile txt
+class StoreExportHandler(BaseHandler):
+    # 导出Store的数据
+    def export_stores(self, stores, file_name):
+        f = open('upload/' + file_name, 'w')
+        try:
+            line = ','.join([item.mobile for item in stores if item.mobile])
+            f.write(line.encode('gb18030'))
+        except Exception, err:
+            raise err
+        finally:
+            f.close()
+
+    def post(self):
+        province = self.get_argument("province", '')
+        city = self.get_argument("city", '')
+        town = self.get_argument("district", '')
+        keyword = self.get_argument("keyword", '')
+        status = int(self.get_argument("status", '-1'))
+
+        ft = (Store.store_type == 2)
+        if status >= 0:
+            ft &= (Store.active == status)
+        if town and town != '':
+            ft &= (Store.area_code == town)
+        elif city and city != '':
+            city += '%'
+            ft &= (Store.area_code % city)
+        elif province and province != '':
+            province += '%'
+            ft &= (Store.area_code % province)
+        if keyword:
+            keyword2 = '%' + keyword + '%'
+            ft &= (Store.name % keyword2)
+
+        result = {'flag': 0, 'msg': ''}
+        try:
+            file_name = 'stores_mobile_export'+time.strftime("%Y_%m_%d_%H_%M_%S", time.localtime())+'.txt'
+            q = Store.select().where(ft)
+            self.export_stores(q, file_name)
+            result['msg'] = file_name
+            result['flag'] = 1
+        except Exception, e:
+            result['msg'] = e.message
+        self.write(simplejson.dumps(result))
 
 @route(r'/ajax/user_update_state', name='ajax_user_update_state')  # 修改门店的状态
 class UserUpdateStateHandler(BaseHandler):
