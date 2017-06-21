@@ -275,11 +275,25 @@
             reader.readAsDataURL(file);
 
             reader.onload = function (e) {
-                $("#" + imgId).attr('src', this.result);
+                console.log(file.name);
+                uploadImg(this.result, imgId);
             };
         }
     }
-
-
+    function uploadImg(file, imgId) {
+        $.ajax({
+            type: "POST",
+            url: "http://img.520czj.com/upload/image",
+            data: {file: file},
+            cache: false,
+            success: function (data) {
+                $("#" + imgId).attr('src', file);
+                console.log(data);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("上传失败，请检查网络后重试");
+            }
+        });
+    }
 </script>
 {% endblock %}
