@@ -1588,9 +1588,9 @@ class MobilInsuranceOrderBaseHandler(MobileBaseHandler):
             if sp.score and (sp.store.area_code.find('00270001')>=0) and (sp.insurance.id in insurance_active):
                 hasoil = False
                 rake_back.append({
-                    'name': "积分",
+                    'name': "积分/油品",
                     'type': 3,
-                    'link': "",
+                    'link': "http://img.520czj.com/image/ad/huodong1.jpg",
                     'link_str': "积分金额1:1(交强、车船除外)"
                 })
             if sp.lube and hasoil:
