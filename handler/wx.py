@@ -165,6 +165,7 @@ class WXApiLoginHandler(BaseHandler):
         try:
             url = "https://api.weixin.qq.com/cgi_bin/user/info?access_token=%s&openid=%s&lang=zh_CN" % (access_token, openid)
             result = urllib.urlopen(url).read()
+            logging.info(result)
             return simplejson.loads(result)
         except Exception, e:
             logging.error(traceback.format_exc())
