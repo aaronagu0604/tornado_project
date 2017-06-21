@@ -2395,13 +2395,13 @@ def update_area_policy(insurance_area):
     sss = SSILubePolicy.select().where((SSILubePolicy.insurance == insurance_area.insurance) & (SSILubePolicy.store << stores))
     has_i_stores = [item.store.id for item in sss]
     if has_i_stores:
-        SSILubePolicy.update(lube=insurance_area.lube_policy, cash=insurance_area.cash_policy).\
+        SSILubePolicy.update(lube=insurance_area.lube_policy, cash=insurance_area.cash_policy,score=insurance_area.score_policy).\
             where((SSILubePolicy.insurance == insurance_area.insurance) & (SSILubePolicy.store << has_i_stores)).execute()
     # 没有该保险公司政策的门店，create
     for s in stores:
         if s not in has_i_stores:
             SSILubePolicy.create(store=s, insurance=insurance_area.insurance, lube=insurance_area.lube_policy,
-                                 dealer_store=insurance_area.dealer_store, cash=insurance_area.cash_policy)
+                                 dealer_store=insurance_area.dealer_store, cash=insurance_area.cash_policy, score=insurance_area.score_policy)
 
 
 @route(r'/admin/insurance/score', name='admin_insurance_score')  # 保险返积分策略
