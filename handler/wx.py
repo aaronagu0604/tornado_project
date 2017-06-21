@@ -14,6 +14,8 @@ import random as rand
 from lib.payment.wxPay import UnifiedOrder_pub
 import hashlib
 
+appid = 'wxf23313db028ab4bc'
+secret = '8d75a7fa77dc0e5b2dc3c6dd551d87d6'
 
 @route(r'/', name='wx root') # 根域名重定向
 class RootHandler(BaseHandler):
@@ -105,8 +107,8 @@ class InsuranceOrderPriceHandler(BaseHandler):
 class PayDetailHandler(BaseHandler):
 
     def get_access_token(self):
-        self.weixin_app_id = 'wxf23313db028ab4bc'
-        self.weixin_secret = '8d75a7fa77dc0e5b2dc3c6dd551d87d6'
+        self.weixin_app_id = appid
+        self.weixin_secret = secret
         self.url_access_token = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s" % (
         self.weixin_app_id, self.weixin_secret)
         return simplejson.loads(urllib2.urlopen(self.url_access_token).read())["access_token"]
@@ -144,14 +146,43 @@ class PayDetailHandler(BaseHandler):
 
 @route(r'/wxapi/login', name='wx_api_login')  # html 登录
 class WXApiLoginHandler(BaseHandler):
+    def get_access_token(self,code):
+        get_access_token_url = "https://api.weixin.qq.com/sns/oauth2/access_token"
+        grant_type = "authorization_code"
+        try:
+            _code = code
+            url = get_access_token_url + "?appid=" + appid + "&secret=" + secret + "&code=" + _code + "&grant_type=" + grant_type
+
+            result = urllib.urlopen(url).read()
+            result = simplejson.loads(result)
+
+            return result['openid'], result['access_token']
+        except Exception, e:
+            return '',''
+    def get_user_info(self,access_token,openid):
+        try:
+            url = "https://api.weixin.qq.com/cgi_bin/user/info?access_token=%s&openid=%s&lang=zh_CN" % (access_token, openid)
+            result = urllib.urlopen(url).read()
+            return simplejson.loads(result)
+        except Exception, e:
+            return {}
+
     def get(self):
-        logging.info(self.request)
-        self.redirect('/insurance/1')
+        code = self.get_argument('code','')
+        state = self.get_argument('state','')
+        openid,access_token = self.get_access_token(code)
+        userinfo = self.get_user_info(access_token,openid)
+        logging.info({'url':'/wxapi/login','code':code,'openid':openid,'userinfo':userinfo})
+        if userinfo['subscribe']==1:
+            # 已经关注条个人中心
+            self.redirect('/mine')
+        else:
+            # 未关注太跳关注引导
+            self.redirect('/insurance/1')
 
 @route(r'/login', name='wx_login')  # html 登录
 class LoginHandler(BaseHandler):
     def get(self):
-
         wxlogin_url = "https://open.weixin.qq.com/connect/oauth2/authorize"
         appid = 'wxf23313db028ab4bc'
         redirect_uri = urllib.urlencode({'url': "http://wx.dev.520czj.com/wxapi/login"})
