@@ -1,0 +1,273 @@
+{% extends "layout/admin.html" %}
+{% block css %}
+<link href="/style/css/jquery-ui.css" rel="stylesheet">
+{% endblock%}
+{% block content %}
+<div class="row">
+    <nav>
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">检索手机号</a>
+        </div>
+    </nav>
+</div>
+<div class="row">
+    <div class="col-xs-12">
+    <div class="panel panel-primary">
+        <div class="panel-body">
+            <h4>检索</h4>
+            {%set messages=handler.get_flashed_messages() %}
+            {%if messages%}
+            <div class="msg" style="color:red;">
+                {% for type, msg in messages%}
+                <span>{{msg}}</span>
+                {% endfor %}
+            </div>
+            {%endif%}
+
+            <form action="" method="post" enctype="multipart/form-data">
+                {{xsrf()}}
+
+                <div class="form-group has-success">
+                    <input type="radio" id="is_all_users" name="is_users" value="all_user" /><label for="is_all_users" style="margin-right:20px;">所有注册用户</label>
+                    <input type="radio" id="is_group_users" name="is_users" value="group_user" /><label for="is_group_users">分组地区</label>
+                </div>
+                <div class="form-group has-success">
+                    <div class="area" style="margin-left:10px;">
+                        <select name="province_code" id="province_code" onchange="province_change(this.value,0)" data-default="{{default_province}}" style="height:28px;margin-left: -10px;margin-top: 10px;border-radius:4px;" >
+                            <option value="">--请选择省份--</option>
+                            {% for area in items %}
+                            <option value="{{area.code}}" {{area.code==default_province and 'selected' or ''}}>{{area.name}}</option>
+                            {% endfor %}
+                        </select>
+                        <select name="city_code" id="city_code" onchange="city_change(this.value,0)" data-default="{{default_city}}" style="height:28px;margin-left: 10px;margin-top: 10px;border-radius:4px;" >
+                            <option value="">--请选择城市--</option>
+                        </select>
+                        <select name="district_code" id="district_code" data-default="{{default_district}}" style="height:28px;margin-left: 10px;margin-top: 10px;border-radius:4px;">
+                            <option value="">--请选择区县--</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group has-success">
+                    <p><label class="control-label">内容（短信不超过60字符/条）</label></p>
+                    <textarea id="textarea" name="content" value="" required rows="10" cols="30" style="width:480px;border-radius:4px;border-color:#3C763D;padding:10px;"></textarea>
+                </div>
+                 <div class="form-group has-success">
+                    <input type="radio" id="static" name="link_type" checked value="0" onclick="update_link_status(0)"/><label for="send" style="margin-right:20px;">静态模板</label>
+                    <input type="radio" id="active" name="link_type" value="1" onclick="update_link_status(1)"/><label for="save" style="margin-right:20px;">动态模板</label>
+                    <!--<input type="radio" id="site" name="sms_type" value="2" /><label for="site">站内</label>-->
+                </div>
+                <div class="form-group has-success" style="display: none" id="div_link_url">
+                    <p><label class="control-label">动态link网址</label></p>
+                    <input type="text" id="active_url" name="active_url" class="form-control" value="" maxlength="240"  placeholder="请输入link网址：http://img.520czj.com..." style="width:480px;"/>
+                </div>
+                <div class="form-group has-success" id="div_link_article">
+                    <div class="articles" style="margin-left:10px;">
+                        <select name="article_id" id="article_id" style="height:28px;margin-left: -10px;margin-top: 10px;border-radius:4px;" >
+                            <option value="0">--请选择活动文章，不需要可以不选--</option>
+                            {% for article in articles %}
+                            <option value="{{article.id}}">{{article.title}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group has-success">
+                    <input type="radio" id="send" name="send_type" onclick="update_send_div(0)" checked value="0" /><label for="send" style="margin-right:20px;">立即发送</label>
+                    <input type="radio" id="save" name="send_type" onclick="update_send_div(0)" value="1" /><label for="save" style="margin-right:20px;">保存消息</label>
+                    <input type="radio" id="settime" name="send_type" onclick="update_send_div(1)" value="2" /><label for="send" style="margin-right:20px;">定时发送</label>
+                    <!--<input type="radio" id="site" name="sms_type" value="2" /><label for="site">站内</label>-->
+                </div>
+                <div id="settime_date_picker" style="display: none" class="form-group has-success">
+                    <input type="text" name="begin_date" id="begin_date" value="{{begin_date}}" style="width:110px; height: 34px;margin-right:5px;border:1px solid #ccc;border-radius:4px;" placeholder="开始日期"/>
+                    <input type="text" name="end_date" id="end_date" value="{{end_date}}" style="width:110px; height:34px;margin-right:5px;border:1px solid #ccc;border-radius:4px;" placeholder="截止日期"/>
+                </div>
+                <div class="form-group has-success">
+                    <input type="checkbox" id="istest" name="istest" value="1" /><label for="istest" style="margin-right:20px;">是否测试环境</label>
+                </div>
+                <div class="form-group has-success">
+                    <input type="submit" name="sub" value="提 交" class="btn btn-outline btn-primary btn-sm">
+                    <!--<input type="submit" name="get_mobile" value="获取手机号" class="btn btn-outline btn-primary btn-sm">-->
+                </div>
+            </form>
+
+        </div>
+    </div>
+    </div>
+    <div class="col-xs-6">
+        <div class="panel panel-primary">
+            <div class="panel-body">
+                <h4>现有消息</h4>
+                <table class="table table-hover" id="tb_users" cellpadding="0" cellspacing="0" border="0" style="text-align:center;width:100%;">
+                <thead>
+                <tr >
+                    <th style="width:15%;text-align:center;">编号</th>
+                    <th style="width:15%;text-align:center;">图片</th>
+                    <th style="width:15%;text-align:center;">活动html</th>
+                    <th style="width:15%;text-align:center;">内容</th>
+                    <th style="width:15%;text-align:center;">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for item in jpushmsg %}
+                <tr>
+                    <td align=center onclick="setjpushmsg('{{item.img_url}}','{{item.content}}',{{item.jpush_active.id and item.jpush_active.id or 0}});">
+                        <span style="color: blue">{{item.id}}</span>
+                    </td>
+                    <td align=center>
+                        <img src="{{item.img_url}}"  height="80">
+                    </td>
+                    <td align=center >
+                        <span>{{item.jpush_active.id or '---'}}/{{item.jpush_active.title or '---'}}</span>
+                    </td>
+                    <td align=center >
+                        <span>{{item.content}}</span>
+                    </td>
+                    <td align=center >
+                        <!--<button type="button" onclick="change_status({{item.id}}, 1)" id='bt_pass_{{store.id}}'-->
+                                <!--class="btn btn-xs btn-success" >-->
+                            <!--启用-->
+                        <!--</button>-->
+                        <button type="button" onclick="change_status({{item.id}}, 2)" class="btn btn-xs btn-warning" >
+                            下线
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script src="/style/js/DateTimePicker/jquery.ui.datepicker-zh-CN.js"></script>
+<script src="/style/js/DateTimePicker/jquery-ui-1.10.4.custom.min.js"></script>
+<script src="/style/js/DateTimePicker/jquery-ui-timepicker-addon.js"></script>
+<script src="/style/js/DateTimePicker/jquery-ui-timepicker-zh-CN.js"></script>
+<script>
+    $( "input[name='begin_date'],input[name='end_date']" ).datetimepicker();
+
+    function setjpushmsg(imgurl,title,article){
+        $('#img_url').val(imgurl);
+        $('#textarea').val(title);
+        $('#article_id').val(article);
+    }
+    function update_link_status(status){
+        if (status == 0) {
+            var targetObj = document.getElementById('div_link_url');
+            targetObj.style.display="none";
+            var targetObj = document.getElementById('div_link_article');
+            targetObj.style.display="";
+        } else {
+            var targetObj = document.getElementById('div_link_url');
+            targetObj.style.display="";
+            var targetObj = document.getElementById('div_link_article');
+            targetObj.style.display="none";
+        }
+    }
+
+    function update_send_div(status){
+        console.log(status)
+        if (status == 0) {
+            console.log('set none');
+            var targetObj = document.getElementById('settime_date_picker');
+            targetObj.style.display="none";
+        } else {
+            console.log('set ""');
+            var targetObj = document.getElementById('settime_date_picker');
+            targetObj.style.display="";
+        }
+    }
+    var xsrf='{{handler.xsrf_token}}';
+    function change_status(id, state_type){
+        $.post("/ajax/jpushmsg_status", { _xsrf:xsrf,id: id, state_type:state_type }, function (data) {
+            data = jQuery.parseJSON(data);
+            alert(data.msg);
+            if(data.flag==1){
+                location.reload();
+            }
+        });
+    }
+
+    $(function(){
+        $(".area").hide();
+        $("input:radio[name='is_users']").click(function(){
+            var v = $("input:radio[name='is_users']:checked").val();
+            if(v == "all_user"){
+                $("#number").val('');
+                $("#number").prop("readonly","readonly");
+                $(".area").hide();
+                $("input:radio[name='user_type']").attr("checked",false);
+            }else if(v == "group_user"){
+                $("#number").val('');
+                $("#number").prop("readonly","readonly");
+                $(".area").show();
+            }
+            else{
+                $("#number").val('');
+                $("#number").removeAttr("readonly");
+                $("input:radio[name='user_type']").attr("checked",false);
+                $(".area").hide();
+            }
+        });
+
+
+        $("input:radio[name='sms_type']").click(function(){
+            var v = $("input:radio[name='sms_type']:checked").val();
+            if(v == "2"){
+                $("#title").show();
+            }
+            else{
+                $("#title").hide();
+            }
+        });
+    });
+
+
+    function province_change(id, default_id){
+//    var id = $(obj).val();
+        $("#district_code > option").remove();
+        $("#district_code").append("<option value=\"0\">--请选择区县--</option>");
+        $("#city_code > option").remove();
+        $("#city_code").append("<option value=\"0\">--请选择城市--</option>");
+        if(id > 0){
+            GetSubAreas(id, "city_code", default_id);
+        }
+    }
+    function city_change(id, default_id){
+//    var id = $(obj).val();
+        $("#district_code > option").remove();
+        $("#district_code").append("<option value=\"0\">--请选择区县--</option>");
+        if(id > 0){
+            GetSubAreas(id, "district_code", default_id);
+        }
+    }
+    function GetSubAreas(id,ddl_id, default_id) {
+//    alert(default_id);
+        $.get("/ajax/GetSubAreas", { pcode: id,  t: Math.random() }, function (data) {
+            data = jQuery.parseJSON(data);
+            if(data.flag==1){
+                for(var i=0; i< data.data.length; i++){
+                    if(default_id.length>0){
+                        if(data.data[i]["code"]==default_id){
+                            $("#" + ddl_id).append("<option value=\"" + data.data[i]["code"] + "\" selected>" + data.data[i]["name"] + "</option>");
+                        }
+                        else{
+                            $("#" + ddl_id).append("<option value=\"" + data.data[i]["code"] + "\">" + data.data[i]["name"] + "</option>");
+                        }
+                    }
+                    else {
+                        $("#" + ddl_id).append("<option value=\"" + data.data[i]["code"] + "\">" + data.data[i]["name"] + "</option>");
+                    }
+                }
+            }
+            else{
+                alert(data.msg)
+            }
+        });
+    }
+
+</script>
+{% endblock %}

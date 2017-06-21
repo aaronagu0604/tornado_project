@@ -69,12 +69,12 @@
             <img src="../../style/wximg/id_card.png" id="id_card_img">
         </div>
         <div class="weui-col-40">
-            <a href="javascript:;" class="weui-btn weui-btn_mini  weui-btn_plain-primary"
+            <div onclick="setinput('#id_card_file');" class="weui-btn weui-btn_mini  weui-btn_plain-primary"
                id="id_card">
                 选择
                 <input type="file" id="id_card_file" onchange="loadingImg(this,'id_card_img')"
-                       class="weui-uploader__input" accept="image/*">
-            </a>
+                       style="display:None" accept="image/*">
+            </div>
             <p class="name">
                 被保人身份证<br/>
                 (正面)
@@ -91,10 +91,10 @@
         </div>
 
         <div class="weui-col-40">
-            <a href="javascript:;" class="weui-btn weui-btn_mini  weui-btn_plain-primary"
+            <a href="#" class="weui-btn weui-btn_mini  weui-btn_plain-primary"
                id="id_card_back">选择</a>
              <input type="file" id="id_card_back_file" onchange="loadingImg(this,'id_card_back_img')"
-                       class="weui-uploader__input" accept="image/*">
+                       style="display:None" accept="image/*">
             <p class="name">
                 被保人身份证<br/>
                 (反面)
@@ -112,10 +112,10 @@
         </div>
 
         <div class="weui-col-40">
-            <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_plain-primary"
+            <a href="#" class="weui-btn weui-btn_mini weui-btn_plain-primary"
                id="drive_card">选择</a>
              <input type="file" id="drive_card_file" onchange="loadingImg(this,'drive_card_img')"
-                       class="weui-uploader__input" accept="image/*">
+                       style="display:None" accept="image/*">
             <p class="name">
                 行驶证
             </p>
@@ -132,10 +132,10 @@
         </div>
 
         <div class="weui-col-40">
-            <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_plain-primary"
+            <a href="#" class="weui-btn weui-btn_mini weui-btn_plain-primary"
                id="drive_card_back">选择</a>
               <input type="file" id="drive_card_back_file" onchange="loadingImg(this,'drive_card_back_img')"
-                       class="weui-uploader__input" accept="image/*">
+                       style="display:None" accept="image/*">
             <p class="name">
                 行驶证(副本)
 
@@ -163,10 +163,10 @@
             </div>
 
             <div class="weui-col-40">
-                <a href="javascript:;" class="weui-btn weui-btn_mini  weui-btn_plain-primary"
+                <a href="#" class="weui-btn weui-btn_mini  weui-btn_plain-primary"
                    id="id_card_front_owner">选择</a>
                    <input type="file" id="id_card_front_owner_file" onchange="loadingImg(this,'id_card_front_owner_img')"
-                       class="weui-uploader__input" accept="image/*">
+                       style="display:None" accept="image/*">
                 <p class="name">
                     车主身份证<br/>
                     (正面)
@@ -181,11 +181,11 @@
             </div>
 
             <div class="weui-col-40">
-                <a href="javascript:;" class="weui-btn weui-btn_mini  weui-btn_plain-primary"
+                <a href="#" class="weui-btn weui-btn_mini  weui-btn_plain-primary"
 
                    id="id_card_back_owner">选择</a>
                  <input type="file" id="id_card_back_owner_file" onchange="loadingImg(this,'id_card_back_owner_img')"
-                       class="weui-uploader__input" accept="image/*">
+                       style="display:None" accept="image/*">
                 <p class="name">
                     车主身份证<br/>
                     (反面)
@@ -210,6 +210,11 @@
             $(".owner").show();
         }
     });
+    function setinput(a) {
+        console.log(a);
+        $(a).click();
+        return false;
+    }
     $(document).on("click", "#next", function () {
         var insurance = {};
         insurance.id = 1;
@@ -240,6 +245,7 @@
             reader.readAsDataURL(file);
 
             reader.onload = function (e) {
+                console.log(imgId);
                 $("#" + imgId).attr('src', this.result);
             };
         }
