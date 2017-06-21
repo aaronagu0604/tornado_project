@@ -154,7 +154,7 @@ class WXApiLoginHandler(BaseHandler):
             _code = code
             url = get_access_token_url + "?appid=" + appid + "&secret=" + secret + "&code=" + _code + "&grant_type=" + grant_type
 
-            result = urllib.urlopen(url).read()
+            result = urllib2.urlopen(url).read()
             result = simplejson.loads(result)
 
             return result['openid'], result['access_token']
@@ -163,8 +163,8 @@ class WXApiLoginHandler(BaseHandler):
             return '',''
     def get_user_info(self,access_token,openid):
         try:
-            url = "https://api.weixin.qq.com/cgi_bin/user/info?access_token=%s&openid=%s&lang=zh_CN" % (access_token, openid)
-            result = urllib.urlopen(url).read()
+            url = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=%s&openid=%s&lang=zh_CN" % (access_token, openid)
+            result = urllib2.urlopen(url).read()
             logging.info(result)
             return simplejson.loads(result)
         except Exception, e:
