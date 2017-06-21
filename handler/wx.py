@@ -146,11 +146,12 @@ class PayDetailHandler(BaseHandler):
 class WXApiLoginHandler(BaseHandler):
     def get(self):
         logging.info(self.request)
-        self.render('weixin/index.html')
+        self.redirect('/insurance/1')
 
 @route(r'/login', name='wx_login')  # html 登录
 class LoginHandler(BaseHandler):
     def get(self):
+
         wxlogin_url = "https://open.weixin.qq.com/connect/oauth2/authorize"
         appid = 'wxf23313db028ab4bc'
         redirect_uri = urllib.urlencode({'url': "http://wx.dev.520czj.com/wxapi/login"})
