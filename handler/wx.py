@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding=utf8
 
-from handler import AdminBaseHandler, BaseHandler
+from handler import BaseHandler
 from lib.route import route
 from model import *
 import simplejson
@@ -10,16 +10,9 @@ import time
 import string
 import random as rand
 from lib.payment.wxPay import UnifiedOrder_pub
-import logging
-import setting
-import os
-from payqrcode import postRequest
-from tornado.gen import coroutine
-from tornado.web import asynchronous
-from tornado.concurrent import run_on_executor
-from concurrent.futures import ThreadPoolExecutor
-from lib.mqhelper import create_msg
 import hashlib
+
+
 @route(r'/', name='wx root') # 根域名重定向
 class RootHandler(BaseHandler):
     def get(self):
