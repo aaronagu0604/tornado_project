@@ -150,13 +150,14 @@ class BaseHandler(RequestHandler, FlashMessagesMixin):
 
 
 class AdminBaseHandler(BaseHandler):
-    def prepare(self):
-        if self.get_admin_user():
-            pass
-        else:
-            self.redirect("/admin/login")
-
-        super(AdminBaseHandler, self).prepare()
+    pass
+    # def prepare(self):
+    #     if self.get_admin_user():
+    #         pass
+    #     else:
+    #         self.redirect("/admin/login")
+	#
+    #     super(AdminBaseHandler, self).prepare()
 
     def vrole(self, rolelist):
         userrole = self.get_user_role()
