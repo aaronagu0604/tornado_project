@@ -61,7 +61,7 @@ function getVcode(cell) {
 }
 function register() {
     var mobile = $('#cellphone').val();
-    var vcode = $(#'vcode').val();
+    var vcode = $('#vcode').val();
     if (mobile == "" || mobile.length<11) {
         $.toast('电话号码不合法');
     }
