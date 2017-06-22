@@ -3,24 +3,62 @@
 {% block css %}
 <title>登录</title>
 <style>
-a {
-    width: 60%;
+html,body {
+    height:100%;
+    margin:0rem;
+    padding:0rem;
 }
-#logo {
-    margin-top: 45%;
+.weui-tab {
+    height:100%;
 }
-#btn {
-    margin-top: 50%;
+.weui-tabbar {
+    height:2rem;
+}
+#tab1 div {
+    margin-top:10rem;
 }
 </style>
 {% endblock %}
 {% block content %}
-<div class="has-max">
-    <div id="logo" align="center">
-        <img src="../../style/images/logo.png" alt="" />
+<div class="weui-tab">
+    <div class="weui-tab__bd">
+        <div id="tab1" class="weui-tab__bd-item weui-tab__bd-item--active">
+            <div id="login_logo" align="center">
+                <img src="../../style/images/logo.png" alt="" />
+            </div>
+            <div id="login_btn" class="weui_cell" align="center">
+                <a href="{{wx_url}}" class="weui-btn weui-btn_primary">微信登录</a>
+            </div>
+        </div>
+        <div id="tab2" class="weui-tab__bd-item">
+            <div id="bound_logo" align="center">
+                <img src="../../style/images/logo.png" alt="" />
+            </div>
+            <div class="weui-cell weui-cell_vcode">
+                <div class="weui-cell__hd">
+                    <label class="weui-label">手机号</label>
+                </div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input" type="tel" placeholder="请输入手机号">
+                </div>
+                <div class="weui-cell__ft">
+                    <button class="weui-vcode-btn">获取验证码</button>
+                </div>
+            </div>
+            <div id="bound_btn" class="weui_cell" align="center">
+                <a href="{{wx_url}}" class="weui-btn weui-btn_primary">加入车装甲</a>
+            </div>
+        </div>
+
     </div>
-    <div id="btn" class="weui_cell" align="center">
-        <a href="{{wx_url}}" class="weui-btn weui-btn_primary">微信登录</a>
+
+    <div class="weui-tabbar">
+        <a href="#tab1" class="weui-tabbar__item weui-bar__item--on">
+            <p class="weui-tabbar__label">微信登录</p>
+        </a>
+        <a href="#tab2" class="weui-tabbar__item">
+            <p class="weui-tabbar__label">加入车装甲</p>
+        </a>
     </div>
 </div>
 {% endblock %}

@@ -143,9 +143,9 @@
 	function province_change(id, default_id){
 //    var id = $(obj).val();
         $("#district_code > option").remove();
-        $("#district_code").append("<option value=\"0\">--请选择区县--</option>");
+        $("#district_code").append("<option value=\"\">--请选择区县--</option>");
         $("#city_code > option").remove();
-        $("#city_code").append("<option value=\"0\">--请选择城市--</option>");
+        $("#city_code").append("<option value=\"\">--请选择城市--</option>");
         if(id > 0){
             GetSubAreas(id, "city_code", default_id);
         }
@@ -153,7 +153,7 @@
     function city_change(id, default_id){
 //    var id = $(obj).val();
         $("#district_code > option").remove();
-        $("#district_code").append("<option value=\"0\">--请选择区县--</option>");
+        $("#district_code").append("<option value=\"\">--请选择区县--</option>");
         if(id > 0){
             GetSubAreas(id, "district_code", default_id);
         }
