@@ -2034,15 +2034,15 @@ class WeiXinMenuHandler(BaseHandler):
         self.weixin_app_id, self.weixin_secret)
         return simplejson.loads(urllib2.urlopen(self.url_access_token).read())["access_token"]
 
-    def create_url(self,url):
+    def create_url(self,tourl):
         url = wxdomanName + '/wxapi/login'
         wxlogin_url = "https://open.weixin.qq.com/connect/oauth2/authorize"
         appid = 'wxf23313db028ab4bc'
         redirect_uri = urllib.urlencode({'url': url})
         response_type = "code"
-        scope = "snsapi_userinfo"
+        scope = "snsapi_base"
 
-        state = '0,%s'%(url.replace('/','00xiegang00'))
+        state = '000douhao00%s'%(tourl.replace('/','00xiegang00'))
         end = "#wechat_redirect"
         wx_url = wxlogin_url + "?appid=" + appid + "&redirect_uri=" + redirect_uri[4:] + \
                  "&response_type=" + response_type + "&scope=" + scope + "&state=" + state + end
@@ -2083,7 +2083,7 @@ class WeiXinMenuHandler(BaseHandler):
                 ]}'''%(self.create_url('/index'),
                        self.create_url('/insurance/13'),
                        self.create_url('/mine'))
-
+        print menu
         try:
             url_menu_create = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=" + self.get_access_token()
             print url_menu_create

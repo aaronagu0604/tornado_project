@@ -19,7 +19,7 @@ import hashlib
 appid = 'wxf23313db028ab4bc'
 secret = '8d75a7fa77dc0e5b2dc3c6dd551d87d6'
 
-'''
+'''                   
 https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf23313db028ab4bc&redirect_uri=http%3A%2F%2Fwx.dev.520czj.com%2Fwxapi%2Flogin&response_type=code&scope=snsapi_base&state=1#wechat_redirect
 '''
 
@@ -199,7 +199,10 @@ class WXApiLoginHandler(BaseHandler):
     def get(self):
         code = self.get_argument('code','')
         state = self.get_argument('state','0')
-        parameters = state.split(',')
+        parameters = state.replace('00douhao00',',')
+        logging.info(parameters)
+        parameters = parameters.split(',')
+
         store_id = parameters[0]
         tourl = parameters[1].replace('00xiegang00','/')
         openid,_ = self.get_access_token_from_code(code)
