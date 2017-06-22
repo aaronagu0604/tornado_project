@@ -258,15 +258,18 @@
 {% block js %}
 <script>
     $(document).ready(function () {
+        localStorage.removeItem("insurance");
         $.ajax(
             {
                 url: "/demo_insurance_list",
                 type: 'GET',
                 success: function (data) {
                     var insurance_list = JSON.parse(data);
-                    var insurance = JSON.parse(window.localStorage.getItem("insurance"));
-                    if (insurance == null) {
+                    var str = window.localStorage.getItem("insurance");
+                    if (str == null) {
                         var insurance = {};
+                    } else {
+                        var insurance = JSON.parse(str);
                     }
                     insurance.insurance_list = insurance_list;
                     window.localStorage.setItem("insurance", JSON.stringify(insurance));
@@ -398,7 +401,8 @@
                 }
                 insurance.insurance = 1;
                 window.localStorage.setItem("insurance", JSON.stringify(insurance));
-                document.location.href = "insurance_order_new";
+                console.log(insurance);
+            /*    document.location.href = "insurance_order_new";*/
             }
         });
 

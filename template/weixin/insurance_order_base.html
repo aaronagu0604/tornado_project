@@ -307,7 +307,6 @@
             },
             success: function (data) {
                 $.hideLoading();
-                console.log(data);
                 var data = JSON.parse(data);
                 if (data.flag == 1) {
                     $("#" + parent.name).attr('src', data.data);
@@ -317,7 +316,7 @@
                     }
                     insurance[parent.name] = data.data;
                     window.localStorage.setItem("insurance", JSON.stringify(insurance));
-
+                    console.log(insurance);
                 } else {
                     $.toast(data.msg, "text");
                 }

@@ -8,6 +8,11 @@
     <link rel="stylesheet" href="//cdn.bootcss.com/weui/1.1.1/style/weui.min.css">
     <link rel="stylesheet" href="//cdn.bootcss.com/jquery-weui/1.0.1/css/jquery-weui.min.css">
     {% block css %}{% endblock %}
+    <style>
+        .weui-tabbar {
+            position: fixed;
+        }
+    </style>
 </head>
 <body ontouchstart>
 <div class>
@@ -16,22 +21,22 @@
     <!--底部导航栏-->
     <div class="weui-tabbar">
         <a href="/index" class="weui-tabbar__item">
-          <div class="weui-tabbar__icon">
-            <img src="../../style/wximg/index.png" alt="">
-          </div>
-          <p class="weui-tabbar__label">首页</p>
+            <div class="weui-tabbar__icon">
+                <img src="../../style/wximg/index.png" alt="">
+            </div>
+            <p class="weui-tabbar__label">首页</p>
         </a>
         <!--<a href="/category" class="weui-tabbar__item">-->
-          <!--<div class="weui-tabbar__icon">-->
-            <!--<img src="../../style/wximg/category.png" alt="">-->
-          <!--</div>-->
-          <!--<p class="weui-tabbar__label">分类</p>-->
+        <!--<div class="weui-tabbar__icon">-->
+        <!--<img src="../../style/wximg/category.png" alt="">-->
+        <!--</div>-->
+        <!--<p class="weui-tabbar__label">分类</p>-->
         <!--</a>-->
         <a href="/mine" class="weui-tabbar__item">
-          <div class="weui-tabbar__icon">
-            <img src="../../style/wximg/mine.png" alt="">
-          </div>
-          <p class="weui-tabbar__label">个人中心</p>
+            <div class="weui-tabbar__icon">
+                <img src="../../style/wximg/mine.png" alt="">
+            </div>
+            <p class="weui-tabbar__label">个人中心</p>
         </a>
     </div>
 </div>

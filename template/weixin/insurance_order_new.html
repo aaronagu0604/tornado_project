@@ -282,11 +282,15 @@
                 } else if ($("#detailed_address").val() == "") {
                     $.toast("请输入详细地址", "text");
                 } else {
+                    window.localStorage.setItem("insurance", insurance);
                     document.location.href = "insurance_order_success";
                 }
             } else {
-                var name = document.getElementById("default_name");
-                name.innerHTML = "小郭";
+                /*  var name = document.getElementById("default_name");
+                 name.innerHTML = "小郭";*/
+                window.localStorage.setItem("insurance", insurance);
+                console.log(insurance);
+                document.location.href = "insurance_order_success";
 
             }
 
