@@ -2948,7 +2948,7 @@ class PasswordHandler(AdminBaseHandler):
 @route(r'/admin/promotion_ambassador', name='admin_promotion_ambassador')  # 推广大使配置
 class PromotionAmbassadorHandler(AdminBaseHandler):
     def get(self):
-        pas = PromotionAmbassadorPic.select().order_by(PromotionAmbassadorPic.created)
+        pas = PromotionAmbassadorPic.select().order_by(PromotionAmbassadorPic.sort.desc(), PromotionAmbassadorPic.created.desc())
         items = Area.select().where(Area.pid >> None).order_by(Area.spell, Area.sort)
         self.render('admin/App/pas.html', pas=pas, active='pa', items=items)
 

@@ -126,67 +126,6 @@ class MobilStorePopularizeHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/storepopularize
     """
-
-    def act_insurance(self, pop, uid, storeName, addr1, addr2, mobile, now):
-        pic = os.path.join(settings['upload_path'], "store_popularize/%s_%d.jpeg" % (pop['activity'], uid))
-        newPic_name = pic.split('/')[-1]
-        if not os.path.exists(pic):
-            ttfont = ImageFont.truetype(setting.typeface, pop['wordSize'])
-            im = Image.open(pop['basePicPath'])
-            draw = ImageDraw.Draw(im)
-            draw.text((pop['storeWidth'], pop['storeHeight']), storeName, fill=pop['wordColour'], font=ttfont)
-            draw.text((pop['addrWidth'], pop['addrHeight']), addr1, fill=pop['wordColour'], font=ttfont)
-            if addr2:
-                draw.text((pop['addr2Width'], pop['addr2Height']), addr2, fill=pop['wordColour'], font=ttfont)
-            draw.text((pop['phoneWidth'], pop['phoneHeight']), mobile, fill=pop['wordColour'], font=ttfont)
-            im.save(pic, format='jpeg')
-
-        return setting.domanName + '/upload/store_popularize/' + newPic_name
-
-    @require_auth
-    def get(self):
-        user = self.get_user()
-        result = {'flag': 0, 'msg': '', "data": []}
-        try:
-            storeName = user.store.name
-            addr = Area.get_detailed_address(user.store.area_code) + user.store.address
-            addr2 = ''
-            mobile = user.mobile
-            now = str(time.time())[:10]
-            for pop in popularizePIC:
-                area_limits = 0
-                for area_code in pop['area_code'].split(','):
-                    if user.store.area_code.startswith(area_code):
-                        area_limits = 1
-                if len(addr) > pop['addr2tab']:
-                    addr1 = addr[:pop['addr2tab']]
-                    addr2 = addr[pop['addr2tab']:]
-                else:
-                    addr1 = addr
-                if area_limits == 1:
-                    picPath = self.act_insurance(pop, user.id, storeName, addr1, addr2, mobile, now)
-                    result['data'].append(picPath)
-                    result['flag'] = 1
-        except Exception, e:
-            logging.error(e)
-            result['msg'] = u'生成图片失败'
-        logging.info(simplejson.dumps(result))
-        self.write(simplejson.dumps(result))
-
-
-@route(r'/mobile/store_popularize', name='new_store_popularize')  # 推广大使
-class New_MobilStorePopularizeHandler(MobileBaseHandler):
-    """
-    @apiGroup mine
-    @apiVersion 1.0.0
-    @api {get} /mobile/storepopularize 00 推广大使
-    @apiDescription app  推广大使
-
-    @apiHeader {String} token 用户登录凭证
-
-    @apiSampleRequest /mobile/storepopularize
-    """
-
     def create_store_pic(self, pa_pic, store, addr1, addr2):
         pa_pic_tmp = pa_pic.picAP.split('.')
         pic = pa_pic_tmp[0] + '_' + str(store.id)+ '.' + pa_pic_tmp[1]
@@ -223,7 +162,7 @@ class New_MobilStorePopularizeHandler(MobileBaseHandler):
                 ft = None
             if ft:
                 for paa in PromotionAmbassadorArea.select().join(PromotionAmbassadorPic).\
-                        where(ft).order_by(PromotionAmbassadorPic.sort.desc()):
+                        where(ft).order_by(PromotionAmbassadorPic.sort.desc(), PromotionAmbassadorPic.created.desc()):
                     if len(addr) > paa.pa_pic.setting.addr2tab:
                         addr1 = addr[:paa.pa_pic.setting.addr2tab]
                         addr2 = addr[paa.pa_pic.setting.addr2tab:]
