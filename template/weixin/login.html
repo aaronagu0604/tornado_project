@@ -77,6 +77,8 @@ a {
 <script>
 function getVcode(cell) {
     var mobile = $(cell).val();
+    console.log(cell);
+    console.log(mobile);
     jQuery.post("http://api.dev.test.520czj.com/mobile/getvcode", {
             'flag': 0,
             'mobile': mobile
