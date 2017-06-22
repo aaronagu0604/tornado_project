@@ -7,7 +7,7 @@ from lib.route import route
 from model import *
 from bootloader import db
 from lib.mqhelper import create_msg
-from setting import domanName
+from setting import domanName,wxdomanName
 from tornado.gen import coroutine
 from tornado.web import asynchronous
 from tornado.concurrent import run_on_executor
@@ -2035,7 +2035,7 @@ class WeiXinMenuHandler(BaseHandler):
         return simplejson.loads(urllib2.urlopen(self.url_access_token).read())["access_token"]
 
     def create_url(self,url):
-        url = setting.wxdomanName + '/wxapi/login'
+        url = wxdomanName + '/wxapi/login'
         wxlogin_url = "https://open.weixin.qq.com/connect/oauth2/authorize"
         appid = 'wxf23313db028ab4bc'
         redirect_uri = urllib.urlencode({'url': url})
