@@ -148,10 +148,11 @@ class Store(db.Model):
 # 用户表
 class User(db.Model):
     id = PrimaryKeyField()  # 主键
-    mobile = CharField(unique=True, max_length=64, null=False)  # 注册手机号
+    mobile = CharField(unique=True, max_length=64, null=False)  # 注册手机号/openid
+    openid = CharField(unique=True, max_length=128, null=True)
     password = CharField(max_length=32)  # 密码
-    truename = CharField(max_length=32)  # 真实姓名
-    role = CharField(max_length=8, null=False, default='A')  # 用户角色，考虑角色数量、类型
+    truename = CharField(max_length=32)  # 真实姓名/nickname
+    role = CharField(max_length=8, null=False, default='A')  # 用户角色，考虑角色数量、类型:A 通过app注册的用户，W通过微信注册的用户
     signuped = IntegerField(default=0)  # 注册时间
     lsignined = IntegerField(default=0)  # 最后登录时间
     store = ForeignKeyField(Store, related_name='users', db_column='store_id', null=False)  # 所属店铺
