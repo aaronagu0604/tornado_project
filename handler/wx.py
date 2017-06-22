@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 # coding=utf8
 
-from handler import BaseHandler
+from handler import BaseHandler,WXBaseHandler
 from lib.route import route
 from model import *
 import logging
 import simplejson
+import uuid
 import urllib
 import urllib2
 import time
@@ -19,12 +20,12 @@ appid = 'wxf23313db028ab4bc'
 secret = '8d75a7fa77dc0e5b2dc3c6dd551d87d6'
 
 @route(r'/', name='wx root') # 根域名重定向
-class RootHandler(BaseHandler):
+class RootHandler(WXBaseHandler):
     def get(self):
         self.redirect('/index')
 
 @route(r'/signature', name='wx signature') # 公众号服务器验证
-class Signature(BaseHandler):
+class Signature(WXBaseHandler):
     def get(self):
         token = 'wxczjplateform'
         signature = self.get_argument('signature')
@@ -45,67 +46,67 @@ class Signature(BaseHandler):
         self.write('signature error')
 
 @route(r'/index', name='wx_index')  # 首页
-class IndexHandler(BaseHandler):
+class IndexHandler(WXBaseHandler):
     def get(self):
         # insurance = Insurance.select().where(Insurance.active == 1,Insurance.hot == 1)[:3]
         # self.render('weixin/index.html',insurance=insurance)
         self.render('weixin/index.html')
 
 @route(r'/insurance/(\d+)', name='wx_insurance')  # 保险公司详情页面
-class InsuranceHandler(BaseHandler):
+class InsuranceHandler(WXBaseHandler):
     def get(self,id):
         i_id = int(id)
         insurance = Insurance.get(id = i_id)
         self.render('weixin/insurance.html',insurance=insurance)
 
 @route(r'/activer/(\d+)', name='wx_activer')  # 活动详情页面
-class InsuranceHandler(BaseHandler):
+class InsuranceHandler(WXBaseHandler):
     def get(self,id):
         self.render('weixin/activer.html')
 
 @route(r'/category', name='wx_category')  # 分类页面
-class CategoryHandler(BaseHandler):
+class CategoryHandler(WXBaseHandler):
     def get(self):
         self.render('weixin/category.html')
 
 @route(r'/insurance_order_base', name='wx_insurance_order_base')  # 保险订单上传个人信息页面
-class InsuranceOrderBaseHandler(BaseHandler):
+class InsuranceOrderBaseHandler(WXBaseHandler):
     def get(self):
         self.render('weixin/insurance_order_base.html')
 
 @route(r'/insurance_order_items', name='wx_insurance_order_items')  # html 保险下单选择保险条目页面
-class InsuranceOrderItemsHandler(BaseHandler):
+class InsuranceOrderItemsHandler(WXBaseHandler):
     def get(self):
         self.render('weixin/insurance_order_items.html')
 
 @route(r'/insurance_order_new', name='wx_insurance_order_new')  # 保险下单选择地址优惠方式页面
-class InsuranceOrderNewHandler(BaseHandler):
+class InsuranceOrderNewHandler(WXBaseHandler):
     def get(self):
         self.render('weixin/insurance_order_new.html')
 
 @route(r'/insurance_order_success', name='wx_insurance_order_success')  # html 保险下单成功提示页面
-class InsuranceOrderSuccessHandler(BaseHandler):
+class InsuranceOrderSuccessHandler(WXBaseHandler):
     def get(self):
         self.render('weixin/insurance_order_success.html')
 
 @route(r'/insurance_orders', name='wx_insurance_orders')  # html 保险订单列表
-class InsuranceOrdersHandler(BaseHandler):
+class InsuranceOrdersHandler(WXBaseHandler):
     def get(self):
         self.render('weixin/insurance_orders.html')
 
 @route(r'/insurance_order_detail', name='wx_insurance_order_detail')  # html 保险订单详情
-class InsuranceOrderDetailHandler(BaseHandler):
+class InsuranceOrderDetailHandler(WXBaseHandler):
     def get(self):
         self.render('weixin/insurance_order_detail.html')
 
 
 @route(r'/insurance_order_price', name='wx_insurance_order_price')  # html 保险订单历史报价方案
-class InsuranceOrderPriceHandler(BaseHandler):
+class InsuranceOrderPriceHandler(WXBaseHandler):
     def get(self):
         self.render('weixin/insurance_order_Price.html')
 
 @route(r'/pay_detail', name='wx_pay_detail')  # html 微信公众号支付详情页面
-class PayDetailHandler(BaseHandler):
+class PayDetailHandler(WXBaseHandler):
 
     def get_access_token(self):
         self.weixin_app_id = appid
@@ -176,12 +177,27 @@ class WXApiLoginHandler(BaseHandler):
         appid, secret)
         return simplejson.loads(urllib2.urlopen(url_access_token).read())["access_token"]
 
-    def create_user(self,userinfo={}):
-        pass
+    def create_user(self,userinfo={},store_id=0):
+        if userinfo:
+            try:
+                user = User()
+                user.store_id = int(store_id)
+                user.truename = userinfo['nickname']
+                user.mobile = userinfo['openid']
+                user.password = user.create_password('123456') # 微信用户默认密码：123456
+                user.role = 'W'
+                user.validate()
+                user.signuped = int(time.time())
+                user.save()
+                return user
+            except Exception:
+                return None
+        else:
+            return None
 
     def get(self):
         code = self.get_argument('code','')
-        state = self.get_argument('state','')
+        store_id = self.get_argument('state','0')
         openid,_ = self.get_access_token_from_code(code)
         access_token = self.get_access_token()
         userinfo = self.get_user_info(access_token,openid)
@@ -190,14 +206,21 @@ class WXApiLoginHandler(BaseHandler):
         if users.count() >= 1:
             user = users[0]
         else:
-            user = self.create_user(userinfo)
+            user = self.create_user(userinfo,store_id)
 
-        if user.active == 1:
-            user.updatesignin()
-            self.session[user.openid] = user
+        token = user.token
+        if token:
+            data = self.application.memcachedb.get(token)
+            if data is None:
+                token = setting.user_token_prefix + str(uuid.uuid4())
+        else:
+            token = setting.user_token_prefix + str(uuid.uuid4())
+        if self.application.memcachedb.set(token, str(user.id), setting.user_expire):
+            user.updatesignin(token)
+            self.session['user'] = user
             self.session.save()
 
-        if userinfo['subscribe']==1:
+        if userinfo['subscribe'] == 1:
             # 已经关注条个人中心
             self.redirect('/mine')
         else:
@@ -205,61 +228,63 @@ class WXApiLoginHandler(BaseHandler):
             self.render('weixin/focus_guide.html')
 
 @route(r'/login', name='wx_login')  # html 登录
-class LoginHandler(BaseHandler):
+class LoginHandler(WXBaseHandler):
     def get(self):
+        store_id = self.get_argument('store_id',0)
+
         wxlogin_url = "https://open.weixin.qq.com/connect/oauth2/authorize"
         appid = 'wxf23313db028ab4bc'
         redirect_uri = urllib.urlencode({'url': "http://wx.dev.520czj.com/wxapi/login"})
         response_type = "code"
         scope = "snsapi_userinfo"
-        state = "1"
+        state = store_id if store_id else '0'
         end = "#wechat_redirect"
         wx_url = wxlogin_url + "?appid=" + appid + "&redirect_uri=" + redirect_uri[4:] + \
               "&response_type=" + response_type + "&scope=" + scope + "&state=" + state + end
         self.render('weixin/login.html',wx_url=wx_url)
 
 @route(r'/mine', name='wx_mine')  # html 会员中心
-class MineHandler(BaseHandler):
+class MineHandler(WXBaseHandler):
     def get(self):
         self.render('weixin/mine.html')
 
 @route(r'/bound_mobile', name='wx_bound_mobile')  # html 绑定手机号
-class BoundMobileHandler(BaseHandler):
+class BoundMobileHandler(WXBaseHandler):
     def get(self):
         self.render('weixin/bound_mobile.html')
 
 @route(r'/rake_back_setting', name='wx_rake_back_setting')  # html 返佣配置
-class RakeBackSettingHandler(BaseHandler):
+class RakeBackSettingHandler(WXBaseHandler):
     def get(self):
         self.render('weixin/rake_back_setting.html')
 
 @route(r'/user_address', name='wx_user_address')  # html 收货地址
-class UserAddressHandler(BaseHandler):
+class UserAddressHandler(WXBaseHandler):
     def get(self):
         self.render('weixin/user_address.html')
 
 @route(r'/user_address_detail', name='wx_user_address_detail')  # html 编辑地址
-class UserAddressDetailHandler(BaseHandler):
+class UserAddressDetailHandler(WXBaseHandler):
     def get(self):
         self.render('weixin/user_address_detail.html')
 
 @route(r'/user_childrens', name='wx_user_childrens')  # 我的下线
-class UserChildrensHandler(BaseHandler):
+class UserChildrensHandler(WXBaseHandler):
     def get(self):
         self.render('weixin/user_childrens.html')
 
 @route(r'/user_income', name='wx_user_income')  # html 收入
-class UserIncomeHandler(BaseHandler):
+class UserIncomeHandler(WXBaseHandler):
     def get(self):
         self.render('weixin/user_income.html')
 
 @route(r'/user_income_record', name='wx_user_income_record')  # html 收入明细
-class UserIncomeRecordHandler(BaseHandler):
+class UserIncomeRecordHandler(WXBaseHandler):
     def get(self):
         self.render('weixin/user_income_record.html')
 
 @route(r'/income_record_list', name='api_income_record_list')  # api 收入明细
-class IncomeRecordListHandler(BaseHandler):
+class IncomeRecordListHandler(WXBaseHandler):
     def get(self):
         result = {'flag':1,'msg':'','data':[]}
         data = [{
@@ -270,7 +295,7 @@ class IncomeRecordListHandler(BaseHandler):
         self.write(simplejson.dumps(result))
 
 @route(r'/demo_insurance_list', name='wx_demo_insurance_list')
-class UserIncomeRecord11Handler(BaseHandler):
+class UserIncomeRecord11Handler(WXBaseHandler):
     def get(self):
         demo = []
         item1 = {"values":1, "displayValues":"中华联合"}

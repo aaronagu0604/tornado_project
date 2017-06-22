@@ -165,6 +165,14 @@ class AdminBaseHandler(BaseHandler):
                 return True
         return False
 
+class WXBaseHandler(BaseHandler):
+    def prepare(self):
+        if self.get_current_user():
+            pass
+        else:
+            self.redirect("/login")
+
+        super(WXBaseHandler, self).prepare()
 
 def require_auth(method):
     @functools.wraps(method)
