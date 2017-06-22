@@ -191,6 +191,7 @@ class WXApiLoginHandler(BaseHandler):
                 user.save()
                 return user
             except Exception:
+                logging.error(traceback.format_exc())
                 return None
         else:
             return None
