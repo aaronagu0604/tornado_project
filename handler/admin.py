@@ -2966,15 +2966,17 @@ class EditPAHandler(AdminBaseHandler):
         items = Area.select().where(Area.pid >> None)
         pap_id = int(pap_id)
         pap = None
+        pic=''
         if pap_id > 0:
             try:
                 pap = PromotionAmbassadorPic.get(id=pap_id)
+                pic = setting.imgDoman + pap.picAP[15:]
             except:
                 self.flash("此推广活动不存在")
                 self.redirect("/admin/promotion_ambassador")
                 return
         pas = PromotionAmbassador.select()
-        self.render('admin/App/pa_edit.html', items=items, pas=pas, active='pa', pap=pap)
+        self.render('admin/App/pa_edit.html', items=items, pas=pas, active='pa', pap=pap, pic=pic)
 
     def post(self, pap_id):
         pap_id = int(pap_id)
@@ -3027,14 +3029,14 @@ class PromotionAmbassadorPublishHandler(AdminBaseHandler):
     def post(self):
         result = {'flag': 0, 'msg': '发布成功', "data": []}
         pap_id = int(self.get_body_argument('pap_id', 0))
-        codes = self.get_body_argument('codes', None)
+        codes = self.get_body_argument('codes', '')
         if codes:
             codes = codes.split(',')
         if not (codes and pap_id):
             result['msg'] = u'参数不匹配'
             self.write(simplejson.dumps(result))
             return
-        PromotionAmbassadorArea.delete().where(PromotionAmbassadorArea.pa_pic == pap_id).execute()
+        PromotionAmbassadorArea.delete().where((PromotionAmbassadorArea.pa_pic == pap_id) & (PromotionAmbassadorArea.area_code << codes)).execute()
         PromotionAmbassadorArea.insert_many([{
             'area_code': item,
             'pa_pic': pap_id

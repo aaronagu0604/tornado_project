@@ -222,7 +222,8 @@ class New_MobilStorePopularizeHandler(MobileBaseHandler):
             else:
                 ft = None
             if ft:
-                for paa in PromotionAmbassadorArea.select().where(ft):
+                for paa in PromotionAmbassadorArea.select().join(PromotionAmbassadorPic).\
+                        where(ft).order_by(PromotionAmbassadorPic.sort.desc()):
                     if len(addr) > paa.pa_pic.setting.addr2tab:
                         addr1 = addr[:paa.pa_pic.setting.addr2tab]
                         addr2 = addr[paa.pa_pic.setting.addr2tab:]
