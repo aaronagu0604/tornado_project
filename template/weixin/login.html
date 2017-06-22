@@ -80,7 +80,7 @@ function getVcode(cell) {
     console.log(cell);
     console.log(mobile);
     jQuery.post("http://api.dev.test.520czj.com/mobile/getvcode", {
-            'flag': 0,
+            'flag': 2,
             'mobile': mobile
         },function(data) {
             var obj = JSON.parse(data);
