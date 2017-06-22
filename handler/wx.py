@@ -25,7 +25,7 @@ class RootHandler(WXBaseHandler):
         self.redirect('/index')
 
 @route(r'/signature', name='wx signature') # 公众号服务器验证
-class Signature(WXBaseHandler):
+class Signature(BaseHandler):
     def get(self):
         token = 'wxczjplateform'
         signature = self.get_argument('signature')
