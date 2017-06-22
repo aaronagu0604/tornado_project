@@ -3028,7 +3028,6 @@ class PromotionAmbassadorPublishHandler(AdminBaseHandler):
         result = {'flag': 0, 'msg': '发布成功', "data": []}
         pap_id = int(self.get_body_argument('pap_id', 0))
         codes = self.get_body_argument('codes', None)
-        print('-----------codes=%s, pap=%s' % (codes, pap_id))
         if codes:
             codes = codes.split(',')
         if not (codes and pap_id):
@@ -3036,7 +3035,6 @@ class PromotionAmbassadorPublishHandler(AdminBaseHandler):
             self.write(simplejson.dumps(result))
             return
         PromotionAmbassadorArea.delete().where(PromotionAmbassadorArea.pa_pic == pap_id).execute()
-        print('-----------codes=%s, pap=%s' % (codes, pap_id))
         PromotionAmbassadorArea.insert_many([{
             'area_code': item,
             'pa_pic': pap_id
