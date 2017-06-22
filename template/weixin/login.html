@@ -8,83 +8,83 @@ html,body {
     margin:0rem;
     padding:0rem;
 }
-.weui-tab {
-    height:100%;
-}
-.weui-tabbar {
-    height:2rem;
-}
-#tab1 div {
-    margin-top:10rem;
-}
 a {
     width:60%;
 }
 </style>
 {% endblock %}
 {% block content %}
-<div class="weui-tab">
-    <div class="weui-tab__bd">
-        <div id="tab1" class="weui-tab__bd-item weui-tab__bd-item--active">
-            <div id="login_logo" align="center">
-                <img src="../../style/images/logo.png" alt="" />
-            </div>
-            <div id="login_btn" class="weui_cell" align="center">
-                <a href="{{wx_url}}" class="weui-btn weui-btn_primary">微信登录</a>
-            </div>
-        </div>
-        <div id="tab2" class="weui-tab__bd-item">
-            <div id="bound_logo" align="center" style="margin-top:10rem">
-                <img src="../../style/images/logo.png" alt="" />
-            </div>
-            <div class="weui-cell weui-cell_vcode" style="margin-top:5rem">
-                <div class="weui-cell__hd">
-                    <label class="weui-label" style="width:2rem">手机</label>
-                </div>
-                <div class="weui-cell__bd">
-                    <input id="cellphone" class="weui-input" type="tel" placeholder="请输入手机号">
-                </div>
-                <div class="weui-cell__ft">
-                    <button class="weui-vcode-btn" onclick="getVcode('#cellphone')">验证码</button>
-                </div>
-            </div>
-            <div class="weui-cell weui-cell_vcode">
-                <div class="weui-cell__hd">
-                    <label class="weui-label">验证码</label>
-                </div>
-                <div class="weui-cell__bd">
-                  <input id="vcode" class="weui-input" type="number" placeholder="请输入验证码">
-                </div>
-            </div>
-            <div id="bound_btn" class="weui_cell" align="center" style="margin-top:3rem">
-                <a href="{{wx_url}}" class="weui-btn weui-btn_primary">加入车装甲</a>
-            </div>
-        </div>
-
+<div id="bound_logo" align="center" style="margin-top:10%">
+    <img src="../../style/images/logo.png" alt="" />
+</div>
+<div class="weui-cell weui-cell_vcode" style="margin-top:15%">
+    <div class="weui-cell__hd">
+        <label class="weui-label" style="width:2rem">手机</label>
     </div>
-
-    <div class="weui-tabbar">
-        <a href="#tab1" class="weui-tabbar__item weui-bar__item--on">
-            <p class="weui-tabbar__label">微信登录</p>
-        </a>
-        <a href="#tab2" class="weui-tabbar__item">
-            <p class="weui-tabbar__label">加入车装甲</p>
-        </a>
+    <div class="weui-cell__bd">
+        <input id="cellphone" class="weui-input" type="tel" placeholder="请输入手机号">
     </div>
+    <div class="weui-cell__ft">
+        <button class="weui-vcode-btn" onclick="getVcode('#cellphone')">验证码</button>
+    </div>
+</div>
+<div class="weui-cell weui-cell_vcode">
+    <div class="weui-cell__hd">
+        <label class="weui-label">验证码</label>
+    </div>
+    <div class="weui-cell__bd">
+        <input id="vcode" class="weui-input" type="number" placeholder="请输入验证码">
+        <input id="store_id" value="{{storeid}}">
+        <input id="nickname" value="{{nickname}}">
+        <input id="openid" value="{{openid}}">
+        <input id="subscribe" value="{{subscribe}}">
+    </div>
+</div>
+<div id="bound_btn" class="weui_cell" align="center" style="margin-top:20%">
+    <button class="weui-btn weui-btn_primary" onclick="register()">加入车装甲</button>
 </div>
 {% endblock %}
 {% block js %}
 <script>
 function getVcode(cell) {
     var mobile = $(cell).val();
-    console.log(cell);
-    console.log(mobile);
+    if (mobile == "") || (mobile.length<11) {
+        $.toast('电话号码不合法');
+    }
     jQuery.post("http://api.dev.test.520czj.com/mobile/getvcode", {
             'flag': 2,
             'mobile': mobile
         },function(data) {
             var obj = JSON.parse(data);
             $.toast(obj.msg);
+        })
+}
+function register() {
+    var mobile = $('#cellphone').val();
+    var vcode = $(#'vcode').val();
+    if (mobile == "") || (mobile.length<11) {
+        $.toast('电话号码不合法');
+    }
+    if (vcode.length != 4) {
+        $.toast('验证码不合法');
+    }
+
+    jQuery.post("http://api.dev.test.520czj.com/mobile/checkvcode", {
+            'flag': 2,
+            'mobile': mobile,
+            'vcode':vcode
+        },function(data) {
+            var obj = JSON.parse(data);
+            if (obj.flag == 1 ) {
+                var storeid = $('#storeid').val();
+                var nickname = $('#nickname').val();
+                var openid = $('#openid').val();
+
+                window.location.href = '/register?openid='+openid+'&store_id='+store_id+'&mobile='+mobile;
+            }
+            else {
+                $.toast('验证码错误');
+            }
         })
 }
 </script>

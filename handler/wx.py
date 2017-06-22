@@ -192,26 +192,6 @@ class WXApiLoginHandler(BaseHandler):
         appid, secret)
         return simplejson.loads(urllib2.urlopen(url_access_token).read())["access_token"]
 
-    def create_user(self,userinfo={},store_id=0):
-        if userinfo:
-            try:
-                user = User()
-                user.store = int(store_id)
-                user.truename = userinfo['nickname']
-                user.mobile = userinfo['openid']
-                user.openid = userinfo['openid']
-                user.password = user.create_password('123456') # 微信用户默认密码：123456
-                user.role = 'W'
-
-                user.signuped = int(time.time())
-                user.save()
-                return user
-            except Exception:
-                logging.error(traceback.format_exc())
-                return None
-        else:
-            return None
-
     def get(self):
         code = self.get_argument('code','')
         store_id = self.get_argument('state','0')
@@ -223,7 +203,8 @@ class WXApiLoginHandler(BaseHandler):
         if users.count() >= 1:
             user = users[0]
         else:
-            user = self.create_user(userinfo,store_id)
+            self.render('weixin/login.html',storeid=store_id,nickname=userinfo['nickname'],openid=openid,subscribe=userinfo['subscribe'])
+            return
 
         self.session['user'] = user
         self.session.save()
@@ -235,21 +216,46 @@ class WXApiLoginHandler(BaseHandler):
             # 未关注太跳关注引导
             self.render('weixin/focus_guide.html')
 
-@route(r'/login', name='wx_login')  # html 登录
+@route(r'/register', name='wx_register')  # html 登录
 class LoginHandler(BaseHandler):
-    def get(self):
-        store_id = self.get_argument('store_id',0)
+    def create_user(self, openid, mobile, nickname, store_id=0):
+        try:
+            user = User.get(mobile=mobile)
+            user.openid = openid
+            user.role += 'W'
+            user.save()
+        except Exception:
+            try:
+                logging.error(traceback.format_exc())
+                user = User()
+                user.store = int(store_id)
+                user.truename = nickname
+                user.mobile = mobile
+                user.openid = openid
+                user.password = user.create_password('123456')  # 微信用户默认密码：123456
+                user.role = 'W'
 
-        wxlogin_url = "https://open.weixin.qq.com/connect/oauth2/authorize"
-        appid = 'wxf23313db028ab4bc'
-        redirect_uri = urllib.urlencode({'url': "http://wx.dev.520czj.com/wxapi/login"})
-        response_type = "code"
-        scope = "snsapi_userinfo"
-        state = store_id if store_id else '1'
-        end = "#wechat_redirect"
-        wx_url = wxlogin_url + "?appid=" + appid + "&redirect_uri=" + redirect_uri[4:] + \
-              "&response_type=" + response_type + "&scope=" + scope + "&state=" + state + end
-        self.render('weixin/login.html',wx_url=wx_url)
+                user.signuped = int(time.time())
+                user.save()
+                return user
+            except Exception:
+                return None
+
+    def get(self):
+        openid = self.get_argument('openid','')
+        mobile = self.get_argument('mobile', '')
+        nickname = self.get_argument('nickname', '')
+        store_id = self.get_argument('store_id', 0)
+        subscribe = self.get_argument('subscribe', 0)
+        user = self.create_user(openid, mobile, nickname, store_id)
+        self.session['user'] = user
+        self.session.save()
+        if subscribe == '1':
+            # 已经关注条个人中心
+            self.redirect('/mine')
+        else:
+            # 未关注太跳关注引导
+            self.render('weixin/focus_guide.html')
 
 @route(r'/mine', name='wx_mine')  # html 会员中心
 class MineHandler(WXBaseHandler):
