@@ -2,6 +2,7 @@
 {% block css %}
 <title>上传个人信息</title>
 <link rel="stylesheet" href="/style/mobile/swiper3.07.min.css">
+
 <style>
     .parent {
         padding: 0.2rem;
@@ -241,139 +242,143 @@
         $(':file').on("change", function () {
             loadingImg(this);
         });
+        $(document).on("click", "#next", function () {
 
-    });
-    $(document).on("click", "#next", function () {
-
-        var insurance = JSON.parse(window.localStorage.getItem("insurance"));
-        if (insurance == null) {
-            var insurance = {};
-        }
-        if (insurance.id_card_front == null) {
-            $.toast("请上传被保人身份证(正面)", "text");
-        } else if (insurance.id_card_back == null) {
-            $.toast("请上传被保人身份证(反面)", "text");
-        } else if (insurance.drive_card_front == null) {
-            $.toast("请上传行驶证", "text");
-        } else if (insurance.drive_card_back == null) {
-            $.toast("请上传行驶证(副本)", "text");
-        } else {
-            if ($('#switch_owner').is(':checked')) {
-                insurance.is_same_person = 1;
-                document.location.href = "/insurance_order_items"
+            var insurance = JSON.parse(window.localStorage.getItem("insurance"));
+            if (insurance == null) {
+                var insurance = {};
+            }
+            if (insurance.id_card_front == null) {
+                $.toast("请上传被保人身份证(正面)", "text");
+            } else if (insurance.id_card_back == null) {
+                $.toast("请上传被保人身份证(反面)", "text");
+            } else if (insurance.drive_card_front == null) {
+                $.toast("请上传行驶证", "text");
+            } else if (insurance.drive_card_back == null) {
+                $.toast("请上传行驶证(副本)", "text");
             } else {
-                if (insurance.id_card_front_owner == null) {
-                    $.toast("请上传车主身份证(正面)", "text");
-                } else if (insurance.id_card_back_owner == null) {
-                    $.toast("请上传车主身份证(反面)", "text");
+                if ($('#switch_owner').is(':checked')) {
+                    insurance.is_same_person = 1;
+                    document.location.href = "/insurance_order_items"
                 } else {
-                    insurance.is_same_person = 0;
-                    document.location.href = "/insurance_order_items";
-                }
-            }
-        }
-    });
-    $(document).on("click", "#switch_owner", function () {
-        if ($('#switch_owner').is(':checked')) {
-            $(".owner").hide();
-        } else {
-            $(".owner").show();
-        }
-    });
-
-
-    function loadingImg(parent) {
-        var file = parent.files[0];
-        $(parent).replaceWith('<input type="file" name="' + parent.name + '" accept="image/*">');
-        $('input[name="' + parent.name + '"]').on("change", function () {
-            loadingImg(this);
-        });
-        if (!/image\/\w+/.test(file.type)) {
-            $.toast("请确保文件为图像类型", "text");
-            return false;
-        }
-        var formData = new FormData();
-        formData.append("file", file);
-        $.ajax({
-            type: "POST",
-            url: "http://img.520czj.com/upload/image",
-            data: formData,
-            cache: false,
-            contentType: false,
-            processData: false,
-            beforeSend: function () {
-                //页面loading, 不能再进行其他操作，适合比如提交按钮
-                $.showLoading();
-            },
-            success: function (data) {
-                $.hideLoading();
-                var data = JSON.parse(data);
-                if (data.flag == 1) {
-                    $("#" + parent.name).attr('src', data.data);
-                    var insurance = JSON.parse(window.localStorage.getItem("insurance"));
-                    if (insurance == null) {
-                        var insurance = {};
+                    if (insurance.id_card_front_owner == null) {
+                        $.toast("请上传车主身份证(正面)", "text");
+                    } else if (insurance.id_card_back_owner == null) {
+                        $.toast("请上传车主身份证(反面)", "text");
+                    } else {
+                        insurance.is_same_person = 0;
+                        document.location.href = "/insurance_order_items";
                     }
-                    insurance[parent.name] = data.data;
-                    window.localStorage.setItem("insurance", JSON.stringify(insurance));
-                    console.log(insurance);
-                } else {
-                    $.toast(data.msg, "text");
                 }
-            },
-            error: function (XMLHttpRequest, textStatus, errorThrown) {
-                $.hideLoading();
-                $.toast("上传失败，请检查网络后重试", "text");
             }
         });
-    }
+        $(document).on("click", "#switch_owner", function () {
+            if ($('#switch_owner').is(':checked')) {
+                $(".owner").hide();
+            } else {
+                $(".owner").show();
+            }
+        });
 
 
-    $("img").on("click", function () {
-        if ($('#switch_owner').is(':checked')) {
-            var pb = $.photoBrowser({
-                items: [
-                    $("#id_card_front").attr("src"),
-                    $("#id_card_back").attr("src"),
-                    $("#drive_card_front").attr("src"),
-                    $("#drive_card_back").attr("src"),
-                ]
+        function loadingImg(parent) {
+            var file = parent.files[0];
+            $(parent).replaceWith('<input type="file" name="' + parent.name + '" accept="image/*">');
+            $('input[name="' + parent.name + '"]').on("change", function () {
+                loadingImg(this);
             });
-        } else {
-            var pb = $.photoBrowser({
-                items: [
-                    $("#id_card_front").attr("src"),
-                    $("#id_card_back").attr("src"),
-                    $("#drive_card_front").attr("src"),
-                    $("#drive_card_back").attr("src"),
-                    $("#id_card_front_owner").attr("src"),
-                    $("#id_card_back_owner").attr("src"),
-                ]
+            if (!/image\/\w+/.test(file.type)) {
+                $.toast("请确保文件为图像类型", "text");
+                return false;
+            }
+            var formData = new FormData();
+            formData.append("file", file);
+            $.ajax({
+                type: "POST",
+                url: "http://img.520czj.com/upload/image",
+                data: formData,
+                cache: false,
+                contentType: false,
+                processData: false,
+                beforeSend: function () {
+                    //页面loading, 不能再进行其他操作，适合比如提交按钮
+                    $.showLoading();
+                },
+                success: function (data) {
+                    $.hideLoading();
+                    var data = JSON.parse(data);
+                    if (data.flag == 1) {
+                        $("#" + parent.name).attr('src', data.data);
+                        var insurance = JSON.parse(window.localStorage.getItem("insurance"));
+                        if (insurance == null) {
+                            var insurance = {};
+                        }
+                        insurance[parent.name] = data.data;
+                        window.localStorage.setItem("insurance", JSON.stringify(insurance));
+                        console.log(insurance);
+                    } else {
+                        $.toast(data.msg, "text");
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    $.hideLoading();
+                    $.toast("上传失败，请检查网络后重试", "text");
+                }
             });
         }
 
-        switch (this.id) {
-            case "id_card_front":
-                pb.open(0);
-                break;
-            case "id_card_back":
-                pb.open(1);
-                break;
-            case "drive_card_front":
-                pb.open(2);
-                break;
-            case "drive_card_back":
-                pb.open(3);
-                break;
-            case "id_card_front_owner":
-                pb.open(4);
-                break;
-            case "id_card_back_owner":
-                pb.open(5);
-                break;
-        }
+
+        $("img").on("click", function () {
+            var index = 0;
+            switch (this.id) {
+                case "id_card_front":
+                    index = 0;
+                    break;
+                case "id_card_back":
+                    index = 1;
+                    break;
+                case "drive_card_front":
+                    index = 2;
+                    break;
+                case "drive_card_back":
+                    index = 3;
+                    break;
+                case "id_card_front_owner":
+                    index = 4;
+                    break;
+                case "id_card_back_owner":
+                    index = 5;
+                    break;
+            }
+            if ($('#switch_owner').is(':checked')) {
+                var pb = $.photoBrowser({
+                    items: [
+                        $("#id_card_front").attr("src"),
+                        $("#id_card_back").attr("src"),
+                        $("#drive_card_front").attr("src"),
+                        $("#drive_card_back").attr("src"),
+                    ],
+                    initIndex: index
+                });
+
+            } else {
+                var pb = $.photoBrowser({
+                    items: [
+                        $("#id_card_front").attr("src"),
+                        $("#id_card_back").attr("src"),
+                        $("#drive_card_front").attr("src"),
+                        $("#drive_card_back").attr("src"),
+                        $("#id_card_front_owner").attr("src"),
+                        $("#id_card_back_owner").attr("src")
+                    ],
+                    initIndex: index
+                });
+            }
+            pb.open();
+        });
 
     });
+
 
 </script>
 {% endblock %}
