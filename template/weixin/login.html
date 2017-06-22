@@ -17,6 +17,9 @@ html,body {
 #tab1 div {
     margin-top:10rem;
 }
+a {
+    width:60%;
+}
 </style>
 {% endblock %}
 {% block content %}
@@ -31,21 +34,29 @@ html,body {
             </div>
         </div>
         <div id="tab2" class="weui-tab__bd-item">
-            <div id="bound_logo" align="center">
+            <div id="bound_logo" align="center" style="margin-top:10rem">
                 <img src="../../style/images/logo.png" alt="" />
+            </div>
+            <div class="weui-cell weui-cell_vcode" style="margin-top:5rem">
+                <div class="weui-cell__hd">
+                    <label class="weui-label" style="width:2rem">手机</label>
+                </div>
+                <div class="weui-cell__bd">
+                    <input id="cellphone" class="weui-input" type="tel" placeholder="请输入手机号">
+                </div>
+                <div class="weui-cell__ft">
+                    <button class="weui-vcode-btn" onclick="getVcode('#weui-input')">验证码</button>
+                </div>
             </div>
             <div class="weui-cell weui-cell_vcode">
                 <div class="weui-cell__hd">
-                    <label class="weui-label">手机号</label>
+                    <label class="weui-label">验证码</label>
                 </div>
                 <div class="weui-cell__bd">
-                    <input class="weui-input" type="tel" placeholder="请输入手机号">
-                </div>
-                <div class="weui-cell__ft">
-                    <button class="weui-vcode-btn">获取验证码</button>
+                  <input id="vcode" class="weui-input" type="number" placeholder="请输入验证码">
                 </div>
             </div>
-            <div id="bound_btn" class="weui_cell" align="center">
+            <div id="bound_btn" class="weui_cell" align="center" style="margin-top:3rem">
                 <a href="{{wx_url}}" class="weui-btn weui-btn_primary">加入车装甲</a>
             </div>
         </div>
@@ -64,6 +75,14 @@ html,body {
 {% endblock %}
 {% block js %}
 <script>
-
+function getVcode(cell) {
+    var mobile = $(cell).val();
+    jQuery.getJSON("http://api.520czj.com/mobile/getvcode", {
+            'flag': 0,
+            'mobile': mobile
+        },function(data) {
+            //
+        })
+}
 </script>
 {% endblock %}
