@@ -197,7 +197,7 @@
         <div class="weui-flex wy-insurance-img-block">
             <div class="weui-flex__item">
                 <div>
-                    <img id="card_1" class="img_card own_id_card_font" src="../../style/wximg/id_card.png">
+                    <img id="own_id_card_font" class="img_card " src="../../style/wximg/id_card.png">
                 </div>
                 <div class="display_block">
                     <div>
@@ -216,7 +216,7 @@
             </div>
              <div class="weui-flex__item">
                 <div>
-                    <img id="card_2" class="img_card own_id_card_back" src="../../style/wximg/id_card.png">
+                    <img id="own_id_card_back" class="img_card " src="../../style/wximg/id_card.png">
                 </div>
                 <div class="display_block">
                     <div>
@@ -237,7 +237,7 @@
         <div class="weui-flex wy-insurance-img-block">
             <div class="weui-flex__item">
                 <div>
-                    <img id="card_3" class="img_card driver_card_font" src="../../style/wximg/id_card.png">
+                    <img id="driver_card_font" class="img_card " src="../../style/wximg/id_card.png">
                 </div>
                 <div class="display_block">
                     <div>
@@ -253,7 +253,7 @@
             </div>
              <div class="weui-flex__item">
                 <div>
-                    <img id="card_4" class="img_card driver_card_back" src="../../style/wximg/id_card.png">
+                    <img id="driver_card_back" class="img_card " src="../../style/wximg/id_card.png">
                 </div>
                 <div class="display_block">
                     <div>
@@ -272,7 +272,7 @@
         <div class="weui-flex wy-insurance-img-block">
             <div class="weui-flex__item">
                 <div>
-                    <img id="card_5" class="img_card id_card_font" src="../../style/wximg/id_card.png">
+                    <img id="id_card_font" class="img_card " src="../../style/wximg/id_card.png">
                 </div>
                 <div class="display_block">
                     <div>
@@ -288,7 +288,7 @@
             </div>
             <div class="weui-flex__item">
                 <div>
-                    <img id="card_6" class="img_card id_card_back" src="../../style/wximg/id_card.png">
+                    <img id="id_card_back" class="img_card" src="../../style/wximg/id_card.png">
                 </div>
                 <div class="display_block">
                     <div>
@@ -384,11 +384,11 @@
             $.actions({
                 title: "支付方式", actions: [{
                     text: "微信", onclick: function () {
-                        galleryImg("#id_card_front_owner");
+
                     }
                 }, {
                     text: "支付宝", onclick: function () {
-                        galleryImg("#id_card_front_owner");
+
                     }
                 }]
             });
@@ -409,50 +409,50 @@
         });
         var pb1 = $.photoBrowser({
             items: [
-                $("#card_1").attr("src")
+                $("#own_id_card_font").attr("src")
             ]
         });
-        $("#card_1").click(function () {
+        $("#own_id_card_font").click(function () {
             pb1.open();
         });
         var pb2 = $.photoBrowser({
             items: [
-                $("#card_2").attr("src")
+                $("#own_id_card_back").attr("src")
             ]
         });
-        $("#card_2").click(function () {
+        $("#own_id_card_back").click(function () {
             pb2.open();
         });
         var pb3 = $.photoBrowser({
             items: [
-                $("#card_3").attr("src")
+                $("#driver_card_font").attr("src")
             ]
         });
-        $("#card_3").click(function () {
+        $("#driver_card_font").click(function () {
             pb3.open();
         });
         var pb4 = $.photoBrowser({
             items: [
-                $("#card_4").attr("src")
+                $("#driver_card_back").attr("src")
             ]
         });
-        $("#card_4").click(function () {
+        $("#driver_card_back").click(function () {
             pb4.open();
         });
         var pb5 = $.photoBrowser({
             items: [
-                $("#card_5").attr("src")
+                $("#id_card_font").attr("src")
             ]
         });
-        $("#card_5").click(function () {
+        $("#id_card_font").click(function () {
             pb5.open();
         });
         var pb6 = $.photoBrowser({
             items: [
-                $("#card_6").attr("src")
+                $("#id_card_back").attr("src")
             ]
         });
-        $("#card_6").click(function () {
+        $("#id_card_back").click(function () {
             pb6.open();
         });
 

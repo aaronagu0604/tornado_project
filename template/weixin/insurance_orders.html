@@ -705,7 +705,7 @@
                          '</a>');
             };
             if (toend) {
-                console.log(toend);
+
                 $('#demo1').destroyInfinite();
             }
             if (data.length == 10) {
@@ -727,7 +727,7 @@
             $('#demo1').pullToRefreshDone();
         });
 
-        $('#demo1').infinite().on("infinite", function() {
+        $(document.body).infinite().on("infinite", function() {
             if (loading) return;
             loading = true;
             jQuery(".weui-infinite-scroll").show();
@@ -738,11 +738,11 @@
         $.actions({
             title: "支付方式", actions: [{
                 text: "微信", onclick: function () {
-                    galleryImg("#id_card_front_owner");
+
                 }
             }, {
                 text: "支付宝", onclick: function () {
-                    galleryImg("#id_card_front_owner");
+
                 }
             }]
         });
@@ -752,11 +752,11 @@
         $.actions({
             title: "扫码支付", actions: [{
                 text: "微信扫码", onclick: function () {
-                    galleryImg("#id_card_front_owner");
+                    document.location.href = "/pay_detail";
                 }
             }, {
                 text: "支付宝扫码", onclick: function () {
-                    galleryImg("#id_card_front_owner");
+                    document.location.href = "/pay_detail";
                 }
             }]
         });
