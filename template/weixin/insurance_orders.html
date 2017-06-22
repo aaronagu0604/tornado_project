@@ -7,12 +7,14 @@
         font-size: 16px;
         color: gray;
     }
+
     hr {
         height: 0.3px;
         border: none;
         border-top: 1px solid #e7e7e7;
         margin-top: 10px;
     }
+
     .weui-btn {
         margin-left: 10px;
     }
@@ -21,17 +23,22 @@
         background-color: #FFA602;
         color: white;
     }
-    .order_price{
-        font-size: 18px;color: red;
+
+    .order_price {
+        font-size: 18px;
+        color: red;
     }
-    .weui-panel__hd .weui-flex__item{
+
+    .weui-panel__hd .weui-flex__item {
         color: black;
         font-size: 16px;
     }
+
     .weui-panel__bd .weui-flex__item {
         color: #999;
     }
-    .weui-panel__ft .weui-flex__item{
+
+    .weui-panel__ft .weui-flex__item {
         color: black;
     }
 
@@ -110,629 +117,260 @@
 {% block content %}
 <div class="weui-tab">
     <div class="weui-navbar" style="position:fixed;">
-        <a class="weui-navbar__item weui-bar__item--on" href="#tab1">
+        <a type="1" class="weui-navbar__item weui-bar__item--on" href="#tab1">
             全部
         </a>
-        <a class="weui-navbar__item" href="#tab2">
+        <a type="2" class="weui-navbar__item" href="#tab2">
             待核价
         </a>
-        <a class="weui-navbar__item" href="#tab3">
+        <a type="3" class="weui-navbar__item" href="#tab3">
             待付款
         </a>
-        <a class="weui-navbar__item" href="#tab4">
+        <a type="4" class="weui-navbar__item" href="#tab4">
             已付款
         </a>
-        <a class="weui-navbar__item" href="#tab5">
+        <a type="5" class="weui-navbar__item" href="#tab5">
             已完成
         </a>
     </div>
     <div class="weui-tab__bd" style="background-color: #f5f5f5;">
 
-        <div id="demo1" >
-            <div class="weui-pull-to-refresh__layer">
-      <div class="weui-pull-to-refresh__arrow"></div>
-      <div class="weui-pull-to-refresh__preloader"></div>
-      <div class="down">下拉刷新</div>
-      <div class="up">释放刷新</div>
-      <div class="refresh">正在刷新</div>
-    </div>
-        <div id="tab1" class="weui-tab__bd-item weui-tab__bd-item--active" style="position: static;">
-            <a href="/insurance_order_detail">
-            <div class="weui-panel">
-                <div class="weui-panel__hd">
-                    <div class="weui-flex">
-                        <div class="weui-flex__item" style=" flex: 2;">
-                            订单编号:U1285D068I9963
-                        </div>
-                        <div class="weui-flex__item" style="text-align: right;">
-                            <span style="color:red;">待付款</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="weui-panel__bd" style="padding: 5px 10px;">
-                    <div class="weui-flex">
-                        <div class="weui-flex__item">
-                            保险公司:人保车险
-                        </div>
-                        <div class="weui-flex__item" style="text-align: right;">
-                            2017-06-08
-                        </div>
-                    </div>
-                    <div class="weui-flex">
-                        <div class="weui-flex__item">
-                            寄送人:车装甲
-                        </div>
-                        <div class="weui-flex__item" style="text-align: right;">
-                            13389202678
-                        </div>
-                    </div>
-                    <div class="weui-flex">
-                        <div class="weui-flex__item">
-                            陕西省西安市新城区
-                        </div>
-                    </div>
-                </div>
-                <div class="weui-panel__ft2"></div>
-                <div class="weui-panel__ft" style="padding:0 10px;">
-                    <div class="weui-flex">
-                        <div class="weui-flex__item" style=" flex: 3;">
-                            订单金额:<span class="order_price">￥1020</span>
-                        </div>
-                        <div class="weui-flex__item" style=" flex: 5;text-align: right;">
-                            <a href="#" class="weui-btn weui-btn_mini weui-btn_primary">
-                                立即支付</a>
-                            <a href="#" class="weui-btn weui-btn_mini weui-btn_warn weui-btn_code" style="margin-top: 0;">
-                                扫码支付</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            </a>
-            <a href="/insurance_order_detail">
-                <div class="weui-panel">
-                    <div class="weui-panel__hd">
-                        <div class="weui-flex">
-                            <div class="weui-flex__item" style=" flex: 2;">
-                                订单编号:U1285D068I9963
-                            </div>
-                            <div class="weui-flex__item" style="text-align: right;">
-                                <span style="color:red;">待付款</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="weui-panel__bd" style="padding: 5px 10px;">
-                        <div class="weui-flex">
-                            <div class="weui-flex__item">
-                                保险公司:人保车险
-                            </div>
-                            <div class="weui-flex__item" style="text-align: right;">
-                                2017-06-08
-                            </div>
-                        </div>
-                        <div class="weui-flex">
-                            <div class="weui-flex__item">
-                                寄送人:车装甲
-                            </div>
-                            <div class="weui-flex__item" style="text-align: right;">
-                                13389202678
-                            </div>
-                        </div>
-                        <div class="weui-flex">
-                            <div class="weui-flex__item">
-                                陕西省西安市新城区
-                            </div>
-                        </div>
-                    </div>
-                    <div class="weui-panel__ft2"></div>
-                    <div class="weui-panel__ft" style="padding:0 10px;">
-                        <div class="weui-flex">
-                            <div class="weui-flex__item" style=" flex: 3;">
-                                订单金额:<span class="order_price">￥1020</span>
-                            </div>
-                            <div class="weui-flex__item" style=" flex: 5;text-align: right;">
-                                <a href="#" class="weui-btn weui-btn_mini weui-btn_primary">
-                                    立即支付</a>
-                                <a href="#" class="weui-btn weui-btn_mini weui-btn_warn weui-btn_code" style="margin-top: 0;">
-                                    扫码支付</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </a>
-            <a href="/insurance_order_detail">
-            <div class="weui-panel">
-                <div class="weui-panel__hd">
-                    <div class="weui-flex">
-                        <div class="weui-flex__item" style=" flex: 2;">
-                            订单编号:U1285D068I9963
-                        </div>
-                        <div class="weui-flex__item" style="text-align: right;">
-                            <span style="color:red;">待付款</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="weui-panel__bd" style="padding: 5px 10px;">
-                    <div class="weui-flex">
-                        <div class="weui-flex__item">
-                            保险公司:人保车险
-                        </div>
-                        <div class="weui-flex__item" style="text-align: right;">
-                            2017-06-08
-                        </div>
-                    </div>
-                    <div class="weui-flex">
-                        <div class="weui-flex__item">
-                            寄送人:车装甲
-                        </div>
-                        <div class="weui-flex__item" style="text-align: right;">
-                            13389202678
-                        </div>
-                    </div>
-                    <div class="weui-flex">
-                        <div class="weui-flex__item">
-                            陕西省西安市新城区
-                        </div>
-                    </div>
-                </div>
-                <div class="weui-panel__ft2"></div>
-                <div class="weui-panel__ft" style="padding:0 10px;">
-                    <div class="weui-flex">
-                        <div class="weui-flex__item" style=" flex: 3;">
-                            订单金额:<span class="order_price">￥1020</span>
-                        </div>
-                        <div class="weui-flex__item" style=" flex: 5;text-align: right;">
-                            <a href="#" class="weui-btn weui-btn_mini weui-btn_primary">
-                                立即支付</a>
-                            <a href="#" class="weui-btn weui-btn_mini weui-btn_warn weui-btn_code" style="margin-top: 0;">
-                                扫码支付</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            </a>
-            <a href="/insurance_order_detail">
-                <div class="weui-panel">
-                    <div class="weui-panel__hd">
-                        <div class="weui-flex">
-                            <div class="weui-flex__item" style=" flex: 2;">
-                                订单编号:U1285D068I9963
-                            </div>
-                            <div class="weui-flex__item" style="text-align: right;">
-                                <span style="color:red;">待付款</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="weui-panel__bd" style="padding: 5px 10px;">
-                        <div class="weui-flex">
-                            <div class="weui-flex__item">
-                                保险公司:人保车险
-                            </div>
-                            <div class="weui-flex__item" style="text-align: right;">
-                                2017-06-08
-                            </div>
-                        </div>
-                        <div class="weui-flex">
-                            <div class="weui-flex__item">
-                                寄送人:车装甲
-                            </div>
-                            <div class="weui-flex__item" style="text-align: right;">
-                                13389202678
-                            </div>
-                        </div>
-                        <div class="weui-flex">
-                            <div class="weui-flex__item">
-                                陕西省西安市新城区
-                            </div>
-                        </div>
-                    </div>
-                    <div class="weui-panel__ft2"></div>
-                    <div class="weui-panel__ft" style="padding:0 10px;">
-                        <div class="weui-flex">
-                            <div class="weui-flex__item" style=" flex: 3;">
-                                订单金额:<span class="order_price">￥1020</span>
-                            </div>
-                            <div class="weui-flex__item" style=" flex: 5;text-align: right;">
-                                <a href="#" class="weui-btn weui-btn_mini weui-btn_primary">
-                                    立即支付</a>
-                                <a href="#" class="weui-btn weui-btn_mini weui-btn_warn weui-btn_code" style="margin-top: 0;">
-                                    扫码支付</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </a>
-            <a href="/insurance_order_detail">
-            <div class="weui-panel">
-                <div class="weui-panel__hd">
-                    <div class="weui-flex">
-                        <div class="weui-flex__item" style=" flex: 2;">
-                            订单编号:U1285D068I9963
-                        </div>
-                        <div class="weui-flex__item" style="text-align: right;">
-                            <span style="color:red;">待付款</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="weui-panel__bd" style="padding: 5px 10px;">
-                    <div class="weui-flex">
-                        <div class="weui-flex__item">
-                            保险公司:人保车险
-                        </div>
-                        <div class="weui-flex__item" style="text-align: right;">
-                            2017-06-08
-                        </div>
-                    </div>
-                    <div class="weui-flex">
-                        <div class="weui-flex__item">
-                            寄送人:车装甲
-                        </div>
-                        <div class="weui-flex__item" style="text-align: right;">
-                            13389202678
-                        </div>
-                    </div>
-                    <div class="weui-flex">
-                        <div class="weui-flex__item">
-                            陕西省西安市新城区
-                        </div>
-                    </div>
-                </div>
-                <div class="weui-panel__ft2"></div>
-                <div class="weui-panel__ft" style="padding:0 10px;">
-                    <div class="weui-flex">
-                        <div class="weui-flex__item" style=" flex: 3;">
-                            订单金额:<span class="order_price">￥1020</span>
-                        </div>
-                        <div class="weui-flex__item" style=" flex: 5;text-align: right;">
-                            <a href="#" class="weui-btn weui-btn_mini weui-btn_primary">
-                                立即支付</a>
-                            <a href="#" class="weui-btn weui-btn_mini weui-btn_warn weui-btn_code" style="margin-top: 0;">
-                                扫码支付</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            </a>
-            <a href="/insurance_order_detail">
-                <div class="weui-panel">
-                    <div class="weui-panel__hd">
-                        <div class="weui-flex">
-                            <div class="weui-flex__item" style=" flex: 2;">
-                                订单编号:U1285D068I9963
-                            </div>
-                            <div class="weui-flex__item" style="text-align: right;">
-                                <span style="color:red;">待付款</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="weui-panel__bd" style="padding: 5px 10px;">
-                        <div class="weui-flex">
-                            <div class="weui-flex__item">
-                                保险公司:人保车险
-                            </div>
-                            <div class="weui-flex__item" style="text-align: right;">
-                                2017-06-08
-                            </div>
-                        </div>
-                        <div class="weui-flex">
-                            <div class="weui-flex__item">
-                                寄送人:车装甲
-                            </div>
-                            <div class="weui-flex__item" style="text-align: right;">
-                                13389202678
-                            </div>
-                        </div>
-                        <div class="weui-flex">
-                            <div class="weui-flex__item">
-                                陕西省西安市新城区
-                            </div>
-                        </div>
-                    </div>
-                    <div class="weui-panel__ft2"></div>
-                    <div class="weui-panel__ft" style="padding:0 10px;">
-                        <div class="weui-flex">
-                            <div class="weui-flex__item" style=" flex: 3;">
-                                订单金额:<span class="order_price">￥1020</span>
-                            </div>
-                            <div class="weui-flex__item" style=" flex: 5;text-align: right;">
-                                <a href="#" class="weui-btn weui-btn_mini weui-btn_primary">
-                                    立即支付</a>
-                                <a href="#" class="weui-btn weui-btn_mini weui-btn_warn weui-btn_code" style="margin-top: 0;">
-                                    扫码支付</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </a>
-            <a href="/insurance_order_detail">
-            <div class="weui-panel">
-                <div class="weui-panel__hd">
-                    <div class="weui-flex">
-                        <div class="weui-flex__item" style=" flex: 2;">
-                            订单编号:U1285D068I9963
-                        </div>
-                        <div class="weui-flex__item" style="text-align: right;">
-                            <span style="color:red;">待付款</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="weui-panel__bd" style="padding: 5px 10px;">
-                    <div class="weui-flex">
-                        <div class="weui-flex__item">
-                            保险公司:人保车险
-                        </div>
-                        <div class="weui-flex__item" style="text-align: right;">
-                            2017-06-08
-                        </div>
-                    </div>
-                    <div class="weui-flex">
-                        <div class="weui-flex__item">
-                            寄送人:车装甲
-                        </div>
-                        <div class="weui-flex__item" style="text-align: right;">
-                            13389202678
-                        </div>
-                    </div>
-                    <div class="weui-flex">
-                        <div class="weui-flex__item">
-                            陕西省西安市新城区
-                        </div>
-                    </div>
-                </div>
-                <div class="weui-panel__ft2"></div>
-                <div class="weui-panel__ft" style="padding:0 10px;">
-                    <div class="weui-flex">
-                        <div class="weui-flex__item" style=" flex: 3;">
-                            订单金额:<span class="order_price">￥1020</span>
-                        </div>
-                        <div class="weui-flex__item" style=" flex: 5;text-align: right;">
-                            <a href="#" class="weui-btn weui-btn_mini weui-btn_primary">
-                                立即支付</a>
-                            <a href="#" class="weui-btn weui-btn_mini weui-btn_warn weui-btn_code" style="margin-top: 0;">
-                                扫码支付</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            </a>
-            <a href="/insurance_order_detail">
-                <div class="weui-panel">
-                    <div class="weui-panel__hd">
-                        <div class="weui-flex">
-                            <div class="weui-flex__item" style=" flex: 2;">
-                                订单编号:U1285D068I9963
-                            </div>
-                            <div class="weui-flex__item" style="text-align: right;">
-                                <span style="color:red;">待付款</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="weui-panel__bd" style="padding: 5px 10px;">
-                        <div class="weui-flex">
-                            <div class="weui-flex__item">
-                                保险公司:人保车险
-                            </div>
-                            <div class="weui-flex__item" style="text-align: right;">
-                                2017-06-08
-                            </div>
-                        </div>
-                        <div class="weui-flex">
-                            <div class="weui-flex__item">
-                                寄送人:车装甲
-                            </div>
-                            <div class="weui-flex__item" style="text-align: right;">
-                                13389202678
-                            </div>
-                        </div>
-                        <div class="weui-flex">
-                            <div class="weui-flex__item">
-                                陕西省西安市新城区
-                            </div>
-                        </div>
-                    </div>
-                    <div class="weui-panel__ft2"></div>
-                    <div class="weui-panel__ft" style="padding:0 10px;">
-                        <div class="weui-flex">
-                            <div class="weui-flex__item" style=" flex: 3;">
-                                订单金额:<span class="order_price">￥1020</span>
-                            </div>
-                            <div class="weui-flex__item" style=" flex: 5;text-align: right;">
-                                <a href="#" class="weui-btn weui-btn_mini weui-btn_primary">
-                                    立即支付</a>
-                                <a href="#" class="weui-btn weui-btn_mini weui-btn_warn weui-btn_code" style="margin-top: 0;">
-                                    扫码支付</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </a>
-        </div>
-        <div id="tab2" class="weui-tab__bd-item">
-            <h1>页面二</h1>
-        </div>
-        <div id="tab3" class="weui-tab__bd-item">
-            <h1>页面三</h1>
-        </div>
-        <div id="tab4" class="weui-tab__bd-item">
-            <h1>页面4</h1>
-        </div>
-        <div id="tab5" class="weui-tab__bd-item">
-            <h1>页面5</h1>
-        </div>
-     <div class="weui-loadmore">
-          <i class="weui-loading"></i>
-          <span class="weui-loadmore__tips">正在加载</span>
-    </div>
-            </div>
 
-    </div>
+            <div id="tab1"  class="weui-tab__bd-item weui-tab__bd-item--active" style="position: static;">
+                <div class="weui-pull-to-refresh__layer">
+                    <div class="weui-pull-to-refresh__arrow"></div>
+                    <div class="weui-pull-to-refresh__preloader"></div>
+                    <div class="down">下拉刷新</div>
+                    <div class="up">释放刷新</div>
+                    <div class="refresh">正在刷新</div>
+                </div>
+                <a href="/insurance_order_detail">
+                    <div class="weui-panel">
+                        <div class="weui-panel__hd">
+                            <div class="weui-flex">
+                                <div class="weui-flex__item" style=" flex: 2;">
+                                    订单编号:U1285D068I9963
+                                </div>
+                                <div class="weui-flex__item" style="text-align: right;">
+                                    <span style="color:red;">待付款</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="weui-panel__bd" style="padding: 5px 10px;">
+                            <div class="weui-flex">
+                                <div class="weui-flex__item">
+                                    保险公司:人保车险
+                                </div>
+                                <div class="weui-flex__item" style="text-align: right;">
+                                    2017-06-08
+                                </div>
+                            </div>
+                            <div class="weui-flex">
+                                <div class="weui-flex__item">
+                                    寄送人:车装甲
+                                </div>
+                                <div class="weui-flex__item" style="text-align: right;">
+                                    13389202678
+                                </div>
+                            </div>
+                            <div class="weui-flex">
+                                <div class="weui-flex__item">
+                                    陕西省西安市新城区
+                                </div>
+                            </div>
+                        </div>
+                        <div class="weui-panel__ft2"></div>
+                        <div class="weui-panel__ft" style="padding:0 10px;">
+                            <div class="weui-flex">
+                                <div class="weui-flex__item" style=" flex: 3;">
+                                    订单金额:<span class="order_price">￥1020</span>
+                                </div>
+                                <div class="weui-flex__item" style=" flex: 5;text-align: right;">
+                                    <a href="#" class="weui-btn weui-btn_mini weui-btn_primary">
+                                        立即支付</a>
+                                    <a href="#" class="weui-btn weui-btn_mini weui-btn_warn weui-btn_code"
+                                       style="margin-top: 0;">
+                                        扫码支付</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                <a href="/insurance_order_detail">
+                    <div class="weui-panel">
+                        <div class="weui-panel__hd">
+                            <div class="weui-flex">
+                                <div class="weui-flex__item" style=" flex: 2;">
+                                    订单编号:U1285D068I9963
+                                </div>
+                                <div class="weui-flex__item" style="text-align: right;">
+                                    <span style="color:red;">待付款</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="weui-panel__bd" style="padding: 5px 10px;">
+                            <div class="weui-flex">
+                                <div class="weui-flex__item">
+                                    保险公司:人保车险
+                                </div>
+                                <div class="weui-flex__item" style="text-align: right;">
+                                    2017-06-08
+                                </div>
+                            </div>
+                            <div class="weui-flex">
+                                <div class="weui-flex__item">
+                                    寄送人:车装甲
+                                </div>
+                                <div class="weui-flex__item" style="text-align: right;">
+                                    13389202678
+                                </div>
+                            </div>
+                            <div class="weui-flex">
+                                <div class="weui-flex__item">
+                                    陕西省西安市新城区
+                                </div>
+                            </div>
+                        </div>
+                        <div class="weui-panel__ft2"></div>
+                        <div class="weui-panel__ft" style="padding:0 10px;">
+                            <div class="weui-flex">
+                                <div class="weui-flex__item" style=" flex: 3;">
+                                    订单金额:<span class="order_price">￥1020</span>
+                                </div>
+                                <div class="weui-flex__item" style=" flex: 5;text-align: right;">
+                                    <a href="#" class="weui-btn weui-btn_mini weui-btn_primary">
+                                        立即支付</a>
+                                    <a href="#" class="weui-btn weui-btn_mini weui-btn_warn weui-btn_code"
+                                       style="margin-top: 0;">
+                                        扫码支付</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div id="tab2" class="weui-tab__bd-item">
+                <h1>页面二</h1>
+            </div>
+            <div id="tab3" class="weui-tab__bd-item">
+                <h1>页面三</h1>
+            </div>
+            <div id="tab4" class="weui-tab__bd-item">
+                <h1>页面4</h1>
+            </div>
+            <div id="tab5" class="weui-tab__bd-item">
+                <h1>页面5</h1>
+            </div>
+            <!--<div class="weui-loadmore">-->
+                <!--<i class="weui-loading"></i>-->
+                <!--<span class="weui-loadmore__tips">正在加载</span>-->
+            <!--</div>-->
+        </div>
+
 </div>
 {% endblock %}
 {% block js %}
 <script>
-    var page = 1, offset = 1;
     var loading = false; //上拉状态标记
-    var toend = false; //数据加载完标记
 
-    function down() {
+    //加载更多，flag=0刷新，falg==1加载更多
+    function loadmore(flag) {
+        var type = $(".weui-bar__item--on").attr('type');
+        var current_tab = 'tab' + type;
+
+        var offset = 0;
+        if(flag==1) {
+            offset = $('#'+current_tab + ' a').length;
+        }
+
         jQuery.getJSON("/income_record_list", {
-            'offset': 1,
-            'type': 1
+            'offset': offset,
+            'type': type
         }, function (data) {
-            var data = data.data;
             console.log(data);
-            for (var i = data.length; i > 0; i--) {
-                var str = "";
-                jQuery("#tab1").append(
-                        '<a href="/insurance_order_detail">'+
-                        '<div class="weui-panel">'+
-                        '<div class="weui-panel__hd">'+
-                        '<div class="weui-flex">'+
-                        '<div class="weui-flex__item" style=" flex: 2;">'+
-                        '订单编号:U1285D068I9963'+
-                        '</div>'+
-                        '<div class="weui-flex__item" style="text-align: right;">'+
-                        '<span style="color:red;">待付款</span>'+
-                        '</div>'+
-                        '</div>'+
-                        '</div>'+
-                        '<div class="weui-panel__bd" style="padding: 5px 10px;">'+
-                        '<div class="weui-flex">'+
-                        '<div class="weui-flex__item">'+
-                        '保险公司:人保车险'+
-                        '</div>'+
-                        '<div class="weui-flex__item" style="text-align: right;">'+
-                        '2017-06-08'+
-                        '</div>'+
-                        '</div>'+
-                        '<div class="weui-flex">'+
-                        '<div class="weui-flex__item">'+
-                        '寄送人:车装甲'+
-                        '</div>'+
-                        '<div class="weui-flex__item" style="text-align: right;">'+
-                        '13389202678'+
-                        '</div>'+
-                        '</div>'+
-                        '<div class="weui-flex">'+
-                        '<div class="weui-flex__item">'+
-                        '陕西省西安市新城区'+
-                        '</div>'+
-                        '</div>'+
-                        '</div>'+
-                        '<div class="weui-panel__ft2"></div>'+
-                        '<div class="weui-panel__ft" style="padding:0 10px;">'+
-                        '<div class="weui-flex">'+
-                        '<div class="weui-flex__item" style=" flex: 3;">'+
-                        '订单金额:<span class="order_price">￥1020</span>'+
-                        '</div>'+
-                        '<div class="weui-flex__item" style=" flex: 5;text-align: right;">'+
-                        '<a href="#" class="weui-btn weui-btn_mini weui-btn_primary">'+
-                        '立即支付</a>'+
-                        '<a href="#" class="weui-btn weui-btn_mini weui-btn_warn weui-btn_code" style="margin-top: 0;">'+
-                        '扫码支付</a>'+
-                        '</div>'+
-                        '</div>'+
-                        '</div>'+
-                        '</div>'+
-                        '</a>');
-            }
-            ;
-        })
-    }
-    //上拉
-    function up() {
-        jQuery.getJSON("/income_record_list", {
-            'offset': 1,
-            'type': 1
-        }, function (data) {
-            var data = data.data;
-
-            if (data.length < 10) {
-                toend = true;
-            }
-            for (var i = data.length; i > 0; i--) {
-                var str = "";
-                jQuery("#tab1").append(
-                    '<a href="/insurance_order_detail">'+
-                    '<div class="weui-panel">'+
-                    '<div class="weui-panel__hd">'+
-                        '<div class="weui-flex">'+
-                        '<div class="weui-flex__item" style=" flex: 2;">'+
-                        '订单编号:U1285D068I9963'+
-                '</div>'+
-                '<div class="weui-flex__item" style="text-align: right;">'+
-                        '<span style="color:red;">待付款</span>'+
-                        '</div>'+
-                        '</div>'+
-                        '</div>'+
-                        '<div class="weui-panel__bd" style="padding: 5px 10px;">'+
-                        '<div class="weui-flex">'+
-                        '<div class="weui-flex__item">'+
-                        '保险公司:人保车险'+
-                '</div>'+
-                '<div class="weui-flex__item" style="text-align: right;">'+
-                        '2017-06-08'+
-                        '</div>'+
-                        '</div>'+
-                        '<div class="weui-flex">'+
-                        '<div class="weui-flex__item">'+
-                        '寄送人:车装甲'+
-                '</div>'+
-                '<div class="weui-flex__item" style="text-align: right;">'+
-                        '13389202678'+
-                        '</div>'+
-                        '</div>'+
-                        '<div class="weui-flex">'+
-                        '<div class="weui-flex__item">'+
-                        '陕西省西安市新城区'+
-                        '</div>'+
-                        '</div>'+
-                        '</div>'+
-                        '<div class="weui-panel__ft2"></div>'+
-                        '<div class="weui-panel__ft" style="padding:0 10px;">'+
-                        '<div class="weui-flex">'+
-                        '<div class="weui-flex__item" style=" flex: 3;">'+
-                        '订单金额:<span class="order_price">￥1020</span>'+
-                '</div>'+
-                '<div class="weui-flex__item" style=" flex: 5;text-align: right;">'+
-                        '<a href="#" class="weui-btn weui-btn_mini weui-btn_primary">'+
-                        '立即支付</a>'+
-                        '<a href="#" class="weui-btn weui-btn_mini weui-btn_warn weui-btn_code" style="margin-top: 0;">'+
-                        '扫码支付</a>'+
-                        '</div>'+
-                        '</div>'+
-                        '</div>'+
-                        '</div>'+
-                         '</a>');
-            };
-            if (toend) {
-
-                $('#demo1').destroyInfinite();
-            }
-            if (data.length == 10) {
-                page++;
+            if(data.flag == 1) {
+                if(flag == 0) {
+                    $('#'+current_tab).children('a').remove();
+                    $('#'+current_tab).children('.weui-panel').remove();
+                    $('#tab1').pullToRefreshDone();
+                }
+                for (var i = 0; i < data.data.length; i++) {
+                    var html = OrderItemToHtml(data.data[i]);
+                    $('#'+current_tab).append(html);
+                }
+                if (data.data.length < 10) {
+                    $('#'+current_tab).destroyInfinite();
+                }
             }
             loading = false;
-        })
-        setTimeout(function () {
-            jQuery(".weui-infinite-scroll").hide()
-        }, 1000);
+        });
     }
 
-        $('#demo1').pullToRefresh().on("pull-to-refresh", function() {
-            //清空现有数据
-            $('#tab1').empty();
-            //加载新数据
-            down();
-            //重置下拉状态
-            $('#demo1').pullToRefreshDone();
-        });
+    function OrderItemToHtml(data) {
+        var html = '<a href="/insurance_order_detail">\
+                    <div class="weui-panel">\
+                        <div class="weui-panel__hd">\
+                            <div class="weui-flex">\
+                                <div class="weui-flex__item" style=" flex: 2;">\
+                                    订单编号:U1285D068I9963\
+                                </div>\
+                                <div class="weui-flex__item" style="text-align: right;">\
+                                    <span style="color:red;">待付款</span>\
+                                </div>\
+                            </div>\
+                        </div>\
+                        <div class="weui-panel__bd" style="padding: 5px 10px;">\
+                            <div class="weui-flex">\
+                                <div class="weui-flex__item">\
+                                    保险公司:人保车险\
+                                </div>\
+                                <div class="weui-flex__item" style="text-align: right;">\
+                                    2017-06-08\
+                                </div>\
+                            </div>\
+                            <div class="weui-flex">\
+                                <div class="weui-flex__item">\
+                                    寄送人:车装甲\
+                                </div>\
+                                <div class="weui-flex__item" style="text-align: right;">\
+                                    13389202678\
+                                </div>\
+                            </div>\
+                            <div class="weui-flex">\
+                                <div class="weui-flex__item">\
+                                    陕西省西安市新城区\
+                                </div>\
+                            </div>\
+                        </div>\
+                        <div class="weui-panel__ft2"></div>\
+                        <div class="weui-panel__ft" style="padding:0 10px;">\
+                            <div class="weui-flex">\
+                                <div class="weui-flex__item" style=" flex: 3;">\
+                                    订单金额:<span class="order_price">￥1020</span>\
+                                </div>\
+                                <div class="weui-flex__item" style=" flex: 5;text-align: right;">\
+                                    <a href="#" class="weui-btn weui-btn_mini weui-btn_primary">\
+                                        立即支付</a>\
+                                    <a href="#" class="weui-btn weui-btn_mini weui-btn_warn weui-btn_code"\
+                                       style="margin-top: 0;">\
+                                        扫码支付</a>\
+                                </div>\
+                            </div>\
+                        </div>\
+                    </div>\
+                </a>';
+        return html;
+    }
 
-        $(document.body).infinite().on("infinite", function() {
-            if (loading) return;
-            loading = true;
-            jQuery(".weui-infinite-scroll").show();
-            up();
-        });
+    $('#tab1').pullToRefresh().on("pull-to-refresh", function () {
+        loadmore(0);
+    });
+
+//    $('#demo1').infinite().on("infinite", function () {
+//        if (loading) return;
+//        loading = true;
+//        loadmore(1);
+//    });
 
     $(document).on("click", "#soon_pay", function () {
         $.actions({
