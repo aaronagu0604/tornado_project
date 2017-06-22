@@ -81,7 +81,8 @@ function getVcode(cell) {
             'flag': 0,
             'mobile': mobile
         },function(data) {
-
+            var obj = JSON.parse(data);
+            $.toast(obj.msg);
         })
 }
 </script>
