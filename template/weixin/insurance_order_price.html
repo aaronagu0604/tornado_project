@@ -11,12 +11,6 @@
         line-height: 26px;
         margin-top: 3px;
     }
-    .title{
-        font-size: 20px;
-        line-height: 24px;
-        color: black;
-        display: inline-block;
-    }
     .row_right{
         float: right;
     }
@@ -57,6 +51,15 @@
         color: gray;
         margin: 5px;
     }
+    .main_praice{
+        color: #00A73B;
+    }
+    .title{
+        font-size: 18px;
+        line-height: 24px;
+        color: black;
+        display: inline-block;
+    }
 </style>
 {% endblock %}
 {% block content %}
@@ -91,8 +94,14 @@
         </div>
         </div>
             <div class="detail_content">
-                <p class="title">交强险</p>
-
+                <div class="weui-flex">
+                    <div class="weui-flex__item title">
+                        交强险
+                    </div>
+                    <div class="weui-flex__item main_praice" style="text-align: right;">
+                        ￥1234
+                    </div>
+                </div>
                 <div class="weui-flex">
                     <div class="weui-flex__item">
                         车船税
@@ -101,7 +110,14 @@
                         ￥1234
                     </div>
                 </div>
-                <p class="title">商业险(主险)</p>
+                <div class="weui-flex">
+                    <div class="weui-flex__item title">
+                        商业险(主险)
+                    </div>
+                    <div class="weui-flex__item main_praice" style="text-align: right;">
+                        ￥1234
+                    </div>
+                </div>
                 <div class="weui-flex">
                     <div class="weui-flex__item">
                         车辆损失险
@@ -111,68 +127,14 @@
                     </div>
                 </div>
 
-                <p class="title">商业险(附加险)</p>
-
                 <div class="weui-flex">
-                    <div class="weui-flex__item">
-                        玻璃单独损失险
+                    <div class="weui-flex__item title">
+                        商业险(附加险)
                     </div>
-                    <div class="weui-flex__item" style="text-align: right;">
+                    <div class="weui-flex__item main_praice" style="text-align: right;">
                         ￥1234
                     </div>
                 </div>
-            </div>
-        </div>
-
-        <div class="row_bd">
-            <div class="weui-panel__bd">
-                <div class="weui-media-box weui-media-box_text list-box">
-                    <div class="row_container" >
-                        <!--<div id="sss" class=" weui-cell weui-check__label">-->
-                        <label class="weui-cell weui-check__label" for="x12">
-                            <div class=" weui-cell__bd">
-                                <input type="radio" name="radio1" class="weui-check" id="x12">
-                                <span class="weui-icon-checked"></span>
-                            </div>
-                            <div class="weui-cell__ft">
-                                <p class="row_right">待付款</p>
-                            </div>
-                        </label>
-                        <!--</div>-->
-                        <hr>
-                        <div class="weui-flex">
-                            <div class="weui-flex__item">
-                                提交时间
-                            </div>
-                            <div class="weui-flex__item" style="text-align: right;">
-                                2017-06-29
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="detail_content">
-                <p class="title">交强险</p>
-
-                <div class="weui-flex">
-                    <div class="weui-flex__item">
-                        车船税
-                    </div>
-                    <div class="weui-flex__item" style="text-align: right;">
-                        ￥1234
-                    </div>
-                </div>
-                <p class="title">商业险(主险)</p>
-                <div class="weui-flex">
-                    <div class="weui-flex__item">
-                        车辆损失险
-                    </div>
-                    <div class="weui-flex__item" style="text-align: right;">
-                        ￥1234
-                    </div>
-                </div>
-
-                <p class="title">商业险(附加险)</p>
 
                 <div class="weui-flex">
                     <div class="weui-flex__item">

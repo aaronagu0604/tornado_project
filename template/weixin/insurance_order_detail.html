@@ -26,6 +26,16 @@
     .weui-col-60 p {
         text-align: center;
     }
+    .upload_btn{
+        background-image: url("../../style/wximg/btn_photo_upload.png");
+        background-size: 25px 25px;
+        background-repeat: no-repeat;
+        width: 25px;
+        position: absolute;
+        height: 25px;
+        right: 20px;
+        top: 1px;
+    }
     .wy-insurance-img-block {
         text-align: center;
     }
@@ -51,14 +61,6 @@
         height: 25px;
         right: 20px;
         top: 4px;
-    }
-
-    .wy-insurance-img-block .display_block .btn_1 {
-        width: 25px;
-        position: absolute;
-        height: 25px;
-        right: 20px;
-        top: 1px;
     }
     .wy-insurance-img-block .display_block .single_line{
         padding: 0;
@@ -100,6 +102,16 @@
         color: gray;
         margin: 5px;
     }
+    .title{
+        color: black;
+        font-size: 18px;
+    }
+    .main_praice{
+        color: #00A73B;
+    }
+    input{
+        opacity: 0;
+    }
 </style>
 {% endblock %}
 {% block content %}
@@ -119,7 +131,7 @@
                 <div class="weui-cell__bd">
                     <p>人保车险</p>
                 </div>
-                <div class="weui-cell__ft">￥1234</div>
+                <div class="weui-cell__ft main_praice">￥1234</div>
             </div>
             <div class="weui-cell">
                 <div class="weui-cell__bd">
@@ -128,8 +140,14 @@
                 <div class="weui-cell__ft">2017-06-08</div>
             </div>
             <div class="detail_content">
-                <p class="title">交强险</p>
-
+                <div class="weui-flex">
+                    <div class="weui-flex__item title">
+                        交强险
+                    </div>
+                    <div class="weui-flex__item main_praice" style="text-align: right;">
+                        ￥1234
+                    </div>
+                </div>
                 <div class="weui-flex">
                     <div class="weui-flex__item">
                         车船税
@@ -138,7 +156,14 @@
                         ￥1234
                     </div>
                 </div>
-                <p class="title">商业险(主险)</p>
+                <div class="weui-flex">
+                    <div class="weui-flex__item title">
+                        商业险(主险)
+                    </div>
+                    <div class="weui-flex__item main_praice" style="text-align: right;">
+                        ￥1234
+                    </div>
+                </div>
                 <div class="weui-flex">
                     <div class="weui-flex__item">
                         车辆损失险
@@ -148,7 +173,14 @@
                     </div>
                 </div>
 
-                <p class="title">商业险(附加险)</p>
+                <div class="weui-flex">
+                    <div class="weui-flex__item title">
+                        商业险(附加险)
+                    </div>
+                    <div class="weui-flex__item main_praice" style="text-align: right;">
+                        ￥1234
+                    </div>
+                </div>
 
                 <div class="weui-flex">
                     <div class="weui-flex__item">
@@ -165,7 +197,7 @@
         <div class="weui-flex wy-insurance-img-block">
             <div class="weui-flex__item">
                 <div>
-                    <img class="img_card" src="../../style/wximg/id_card.png">
+                    <img id="card_1" class="img_card own_id_card_font" src="../../style/wximg/id_card.png">
                 </div>
                 <div class="display_block">
                     <div>
@@ -176,12 +208,15 @@
                     <span>(被保险人)</span>
                 </p>
                         </div>
-                    <img class="btn_2" src="../../style/wximg/btn_photo_upload.png">
+                    <a href="javascript:" class="upload_btn">
+                        <input type="file" name="own_id_card_font"
+                               accept="image/*">
+                    </a>
                     </div>
             </div>
              <div class="weui-flex__item">
                 <div>
-                    <img class="img_card" src="../../style/wximg/id_card.png">
+                    <img id="card_2" class="img_card own_id_card_back" src="../../style/wximg/id_card.png">
                 </div>
                 <div class="display_block">
                     <div>
@@ -192,14 +227,17 @@
                             <span>(被保险人)</span>
                         </p>
                         </div>
-                    <img class="btn_2" src="../../style/wximg/btn_photo_upload.png">
+                    <a href="javascript:" class="upload_btn">
+                        <input type="file" name="own_id_card_back"
+                               accept="image/*">
+                    </a>
                     </div>
             </div>
         </div>
         <div class="weui-flex wy-insurance-img-block">
             <div class="weui-flex__item">
                 <div>
-                    <img class="img_card" src="../../style/wximg/id_card.png">
+                    <img id="card_3" class="img_card driver_card_font" src="../../style/wximg/id_card.png">
                 </div>
                 <div class="display_block">
                     <div>
@@ -207,12 +245,15 @@
                     <span>行驶证</span>
                 </p>
                         </div>
-                    <img class="btn_1" src="../../style/wximg/btn_photo_upload.png">
+                    <a href="javascript:" class="upload_btn">
+                        <input type="file" name="driver_card_font"
+                               accept="image/*">
+                    </a>
                     </div>
             </div>
              <div class="weui-flex__item">
                 <div>
-                    <img class="img_card" src="../../style/wximg/id_card.png">
+                    <img id="card_4" class="img_card driver_card_back" src="../../style/wximg/id_card.png">
                 </div>
                 <div class="display_block">
                     <div>
@@ -220,7 +261,10 @@
                     <span>行驶证副本</span>
                 </p>
                         </div>
-                    <img class="btn_1" src="../../style/wximg/btn_photo_upload.png">
+                    <a href="javascript:" class="upload_btn">
+                        <input type="file" name="driver_card_back"
+                               accept="image/*">
+                    </a>
                     </div>
             </div>
         </div>
@@ -228,7 +272,7 @@
         <div class="weui-flex wy-insurance-img-block">
             <div class="weui-flex__item">
                 <div>
-                    <img class="img_card" src="../../style/wximg/id_card.png">
+                    <img id="card_5" class="img_card id_card_font" src="../../style/wximg/id_card.png">
                 </div>
                 <div class="display_block">
                     <div>
@@ -236,12 +280,15 @@
                             <span>身份证正面</span>
                         </p>
                     </div>
-                    <img class="btn_1" src="../../style/wximg/btn_photo_upload.png">
+                    <a href="javascript:" class="upload_btn">
+                        <input type="file" name="id_card_font"
+                               accept="image/*">
+                    </a>
                 </div>
             </div>
             <div class="weui-flex__item">
                 <div>
-                    <img class="img_card" src="../../style/wximg/id_card.png">
+                    <img id="card_6" class="img_card id_card_back" src="../../style/wximg/id_card.png">
                 </div>
                 <div class="display_block">
                     <div>
@@ -249,7 +296,10 @@
                             <span>身份证背面</span>
                         </p>
                     </div>
-                    <img class="btn_1" src="../../style/wximg/btn_photo_upload.png">
+                    <a href="javascript:" class="upload_btn">
+                        <input type="file" name="id_card_back"
+                               accept="image/*">
+                    </a>
                 </div>
             </div>
         </div>
@@ -268,7 +318,7 @@
             <div class="weui-panel__bd">
                 <div class="weui-media-box weui-media-box_text list-box">
                     <a  id="soon_pay" class="weui-btn weui-btn_mini  weui-btn_default" >立即支付</a>
-                    <a  id="code_pay" class="weui-btn weui-btn_mini  weui-btn_primary" >扫码支付</a>
+                    <a  href="/pay_detail" class="weui-btn weui-btn_mini  weui-btn_primary" >扫码支付</a>
                     <a href="/insurance_order_items" class="weui-btn weui-btn_mini  weui-btn_default" >重新报价</a>
                 </div>
             </div>
@@ -281,33 +331,133 @@
 
 {% block js %}
 <script>
-    $(document).on("click", "#soon_pay", function () {
-        $.actions({
-            title: "支付方式", actions: [{
-                text: "微信", onclick: function () {
-                    galleryImg("#id_card_front_owner");
-                }
-            }, {
-                text: "支付宝", onclick: function () {
-                    galleryImg("#id_card_front_owner");
-                }
-            }]
-        });
-    })
 
-    $(document).on("click", "#code_pay", function () {
-        $.actions({
-            title: "扫码支付", actions: [{
-                text: "微信扫码", onclick: function () {
-                    galleryImg("#id_card_front_owner");
-                }
-            }, {
-                text: "支付宝扫码", onclick: function () {
-                    galleryImg("#id_card_front_owner");
-                }
-            }]
+    $(document).ready(function () {
+
+        $(':file').on("change", function () {
+            loadingImg(this);
         });
-    })
+
+        function loadingImg(parent) {
+            var file = parent.files[0];
+            $(parent).replaceWith('<input type="file" name="' + parent.name + '" accept="image/*">');
+            $('input[name="' + parent.name + '"]').on("change", function () {
+                loadingImg(this);
+            });
+            if (!/image\/\w+/.test(file.type)) {
+                $.toast("请确保文件为图像类型", "text");
+                return false;
+            }
+            var formData = new FormData();
+            formData.append("file", file);
+            $.ajax({
+                type: "POST",
+                url: "http://img.520czj.com/upload/image",
+                data: formData,
+                cache: false,
+                contentType: false,
+                processData: false,
+                beforeSend: function () {
+                    //页面loading, 不能再进行其他操作，适合比如提交按钮
+                    $.showLoading();
+                },
+                success: function (data) {
+                    $.hideLoading();
+                    console.log(data);
+                    var data = JSON.parse(data);
+                    if (data.flag == 1) {
+                        $("#" + parent.name).attr('src', data.data);
+                        //提交上传图片
+                    } else {
+                        $.toast(data.msg, "text");
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    $.hideLoading();
+                    $.toast("上传失败，请检查网络后重试", "text");
+                }
+
+            });
+        }
+
+        $(document).on("click", "#soon_pay", function () {
+            $.actions({
+                title: "支付方式", actions: [{
+                    text: "微信", onclick: function () {
+                        galleryImg("#id_card_front_owner");
+                    }
+                }, {
+                    text: "支付宝", onclick: function () {
+                        galleryImg("#id_card_front_owner");
+                    }
+                }]
+            });
+        })
+
+        $(document).on("click", "#code_pay", function () {
+            $.actions({
+                title: "扫码支付", actions: [{
+                    text: "微信扫码", onclick: function () {
+                        document.location.href = "/pay_detail";
+                    }
+                }, {
+                    text: "支付宝扫码", onclick: function () {
+                        document.location.href = "/pay_detail";
+                    }
+                }]
+            });
+        });
+        var pb1 = $.photoBrowser({
+            items: [
+                $("#card_1").attr("src")
+            ]
+        });
+        $("#card_1").click(function () {
+            pb1.open();
+        });
+        var pb2 = $.photoBrowser({
+            items: [
+                $("#card_2").attr("src")
+            ]
+        });
+        $("#card_2").click(function () {
+            pb2.open();
+        });
+        var pb3 = $.photoBrowser({
+            items: [
+                $("#card_3").attr("src")
+            ]
+        });
+        $("#card_3").click(function () {
+            pb3.open();
+        });
+        var pb4 = $.photoBrowser({
+            items: [
+                $("#card_4").attr("src")
+            ]
+        });
+        $("#card_4").click(function () {
+            pb4.open();
+        });
+        var pb5 = $.photoBrowser({
+            items: [
+                $("#card_5").attr("src")
+            ]
+        });
+        $("#card_5").click(function () {
+            pb5.open();
+        });
+        var pb6 = $.photoBrowser({
+            items: [
+                $("#card_6").attr("src")
+            ]
+        });
+        $("#card_6").click(function () {
+            pb6.open();
+        });
+
+    });
+
 </script>
 
 {% endblock %}
