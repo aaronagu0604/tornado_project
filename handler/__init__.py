@@ -171,7 +171,7 @@ class WXBaseHandler(BaseHandler):
         if self.get_current_user():
             pass
         else:
-            self.redirect("/login")
+            self.render('404.html')
 
         super(WXBaseHandler, self).prepare()
 
