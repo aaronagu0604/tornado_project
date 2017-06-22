@@ -184,6 +184,7 @@ class WXApiLoginHandler(BaseHandler):
                 user.store_id = int(store_id)
                 user.truename = userinfo['nickname']
                 user.mobile = userinfo['openid']
+                user.openid = userinfo['openid']
                 user.password = user.create_password('123456') # 微信用户默认密码：123456
                 user.role = 'W'
 
