@@ -77,11 +77,11 @@ a {
 <script>
 function getVcode(cell) {
     var mobile = $(cell).val();
-    jQuery.postJSON("http://api.dev.test.520czj.com/mobile/getvcode", {
+    jQuery.post("http://api.dev.test.520czj.com/mobile/getvcode", {
             'flag': 0,
             'mobile': mobile
         },function(data) {
-            //
+
         })
 }
 </script>
