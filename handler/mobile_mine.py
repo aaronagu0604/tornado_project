@@ -126,6 +126,7 @@ class MobilStorePopularizeHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/storepopularize
     """
+
     def act_insurance(self, pop, uid, storeName, addr1, addr2, mobile, now):
         pic = os.path.join(settings['upload_path'], "store_popularize/%s_%d.jpeg" % (pop['activity'], uid))
         newPic_name = pic.split('/')[-1]
@@ -152,7 +153,6 @@ class MobilStorePopularizeHandler(MobileBaseHandler):
             addr2 = ''
             mobile = user.mobile
             now = str(time.time())[:10]
-
             for pop in popularizePIC:
                 area_limits = 0
                 for area_code in pop['area_code'].split(','):
@@ -167,11 +167,75 @@ class MobilStorePopularizeHandler(MobileBaseHandler):
                     picPath = self.act_insurance(pop, user.id, storeName, addr1, addr2, mobile, now)
                     result['data'].append(picPath)
                     result['flag'] = 1
-
         except Exception, e:
             logging.error(e)
             result['msg'] = u'生成图片失败'
         logging.info(simplejson.dumps(result))
+        self.write(simplejson.dumps(result))
+
+
+@route(r'/mobile/store_popularize', name='new_store_popularize')  # 推广大使
+class New_MobilStorePopularizeHandler(MobileBaseHandler):
+    """
+    @apiGroup mine
+    @apiVersion 1.0.0
+    @api {get} /mobile/storepopularize 00 推广大使
+    @apiDescription app  推广大使
+
+    @apiHeader {String} token 用户登录凭证
+
+    @apiSampleRequest /mobile/storepopularize
+    """
+
+    def create_store_pic(self, pa_pic, store, addr1, addr2):
+        pa_pic_tmp = pa_pic.picAP.split('.')
+        pic = pa_pic_tmp[0] + '_' + str(store.id)+ '.' + pa_pic_tmp[1]
+        new_pic_name = pic.split('/')[-1]
+        if not os.path.exists(pic):
+            ttfont = ImageFont.truetype(setting.typeface, pa_pic.setting.wordSize)
+            im = Image.open(pa_pic.picAP)
+            draw = ImageDraw.Draw(im)
+            wordColour = tuple([int(a) for a in pa_pic.wordColour.split(',')])
+            draw.text((pa_pic.setting.storeWidth, pa_pic.setting.storeHeight), store.name, fill=wordColour, font=ttfont)
+            draw.text((pa_pic.setting.addrWidth, pa_pic.setting.addrHeight), addr1, fill=wordColour, font=ttfont)
+            if addr2:
+                draw.text((pa_pic.setting.addr2Width, pa_pic.setting.addr2Height), addr2, fill=wordColour, font=ttfont)
+            draw.text((pa_pic.setting.phoneWidth, pa_pic.setting.phoneHeight), store.mobile, fill=wordColour, font=ttfont)
+            im.save(pic, format='jpeg')
+        return setting.imgDoman + 'store_popularize/' + new_pic_name
+
+    @require_auth
+    def get(self):
+        result = {'flag': 0, 'msg': '', "data": []}
+        try:
+            store = self.get_user().store
+            addr = Area.get_detailed_address(store.area_code) + store.address
+            addr2 = ''
+            if len(store.area_code) == 12:    # 门店是区，能查发布到省市和该区的规则
+                codes = [store.area_code, store.area_code[:8], store.area_code[:4]]
+                ft = (PromotionAmbassadorArea.area_code << codes)
+            elif len(store.area_code) == 8:    # 门店地区是市，只能查发布到省和该市的规则
+                codes = [store.area_code, store.area_code[:4]]
+                ft = (PromotionAmbassadorArea.area_code << codes)
+            elif len(store.area_code) == 4:    # 门店地区是省，只能查发布到省得规则
+                ft = (PromotionAmbassadorArea.area_code == store.area_code)
+            else:
+                ft = None
+            if ft:
+                for paa in PromotionAmbassadorArea.select().where(ft):
+                    if len(addr) > paa.pa_pic.setting.addr2tab:
+                        addr1 = addr[:paa.pa_pic.setting.addr2tab]
+                        addr2 = addr[paa.pa_pic.setting.addr2tab:]
+                    else:
+                        addr1 = addr
+                    picPath = self.create_store_pic(paa.pa_pic,store, addr1, addr2)
+                    result['data'].append(picPath)
+                    result['flag'] = 1
+            else:
+                result['msg'] = u'门店地区没有配置'
+        except Exception, e:
+            logging.error('Error: /mobile/store_popularize: %s' % str(e))
+            result['msg'] = u'生成图片失败'
         self.write(simplejson.dumps(result))
 
 

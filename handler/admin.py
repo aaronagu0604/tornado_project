@@ -3011,7 +3011,7 @@ class EditPAHandler(AdminBaseHandler):
                 file_abspath = setting.admin_file_path + 'image/store_popularize/' + filename
                 with open(file_abspath, "wb") as f:
                     f.write(self.request.files["file"][0]["body"])
-                pap.picAP = setting.imgDoman + 'store_popularize/' + filename
+                pap.picAP = '/imgData/image/store_popularize/' + filename
             pap.save()
             AdminUserLog.create(admin_user=self.get_admin_user(), created=int(time.time()), content=u'编辑推广大使活动图: pap_id:%d' % pap.id)
             self.flash(u"推广大使活动修改成功，请在左侧将广告发布到相应地区")
