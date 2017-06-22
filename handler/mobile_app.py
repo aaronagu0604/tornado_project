@@ -151,6 +151,7 @@ class MobileCheckVCodeAppHandler(MobileBaseHandler):
             result['flag'] = 1
         else:
             result['msg'] = u'请输入正确的手机号或验证码'
+        self.set_header("Access-Control-Allow-Origin", "*")
         self.write(simplejson.dumps(result))
 
 
