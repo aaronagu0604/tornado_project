@@ -150,14 +150,13 @@ class BaseHandler(RequestHandler, FlashMessagesMixin):
 
 
 class AdminBaseHandler(BaseHandler):
-    pass
-    # def prepare(self):
-    #     if self.get_admin_user():
-    #         pass
-    #     else:
-    #         self.redirect("/admin/login")
-	#
-    #     super(AdminBaseHandler, self).prepare()
+    def prepare(self):
+        if self.get_admin_user():
+            pass
+        else:
+            self.redirect("/admin/login")
+
+        super(AdminBaseHandler, self).prepare()
 
     def vrole(self, rolelist):
         userrole = self.get_user_role()
@@ -167,13 +166,14 @@ class AdminBaseHandler(BaseHandler):
         return False
 
 class WXBaseHandler(BaseHandler):
-    def prepare(self):
-        if self.get_current_user():
-            pass
-        else:
-            self.redirect("/login")
-
-        super(WXBaseHandler, self).prepare()
+    pass
+    # def prepare(self):
+    #     if self.get_current_user():
+    #         pass
+    #     else:
+    #         self.redirect("/login")
+	#
+    #     super(WXBaseHandler, self).prepare()
 
 def require_auth(method):
     @functools.wraps(method)
