@@ -44,6 +44,7 @@ class Signature(BaseHandler):
             return
 
         self.write('signature error')
+
     def post(self):
         token = 'wxczjplateform'
         signature = self.get_argument('signature')
@@ -57,11 +58,7 @@ class Signature(BaseHandler):
         map(sha1.update, keylist)
         hashcode = sha1.hexdigest()
 
-        if hashcode == signature:
-            self.write(echostr)
-            return
-
-        self.write('signature error')
+        return
 
 @route(r'/index', name='wx_index')  # 首页
 class IndexHandler(WXBaseHandler):
