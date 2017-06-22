@@ -122,7 +122,7 @@ class MobileGetVCodeAppHandler(MobileBaseHandler):
                     result['msg'] = u'验证码发送失败，请联系400客服处理'
         else:
             result['msg'] = u'手机号格式错误'
-
+        self.set_header("Access-Control-Allow-Origin", "*")
         self.write(simplejson.dumps(result))
         self.finish()
 
