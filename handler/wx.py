@@ -181,7 +181,7 @@ class WXApiLoginHandler(BaseHandler):
         if userinfo:
             try:
                 user = User()
-                user.store_id = int(store_id)
+                user.store = int(store_id)
                 user.truename = userinfo['nickname']
                 user.mobile = userinfo['openid']
                 user.openid = userinfo['openid']
