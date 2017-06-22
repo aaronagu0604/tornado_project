@@ -79,7 +79,6 @@
             <div class="weui-cell__hd">
                 <img src="../../style/wximg/duihao_gray.png" id="default_addr_img"/>
                 <input type="radio" name="radio1" style="display: none" checked="checked" id="default_addr">
-
             </div>
             <div class="weui-cell__bd">
                 <p> 默认地址</p>
@@ -119,13 +118,13 @@
             <div class="weui-cell">
                 <div class="weui-label">收货人</div>
                 <div class="weui-cell__bd">
-                    <input class="weui-input" type="input" placeholder="请输入收货人姓名">
+                    <input class="weui-input" id="name" type="input" placeholder="请输入收货人姓名">
                 </div>
             </div>
             <div class="weui-cell">
                 <div class="weui-label">联系电话</div>
                 <div class="weui-cell__bd">
-                    <input class="weui-input" type="input" placeholder="请输入收货人电话">
+                    <input class="weui-input" id="tel" type="input" placeholder="请输入收货人电话">
                 </div>
             </div>
             <div class="weui-cell weui-cell">
@@ -254,9 +253,18 @@
     });
 
     function gotoNext() {
+
         if (!$('#gift_policy_01').is(':checked') && !$('#gift_policy_02').is(':checked')) {
             $.toast("请选择优惠方式", "text");
         } else {
+
+            var insurance = JSON.parse(window.localStorage.getItem("insurance"));
+
+            if (!$('#default_addr').is(':checked')) {
+
+            } else {
+
+            }
             document.location.href = "insurance_order_success";
         }
     }

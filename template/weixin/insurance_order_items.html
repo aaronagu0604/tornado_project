@@ -276,7 +276,9 @@
                         cols: [{
                             textAlign: 'center',
                             values: displayValues
-                        }]
+                        }],
+                        onClose: function () {
+                        }
                     });
                 },
                 error: function (data) {
@@ -315,8 +317,6 @@
         }
         $("#next").bind("click", function () {
             var insurance = JSON.parse(window.localStorage.getItem("insurance"));
-            insurance.addressID = 1;
-            window.localStorage.setItem("insurance", JSON.stringify(insurance));
             if (!$('#forceI').is(':checked')
                 && !$('#damageI').is(':checked')
                 && $('#thirdDutyI').val() == "不投"
@@ -327,11 +327,74 @@
             } else {
                 if ($('#forceI').is(':checked')) {
                     insurance.forceI = "1";
-                }else{
+                } else {
                     insurance.forceI = "";
                 }
+                if (!$('#damageI').is(':checked')) {
+                    insurance.damageI = "";
+                    insurance.damageIPlus = "";
+                    insurance.glassI = "";
+                    insurance.scratchI = "";
+                    insurance.scratchIPlus = "";
+                    insurance.fireDamageI = "";
+                    insurance.fireDamageIPlus = "";
+                    insurance.wadeI = "";
+                    insurance.wadeIPlus = "";
+                    insurance.thirdSpecialI = "";
+                } else {
+                    insurance.damageI = "";
+                    if ($('#damageIPlus').is(':checked')) {
+                        insurance.damageIPlus = "1";
+                    } else {
+                        insurance.damageIPlus = "";
+                    }
+                    if ($('#glassI').is(':checked')) {
+                        insurance.glassI = "1";
+                    } else {
+                        insurance.glassI = "";
+                    }
+                    if ($('#scratchI').val() == "不投") {
+                        insurance.scratchI = "";
+                        insurance.scratchIPlus = "";
+                    } else {
+                        insurance.scratchI = "1";
+                        if ($('#scratchIPlus').is(':checked')) {
+                            insurance.scratchIPlus = "1";
+                        } else {
+                            insurance.scratchIPlus = "";
+                        }
+                    }
+                    if (!$('#fireDamageI').is(':checked')) {
+                        insurance.fireDamageI = "";
+                        insurance.fireDamageIPlus = "";
+                    } else {
+                        insurance.fireDamageI = "1";
+                        if ($('#fireDamageIPlus').is(':checked')) {
+                            insurance.fireDamageIPlus = "1";
+                        } else {
+                            insurance.fireDamageIPlus = "";
+                        }
+                    }
+                    if (!$('#wadeI').is(':checked')) {
+                        insurance.wadeI = "";
+                        insurance.wadeIPlus = "";
+                    } else {
+                        insurance.wadeI = "1";
+                        if ($('#fireDamageIPlus').is(':checked')) {
+                            insurance.wadeIPlus = "1";
+                        } else {
+                            insurance.wadeIPlus = "";
+                        }
+                    }
 
-
+                    if (!$('#thirdSpecialI').is(':checked')) {
+                        insurance.thirdSpecialI = "";
+                    } else {
+                        insurance.thirdSpecialI = "1";
+                    }
+                }
+                insurance.insurance = 1;
+                window.localStorage.setItem("insurance", JSON.stringify(insurance));
                 document.location.href = "insurance_order_new";
             }
         });
