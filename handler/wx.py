@@ -208,7 +208,6 @@ class WXApiLoginHandler(BaseHandler):
         else:
             user = self.create_user(userinfo,store_id)
 
-        user.updatesignin()
         self.session['user'] = user
         self.session.save()
 
