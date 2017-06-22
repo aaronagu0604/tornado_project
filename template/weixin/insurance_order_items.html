@@ -325,6 +325,12 @@
                 && !$('#robbingI').is(':checked')) {
                 $.toast("请选择险种", "text");
             } else {
+                if ($('#forceI').is(':checked')) {
+                    insurance.forceI = "1";
+                }else{
+                    insurance.forceI = "";
+                }
+
 
                 document.location.href = "insurance_order_new";
             }

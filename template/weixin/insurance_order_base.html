@@ -94,13 +94,12 @@
 <div class="parent">
     <div class="weui-row">
         <div class="weui-col-60">
-            <img src="../../style/wximg/id_card.png" id="id_card_img">
+            <img src="../../style/wximg/id_card.png" id="id_card_front">
         </div>
         <div class="weui-col-40">
-            <a href="javascript:;" class="file" id="id_card">
+            <a href="javascript:;" class="file">
                 选择
-                <input type="file" id="id_card_file" onchange="loadingImg(this,'id_card_img')"
-                       value="选择" accept="image/*">
+                <input type="file" name="id_card_front" accept="image/*">
             </a>
             <p class="name">
                 被保人身份证<br/>
@@ -114,14 +113,13 @@
     </div>
     <div class="weui-row">
         <div class="weui-col-60">
-            <img src="../../style/wximg/id_card.png" id="id_card_back_img">
+            <img src="../../style/wximg/id_card.png" id="id_card_back">
         </div>
 
         <div class="weui-col-40">
-            <a href="javascript:;" class="file"
-               id="id_card_back">
+            <a href="javascript:;" class="file">
                 选择
-                <input type="file" id="id_card_back_file" onchange="loadingImg(this,'id_card_back_img')"
+                <input type="file" name="id_card_back"
                        accept="image/*">
             </a>
             <p class="name">
@@ -137,15 +135,13 @@
     </div>
     <div class="weui-row">
         <div class="weui-col-60">
-            <img src="../../style/wximg/id_card.png" id="drive_card_img">
+            <img src="../../style/wximg/id_card.png" id="drive_card_front">
         </div>
 
         <div class="weui-col-40">
-            <a href="javascript:;" class="file"
-               id="drive_card">
+            <a href="javascript:;" class="file">
                 选择
-                <input type="file" id="drive_card_file" onchange="loadingImg(this,'drive_card_img')"
-                       accept="image/*">
+                <input type="file" name="drive_card_front" accept="image/*">
             </a>
             <p class="name">
                 行驶证
@@ -159,15 +155,13 @@
     </div>
     <div class="weui-row">
         <div class="weui-col-60">
-            <img src="../../style/wximg/id_card.png" id="drive_card_back_img">
+            <img src="../../style/wximg/id_card.png" id="drive_card_back">
         </div>
 
         <div class="weui-col-40">
-            <a href="javascript:;" class="file"
-               id="drive_card_back">
+            <a href="javascript:;" class="file">
                 选择
-                <input type="file" id="drive_card_back_file" onchange="loadingImg(this,'drive_card_back_img')"
-                       accept="image/*">
+                <input type="file" name="drive_card_back" accept="image/*">
             </a>
             <p class="name">
                 行驶证(副本)
@@ -192,14 +186,13 @@
     <div class="owner">
         <div class="weui-row">
             <div class="weui-col-60">
-                <img src="../../style/wximg/id_card.png" id="id_card_front_owner_img">
+                <img src="../../style/wximg/id_card.png" id="id_card_front_owner">
             </div>
 
             <div class="weui-col-40">
-                <a href="javascript:;" class="file"
-                   id="id_card_front_owner">
+                <a href="javascript:;" class="file">
                     选择
-                    <input type="file" id="id_card_front_owner_file"
+                    <input type="file" name="id_card_front_owner"
                            onchange="loadingImg(this,'id_card_front_owner_img')"
                            accept="image/*">
                 </a>
@@ -213,14 +206,13 @@
         </div>
         <div class="weui-row">
             <div class="weui-col-60">
-                <img src="../../style/wximg/id_card.png" id="id_card_back_owner_img">
+                <img src="../../style/wximg/id_card.png" id="id_card_back_owner">
             </div>
 
             <div class="weui-col-40">
-                <a href="javascript:;" class="file"
-                   id="id_card_back_owner">
+                <a href="javascript:;" class="file">
                     选择
-                    <input type="file" id="id_card_back_owner_file" onchange="loadingImg(this,'id_card_back_owner_img')"
+                    <input type="file" name="id_card_back_owner" onchange="loadingImg(this,'id_card_back_owner_img')"
                            accept="image/*">
                 </a>
                 <p class="name">
@@ -239,19 +231,48 @@
 {% block js %}
 <script>
     $(document).ready(function () {
+        localStorage.removeItem("insurance");
         if ($('#switch_owner').is(':checked')) {
             $(".owner").hide();
         } else {
             $(".owner").show();
         }
+
+        $(':file').on("change", function () {
+            loadingImg(this);
+        });
     });
     $(document).on("click", "#next", function () {
-        var insurance = {};
-        insurance.id = 1;
-        insurance.id_card_front = "http://www.baidu.com";
-        window.localStorage.setItem("insurance", JSON.stringify(insurance));
-        document.location.href = "/insurance_order_items"
-    })
+
+        var insurance = JSON.parse(window.localStorage.getItem("insurance"));
+        if (insurance == null) {
+            var insurance = {};
+        }
+        if (insurance.id_card_front == null) {
+            $.toast("请上传被保人身份证(正面)", "text");
+        } else if (insurance.id_card_back == null) {
+            $.toast("请上传被保人身份证(反面)", "text");
+        } else if (insurance.drive_card_front == null) {
+            $.toast("请上传行驶证", "text");
+        } else if (insurance.drive_card_back == null) {
+            $.toast("请上传行驶证(副本)", "text");
+        } else {
+            if ($('#switch_owner').is(':checked')) {
+                insurance.is_same_person = 1;
+                document.location.href = "/insurance_order_items"
+            } else {
+                if (insurance.id_card_front_owner == null) {
+                    $.toast("请上传车主身份证(正面)", "text");
+                } else if (insurance.id_card_back_owner == null) {
+                    $.toast("请上传车主身份证(反面)", "text");
+                } else {
+                    insurance.is_same_person = 0;
+                    document.location.href = "/insurance_order_items";
+                }
+            }
+        }
+
+    });
     $(document).on("click", "#switch_owner", function () {
         if ($('#switch_owner').is(':checked')) {
             $(".owner").hide();
@@ -261,39 +282,54 @@
     });
 
 
-    function loadingImg(fileId, imgId) {
-        if (typeof FileReader === 'undefined') {
-            /* fileId.setAttribute('disabled', 'disabled');*/
-            $.toast("抱歉，你的浏览器不支持 FileReader", "text");
-        } else {
-            var file = fileId.files[0];
-            if (!/image\/\w+/.test(file.type)) {
-                alert("请确保文件为图像类型");
-                return false;
-            }
-            var reader = new FileReader();
-            reader.readAsDataURL(file);
-
-            reader.onload = function (e) {
-                console.log(file.name);
-                uploadImg(this.result, imgId);
-            };
+    function loadingImg(parent) {
+        var file = parent.files[0];
+        $(parent).replaceWith('<input type="file" name="' + parent.name + '" accept="image/*">');
+        $('input[name="' + parent.name + '"]').on("change", function () {
+            loadingImg(this);
+        });
+        if (!/image\/\w+/.test(file.type)) {
+            $.toast("请确保文件为图像类型", "text");
+            return false;
         }
-    }
-    function uploadImg(file, imgId) {
+        var formData = new FormData();
+        formData.append("file", file);
         $.ajax({
             type: "POST",
             url: "http://img.520czj.com/upload/image",
-            data: {file: file},
+            data: formData,
             cache: false,
+            contentType: false,
+            processData: false,
+            beforeSend: function () {
+                //页面loading, 不能再进行其他操作，适合比如提交按钮
+                $.showLoading();
+            },
             success: function (data) {
-                $("#" + imgId).attr('src', file);
+
+                $.hideLoading();
                 console.log(data);
+                var data = JSON.parse(data);
+                if (data.flag == 1) {
+                    $("#" + parent.name).attr('src', data.data);
+                    var insurance = JSON.parse(window.localStorage.getItem("insurance"));
+                    if (insurance == null) {
+                        var insurance = {};
+                    }
+                    insurance[parent.name] = data.data;
+                    window.localStorage.setItem("insurance", JSON.stringify(insurance));
+
+                } else {
+                    $.toast(data.msg, "text");
+                }
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
-                alert("上传失败，请检查网络后重试");
+                $.hideLoading();
+                $.toast("上传失败，请检查网络后重试", "text");
             }
+
         });
     }
+
 </script>
 {% endblock %}
