@@ -696,11 +696,13 @@ class InsuranceArea(db.Model):
                             'lube': i.lube_policy,
                             'cash': i.cash_policy,
                             'score': i.score_policy,
-                            'dealer_store': i.dealer_store
+                            'dealer_store': i.dealer_store,
+                            'area_code': i.area_code
                         })
             else:
                 for r in result:
                     if r['insurance'] == i.insurance:
+                        r['area_code'] = i.area_code
                         if i.cash_policy:
                             r['cash'] = i.cash_policy
                         if i.lube_policy:

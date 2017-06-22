@@ -86,7 +86,10 @@ class StoreUpdateGradeHandler(BaseHandler):
                     result['msg'] = u'该店铺已经有返佣政策，请到该店铺详情里查看'
                 else:
                     policies = InsuranceArea.get_area_insurance(store.area_code)
+
                     for policy in policies:
+                        store.insurance_policy_code = policy['area_code']
+                        store.save()
                         SSILubePolicy.create(store=store, insurance=policy['insurance'], lube=policy['lube'],
                                              dealer_store=policy['dealer_store'], cash=policy['cash'],
                                              score = policy['score'])
