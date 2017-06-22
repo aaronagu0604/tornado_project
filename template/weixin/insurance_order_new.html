@@ -90,14 +90,21 @@
             </div>
             <div class="weui-row">
                 <div class="weui-row-50">
-                    长孙
+                    <p id="default_name">
+                        长孙
+                    </p>
                 </div>
                 <div class="weui-row-50">
-                    13289269257
+                    <p id="default_tel">
+                        13289269257
+                    </p>
+
                 </div>
             </div>
             <div class="weui-row">
-                陕西省，西安市
+                <p id="default_detailed_address">
+                    陕西省，西安市
+                </p>
             </div>
 
         </div>
@@ -132,7 +139,7 @@
                     所在地区&#8195&#8195
                 </div>
                 <div class="weui-cell__bd">
-                    <input class="weui-input" id="start" type="text" value="陕西省 西安市 碑林区" readonly>
+                    <input class="weui-input" id="address" type="text" value="陕西省 西安市 碑林区" readonly>
                 </div>
             </div>
             <div class="hr">
@@ -143,8 +150,7 @@
             <div class="weui-cells weui-cells_form">
                 <div class="weui-cell">
                     <div class="weui-cell__bd">
-                        <textarea class="weui-textarea" placeholder="请输入详细地址" rows="2"></textarea>
-
+                        <textarea class="weui-textarea" id="detailed_address" placeholder="请输入详细地址" rows="2"></textarea>
                     </div>
                 </div>
             </div>
@@ -257,18 +263,36 @@
         if (!$('#gift_policy_01').is(':checked') && !$('#gift_policy_02').is(':checked')) {
             $.toast("请选择优惠方式", "text");
         } else {
-
             var insurance = JSON.parse(window.localStorage.getItem("insurance"));
 
-            if (!$('#default_addr').is(':checked')) {
-
+            if ($('#gift_policy_01').is(':checked')) {
+                insurance.gift_policy = "1";
             } else {
+                insurance.gift_policy = "2";
+            }
+            if (!$('#default_addr').is(':checked')) {
+                var tel = $("#tel").val();
+                var re = /^1\d{10}$/;
+                if ($("#name").val() == "") {
+                    $.toast("请输入收货人姓名", "text");
+                } else if (tel == "") {
+                    $.toast("请输入收货人电话", "text");
+                } else if (!re.test(tel)) {
+                    $.toast("手机号格式错误", "text");
+                } else if ($("#detailed_address").val() == "") {
+                    $.toast("请输入详细地址", "text");
+                } else {
+                    document.location.href = "insurance_order_success";
+                }
+            } else {
+                var name = document.getElementById("default_name");
+                name.innerHTML = "小郭";
 
             }
-            document.location.href = "insurance_order_success";
+
         }
     }
-    $("#start").cityPicker({
+    $("#address").cityPicker({
         onChange: function (picker, values, displayValues) {
             console.log(values, displayValues)
         }

@@ -265,6 +265,9 @@
                 success: function (data) {
                     var insurance_list = JSON.parse(data);
                     var insurance = JSON.parse(window.localStorage.getItem("insurance"));
+                    if (insurance == null) {
+                        var insurance = {};
+                    }
                     insurance.insurance_list = insurance_list;
                     window.localStorage.setItem("insurance", JSON.stringify(insurance));
                     var displayValues = [];
