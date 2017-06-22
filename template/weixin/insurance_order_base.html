@@ -113,7 +113,7 @@
     </div>
     <div class="weui-row">
         <div class="weui-col-60">
-            <img src="../../style/wximg/id_card.png" id="id_card_back">
+            <img src="../../style/wximg/id_card.png" class="" id="id_card_back">
         </div>
 
         <div class="weui-col-40">
@@ -241,6 +241,7 @@
         $(':file').on("change", function () {
             loadingImg(this);
         });
+
     });
     $(document).on("click", "#next", function () {
 
@@ -271,7 +272,6 @@
                 }
             }
         }
-
     });
     $(document).on("click", "#switch_owner", function () {
         if ($('#switch_owner').is(':checked')) {
@@ -327,6 +327,53 @@
             }
         });
     }
+
+
+    $("img").on("click", function () {
+        if ($('#switch_owner').is(':checked')) {
+            var pb = $.photoBrowser({
+                items: [
+                    $("#id_card_front").attr("src"),
+                    $("#id_card_back").attr("src"),
+                    $("#drive_card_front").attr("src"),
+                    $("#drive_card_back").attr("src"),
+                ]
+            });
+        } else {
+            var pb = $.photoBrowser({
+                items: [
+                    $("#id_card_front").attr("src"),
+                    $("#id_card_back").attr("src"),
+                    $("#drive_card_front").attr("src"),
+                    $("#drive_card_back").attr("src"),
+                    $("#id_card_front_owner").attr("src"),
+                    $("#id_card_back_owner").attr("src"),
+                ]
+            });
+        }
+
+        switch (this.id) {
+            case "id_card_front":
+                pb.open(0);
+                break;
+            case "id_card_back":
+                pb.open(1);
+                break;
+            case "drive_card_front":
+                pb.open(2);
+                break;
+            case "drive_card_back":
+                pb.open(3);
+                break;
+            case "id_card_front_owner":
+                pb.open(4);
+                break;
+            case "id_card_back_owner":
+                pb.open(5);
+                break;
+        }
+
+    });
 
 </script>
 {% endblock %}
