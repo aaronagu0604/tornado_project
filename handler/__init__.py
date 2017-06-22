@@ -167,13 +167,13 @@ class AdminBaseHandler(BaseHandler):
 
 class WXBaseHandler(BaseHandler):
     pass
-    def prepare(self):
-        if self.get_current_user():
-            pass
-        else:
-            self.render('404.html')
-
-        super(WXBaseHandler, self).prepare()
+    # def prepare(self):
+    #     if self.get_current_user():
+    #         pass
+    #     else:
+    #         self.render('404.html')
+	#
+    #     super(WXBaseHandler, self).prepare()
 
 def require_auth(method):
     @functools.wraps(method)
