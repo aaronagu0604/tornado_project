@@ -217,89 +217,92 @@
         } else {
             $("#gift_policy_02_img").attr('src', "../../style/wximg/duihao_gray.png");
         }
-    });
-    $(document).on("click", "#write_addr", function () {
-        if ($('#write_addr').is(':checked')) {
-            $(".write-addr").show();
-            $("#default_addr_img").attr('src', "../../style/wximg/duihao_gray.png");
-            $("#write_addr_img").attr('src', "../../style/wximg/duihao_green.png");
-        } else {
-            $(".write-addr").hide();
-            $("#default_addr_img").attr('src', "../../style/wximg/duihao_green.png");
-            $("#write_addr_img").attr('src', "../../style/wximg/duihao_gray.png");
-        }
-    });
-    $(document).on("click", "#default_addr", function () {
-        if ($('#default_addr').is(':checked')) {
-            $(".write-addr").hide();
-            $("#default_addr_img").attr('src', "../../style/wximg/duihao_green.png");
-            $("#write_addr_img").attr('src', "../../style/wximg/duihao_gray.png");
-        } else {
-            $("#default_addr_img").attr('src', "../../style/wximg/duihao_gray.png");
-            $("#write_addr_img").attr('src', "../../style/wximg/duihao_green.png");
-        }
-    });
-    $(document).on("click", "#gift_policy_01", function () {
-        if ($('#gift_policy_01').is(':checked')) {
-            $("#gift_policy_01_img").attr('src', "../../style/wximg/duihao_green.png");
-            $("#gift_policy_02_img").attr('src', "../../style/wximg/duihao_gray.png");
-        } else {
-            $("#gift_policy_01_img").attr('src', "../../style/wximg/duihao_gray.png");
-            $("#gift_policy_02_img").attr('src', "../../style/wximg/duihao_green.png");
-        }
-    });
-    $(document).on("click", "#gift_policy_02", function () {
-        if ($('#gift_policy_02').is(':checked')) {
-            $("#gift_policy_02_img").attr('src', "../../style/wximg/duihao_green.png");
-            $("#gift_policy_01_img").attr('src', "../../style/wximg/duihao_gray.png");
-        } else {
-            $("#gift_policy_02_img").attr('src', "../../style/wximg/duihao_gray.png");
-            $("#gift_policy_01_img").attr('src', "../../style/wximg/duihao_green.png");
-        }
-    });
 
-    function gotoNext() {
-
-        if (!$('#gift_policy_01').is(':checked') && !$('#gift_policy_02').is(':checked')) {
-            $.toast("请选择优惠方式", "text");
-        } else {
-            var insurance = JSON.parse(window.localStorage.getItem("insurance"));
-
+        $(document).on("click", "#write_addr", function () {
+            if ($('#write_addr').is(':checked')) {
+                $(".write-addr").show();
+                $("#default_addr_img").attr('src', "../../style/wximg/duihao_gray.png");
+                $("#write_addr_img").attr('src', "../../style/wximg/duihao_green.png");
+            } else {
+                $(".write-addr").hide();
+                $("#default_addr_img").attr('src', "../../style/wximg/duihao_green.png");
+                $("#write_addr_img").attr('src', "../../style/wximg/duihao_gray.png");
+            }
+        });
+        $(document).on("click", "#default_addr", function () {
+            if ($('#default_addr').is(':checked')) {
+                $(".write-addr").hide();
+                $("#default_addr_img").attr('src', "../../style/wximg/duihao_green.png");
+                $("#write_addr_img").attr('src', "../../style/wximg/duihao_gray.png");
+            } else {
+                $("#default_addr_img").attr('src', "../../style/wximg/duihao_gray.png");
+                $("#write_addr_img").attr('src', "../../style/wximg/duihao_green.png");
+            }
+        });
+        $(document).on("click", "#gift_policy_01", function () {
             if ($('#gift_policy_01').is(':checked')) {
-                insurance.gift_policy = "1";
+                $("#gift_policy_01_img").attr('src', "../../style/wximg/duihao_green.png");
+                $("#gift_policy_02_img").attr('src', "../../style/wximg/duihao_gray.png");
             } else {
-                insurance.gift_policy = "2";
+                $("#gift_policy_01_img").attr('src', "../../style/wximg/duihao_gray.png");
+                $("#gift_policy_02_img").attr('src', "../../style/wximg/duihao_green.png");
             }
-            if (!$('#default_addr').is(':checked')) {
-                var tel = $("#tel").val();
-                var re = /^1\d{10}$/;
-                if ($("#name").val() == "") {
-                    $.toast("请输入收货人姓名", "text");
-                } else if (tel == "") {
-                    $.toast("请输入收货人电话", "text");
-                } else if (!re.test(tel)) {
-                    $.toast("手机号格式错误", "text");
-                } else if ($("#detailed_address").val() == "") {
-                    $.toast("请输入详细地址", "text");
+        });
+        $(document).on("click", "#gift_policy_02", function () {
+            if ($('#gift_policy_02').is(':checked')) {
+                $("#gift_policy_02_img").attr('src', "../../style/wximg/duihao_green.png");
+                $("#gift_policy_01_img").attr('src', "../../style/wximg/duihao_gray.png");
+            } else {
+                $("#gift_policy_02_img").attr('src', "../../style/wximg/duihao_gray.png");
+                $("#gift_policy_01_img").attr('src', "../../style/wximg/duihao_green.png");
+            }
+        });
+
+        function gotoNext() {
+
+            if (!$('#gift_policy_01').is(':checked') && !$('#gift_policy_02').is(':checked')) {
+                $.toast("请选择优惠方式", "text");
+            } else {
+                var insurance = JSON.parse(window.localStorage.getItem("insurance"));
+
+                if ($('#gift_policy_01').is(':checked')) {
+                    insurance.gift_policy = "1";
                 } else {
-                    window.localStorage.setItem("insurance", insurance);
-                    document.location.href = "insurance_order_success";
+                    insurance.gift_policy = "2";
                 }
-            } else {
-                /*  var name = document.getElementById("default_name");
-                 name.innerHTML = "小郭";*/
-                window.localStorage.setItem("insurance", insurance);
-                console.log(insurance);
-                document.location.href = "insurance_order_success";
+                if (!$('#default_addr').is(':checked')) {
+                    var tel = $("#tel").val();
+                    var re = /^1\d{10}$/;
+                    if ($("#name").val() == "") {
+                        $.toast("请输入收货人姓名", "text");
+                    } else if (tel == "") {
+                        $.toast("请输入收货人电话", "text");
+                    } else if (!re.test(tel)) {
+                        $.toast("手机号格式错误", "text");
+                    } else if ($("#detailed_address").val() == "") {
+                        $.toast("请输入详细地址", "text");
+                    } else {
+                        window.localStorage.setItem("insurance", insurance);
+                        document.location.href = "insurance_order_success";
+                    }
+                } else {
+                    /*  var name = document.getElementById("default_name");
+                     name.innerHTML = "小郭";*/
+                    window.localStorage.setItem("insurance", insurance);
+                    console.log(insurance);
+                    document.location.href = "insurance_order_success";
+
+                }
 
             }
+        }
 
-        }
-    }
-    $("#address").cityPicker({
-        onChange: function (picker, values, displayValues) {
-            console.log(values, displayValues)
-        }
+        $("#address").cityPicker({
+            onChange: function (picker, values, displayValues) {
+                console.log(values, displayValues)
+            }
+        });
     });
+
 </script>
 {% endblock %}

@@ -32,11 +32,14 @@
 {% endblock %}
 {% block js %}
 <script>
-     $(document).on("click", "#back", function () {
-          document.location.href = "/index"
+    $(document).ready(function () {
+        $(document).on("click", "#back", function () {
+            document.location.href = "/index"
+        });
+        $(document).on("click", "#check", function () {
+            document.location.href = "/insurance_order_detail"
+        });
     });
-      $(document).on("click", "#check", function () {
-          document.location.href = "/insurance_order_detail"
-    });
+
 </script>
 {% endblock %}
