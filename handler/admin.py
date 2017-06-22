@@ -2392,11 +2392,13 @@ def update_area_policy(insurance_area):
     stores = Store.select().where((Store.active == 1) & (Store.insurance_policy_code == insurance_area.area_code))
     stores = [item.id for item in stores]
     # 已经有该保险公司政策的门店，update
+    logging.info(3142 in stores)
     sss = SSILubePolicy.select().where((SSILubePolicy.insurance == insurance_area.insurance) & (SSILubePolicy.store << stores))
     has_i_stores = [item.store.id for item in sss]
+    logging.info(3142 in has_i_stores)
     if has_i_stores:
         SSILubePolicy.update(lube=insurance_area.lube_policy, cash=insurance_area.cash_policy,score=insurance_area.score_policy).\
-            where((SSILubePolicy.insurance == insurance_area.insurance) & (SSILubePolicy.store << has_i_stores)).execute()
+            where((SSILubePolicy.insurance == insurance_area.insurance.id) & (SSILubePolicy.store << has_i_stores)).execute()
     # 没有该保险公司政策的门店，create
     for s in stores:
         if s not in has_i_stores:
