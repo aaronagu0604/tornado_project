@@ -79,6 +79,7 @@ class UploadImageHandler(BaseHandler):
         if is_admin:
             self.redirect('%s/admin/upload_pic?data=%s' % (setting.domanName, result['data']))
         else:
+            self.set_header("Access-Control-Allow-Origin", "*")
             self.write(simplejson.dumps(result))
 
 
