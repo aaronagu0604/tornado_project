@@ -228,7 +228,7 @@ class LoginHandler(BaseHandler):
         redirect_uri = urllib.urlencode({'url': "http://wx.dev.520czj.com/wxapi/login"})
         response_type = "code"
         scope = "snsapi_userinfo"
-        state = store_id if store_id else '0'
+        state = store_id if store_id else '1'
         end = "#wechat_redirect"
         wx_url = wxlogin_url + "?appid=" + appid + "&redirect_uri=" + redirect_uri[4:] + \
               "&response_type=" + response_type + "&scope=" + scope + "&state=" + state + end
