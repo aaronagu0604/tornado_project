@@ -220,7 +220,7 @@ class WXApiLoginHandler(BaseHandler):
             self.render('weixin/focus_guide.html')
 
 @route(r'/login', name='wx_login')  # html 登录
-class LoginHandler(WXBaseHandler):
+class LoginHandler(BaseHandler):
     def get(self):
         store_id = self.get_argument('store_id',0)
 
