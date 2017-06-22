@@ -44,6 +44,24 @@ class Signature(BaseHandler):
             return
 
         self.write('signature error')
+    def post(self):
+        token = 'wxczjplateform'
+        signature = self.get_argument('signature')
+        timestamp = self.get_argument('timestamp')
+        nonce = self.get_argument('nonce')
+        echostr = self.get_argument('echostr')
+
+        keylist = [token, timestamp, nonce]
+        keylist.sort()
+        sha1 = hashlib.sha1()
+        map(sha1.update, keylist)
+        hashcode = sha1.hexdigest()
+
+        if hashcode == signature:
+            self.write(echostr)
+            return
+
+        self.write('signature error')
 
 @route(r'/index', name='wx_index')  # 首页
 class IndexHandler(WXBaseHandler):
