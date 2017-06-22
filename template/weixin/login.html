@@ -48,7 +48,7 @@ a {
 <script>
 function getVcode(cell) {
     var mobile = $(cell).val();
-    if (mobile == "") || (mobile.length<11) {
+    if (mobile == "" || mobile.length<11) {
         $.toast('电话号码不合法');
     }
     jQuery.post("http://api.dev.test.520czj.com/mobile/getvcode", {

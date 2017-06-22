@@ -20,7 +20,7 @@ appid = 'wxf23313db028ab4bc'
 secret = '8d75a7fa77dc0e5b2dc3c6dd551d87d6'
 
 '''
-https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf23313db028ab4bc&redirect_uri=http%3A%2F%2Fwx.dev.520czj.com%2Fwxapi%2Flogin&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect
+https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf23313db028ab4bc&redirect_uri=http%3A%2F%2Fwx.dev.520czj.com%2Fwxapi%2Flogin&response_type=code&scope=snsapi_base&state=1#wechat_redirect
 '''
 
 @route(r'/', name='wx root') # 根域名重定向
