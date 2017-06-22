@@ -13,7 +13,7 @@ import time
 import string
 import random as rand
 import traceback
-from lib.payment.wxPay import UnifiedOrder_pub
+from lib.payment.wxPay import Qrcode_pub
 import hashlib
 
 appid = 'wxf23313db028ab4bc'
@@ -143,7 +143,7 @@ class PayDetailHandler(WXBaseHandler):
         ret = self.sign(ret)
         ret['appid'] = appid
 
-        payinfo = UnifiedOrder_pub().getPrepayId(self.__create_nonce_str(), '车装甲微信测试付款', int(1 * 100))
+        payinfo = Qrcode_pub().getPayQrcode(self.__create_nonce_str(), '车装甲微信测试付款', int(1 * 100))
         self.render('weixin/pay_detail.html',ret=ret,payinfo=payinfo)
 
 @route(r'/wxapi/login', name='wx_api_login')  # html 登录
