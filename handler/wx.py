@@ -208,17 +208,9 @@ class WXApiLoginHandler(BaseHandler):
         else:
             user = self.create_user(userinfo,store_id)
 
-        token = user.token
-        if token:
-            data = self.application.memcachedb.get(token)
-            if data is None:
-                token = setting.user_token_prefix + str(uuid.uuid4())
-        else:
-            token = setting.user_token_prefix + str(uuid.uuid4())
-        if self.application.memcachedb.set(token, str(user.id), setting.user_expire):
-            user.updatesignin(token)
-            self.session['user'] = user
-            self.session.save()
+        user.updatesignin()
+        self.session['user'] = user
+        self.session.save()
 
         if userinfo['subscribe'] == 1:
             # 已经关注条个人中心
