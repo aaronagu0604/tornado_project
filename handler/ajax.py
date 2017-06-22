@@ -16,6 +16,7 @@ import logging
 import os
 import random
 from payqrcode import postRequest
+import urllib
 import urllib2
 import base64
 import traceback
@@ -2033,6 +2034,19 @@ class WeiXinMenuHandler(BaseHandler):
         self.weixin_app_id, self.weixin_secret)
         return simplejson.loads(urllib2.urlopen(self.url_access_token).read())["access_token"]
 
+    def create_url(self,url):
+        url = setting.wxdomanName + '/wxapi/login'
+        wxlogin_url = "https://open.weixin.qq.com/connect/oauth2/authorize"
+        appid = 'wxf23313db028ab4bc'
+        redirect_uri = urllib.urlencode({'url': url})
+        response_type = "code"
+        scope = "snsapi_userinfo"
+
+        state = '0,%s'%(url.replace('/','00xiegang00'))
+        end = "#wechat_redirect"
+        wx_url = wxlogin_url + "?appid=" + appid + "&redirect_uri=" + redirect_uri[4:] + \
+                 "&response_type=" + response_type + "&scope=" + scope + "&state=" + state + end
+        return wx_url
     def get(self):
         result = {'flag': 1, 'msg': ''}
         menu = '''{
@@ -2043,7 +2057,7 @@ class WeiXinMenuHandler(BaseHandler):
                     {
                        "type":"view",
                        "name":"微官网",
-                       "url":"http://wx.dev.520czj.com/index"
+                       "url": "%s"
                     }]
                  },
 
@@ -2053,7 +2067,7 @@ class WeiXinMenuHandler(BaseHandler):
                     {
                        "type":"view",
                        "name":"人保",
-                       "url":"http://wx.dev.520czj.com/insurance/1"
+                       "url":"%s"
                     }]
                  },
 
@@ -2063,10 +2077,12 @@ class WeiXinMenuHandler(BaseHandler):
                     {
                        "type":"view",
                        "name":"个人中心",
-                       "url":"http://wx.dev.520czj.com/mine"
+                       "url":"%s"
                     }]
                   }
-                ]}'''
+                ]}'''%(self.create_url('/index'),
+                       self.create_url('/insurance/13'),
+                       self.create_url('/mine'))
 
         try:
             url_menu_create = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=" + self.get_access_token()

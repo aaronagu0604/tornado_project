@@ -31,6 +31,7 @@ MQROUTINGKEY = 'czj_routing_key'
 
 imgDoman = 'http://img.520czj.com/image/'
 domanName = 'http://api.dev.test.520czj.com'
+wxdomanNmae = 'http://wx.dev.test.520czj.com'
 baseUrl = domanName + '/mobile/'
 
 presentToA = u'车主'

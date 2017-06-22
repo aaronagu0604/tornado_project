@@ -198,7 +198,10 @@ class WXApiLoginHandler(BaseHandler):
 
     def get(self):
         code = self.get_argument('code','')
-        store_id = self.get_argument('state','0')
+        state = self.get_argument('state','0')
+        parameters = state.split(',')
+        store_id = parameters[0]
+        tourl = parameters[1].replace('00xiegang00','/')
         openid,_ = self.get_access_token_from_code(code)
         access_token = self.get_access_token()
         userinfo = self.get_user_info(access_token,openid)
@@ -215,7 +218,7 @@ class WXApiLoginHandler(BaseHandler):
 
         if userinfo['subscribe'] == 1:
             # 已经关注条个人中心
-            self.redirect('/mine')
+            self.redirect(tourl)
         else:
             # 未关注太跳关注引导
             self.render('weixin/focus_guide.html')
