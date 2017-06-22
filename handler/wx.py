@@ -214,7 +214,7 @@ class WXApiLoginHandler(BaseHandler):
             user = users[0]
         else:
             if store_id=='0':
-                self.render('404.html')
+                self.render('weixin/tips.html')
                 return
             self.render('weixin/login.html',storeid=store_id,nickname=userinfo['nickname'],openid=openid,subscribe=userinfo['subscribe'])
             return
