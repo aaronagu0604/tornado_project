@@ -140,7 +140,7 @@ class PayDetailHandler(BaseHandler):
             'url': 'http://wx.dev.520czj.com/pay_detail'
         }
         ret = self.sign(ret)
-        ret['appid'] = 'wxf23313db028ab4bc'
+        ret['appid'] = appid
 
         payinfo = UnifiedOrder_pub().getPrepayId(self.__create_nonce_str(), '车装甲微信测试付款', int(1 * 100))
         self.render('weixin/pay_detail.html',ret=ret,payinfo=payinfo)
@@ -176,6 +176,9 @@ class WXApiLoginHandler(BaseHandler):
         appid, secret)
         return simplejson.loads(urllib2.urlopen(url_access_token).read())["access_token"]
 
+    def create_user(self,userinfo={}):
+        pass
+
     def get(self):
         code = self.get_argument('code','')
         state = self.get_argument('state','')
@@ -183,12 +186,23 @@ class WXApiLoginHandler(BaseHandler):
         access_token = self.get_access_token()
         userinfo = self.get_user_info(access_token,openid)
         logging.info({'url':'/wxapi/login','code':code,'openid':openid,'accesstoken':access_token,'userinfo':userinfo})
+        users = User.select().where(User.openid == openid)
+        if users.count() >= 1:
+            user = users[0]
+        else:
+            user = self.create_user(userinfo)
+
+        if user.active == 1:
+            user.updatesignin()
+            self.session[user.openid] = user
+            self.session.save()
+
         if userinfo['subscribe']==1:
             # 已经关注条个人中心
             self.redirect('/mine')
         else:
             # 未关注太跳关注引导
-            self.redirect('/insurance/1')
+            self.render('weixin/focus_guide.html')
 
 @route(r'/login', name='wx_login')  # html 登录
 class LoginHandler(BaseHandler):
