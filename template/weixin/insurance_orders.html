@@ -298,8 +298,8 @@
                     var html = OrderItemToHtml(data.data[i]);
                     $('#'+current_tab).append(html);
                 }
-                if (data.data.length < 10) {
-                    $('#'+current_tab).destroyInfinite();
+                if (data.data.length < 10 && flag == 1) {
+                    $(document.body).destroyInfinite();
                 }
             }
             loading = false;
@@ -366,7 +366,7 @@
         loadmore(0);
     });
 
-    $('#demo1').infinite().on("infinite", function () {
+    $(document.body).infinite().on("infinite", function () {
         if (loading) return;
         loading = true;
         loadmore(1);
