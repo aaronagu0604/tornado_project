@@ -75,7 +75,7 @@ class IndexHandler(WXBaseHandler):
         return simplejson.loads(response.read())['data']
 
     def get(self):
-        user = self.get_current_user()
+        user = User.get(mobile='13289269257')#self.get_current_user()
         data = self.get_api_home_data(user.token)
         logging.info(data)
         banner = data['banner']

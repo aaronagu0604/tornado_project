@@ -79,7 +79,7 @@ def send_users_base_alias(alias, body, images='', extras = {'link':''}):
 
     push.platform = jpush.all_
     push.options = {
-        "apns_production": True
+        "apns_production": False
     }
     result = push.send()
     print result.payload
