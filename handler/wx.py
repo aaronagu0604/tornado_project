@@ -96,10 +96,10 @@ class InsuranceHandler(WXBaseHandler):
         insurance = Insurance.get(id = i_id)
         self.render('weixin/insurance.html',insurance=insurance)
 
-@route(r'/insurance_order_base', name='wx_insurance_order_base')  # 保险订单上传个人信息页面
+@route(r'/insurance_order_base/(\d+)', name='wx_insurance_order_base')  # 保险订单上传个人信息页面
 class InsuranceOrderBaseHandler(WXBaseHandler):
-    def get(self):
-        self.render('weixin/insurance_order_base.html')
+    def get(self,insurance):
+        self.render('weixin/insurance_order_base.html',insurance=insurance)
 
 @route(r'/insurance_order_items', name='wx_insurance_order_items')  # html 保险下单选择保险条目页面
 class InsuranceOrderItemsHandler(WXBaseHandler):
