@@ -62,7 +62,7 @@
         </div>
         <div class="weui-cell__ft">
 
-            <input class="weui-input" id="insurance_name" type="text" >
+            <input class="weui-input" id="insurance_name" type="text">
         </div>
     </div>
     <div class="insurance_parent">
@@ -275,6 +275,7 @@
             nameValues.push(insurance_list[i].name);
             idValues.push(insurance_list[i].id);
         }
+        $("#insurance_name").setValue(nameValues._get(0));
         $("#insurance_name").picker({
             title: "选择保险公司",
             cols: [{
@@ -283,8 +284,7 @@
             }],
             onClose: function () {
 
-            },
-            setValue: nameValues._get(0)
+            }
         });
 
         if ($('#damageI').is(':checked')) {
