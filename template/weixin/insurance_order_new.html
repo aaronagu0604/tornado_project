@@ -165,13 +165,13 @@
             <p>选择优惠方式</p>
         </div>
         <div class="weui-cells weui-cells_radio">
-            <div >
+            <div class="weui-row">
                 {% for gift in rake_back %}
                 <div class="weui-col-50">
                     <label class="weui-cell weui-check__label" for="gift_policy_01">
                         <div class="weui-cell__hd">
-                            <input type="radio" name="radio2" style="display: none" id="gift_policy_01">
-                            <img src="../../style/wximg/duihao_gray.png" id="gift_policy_01_img"/>
+                            <input type="radio" name="radio2" id="gift_policy_01">
+
                         </div>
                         <div class="weui-cell__bd">
                             <p> {{gift['name']}}</p>
