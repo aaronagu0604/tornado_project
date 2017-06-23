@@ -61,7 +61,8 @@
             保险公司
         </div>
         <div class="weui-cell__ft">
-            <input class="weui-input" id="insurance_name" type="text">
+
+            <input class="weui-input" id="insurance_name" type="text" >
         </div>
     </div>
     <div class="insurance_parent">
@@ -281,8 +282,9 @@
                 values: nameValues
             }],
             onClose: function () {
-                insurance.insurance = $('#insurance_name').val();
-            }
+
+            },
+            setValue: nameValues._get(0)
         });
 
         if ($('#damageI').is(':checked')) {
@@ -392,7 +394,7 @@
                         insurance.thirdSpecialI = "1";
                     }
                 }
-                insurance.insurance = 1;
+                insurance.insurance = $('#insurance_name').val();
                 window.localStorage.setItem("insurance", JSON.stringify(insurance));
                 console.log(insurance);
                 /*    document.location.href = "insurance_order_new";*/
