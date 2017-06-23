@@ -302,7 +302,7 @@ class RegisterHandler(BaseHandler):
             self.redirect('/mine')
         else:
             # 未关注太跳关注引导
-            self.render('weixin/focus_guide.html')
+            self.redirect('https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzIyNDMyODk2NQ==&scene=124#wechat_redirect')
 
 @route(r'/mine', name='wx_mine')  # html 会员中心
 class MineHandler(WXBaseHandler):
