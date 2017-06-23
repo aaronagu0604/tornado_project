@@ -166,6 +166,7 @@
         </div>
         <div class="weui-cells weui-cells_radio">
             <div class="weui-row">
+                {% for ad in rake_back %}
                 <div class="weui-col-50">
                     <label class="weui-cell weui-check__label" for="gift_policy_01">
                         <div class="weui-cell__hd">
@@ -173,21 +174,12 @@
                             <img src="../../style/wximg/duihao_gray.png" id="gift_policy_01_img"/>
                         </div>
                         <div class="weui-cell__bd">
-                            <p> 返油</p>
+                            <p> {{ad['name']}}</p>
                         </div>
                     </label>
                 </div>
-                <div class="weui-col-50">
-                    <label class="weui-cell weui-check__label" for="gift_policy_02">
-                        <div class="weui-cell__hd">
-                            <input type="radio" name="radio2" style="display: none" id="gift_policy_02">
-                            <img src="../../style/wximg/duihao_gray.png" id="gift_policy_02_img"/>
-                        </div>
-                        <div class="weui-cell__bd">
-                            <p> 返现</p>
-                        </div>
-                    </label>
-                </div>
+                {% endfor %}
+
             </div>
         </div>
     </div>
