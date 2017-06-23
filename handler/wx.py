@@ -113,7 +113,7 @@ class InsuranceOrderItemsHandler(WXBaseHandler):
     def get(self):
         user = self.get_current_user()
         data = self.get_mobile_order_base(user.token)
-        logging.info(data)
+        logging.info(simplejson.dumps(data))
         self.render('weixin/insurance_order_items.html')
 
 @route(r'/insurance_order_new', name='wx_insurance_order_new')  # 保险下单选择地址优惠方式页面
