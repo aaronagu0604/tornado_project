@@ -87,16 +87,18 @@
                         </div>
                         <img class="mskeClaose" src="/style/images/mke_close.png" width="27" height="27" />
                     </div>
+                    <span class="hidden" style="diplay:none"><img id="example"/></span>
+
                     <div class="col-sm-6">
                         <div class="form-group has-success">
                             <label class="control-label">门店图片</label>
-                            <img class="preview" src="{{s.store_image}}" width="80" height="80" style="display:block;">
+                            <img class="preview" id="img_image" src="{{s.store_image}}" width="80" height="80" style="display:block;">
                         </div>
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group has-success">
                             <label class="control-label">营业执照</label>
-                            <img class="preview" src="{{s.license_image}}" width="80" height="80" style="display:block;">
+                            <img class="preview" id="img_license" src="{{s.license_image}}" width="80" height="80" style="display:block;">
                         </div>
                     </div>
                     <div class="col-sm-4">
