@@ -453,7 +453,7 @@ class MobileHomeHandler(MobileBaseHandler):
             else:
                 result_rec = recommends
         if not user:
-            result_rec = self.get_recommend(self.get_default_area_code(), user=False)
+            result_rec = self.get_recommend(self.get_default_area_code(),sk_brand_id, user=False)
         result['data']['category'].append({'title': u'为您推荐', 'data': result_rec})
 
         # 积分商品
