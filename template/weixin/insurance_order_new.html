@@ -66,6 +66,12 @@
         margin-bottom: 5px;
     }
 
+    .weui_czj_gift {
+        height: 30px;
+        color: #00A73B;
+        font-size: 12px;
+    }
+
 </style>
 {% endblock %}
 {% block content %}
@@ -177,7 +183,7 @@
                         </div>
                     </label>
                     <p>
-                        <a href="{{gift['link']}}"> {{gift['link_str']}}</a>
+                        <a class="weui_czj_gift" href="{{gift['link']}}"> {{gift['link_str']}}</a>
                     </p>
                 </div>
                 {% endfor %}
