@@ -77,6 +77,7 @@ class IndexHandler(WXBaseHandler):
     def get(self):
         user = self.get_current_user()
         data = self.get_api_home_data(user.token)
+        logging.info(data)
         banner = data['banner']
         insurance = []
         for item in data['category']:
