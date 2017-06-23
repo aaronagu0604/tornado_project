@@ -24,9 +24,22 @@
         color: white;
     }
 
+    .order_price_title {
+        font-size: 13px;
+        color:#999;
+    }
+
     .order_price {
         font-size: 18px;
         color: red;
+    }
+
+    .order_title {
+        padding: 12px 10px;
+    }
+
+    .order_title:after{
+        left: 10px;
     }
 
     .weui-panel__hd .weui-flex__item {
@@ -36,6 +49,8 @@
 
     .weui-panel__bd .weui-flex__item {
         color: #999;
+            font-size: 14px;
+        line-height: 24px
     }
 
     .weui-panel__ft .weui-flex__item {
@@ -112,6 +127,8 @@
         -webkit-transform: scaleY(.5);
         transform: scaleY(.5)
     }
+
+
 </style>
 {% endblock %}
 {% block content %}
@@ -145,58 +162,6 @@
                 </div>
             <div id="tab1"  class="weui-tab__bd-item weui-tab__bd-item--active" style="position: static;">
 
-                <a href="/insurance_order_detail">
-                    <div class="weui-panel">
-                        <div class="weui-panel__hd">
-                            <div class="weui-flex">
-                                <div class="weui-flex__item" style=" flex: 2;">
-                                    订单编号:U1285D068I9963
-                                </div>
-                                <div class="weui-flex__item" style="text-align: right;">
-                                    <span style="color:red;">待付款</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="weui-panel__bd" style="padding: 5px 10px;">
-                            <div class="weui-flex">
-                                <div class="weui-flex__item">
-                                    保险公司:人保车险
-                                </div>
-                                <div class="weui-flex__item" style="text-align: right;">
-                                    2017-06-08
-                                </div>
-                            </div>
-                            <div class="weui-flex">
-                                <div class="weui-flex__item">
-                                    寄送人:车装甲
-                                </div>
-                                <div class="weui-flex__item" style="text-align: right;">
-                                    13389202678
-                                </div>
-                            </div>
-                            <div class="weui-flex">
-                                <div class="weui-flex__item">
-                                    陕西省西安市新城区
-                                </div>
-                            </div>
-                        </div>
-                        <div class="weui-panel__ft2"></div>
-                        <div class="weui-panel__ft" style="padding:0 10px;">
-                            <div class="weui-flex">
-                                <div class="weui-flex__item" style=" flex: 3;">
-                                    订单金额:<span class="order_price">￥1020</span>
-                                </div>
-                                <div class="weui-flex__item" style=" flex: 5;text-align: right;">
-                                    <a href="#" class="weui-btn weui-btn_mini weui-btn_primary">
-                                        立即支付</a>
-                                    <a href="#" class="weui-btn weui-btn_mini weui-btn_warn weui-btn_code"
-                                       style="margin-top: 0;">
-                                        扫码支付</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </a>
                 <a href="/insurance_order_detail">
                     <div class="weui-panel">
                         <div class="weui-panel__hd">
@@ -318,7 +283,7 @@
     function OrderItemToHtml(data) {
         var html = '<a href="/insurance_order_detail">\
                     <div class="weui-panel">\
-                        <div class="weui-panel__hd">\
+                        <div class="weui-panel__hd order_title">\
                             <div class="weui-flex">\
                                 <div class="weui-flex__item" style=" flex: 2;">\
                                     订单编号:U1285D068I9963\
@@ -355,7 +320,7 @@
                         <div class="weui-panel__ft" style="padding:0 10px;">\
                             <div class="weui-flex">\
                                 <div class="weui-flex__item" style=" flex: 3;">\
-                                    订单金额:<span class="order_price">￥1020</span>\
+                                    <span class="order_price_title">订单金额:</span><span style="font-size: 13px; color:red;">￥</span><span class="order_price">1020</span>\
                                 </div>\
                                 <div class="weui-flex__item" style=" flex: 5;text-align: right;">\
                                     <a href="#" class="weui-btn weui-btn_mini weui-btn_primary">\
