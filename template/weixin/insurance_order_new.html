@@ -177,6 +177,9 @@
                             <p> {{gift['name']}}</p>
                         </div>
                     </label>
+                    <a href="{{gift['link']}}">
+                        {{gift['link_str"']}}
+                    </a>
                 </div>
                 {% endfor %}
 
@@ -203,16 +206,6 @@
 
         }
 
-        if ($('#gift_policy_01').is(':checked')) {
-            $("#gift_policy_01_img").attr('src', "../../style/wximg/duihao_green.png");
-        } else {
-            $("#gift_policy_01_img").attr('src', "../../style/wximg/duihao_gray.png");
-        }
-        if ($('#gift_policy_02').is(':checked')) {
-            $("#gift_policy_02_img").attr('src', "../../style/wximg/duihao_green.png");
-        } else {
-            $("#gift_policy_02_img").attr('src', "../../style/wximg/duihao_gray.png");
-        }
 
         $(document).on("click", "#write_addr", function () {
             if ($('#write_addr').is(':checked')) {
@@ -233,24 +226,6 @@
             } else {
                 $("#default_addr_img").attr('src', "../../style/wximg/duihao_gray.png");
                 $("#write_addr_img").attr('src', "../../style/wximg/duihao_green.png");
-            }
-        });
-        $(document).on("click", "#gift_policy_01", function () {
-            if ($('#gift_policy_01').is(':checked')) {
-                $("#gift_policy_01_img").attr('src', "../../style/wximg/duihao_green.png");
-                $("#gift_policy_02_img").attr('src', "../../style/wximg/duihao_gray.png");
-            } else {
-                $("#gift_policy_01_img").attr('src', "../../style/wximg/duihao_gray.png");
-                $("#gift_policy_02_img").attr('src', "../../style/wximg/duihao_green.png");
-            }
-        });
-        $(document).on("click", "#gift_policy_02", function () {
-            if ($('#gift_policy_02').is(':checked')) {
-                $("#gift_policy_02_img").attr('src', "../../style/wximg/duihao_green.png");
-                $("#gift_policy_01_img").attr('src', "../../style/wximg/duihao_gray.png");
-            } else {
-                $("#gift_policy_02_img").attr('src', "../../style/wximg/duihao_gray.png");
-                $("#gift_policy_01_img").attr('src', "../../style/wximg/duihao_green.png");
             }
         });
 
