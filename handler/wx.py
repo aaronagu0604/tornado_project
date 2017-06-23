@@ -114,11 +114,11 @@ class InsuranceOrderItemsHandler(WXBaseHandler):
         user = self.get_current_user()
         data = self.get_mobile_order_base(user.token)
         logging.info(simplejson.dumps(data))
-        insurance_message = data['insurance_message']
-        driverDutyI = data['driverDutyI']
-        passengerDutyI = data['passengerDutyI']
-        scratchI = data['scratchI']
-        thirdDutyI = data['thirdDutyI']
+        insurance_message = simplejson.dumps(data['insurance_message'])
+        driverDutyI = simplejson.dumps(data['driverDutyI'])
+        passengerDutyI = simplejson.dumps(data['passengerDutyI'])
+        scratchI = simplejson.dumps(data['scratchI'])
+        thirdDutyI = simplejson.dumps(data['thirdDutyI'])
         self.render('weixin/insurance_order_items.html',insurance_message=insurance_message,
                     driverDutyI=driverDutyI, passengerDutyI=passengerDutyI,
                     scratchI=scratchI, thirdDutyI=thirdDutyI)
