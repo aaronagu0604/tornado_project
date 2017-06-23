@@ -114,7 +114,14 @@ class InsuranceOrderItemsHandler(WXBaseHandler):
         user = self.get_current_user()
         data = self.get_mobile_order_base(user.token)
         logging.info(simplejson.dumps(data))
-        self.render('weixin/insurance_order_items.html')
+        insurance_message = data['insurance_message']
+        driverDutyI = data['driverDutyI']
+        passengerDutyI = data['passengerDutyI']
+        scratchI = data['scratchI']
+        thirdDutyI = data['thirdDutyI']
+        self.render('weixin/insurance_order_items.html',insurance_message=insurance_message,
+                    driverDutyI=driverDutyI, passengerDutyI=passengerDutyI,
+                    scratchI=scratchI, thirdDutyI=thirdDutyI)
 
 @route(r'/insurance_order_new', name='wx_insurance_order_new')  # 保险下单选择地址优惠方式页面
 class InsuranceOrderNewHandler(WXBaseHandler):

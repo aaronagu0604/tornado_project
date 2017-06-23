@@ -259,38 +259,31 @@
 <script>
     $(document).ready(function () {
         localStorage.removeItem("insurance");
-        $.ajax(
-            {
-                url: "/demo_insurance_list",
-                type: 'GET',
-                success: function (data) {
-                    var insurance_list = JSON.parse(data);
-                    var str = window.localStorage.getItem("insurance");
-                    if (str == null) {
-                        var insurance = {};
-                    } else {
-                        var insurance = JSON.parse(str);
-                    }
-                    insurance.insurance_list = insurance_list;
-                    window.localStorage.setItem("insurance", JSON.stringify(insurance));
-                    var displayValues = [];
-                    for (var i = 0; i < insurance_list.length; i++) {
-                        displayValues.push(insurance_list[i].displayValues);
-                    }
-                    $("#insurance_name").picker({
-                        title: "选择保险公司",
-                        cols: [{
-                            textAlign: 'center',
-                            values: displayValues
-                        }],
-                        onClose: function () {
-                        }
-                    });
-                },
-                error: function (data) {
-                    $.toast("网络异常", "text");
-                }
-            });
+        var insurance_list = JSON.parse({{insurance_message}});
+        var str = window.localStorage.getItem("insurance");
+        if (str == null) {
+            var insurance = {};
+        } else {
+            var insurance = JSON.parse(str);
+        }
+        insurance.insurance_list = insurance_list;
+        window.localStorage.setItem("insurance", JSON.stringify(insurance));
+        var displayValues = [];
+        var values = [];
+        for (var i = 0; i < insurance_list.length; i++) {
+            displayValues.push(insurance_list[i].name);
+            values.push(insurance_list[i].id;
+        }
+        $("#insurance_name").picker({
+            title: "选择保险公司",
+            cols: [{
+                textAlign: 'center',
+                values: values,
+                displayvalues:displayValues
+            }],
+            onClose: function () {
+            }
+        });
 
         if ($('#damageI').is(':checked')) {
             $(".insurance_main_plus").show();
@@ -405,11 +398,13 @@
                 /*    document.location.href = "insurance_order_new";*/
             }
         });
+        var third = JSON.parse({{thirdDutyI}});
+
         $("#thirdDutyI").picker({
             title: "选择保额",
             cols: [{
                 textAlign: 'center',
-                values: ['不投', '10万', '20万', '30万']
+                values: third
             }
             ],
             onClose: function () {
@@ -425,12 +420,13 @@
 
             }
         });
+        var driver = JSON.parse({{driverDutyI}});
         $("#driverDutyI").picker({
             title: "选择保额",
             cols: [{
                 textAlign: 'center',
                 values: ['0', '1', '2', '3'],
-                displayvalues: ['不投', '10万', '20万', '30万']
+                displayvalues: driver
             }
             ],
             onClose: function () {
@@ -444,11 +440,12 @@
                 }
             }
         });
+        var passenger = JSON.parse({{passengerDutyI}});
         $("#passengerDutyI").picker({
             title: "选择保额",
             cols: [{
                 textAlign: 'center',
-                values: ['不投', '10万', '20万', '30万']
+                values: passenger
             }
             ],
             onClose: function () {
@@ -461,11 +458,12 @@
                 }
             }
         });
+        var scratch = JSON.parse({{scratchI}});
         $("#scratchI").picker({
             title: "选择保额",
             cols: [{
                 textAlign: 'center',
-                values: ['不投', '10万', '20万', '30万']
+                values: scratch
             }
             ],
             onClose: function () {
