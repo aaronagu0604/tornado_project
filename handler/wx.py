@@ -67,10 +67,26 @@ class Signature(BaseHandler):
 
 @route(r'/index', name='wx_index')  # 首页
 class IndexHandler(WXBaseHandler):
+    def get_api_home_data(self,token):
+        url = "http://api.dev.test.520czj.com/mobile/home"
+        req = urllib2.Request(url)
+        req.add_header('token',token)
+        response = urllib2.urlopen(req)
+        return simplejson.loads(response.read())
+
     def get(self):
-        # insurance = Insurance.select().where(Insurance.active == 1,Insurance.hot == 1)[:3]
-        # self.render('weixin/index.html',insurance=insurance)
-        self.render('weixin/index.html')
+        user = self.get_current_user()
+        data = self.get_api_home_data(user.token)
+        banner = data['banner']
+        insurance = []
+        for item in data['category']:
+            if item['title'] == '保险业务':
+                insurance = item['data']
+        for i in insurance:
+            index = i['link'].rfind('/')
+            i['link'] = i['link'][:index].replace('czj://','/')
+
+        self.render('weixin/index.html',banner=banner, insurance=insurance)
 
 @route(r'/insurance/(\d+)', name='wx_insurance')  # 保险公司详情页面
 class InsuranceHandler(WXBaseHandler):
@@ -229,6 +245,8 @@ class WXApiLoginHandler(BaseHandler):
                 token = setting.user_token_prefix + str(uuid.uuid4())
         else:
             token = setting.user_token_prefix + str(uuid.uuid4())
+        user.token = token
+        user.save()
         self.application.memcachedb.set(token, str(user.id), setting.user_expire)
         if userinfo['subscribe'] == 1:
             # 已经关注条个人中心

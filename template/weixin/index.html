@@ -109,15 +109,11 @@
 <div class='weui-content'>
     <div class="swiper-container swiper-banner">
         <div class="swiper-wrapper">
-            <div class="swiper-slide"><a href="#"><img
-                    src="//gqianniu.alicdn.com/bao/uploaded/i4//tfscom/i1/TB1n3rZHFXXXXX9XFXXXXXXXXXX_!!0-item_pic.jpg_320x320q60.jpg"/></a>
+            {% for ad in banner %}
+            <div class="swiper-slide"><a href="#">
+                <img src="{{ad['img'}}"/></a>
             </div>
-            <div class="swiper-slide"><a href="#"><img
-                    src="//gqianniu.alicdn.com/bao/uploaded/i4//tfscom/i4/TB10rkPGVXXXXXGapXXXXXXXXXX_!!0-item_pic.jpg_320x320q60.jpg"/></a>
-            </div>
-            <div class="swiper-slide"><a href="#"><img
-                    src="//gqianniu.alicdn.com/bao/uploaded/i4//tfscom/i1/TB1kQI3HpXXXXbSXFXXXXXXXXXX_!!0-item_pic.jpg_320x320q60.jpg"/></a>
-            </div>
+            {% endfor %}
         </div>
         <div class="swiper-pagination"></div>
     </div>
@@ -138,71 +134,16 @@
     </div>
     <div class="wy-grid-insurances">
         <div class="weui-grids">
-
-            <a href="/insurance/7" class="weui-grid js_grid">
+            {% for i in insurance %}
+            <a href="{{i['link'}}" class="weui-grid js_grid">
                 <div class="weui-grid__icon logo">
-                    <img src="./../style/wximg/img_mine_head.png" alt="">
+                    <img src="{{i[''img}}" alt="">
                 </div>
                 <p class="weui-grid__label">
-                    平安车险
+                    {{i['name']}}
                 </p>
             </a>
-            <a href="#" class="weui-grid js_grid">
-                <div class="weui-grid__icon logo">
-                    <img src="./../style/wximg/img_mine_head.png" alt="">
-                </div>
-                <p class="weui-grid__label">
-                    平安车险
-                </p>
-            </a>
-            <a href="#" class="weui-grid js_grid">
-                <div class="weui-grid__icon logo">
-                    <img src="./../style/wximg/img_mine_head.png" alt="">
-                </div>
-                <p class="weui-grid__label">
-                    平安车险
-                </p>
-            </a>
-            <a href="#" class="weui-grid js_grid">
-                <div class="weui-grid__icon logo">
-                    <img src="./../style/wximg/img_mine_head.png" alt="">
-                </div>
-                <p class="weui-grid__label">
-                    平安车险
-                </p>
-            </a>
-            <a href="#" class="weui-grid js_grid">
-                <div class="weui-grid__icon logo">
-                    <img src="./../style/wximg/img_mine_head.png" alt="">
-                </div>
-                <p class="weui-grid__label">
-                    平安车险
-                </p>
-            </a>
-            <a href="#" class="weui-grid js_grid">
-                <div class="weui-grid__icon logo">
-                    <img src="./../style/wximg/img_mine_head.png" alt="">
-                </div>
-                <p class="weui-grid__label">
-                    平安车险
-                </p>
-            </a>
-            <a href="#" class="weui-grid js_grid">
-                <div class="weui-grid__icon logo">
-                    <img src="./../style/wximg/img_mine_head.png" alt="">
-                </div>
-                <p class="weui-grid__label">
-                    平安车险
-                </p>
-            </a>
-            <a href="#" class="weui-grid js_grid">
-                <div class="weui-grid__icon logo">
-                    <img src="./../style/wximg/img_mine_head.png" alt="">
-                </div>
-                <p class="weui-grid__label">
-                    平安车险
-                </p>
-            </a>
+            {% endfor %}
         </div>
 
     </div>
