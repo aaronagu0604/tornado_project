@@ -79,8 +79,8 @@ function register() {
                 var store_id = $('#store_id').val();
                 var nickname = $('#nickname').val();
                 var openid = $('#openid').val();
-
-                window.location.href = '/register?openid='+openid+'&store_id='+store_id+'&mobile='+mobile;
+                var subscribe = $('#subscribe').val();
+                window.location.href = '/register?openid='+openid+'&store_id='+store_id+'&mobile='+mobile+'&subscribe='+subscribe;
             }
             else {
                 $.toast('验证码错误');
