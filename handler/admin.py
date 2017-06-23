@@ -15,6 +15,9 @@ from tornado.web import asynchronous
 from tornado.concurrent import run_on_executor
 from concurrent.futures import ThreadPoolExecutor
 from lib.mqhelper import create_msg
+import datetime
+
+
 @route(r'/',name='admin root')
 class RootHandler(AdminBaseHandler):
     def get(self):
@@ -32,7 +35,8 @@ class IndexHandler(AdminBaseHandler):
         report['order_i'] = InsuranceOrder.select().where(InsuranceOrder.status > 0).count()
         report['order_n'] = SubOrder.select().where(SubOrder.status > 0).count()
         report['product_n'] = Product.select().where(Product.active == 1, Product.is_score == 0).count()
-        report['product_s'] = Product.select().where(Product.active == 1, Product.is_score == 1).count()
+        report['product_s'] = StoreProductPrice.select().join(ProductRelease).\
+            where(StoreProductPrice.active == 1, ProductRelease.active == 1, StoreProductPrice.score > 0).count()
         logs = AdminUserLog.select().order_by(AdminUserLog.created.desc()).limit(20)
         self.render('admin/index.html', report=report, logs=logs)
 
@@ -1527,6 +1531,23 @@ class MobileUpdateDelHandler(AdminBaseHandler):
 
 
 # -------------------------------------------------------财务对账-------------------------------------------------------
+def getDate(startDate, lastDate):
+    if not (startDate and lastDate):
+        today = datetime.datetime.today()
+        year = today.year
+        month = today.month
+        if month == 1:
+            month = 12
+            year -= 1
+        else:
+            month -= 1
+        startDate = '%s-%s-1' % (year, month)
+        lastDate = '%s-%s-1' % (today.year, today.month)
+    startTime = int(time.mktime(time.strptime(startDate, '%Y-%m-%d')))
+    lastTime = int(time.mktime(time.strptime(lastDate, '%Y-%m-%d')))
+    return (startDate, lastDate, startTime, lastTime)
+
+
 @route(r'/admin/withdraw', name='admin_withdraw')  # 提现管理列表
 class WithdrawHandler(AdminBaseHandler):
     def get(self):
@@ -1563,6 +1584,7 @@ class WithdrawHandler(AdminBaseHandler):
                     totalpage=totalpage, active='withdraw', keyword=key, begindate=begindate, enddate=enddate,
                     status=status, StoreBankAccount=StoreBankAccount)
 
+
 @route(r'/admin/export_insurance_success', name='admin_export_insurance_success')  # 导出出单明细
 class ExportInsuranceSuccessHandler(AdminBaseHandler):
     def get(self):
@@ -1597,6 +1619,7 @@ class ExportInsuranceSuccessHandler(AdminBaseHandler):
                     totalpage=totalpage, active=active, begin_date=begin_date, end_date=end_date,
                     archive=archive)
 
+
 @route(r'/admin/export_insurance_three', name='admin_export_insurance_three')  # 首三单统计
 class ExportInsuranceThreeHandler(AdminBaseHandler):
     def get(self):
@@ -1627,6 +1650,58 @@ class ExportInsuranceThreeHandler(AdminBaseHandler):
         self.render('admin/order/export_insurance_three.html', orders=orders, total=total, page=page, pagesize=pagesize,
                     totalpage=totalpage, active=active, begin_date=begin_date, end_date=end_date,
                     archive=archive,InsuranceOrder=InsuranceOrder)
+
+
+@route(r'/admin/export_referee', name='admin_referee_list')    # 推广人员统计
+class RefereeList(AdminBaseHandler):
+    '''
+    storeList = {0:{              #store_id
+        'rid': rid,
+        'amount':io.price,
+        'beforOrederNum': 1,
+        'firstOrderNum': 0,
+        'secondOrderNum': 0,
+        'thirdOrderNum': 0,
+        'totalOrderNum': 0,
+        'firstOrderID':[],
+        'secondOrderID':[],
+        'thirdOrderID':[],
+        'totalOrderID':[]
+    }}
+    refereeList = {0: {           #referee_id
+        'name': u'雷锋',
+        'amount':io.price,
+        'number': '000000',
+        'newStore': 0,
+        'firstOrderNum': 0,
+        'secondOrderNum': 0,
+        'thirdOrderNum': 0,
+        'totalOrderNum': 0,
+        'firstOrderID': [],
+        'secondOrderID': [],
+        'thirdOrderID': [],
+        'totalOrderID': []
+    }}
+
+    '''
+    def getOrderCount(self, startTime, lastTime, refereeID):
+        ios = InsuranceOrder.select().where(InsuranceOrder.status == 3, InsuranceOrder.pay_time > startTime,
+                                            InsuranceOrder.pay_time <= lastTime)
+        AdminUser.select().where(AdminUser.roles == 'S')
+        storeList = {}
+
+    def get(self):
+        startDate = self.get_argument("startDate", '')
+        lastDate = self.get_argument("lastDate", '')
+        refereeID = self.get_argument("refereeID", '')
+        if refereeID:
+            refereeID = int(refereeID)
+        startDate, lastDate, startTime, lastTime = getDate(startDate, lastDate)
+        refereeList, amount = self.getOrderCount(startTime, lastTime, refereeID)
+
+        self.render("admin/report/referee_list.html", refereeList=refereeList, active='refereeReport',
+                    amount=amount, startDate=startDate, lastDate=lastDate)
+
 
 @route(r'/admin/export_trade_list', name='admin_export_trade_list')  # 导出出单明细
 class ExportTradeListHandler(AdminBaseHandler):

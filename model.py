@@ -1019,40 +1019,6 @@ class BaoDaiBaoQuote(db.Model):
         db_table = 'tb_baodaibao_quote'
 
 
-# # 卖保险兑现规则 返现政策
-# class InsuranceScoreExchange(db.Model):
-#     id = PrimaryKeyField()
-#     area_code = CharField(max_length=12)  # 地区code
-#     insurance = ForeignKeyField(Insurance, db_column='insurance_id')  # 保险公司ID
-#     created = IntegerField()  # 创建时间
-#
-#     business_exchange_rate = FloatField(default=0.0)  # 兑换率（商业险），仅商业险
-#     business_exchange_rate2 = FloatField(default=0.0)  # 兑换率（商业险），商业险+交强险
-#     business_tax_rate = FloatField(default=0.0)  # 商业险税率
-#
-#     force_exchange_rate = FloatField(default=0.0)  # 交强险兑换率, 仅交强险
-#     force_exchange_rate2 = FloatField(default=0.0)  # 交强险兑换率, 商业险+交强险
-#     force_tax_rate = FloatField(default=0.0)  # 交强险税率
-#
-#     ali_rate = FloatField(default=0.0)  # 银联支付宝微信转账 手续费率
-#     profit_rate = FloatField(default=0.0)  # 利润率（车装甲）
-#     base_money = FloatField(default=0.0)  # 多少元起兑
-#
-#     class Meta:
-#         db_table = "tb_insurance_score_exchange"
-#
-
-# 帮助中心 返油政策
-# class LubePolicy(db.Model):
-#     id = PrimaryKeyField()
-#     area_code = CharField(max_length=12)  # 地区code
-#     insurance = ForeignKeyField(Insurance, related_name='lube_policy', db_column='insurance_id')
-#     policy = CharField(max_length=4000)  # 返油政策的json串
-#
-#     class Meta:
-#         db_table = "tb_lube_policy"
-
-
 # 店铺经销商返油返现映射表
 class SSILubePolicy(db.Model):
     id = PrimaryKeyField()

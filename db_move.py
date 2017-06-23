@@ -1981,8 +1981,18 @@ def get_hanzhong():
     fp.close()
 
 
+def move_Referee():
+    import time
+    now = int(time.time())
+    for r in Referee.select():
+        if New_AdminUser.select().where(New_AdminUser.username == r.name).count() <= 0:
+            New_AdminUser.create(username=r.name, password='e10adc3949ba59abbe56e057f20f883e', mobile='110', email='',
+                                 code=r.number, area_code='', realname=r.name, roles='Y', signuped=now,
+                                 lsignined=now, active=1)
+
+
 if __name__ == '__main__':
-    pass
+    move_Referee()
     # get_all_old_product_price()
     # get_all_new_product_price()
 
@@ -2039,7 +2049,7 @@ if __name__ == '__main__':
     # init_store_po()
     # update_store_po()
     # update_store_address()
-    # update_insurance_order()
+
 
 
 
