@@ -67,7 +67,6 @@
     }
 
     .weui_czj_gift {
-
         color: #00A73B;
         font-size: 12px;
         margin-top: 5px;
@@ -185,9 +184,9 @@
                             <p> {{gift['name']}}</p>
                         </div>
                     </label>
-
-                    <a class="weui_czj_gift" href="{{gift['link']}}"> {{gift['link_str']}}</a>
-
+                    <div>
+                        <a class="weui_czj_gift" href="{{gift['link']}}"> {{gift['link_str']}}</a>
+                    </div>
                 </div>
                 {% endfor %}
 
