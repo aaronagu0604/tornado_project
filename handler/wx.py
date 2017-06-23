@@ -125,8 +125,31 @@ class InsuranceOrderItemsHandler(WXBaseHandler):
 
 @route(r'/insurance_order_new', name='wx_insurance_order_new')  # 保险下单选择地址优惠方式页面
 class InsuranceOrderNewHandler(WXBaseHandler):
+    def get_mobile_order_base(self,token):
+        url = "http://api.dev.test.520czj.com/mobile/insuranceorderbase"
+        req = urllib2.Request(url)
+        req.add_header('token', token)
+        response = urllib2.urlopen(req)
+        return simplejson.loads(response.read())['data']
+
     def get(self):
-        self.render('weixin/insurance_order_new.html')
+        i_name = self.get_argument('i_name','')
+        user = self.get_current_user()
+        data = self.get_mobile_order_base(user.token)
+        logging.info(simplejson.dumps(data))
+        address = {}
+        address["delivery_address"]=data["delivery_address"]
+        address["delivery_city"]= data["delivery_city"]
+        address["delivery_district"]=data["delivery_district"]
+        address["delivery_province"]=data["delivery_province"]
+        address["delivery_tel"]=data["delivery_tel"]
+        address["delivery_to"]=data["delivery_to"]
+        insurance_message = data['insurance_message']
+        insurance_policy = None
+        for item in insurance_message:
+            if item['name'] == i_name:
+                insurance_policy = item['rake_back']
+        self.render('weixin/insurance_order_new.html',address=address, rake_back=insurance_policy)
 
 @route(r'/insurance_order_success', name='wx_insurance_order_success')  # html 保险下单成功提示页面
 class InsuranceOrderSuccessHandler(WXBaseHandler):
