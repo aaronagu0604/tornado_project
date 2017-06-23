@@ -3,97 +3,6 @@
 {% block css %}
 <title>订单列表</title>
 <style>
-    p {
-        font-size: 16px;
-        color: gray;
-    }
-
-    hr {
-        height: 0.3px;
-        border: none;
-        border-top: 1px solid #e7e7e7;
-        margin-top: 10px;
-    }
-
-    .weui-btn {
-        margin-left: 10px;
-    }
-
-    .weui-btn_code {
-        background-color: #FFA602;
-        color: white;
-    }
-
-    .order_price_title {
-        font-size: 13px;
-        color:#999;
-    }
-
-    .order_price {
-        font-size: 18px;
-        color: red;
-    }
-
-    .order_title {
-        padding: 12px 10px;
-    }
-
-    .order_title:after{
-        left: 10px;
-    }
-
-    .weui-panel__hd .weui-flex__item {
-        color: black;
-        font-size: 16px;
-    }
-
-    .weui-panel__bd .weui-flex__item {
-        color: #999;
-            font-size: 14px;
-        line-height: 24px
-    }
-
-    .weui-panel__ft .weui-flex__item {
-        color: black;
-    }
-
-    .weui-navbar {
-        display: -webkit-box;
-        display: -webkit-flex;
-        display: flex;
-        position: absolute;
-        z-index: 500;
-        top: 0;
-        width: 100%;
-        background-color: #fff;
-    }
-
-    .weui-navbar:after {
-        content: " ";
-        position: absolute;
-        left: 0;
-        bottom: 0;
-        right: 0;
-        height: 1px;
-        border-bottom: 0px solid #ccc;
-        color: #ccc;
-        -webkit-transform-origin: 0 100%;
-        transform-origin: 0 100%;
-        -webkit-transform: scaleY(.5);
-        transform: scaleY(.5);
-    }
-
-    .weui-navbar__item {
-        position: relative;
-        display: block;
-        -webkit-box-flex: 1;
-        -webkit-flex: 1;
-        flex: 1;
-        padding: 13px 0;
-        text-align: center;
-        font-size: 15px;
-    }
-
     .weui-navbar__item.weui-bar__item--on {
         color: #42d161;
         background-color: #fff;
@@ -101,39 +10,14 @@
     }
 
     .weui-navbar__item:after {
-        content: " ";
-        position: absolute;
-        right: 0;
-        top: 0;
-        width: 1px;
-        bottom: 0;
-        border-right: 0px solid #ccc;
-        color: #ccc;
-        -webkit-transform-origin: 100% 0;
-        transform-origin: 100% 0;
-        -webkit-transform: scaleX(.5);
-        transform: scaleX(.5);
+        border-right: 0 solid #ccc;
     }
-
-    .weui-navbar__item:active {
-    }
-
-    .weui-panel__ft2 {
-        margin-left: 10px;
-        height: 10px;
-        border-top: 1px solid #e5e5e5;
-        -webkit-transform-origin: 0 100%;
-        transform-origin: 0 100%;
-        -webkit-transform: scaleY(.5);
-        transform: scaleY(.5)
-    }
-
 
 </style>
 {% endblock %}
 {% block content %}
-<div class="weui-tab">
-    <div class="weui-navbar" style="position:fixed;">
+<div class="weui-tab czj_wx_body">
+    <div class="weui-navbar order-list-tab-bar">
         <a type="1" class="weui-navbar__item weui-bar__item--on" href="#tab1">
             全部
         </a>
@@ -150,17 +34,16 @@
             已完成
         </a>
     </div>
-    <div class="weui-tab__bd" style="background-color: #f5f5f5;">
-
-        <div id="demo1">
+    <div class="weui-tab__bd">
+        <div id="loadMoreContainer">
             <div class="weui-pull-to-refresh__layer">
-                    <div class="weui-pull-to-refresh__arrow"></div>
-                    <div class="weui-pull-to-refresh__preloader"></div>
-                    <div class="down">下拉刷新</div>
-                    <div class="up">释放刷新</div>
-                    <div class="refresh">正在刷新</div>
-                </div>
-            <div id="tab1"  class="weui-tab__bd-item weui-tab__bd-item--active">
+                <div class="weui-pull-to-refresh__arrow"></div>
+                <div class="weui-pull-to-refresh__preloader"></div>
+                <div class="down">下拉刷新</div>
+                <div class="up">释放刷新</div>
+                <div class="refresh">正在刷新</div>
+            </div>
+            <div id="tab1" class="weui-tab__bd-item weui-tab__bd-item--active">
             </div>
             <div id="tab2" class="weui-tab__bd-item">
                 <h1>页面二</h1>
@@ -192,8 +75,8 @@
         var current_tab = 'tab' + type;
 
         var offset = 0;
-        if(flag==1) {
-            offset = $('#'+current_tab + ' a').length;
+        if (flag == 1) {
+            offset = $('#' + current_tab + ' a').length;
         }
 
         jQuery.getJSON("/income_record_list", {
@@ -201,20 +84,20 @@
             'type': type
         }, function (data) {
             console.log(data);
-            if(data.flag == 1) {
-                if(flag == 0) {
-                    $('#'+current_tab).html('');
-                    $('#demo1').pullToRefreshDone();
+            if (data.flag == 1) {
+                if (flag == 0) {
+                    $('#' + current_tab).html('');
+                    $('#loadMoreContainer').pullToRefreshDone();
                 }
                 for (var i = 0; i < data.data.length; i++) {
                     var html = OrderItemToHtml(data.data[i]);
-                    $('#'+current_tab).append(html);
+                    $('#' + current_tab).append(html);
                 }
                 if (data.data.length < 10) {
                     $(".weui-loadmore").hide();
                     $(document.body).destroyInfinite();
                 }
-                if (data.data.length>=10 && flag ==0){
+                if (data.data.length >= 10 && flag == 0) {
                     $(document.body).destroyInfinite();
                     $(document.body).infinite().on("infinite", function () {
                         if (loading) return;
@@ -232,39 +115,39 @@
                     <div class="weui-panel">\
                         <div class="weui-panel__hd order_title">\
                             <div class="weui-flex">\
-                                <div class="weui-flex__item" style=" flex: 2;">\
+                                <div class="weui-flex__item order-num">\
                                     订单编号:U1285D068I9963\
                                 </div>\
-                                <div class="weui-flex__item" style="text-align: right;">\
-                                    <span style="color:red;">待付款</span>\
+                                <div class="weui-flex__item order-status">\
+                                    <span>待付款</span>\
                                 </div>\
                             </div>\
                         </div>\
-                        <div class="weui-panel__bd" style="padding: 5px 10px;">\
+                        <div class="weui-panel__bd order-bd">\
                             <div class="weui-flex">\
-                                <div class="weui-flex__item">\
+                                <div class="weui-flex__item left">\
                                     保险公司:人保车险\
                                 </div>\
-                                <div class="weui-flex__item" style="text-align: right;">\
+                                <div class="weui-flex__item right">\
                                     2017-06-08\
                                 </div>\
                             </div>\
                             <div class="weui-flex">\
-                                <div class="weui-flex__item">\
+                                <div class="weui-flex__item left">\
                                     寄送人:车装甲\
                                 </div>\
-                                <div class="weui-flex__item" style="text-align: right;">\
+                                <div class="weui-flex__item right" >\
                                     13389202678\
                                 </div>\
                             </div>\
                             <div class="weui-flex">\
-                                <div class="weui-flex__item">\
-                                    陕西省西安市新城区\
+                                <div class="weui-flex__item left">\
+                                    陕西省西安市新城区陕西省西安市新城区陕西省西安市新城区陕西省西安市新城区陕西省西安市新城区\
                                 </div>\
                             </div>\
                         </div>\
-                        <div class="weui-panel__ft2"></div>\
-                        <div class="weui-panel__ft" style="padding:0 10px;">\
+                        <div class="order-split-line"></div>\
+                        <div class="weui-panel__ft order-ft">\
                             <div class="weui-flex">\
                                 <div class="weui-flex__item" style=" flex: 3;">\
                                     <span class="order_price_title">订单金额:</span><span style="font-size: 13px; color:red;">￥</span><span class="order_price">1020</span>\
@@ -272,7 +155,7 @@
                                 <div class="weui-flex__item" style=" flex: 5;text-align: right;">\
                                     <a href="#" class="weui-btn weui-btn_mini weui-btn_primary">\
                                         立即支付</a>\
-                                    <a href="#" class="weui-btn weui-btn_mini weui-btn_warn weui-btn_code"\
+                                    <a href="#" class="weui-btn weui-btn_mini czj-btn-yellow"\
                                        style="margin-top: 0;">\
                                         扫码支付</a>\
                                 </div>\
@@ -283,7 +166,7 @@
         return html;
     }
 
-    $('#demo1').pullToRefresh().on("pull-to-refresh", function () {
+    $('#loadMoreContainer').pullToRefresh().on("pull-to-refresh", function () {
         loadmore(0);
     });
 

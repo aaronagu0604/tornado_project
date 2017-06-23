@@ -1,0 +1,422 @@
+.czj_wx_body {
+    background: #f5f5f5;
+    overflow-x: hidden;
+}
+
+.swiper-container {
+    width: 100%;
+    height: 10rem;
+}
+
+.swiper-container img {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.notify-title {
+    margin: 0;
+    padding: 0;
+    background-color: #fff;
+}
+
+.notify_no_padding {
+    padding: 0;
+}
+
+.notify-cell {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+}
+
+.notify_no_padding:after {
+    left: 0;
+}
+
+.notify_center-list-icon {
+    width: 20px;
+    height: auto;
+}
+
+.notify-txt {
+    color: #999;
+}
+
+.notify-wy {
+    padding: 8px 15px 8px 4px;
+}
+
+.wy-Module {
+    margin: 0;
+    position: relative;
+}
+
+.wy-Module-tit {
+    padding: 8px 10px;
+    line-height: 18px;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.wy-Module-tit span {
+    font-size: 12px;
+    font-weight: bold;
+    color: #333;
+    padding-left: 5px;
+    line-height: 18px;
+}
+
+.wy-Module-tit span:after {
+    position: absolute;
+    left: 0;
+    top: 9px;
+    height: 16px;
+    width: 3px;
+    background: #e21323;
+    content: "";
+}
+
+.czj-grid-insurances {
+    margin: 35px 0 0 0;
+    padding: 0;
+    background-color: #fff;
+}
+
+.czj-grid-insurances a {
+    padding: 10px;
+}
+
+.czj-grid-insurances img {
+    width: auto;
+    display: inline;
+}
+
+.czj-grid-insurances .logo {
+    width: 100%;
+    height: 60px;
+    text-align: center;
+}
+
+.czj-new-insurance-btn {
+    background-color: #df8a13;
+    border-radius: 30px;
+}
+
+.mine-center-top {
+    width: 100%;
+    overflow: hidden;
+    background: url(../../style/wximg/zhanghubeijing.jpg) no-repeat;
+    background-size: cover;
+}
+
+.mine-user-name {
+    color: #fff;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.mine-user-grade {
+    color: #FC0;
+    margin: 2px 0;
+    font-size: 13px;
+}
+
+.mine-panel {
+    padding: 10px 15px 10px 10px;
+}
+
+.mine-panel:after {
+    left: 10px;
+}
+
+.center-ordersModule {
+    text-align: center;
+    display: block;
+    padding: 10px 0;
+    position: relative;
+}
+
+.center-ordersModule .imgicon {
+    display: inline-block;
+    height: 24px;
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+.center-ordersModule .imgicon img {
+    height: 24px;
+    width: auto;
+}
+
+.center-ordersModule .name {
+    font-size: 12px;
+    color: #333;
+}
+
+.center-alloder {
+    padding: 0;
+    font-size: 14px;
+    color: #333;
+}
+
+.wy-cell {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+}
+
+.center-list-icon {
+    width: 20px;
+    height: auto;
+}
+
+.center-list-txt {
+    font-size: 14px;
+    color: #333;
+    line-height: 20px;
+}
+
+.order-list-tab-bar {
+    background-color: #fff;
+    position: fixed;
+}
+
+.order_title {
+    padding: 12px 10px;
+}
+
+.order_title:after {
+    left: 10px;
+}
+
+.order_title .order-num {
+    flex: 2;
+    color: black;
+    font-size: 16px;
+}
+
+.order_title .order-status {
+    text-align: right;
+}
+
+.order_title .order-status span {
+    color: red;
+}
+
+.order-bd {
+    padding: 5px 10px;
+}
+
+.order-bd .left {
+    color: #999;
+    font-size: 14px;
+    line-height: 24px;
+}
+
+.order-bd .right {
+    color: #999;
+    font-size: 14px;
+    line-height: 24px;
+    text-align: right;
+}
+
+.order_price_title {
+    font-size: 13px;
+    color: #999;
+}
+
+.order_price {
+    font-size: 18px;
+    color: red;
+}
+
+.order-split-line {
+    margin-left: 10px;
+    height: 10px;
+    border-top: 1px solid #e5e5e5;
+    -webkit-transform-origin: 0 100%;
+    transform-origin: 0 100%;
+    -webkit-transform: scaleY(.5);
+    transform: scaleY(.5)
+}
+
+.order-ft {
+    padding: 0 10px;
+}
+
+.czj-btn-yellow {
+    background-color: #FFA602;
+    color: white;
+}
+
+.order-detail-title {
+    margin: 0;
+    padding: 10px 15px;
+    background-color: #fff;
+}
+
+.order-detail-block {
+
+}
+
+.order-detail-block .line {
+
+}
+
+.order-detail-block .line .left {
+    color: black;
+    font-size: 15px;
+}
+
+.order-detail-block .line .right {
+    font-size: 15px;
+}
+
+.order-price {
+    color: #00A73B;
+    text-align: right;
+}
+
+.order-detail-content {
+    background-color: #f5f6f7;
+    padding: 0 15px 10px 15px;
+    font-size: 15px;
+}
+
+.order-detail-content .header {
+    padding-top: 10px;
+}
+
+.order-detail-content .header .left {
+    color: black;
+}
+
+.order-detail-content .header .right {
+    text-align: right;
+}
+
+.order-detail-content .body {
+    line-height: 20px;
+    color: #999;
+}
+
+.order_remind {
+    background-color: #f39b00;
+    text-align: center;
+    color: white;
+    font-size: 13px;
+    line-height: 25px;
+}
+
+.upload_btn {
+    background-image: url("../../style/wximg/btn_photo_upload.png");
+    background-size: 25px 25px;
+    background-repeat: no-repeat;
+    width: 25px;
+    position: absolute;
+    height: 25px;
+    right: 20px;
+    top: 1px;
+}
+
+.upload_btn input {
+    opacity: 0;
+}
+
+.wy-insurance-img-block {
+    text-align: center;
+    background-color: #fff;
+    padding: 5px 0 10px 0;
+}
+
+.wy-insurance-img-block img {
+    height: 100px;
+    width: auto;
+    border: 0; vertical-align: middle;
+}
+
+.wy-insurance-img-block p {
+    padding: 0;
+    margin: 0;
+    font-size: 13px;
+    line-height: 17px;
+}
+
+.wy-insurance-img-block .display_block {
+    position: relative;
+    width: 100%;
+}
+
+.wy-insurance-img-block .display_block .btn_2 {
+    width: 25px;
+    position: absolute;
+    height: 25px;
+    right: 20px;
+    top: 4px;
+}
+
+.wy-insurance-img-block .display_block .single_line {
+    padding: 0;
+    margin: 0;
+    font-size: 13px;
+    line-height: 25px;
+}
+
+.address-block {
+        margin-top: 5px;
+    padding:0 10px;
+    background-color: #fff;
+    margin-bottom: 60px;
+    }
+.address-block .icon-left {
+    width:20px;    margin-right: 0;
+}
+    .address-txt {
+        font-size: 13px;
+        color: #999;
+        line-height: 18px;
+    }
+
+    .address-name {
+        font-size: 16px;
+        padding-bottom: 4px;
+        color: #111;
+
+    }
+
+    .address-name span {
+        margin-right: 10px;
+    }
+
+    .promotion-label-tit img {
+        width: 80%;
+        border: 0;
+        vertical-align: middle;
+    }
+
+    .order-pay-bottom {
+        text-align: center;
+    background-color: #fff;
+        height: 55px;
+        position: fixed;
+        bottom:0;
+        width:100%;
+    }
+
+    .order-pay-bottom:before {
+    content: " ";
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    height: 1px;
+    border-top: 1px solid #e5e5e5;
+    color: #e5e5e5;
+    -webkit-transform-origin: 0 0;
+    transform-origin: 0 0;
+    -webkit-transform: scaleY(.5);
+    transform: scaleY(.5);
+    left: 0px;
+    }

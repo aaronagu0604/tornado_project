@@ -2,73 +2,23 @@
 {% block css %}
 <title>我的界面</title>
 <style>
-    .weui-content {
-    background: #f5f5f5;
-}
-    .user-name {
-    color: #fff;
-    font-weight: 600;
-    font-size: 16px;
-}
-    .user-grade {
-    color: #FC0;
-    margin: 2px 0;
-    font-size: 13px;
-}
-.wy-center-top {
-    width:100%;
-    overflow:hidden;
-    background:url(../../style/wximg/zhanghubeijing.jpg) no-repeat;
-    background-size:cover;
-}
 
-.center-alloder {
-    padding: 0;
-    font-size: 14px;
-    color: #333;
-}
-.wy-cell {
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: flex;
-}
-.center-list-icon {
-    width: 20px;
-    height: auto;
-}
-.center-list-txt {
-    font-size: 14px;
-    color: #333;
-    line-height: 20px;
-}
-
-.weui-panel__hd {
-    padding: 10px 15px 10px 10px;
-}
-.weui-panel__hd:after {
-    left: 10px;
-}
-
-.center-ordersModule{text-align:center; display:block; padding:10px 0; position:relative;}
-.center-ordersModule .imgicon{display:inline-block; height:24px; text-align:center; margin-bottom:5px;}
-.center-ordersModule .imgicon img{height:24px; width:auto;}
-.center-ordersModule .name{font-size:12px; color:#333;}
 </style>
 {% endblock %}
 {% block content %}
-<div class='weui-content'>
-    <div class="wy-center-top">
+<div class='weui-content czj_wx_body'>
+    <div class="mine-center-top">
     <div class="weui-media-box weui-media-box_appmsg">
       <div class="weui-media-box__hd"><img class="weui-media-box__thumb radius" src="./../style/wximg/img_mine_head.png" alt=""></div>
       <div class="weui-media-box__bd">
-        <h4 class="weui-media-box__title user-name">132****9257</h4>
-        <p class="user-grade">门店：西安金倍利嘉</p>
+        <h4 class="weui-media-box__title mine-user-name">132****9257</h4>
+        <p class="mine-user-grade">门店：西安金倍利嘉</p>
       </div>
     </div>
   </div>
 
 <div class="weui-panel weui-panel_access">
-    <div class="weui-panel__hd">
+    <div class="weui-panel__hd mine-panel">
       <a href="/insurance_orders" class="weui-cell weui-cell_access center-alloder">
         <div class="weui-cell__bd wy-cell">
           <div class="weui-cell__hd"><img src="./../style/wximg/category.png" alt="" class="center-list-icon"></div>
@@ -127,13 +77,6 @@
                 </div>
                 <span class="weui-cell__ft"></span>
               </a>
-             <!-- <a class="weui-cell weui-cell_access" href="">
-                <div class="weui-cell__hd"><img src="./../style/wximg/mine.png" alt="" class="center-list-icon"></div>
-                <div class="weui-cell__bd weui-cell_primary">
-                  <p class="center-list-txt">修改密码</p>
-                </div>
-                <span class="weui-cell__ft"></span>
-              </a>-->
               <a class="weui-cell weui-cell_access" href="">
                 <div class="weui-cell__hd"><img src="./../style/wximg/mine.png" alt="" class="center-list-icon"></div>
                 <div class="weui-cell__bd weui-cell_primary">
