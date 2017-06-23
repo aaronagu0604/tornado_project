@@ -9,6 +9,7 @@ from lib.mixin import FlashMessagesMixin
 import logging
 import functools
 import setting
+import uuid
 
 
 
