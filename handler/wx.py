@@ -72,7 +72,7 @@ class IndexHandler(WXBaseHandler):
         req = urllib2.Request(url)
         req.add_header('token',token)
         response = urllib2.urlopen(req)
-        return simplejson.loads(response.read())
+        return simplejson.loads(response.read())['data']
 
     def get(self):
         user = self.get_current_user()
