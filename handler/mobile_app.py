@@ -542,7 +542,7 @@ class MobileHomeHandler(MobileBaseHandler):
 
     def get_recommend(self, area_code, brand_id=''):
         items = []
-        ft = (StoreProductPrice.price > 0) & (StoreProductPrice.active == 1)
+        ft = (StoreProductPrice.price > 0) & (StoreProductPrice.active == 1) & (ProductRelease.active == 1) & (Product.active == 1)
         if isinstance(area_code, list):
             ft &= (StoreProductPrice.area_code << area_code)
         else:
