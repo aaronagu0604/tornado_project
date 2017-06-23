@@ -225,6 +225,7 @@ class StoreDetailHandler(AdminBaseHandler):
         district = self.get_argument('district', '')
         address = self.get_argument('address', '')
         active = int(self.get_argument('active', 0))
+        store_type = int(self.get_argument('store_type', 1))
         process_insurance = int(self.get_argument('process_insurance', 0))
 
         legal_person = self.get_argument('legal_person', '')
@@ -249,6 +250,7 @@ class StoreDetailHandler(AdminBaseHandler):
         store.license_code = license_code
         store.linkman = linkman
         store.mobile = mobile
+        store.store_type = store_type
         store.insurance_policy_code = insurance_policy_code
         store.save()
         AdminUserLog.create(admin_user=self.get_admin_user(), created=int(time.time()),

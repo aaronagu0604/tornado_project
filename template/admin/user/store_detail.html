@@ -61,6 +61,15 @@
                         <input style="margin-top:10px;" type="text" name="address" class="form-control" value="{{s.address or ''}}" required  placeholder="经销商地址" />
                     </div>
                     <div class="form-group has-success">
+                        <label class="control-label">门店角色</label>
+                        <label class="checkbox-inline">
+                            <input type="radio" name="store_type" value="1" {{ 'checked' if s.store_type ==1 else ''}}> 经销商
+                        </label>
+                        <label class="checkbox-inline">
+                            <input type="radio" name="store_type" value="2" {{ 'checked' if s.store_type ==2 else ''}}> 修理厂
+                        </label>
+                    </div>
+                    <div class="form-group has-success">
                         <label class="control-label">审核状态</label>
                         <label class="checkbox-inline">
                             <input type="radio" name="active" value="1" {{ 'checked' if s.active ==1 else ''}}> 通过

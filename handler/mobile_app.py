@@ -414,15 +414,42 @@ class MobileHomeHandler(MobileBaseHandler):
                 } for id, logo, name, cid in all]
                 self.application.memcachedb.set('brands_no_login', brands)
             result['data']['category'].append({'title': u'热销品牌', 'data': brands[:4]})
+
         # 推荐商品
-        # tmp_code = area_code
-        # recommends = self.get_recommend(tmp_code)
-        # while len(recommends) == 0 and len(tmp_code) > 4:
-        #     tmp_code = tmp_code[0: -4]
-        #     recommends = self.get_recommend(tmp_code)
-        # if len(recommends) == 0:
-        #     recommends = self.get_recommend(self.get_default_area_code())
-        result['data']['category'].append({'title': u'为您推荐', 'data': []})
+        result_rec = []
+        tmp_code = area_code
+        sk_brand_id = Brand.get(name='SK').id
+        recommends = self.get_recommend(tmp_code, sk_brand_id)    # SK的品牌ID 15
+        while len(recommends) == 0 and len(tmp_code) > 4:
+            tmp_code = tmp_code[0: -4]
+            recommends += self.get_recommend(tmp_code, sk_brand_id)
+        if recommends:
+            result_rec = recommends
+            recommends = []
+        jsd_brand_id = Brand.get(name='嘉实多').id
+        recommends = self.get_recommend(tmp_code, jsd_brand_id)    # 嘉实多的品牌ID 12
+        while len(recommends) == 0 and len(tmp_code) > 4:
+            tmp_code = tmp_code[0: -4]
+            recommends += self.get_recommend(tmp_code, jsd_brand_id)
+        if recommends:
+            if result_rec:
+                result_rec = result_rec[:10] + recommends[:20]
+            else:
+                result_rec = recommends
+            recommends = []
+        dde_brand_id = Brand.get(name='道达尔').id
+        recommends = self.get_recommend(tmp_code, dde_brand_id)    # 道达尔的品牌ID 13
+        while len(recommends) == 0 and len(tmp_code) > 4:
+            tmp_code = tmp_code[0: -4]
+            recommends += self.get_recommend(tmp_code, dde_brand_id)
+        if recommends:
+            if result_rec:
+                result_rec = result_rec[:20] + recommends[:10]
+            else:
+                result_rec = recommends
+        if not area_code:
+            result_rec = self.get_recommend(self.get_default_area_code())
+        result['data']['category'].append({'title': u'为您推荐', 'data': result_rec})
 
         # 积分商品
         tmp_code = area_code
@@ -435,7 +462,6 @@ class MobileHomeHandler(MobileBaseHandler):
         result['data']['category'].append({'title': u'积分兑换', 'data': score_product})
 
         result['flag'] = 1
-
         self.write(simplejson.dumps(result))
         self.finish()
 
@@ -509,23 +535,26 @@ class MobileHomeHandler(MobileBaseHandler):
 
         return items[:4]
 
-    def get_recommend(self, area_code):
+    def get_recommend(self, area_code, brand_id=''):
         items = []
         if isinstance(area_code, list):
-            ft = StoreProductPrice.area_code << area_code
+            ft = (StoreProductPrice.area_code << area_code)
         else:
-            ft = StoreProductPrice.area_code == area_code
-        spps = Product.select(Product.id.alias('id'),
+            ft = (StoreProductPrice.area_code == area_code)
+        if brand_id:
+            ft &= (Product.brand == brand_id)
+        spps = Product.select(StoreProductPrice.id.alias('id'),
                               Product.name.alias('name'),
                               Product.cover.alias('cover'),
                               StoreProductPrice.price.alias('price'),
                               StoreProductPrice.score.alias('score'),
-                              Store.name.alias('sname')). \
+                              Store.name.alias('sname'),
+                              Product.brand.alias('brand')). \
             join(ProductRelease, on=(ProductRelease.product == Product.id)). \
             join(Store, on=(Store.id == ProductRelease.store)). \
             join(StoreProductPrice, on=(StoreProductPrice.product_release == ProductRelease.id)). \
-            where(ft).tuples()
-        for id, name, cover, price, score, sname in spps:
+            where(ft).limit(30).tuples()
+        for id, name, cover, price, score, sname, brand in spps:
             items.append({
                 'img': cover,
                 'name': name,
@@ -534,9 +563,10 @@ class MobileHomeHandler(MobileBaseHandler):
                 'score': score,
                 'link': 'czj://product/%d' % id,
                 'is_score': 0,
-                'storeName': sname
+                'storeName': sname,
+                'brand': brand
             })
-        return items[:6]
+        return items
 
     def get_score_product(self, area_code):
         items = []
