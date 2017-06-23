@@ -101,11 +101,6 @@ class InsuranceHandler(WXBaseHandler):
     def get(self,id):
         self.render('weixin/activer.html')
 
-@route(r'/category', name='wx_category')  # 分类页面
-class CategoryHandler(WXBaseHandler):
-    def get(self):
-        self.render('weixin/category.html')
-
 @route(r'/insurance_order_base', name='wx_insurance_order_base')  # 保险订单上传个人信息页面
 class InsuranceOrderBaseHandler(WXBaseHandler):
     def get(self):
