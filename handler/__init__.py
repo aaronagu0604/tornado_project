@@ -166,7 +166,8 @@ class AdminBaseHandler(BaseHandler):
         return False
 
 class WXBaseHandler(BaseHandler):
-    pass
+    def get_current_user(self):
+        return User.get(mobile='13289269257')
     # def prepare(self):
     #     if self.get_current_user():
     #         pass

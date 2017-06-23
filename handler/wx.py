@@ -67,7 +67,7 @@ class Signature(BaseHandler):
 
 @route(r'/index', name='wx_index')  # 首页
 class IndexHandler(WXBaseHandler):
-    def get_api_home_data(self,token):
+    def get_mobile_home_data(self,token):
         url = "http://api.dev.test.520czj.com/mobile/home"
         req = urllib2.Request(url)
         req.add_header('token',token)
@@ -75,8 +75,8 @@ class IndexHandler(WXBaseHandler):
         return simplejson.loads(response.read())['data']
 
     def get(self):
-        user = User.get(mobile='13289269257')#self.get_current_user()
-        data = self.get_api_home_data(user.token)
+        user = self.get_current_user()
+        data = self.get_mobile_home_data(user.token)
         logging.info(data)
         banner = data['banner']
         insurance = []
@@ -103,7 +103,17 @@ class InsuranceOrderBaseHandler(WXBaseHandler):
 
 @route(r'/insurance_order_items', name='wx_insurance_order_items')  # html 保险下单选择保险条目页面
 class InsuranceOrderItemsHandler(WXBaseHandler):
+    def get_mobile_order_base(self,token):
+        url = "http://api.dev.test.520czj.com/mobile/insuranceorderbase"
+        req = urllib2.Request(url)
+        req.add_header('token', token)
+        response = urllib2.urlopen(req)
+        return simplejson.loads(response.read())['data']
+
     def get(self):
+        user = self.get_current_user()
+        data = self.get_mobile_order_base(user.token)
+        logging.info(data)
         self.render('weixin/insurance_order_items.html')
 
 @route(r'/insurance_order_new', name='wx_insurance_order_new')  # 保险下单选择地址优惠方式页面
