@@ -418,6 +418,7 @@ class MobileHomeHandler(MobileBaseHandler):
         # 推荐商品
         result_rec = []
         tmp_code = area_code
+        # SK
         sk_brand_id = Brand.get(name='SK').id
         recommends = self.get_recommend(tmp_code, sk_brand_id)    # SK的品牌ID 15
         while len(recommends) == 0 and len(tmp_code) > 4:
@@ -426,6 +427,8 @@ class MobileHomeHandler(MobileBaseHandler):
         if recommends:
             result_rec = recommends
             recommends = []
+        # 嘉实多
+        tmp_code = area_code
         jsd_brand_id = Brand.get(name='嘉实多').id
         recommends = self.get_recommend(tmp_code, jsd_brand_id)    # 嘉实多的品牌ID 12
         while len(recommends) == 0 and len(tmp_code) > 4:
@@ -437,6 +440,8 @@ class MobileHomeHandler(MobileBaseHandler):
             else:
                 result_rec = recommends
             recommends = []
+        # 道达尔
+        tmp_code = area_code
         dde_brand_id = Brand.get(name='道达尔').id
         recommends = self.get_recommend(tmp_code, dde_brand_id)    # 道达尔的品牌ID 13
         while len(recommends) == 0 and len(tmp_code) > 4:
@@ -537,10 +542,11 @@ class MobileHomeHandler(MobileBaseHandler):
 
     def get_recommend(self, area_code, brand_id=''):
         items = []
+        ft = (StoreProductPrice.price > 0) & (StoreProductPrice.active == 1)
         if isinstance(area_code, list):
-            ft = (StoreProductPrice.area_code << area_code)
+            ft &= (StoreProductPrice.area_code << area_code)
         else:
-            ft = (StoreProductPrice.area_code == area_code)
+            ft &= (StoreProductPrice.area_code == area_code)
         if brand_id:
             ft &= (Product.brand == brand_id)
         spps = Product.select(StoreProductPrice.id.alias('id'),
