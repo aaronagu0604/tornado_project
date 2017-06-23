@@ -259,7 +259,7 @@
 <script>
     $(document).ready(function () {
         localStorage.removeItem("insurance");
-        var insurance_list = JSON.parse({{insurance_message}});
+        var insurance_list = JSON.parse('{{insurance_message}}');
         var str = window.localStorage.getItem("insurance");
         if (str == null) {
             var insurance = {};
