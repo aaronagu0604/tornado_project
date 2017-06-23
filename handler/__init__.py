@@ -8,6 +8,7 @@ from lib.session import Session
 from lib.mixin import FlashMessagesMixin
 import logging
 import functools
+import setting
 
 
 
@@ -167,7 +168,18 @@ class AdminBaseHandler(BaseHandler):
 
 class WXBaseHandler(BaseHandler):
     def get_current_user(self):
-        return User.get(mobile='13289269257')
+        user = User.get(mobile='13289269257')
+        token = user.token
+        if token:
+            data = self.application.memcachedb.get(token)
+            if data is None:
+                token = setting.user_token_prefix + str(uuid.uuid4())
+        else:
+            token = setting.user_token_prefix + str(uuid.uuid4())
+        user.token = token
+        user.save()
+        self.application.memcachedb.set(token, str(user.id), setting.user_expire)
+        return user
     # def prepare(self):
     #     if self.get_current_user():
     #         pass
