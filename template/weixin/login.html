@@ -76,11 +76,11 @@ function register() {
         },function(data) {
             var obj = JSON.parse(data);
             if (obj.flag == 1 ) {
-                var storeid = $('#storeid').val();
+                var store_id = $('#store_id').val();
                 var nickname = $('#nickname').val();
                 var openid = $('#openid').val();
 
-                window.location.href = '/register?openid='+openid+'&store_id='+storeid+'&mobile='+mobile;
+                window.location.href = '/register?openid='+openid+'&store_id='+store_id+'&mobile='+mobile;
             }
             else {
                 $.toast('验证码错误');
