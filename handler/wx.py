@@ -234,7 +234,10 @@ class WXApiLoginHandler(BaseHandler):
             if store_id=='0':
                 self.render('weixin/tips.html')
                 return
-            self.render('weixin/login.html',storeid=store_id,nickname=userinfo['nickname'],openid=openid,subscribe=userinfo['subscribe'])
+            nickname = '微信注册用户'
+            if userinfo.has_key('nickname'):
+                nickname = userinfo['nickname']
+            self.render('weixin/login.html',storeid=store_id,nickname=nickname,openid=openid,subscribe=userinfo['subscribe'])
             return
 
         self.session['user'] = user
