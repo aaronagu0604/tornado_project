@@ -168,10 +168,9 @@
             <div class="weui-row">
                 {% for gift in rake_back %}
                 <div class="weui-col-50">
-                    <label class="weui-cell weui-check__label" for="gift_policy_01">
+                    <label class="weui-cell weui-check__label" for="{{gift['name']}}">
                         <div class="weui-cell__hd">
-                            <input type="radio" name="radio2" id="gift_policy_01">
-
+                            <input type="radio" name="radio2" id="{{gift['name']}}">
                         </div>
                         <div class="weui-cell__bd">
                             <p> {{gift['name']}}</p>
@@ -228,7 +227,6 @@
         });
 
         function gotoNext() {
-
             if (!$('#gift_policy_01').is(':checked') && !$('#gift_policy_02').is(':checked')) {
                 $.toast("请选择优惠方式", "text");
             } else {
