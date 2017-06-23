@@ -15,6 +15,7 @@ import random as rand
 import traceback
 from lib.payment.wxPay import Qrcode_pub
 import hashlib
+import setting
 
 appid = 'wxf23313db028ab4bc'
 secret = '8d75a7fa77dc0e5b2dc3c6dd551d87d6'
@@ -221,7 +222,14 @@ class WXApiLoginHandler(BaseHandler):
 
         self.session['user'] = user
         self.session.save()
-
+        token = user.token
+        if token:
+            data = self.application.memcachedb.get(token)
+            if data is None:
+                token = setting.user_token_prefix + str(uuid.uuid4())
+        else:
+            token = setting.user_token_prefix + str(uuid.uuid4())
+        self.application.memcachedb.set(token, str(user.id), setting.user_expire)
         if userinfo['subscribe'] == 1:
             # 已经关注条个人中心
             self.redirect(tourl)
@@ -230,7 +238,7 @@ class WXApiLoginHandler(BaseHandler):
             self.render('weixin/focus_guide.html')
 
 @route(r'/register', name='wx_register')  # html 登录
-class LoginHandler(BaseHandler):
+class RegisterHandler(BaseHandler):
     def create_user(self, openid, mobile, nickname, store_id=0):
         try:
             user = User.get(mobile=mobile)
@@ -243,6 +251,7 @@ class LoginHandler(BaseHandler):
                 user = User()
                 user.store = int(store_id)
                 user.truename = nickname
+                user.token = setting.user_token_prefix + str(uuid.uuid4())
                 user.mobile = mobile
                 user.openid = openid
                 user.password = user.create_password('123456')  # 微信用户默认密码：123456
@@ -263,6 +272,7 @@ class LoginHandler(BaseHandler):
         user = self.create_user(openid, mobile, nickname, store_id)
         self.session['user'] = user
         self.session.save()
+        self.application.memcachedb.set(user.token, str(user.id), setting.user_expire)
         if subscribe == '1':
             # 已经关注条个人中心
             self.redirect('/mine')
