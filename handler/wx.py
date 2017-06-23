@@ -121,7 +121,7 @@ class InsuranceOrderItemsHandler(WXBaseHandler):
         thirdDutyI = simplejson.dumps(['不投']+data['thirdDutyI'])
         self.render('weixin/insurance_order_items.html',insurance_message=insurance_message,
                     driverDutyI=driverDutyI, passengerDutyI=passengerDutyI,
-                    scratchI=scratchI, thirdDutyI=thirdDutyI)
+                    scratchI=scratchI, thirdDutyI=thirdDutyI,selectinsurance='中华联合')
 
 @route(r'/insurance_order_new', name='wx_insurance_order_new')  # 保险下单选择地址优惠方式页面
 class InsuranceOrderNewHandler(WXBaseHandler):
