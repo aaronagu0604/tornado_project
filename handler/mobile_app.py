@@ -452,8 +452,8 @@ class MobileHomeHandler(MobileBaseHandler):
                 result_rec = result_rec[:20] + recommends[:10]
             else:
                 result_rec = recommends
-        if not area_code:
-            result_rec = self.get_recommend(self.get_default_area_code())
+        if not user:
+            result_rec = self.get_recommend(self.get_default_area_code(), user=False)
         result['data']['category'].append({'title': u'为您推荐', 'data': result_rec})
 
         # 积分商品
@@ -540,7 +540,7 @@ class MobileHomeHandler(MobileBaseHandler):
 
         return items[:4]
 
-    def get_recommend(self, area_code, brand_id=''):
+    def get_recommend(self, area_code, brand_id='', user=True):
         items = []
         ft = (StoreProductPrice.price > 0) & (StoreProductPrice.active == 1) & (ProductRelease.active == 1) & (Product.active == 1)
         if isinstance(area_code, list):
@@ -559,13 +559,13 @@ class MobileHomeHandler(MobileBaseHandler):
             join(ProductRelease, on=(ProductRelease.product == Product.id)). \
             join(Store, on=(Store.id == ProductRelease.store)). \
             join(StoreProductPrice, on=(StoreProductPrice.product_release == ProductRelease.id)). \
-            where(ft).limit(30).tuples()
+            where(ft).order_by(ProductRelease.sort.desc(), StoreProductPrice.created.desc()).limit(30).tuples()
         for id, name, cover, price, score, sname, brand in spps:
             items.append({
                 'img': cover,
                 'name': name,
                 'price': price,
-                'display_price': u'¥' + str(price),
+                'display_price': u'¥' + str(price) if user else '',
                 'score': score,
                 'link': 'czj://product/%d' % id,
                 'is_score': 0,
