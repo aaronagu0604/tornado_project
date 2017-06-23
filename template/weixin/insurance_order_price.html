@@ -60,6 +60,16 @@
         color: black;
         display: inline-block;
     }
+
+    .weui-cells_radio .weui-check:checked+.weui-icon-checked:before {
+        display: block;
+        content: "\EA06";
+        color: #09bb07;
+        font-size: 16px
+    }
+    .weui-cells:after{
+        border-bottom:0px;
+    }
 </style>
 {% endblock %}
 {% block content %}
@@ -146,7 +156,9 @@
             </div>
         </div>
     </div>
-
+    <div class="weui-btn-area">
+        <a class="weui-btn weui-btn_primary" href="" id="showTooltips">修改方案</a>
+    </div>
 </div>
 
 {% endblock %}

@@ -298,8 +298,17 @@
                     var html = OrderItemToHtml(data.data[i]);
                     $('#'+current_tab).append(html);
                 }
-                if (data.data.length < 10 && flag == 1) {
+                if (data.data.length < 10) {
+                    $(".weui-loadmore").hide();
                     $(document.body).destroyInfinite();
+                }
+                if (data.data.length>=10 && flag ==0){
+                    $(document.body).destroyInfinite();
+                    $(document.body).infinite().on("infinite", function () {
+                        if (loading) return;
+                        loading = true;
+                        loadmore(1);
+                    });
                 }
             }
             loading = false;
@@ -366,11 +375,7 @@
         loadmore(0);
     });
 
-    $(document.body).infinite().on("infinite", function () {
-        if (loading) return;
-        loading = true;
-        loadmore(1);
-    });
+    loadmore(0);
 
     $(document).on("click", "#soon_pay", function () {
         $.actions({

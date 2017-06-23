@@ -407,53 +407,14 @@
                 }]
             });
         });
-        var pb1 = $.photoBrowser({
-            items: [
-                $("#own_id_card_font").attr("src")
-            ]
-        });
-        $("#own_id_card_font").click(function () {
-            pb1.open();
-        });
-        var pb2 = $.photoBrowser({
-            items: [
-                $("#own_id_card_back").attr("src")
-            ]
-        });
-        $("#own_id_card_back").click(function () {
-            pb2.open();
-        });
-        var pb3 = $.photoBrowser({
-            items: [
-                $("#driver_card_font").attr("src")
-            ]
-        });
-        $("#driver_card_font").click(function () {
-            pb3.open();
-        });
-        var pb4 = $.photoBrowser({
-            items: [
-                $("#driver_card_back").attr("src")
-            ]
-        });
-        $("#driver_card_back").click(function () {
-            pb4.open();
-        });
-        var pb5 = $.photoBrowser({
-            items: [
-                $("#id_card_font").attr("src")
-            ]
-        });
-        $("#id_card_font").click(function () {
-            pb5.open();
-        });
-        var pb6 = $.photoBrowser({
-            items: [
-                $("#id_card_back").attr("src")
-            ]
-        });
-        $("#id_card_back").click(function () {
-            pb6.open();
+
+        $(".img_card").on("click", function () {
+            var pb = $.photoBrowser({
+                items: [
+                    $("#"+this.id).attr("src")
+                ]
+            });
+            pb.open();
         });
 
     });
