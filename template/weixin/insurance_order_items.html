@@ -258,7 +258,7 @@
 {% block js %}
 <script>
     $(document).ready(function () {
-        localStorage.removeItem("insurance");
+
         var insurance_list = JSON.parse('{{insurance_message}}');
         var str = window.localStorage.getItem("insurance");
         if (str == null) {
@@ -268,20 +268,20 @@
         }
         insurance.insurance_list = insurance_list;
         window.localStorage.setItem("insurance", JSON.stringify(insurance));
-        var displayValues = [];
-        var values = [];
+        var idValues = [];
+        var nameValues = [];
         for (var i = 0; i < insurance_list.length; i++) {
-            displayValues.push(insurance_list[i].name);
-            values.push(insurance_list[i].id);
+            nameValues.push(insurance_list[i].name);
+            idValues.push(insurance_list[i].id);
         }
         $("#insurance_name").picker({
             title: "选择保险公司",
             cols: [{
                 textAlign: 'center',
-                values: values,
-                displayValues:displayValues
+                values: nameValues
             }],
             onClose: function () {
+                insurance.insurance = $('#insurance_name').val();
             }
         });
 
@@ -415,9 +415,7 @@
                 } else {
                     $('#thirdDutyI').css("background-color", "#ffffff").css("color", "#262626");
                     $("#thirdDutyIPlus").prop("checked", false);
-
                 }
-
             }
         });
         var driver = JSON.parse('{{driverDutyI}}');
