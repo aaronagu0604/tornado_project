@@ -91,19 +91,22 @@
             <div class="weui-row">
                 <div class="weui-row-50">
                     <p id="default_name">
-                        长孙
+                        {{address["delivery_to"]}}
                     </p>
                 </div>
                 <div class="weui-row-50">
                     <p id="default_tel">
-                        13289269257
+                        {{address["delivery_tel"]}}
                     </p>
 
                 </div>
             </div>
             <div class="weui-row">
                 <p id="default_detailed_address">
-                    陕西省，西安市
+                    {{address["delivery_province"]
+                    +address["delivery_city"]
+                    +address["delivery_district"]
+                    +address["delivery_address"]}}
                 </p>
             </div>
 
@@ -205,6 +208,7 @@
             $(".write-addr").hide();
             $("#default_addr_img").attr('src', "../../style/wximg/duihao_green.png");
             $("#write_addr_img").attr('src', "../../style/wximg/duihao_gray.png");
+
         }
 
         if ($('#gift_policy_01').is(':checked')) {
@@ -286,8 +290,6 @@
                         document.location.href = "insurance_order_success";
                     }
                 } else {
-                    /*  var name = document.getElementById("default_name");
-                     name.innerHTML = "小郭";*/
                     window.localStorage.setItem("insurance", insurance);
                     console.log(insurance);
                     document.location.href = "insurance_order_success";
