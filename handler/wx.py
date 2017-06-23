@@ -267,6 +267,7 @@ class RegisterHandler(BaseHandler):
             user.openid = openid
             user.role += 'W'
             user.save()
+            return user
         except Exception:
             try:
                 logging.error(traceback.format_exc())
