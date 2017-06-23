@@ -3,17 +3,6 @@
 {% block css %}
 <title>订单详情</title>
 <style>
-    
-    hr{
-        height:0.3px;border:none;border-top:1px solid #e7e7e7;
-    }
-    .moblie{
-         display: inline-block;
-     }
-    .tel{
-        display: inline-block;
-        float: right;
-    }
     .a_history{
         color: gray;
         font-size: 15px;
@@ -75,29 +64,34 @@
         background-color: #f39b00;
         text-align: center;
         color: white;
+            font-size: 13px;
+    line-height: 25px;
     }
     .list-box{position:relative;}
     .address-box .weui-panel__bd{border-bottom:10px solid #f5f5f5;}
     .address-box{
         border-top:10px solid #f5f5f5;
     }
+    .promotion-label-tit img{width:80%;}
+    img { border: 0; vertical-align: middle; }
     #soon_pay{
         background-color: #FFA602;
         color: white;
     }
-    .adderss_icon{
-        width: 14px;
-        height: 16px;
-        alignment: center;
+    .weui-cell__bd p{
+        font-size: 15px;
     }
-    .address_detail{
-        padding-left: 16px;
+    .cell_txt{
+        font-size: 15px;
     }
     .detail_content{
         background-color: #f5f6f7;
-        margin-top: 8px;
         padding:5px 15px 10px 15px;
     }
+    .address-txt{font-size:13px; color:#232323; line-height:18px;}
+.address-name{font-size:15px; color:#232323;}
+.address-name span{margin-right:10px;}
+
     .weui-flex__item{
         color: gray;
         margin: 5px;
@@ -119,14 +113,16 @@
     <div class="page__bd">
         <div class="weui-cells__title">保险明细</div>
         <div class="weui-cells">
+            <a class="a_history" href="/insurance_order_price">
             <div class="weui-cell">
                 <div class="weui-cell__bd">
                     <p>保险明细</p>
                 </div>
-                <div class="weui-cell__ft">
-                    <a class="a_history" href="/insurance_order_price">历史方案></a>
+
+                <div class="weui-cell__ft cell_txt">
+                    历史方案>
                 </div>
-            </div>
+            </div></a>
             <div class="weui-cell">
                 <div class="weui-cell__bd">
                     <p>人保车险</p>
@@ -137,7 +133,7 @@
                 <div class="weui-cell__bd">
                     <p>提交时间</p>
                 </div>
-                <div class="weui-cell__ft">2017-06-08</div>
+                <div class="weui-cell__ft cell_txt">2017-06-08</div>
             </div>
             <div class="detail_content">
                 <div class="weui-flex">
@@ -307,12 +303,20 @@
         <div class="weui-panel address-box">
             <div class="weui-panel__bd">
                 <div class="weui-media-box weui-media-box_text list-box">
-                    <div>
-                        <img class="adderss_icon" src="../../style/wximg/img_location.png">
-                        <p class="moblie">收货人:测试ios</p>
-                        <p class="tel">13389202687</p>
-                    </div>
-                    <p class="address_detail">陕西省 西安市 新城区 测试地址</p>
+                    <div class="wy-media-box weui-media-box_text address-select">
+    <div class="weui-media-box_appmsg">
+      <div class="weui-media-box__hd proinfo-txt-l" style="width:20px;">
+          <span class="promotion-label-tit">
+              <img src="../../style/wximg/img_location.png" /></span></div>
+      <div class="weui-media-box__bd">
+        <a href="#" class="weui-cell_access">
+          <h4 class="address-name"><span>测试ios</span><span>13389202687</span></h4>
+          <div class="address-txt">陕西省 西安市 新城区 测试地址</div>
+        </a>
+      </div>
+
+    </div>
+  </div>
                 </div>
             </div>
             <div class="weui-panel__bd">
