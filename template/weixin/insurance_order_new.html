@@ -251,7 +251,7 @@
             }
             else {
                 var insurance = JSON.parse(window.localStorage.getItem("insurance"));
-                insurance.gift_policy = "{{gift['type']}}";
+
                 if (!$('#default_addr').is(':checked')) {
                     var tel = $("#tel").val();
                     var re = /^1\d{10}$/;
@@ -269,19 +269,26 @@
                         insurance.delivery_address = $("#detailed_address").val();
                         var address = $("#address").val();
                         var arr = new Array();
-                        arr=address.split(' ');
+                        arr = address.split(' ');
                         console.log(arr[0]);
+                        insurance.delivery_province = arr[0];
+                        insurance.delivery_city = arr[1];
+                        insurance.delivery_district = arr[2];
 
                         window.localStorage.setItem("insurance", insurance);
                         document.location.href = "insurance_order_success";
                     }
                 } else {
+                    insurance.delivery_to = "{{address['delivery_to']}}";
+                    insurance.delivery_tel = "{{address['delivery_tel']}}";
+                    insurance.delivery_address = "{{address['delivery_address']}}";
+                    insurance.delivery_province = "{{address['delivery_province']}}";
+                    insurance.delivery_city = "{{address['delivery_city']}}";
+                    insurance.delivery_district = "{{address['delivery_district']}}";
                     window.localStorage.setItem("insurance", insurance);
                     console.log(insurance);
                     document.location.href = "insurance_order_success";
-
                 }
-
             }
         }
 
