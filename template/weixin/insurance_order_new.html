@@ -244,13 +244,19 @@
             }
         });
 
+
+        $("#address").cityPicker({
+            onChange: function (picker, values, displayValues) {
+                console.log(values, displayValues)
+            }
+        });
+
         function gotoNext() {
             var list = $('input:radio[name="radio2"]:checked').val();
             if (list == null) {
                 $.toast("请选择优惠方式", "text");
 
-            }
-            else {
+            } else {
                 var insurance = JSON.parse(window.localStorage.getItem("insurance"));
                 insurance.gift_policy = list;
                 if (!$('#default_addr').is(':checked')) {
@@ -292,12 +298,6 @@
                 }
             }
         }
-
-        $("#address").cityPicker({
-            onChange: function (picker, values, displayValues) {
-                console.log(values, displayValues)
-            }
-        });
     });
 
 </script>
