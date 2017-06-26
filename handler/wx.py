@@ -351,13 +351,68 @@ class RakeBackSettingHandler(WXBaseHandler):
 
 @route(r'/user_address', name='wx_user_address')  # html 收货地址
 class UserAddressHandler(WXBaseHandler):
+    def get_mobile_address(self,token):
+        url = "http://api.dev.test.520czj.com/mobile/receiveraddress"
+        req = urllib2.Request(url)
+        req.add_header('token', token)
+        response = urllib2.urlopen(req)
+        return simplejson.loads(response.read())['data']
+
     def get(self):
-        self.render('weixin/user_address.html')
+        user = self.get_current_user()
+        address = self.get_mobile_address(user.token)
+        logging.info(address)
+
+        self.render('weixin/user_address.html',address=address)
 
 @route(r'/user_address_detail', name='wx_user_address_detail')  # html 编辑地址
 class UserAddressDetailHandler(WXBaseHandler):
     def get(self):
-        self.render('weixin/user_address_detail.html')
+        add_id = self.get_argument('add_id',0)
+        address = StoreAddress.get(id=int(add_id))
+        self.render('weixin/user_address_detail.html',address=address)
+
+    def post(self):
+        user = self.get_current_user()
+        store_address_id = self.get_argument('store_address_id', None)
+        receiver = self.get_argument('receiver', None)
+        mobile = self.get_argument('mobile', None)
+        province = self.get_argument('province', None)
+        city = self.get_argument('city', None)
+        region = self.get_argument('district', None)
+        address = self.get_argument('address', None)
+        is_default = int(self.get_argument('is_default', 0))
+        created = int(time.time())
+
+        if is_default:
+            for store_address in user.store.addresses:
+                if store_address.is_default:
+                    store_address.is_default = 0
+                    store_address.save()
+
+        if store_address_id:
+            sa = StoreAddress.get(id=store_address_id)
+            sa.is_default = is_default
+            if receiver:
+                sa.name = receiver
+            if mobile:
+                sa.mobile = mobile
+            if province:
+                sa.province = province
+            if city:
+                sa.city = city
+            if region:
+                sa.region = region
+            if address:
+                sa.address = address
+            sa.save()
+        else:
+            StoreAddress.create(store=user.store, province=province, city=city, region=region, address=address,
+                                name=receiver, mobile=mobile, is_default=is_default, create_by=user, created=created)
+        self.redirect('/user_address')
+
+
+
 
 @route(r'/user_childrens', name='wx_user_childrens')  # 我的下线
 class UserChildrensHandler(WXBaseHandler):
