@@ -213,12 +213,12 @@ class WXBaseHandler(BaseHandler):
         ret['signature'] = hashlib.sha1(string1).hexdigest()
         return ret
 
-    def get_js_sdk_sign(self):
+    def get_js_sdk_sign(self,url):
         ret = {
             'nonceStr': self.create_nonce_str(),
             'jsapi_ticket': self.get_jsapi_ticket(),
             'timeStamp': self.create_timestamp(),
-            'url': 'http://wx.dev.520czj.com/pay_detail'
+            'url': url
         }
         ret = self.sign(ret)
         ret['appid'] = appid
