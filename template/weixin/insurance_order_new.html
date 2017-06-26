@@ -297,6 +297,7 @@
             }
         });
         function submit(insurance) {
+            var token = $("#token").var();
             $.ajax({
                 type: "POST",
                 url: "http://api.dev.test.520czj.com/mobile/newinsuranceorder",
@@ -306,7 +307,7 @@
                 processData: false,
                 beforeSend: function (xhr) {
 
-                    xhr.setRequestHeader("token", $("#token").var());
+                    xhr.setRequestHeader("token", token);
                     //页面loading, 不能再进行其他操作，适合比如提交按钮
                     $.showLoading();
                 },
