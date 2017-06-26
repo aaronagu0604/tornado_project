@@ -9,7 +9,7 @@ import tornado.options
 import tornado.web
 import logging
 import sys
-from handlers import UploadImageHandler,  PageNotFoundHandler, DefaultHandler, ViewHandler
+from handlers import UploadImageHandler, UploadImageFromUrlHandler,  PageNotFoundHandler, DefaultHandler, ViewHandler
 import memcache
 import setting
 
@@ -21,6 +21,7 @@ class Application(tornado.web.Application):
         handlers = [
                         (r"/", DefaultHandler),
                         (r"/upload/image", UploadImageHandler),
+                        (r"/upload/urlimage", UploadImageFromUrlHandler),
                         (r"/upload/view", ViewHandler),
                         tornado.web.url(r".*", tornado.web.StaticFileHandler,
                                         dict(path=setting.imgDir), name='static_path')

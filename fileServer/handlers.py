@@ -90,6 +90,7 @@ class UploadImageFromUrlHandler(BaseHandler):
 
     def get(self):
         self.write('please upload a image file')
+
     def get_access_token(self):
         self.weixin_app_id = 'wxf23313db028ab4bc'
         self.weixin_secret = '8d75a7fa77dc0e5b2dc3c6dd551d87d6'

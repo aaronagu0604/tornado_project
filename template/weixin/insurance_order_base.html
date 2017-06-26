@@ -400,15 +400,36 @@ var syncUpload = function(localIds){
         isShowProgressTips: 1,
         success: function (res) {
             var serverId = res.serverId; // 返回图片的服务器端ID
-            //其他对serverId做处理的代码
-            wx.downloadImage({
-                serverId: serverId, // 需要下载的图片的服务器端ID，由uploadImage接口获得
-                isShowProgressTips: 1, // 默认为1，显示进度提示
-                success: function (res) {
-                    var localId = res.localId; // 返回图片下载后的本地ID
-                    console.log(localId);
+            $.ajax({
+                type: "POST",
+                url: "http://img.520czj.com/upload/urlimage",
+                data: {
+                    media_id:serverId
+                },
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    $.hideLoading();
+                    var data = JSON.parse(data);
+                    if (data.flag == 1) {
+                        $("#" + parent.name).attr('src', data.data);
+                        var insurance = JSON.parse(window.localStorage.getItem("insurance"));
+                        if (insurance == null) {
+                            var insurance = {};
+                        }
+                        insurance[parent.name] = data.data;
+                        window.localStorage.setItem("insurance", JSON.stringify(insurance));
+                        console.log(insurance);
+                    } else {
+                        $.toast(data.msg, "text");
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    $.hideLoading();
+                    $.toast("上传失败，请检查网络后重试", "text");
                 }
-                });
+            });
         }
     });
 };
