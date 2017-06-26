@@ -1868,6 +1868,7 @@ class MobilNewInsuranceOrderHandler(MobileBaseHandler):
             create_msg(simplejson.dumps(sms), 'sms')
         else:
             result['msg'] = u'输入参数异常'
+        self.set_header("Access-Control-Allow-Origin", "*")
         self.write(simplejson.dumps(result))
         self.finish()
 
