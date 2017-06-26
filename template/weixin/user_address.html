@@ -15,27 +15,19 @@
 {% block content %}
 <div class="weui-content">
   <div class="weui-panel address-box">
-    <!--<div class="weui-panel__bd">-->
-      <!--<div class="weui-media-box weui-media-box_text address-list-box">-->
-        <!--<a href="/user_address_detail" class="address-edit"></a>-->
-        <!--<h4 class="weui-media-box__title"><span>陈四无</span>&nbsp;&nbsp;<span>18912343850</span></h4>-->
-        <!--<p class="weui-media-box__desc address-txt">陕西省 西安市 未央区</p>-->
-          <!--<p class="weui-media-box__desc address-txt">洋河新区电商产业园2楼</p>-->
-        <!--<span class="default-add">默认地址</span>-->
-      <!--</div>-->
-    <!--</div>-->
 
     {% for ad in address %}
     <div class="weui-panel__bd">
       <div class="weui-media-box weui-media-box_text address-list-box">
         <a href="/user_address_detail" class="address-edit"></a>
         <h4 class="weui-media-box__title"><span>{{ad['receiver']}}</span>&nbsp;&nbsp;<span>{{ad['mobile']}}</span></h4>
-        <p class="weui-media-box__desc address-txt">{{ad['province']}} + {{ad['city']}} +{{ad['district']}}</p>
+        <p class="weui-media-box__desc address-txt">{{ad['province']}}{{ad['city']}}{{ad['district']}}</p>
         <p class="weui-media-box__desc address-txt">{{ad['address']}}</p>
-        <!--<span class="default-add">默认地址</span>-->
+        {% if ad.is_default == 1 %}
+        <span class="default-add">默认地址</span>
+        {% endif %}
       </div>
     </div>
-
     {% endfor %}
 
   </div>
