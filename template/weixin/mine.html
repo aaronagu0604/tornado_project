@@ -11,8 +11,8 @@
     <div class="weui-media-box weui-media-box_appmsg">
       <div class="weui-media-box__hd"><img class="weui-media-box__thumb radius" src="./../style/wximg/img_mine_head.png" alt=""></div>
       <div class="weui-media-box__bd">
-        <h4 class="weui-media-box__title mine-user-name">132****9257</h4>
-        <p class="mine-user-grade">门店：西安金倍利嘉</p>
+        <h4 class="weui-media-box__title mine-user-name">{{mine['user_name']}}</h4>
+        <p class="mine-user-grade">门店：{{mine['store_name'}}</p>
       </div>
     </div>
   </div>
@@ -31,27 +31,28 @@
       <div class="weui-flex">
         <div class="weui-flex__item">
           <a href="/insurance_orders" class="center-ordersModule">
-            <span class="weui-badge" style="position: absolute;top:5px;right:10px; font-size:10px;">2</span>
+            <span class="weui-badge" style="position: absolute;top:5px;right:10px; font-size:10px;">{{mine['insurance_orders']['wait_quote']}}</span>
             <div class="imgicon"><img src="./../style/wximg/category.png" /></div>
             <div class="name">待核价</div>
           </a>
         </div>
         <div class="weui-flex__item">
           <a href="/insurance_orders" class="center-ordersModule">
-            <span class="weui-badge" style="position: absolute;top:5px;right:10px; font-size:10px;">1</span>
+            <span class="weui-badge" style="position: absolute;top:5px;right:10px; font-size:10px;">{{mine['insurance_orders']['wait_pay']}}</span>
             <div class="imgicon"><img src="./../style/wximg/category.png" /></div>
             <div class="name">待支付</div>
           </a>
         </div>
         <div class="weui-flex__item">
           <a href="/insurance_orders" class="center-ordersModule">
+            <span class="weui-badge" style="position: absolute;top:5px;right:10px; font-size:10px;">{{mine['insurance_orders']['wait_send']}}</span>
             <div class="imgicon"><img src="./../style/wximg/category.png" /></div>
             <div class="name">待出单</div>
           </a>
         </div>
         <div class="weui-flex__item">
           <a href="/insurance_orders" class="center-ordersModule">
-            <span class="weui-badge" style="position: absolute;top:5px;right:10px; font-size:10px;">2</span>
+            <span class="weui-badge" style="position: absolute;top:5px;right:10px; font-size:10px;">{{mine['insurance_orders']['finish']}}</span>
             <div class="imgicon"><img src="./../style/wximg/category.png" /></div>
             <div class="name">已完成</div>
           </a>
