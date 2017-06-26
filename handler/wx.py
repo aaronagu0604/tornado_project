@@ -163,7 +163,7 @@ class InsuranceOrdersHandler(WXBaseHandler):
         req = urllib2.Request(url)
         req.add_header('token', token)
         response = urllib2.urlopen(req)
-        return simplejson.loads(response.read())['data']
+        return simplejson.loads(response.read())
 
     def get(self):
         index = self.get_argument('index',1)
