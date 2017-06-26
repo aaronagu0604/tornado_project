@@ -78,6 +78,21 @@
         text-align: center;
     }
 
+    .weui-cells_radio .weui-check:checked + .weui-icon-checked:before {
+        display: block;
+        content: "\EA06";
+        color: #09bb07;
+        font-size: 23px
+    }
+
+    .weui-cells_radio .weui-icon-checked:before {
+        display: block;
+        content: "\EA01";
+        color: #c9c9c9;
+        font-size: 23px
+    }
+
+
 </style>
 {% endblock %}
 {% block content %}
@@ -89,8 +104,9 @@
         <label class="weui-cell weui-check__label" for="default_addr">
 
             <div class="weui-cell__hd">
-                <img src="../../style/wximg/duihao_gray.png" id="default_addr_img"/>
-                <input type="radio" name="radio1" style="display: none" checked="checked" id="default_addr">
+
+                <input type="radio" name="radio1" class="weui-check" style="display: none" checked="checked"
+                       id="default_addr">
             </div>
             <div class="weui-cell__bd">
                 <p> 默认地址</p>
@@ -126,8 +142,7 @@
         <label class="weui-cell weui-check__label" for="write_addr">
 
             <div class="weui-cell__hd">
-                <img src="../../style/wximg/duihao_gray.png" id="write_addr_img"/>
-                <input type="radio" name="radio1" style="display: none" id="write_addr">
+                <input type="radio" name="radio1" class="weui-check" style="display: none" id="write_addr">
 
             </div>
             <div class="weui-cell__bd">
@@ -182,7 +197,8 @@
                 <div class="weui-col-50">
                     <label class="weui-cell weui-check__label" for="{{gift['name']}}">
                         <div class="weui-cell__hd">
-                            <input type="radio" name="radio2" id="{{gift['name']}}" value="{{gift['type']}}">
+                            <input type="radio" class="weui-check" name="radio2" id="{{gift['name']}}"
+                                   value="{{gift['type']}}">
                         </div>
                         <div class="weui-cell__bd">
                             <p> {{gift['name']}}</p>
@@ -209,13 +225,8 @@
 
         if ($('#write_addr').is(':checked')) {
             $(".write-addr").show();
-            $("#default_addr_img").attr('src', "../../style/wximg/duihao_gray.png");
-            $("#write_addr_img").attr('src', "../../style/wximg/duihao_green.png");
         } else {
             $(".write-addr").hide();
-            $("#default_addr_img").attr('src', "../../style/wximg/duihao_green.png");
-            $("#write_addr_img").attr('src', "../../style/wximg/duihao_gray.png");
-
         }
         if ($(".gift_policy,input").length > 0) {
             $(".gift_policy").show();
@@ -226,12 +237,9 @@
         $(document).on("click", "#write_addr", function () {
             if ($('#write_addr').is(':checked')) {
                 $(".write-addr").show();
-                $("#default_addr_img").attr('src', "../../style/wximg/duihao_gray.png");
-                $("#write_addr_img").attr('src', "../../style/wximg/duihao_green.png");
+
             } else {
                 $(".write-addr").hide();
-                $("#default_addr_img").attr('src', "../../style/wximg/duihao_green.png");
-                $("#write_addr_img").attr('src', "../../style/wximg/duihao_gray.png");
             }
         });
         $(document).on("click", "#default_addr", function () {
@@ -291,7 +299,7 @@
                     insurance.delivery_province = "{{address['delivery_province']}}";
                     insurance.delivery_city = "{{address['delivery_city']}}";
                     insurance.delivery_district = "{{address['delivery_district']}}";
-                    window.localStorage.setItem("insurance",  JSON.stringify(insurance));
+                    window.localStorage.setItem("insurance", JSON.stringify(insurance));
                     console.log(insurance);
                     submit(insurance);
                 }
@@ -304,7 +312,7 @@
                 url: "http://127.0.0.1:8889/mobile/newinsuranceorder",
                 data: insurance,
                 cache: false,
-                dataType:'json',
+                dataType: 'json',
                 contentType: false,
                 processData: false,
                 beforeSend: function (xhr) {
