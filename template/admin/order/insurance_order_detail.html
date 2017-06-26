@@ -2042,88 +2042,87 @@
                 var business_rate = $(program).find('input[name="business_rate"]').val();    // 商业险折扣
                 var force_rate = $(program).find('input[name="force_rate"]').val();    // 交强险折扣
 
-
                 if(damageICB){
                     hasbus = true;
-                    msg = msg+'车辆损失险'+damageIPrice+'元\n'
+                    msg = msg+'车辆损失险【'+damageIPrice+'】元\n'
                 }
                 if(damageIPlusCB){
                     hasbus = true;
-                    msg = msg+'车辆损失不计免赔'+damageIPlusPrice+'元\n'
+                    msg = msg+'车辆损失不计免赔【'+damageIPlusPrice+'】元\n'
                 }
                 if(thirdDutyICB){
                     hasbus = true;
                     var thirdDutyIP = $(program).find('select[name="thirdDutyIP"]').find("option:selected").text();    // 三责 险额
-                    msg = msg +'第三者责任险'+' '+thirdDutyIPrice+'元 保额：' + thirdDutyIP + '\n'
+                    msg = msg +'第三者责任险【'+thirdDutyIPrice+'】元 保额：' + thirdDutyIP + '\n'
                 }
                 if(thirdDutyIPlusCB){
                     hasbus = true;
-                    msg = msg +'第三者责任不计免赔'+thirdDutyIPlusPrice+'元\n'
+                    msg = msg +'第三者责任不计免赔【'+thirdDutyIPlusPrice+'】元\n'
                 }
                 if( robbingICB){
                     hasbus = true;
-                    msg = msg +'盗抢险'+robbingIPrice+'元\n'
+                    msg = msg +'盗抢险【'+robbingIPrice+'】元\n'
                 }
                 if(robbingIPlusCB){
                     hasbus = true;
-                    msg = msg +'盗抢险不计免赔'+robbingIPlusPrice+'元\n'
+                    msg = msg +'盗抢险不计免赔【'+robbingIPlusPrice+'】元\n'
                 }
                 if(driverDutyICB){
                     hasbus = true;
                     var driverDutyIS = $(program).find('select[name="driverDutyIS"]').find("option:selected").text();    // 司机 险额
-                    msg = msg +'车上人员责任险（司机）'+driverDutyIPrice+'元 保额：'+driverDutyIS+'\n'
+                    msg = msg +'车上人员责任险（司机）【'+driverDutyIPrice+'】元 保额：'+driverDutyIS+'\n'
                 }
                 if(driverDutyIPlusCB){
                     hasbus = true;
-                    msg = msg +'车上人员责任险（司机）不计免赔'+driverDutyIPlusPrice+'元\n'
+                    msg = msg +'车上人员责任险（司机）不计免赔【'+driverDutyIPlusPrice+'】元\n'
                 }
                 if(passengerDutyICB){
                     hasbus = true;
                     var passengerDutyIS = $(program).find('select[name="passengerDutyIS"]').find("option:selected").text();    // 乘客 险额
-                    msg = msg +'车上人员责任险（乘客）'+passengerDutyIPrice+'元 保额：'+passengerDutyIS+'\n'
+                    msg = msg +'车上人员责任险（乘客）【'+passengerDutyIPrice+'】元 保额：'+passengerDutyIS+'\n'
                 }
                 if(passengerDutyIPlusCB){
                     hasbus = true;
-                    msg = msg +'车上人员责任险（乘客）不计免赔'+passengerDutyIPlusPrice+'元\n'
+                    msg = msg +'车上人员责任险（乘客）不计免赔【'+passengerDutyIPlusPrice+'】元\n'
                 }
                 if(glassICB){
                     hasbus = true;
-                    msg = msg +'玻璃单独破碎险'+glassIPrice+'元\n'
+                    msg = msg +'玻璃单独破碎险【'+glassIPrice+'】元\n'
                 }
                 if(scratchICB){
                     hasbus = true;
-                    msg = msg +'车身划痕损失险'+scratchIPrice+'元\n'
+                    msg = msg +'车身划痕损失险【'+scratchIPrice+'】元\n'
                 }
                 if(scratchIPlusCB){
                     hasbus = true;
                     var scratchIS = $(program).find('select[name="scratchIS"]').find("option:selected").text();    // 划痕 险额
-                    msg = msg +'车身划痕损失不计免赔 '+scratchIPlusPrice+'元 保额：'+scratchIS+'\n'
+                    msg = msg +'车身划痕损失不计免赔【'+scratchIPlusPrice+'】元 保额：'+scratchIS+'\n'
                 }
                 if(fireDamageICB){
                     hasbus = true;
-                    msg = msg +'自燃损失险'+fireDamageIPrice+'元\n'
+                    msg = msg +'自燃损失险【'+fireDamageIPrice+'】元\n'
                 }
                 if(fireDamageIPlusCB){
                     hasbus = true;
-                    msg = msg +'自燃损失不计免赔'+fireDamageIPlusPrice+'元\n'
+                    msg = msg +'自燃损失不计免赔【'+fireDamageIPlusPrice+'】元\n'
                 }
                 if(wadeICB){
                     hasbus = true;
-                    msg = msg +'发动机涉水损失险'+wadeIPrice+'元\n'
+                    msg = msg +'发动机涉水损失险【'+wadeIPrice+'】元\n'
                 }
                 if(wadeIPlusCB){
                     hasbus = true;
-                    msg = msg +'发动机涉水损失不计免赔'+wadeIPlusPrice+'元\n'
+                    msg = msg +'发动机涉水损失不计免赔【'+wadeIPlusPrice+'】元\n'
                 }
                 if(thirdSpecialICB){
                     hasbus = true;
-                    msg = msg +'车辆损失无法找到第三方特约险'+thirdSpecialIPrice+'元\n'
+                    msg = msg +'车辆损失无法找到第三方特约险【'+thirdSpecialIPrice+'】元\n'
                 }
                 if (hasbus) {
                     if(business_rate == ''){
-                        total = '商业险'+total_business+'元\n'
+                        total = '商业险【'+total_business+'】元\n'
                     } else{
-                        total = '商业险'+business_rate+'折'+total_business+'元\n'
+                        total = '商业险'+business_rate+'折【'+total_business+'】元\n'
                     }
                 }
                 if (msg != '') {
@@ -2132,15 +2131,14 @@
                 total = total + msg;
                 if (forceICB) {
                     if(force_rate == ''){
-                        total = total+'交强险'+forceIPrice+'元\n'
+                        total = total+'交强险【'+forceIPrice+'】元\n'
                     } else {
-                        total = total+'交强险'+force_rate+'折'+forceIPrice+'元\n'
+                        total = total+'交强险'+force_rate+'折【'+forceIPrice+'】元\n'
                     }
                 }
                 if (vehicleTaxCB) {
-                    total = total+'车船税'+vehicle_tax_price+'元\n' + '合计'+total_price+'元；\n';
+                    total = total+'车船税【'+vehicle_tax_price+'】元\n' + '合计【'+total_price+'】元；\n';
                 }
-
                 $(program).find('textarea[name="psummary"]').val(total);
             } else {
                 layer.alert('保险金额有误');
