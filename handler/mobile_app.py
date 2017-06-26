@@ -1757,6 +1757,10 @@ class MobilNewInsuranceOrderHandler(MobileBaseHandler):
     @apiParam {Int} gift_policy 礼品策略 1反油， 2反积分, 0无礼品
     @apiSampleRequest /mobile/newinsuranceorder
     """
+    def options(self):
+        result = {'flag':1,'msg':'sucess','data':[]}
+        self.set_header("Access-Control-Allow-Origin", "*")
+        self.write(simplejson.dumps(result))
 
     @require_auth
     def post(self):
