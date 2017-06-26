@@ -387,6 +387,7 @@ wx.config({
 });
 $('#id_card_back_owner_div').on('click', function () {
     wx.chooseImage({
+          count: 1,
         success: function (res) {
             var localIds = res.localIds;
             syncUpload(localIds);
