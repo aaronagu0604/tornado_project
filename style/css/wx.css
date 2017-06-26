@@ -320,7 +320,6 @@
     right: 20px;
     top: 1px;
 }
-
 .upload_btn input {
     opacity: 0;
 }
@@ -418,5 +417,5 @@
     transform-origin: 0 0;
     -webkit-transform: scaleY(.5);
     transform: scaleY(.5);
-    left: 0px;
     }
+

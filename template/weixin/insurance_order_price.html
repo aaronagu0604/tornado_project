@@ -4,28 +4,26 @@
 <title>订单列表</title>
 <style>
 
-    p{
-        font-size: 18px;
-        color: gray;
-        display: inline-block;
-        line-height: 26px;
-        margin-top: 3px;
+    .weui-check__label{
+        -webkit-tap-highlight-color:rgba(0,0,0,0);
+        -webkit-user-select: none;
+        -moz-user-select: none;
     }
-    .row_right{
-        float: right;
+    .weui-check__label:active {
+        background-color: rgba(0,0,0,0)
     }
-    hr{
-        height:0.3px;
-        border:none;
-        border-top:1px solid #e7e7e7;
-        width: 220%;
-        margin-top: 5px;
-        margin-bottom: 10px;
+
+    .weui-cells_radio .weui-check:checked+.weui-icon-checked:before {
+        display: block;
+        content: "\EA06";
+        color: #09bb07;
+        font-size: 23px
     }
-    .detail_content{
-        background-color: #f5f6f7;
-        margin-top: 8px;
-        padding:5px 15px 10px 15px;
+    .weui-cells_radio .weui-icon-checked:before {
+        display: block;
+        content: "\EA01";
+        color: #c9c9c9;
+        font-size: 23px
     }
     .row_container{
         alignment: center;
@@ -34,53 +32,26 @@
         background-position:center;
         background-origin:content-box;
     }
-    .weui-check__label{
-        -webkit-tap-highlight-color:rgba(0,0,0,0);
-        -webkit-user-select: none;
-        -moz-user-select: none;
-    }
-    .list-box{position:relative;}
-    .row_bd {border-bottom:10px solid #e0e0e0;}
-    .weui-cells{
+    .order_price_base{
         margin-top:0;
     }
-    .weui-check__label:active {
-        background-color: rgba(0,0,0,0)
+    .order_price_statue{
+        padding: 10px 0;
     }
-    .weui-flex__item{
-        color: gray;
-        margin: 5px;
-    }
-    .main_praice{
-        color: #00A73B;
-    }
-    .title{
-        font-size: 18px;
-        line-height: 24px;
-        color: black;
-        display: inline-block;
+    .order_price_right{
+        text-align: right;color: #999;
     }
 
-    .weui-cells_radio .weui-check:checked+.weui-icon-checked:before {
-        display: block;
-        content: "\EA06";
-        color: #09bb07;
-        font-size: 16px
-    }
-    .weui-cells:after{
-        border-bottom:0px;
-    }
 </style>
 {% endblock %}
 {% block content %}
 
-<div  class="weui-cells weui-cells_radio">
+<div  class="weui-cells weui-cells_radio order_price_base">
     <div id="list" class="weui-panel row-box">
-        <div class="row_bd">
         <div class="weui-panel__bd">
         <div class="weui-media-box weui-media-box_text list-box">
             <div class="row_container" >
-                    <label class="weui-cell weui-check__label" for="x11">
+                    <label class="weui-cell weui-check__label order_price_statue" for="x11">
                         <div class=" weui-cell__bd">
                             <input type="radio" name="radio1" class="weui-check" id="x11" checked="checked">
                             <span class="weui-icon-checked"></span>
@@ -90,28 +61,27 @@
                             <p class="row_right">待付款</p>
                         </div>
                     </label>
-                <hr>
+                <div class="order-split-line"></div>
                 <div class="weui-flex">
                     <div class="weui-flex__item">
                         提交时间
                     </div>
-                    <div class="weui-flex__item" style="text-align: right;">
+                    <div class="weui-flex__item order_price_right">
                         2017-06-29
                     </div>
                 </div>
             </div>
         </div>
-        </div>
-            <div class="detail_content">
-                <div class="weui-flex">
-                    <div class="weui-flex__item title">
+            <div class="order-detail-content">
+                <div class="weui-flex header">
+                    <div class="weui-flex__item left">
                         交强险
                     </div>
-                    <div class="weui-flex__item main_praice" style="text-align: right;">
-                        ￥1234
+                    <div class="weui-flex__item right">
+                        <span class="order-price">￥1234</span>
                     </div>
                 </div>
-                <div class="weui-flex">
+                <div class="weui-flex body">
                     <div class="weui-flex__item">
                         车船税
                     </div>
@@ -119,15 +89,15 @@
                         ￥1234
                     </div>
                 </div>
-                <div class="weui-flex">
-                    <div class="weui-flex__item title">
+                <div class="weui-flex header">
+                    <div class="weui-flex__item left">
                         商业险(主险)
                     </div>
-                    <div class="weui-flex__item main_praice" style="text-align: right;">
-                        ￥1234
+                    <div class="weui-flex__item right">
+                        <span class="order-price">￥1234</span>
                     </div>
                 </div>
-                <div class="weui-flex">
+                <div class="weui-flex body">
                     <div class="weui-flex__item">
                         车辆损失险
                     </div>
@@ -135,17 +105,173 @@
                         ￥1234
                     </div>
                 </div>
-
-                <div class="weui-flex">
-                    <div class="weui-flex__item title">
-                        商业险(附加险)
+                <div class="weui-flex body">
+                    <div class="weui-flex__item">
+                        车辆损失险
                     </div>
-                    <div class="weui-flex__item main_praice" style="text-align: right;">
+                    <div class="weui-flex__item" style="text-align: right;">
                         ￥1234
                     </div>
                 </div>
+                <div class="weui-flex body">
+                    <div class="weui-flex__item">
+                        车辆损失险
+                    </div>
+                    <div class="weui-flex__item" style="text-align: right;">
+                        ￥1234
+                    </div>
+                </div>
+                <div class="weui-flex body">
+                    <div class="weui-flex__item">
+                        车辆损失险
+                    </div>
+                    <div class="weui-flex__item" style="text-align: right;">
+                        ￥1234
+                    </div>
+                </div>
+                <div class="weui-flex body">
+                    <div class="weui-flex__item">
+                        车辆损失险
+                    </div>
+                    <div class="weui-flex__item" style="text-align: right;">
+                        ￥1234
+                    </div>
+                </div>
+                <div class="weui-flex header">
+                    <div class="weui-flex__item left">
+                        商业险(附加险)
+                    </div>
+                    <div class="weui-flex__item right">
+                        <span class="order-price">￥1234</span>
+                    </div>
+                </div>
 
-                <div class="weui-flex">
+                <div class="weui-flex body">
+                    <div class="weui-flex__item">
+                        玻璃单独损失险
+                    </div>
+                    <div class="weui-flex__item" style="text-align: right;">
+                        ￥1234
+                    </div>
+                </div>
+                <div class="weui-flex body">
+                    <div class="weui-flex__item">
+                        玻璃单独损失险
+                    </div>
+                    <div class="weui-flex__item" style="text-align: right;">
+                        ￥1234
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="weui-panel__bd">
+            <div class="weui-media-box weui-media-box_text list-box">
+                <div class="row_container" >
+                    <label class="weui-cell weui-check__label order_price_statue" for="x12">
+                        <div class=" weui-cell__bd">
+                            <input type="radio" name="radio1" class="weui-check" id="x12">
+                            <span class="weui-icon-checked"></span>
+                            <span>人保车险</span>
+                        </div>
+                        <div class="weui-cell__ft">
+                            <p class="row_right">待付款</p>
+                        </div>
+                    </label>
+                    <div class="order-split-line"></div>
+                    <div class="weui-flex">
+                        <div class="weui-flex__item">
+                            提交时间
+                        </div>
+                        <div class="weui-flex__item order_price_right">
+                            2017-06-29
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="order-detail-content">
+                <div class="weui-flex header">
+                    <div class="weui-flex__item left">
+                        交强险
+                    </div>
+                    <div class="weui-flex__item right">
+                        <span class="order-price">￥1234</span>
+                    </div>
+                </div>
+                <div class="weui-flex body">
+                    <div class="weui-flex__item">
+                        车船税
+                    </div>
+                    <div class="weui-flex__item" style="text-align: right;">
+                        ￥1234
+                    </div>
+                </div>
+                <div class="weui-flex header">
+                    <div class="weui-flex__item left">
+                        商业险(主险)
+                    </div>
+                    <div class="weui-flex__item right">
+                        <span class="order-price">￥1234</span>
+                    </div>
+                </div>
+                <div class="weui-flex body">
+                    <div class="weui-flex__item">
+                        车辆损失险
+                    </div>
+                    <div class="weui-flex__item" style="text-align: right;">
+                        ￥1234
+                    </div>
+                </div>
+                <div class="weui-flex body">
+                    <div class="weui-flex__item">
+                        车辆损失险
+                    </div>
+                    <div class="weui-flex__item" style="text-align: right;">
+                        ￥1234
+                    </div>
+                </div>
+                <div class="weui-flex body">
+                    <div class="weui-flex__item">
+                        车辆损失险
+                    </div>
+                    <div class="weui-flex__item" style="text-align: right;">
+                        ￥1234
+                    </div>
+                </div>
+                <div class="weui-flex body">
+                    <div class="weui-flex__item">
+                        车辆损失险
+                    </div>
+                    <div class="weui-flex__item" style="text-align: right;">
+                        ￥1234
+                    </div>
+                </div>
+                <div class="weui-flex body">
+                    <div class="weui-flex__item">
+                        车辆损失险
+                    </div>
+                    <div class="weui-flex__item" style="text-align: right;">
+                        ￥1234
+                    </div>
+                </div>
+                <div class="weui-flex header">
+                    <div class="weui-flex__item left">
+                        商业险(附加险)
+                    </div>
+                    <div class="weui-flex__item right">
+                        <span class="order-price">￥1234</span>
+                    </div>
+                </div>
+
+                <div class="weui-flex body">
+                    <div class="weui-flex__item">
+                        玻璃单独损失险
+                    </div>
+                    <div class="weui-flex__item" style="text-align: right;">
+                        ￥1234
+                    </div>
+                </div>
+                <div class="weui-flex body">
                     <div class="weui-flex__item">
                         玻璃单独损失险
                     </div>
