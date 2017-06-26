@@ -248,7 +248,6 @@
             var list = $('input:radio[name="radio2"]:checked').val();
             if (list == null) {
                 $.toast("请选择优惠方式", "text");
-
             } else {
                 var str = window.localStorage.getItem("insurance");
                 if (str == null) {
@@ -281,7 +280,7 @@
                         insurance.delivery_district = arr[2];
                         window.localStorage.setItem("insurance", insurance);
                         console.log(insurance);
-                        /* document.location.href = "insurance_order_success";*/
+                        submit(insurance);
                     }
                 } else {
                     insurance.delivery_to = "{{address['delivery_to']}}";
@@ -292,7 +291,7 @@
                     insurance.delivery_district = "{{address['delivery_district']}}";
                     window.localStorage.setItem("insurance", insurance);
                     console.log(insurance);
-                    /*    document.location.href = "insurance_order_success";*/
+                    submit(insurance);
                 }
             }
         });
@@ -303,6 +302,37 @@
             }
         });
 
+        function submit(insurance) {
+            $.ajax({
+                type: "POST",
+                url: "http://api.dev.test.520czj.com/mobile/newinsuranceorder",
+                data: insurance,
+                cache: false,
+                contentType: false,
+                processData: false,
+                beforeSend: function (xhr) {
+
+                    xhr.setRequestHeader("token", $("#token").var);
+                    //页面loading, 不能再进行其他操作，适合比如提交按钮
+                    $.showLoading();
+                },
+                success: function (data) {
+                    $.hideLoading();
+                    var data = JSON.parse(data);
+                    if (data.flag == 1) {
+                        console.log(data);
+                        /*     document.location.href = "/insurance_success"*/
+                    } else {
+                        $.toast(data.msg, "text");
+                        console.log(data);
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    $.hideLoading();
+                    $.toast("创建订单失败，请检查网络后重试", "text");
+                }
+            });
+        }
 
     });
 
