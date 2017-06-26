@@ -306,7 +306,7 @@
                 processData: false,
                 beforeSend: function (xhr) {
 
-                    xhr.setRequestHeader("token", $("#token").var);
+                    xhr.setRequestHeader("token", $("#token").var());
                     //页面loading, 不能再进行其他操作，适合比如提交按钮
                     $.showLoading();
                 },
