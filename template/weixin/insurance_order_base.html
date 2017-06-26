@@ -407,6 +407,9 @@ var syncUpload = function(localIds){
                 data: {
                     media_id:serverId
                 },
+                beforeSend: function (res) {
+                    res.
+                },
                 success: function (data) {
                     $.hideLoading();
                     var data = JSON.parse(data);
