@@ -247,11 +247,6 @@
         $(document).on("click", "#default_addr", function () {
             if ($('#default_addr').is(':checked')) {
                 $(".write-addr").hide();
-                $("#default_addr_img").attr('src', "../../style/wximg/duihao_green.png");
-                $("#write_addr_img").attr('src', "../../style/wximg/duihao_gray.png");
-            } else {
-                $("#default_addr_img").attr('src', "../../style/wximg/duihao_gray.png");
-                $("#write_addr_img").attr('src', "../../style/wximg/duihao_green.png");
             }
         });
         $("#address").cityPicker({
@@ -314,7 +309,7 @@
                 url: "http://127.0.0.1:8889/mobile/newinsuranceorder",
                 data: insurance,
                 cache: false,
-                dataType: 'json',
+                dataType: 'jsonp',
                 contentType: false,
                 processData: false,
                 beforeSend: function (xhr) {
