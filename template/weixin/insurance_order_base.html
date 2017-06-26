@@ -258,6 +258,7 @@
             } else {
                 if ($('#switch_owner').is(':checked')) {
                     insurance.is_same_person = 1;
+                    window.localStorage.setItem("insurance", JSON.stringify(insurance));
                     document.location.href = "/insurance_order_items"
                 } else {
                     if (insurance.id_card_front_owner == null) {
@@ -266,6 +267,7 @@
                         $.toast("请上传车主身份证(反面)", "text");
                     } else {
                         insurance.is_same_person = 0;
+                        window.localStorage.setItem("insurance", JSON.stringify(insurance));
                         document.location.href = "/insurance_order_items";
                     }
                 }
