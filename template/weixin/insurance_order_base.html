@@ -213,8 +213,7 @@
             <div class="weui-col-40">
                 <a href="javascript:;" class="file">
                     选择
-                    <input type="file" name="id_card_back_owner" onchange="loadingImg(this,'id_card_back_owner_img')"
-                           accept="image/*">
+                    <input  name="id_card_back_owner">
                 </a>
                 <p class="name">
                     车主身份证<br/>
@@ -384,13 +383,27 @@ wx.config({
     signature: '{{ret["signature"]}}',// 必填，签名，见附录1
     jsApiList: ['chooseImage','uploadImage','downloadImage'] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
 });
-wx.chooseImage({
-    count: 1, // 默认9
-    sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
-    sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
-    success: function (res) {
-        var localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
-    }
+$('#id_card_back_owner').on('click', function () {
+    wx.chooseImage({
+        success: function (res) {
+            var localIds = res.localIds;
+            syncUpload(localIds);
+        }
+    });
 });
+var syncUpload = function(localIds){
+    var localId = localIds.pop();
+    wx.uploadImage({
+        localId: localId,
+        isShowProgressTips: 1,
+        success: function (res) {
+            var serverId = res.serverId; // 返回图片的服务器端ID
+            //其他对serverId做处理的代码
+            if(localIds.length > 0){
+                syncUpload(localIds);
+            }
+        }
+    });
+};
 </script>
 {% endblock %}
