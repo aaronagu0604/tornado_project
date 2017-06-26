@@ -1571,8 +1571,7 @@ class WithdrawHandler(AdminBaseHandler):
             ft = ft & (MoneyRecord.apply_time > time.mktime(begin)) & (MoneyRecord.apply_time < time.mktime(end))
 
         if key:
-            keyword = '%' + key + '%'
-            ft = ft & ((Store.name.contains(keyword)) | (User.mobile.contains(keyword)))
+            ft = ft & ((Store.name.contains(key)) | (User.mobile.contains(key)))
             uq = MoneyRecord.select().join(Store, on=(MoneyRecord.store == Store.id)).join(User, on=(MoneyRecord.user == User.id)).where(ft)
         else:
             uq = MoneyRecord.select().where(ft)
@@ -1686,23 +1685,83 @@ class RefereeList(AdminBaseHandler):
     }}
 
     '''
-    def getOrderCount(self, startTime, lastTime, refereeID):
-        ios = InsuranceOrder.select().where(InsuranceOrder.status == 3, InsuranceOrder.pay_time > startTime,
-                                            InsuranceOrder.pay_time <= lastTime)
-        AdminUser.select().where(AdminUser.roles == 'S')
-        storeList = {}
+    def getInsuranceOrder(self, startTime, lastTime, referees):
+        print time.strftime('%H:%M:%S', time.localtime())
+        io_list = []
+        store_list = {}
+        for io in InsuranceOrder.select(InsuranceOrder.id, Store.id, Store.admin_code, InsuranceOrder.deal_time).\
+                join(Store).where(InsuranceOrder.status == 3).tuples():
+            if io[1] not in store_list:
+                store_list[io[1]] = 1
+            else:
+                store_list[io[1]] += 1
+            if (io[3] > startTime) and (io[3] <= lastTime):
+                for referee in referees:
+                    if io[2] == referee['code']:
+                        referee['total_io'] += 1
+                        if store_list[io[1]] == 1:
+                            referee['first_io'] += 1
+                        elif store_list[io[1]] == 2:
+                            referee['second_io'] += 1
+                        elif store_list[io[1]] == 3:
+                            referee['third_io'] += 1
+                        break
+                else:
+                    referees[0]['total_io'] += 1
+                    if store_list[io[1]] == 1:
+                        referee['first_io'] += 1
+                    elif store_list[io[1]] == 2:
+                        referee['second_io'] += 1
+                    elif store_list[io[1]] == 3:
+                        referee['third_io'] += 1
+        print time.strftime('%H:%M:%S', time.localtime())
+        return referees
+
+    def get_store(self, startTime, lastTime):
+        print time.strftime('%H:%M:%S', time.localtime())
+        referees = [{
+            'name': u'无推广人员',
+            'code': '000000',
+            'new_store': 0,
+            'total_io': 0,
+            'first_io': 0,
+            'second_io': 0,
+            'third_io': 0
+        }]
+        for referee in AdminUser.select().where(AdminUser.active == 1, AdminUser.roles.contains('S')):
+            referees.append({
+                'name': referee.realname,
+                'code': referee.code,
+                'new_store': 0,
+                'total_io': 0,
+                'first_io': 0,
+                'second_io': 0,
+                'third_io': 0
+            })
+
+        for s in Store.select().where(Store.created > startTime, Store.created <= lastTime, Store.active == 1):
+            for referee in referees:
+                if s.admin_code == referee['code']:
+                    referee['new_store'] += 1
+                    break
+            else:
+                referees[0]['new_store'] += 1
+        print time.strftime('%H:%M:%S', time.localtime())
+        return referees
 
     def get(self):
         startDate = self.get_argument("startDate", '')
         lastDate = self.get_argument("lastDate", '')
-        refereeID = self.get_argument("refereeID", '')
-        if refereeID:
-            refereeID = int(refereeID)
-        startDate, lastDate, startTime, lastTime = getDate(startDate, lastDate)
-        refereeList, amount = self.getOrderCount(startTime, lastTime, refereeID)
 
-        self.render("admin/report/referee_list.html", refereeList=refereeList, active='refereeReport',
-                    amount=amount, startDate=startDate, lastDate=lastDate)
+        startDate, lastDate, startTime, lastTime = getDate(startDate, lastDate)
+        referees = self.get_store(startTime, lastTime)
+        referees = self.getInsuranceOrder(startTime, lastTime, referees)
+
+        for r in referees:
+            print r['name'], r['code'], r['new_store'], r['total_io'], r['first_io'], r['second_io'], r['third_io']
+
+        # self.render("admin/report/referee_list.html", refereeList=refereeList, active='refereeReport',
+        #             amount=amount, startDate=startDate, lastDate=lastDate)
 
 
 @route(r'/admin/export_trade_list', name='admin_export_trade_list')  # 导出出单明细
@@ -2305,58 +2364,6 @@ class InsuranceOrderDetailHandler(AdminBaseHandler):
 
         self.redirect('admin/insurance_order/%s'%oid)
 
-#
-# @route(r'/admin/new_program/(\d+)', name='admin_new_program')  # 新增保险方案
-# class NewProgramHandler(AdminBaseHandler):
-#     def get(self, oid):
-#         i_items = InsuranceItem.select().order_by(InsuranceItem.sort)
-#         insurances = Insurance.select().order_by(Insurance.sort)
-#         insurance_list = []
-#         for insurance in insurances:
-#             insurance_list.append({
-#                 'id': insurance.id,
-#                 'name': insurance.name
-#             })
-#         i_item_list = []
-#         for i_item in i_items:
-#             i_item_list.append({
-#                 'eName': i_item.eName,
-#                 'name': i_item.name,
-#                 'style': i_item.style,
-#                 'style_id': i_item.style_id,
-#                 'insurance_prices': [i_price.coverage for i_price in i_item.insurance_prices]
-#             })
-#
-#         self.render('admin/order/insurance_order_new_program.html', oid=oid, i_item_list=i_item_list, insurance_list=insurance_list)
-#
-#     def post(self, oid):
-#         insurance = self.get_body_argument('insurance', None)
-#         gift_policy = self.get_body_argument('gift_policy', None)
-#         datas = {}
-#         for data in self.request.body.split('&'):
-#             key, value = data.split('=', 1)
-#             if value:
-#                 datas[key] = value
-#         iop = InsuranceOrderPrice()
-#         iop.insurance_order_id = oid
-#         iop.insurance = insurance
-#         iop.gift_policy = gift_policy if gift_policy else 1
-#         iop.admin_user = self.get_admin_user()
-#         iop.created = time.time()
-#         i_items = InsuranceItem.select().order_by(InsuranceItem.sort)
-#         for i_item in i_items:
-#             if i_item.eName in datas:
-#                 if i_item.eName+'_p' in datas:
-#                     iop.__dict__['_data'][i_item.eName] = self.get_body_argument(i_item.eName+'_p', None)
-#                 else:
-#                     iop.__dict__['_data'][i_item.eName] = '1'
-#         iop.save()
-#         AdminUserLog.create(admin_user=self.get_admin_user(),
-#                             created=int(time.time()),
-#                             content='添加报价单: iop_id:%d'%iop.id)
-#         self.write(u'新建成功')
-#         # self.redirect('/admin/insurance_order/%s'%oid)
-
 
 @route(r'/admin/insurance_dispose/(\d+)', name='admin_insurance_dispose')  # 保险订单完成（保单返佣）
 class InsuranceOrderDelHandler(AdminBaseHandler):
@@ -2461,7 +2468,6 @@ class InsuranceList(AdminBaseHandler):
         ia.score_policy = ''
         ia.save()
         self.redirect('/admin/insurance')
-
 
 
 def update_area_policy(insurance_area):
@@ -2930,6 +2936,7 @@ class CheckJPushHandler(AdminBaseHandler):
         jp.save()
         self.redirect('/admin/check_jpush')
 
+
 @route(r'/admin/store_mobile', name='admin_store_mobile')  # 门店管理
 class StoresMobileHandler(AdminBaseHandler):
     def get(self):
@@ -2974,6 +2981,7 @@ class StoresMobileHandler(AdminBaseHandler):
         self.render('/admin/sysSetting/get_store_user_mobile.html', stores=cfs, total=total, page=page, pagesize=pagesize,
                     totalpage=totalpage, active='store_mobile', status=status, keyword=keyword, Area=Area, items=items,
                     province=default_province, city=default_city, district=default_district)
+
 
 @route(r'/admin/log', name='admin_log')  # 系统日志
 class LogHandler(AdminBaseHandler):
