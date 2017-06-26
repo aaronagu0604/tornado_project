@@ -257,6 +257,7 @@
             } else {
                 var insurance = JSON.parse(window.localStorage.getItem("insurance"));
                 insurance.gift_policy = list;
+                var token = $("#token").var();
                 if (!$('#default_addr').is(':checked')) {
                     var tel = $("#tel").val();
                     var re = /^1\d{10}$/;
@@ -281,7 +282,7 @@
                         insurance.delivery_district = arr[2];
                         window.localStorage.setItem("insurance", insurance);
                         console.log(insurance);
-                        submit(insurance);
+                        submit(insurance, token);
                     }
                 } else {
                     insurance.delivery_to = "{{address['delivery_to']}}";
@@ -292,12 +293,12 @@
                     insurance.delivery_district = "{{address['delivery_district']}}";
                     window.localStorage.setItem("insurance", insurance);
                     console.log(insurance);
-                    submit(insurance);
+                    submit(insurance, token);
                 }
             }
         });
-        function submit(insurance) {
-            var token = $("#token").var();
+        function submit(insurance, token) {
+
             $.ajax({
                 type: "POST",
                 url: "http://api.dev.test.520czj.com/mobile/newinsuranceorder",
