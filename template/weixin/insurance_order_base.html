@@ -213,7 +213,7 @@
             <div class="weui-col-40">
                 <a href="javascript:;" class="file">
                     选择
-                    <input  name="id_card_back_owner">
+                    <div  name="id_card_back_owner_div"></div>
                 </a>
                 <p class="name">
                     车主身份证<br/>
@@ -384,7 +384,7 @@ wx.config({
     signature: '{{ret["signature"]}}',// 必填，签名，见附录1
     jsApiList: ['chooseImage','uploadImage','downloadImage'] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
 });
-$('#id_card_back_owner').on('click', function () {
+$('#id_card_back_owner_div').on('click', function () {
     wx.chooseImage({
         success: function (res) {
             var localIds = res.localIds;
