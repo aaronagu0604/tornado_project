@@ -317,6 +317,9 @@
 
         $("#next").bind("click", function () {
             var insurance = JSON.parse(window.localStorage.getItem("insurance"));
+            if (insurance == null) {
+                var insurance = {};
+            }
             if (!$('#forceI').is(':checked')
                 && !$('#damageI').is(':checked')
                 && $('#thirdDutyI').val() == "不投"
