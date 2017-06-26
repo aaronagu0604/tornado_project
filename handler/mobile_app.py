@@ -1758,7 +1758,9 @@ class MobilNewInsuranceOrderHandler(MobileBaseHandler):
     @apiSampleRequest /mobile/newinsuranceorder
     """
     def options(self):
-        pass
+        result = {'flag':1,'msg':'sucess','data':[]}
+        self.set_header("Access-Control-Allow-Origin", "*")
+        self.write(simplejson.dumps(result))
 
     @require_auth
     def post(self):
@@ -1866,7 +1868,6 @@ class MobilNewInsuranceOrderHandler(MobileBaseHandler):
             create_msg(simplejson.dumps(sms), 'sms')
         else:
             result['msg'] = u'输入参数异常'
-        self.set_header("Access-Control-Allow-Origin", "*")
         self.write(simplejson.dumps(result))
         self.finish()
 

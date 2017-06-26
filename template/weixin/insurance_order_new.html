@@ -103,7 +103,7 @@
     <div class="weui-cells weui-cells_radio">
         <label class="weui-cell weui-check__label" for="default_addr">
 
-            <div class="weui-cell__hd">
+            <div class="weui-cell weui-check__label order_price_statue">
 
                 <input type="radio" name="radio1" class="weui-check" style="display: none" checked="checked"
                        id="default_addr">
@@ -141,7 +141,7 @@
         </div>
         <label class="weui-cell weui-check__label" for="write_addr">
 
-            <div class="weui-cell__hd">
+            <div class="weui-cell weui-check__label order_price_statue">
                 <input type="radio" name="radio1" class="weui-check" style="display: none" id="write_addr">
 
             </div>
@@ -195,7 +195,7 @@
             <div class="weui-row">
                 {% for gift in rake_back %}
                 <div class="weui-col-50">
-                    <label class="weui-cell weui-check__label" for="{{gift['name']}}">
+                    <label class="weui-cell weui-check__label order_price_statue" for="{{gift['name']}}">
                         <div class="weui-cell__hd">
                             <input type="radio" class="weui-check" name="radio2" id="{{gift['name']}}"
                                    value="{{gift['type']}}">
