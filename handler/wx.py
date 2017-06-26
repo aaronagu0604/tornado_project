@@ -99,7 +99,7 @@ class InsuranceHandler(WXBaseHandler):
 @route(r'/insurance_order_base/(\d+)', name='wx_insurance_order_base')  # 保险订单上传个人信息页面
 class InsuranceOrderBaseHandler(WXBaseHandler):
     def get(self,insurance):
-        self.render('weixin/insurance_order_base.html',insurance=insurance)
+        self.render('weixin/insurance_order_base.html',insurance=insurance, ret = self.get_js_sdk_sign())
 
 @route(r'/insurance_order_items', name='wx_insurance_order_items')  # html 保险下单选择保险条目页面
 class InsuranceOrderItemsHandler(WXBaseHandler):
@@ -193,44 +193,9 @@ class InsuranceOrderPriceHandler(WXBaseHandler):
 
 @route(r'/pay_detail', name='wx_pay_detail')  # html 微信公众号支付详情页面
 class PayDetailHandler(WXBaseHandler):
-
-    def get_access_token(self):
-        self.weixin_app_id = appid
-        self.weixin_secret = secret
-        self.url_access_token = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s" % (
-        self.weixin_app_id, self.weixin_secret)
-        return simplejson.loads(urllib2.urlopen(self.url_access_token).read())["access_token"]
-
-    def get_jsapi_ticket(self):
-        # https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=ACCESS_TOKEN&type=jsapi
-        self.url_access_token = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=%s&type=jsapi" % (
-        self.get_access_token())
-        return simplejson.loads(urllib2.urlopen(self.url_access_token).read())["ticket"]
-
-    def __create_nonce_str(self):
-        return ''.join(rand.choice(string.ascii_letters + string.digits) for _ in range(15))
-
-    def __create_timestamp(self):
-        return int(time.time())
-
-    def sign(self,ret={}):
-        string1 = '&'.join(['%s=%s' % (key.lower(), ret[key]) for key in sorted(ret)])
-        ret['signature'] = hashlib.sha1(string1).hexdigest()
-        return ret
-
-
     def get(self):
-        ret = {
-            'nonceStr': self.__create_nonce_str(),
-            'jsapi_ticket': self.get_jsapi_ticket(),
-            'timeStamp': self.__create_timestamp(),
-            'url': 'http://wx.dev.520czj.com/pay_detail'
-        }
-        ret = self.sign(ret)
-        ret['appid'] = appid
-
         payinfo = Qrcode_pub().getPayQrcode(self.__create_nonce_str(), '车装甲微信测试付款', int(1 * 100))
-        self.render('weixin/pay_detail.html',ret=ret,payinfo=payinfo)
+        self.render('weixin/pay_detail.html', payinfo=payinfo)
 
 @route(r'/wxapi/login', name='wx_api_login')  # html 登录
 class WXApiLoginHandler(BaseHandler):
@@ -442,7 +407,6 @@ class UserAddressDetailHandler(WXBaseHandler):
             StoreAddress.create(store=user.store, province=province, city=city, region=region, address=address,
                                 name=receiver, mobile=mobile, is_default=is_default, create_by=user, created=created)
         self.redirect('/user_address')
-
 
 @route(r'/user_childrens', name='wx_user_childrens')  # 我的下线
 class UserChildrensHandler(WXBaseHandler):

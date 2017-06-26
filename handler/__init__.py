@@ -10,8 +10,15 @@ import logging
 import functools
 import setting
 import uuid
+import simplejson
+import random as rand
+import hashlib
+import string
+import urllib2
+import time
 
-
+appid = 'wxf23313db028ab4bc'
+secret = '8d75a7fa77dc0e5b2dc3c6dd551d87d6'
 
 class MobilePageNotFoundHandler(RequestHandler):
     def get(self):
@@ -181,6 +188,41 @@ class WXBaseHandler(BaseHandler):
         user.save()
         self.application.memcachedb.set(token, str(user.id), setting.user_expire)
         return user
+
+    def get_access_token(self):
+        self.weixin_app_id = appid
+        self.weixin_secret = secret
+        self.url_access_token = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s" % (
+            self.weixin_app_id, self.weixin_secret)
+        return simplejson.loads(urllib2.urlopen(self.url_access_token).read())["access_token"]
+
+    def get_jsapi_ticket(self):
+        # https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=ACCESS_TOKEN&type=jsapi
+        self.url_access_token = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=%s&type=jsapi" % (
+            self.get_access_token())
+        return simplejson.loads(urllib2.urlopen(self.url_access_token).read())["ticket"]
+
+    def create_nonce_str(self):
+        return ''.join(rand.choice(string.ascii_letters + string.digits) for _ in range(15))
+
+    def create_timestamp(self):
+        return int(time.time())
+
+    def sign(self, ret={}):
+        string1 = '&'.join(['%s=%s' % (key.lower(), ret[key]) for key in sorted(ret)])
+        ret['signature'] = hashlib.sha1(string1).hexdigest()
+        return ret
+
+    def get_js_sdk_sign(self):
+        ret = {
+            'nonceStr': self.create_nonce_str(),
+            'jsapi_ticket': self.get_jsapi_ticket(),
+            'timeStamp': self.create_timestamp(),
+            'url': 'http://wx.dev.520czj.com/pay_detail'
+        }
+        ret = self.sign(ret)
+        ret['appid'] = appid
+        return ret
     # def prepare(self):
     #     if self.get_current_user():
     #         pass
