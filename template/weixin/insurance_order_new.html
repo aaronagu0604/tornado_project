@@ -251,54 +251,54 @@
             }
         });
 
-        function gotoNext() {
-            var list = $('input:radio[name="radio2"]:checked').val();
-            if (list == null) {
-                $.toast("请选择优惠方式", "text");
 
-            } else {
-                var insurance = JSON.parse(window.localStorage.getItem("insurance"));
-                insurance.gift_policy = list;
-                if (!$('#default_addr').is(':checked')) {
-                    var tel = $("#tel").val();
-                    var re = /^1\d{10}$/;
-                    if ($("#name").val() == "") {
-                        $.toast("请输入收货人姓名", "text");
-                    } else if (tel == "") {
-                        $.toast("请输入收货人电话", "text");
-                    } else if (!re.test(tel)) {
-                        $.toast("手机号格式错误", "text");
-                    } else if ($("#detailed_address").val() == "") {
-                        $.toast("请输入详细地址", "text");
-                    } else {
-                        insurance.delivery_to = $("#name").val();
-                        insurance.delivery_tel = $("#tel").val();
-                        insurance.delivery_address = $("#detailed_address").val();
-                        var address = $("#address").val();
-                        var arr = new Array();
-                        arr = address.split(' ');
-                        console.log(arr[0]);
-                        insurance.delivery_province = arr[0];
-                        insurance.delivery_city = arr[1];
-                        insurance.delivery_district = arr[2];
+    });
+    function gotoNext() {
+        var list = $('input:radio[name="radio2"]:checked').val();
+        if (list == null) {
+            $.toast("请选择优惠方式", "text");
 
-                        window.localStorage.setItem("insurance", insurance);
-                        document.location.href = "insurance_order_success";
-                    }
+        } else {
+            var insurance = JSON.parse(window.localStorage.getItem("insurance"));
+            insurance.gift_policy = list;
+            if (!$('#default_addr').is(':checked')) {
+                var tel = $("#tel").val();
+                var re = /^1\d{10}$/;
+                if ($("#name").val() == "") {
+                    $.toast("请输入收货人姓名", "text");
+                } else if (tel == "") {
+                    $.toast("请输入收货人电话", "text");
+                } else if (!re.test(tel)) {
+                    $.toast("手机号格式错误", "text");
+                } else if ($("#detailed_address").val() == "") {
+                    $.toast("请输入详细地址", "text");
                 } else {
-                    insurance.delivery_to = "{{address['delivery_to']}}";
-                    insurance.delivery_tel = "{{address['delivery_tel']}}";
-                    insurance.delivery_address = "{{address['delivery_address']}}";
-                    insurance.delivery_province = "{{address['delivery_province']}}";
-                    insurance.delivery_city = "{{address['delivery_city']}}";
-                    insurance.delivery_district = "{{address['delivery_district']}}";
+                    insurance.delivery_to = $("#name").val();
+                    insurance.delivery_tel = $("#tel").val();
+                    insurance.delivery_address = $("#detailed_address").val();
+                    var address = $("#address").val();
+                    var arr = new Array();
+                    arr = address.split(' ');
+                    console.log(arr[0]);
+                    insurance.delivery_province = arr[0];
+                    insurance.delivery_city = arr[1];
+                    insurance.delivery_district = arr[2];
+
                     window.localStorage.setItem("insurance", insurance);
-                    console.log(insurance);
                     document.location.href = "insurance_order_success";
                 }
+            } else {
+                insurance.delivery_to = "{{address['delivery_to']}}";
+                insurance.delivery_tel = "{{address['delivery_tel']}}";
+                insurance.delivery_address = "{{address['delivery_address']}}";
+                insurance.delivery_province = "{{address['delivery_province']}}";
+                insurance.delivery_city = "{{address['delivery_city']}}";
+                insurance.delivery_district = "{{address['delivery_district']}}";
+                window.localStorage.setItem("insurance", insurance);
+                console.log(insurance);
+                document.location.href = "insurance_order_success";
             }
         }
-    });
-
+    }
 </script>
 {% endblock %}
