@@ -402,10 +402,13 @@ var syncUpload = function(localIds){
             var serverId = res.serverId; // 返回图片的服务器端ID
             $.ajax({
                 type: "POST",
-                dataType:"jsonp",
+                dataType:"json",
                 url: "http://img.520czj.com/upload/urlimage",
                 data: {
                     media_id:serverId
+                },
+                beforeSend: function (res) {
+                    res.setRequestHeader("Access-Control-Allow-Origin", "*");
                 },
                 success: function (data) {
                     $.hideLoading();
