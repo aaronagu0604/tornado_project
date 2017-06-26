@@ -261,14 +261,6 @@
     $(document).ready(function () {
 
         var insurance_list = JSON.parse('{{insurance_message}}');
-        var str = window.localStorage.getItem("insurance");
-        if (str == null) {
-            var insurance = {};
-        } else {
-            var insurance = JSON.parse(str);
-        }
-        insurance.insurance_list = insurance_list;
-        window.localStorage.setItem("insurance", JSON.stringify(insurance));
         var idValues = [];
         var nameValues = [];
         for (var i = 0; i < insurance_list.length; i++) {
@@ -316,6 +308,7 @@
             $('#scratchI').css("background-color", "#ffffff").css("color", "#262626");
             $("#scratchIPlus").prop("checked", false);
         }
+
         $("#next").bind("click", function () {
             var insurance = JSON.parse(window.localStorage.getItem("insurance"));
             if (!$('#forceI').is(':checked')
@@ -397,7 +390,7 @@
                 insurance.insurance = $('#insurance_name').val();
                 window.localStorage.setItem("insurance", JSON.stringify(insurance));
                 console.log(insurance);
-                document.location.href = "/insurance_order_new?i_name="+insurance.insurance;
+                document.location.href = "/insurance_order_new?i_name=" + insurance.insurance;
             }
         });
         var third = JSON.parse('{{thirdDutyI}}');
