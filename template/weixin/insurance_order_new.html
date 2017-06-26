@@ -78,18 +78,23 @@
         text-align: center;
     }
 
+    .weui-cell weui-check__label {
+        padding-left: 10px;
+    }
+
     .weui-cells_radio .weui-check:checked + .weui-icon-checked:before {
         display: block;
         content: "\EA06";
         color: #09bb07;
-        font-size: 23px
+        font-size: 13px
     }
 
     .weui-cells_radio .weui-icon-checked:before {
         display: block;
         content: "\EA01";
         color: #c9c9c9;
-        font-size: 23px
+        adding-left: 10px;
+        font-size: 13px
     }
 
 
@@ -309,7 +314,7 @@
                 url: "http://127.0.0.1:8889/mobile/newinsuranceorder",
                 data: insurance,
                 cache: false,
-                dataType: 'jsonp',
+                dataType: 'json',
                 contentType: false,
                 processData: false,
                 beforeSend: function (xhr) {
