@@ -280,7 +280,7 @@
                         insurance.delivery_province = arr[0];
                         insurance.delivery_city = arr[1];
                         insurance.delivery_district = arr[2];
-                        window.localStorage.setItem("insurance", insurance);
+                        window.localStorage.setItem("insurance", JSON.stringify(insurance));
                         console.log(insurance);
                         submit(insurance);
                     }
@@ -291,7 +291,7 @@
                     insurance.delivery_province = "{{address['delivery_province']}}";
                     insurance.delivery_city = "{{address['delivery_city']}}";
                     insurance.delivery_district = "{{address['delivery_district']}}";
-                    window.localStorage.setItem("insurance", insurance);
+                    window.localStorage.setItem("insurance",  JSON.stringify(insurance));
                     console.log(insurance);
                     submit(insurance);
                 }
@@ -303,6 +303,9 @@
                 type: "POST",
                 url: "http://api.dev.test.520czj.com/mobile/newinsuranceorder",
                 data: insurance,
+                cache: false,
+                contentType: false,
+                processData: false,
                 beforeSend: function (xhr) {
                     xhr.setRequestHeader("token", "{{token}}");
                 },
