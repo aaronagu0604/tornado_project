@@ -182,7 +182,7 @@
                 <div class="weui-col-50">
                     <label class="weui-cell weui-check__label" for="{{gift['name']}}">
                         <div class="weui-cell__hd">
-                            <input type="radio" name="radio2" id="{{gift['name']}}">
+                            <input type="radio" name="radio2" id="{{gift['name']}}" value="{{gift['type']}}">
                         </div>
                         <div class="weui-cell__bd">
                             <p> {{gift['name']}}</p>
@@ -193,7 +193,6 @@
                     </div>
                 </div>
                 {% endfor %}
-
             </div>
         </div>
     </div>
@@ -216,7 +215,11 @@
             $("#write_addr_img").attr('src', "../../style/wximg/duihao_gray.png");
 
         }
-
+        if ($(".gift_policy,input").length > 0) {
+            $(".gift_policy").show();
+        } else {
+            $(".gift_policy").hide();
+        }
 
         $(document).on("click", "#write_addr", function () {
             if ($('#write_addr').is(':checked')) {
@@ -241,16 +244,13 @@
         });
 
         function gotoNext() {
-            if (!$('#gift_policy_01').is(':checked') && !$('#gift_policy_02').is(':checked')) {
+            var list = $('input:radio[name="radio2"]:checked').val();
+            if (list == null) {
                 $.toast("请选择优惠方式", "text");
-            } else {
+            }
+            else {
                 var insurance = JSON.parse(window.localStorage.getItem("insurance"));
-
-                if ($('#gift_policy_01').is(':checked')) {
-                    insurance.gift_policy = "1";
-                } else {
-                    insurance.gift_policy = "2";
-                }
+                insurance.gift_policy = "{{gift['type']}}";
                 if (!$('#default_addr').is(':checked')) {
                     var tel = $("#tel").val();
                     var re = /^1\d{10}$/;
