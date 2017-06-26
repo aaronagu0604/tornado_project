@@ -249,7 +249,13 @@
                 $.toast("请选择优惠方式", "text");
 
             } else {
-                var insurance = JSON.parse(window.localStorage.getItem("insurance"));
+
+                var str = window.localStorage.getItem("insurance");
+                if (str == null) {
+                    var insurance = {};
+                } else {
+                    var insurance = JSON.parse(str);
+                }
                 insurance.gift_policy = list;
                 if (!$('#default_addr').is(':checked')) {
                     var tel = $("#tel").val();
