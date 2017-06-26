@@ -1758,10 +1758,7 @@ class MobilNewInsuranceOrderHandler(MobileBaseHandler):
     @apiSampleRequest /mobile/newinsuranceorder
     """
     def options(self):
-        logging.info(self.request)
-        result = {'flag':1,'msg':'sucess','data':[]}
-        self.set_header("Access-Control-Allow-Origin", "*")
-        self.write(simplejson.dumps(result))
+        pass
 
     @require_auth
     def post(self):
