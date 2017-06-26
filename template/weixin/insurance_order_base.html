@@ -402,7 +402,7 @@ var syncUpload = function(localIds){
             var serverId = res.serverId; // 返回图片的服务器端ID
             $.ajax({
                 type: "POST",
-                dataType:json,
+                dataType:"json",
                 url: "http://img.520czj.com/upload/urlimage",
                 data: {
                     media_id:serverId
