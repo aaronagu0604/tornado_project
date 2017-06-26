@@ -107,6 +107,7 @@ class InsuranceOrderItemsHandler(WXBaseHandler):
         url = "http://api.dev.test.520czj.com/mobile/insuranceorderbase"
         req = urllib2.Request(url)
         req.add_header('token', token)
+        print token
         response = urllib2.urlopen(req)
         return simplejson.loads(response.read())['data']
 
