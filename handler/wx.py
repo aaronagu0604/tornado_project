@@ -150,7 +150,8 @@ class InsuranceOrderNewHandler(WXBaseHandler):
         for item in insurance_message:
             if item['name'] == i_name:
                 insurance_policy = item['rake_back']
-        self.render('weixin/insurance_order_new.html', address=address, rake_back=insurance_policy)
+
+        self.render('weixin/insurance_order_new.html', address=address, rake_back=insurance_policy,token=user.token)
 
 @route(r'/insurance_order_success', name='wx_insurance_order_success')  # html 保险下单成功提示页面
 class InsuranceOrderSuccessHandler(WXBaseHandler):
