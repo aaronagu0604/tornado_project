@@ -255,6 +255,7 @@
             if (list == null) {
                 $.toast("请选择优惠方式", "text");
             } else {
+                console.log(window.localStorage.getItem("insurance"));
                 var insurance = JSON.parse(window.localStorage.getItem("insurance"));
                 insurance.gift_policy = list;
                 if (!$('#default_addr').is(':checked')) {
