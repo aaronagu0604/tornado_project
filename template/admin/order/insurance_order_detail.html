@@ -2054,7 +2054,7 @@
                 if(thirdDutyICB){
                     hasbus = true;
                     var thirdDutyIP = $(program).find('select[name="thirdDutyIP"]').find("option:selected").text();    // 三责 险额
-                    msg = msg +'第三者责任险 保额：'+thirdDutyIP+' '+thirdDutyIPrice+'元\n'
+                    msg = msg +'第三者责任险'+' '+thirdDutyIPrice+'元 保额：' + thirdDutyIP + '\n'
                 }
                 if(thirdDutyIPlusCB){
                     hasbus = true;
@@ -2071,7 +2071,7 @@
                 if(driverDutyICB){
                     hasbus = true;
                     var driverDutyIS = $(program).find('select[name="driverDutyIS"]').find("option:selected").text();    // 司机 险额
-                    msg = msg +'车上人员责任险（司机）保额：'+driverDutyIS+' '+driverDutyIPrice+'元\n'
+                    msg = msg +'车上人员责任险（司机）'+driverDutyIPrice+'元 保额：'+driverDutyIS+'\n'
                 }
                 if(driverDutyIPlusCB){
                     hasbus = true;
@@ -2080,7 +2080,7 @@
                 if(passengerDutyICB){
                     hasbus = true;
                     var passengerDutyIS = $(program).find('select[name="passengerDutyIS"]').find("option:selected").text();    // 乘客 险额
-                    msg = msg +'车上人员责任险（乘客）保额：'+passengerDutyIS+' '+passengerDutyIPrice+'元\n'
+                    msg = msg +'车上人员责任险（乘客）'+passengerDutyIPrice+'元 保额：'+passengerDutyIS+'\n'
                 }
                 if(passengerDutyIPlusCB){
                     hasbus = true;
@@ -2097,7 +2097,7 @@
                 if(scratchIPlusCB){
                     hasbus = true;
                     var scratchIS = $(program).find('select[name="scratchIS"]').find("option:selected").text();    // 划痕 险额
-                    msg = msg +'车身划痕损失不计免赔 保额：'+scratchIS+' '+scratchIPlusPrice+'元\n'
+                    msg = msg +'车身划痕损失不计免赔 '+scratchIPlusPrice+'元 保额：'+scratchIS+'\n'
                 }
                 if(fireDamageICB){
                     hasbus = true;

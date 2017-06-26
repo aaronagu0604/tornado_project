@@ -32,47 +32,47 @@ def sendmsg(mobile, content, isyzm):
     if isinstance(isyzm, unicode):
         isyzm = isyzm.encode('utf8')
     try:#vcodeNew
-        if isyzm == 'vcode': #验证码
+        if isyzm == 'vcode':    # 验证码
             req.sms_param = "{\"sms_code\":\"" +content+ "\"}"
             req.sms_template_code = "SMS_35940131"
-        elif isyzm == 'vcodeNew': #验证码
+        elif isyzm == 'vcodeNew':   # 验证码
             req.sms_param = "{\"sms_code\":\"" +content+ "\"}"
             req.sms_template_code = "SMS_35895219"
             req.sms_free_sign_name = "车装甲网络科技"
-        elif isyzm == 'changePrice': #修改价格
+        elif isyzm == 'changePrice':    # 修改价格
             logging.error(u'修改价格，发送短信 %s' % str(content))
             req.sms_param = "{\"InsuranceOrderId\":\"%s\", \"Insurer\":\"%s\", \"Price\":\"%s\", \"Remarks\":\"%s\"}"%(content[0], content[1], content[2], content[3])
-            req.sms_template_code = "SMS_25095450"
-        elif isyzm == 'paySuccess': #支付成功
+            req.sms_template_code = "SMS_35600002"
+        elif isyzm == 'paySuccess':    # 支付成功
             req.sms_param = "{\"ShopName\":\"%s\", \"LocalArea\":\"%s\", \"OrderId\":\"%s\", \"Insurance\":\"%s\", \"payment\":\"%s\", \"gift\":\"%s\", \"Remarks\":\"%s\"}"%(
                 content[0], content[1], content[2], content[3], content[4], content[5], content[6])
             req.sms_template_code = "SMS_38970039"
-        elif isyzm == 'shipments': # 商品已发货，注意查收
+        elif isyzm == 'shipments':    # 商品已发货，注意查收
             req.sms_param = "{\"Ordernum\":\"%s\"}"%content
             req.sms_template_code = "SMS_25465034"
-        elif isyzm == 'cashMoney':  #提现（客户端）
+        elif isyzm == 'cashMoney':    # 提现（客户端）
             req.sms_param = "{\"Money\":\"%s\", \"CashMoney\":\"%s\"}"%(content[0], content[1])
             req.sms_template_code = "SMS_25340017"
-        elif isyzm == 'cashMoneySys':  #提现（管理员）
+        elif isyzm == 'cashMoneySys':    # 提现（管理员）
             req.sms_param = "{\"addr\":\"%s\", \"company\":\"%s\", \"people\":\"%s\", \"money\":\"%s\"," \
                             " \"payment\":\"%s\"}"%(content[0], content[1], content[2], content[3], content[4])
             req.sms_template_code = "SMS_36105271"
-        elif isyzm == 'placeOrderSys':  #下单通知（管理员）
+        elif isyzm == 'placeOrderSys':    # 下单通知（管理员）
             req.sms_param = "{\"OrderId\":\"%s\", \"OrderInfo\":\"%s\"}"%(content[0], content[1])
             req.sms_template_code = "SMS_25050449"
-        elif isyzm == 'placeOrderToStore':  #保险订单下单通知（客户）
+        elif isyzm == 'placeOrderToStore':    # 保险订单下单通知（客户）
             req.sms_param = ""
             req.sms_template_code = "SMS_35535019"
-        elif isyzm == 'checkStorePass': #申请入驻审核通过
+        elif isyzm == 'checkStorePass':   # 申请入驻审核通过
             req.sms_param = ""
             req.sms_template_code = "SMS_25075401"
-        elif isyzm == 'checkStoreDecline': #申请入驻审核 不通过
+        elif isyzm == 'checkStoreDecline':    # 申请入驻审核 不通过
             req.sms_param = ""
             req.sms_template_code = "SMS_25225457"
         elif isyzm == 'placeOrderToServer':    # 普通商品下单通知卖家
             req.sms_param = "{\"product\":\"%s\"}"%content
             req.sms_template_code = "SMS_25985258"
-        elif isyzm == 'accountNotice':  #已经给您的${bankName}尾号为${bankNum}的银行卡汇款，将于两小时内到账，请注意查收。
+        elif isyzm == 'accountNotice':    # 已经给您的${bankName}尾号为${bankNum}的银行卡汇款，将于两小时内到账，请注意查收。
             req.sms_param = "{\"bankName\":\"%s\", \"bankNum\":\"%s\"}"%(content[0], content[1])
             req.sms_template_code = "SMS_34930382"
 
