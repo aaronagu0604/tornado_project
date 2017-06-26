@@ -249,7 +249,6 @@
                 $.toast("请选择优惠方式", "text");
 
             } else {
-
                 var str = window.localStorage.getItem("insurance");
                 if (str == null) {
                     var insurance = {};
@@ -279,9 +278,9 @@
                         insurance.delivery_province = arr[0];
                         insurance.delivery_city = arr[1];
                         insurance.delivery_district = arr[2];
-
                         window.localStorage.setItem("insurance", insurance);
-                        document.location.href = "insurance_order_success";
+                        console.log(insurance);
+                        /* document.location.href = "insurance_order_success";*/
                     }
                 } else {
                     insurance.delivery_to = "{{address['delivery_to']}}";
@@ -292,7 +291,7 @@
                     insurance.delivery_district = "{{address['delivery_district']}}";
                     window.localStorage.setItem("insurance", insurance);
                     console.log(insurance);
-                    document.location.href = "insurance_order_success";
+                    /*    document.location.href = "insurance_order_success";*/
                 }
             }
         });
