@@ -2,11 +2,6 @@
 {% extends "weixin/none_foot_nav_tab.html" %}
 {% block css %}
 <title>保险公司详情</title>
-<style>
-a {
-    width: 80%;
-}
-</style>
 {% endblock %}
 {% block content %}
     <div align="center" style="padding-top: 2rem;">
@@ -15,8 +10,10 @@ a {
     <div class="content-padded">
         <p style="margin:0.8rem">{{insurance.intro}}</p>
     </div>
-    <div>
+<div style="position:fixed; width:100%; text-align: center; bottom:25px;">
+<div class="weui-btn-area">
         <a href="/insurance_order_base/{{insurance.id}}" class="weui-btn weui-btn_primary">车险报价</a>
+    </div>
     </div>
 {% endblock %}
 {% block js %}
