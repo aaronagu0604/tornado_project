@@ -244,6 +244,12 @@
                 $("#write_addr_img").attr('src', "../../style/wximg/duihao_green.png");
             }
         });
+        $("#address").cityPicker({
+            onChange: function (picker, values, displayValues) {
+                console.log(values, displayValues)
+            }
+        });
+
         $(document).on("click", "#goto_next", function () {
             var list = $('input:radio[name="radio2"]:checked').val();
             if (list == null) {
@@ -295,13 +301,6 @@
                 }
             }
         });
-
-        $("#address").cityPicker({
-            onChange: function (picker, values, displayValues) {
-                console.log(values, displayValues)
-            }
-        });
-
         function submit(insurance) {
             $.ajax({
                 type: "POST",
@@ -333,7 +332,6 @@
                 }
             });
         }
-
     });
 
 </script>
