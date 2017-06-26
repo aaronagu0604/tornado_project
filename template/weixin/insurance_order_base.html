@@ -406,21 +406,12 @@ var syncUpload = function(localIds){
                 data: {
                     media_id:serverId
                 },
-                cache: false,
-                contentType: false,
-                processData: false,
                 success: function (data) {
                     $.hideLoading();
                     var data = JSON.parse(data);
+                    console.log(data);
                     if (data.flag == 1) {
-                        $("#" + parent.name).attr('src', data.data);
-                        var insurance = JSON.parse(window.localStorage.getItem("insurance"));
-                        if (insurance == null) {
-                            var insurance = {};
-                        }
-                        insurance[parent.name] = data.data;
-                        window.localStorage.setItem("insurance", JSON.stringify(insurance));
-                        console.log(insurance);
+
                     } else {
                         $.toast(data.msg, "text");
                     }
