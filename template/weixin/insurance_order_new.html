@@ -301,9 +301,7 @@
                 type: "POST",
                 url: "http://api.dev.test.520czj.com/mobile/newinsuranceorder",
                 data: insurance,
-                cache: false,
-                contentType: false,
-                processData: false,
+
                 beforeSend: function (xhr) {
 
                     xhr.setRequestHeader("token", "{{token}}");
