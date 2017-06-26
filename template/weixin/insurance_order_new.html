@@ -172,7 +172,30 @@
         </div>
 
     </div>
-
+    <div class="gift_policy">
+        <div class="weui-cells__title">
+            <p>选择优惠方式</p>
+        </div>
+        <div class="weui-cells weui-cells_radio">
+            <div class="weui-row">
+                {% for gift in rake_back %}
+                <div class="weui-col-50">
+                    <label class="weui-cell weui-check__label" for="{{gift['name']}}">
+                        <div class="weui-cell__hd">
+                            <input type="radio" name="radio2" id="{{gift['name']}}" value="{{gift['type']}}">
+                        </div>
+                        <div class="weui-cell__bd">
+                            <p> {{gift['name']}}</p>
+                        </div>
+                    </label>
+                    <div class="weui_czj_gift">
+                        <a href="{{gift['link']}}"> {{gift['link_str']}}</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
     <div class="goto_next">
         <a href="#" onclick="gotoNext()" class="weui-btn weui-btn_primary">完成</a>
     </div>
