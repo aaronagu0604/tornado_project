@@ -322,6 +322,7 @@
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
                     $.hideLoading();
                     $.toast("创建订单失败，请检查网络后重试", "text");
+                    console.log(XMLHttpRequest);
                 }
             });
         }
