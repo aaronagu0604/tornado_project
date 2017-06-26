@@ -9,6 +9,7 @@ import string
 import os
 import simplejson
 import random
+import urllib2
 
 
 class BaseHandler(RequestHandler):
@@ -69,6 +70,54 @@ class UploadImageHandler(BaseHandler):
                 fullname, arr, filename = self.get_full_file_name('image', suffix)
             f = open(fullname, 'wb')
             f.write(meta['body'])
+            f.close()
+            result['data'] = setting.openHost+'/'+arr[0]+'/'+arr[1]+'/'+arr[2]+'/'+arr[3]+'/' + filename
+            result['flag'] = 1
+        except Exception, e:
+            logging.info('Error: upload image failing,%s' % str(e))
+            result['flag'] = 0
+            result['msg'] = 'fail in upload image'
+        if is_admin:
+            self.redirect('%s/admin/upload_pic?data=%s' % (setting.domanName, result['data']))
+        else:
+            self.set_header("Access-Control-Allow-Origin", "*")
+            self.write(simplejson.dumps(result))
+
+
+class UploadImageFromUrlHandler(BaseHandler):
+    def options(self):
+        pass
+
+    def get(self):
+        self.write('please upload a image file')
+    def get_access_token(self):
+        self.weixin_app_id = 'wxf23313db028ab4bc'
+        self.weixin_secret = '8d75a7fa77dc0e5b2dc3c6dd551d87d6'
+        self.url_access_token = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s" % (
+            self.weixin_app_id, self.weixin_secret)
+        return simplejson.loads(urllib2.urlopen(self.url_access_token).read())["access_token"]
+
+    def get_img_base_media_id(self):
+        media_id = self.get_argument('media_id', None)
+        url = 'https://api.weixin.qq.com/cgi-bin/media/get?access_token=%s&media_id=%s' % (
+        self.get_access_token(), media_id)
+        return simplejson.loads(urllib2.urlopen(url).read())
+
+    def post(self):
+        result = {}
+        result['flag'] = 0
+        result['data'] = ''
+        result['msg'] = ''
+        imgdata = self.get_img_base_media_id()
+
+        try:
+            is_admin = self.get_body_argument('is_admin', None)
+            fullname, arr, filename = self.get_full_file_name('image', 'jpg')
+            while os.path.exists(fullname):
+                logging.info('已经存在文件：' + fullname)
+                fullname, arr, filename = self.get_full_file_name('image', 'jpg')
+            f = open(fullname, 'wb')
+            f.write(imgdata)
             f.close()
             result['data'] = setting.openHost+'/'+arr[0]+'/'+arr[1]+'/'+arr[2]+'/'+arr[3]+'/' + filename
             result['flag'] = 1

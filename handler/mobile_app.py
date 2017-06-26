@@ -1761,7 +1761,7 @@ class MobilNewInsuranceOrderHandler(MobileBaseHandler):
     @require_auth
     def post(self):
         result = {'flag': 0, 'msg': '', "data": {}}
-        logging.info(self.request)
+        logging.info(self.request.body)
         id_card_front = self.get_body_argument('id_card_front', None)
         id_card_back = self.get_body_argument('id_card_back', None)
         drive_card_front = self.get_body_argument('drive_card_front', None)
