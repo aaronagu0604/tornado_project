@@ -257,7 +257,6 @@
             } else {
                 var insurance = JSON.parse(window.localStorage.getItem("insurance"));
                 insurance.gift_policy = list;
-                var token = $("#token").var();
                 if (!$('#default_addr').is(':checked')) {
                     var tel = $("#tel").val();
                     var re = /^1\d{10}$/;
@@ -282,7 +281,7 @@
                         insurance.delivery_district = arr[2];
                         window.localStorage.setItem("insurance", insurance);
                         console.log(insurance);
-                        submit(insurance, token);
+                        submit(insurance);
                     }
                 } else {
                     insurance.delivery_to = "{{address['delivery_to']}}";
@@ -293,12 +292,11 @@
                     insurance.delivery_district = "{{address['delivery_district']}}";
                     window.localStorage.setItem("insurance", insurance);
                     console.log(insurance);
-                    submit(insurance, token);
+                    submit(insurance);
                 }
             }
         });
-        function submit(insurance, token) {
-
+        function submit(insurance) {
             $.ajax({
                 type: "POST",
                 url: "http://api.dev.test.520czj.com/mobile/newinsuranceorder",
@@ -308,7 +306,7 @@
                 processData: false,
                 beforeSend: function (xhr) {
 
-                    xhr.setRequestHeader("token", token);
+                    xhr.setRequestHeader("token", "{{token}}");
                     //页面loading, 不能再进行其他操作，适合比如提交按钮
                     $.showLoading();
                 },
