@@ -156,6 +156,23 @@ class InsuranceOrderSuccessHandler(WXBaseHandler):
     def get(self):
         self.render('weixin/insurance_order_success.html')
 
+@route(r'/wxapi/insurance_orders', name='wxapi_insurance_orders')  # html 保险订单列表
+class InsuranceOrdersHandler(WXBaseHandler):
+    def get_mobile_mine(self,token,index,type):
+        url = "http://api.dev.test.520czj.com/mobile/insuranceorder"
+        req = urllib2.Request(url)
+        req.add_header('token', token)
+        response = urllib2.urlopen(req)
+        return simplejson.loads(response.read())['data']
+
+    def get(self):
+        index = self.get_argument('index',1)
+        type = self.get_argument('type','all')
+        user = self.get_current_user()
+        data = self.get_mobile_mine(user.token,index,type)
+        logging.info(data)
+        self.render('weixin/insurance_orders.html',insurance_orders=data)
+
 @route(r'/insurance_orders', name='wx_insurance_orders')  # html 保险订单列表
 class InsuranceOrdersHandler(WXBaseHandler):
     def get(self):
@@ -336,8 +353,18 @@ class RegisterHandler(BaseHandler):
 
 @route(r'/mine', name='wx_mine')  # html 会员中心
 class MineHandler(WXBaseHandler):
+    def get_mobile_mine(self, token):
+        url = "http://api.dev.test.520czj.com/mobile/mine"
+        req = urllib2.Request(url)
+        req.add_header('token', token)
+        response = urllib2.urlopen(req)
+        return simplejson.loads(response.read())['data']
+
     def get(self):
-        self.render('weixin/mine.html')
+        user = self.get_current_user()
+        data = self.get_mobile_mine(user.token)
+        logging.info(data)
+        self.render('weixin/mine.html', mine=data)
 
 @route(r'/bound_mobile', name='wx_bound_mobile')  # html 绑定手机号
 class BoundMobileHandler(WXBaseHandler):
@@ -413,8 +440,6 @@ class UserAddressDetailHandler(WXBaseHandler):
             StoreAddress.create(store=user.store, province=province, city=city, region=region, address=address,
                                 name=receiver, mobile=mobile, is_default=is_default, create_by=user, created=created)
         self.redirect('/user_address')
-
-
 
 
 @route(r'/user_childrens', name='wx_user_childrens')  # 我的下线
