@@ -37,7 +37,7 @@
         </div>
       </div>
       <div class="weui-btn-area">
-         <input id="address_id" style="display:none" value="{{address.id}}">
+         <input id="address_id" style="display:none" value="{{address.id and address.id or 0}}">
         <a class="weui-btn weui-btn_primary" type="submit" href="javascript:" id="showTooltips">保存此地址</a>
         <a href="javascript:;" class="weui-btn weui-btn_warn">删除此地址</a>
       </div>
