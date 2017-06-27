@@ -413,7 +413,7 @@ var syncUpload = function(localIds){
 
                     console.log(data);
                     if (data.flag == 1) {
-
+                        $("#id_card_back_owner").attr('src', data.data);
                     } else {
                         $.toast(data.msg, "text");
                     }
