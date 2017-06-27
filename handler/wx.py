@@ -447,6 +447,16 @@ class UserAddressDetailHandler(WXBaseHandler):
                                 name=receiver, mobile=mobile, is_default=is_default, create_by=user, created=created)
         self.redirect('/user_address')
 
+@route(r'/delete_address/(\d+)', name='wx_delete_user_address_detail')  # html 删除地址
+class DeleteUserAddressDetailHandler(WXBaseHandler):
+    def get(self,store_address_id):
+        add_id = int(store_address_id) if store_address_id!='0' else 0
+        if add_id:
+            StoreAddress.delete().where(StoreAddress.id == add_id).execute()
+
+        self.redirect('/user_address')
+
+
 @route(r'/user_childrens', name='wx_user_childrens')  # 我的下线
 class UserChildrensHandler(WXBaseHandler):
     def get(self):
