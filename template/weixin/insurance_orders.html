@@ -18,19 +18,19 @@
 {% block content %}
 <div class="weui-tab czj_wx_body">
     <div class="weui-navbar order-list-tab-bar">
-        <a type="1" class="weui-navbar__item weui-bar__item--on" href="#tab1">
+        <a type="all" class="weui-navbar__item weui-bar__item--on" href="#tab1">
             全部
         </a>
-        <a type="2" class="weui-navbar__item" href="#tab2">
+        <a type="unverify" class="weui-navbar__item" href="#tab2">
             待核价
         </a>
-        <a type="3" class="weui-navbar__item" href="#tab3">
+        <a type="unpay" class="weui-navbar__item" href="#tab3">
             待付款
         </a>
-        <a type="4" class="weui-navbar__item" href="#tab4">
+        <a type="paid" class="weui-navbar__item" href="#tab4">
             已付款
         </a>
-        <a type="5" class="weui-navbar__item" href="#tab5">
+        <a type="success" class="weui-navbar__item" href="#tab5">
             已完成
         </a>
     </div>
@@ -68,19 +68,18 @@
 {% block js %}
 <script>
     var loading = false; //上拉状态标记
-
+    var index = 1;
     //加载更多，flag=0刷新，falg==1加载更多
     function loadmore(flag) {
         var type = $(".weui-bar__item--on").attr('type');
         var current_tab = 'tab' + type;
 
-        var offset = 0;
-        if (flag == 1) {
-            offset = $('#' + current_tab + ' a').length;
+        if (flag == 0) {
+            index = 1;
         }
 
-        jQuery.getJSON("/income_record_list", {
-            'offset': offset,
+        jQuery.getJSON("/wxapi/insurance_orders", {
+            'index': index,
             'type': type
         }, function (data) {
             console.log(data);
@@ -88,6 +87,9 @@
                 if (flag == 0) {
                     $('#' + current_tab).html('');
                     $('#loadMoreContainer').pullToRefreshDone();
+                }
+                else {
+                    index = index + 1;
                 }
                 for (var i = 0; i < data.data.length; i++) {
                     var html = OrderItemToHtml(data.data[i]);
@@ -116,7 +118,7 @@
                         <div class="weui-panel__hd order_title">\
                             <div class="weui-flex">\
                                 <div class="weui-flex__item order-num">\
-                                    订单编号:U1285D068I9963\
+                                    订单编号:{{data['ordernum'}}\
                                 </div>\
                                 <div class="weui-flex__item order-status">\
                                     <span>待付款</span>\

@@ -173,7 +173,7 @@ class InsuranceOrdersHandler(WXBaseHandler):
         user = self.get_current_user()
         data = self.get_mobile_mine(user.token,index,type)
         logging.info(data)
-        self.render('weixin/insurance_orders.html',insurance_orders=data)
+        self.write(simplejson.dumps(data))
 
 @route(r'/insurance_orders', name='wx_insurance_orders')  # html 保险订单列表
 class InsuranceOrdersHandler(WXBaseHandler):
