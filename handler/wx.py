@@ -155,7 +155,7 @@ class InsuranceOrderNewHandler(WXBaseHandler):
 
 @route(r'/wxapi/insurance_order_new', name='wxapi_insurance_order_new')  # wxapi 创建保险订单
 class WXApiInsuranceOrderNewHandler(WXBaseHandler):
-    def post_mobile_mine(self,token):
+    def post_mobile_insurnace_order_new(self,token):
         url = "http://api.dev.test.520czj.com/mobile/newinsuranceorder"
         req = urllib2.Request(url,self.request.body)
         req.add_header('token', token)
@@ -164,7 +164,7 @@ class WXApiInsuranceOrderNewHandler(WXBaseHandler):
 
     def post(self):
         user = self.get_current_user()
-        data = self.get_mobile_mine(user.token)
+        data = self.post_mobile_insurnace_order_new(user.token)
         logging.info(data)
         self.write(data)
 
