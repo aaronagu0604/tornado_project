@@ -217,8 +217,19 @@ class InsuranceOrderDetailHandler(WXBaseHandler):
 
 @route(r'/insurance_order_price', name='wx_insurance_order_price')  # html 保险订单历史报价方案
 class InsuranceOrderPriceHandler(WXBaseHandler):
-    def get(self):
-        self.render('weixin/insurance_order_Price.html')
+    def get_mobile_insurance_order_price(self,token,id):
+        url = "http://api.dev.test.520czj.com/mobile/insurance_method?id=%s"%(id)
+        req = urllib2.Request(url)
+        req.add_header('token', token)
+        response = urllib2.urlopen(req)
+        return simplejson.loads(response.read())
+
+    def get(self,id):
+        user = self.get_current_user()
+        data = self.get_mobile_insurance_order_price(user.token,id)
+        logging.info(data)
+        self.render('weixin/insurance_order_price.html',data=data['data'])
+
 
 @route(r'/pay_detail', name='wx_pay_detail')  # html 微信公众号支付详情页面
 class PayDetailHandler(WXBaseHandler):
