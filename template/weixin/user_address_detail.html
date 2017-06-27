@@ -15,25 +15,33 @@
       <div class="weui-cells weui-cells_form wy-address-edit">
         <div class="weui-cell">
           <div class="weui-cell__hd"><label class="weui-label wy-lab">收货人</label></div>
-          <div class="weui-cell__bd"><input class="weui-input" type="text" placeholder="" value="{{address.name}}"></div>
+          <div class="weui-cell__bd"><input name="receiver" class="weui-input" type="text" placeholder="" value="{{address.name}}"></div>
         </div>
         <div class="weui-cell">
           <div class="weui-cell__hd"><label class="weui-label wy-lab">手机号</label></div>
-          <div class="weui-cell__bd"><input class="weui-input" type="number" pattern="[0-9]*" placeholder="" value="{{address.mobile}}"></div>
+          <div class="weui-cell__bd"><input name="mobile" class="weui-input" type="number" pattern="[0-9]*" placeholder="" value="{{address.mobile}}"></div>
         </div>
         <div class="weui-cell">
-          <div class="weui-cell__hd"><label class="weui-label wy-lab">所在地区</label></div>
-          <div class="weui-cell__bd"><input class="weui-input" id="address" type="text" value="{{address.province}}{{address.city}}{{address.district}}" readonly="" ></div>
+          <div class="weui-cell__hd"><label class="weui-label wy-lab">省</label></div>
+          <div class="weui-cell__bd"><input name="province" class="weui-input" id="province" type="text" value="{{address.province}}" readonly="" ></div>
+        </div>
+        <div class="weui-cell">
+          <div class="weui-cell__hd"><label class="weui-label wy-lab">市</label></div>
+          <div class="weui-cell__bd"><input name="city" class="weui-input" id="city" type="text" value="{{address.city}}" readonly="" ></div>
+        </div>
+        <div class="weui-cell">
+          <div class="weui-cell__hd"><label class="weui-label wy-lab">区</label></div>
+          <div class="weui-cell__bd"><input name="region" class="weui-input" id="region" type="text" value="{{address.district}}" readonly="" ></div>
         </div>
         <div class="weui-cell">
           <div class="weui-cell__hd"><label class="weui-label wy-lab">详细地址</label></div>
           <div class="weui-cell__bd">
-            <textarea class="weui-textarea" placeholder="">{{address.address}}</textarea>
+            <textarea name="address" class="weui-textarea" placeholder="">{{address.address}}</textarea>
           </div>
         </div>
         <div class="weui-cell weui-cell_switch">
           <div class="weui-cell__bd">设为默认地址</div>
-          <div class="weui-cell__ft"><input class="weui-switch" {% if address.is_default == 1 %} checked {% endif %}type="checkbox"></div>
+          <div class="weui-cell__ft"><input name="is_default" class="weui-switch" {% if address.is_default == 1 %} checked {% endif %}type="checkbox"></div>
         </div>
       </div>
       <div class="weui-btn-area">
