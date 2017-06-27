@@ -273,15 +273,6 @@
                 values: nameValues
             }],
             onClose: function () {
-
-                var company = $('#insurance_name').val();
-                var insurance = JSON.parse(window.localStorage.getItem("insurance"));
-                for (var i = 0; i < insurance_list.length; i++) {
-                    if (insurance_list[i].name == company) {
-                        insurance.insurance = insurance_list[i].id;
-                        window.localStorage.setItem("insurance", JSON.stringify(insurance));
-                    }
-                }
             }
         });
         $("#insurance_name").val('{{selectinsurance}}');
@@ -316,7 +307,15 @@
         }
 
         $("#next").bind("click", function () {
+            var insurance_list = JSON.parse('{{insurance_message}}');
+            var company = $('#insurance_name').val();
             var insurance = JSON.parse(window.localStorage.getItem("insurance"));
+            for (var i = 0; i < insurance_list.length; i++) {
+                if (insurance_list[i].name == company) {
+                    insurance.insurance = insurance_list[i].id;
+                    window.localStorage.setItem("insurance", JSON.stringify(insurance));
+                }
+            }
             if (insurance == null) {
                 var insurance = {};
             }
@@ -333,6 +332,7 @@
                 } else {
                     insurance.forceI = "";
                 }
+
                 if (!$('#damageI').is(':checked')) {
                     insurance.damageI = "";
                     insurance.damageIPlus = "";
@@ -360,7 +360,7 @@
                         insurance.scratchI = "";
                         insurance.scratchIPlus = "";
                     } else {
-                        insurance.scratchI = "1";
+                        insurance.scratchI = $('#scratchI').val();
                         if ($('#scratchIPlus').is(':checked')) {
                             insurance.scratchIPlus = "1";
                         } else {
@@ -394,6 +394,50 @@
                         insurance.thirdSpecialI = "";
                     } else {
                         insurance.thirdSpecialI = "1";
+                    }
+                }
+                if ($('#thirdDutyI').val() == "不投") {
+                    insurance.thirdDutyI = "";
+                    insurance.thirdDutyIPlus = "";
+                } else {
+                    insurance.thirdDutyI = $('#thirdDutyI').val();
+                    if ($('#thirdDutyIPlus').is(':checked')) {
+                        insurance.thirdDutyIPlus = "1";
+                    } else {
+                        insurance.thirdDutyIPlus = "";
+                    }
+                }
+                if ($('#driverDutyI').val() == "不投") {
+                    insurance.thirdDutyI = "";
+                    insurance.thirdDutyIPlus = "";
+                } else {
+                    insurance.driverDutyI = $('#driverDutyI').val();
+                    if ($('#driverDutyIPlus').is(':checked')) {
+                        insurance.driverDutyIPlus = "1";
+                    } else {
+                        insurance.driverDutyIPlus = "";
+                    }
+                }
+                if ($('#passengerDutyI').val() == "不投") {
+                    insurance.passengerDutyI = "";
+                    insurance.passengerDutyIPlus = "";
+                } else {
+                    insurance.passengerDutyI = $('#passengerDutyI').val();
+                    if ($('#passengerDutyIPlus').is(':checked')) {
+                        insurance.passengerDutyIPlus = "1";
+                    } else {
+                        insurance.passengerDutyIPlus = "";
+                    }
+                }
+                if (!$('#robbingI').is(':checked')) {
+                    insurance.robbingI = "";
+                    insurance.robbingIPlus = "";
+                } else {
+                    insurance.robbingI = "1";
+                    if ($('#robbingIPlus').is(':checked')) {
+                        insurance.robbingIPlus = "1";
+                    } else {
+                        insurance.robbingIPlus = "";
                     }
                 }
                 window.localStorage.setItem("insurance", JSON.stringify(insurance));

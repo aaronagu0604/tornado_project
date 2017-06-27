@@ -310,6 +310,7 @@
         });
         function submit(insurance) {
             $.showLoading();
+
             $.ajax({
                 type: "POST",
                 url: "/wxapi/insurance_order_new",

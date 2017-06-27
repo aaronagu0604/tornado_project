@@ -248,6 +248,8 @@
             } else {
                 if ($('#switch_owner').is(':checked')) {
                     insurance.is_same_person = 1;
+                    insurance.id_card_front_owner="";
+                    insurance.id_card_back_owner="";
                     window.localStorage.setItem("insurance", JSON.stringify(insurance));
                     document.location.href = "/insurance_order_items"
                 } else {
