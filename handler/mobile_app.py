@@ -1757,11 +1757,6 @@ class MobilNewInsuranceOrderHandler(MobileBaseHandler):
     @apiParam {Int} gift_policy 礼品策略 1反油， 2反积分, 0无礼品
     @apiSampleRequest /mobile/newinsuranceorder
     """
-    def options(self):
-        pass
-
-    def check_xsrf_cookie(self):
-        pass
 
     @require_auth
     def post(self):
