@@ -119,14 +119,14 @@
         // 0待报价 1已核价/待支付 2已支付/待出单 3完成（已送积分/油） -1已删除(取消)
         if (data.status==0) {
             paystr = '待核价';
-        } elif (data.status == 1) {
-            paystr = '待付款'
-        } elif (data.status == 2) {
-            paystr = '待出单'
-        } elif (data.status == 3) {
-            paystr = '已完成'
+        } else if (data.status == 1) {
+            paystr = '待付款';
+        } else if (data.status == 2) {
+            paystr = '待出单';
+        } else if (data.status == 3) {
+            paystr = '已完成';
         } else {
-            paystr = '已删除'
+            paystr = '已删除';
         }
 
         var html = '<a href="/insurance_order_detail'+data.id+'">\
