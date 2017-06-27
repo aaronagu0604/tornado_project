@@ -399,9 +399,9 @@ class UserAddressHandler(WXBaseHandler):
 @route(r'/user_address_detail/(\d+)', name='wx_user_address_detail')  # html 编辑地址
 class UserAddressDetailHandler(WXBaseHandler):
     def get(self,store_address_id):
-        add_id = store_address_id
+        add_id = int(store_address_id) if store_address_id!='0' else 0
         if add_id:
-            address = StoreAddress.get(id=int(add_id))
+            address = StoreAddress.get(id=add_id)
         else:
             address = None
         self.render('weixin/user_address_detail.html',address=address)
