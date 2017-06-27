@@ -1800,7 +1800,7 @@ class MobilNewInsuranceOrderHandler(MobileBaseHandler):
         thirdSpecialI = self.get_body_argument('thirdSpecialI', '')
 
         logging.info((id_card_front,id_card_back,drive_card_front,drive_card_back,
-                     is_same_person,id_card_front_owner,id_card_front_owner,
+                     is_same_person,id_card_front_owner,
                      id_card_back_owner))
         logging.info((insurance,delivery_to,delivery_tel,delivery_province,
                      delivery_city,delivery_district,delivery_address,gift_policy))
