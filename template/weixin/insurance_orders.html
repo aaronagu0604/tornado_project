@@ -18,19 +18,19 @@
 {% block content %}
 <div class="weui-tab czj_wx_body">
     <div class="weui-navbar order-list-tab-bar">
-        <a type="all" class="weui-navbar__item weui-bar__item--on" href="#taball">
+        <a type="all" class="weui-navbar__item {% if active=='all' %} weui-bar__item--on {% endif %}" href="#taball">
             全部
         </a>
-        <a type="unverify" class="weui-navbar__item" href="#tabunverify">
+        <a type="unverify" class="weui-navbar__item {% if active=='unverify' %} weui-bar__item--on {% endif %}" href="#tabunverify">
             待核价
         </a>
-        <a type="unpay" class="weui-navbar__item" href="#tabunpay">
+        <a type="unpay" class="weui-navbar__item {% if active=='unpay' %} weui-bar__item--on {% endif %}" href="#tabunpay">
             待付款
         </a>
-        <a type="paid" class="weui-navbar__item" href="#tabpaid">
+        <a type="paid" class="weui-navbar__item {% if active=='paid' %} weui-bar__item--on {% endif %}" href="#tabpaid">
             已付款
         </a>
-        <a type="success" class="weui-navbar__item" href="#tabsuccess">
+        <a type="success" class="weui-navbar__item {% if active=='success' %} weui-bar__item--on {% endif %}" href="#tabsuccess">
             已完成
         </a>
     </div>
