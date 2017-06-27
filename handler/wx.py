@@ -157,6 +157,7 @@ class InsuranceOrderNewHandler(WXBaseHandler):
 class WXApiInsuranceOrderNewHandler(WXBaseHandler):
     def post_mobile_insurnace_order_new(self,token):
         url = "http://api.dev.test.520czj.com/mobile/newinsuranceorder"
+        logging.info(self.request.body)
         req = urllib2.Request(url,self.request.body)
         req.add_header('token', token)
         response = urllib2.urlopen(req)
