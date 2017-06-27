@@ -114,7 +114,7 @@
 
     function OrderItemToHtml(data) {
         console.log(data);
-        var html = '<a href="/insurance_order_detail">\
+        var html = '<a href="/insurance_order_detail'+data.id+'">\
                     <div class="weui-panel">\
                         <div class="weui-panel__hd order_title">\
                             <div class="weui-flex">\
@@ -129,7 +129,7 @@
                         <div class="weui-panel__bd order-bd">\
                             <div class="weui-flex">\
                                 <div class="weui-flex__item left">\
-                                    保险公司:人保车险\
+                                    保险公司:'+data.iName+'\
                                 </div>\
                                 <div class="weui-flex__item right">\
                                     2017-06-08\
@@ -137,15 +137,15 @@
                             </div>\
                             <div class="weui-flex">\
                                 <div class="weui-flex__item left">\
-                                    寄送人:车装甲\
+                                    寄送人:'+data.recipients+'\
                                 </div>\
                                 <div class="weui-flex__item right" >\
-                                    13389202678\
+                                    '+data.recipientsTel+'\
                                 </div>\
                             </div>\
                             <div class="weui-flex">\
                                 <div class="weui-flex__item left">\
-                                    陕西省西安市新城区陕西省西安市新城区陕西省西安市新城区陕西省西安市新城区陕西省西安市新城区\
+                                    '+data.recipientsAddr+'\
                                 </div>\
                             </div>\
                         </div>\
@@ -153,7 +153,7 @@
                         <div class="weui-panel__ft order-ft">\
                             <div class="weui-flex">\
                                 <div class="weui-flex__item" style=" flex: 3;">\
-                                    <span class="order_price_title">订单金额:</span><span style="font-size: 13px; color:red;">￥</span><span class="order_price">1020</span>\
+                                    <span class="order_price_title">订单金额:</span><span style="font-size: 13px; color:red;">￥</span><span class="order_price">'+data.price+'</span>\
                                 </div>\
                                 <div class="weui-flex__item" style=" flex: 5;text-align: right;">\
                                     <a href="#" class="weui-btn weui-btn_mini weui-btn_primary">\
