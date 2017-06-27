@@ -414,14 +414,17 @@ class UserAddressDetailHandler(WXBaseHandler):
         city = self.get_argument('city', None)
         region = self.get_argument('district', None)
         address = self.get_argument('address', None)
-        is_default = self.get_argument('is_default', 0)
+        is_default = self.get_argument('is_default', None)
         created = int(time.time())
 
-        if is_default:
+        if is_default == 'on':
+            is_default = 1
             for store_address in user.store.addresses:
                 if store_address.is_default:
                     store_address.is_default = 0
                     store_address.save()
+        else:
+            is_default = 0
 
         if store_address_id!='0':
             sa = StoreAddress.get(id=store_address_id)
@@ -441,7 +444,7 @@ class UserAddressDetailHandler(WXBaseHandler):
             sa.save()
         else:
             StoreAddress.create(store=user.store, province=province, city=city, region=region, address=address,
-                                name=receiver, mobile=mobile, is_default=int(is_default), create_by=user, created=created)
+                                name=receiver, mobile=mobile, is_default=is_default, create_by=user, created=created)
         self.redirect('/user_address')
 
 @route(r'/user_childrens', name='wx_user_childrens')  # 我的下线
