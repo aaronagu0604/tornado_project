@@ -452,7 +452,7 @@ class MobileHomeHandler(MobileBaseHandler):
                 result_rec = result_rec[:20] + recommends[:10]
             else:
                 result_rec = recommends
-        if not user:
+        if not (user and user.store.active == 1):
             result_rec = self.get_recommend(self.get_default_area_code(),sk_brand_id, user=False)
         result['data']['category'].append({'title': u'为您推荐', 'data': result_rec})
 
@@ -565,7 +565,7 @@ class MobileHomeHandler(MobileBaseHandler):
                 'img': cover,
                 'name': name,
                 'price': price,
-                'display_price': u'¥' + str(price) if user and user.store.active == 1 else '',
+                'display_price': u'¥' + str(price) if user else '',
                 'score': score,
                 'link': 'czj://product/%d' % id,
                 'is_score': 0,
@@ -1087,9 +1087,10 @@ class MobileProductHandler(MobileBaseHandler):
                 tmp.append(i)
         items = tmp
         attributes = sorted(items, key=lambda item: item.attribute.sort)
-        login = self.get_user() is not None
+        user = self.get_user()
+        login = user is not None
         product = {'name': spp.product_release.product.name, 'type': type, 'from': f, 'id': id,
-                   'price': spp.price if login and login.store.active == 1 else '',
+                   'price': spp.price if user and user.store.active == 1 else '',
                    'pics': pics, 'buy_count': spp.product_release.buy_count,
                    'store': spp.store.name, 'mobile': spp.store.mobile, 'attributes': attributes,
                    'login': login, 'platform': platform,'intro':spp.product_release.product.intro,
