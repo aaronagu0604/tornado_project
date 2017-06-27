@@ -231,10 +231,11 @@ class InsuranceOrderPriceHandler(WXBaseHandler):
         self.render('weixin/insurance_order_price.html',data=data['data'])
 
 
-@route(r'/pay_detail', name='wx_pay_detail')  # html 微信公众号支付详情页面
+@route(r'/pay_detail/(\d+)', name='wx_pay_detail')  # html 微信公众号支付详情页面
 class PayDetailHandler(WXBaseHandler):
-    def get(self):
-        payinfo = Qrcode_pub().getPayQrcode(self.__create_nonce_str(), '车装甲微信测试付款', int(1 * 100))
+    def get(self,id):
+        io = InsuranceOrder.get(id=int(id))
+        payinfo = Qrcode_pub().getPayQrcode(io.ordernum, '车装甲微信测试付款', int(io.current_order_price.total_price * 100))
         self.render('weixin/pay_detail.html', payinfo=payinfo)
 
 @route(r'/wxapi/login', name='wx_api_login')  # html 登录
