@@ -43,18 +43,18 @@
                 <div class="up">释放刷新</div>
                 <div class="refresh">正在刷新</div>
             </div>
-            <div id="taball" class="weui-tab__bd-item weui-tab__bd-item--active">
+            <div id="taball" class="weui-tab__bd-item {{active=='all' and 'weui-tab__bd-item--active' or ''}}">
             </div>
-            <div id="tabunverify" class="weui-tab__bd-item">
+            <div id="tabunverify" class="weui-tab__bd-item {{active=='unverify' and 'weui-tab__bd-item--active' or ''}}">
 
             </div>
-            <div id="tabunpay" class="weui-tab__bd-item">
+            <div id="tabunpay" class="weui-tab__bd-item {{active=='unpay' and 'weui-tab__bd-item--active' or ''}}">
 
             </div>
-            <div id="tabpaid" class="weui-tab__bd-item">
+            <div id="tabpaid" class="weui-tab__bd-item {{active=='paid' and 'weui-tab__bd-item--active' or ''}}">
 
             </div>
-            <div id="tabsuccess" class="weui-tab__bd-item">
+            <div id="tabsuccess" class="weui-tab__bd-item {{active=='success' and 'weui-tab__bd-item--active' or ''}}">
 
             </div>
             <div class="weui-loadmore">

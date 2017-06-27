@@ -178,7 +178,8 @@ class InsuranceOrdersHandler(WXBaseHandler):
 @route(r'/insurance_orders', name='wx_insurance_orders')  # html 保险订单列表
 class InsuranceOrdersHandler(WXBaseHandler):
     def get(self):
-        self.render('weixin/insurance_orders.html')
+        active = self.get_argument('active','all')
+        self.render('weixin/insurance_orders.html',active=active)
 
 @route(r'/insurance_order_detail', name='wx_insurance_order_detail')  # html 保险订单详情
 class InsuranceOrderDetailHandler(WXBaseHandler):

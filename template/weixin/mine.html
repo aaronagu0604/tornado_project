@@ -19,7 +19,7 @@
 
 <div class="weui-panel weui-panel_access">
     <div class="weui-panel__hd mine-panel">
-      <a href="/insurance_orders" class="weui-cell weui-cell_access center-alloder">
+      <a href="/insurance_orders?active=all" class="weui-cell weui-cell_access center-alloder">
         <div class="weui-cell__bd wy-cell">
           <div class="weui-cell__hd"><img src="./../style/wximg/category.png" alt="" class="center-list-icon"></div>
           <div class="weui-cell__bd weui-cell_primary"><p class="center-list-txt">全部订单</p></div>
@@ -30,28 +30,28 @@
     <div class="weui-panel__bd">
       <div class="weui-flex">
         <div class="weui-flex__item">
-          <a href="/insurance_orders" class="center-ordersModule">
+          <a href="/insurance_orders?active=unverify" class="center-ordersModule">
             <span class="weui-badge" style="position: absolute;top:5px;right:10px; font-size:10px;">{{mine['insurance_orders']['wait_quote']}}</span>
             <div class="imgicon"><img src="./../style/wximg/category.png" /></div>
             <div class="name">待核价</div>
           </a>
         </div>
         <div class="weui-flex__item">
-          <a href="/insurance_orders" class="center-ordersModule">
+          <a href="/insurance_orders?active=unpay" class="center-ordersModule">
             <span class="weui-badge" style="position: absolute;top:5px;right:10px; font-size:10px;">{{mine['insurance_orders']['wait_pay']}}</span>
             <div class="imgicon"><img src="./../style/wximg/category.png" /></div>
             <div class="name">待支付</div>
           </a>
         </div>
         <div class="weui-flex__item">
-          <a href="/insurance_orders" class="center-ordersModule">
+          <a href="/insurance_orders?active=paid" class="center-ordersModule">
             <span class="weui-badge" style="position: absolute;top:5px;right:10px; font-size:10px;">{{mine['insurance_orders']['wait_send']}}</span>
             <div class="imgicon"><img src="./../style/wximg/category.png" /></div>
             <div class="name">待出单</div>
           </a>
         </div>
         <div class="weui-flex__item">
-          <a href="/insurance_orders" class="center-ordersModule">
+          <a href="/insurance_orders?active=sucess" class="center-ordersModule">
             <span class="weui-badge" style="position: absolute;top:5px;right:10px; font-size:10px;">{{mine['insurance_orders']['finish']}}</span>
             <div class="imgicon"><img src="./../style/wximg/category.png" /></div>
             <div class="name">已完成</div>
