@@ -153,7 +153,7 @@ class InsuranceOrderNewHandler(WXBaseHandler):
 
         self.render('weixin/insurance_order_new.html', address=address, rake_back=insurance_policy,token=user.token)
 
-@route(r'/wxapi/insurance_order_new', name='wxapi_insurance_order_new')  # html 保险订单列表
+@route(r'/wxapi/insurance_order_new', name='wxapi_insurance_order_new')  # wxapi 创建保险订单
 class WXApiInsuranceOrderNewHandler(WXBaseHandler):
     def post_mobile_mine(self,token):
         url = "http://api.dev.test.520czj.com/mobile/newinsuranceorder"
@@ -162,7 +162,7 @@ class WXApiInsuranceOrderNewHandler(WXBaseHandler):
         response = urllib2.urlopen(req)
         return response.read()
 
-    def get(self):
+    def post(self):
         user = self.get_current_user()
         data = self.get_mobile_mine(user.token)
         logging.info(data)
