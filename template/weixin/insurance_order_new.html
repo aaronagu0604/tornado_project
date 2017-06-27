@@ -314,13 +314,7 @@
                 type: "POST",
                 url: "/wxapi/insurance_order_new",
                 data: insurance,
-                cache: false,
                 dataType: 'json',
-                contentType: false,
-                processData: false,
-                beforeSend: function (xhr) {
-                    xhr.setRequestHeader("token", "{{token}}");
-                },
                 success: function (data) {
                     $.hideLoading();
                     var data = JSON.parse(data);
