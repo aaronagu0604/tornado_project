@@ -618,7 +618,7 @@ class SubOrder(db.Model):
     fail_reason = CharField(default='', max_length=1024)  # 取消或退款原因
     fail_time = IntegerField(default=0)  # 取消或退款时间
     delivery_time = IntegerField(default=0)  # 发货时间
-    receiving_time = IntegerField(default=0)  # 收货时间
+    # receiving_time = IntegerField(default=0)  # 收货时间
     settlement = ForeignKeyField(Settlement, related_name='settlement_orders', db_column='settlement_id', null=True)  # 完成的订单才可以结算
     saler_del = IntegerField(default=0)  # 卖家删除已经完成的订单 1删除
     buyer_del = IntegerField(default=0)  # 买家删除已经完成的订单 1删除

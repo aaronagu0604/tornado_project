@@ -1682,10 +1682,6 @@ class MobilInsuranceOrderBaseHandler(MobileBaseHandler):
         result = {'flag': 0, 'msg': '', "data": {}}
         user = self.get_user()
         try:
-            if user.store.active != 1:
-                result['msg'] = u'您尚未通过审核，暂不能购买保险'
-                self.write(simplejson.dumps(result))
-                return
             sda = self.get_store_delivery_address(user.store)
             result['data']['delivery_to'] = sda['delivery_to']
             result['data']['delivery_tel'] = sda['delivery_tel']
@@ -1693,7 +1689,7 @@ class MobilInsuranceOrderBaseHandler(MobileBaseHandler):
             result['data']['delivery_city'] = sda['delivery_city']
             result['data']['delivery_district'] = sda['delivery_district']
             result['data']['delivery_address'] = sda['delivery_address']
-            result['data']['insurance_message'] = self.get_store_policies(user.store)
+            result['data']['insurance_message'] = self.get_store_policies(user.store) if user.store.active == 1 else []
             for i_item in InsuranceItem.select():
                 if i_item.insurance_prices:
                     result['data'][i_item.eName] = [i_price.coverage for i_price in i_item.insurance_prices]
