@@ -89,9 +89,9 @@
                     $('#' + current_tab).html('');
                     $('#loadMoreContainer').pullToRefreshDone();
                 }
-                else {
-                    index = index + 1;
-                }
+
+                index = index + 1;
+
                 for (var i = 0; i < data.data.length; i++) {
                     var html = OrderItemToHtml(data.data[i]);
                     $('#' + current_tab).append(html);
