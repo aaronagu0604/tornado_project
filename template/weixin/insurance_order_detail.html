@@ -24,17 +24,17 @@
         </a>
         <div class="weui-cell line">
             <div class="weui-cell__bd left">
-                <p>人保车险</p>
+                <p>{{insurance['insuranceorderprice']['insurance']}}</p>
             </div>
             <div class="weui-cell__ft">
-                <span class="right order-price">￥1234</span></div>
+                <span class="right order-price">￥{{insurance['total_price']}}</span></div>
         </div>
         <div class="weui-cell line">
             <div class="weui-cell__bd left">
                 <p>提交时间</p>
             </div>
             <div class="weui-cell__ft cell_txt">
-                <span class="right">2017-06-08</span></div>
+                <span class="right">{{data['insuranceorderprice']['created']}}</span></div>
         </div>
         <div class="order-detail-content">
             <div class="weui-flex header">

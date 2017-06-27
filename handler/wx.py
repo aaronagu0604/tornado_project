@@ -198,10 +198,21 @@ class InsuranceOrdersHandler(WXBaseHandler):
         active = self.get_argument('active','all')
         self.render('weixin/insurance_orders.html',active=active)
 
-@route(r'/insurance_order_detail', name='wx_insurance_order_detail')  # html 保险订单详情
+@route(r'/insurance_order_detail/(\d+)', name='wx_insurance_order_detail')  # html 保险订单详情
 class InsuranceOrderDetailHandler(WXBaseHandler):
-    def get(self):
-        self.render('weixin/insurance_order_detail.html')
+    def get_mobile_insurance_order_detail(self,token,id):
+        url = "http://api.dev.test.520czj.com/mobile/insuranceorderdetail?id"%(id)
+        req = urllib2.Request(url)
+        req.add_header('token', token)
+        response = urllib2.urlopen(req)
+        return simplejson.loads(response.read())
+
+    def get(self,id):
+        user = self.get_current_user()
+        data = self.get_mobile_insurance_order_detail(user.token,id)
+        logging.info(data)
+        self.render('weixin/insurance_order_detail.html',insurance=data['data'])
+
 
 
 @route(r'/insurance_order_price', name='wx_insurance_order_price')  # html 保险订单历史报价方案
