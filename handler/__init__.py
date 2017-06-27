@@ -175,6 +175,9 @@ class AdminBaseHandler(BaseHandler):
         return False
 
 class WXBaseHandler(BaseHandler):
+    def check_xsrf_cookie(self):
+        pass
+
     def get_current_user(self):
         user = User.get(mobile='13289269257')
         token = user.token
