@@ -1,0 +1,92 @@
+{% extends "layout/admin.html" %}
+{% block css %}
+<link href="/style2/css/plugins/dataTables.bootstrap.css" rel="stylesheet">
+<link href="/style2/css/select2.css" rel="stylesheet"/>
+{{xsrf()}}
+<style>
+#num{
+    width:130px;
+    height:30px;
+    border:1px solid #aaa;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+    transform:translateY(3px);
+    -webkit-transform:translateY(3px);
+}
+#btn{
+    height:30px;
+    line-height:15px;
+    background:#528ACB;
+    color:#fff;
+}
+</style>
+{% endblock %}
+{% block content %}
+
+<div class="row">
+    <nav>
+        <div>
+            <a class="navbar-brand" href="#">保单汇总</a>
+            <input type=button value=返回 style="background:#438bca;color:#fff;border:none;border-radius:4px;margin-top:10px;" onclick="window.history.back()">
+        </div>
+    </nav>
+</div>
+<div class="row">
+    <div class="panel panel-primary">
+        <div class="table-responsive">
+            <table class="table table-hover" id="tb_need_pay_back_orders" style="text-align:center;">
+                <thead>
+                <tr style="background:#528ACB;color:#fff;">
+                    <th style="text-align:center;">联系人</th>
+                    <th style="text-align:center;">电话</th>
+                    <th style="text-align:center;">门店</th>
+                    <th style="text-align:center;">地区</th>
+                    <th style="text-align:center;">详细地址</th>
+                    <th style="text-align:center;">状态</th>
+                    <th style="text-align:center;">开店时间</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for s in stores %}
+                <tr>
+                    <td>{{ s['link_man'] }}</td>
+                    <td>{{ s['mobile'] }}</td>
+                    <td>{{ s['name'] }}</td>
+                    <td>{{ s['addr'] }}</td>
+                    <td>{{ s['addr_det'] }}</td>
+                    <td>{{ s['check_state'] }}</td>
+                    <td>{{ s['created'] }}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script src="/style2/js/jquery.twbsPagination.min.js"></script>
+<script type="text/javascript">
+	$(document).ready(function() {
+	    var xsrf='{{handler.xsrf_token}}';
+		$('#bt_export').bind('click', function () {
+            $.get("/ajax/orders/refereeOrder",{sql: JSON.stringify(sql), _xsrf: xsrf, keyword: '{{keyword}}'},
+            function (data) {
+                var obj = jQuery.parseJSON(data);
+                if (obj.err == 0) {
+                    alert('生成成功，点击下载连接，下载数据文件！');
+                    window.open("/upload/" + obj.msg);
+                }
+                else {
+                    alert('生成失败：' + obj.msg);
+                }
+            });
+        });
+    });
+
+</script>
+
+
+{% endblock %}

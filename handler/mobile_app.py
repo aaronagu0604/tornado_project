@@ -565,7 +565,7 @@ class MobileHomeHandler(MobileBaseHandler):
                 'img': cover,
                 'name': name,
                 'price': price,
-                'display_price': u'¥' + str(price) if user else '',
+                'display_price': u'¥' + str(price) if user and user.store.active == 1 else '',
                 'score': score,
                 'link': 'czj://product/%d' % id,
                 'is_score': 0,
@@ -936,7 +936,7 @@ class MobileDiscoverProductsHandler(MobileBaseHandler):
             if isadd and (p['prid'] not in prds):
                 prds.append(p['prid'])
                 display_price = ''
-                if loginUser:    # 未登陆不显示价格
+                if loginUser and loginUser.store.active == 1:    # 未登陆不显示价格
                     display_price = '¥' + str(p['price']) + '/' + (p['unit'] if p['unit'] else '件')
                 productList.append({
                     'prid': p['prid'],
@@ -1089,7 +1089,8 @@ class MobileProductHandler(MobileBaseHandler):
         attributes = sorted(items, key=lambda item: item.attribute.sort)
         login = self.get_user() is not None
         product = {'name': spp.product_release.product.name, 'type': type, 'from': f, 'id': id,
-                   'price': spp.price, 'pics': pics, 'buy_count': spp.product_release.buy_count,
+                   'price': spp.price if login and login.store.active == 1 else '',
+                   'pics': pics, 'buy_count': spp.product_release.buy_count,
                    'store': spp.store.name, 'mobile': spp.store.mobile, 'attributes': attributes,
                    'login': login, 'platform': platform,'intro':spp.product_release.product.intro,
                    'cover': spp.product_release.product.cover}

@@ -1648,17 +1648,17 @@ class ExportInsuranceThreeHandler(AdminBaseHandler):
             active = 'insurancesuccess'
         else:
             active = 'insurancesuccess'
-        self.render('admin/order/export_insurance_three.html', orders=orders, total=total, page=page, pagesize=pagesize,
+        self.render('admin/report/export_insurance_three.html', orders=orders, total=total, page=page, pagesize=pagesize,
                     totalpage=totalpage, active=active, begin_date=begin_date, end_date=end_date,
-                    archive=archive,InsuranceOrder=InsuranceOrder)
+                    archive=archive, InsuranceOrder=InsuranceOrder)
 
 
-@route(r'/admin/export_referee', name='admin_referee_list')    # 推广人员统计
+@route(r'/admin/export_referee', name='admin_export_referee')    # 推广人员统计
 class RefereeList(AdminBaseHandler):
     '''
     storeList = {0:{              #store_id
         'rid': rid,
-        'amount':io.price,
+        'amount':io['total_price'],
         'beforOrederNum': 1,
         'firstOrderNum': 0,
         'secondOrderNum': 0,
@@ -1671,7 +1671,7 @@ class RefereeList(AdminBaseHandler):
     }}
     refereeList = {0: {           #referee_id
         'name': u'雷锋',
-        'amount':io.price,
+        'amount':io['total_price'],
         'number': '000000',
         'newStore': 0,
         'firstOrderNum': 0,
@@ -1687,7 +1687,6 @@ class RefereeList(AdminBaseHandler):
     '''
     def getInsuranceOrder(self, startTime, lastTime, referees):
         print time.strftime('%H:%M:%S', time.localtime())
-        io_list = []
         store_list = {}
         for io in InsuranceOrder.select(InsuranceOrder.id, Store.id, Store.admin_code, InsuranceOrder.deal_time).\
                 join(Store).where(InsuranceOrder.status == 3).tuples():
@@ -1698,22 +1697,30 @@ class RefereeList(AdminBaseHandler):
             if (io[3] > startTime) and (io[3] <= lastTime):
                 for referee in referees:
                     if io[2] == referee['code']:
-                        referee['total_io'] += 1
+                        referee['total_io_count'] += 1
+                        referee['total_io_id'] += str(io[0]) + ','
                         if store_list[io[1]] == 1:
-                            referee['first_io'] += 1
+                            referee['first_io_count'] += 1
+                            referee['first_io_id'] += str(io[0]) + ','
                         elif store_list[io[1]] == 2:
-                            referee['second_io'] += 1
+                            referee['second_io_count'] += 1
+                            referee['second_io_id'] += str(io[0]) + ','
                         elif store_list[io[1]] == 3:
-                            referee['third_io'] += 1
+                            referee['third_io_count'] += 1
+                            referee['third_io_id'] += str(io[0]) + ','
                         break
                 else:
-                    referees[0]['total_io'] += 1
+                    referees[0]['total_io_count'] += 1
+                    referees[0]['total_io_id'] += str(io[0]) + ','
                     if store_list[io[1]] == 1:
-                        referee['first_io'] += 1
+                        referees[0]['first_io_count'] += 1
+                        referees[0]['first_io_id'] += str(io[0]) + ','
                     elif store_list[io[1]] == 2:
-                        referee['second_io'] += 1
+                        referees[0]['second_io_count'] += 1
+                        referees[0]['second_io_id'] += str(io[0]) + ','
                     elif store_list[io[1]] == 3:
-                        referee['third_io'] += 1
+                        referees[0]['third_io_count'] += 1
+                        referees[0]['third_io_id'] += str(io[0]) + ','
         print time.strftime('%H:%M:%S', time.localtime())
         return referees
 
@@ -1723,45 +1730,170 @@ class RefereeList(AdminBaseHandler):
             'name': u'无推广人员',
             'code': '000000',
             'new_store': 0,
-            'total_io': 0,
-            'first_io': 0,
-            'second_io': 0,
-            'third_io': 0
+            'new_store_id': '',
+            'total_io_count': 0,
+            'first_io_count': 0,
+            'second_io_count': 0,
+            'third_io_count': 0,
+            'total_io_id': '',
+            'first_io_id': '',
+            'second_io_id': '',
+            'third_io_id': ''
         }]
-        for referee in AdminUser.select().where(AdminUser.active == 1, AdminUser.roles.contains('S')):
+        for referee in AdminUser.select().where(AdminUser.active == 1, AdminUser.roles.contains('S'), AdminUser.code % '00%'):
             referees.append({
                 'name': referee.realname,
                 'code': referee.code,
                 'new_store': 0,
-                'total_io': 0,
-                'first_io': 0,
-                'second_io': 0,
-                'third_io': 0
+                'new_store_id': '',
+                'total_io_count': 0,
+                'first_io_count': 0,
+                'second_io_count': 0,
+                'third_io_count': 0,
+                'total_io_id': '',
+                'first_io_id': '',
+                'second_io_id': '',
+                'third_io_id': ''
             })
-
         for s in Store.select().where(Store.created > startTime, Store.created <= lastTime, Store.active == 1):
             for referee in referees:
                 if s.admin_code == referee['code']:
                     referee['new_store'] += 1
+                    referee['new_store_id'] += str(s.id) + ','
                     break
             else:
                 referees[0]['new_store'] += 1
-        print time.strftime('%H:%M:%S', time.localtime())
+                referees[0]['new_store_id'] += str(s.id) + ','
+
         return referees
+
+    def put_area_to_cash(self):
+        if not self.application.memcachedb.get('00270001'):
+            for area in Area.select().where(db.fn.Length(Area.code) == 8):
+                self.application.memcachedb.set(area.code, area.pid.name+area.name, 60*60)
 
     def get(self):
         startDate = self.get_argument("startDate", '')
         lastDate = self.get_argument("lastDate", '')
-
         startDate, lastDate, startTime, lastTime = getDate(startDate, lastDate)
         referees = self.get_store(startTime, lastTime)
         referees = self.getInsuranceOrder(startTime, lastTime, referees)
+        self.put_area_to_cash()
 
-        for r in referees:
-            print r['name'], r['code'], r['new_store'], r['total_io'], r['first_io'], r['second_io'], r['third_io']
+        self.render("admin/report/referee_list.html", refereeList=referees, active='refereeReport',
+                    startDate=startDate, lastDate=lastDate)
 
-        # self.render("admin/report/referee_list.html", refereeList=refereeList, active='refereeReport',
-        #             amount=amount, startDate=startDate, lastDate=lastDate)
+
+@route('/admin/export_orders', name='admin_report_orders')    # 保险订单们
+class ReportOrders(AdminBaseHandler):
+    def get(self):
+        iIDList = self.get_argument("iIDList", '')
+        ios = []
+        if iIDList and (not iIDList == '[]'):
+            iIDList_int = [int(id) for id in iIDList.strip(',').split(',')]
+            ft = (InsuranceOrder.id << iIDList_int)
+            ios = InsuranceOrder.select(InsuranceOrder.ordernum.alias('ordernum'),
+                                        InsuranceOrder.payment.alias('payment'),
+                                        InsuranceOrder.pay_time.alias('pay_time'),
+                                        InsuranceOrder.status.alias('status'),
+                                        InsuranceOrderPrice.force_price.alias('foc_price'),
+                                        InsuranceOrderPrice.business_price.alias('bus_price'),
+                                        InsuranceOrderPrice.gift_policy.alias('gift_policy'),
+                                        InsuranceOrderPrice.total_price.alias('total_price'),
+                                        Store.name.alias('s_name'),
+                                        Store.area_code.alias('area_code'),
+                                        Insurance.name.alias('i_name')).\
+                join(Store, on=(Store.id == InsuranceOrder.store)).\
+                join(InsuranceOrderPrice, on=(InsuranceOrderPrice.id == InsuranceOrder.current_order_price)).\
+                join(Insurance, on=(Insurance.id == InsuranceOrderPrice.insurance)).\
+                where(ft).order_by(InsuranceOrder.deal_time).dicts()
+        itList = [0, 0, 0, 0, 0]
+        io_list = []
+        for io in ios:
+            itList[0] += 1
+            if io['foc_price'] > 0 and io['bus_price'] > 0:
+                i_type = u'全险'
+                itList[1] += 1
+            elif io['foc_price'] > 0:
+                i_type = u'单交强'
+                itList[2] += 1
+            elif io['bus_price'] > 0:
+                i_type = u'单商业'
+                itList[3] += 1
+            else:
+                i_type = u'其它'
+                itList[4] += 1
+
+            if io['payment'] == 1 or io['payment'] == 6:
+                payment = u'支付宝'
+            elif io['payment'] == 2 or io['payment'] == 7:
+                payment = u'微信'
+            elif io['payment'] == 3:
+                payment = u'银联'
+            elif io['payment'] == 4:
+                payment = u'余额'
+            elif io['payment'] == 5:
+                payment = u'积分'
+            else:
+                payment = u'其它'
+            if io['gift_policy'] == 1:
+                gift_policy = u'返油'
+            elif io['gift_policy'] == 2:
+                gift_policy = u'返现'
+            elif io['gift_policy'] == 3:
+                gift_policy = u'返积分'
+            else:
+                gift_policy = u'其它'
+            if io['status'] == 3:
+                status = u'已完成'
+            elif io['status'] == 2:
+                status = u'已支付'
+            else:
+                status = u'其它'
+            io_list.append({
+                'ordernum': io['ordernum'],
+                'payment': payment,
+                'i_type': i_type,
+                'gift_policy': gift_policy,
+                'status': status,
+                's_name': io['s_name'],
+                's_addr': self.application.memcachedb.get(io['area_code'][:8]),
+                'i_name': io['i_name'],
+                'total_price': io['total_price'],
+                'pay_time': time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(io['pay_time'])) if io['pay_time'] else '--'
+            })
+
+        self.render("admin/report/orders.html", ios=io_list, itList=itList, active='refereeReport')
+
+
+@route('/admin/export_stores', name='admin_report_stores')    # 新开通门店们
+class ReportStores(AdminBaseHandler):
+    def get(self):
+        sList = self.get_argument("sList", '')
+        if sList:
+            sList_int = [int(id) for id in sList.strip(',').split(',')]
+            stores = []
+            for s in Store.select().where((Store.id << sList_int)).order_by(Store.created.desc()):
+                if s.active == 1:
+                    check_state = u'通过'
+                elif s.active == 0:
+                    check_state = u'未审核'
+                elif s.active == 2:
+                    check_state = u'拒绝'
+                else:
+                    check_state = u'其它'
+                stores.append({
+                    'link_man': s.linkman,
+                    'mobile': s.mobile,
+                    'name': s.name,
+                    'addr': self.application.memcachedb.get(s.area_code[:8]),
+                    'addr_det': s.address,
+                    'check_state': check_state,
+                    'created': time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(s.created)) if s.created else '--'
+                })
+        else:
+            stores = ''
+        self.render("admin/report/stores.html", stores=stores, Area=Area, time=time, active='refereeReport')
 
 
 @route(r'/admin/export_trade_list', name='admin_export_trade_list')  # 导出出单明细
@@ -1830,8 +1962,329 @@ class ExportTradeListHandler(AdminBaseHandler):
         else:
             active = 'tradelist'
         self.render('admin/order/export_trade_list.html', orders=orders, total=total, page=page, pagesize=pagesize,
-                    totalpage=totalpage, status=status, active=active, begin_date=begin_date, end_date=end_date,
+                    totalpage=totalpage, status=status, active='refereeReport', begin_date=begin_date, end_date=end_date,
                     archive=archive)
+
+
+@route(r'/admin/export_areaorder', name='admin_area_order')    # 地区销售统计
+class ReportAreaOrder(AdminBaseHandler):
+    '''
+    areaList = {
+        '00270001': {
+            'province': Area.get(code=io['area_code'][:4]).name,
+            'city': '--',
+            'newStoreC': newStoreC,
+            'newStoreList': [],
+            'POCount': POCount,
+            'POamount': POamount,
+            'POCList':[],
+            'IOcount':1,
+            'IOamount':io['total_price'],
+            'lube':1 if io['gift_policy']==1 else 0,
+            'score':1 if io['gift_policy']==2 else 0,
+            'wechat':{'count':1 if io['payment']==6 else 0, 'money':io['total_price'] if io['payment']==6 else 0},
+            'alipay':{'count':1 if io['payment']==1 else 0, 'money':io['total_price'] if io['payment']==1 else 0},
+            'upay':{'count':1 if io['payment']==7 else 0, 'money':io['total_price'] if io['payment']==7 else 0},
+            'ioCList':[str(io.id)],
+            'lubeList': [str(io.id)] if io['gift_policy'] == 1 else [],
+            'scoreList': [str(io.id)] if io['gift_policy'] == 2 else [],
+            'wechatList': [str(io.id)] if (io['payment'] == 1 or io['payment'] == 6) else [],
+            'alipayList': [str(io.id)] if (io['payment'] == 1 or io['payment'] == 6) else [],
+            'upayList': [str(io.id)] if io['payment'] == 7 else []
+        }
+    }
+    '''
+    # 某时间段某地区 保险报表
+    def getIOReport(self, startTime, lastTime, code):
+        if code:
+            ft = ((InsuranceOrder.status == 3) & (InsuranceOrder.deal_time >= startTime) &
+                  (InsuranceOrder.deal_time <= lastTime) & (Store.area_code % code))
+            ios = InsuranceOrder.select(InsuranceOrder.id.alias('id'),
+                                        InsuranceOrder.payment.alias('payment'),
+                                        InsuranceOrderPrice.total_price.alias('total_price'),
+                                        InsuranceOrderPrice.gift_policy.alias('gift_policy'),
+                                        Store.area_code.alias('area_code')).\
+                join(Store, on=(Store.id == InsuranceOrder.store)).\
+                join(InsuranceOrderPrice, on=(InsuranceOrderPrice.id == InsuranceOrder.current_order_price)).\
+                where(ft).order_by(InsuranceOrder.deal_time.desc()).dicts()
+        else:
+            ft = ((InsuranceOrder.status == 3) & (InsuranceOrder.deal_time >= startTime) & 
+                  (InsuranceOrder.pay_time <= lastTime))
+            ios = InsuranceOrder.select(InsuranceOrder.id.alias('id'),
+                                        InsuranceOrder.payment.alias('payment'),
+                                        InsuranceOrderPrice.total_price.alias('total_price'),
+                                        InsuranceOrderPrice.gift_policy.alias('gift_policy'),
+                                        Store.area_code.alias('area_code')).\
+                join(Store, on=(InsuranceOrder.store)).\
+                join(InsuranceOrderPrice, on=(InsuranceOrderPrice.id == InsuranceOrder.current_order_price)).\
+                where(ft).order_by(InsuranceOrder.pay_time).dicts()
+        areaList = {}
+        for io in ios:
+            if len(code) != 9:
+                if io['area_code'][:4] not in areaList:
+                    areaList[io['area_code'][:4]] = {
+                        'province': '',
+                        'city': '--',
+                        'newStoreC': 0,
+                        'newStoreList': [],
+                        'POCount': 0,
+                        'POAmount': 0,
+                        'POCList': [],
+                        'IOcount': 1,
+                        'IOamount': io['total_price'],
+                        'lube': 1 if io['gift_policy'] == 1 else 0,
+                        'score': 1 if io['gift_policy'] == 2 else 0,
+                        'wechat': {'count': 1 if (io['payment'] == 2 or io['payment'] == 7) else 0, 'money': io['total_price'] if (io['payment'] == 2 or io['payment'] == 7) else 0},
+                        'alipay': {'count': 1 if (io['payment'] == 1 or io['payment'] == 6) else 0, 'money': io['total_price'] if (io['payment'] == 1 or io['payment'] == 6) else 0},
+                        'upay': {'count': 1 if io['payment'] == 3 else 0, 'money': io['total_price'] if io['total_price'] == 3 else 0},
+                        'ioCList': [str(io['id'])],
+                        'lubeList': [str(io['id'])] if io['gift_policy'] == 1 else [],
+                        'scoreList': [str(io['id'])] if io['gift_policy'] == 2 else [],
+                        'wechatList': [str(io['id'])] if (io['payment'] == 2 or io['payment'] == 7) else [],
+                        'alipayList': [str(io['id'])] if (io['payment'] == 1 or io['payment'] == 6) else [],
+                        'upayList': [str(io['id'])] if io['payment'] == 3 else []
+                    }
+                else:
+                    areaList[io['area_code'][:4]]['IOcount'] += 1
+                    areaList[io['area_code'][:4]]['IOamount'] += io['total_price']
+                    areaList[io['area_code'][:4]]['ioCList'].append(str(io['id']))
+                    if io['gift_policy'] == 1:
+                        areaList[io['area_code'][:4]]['lube'] += 1
+                        areaList[io['area_code'][:4]]['lubeList'].append(str(io['id']))
+                    elif io['gift_policy'] == 2:
+                        areaList[io['area_code'][:4]]['score'] += 1
+                        areaList[io['area_code'][:4]]['scoreList'].append(str(io['id']))
+                    if io['payment'] == 2 or io['payment'] == 7:
+                        areaList[io['area_code'][:4]]['wechat']['count'] += 1
+                        areaList[io['area_code'][:4]]['wechat']['money'] += io['total_price']
+                        areaList[io['area_code'][:4]]['wechatList'].append(str(io['id']))
+                    elif io['payment'] == 1 or io['payment'] == 6:
+                        areaList[io['area_code'][:4]]['alipay']['count'] += 1
+                        areaList[io['area_code'][:4]]['alipay']['money'] += io['total_price']
+                        areaList[io['area_code'][:4]]['alipayList'].append(str(io['id']))
+                    if io['payment'] == 3:
+                        areaList[io['area_code'][:4]]['upay']['count'] += 1
+                        areaList[io['area_code'][:4]]['upay']['money'] += io['total_price']
+                        areaList[io['area_code'][:4]]['upayList'].append(str(io['id']))
+            if io['area_code'][:8] not in areaList:
+                areaList[io['area_code'][:8]] = {
+                    'province': '--',
+                    'city': '',
+                    'newStoreC': 0,
+                    'newStoreList': [],
+                    'POCount': 0,
+                    'POAmount': 0,
+                    'POCList':[],
+                    'IOcount': 1,
+                    'IOamount': io['total_price'],
+                    'lube': 1 if io['gift_policy'] == 1 else 0,
+                    'score': 1 if io['gift_policy'] == 2 else 0,
+                    'wechat': {'count': 1 if (io['payment'] == 2 or io['payment'] == 7) else 0, 'money': io['total_price'] if (io['payment'] == 2 or io['payment'] == 7) else 0},
+                    'alipay': {'count': 1 if (io['payment'] == 1 or io['payment'] == 6) else 0, 'money': io['total_price'] if (io['payment'] == 1 or io['payment'] == 6) else 0},
+                    'upay': {'count': 1 if io['payment'] == 3 else 0, 'money': io['total_price'] if io['payment'] == 3 else 0},
+                    'ioCList':[str(io['id'])],
+                    'lubeList': [str(io['id'])] if io['gift_policy'] == 1 else [],
+                    'scoreList': [str(io['id'])] if io['gift_policy'] == 2 else [],
+                    'wechatList': [str(io['id'])] if (io['payment'] == 2 or io['payment'] == 7) else [],
+                    'alipayList': [str(io['id'])] if (io['payment'] == 1 or io['payment'] == 6) else [],
+                    'upayList': [str(io['id'])] if io['payment'] == 3 else []
+                }
+            else:
+                areaList[io['area_code'][:8]]['IOcount'] += 1
+                areaList[io['area_code'][:8]]['IOamount'] += io['total_price']
+                areaList[io['area_code'][:8]]['ioCList'].append(str(io['id']))
+                if io['gift_policy'] == 1:
+                    areaList[io['area_code'][:8]]['lube'] += 1
+                    areaList[io['area_code'][:8]]['lubeList'].append(str(io['id']))
+                elif io['gift_policy'] == 2:
+                    areaList[io['area_code'][:8]]['score'] += 1
+                    areaList[io['area_code'][:8]]['scoreList'].append(str(io['id']))
+                if io['payment'] == 2 or io['payment'] == 7:
+                    areaList[io['area_code'][:8]]['wechat']['count'] += 1
+                    areaList[io['area_code'][:8]]['wechat']['money'] += io['total_price']
+                    areaList[io['area_code'][:8]]['wechatList'].append(str(io['id']))
+                elif io['payment'] == 1 or io['payment'] == 6:
+                    areaList[io['area_code'][:8]]['alipay']['count'] += 1
+                    areaList[io['area_code'][:8]]['alipay']['money'] += io['total_price']
+                    areaList[io['area_code'][:8]]['alipayList'].append(str(io['id']))
+                if io['payment'] == 3:
+                    areaList[io['area_code'][:8]]['upay']['count'] += 1
+                    areaList[io['area_code'][:8]]['upay']['money'] += io['total_price']
+                    areaList[io['area_code'][:8]]['upayList'].append(str(io['id']))
+
+        return areaList
+
+    # 某时间段某地区 普通商品报表
+    def getPOReport(self, areaList, startTime, lastTime, code):
+        if code:
+            ft = (SubOrder.status << [1, 2, 3, 4]) & (Order.pay_time >= startTime) & \
+                 (Order.pay_time <= lastTime) & (Store.area_code % code)
+            os = SubOrder.select().join(Store, on=(Store.id == SubOrder.saler_store)).join(Order).where(ft).order_by(SubOrder.paytime)
+        else:
+            ft = (SubOrder.status << [1, 2, 3, 4]) & (Order.pay_time > startTime) & (Order.pay_time <= lastTime)
+            os = SubOrder.select().join(Order).where(ft).order_by(Order.pay_time)
+        for o in os:
+            if len(code) != 9:
+                if o.buyer_store.area_code[:4] not in areaList:
+                    areaList[o.buyer_store.area_code[:4]] = {
+                        'province': Area.get(code=o.buyer_store.area_code[:4]).name,
+                        'city': '--',
+                        'newStoreC': 0,
+                        'newStoreList': [],
+                        'POCount': 1,
+                        'POAmount': o.price,
+                        'POCList': [str(o.id)],
+                        'IOcount':0,
+                        'IOamount':0,
+                        'ioCList':[],
+                        'lube':0,
+                        'score':0,
+                        'wechat':{'count':0, 'money':0},
+                        'alipay':{'count':0, 'money':0},
+                        'upay':{'count':0, 'money':0},
+                        'lubeList': [],
+                        'scoreList': [],
+                        'wechatList': [],
+                        'alipayList': [],
+                        'upayList': []
+                    }
+                else:
+                    areaList[o.saler_store.area_code[:4]]['POCount'] += 1
+                    areaList[o.saler_store.area_code[:4]]['POAmount'] += o.price
+                    areaList[o.saler_store.area_code[:4]]['POCList'].append(str(o.id))
+            if o.buyer_store.area_code[:8] not in areaList:
+                areaList[o.buyer_store.area_code[:8]] = {
+                    'province': '--',
+                    'city': Area.get(code=o.buyer_store.area_code[:8]).name,
+                    'newStoreC': 0,
+                    'newStoreList': [],
+                    'POCount': 1,
+                    'POAmount': o.price,
+                    'POCList': [str(o.id)],
+                    'IOcount':0,
+                    'IOamount':0,
+                    'ioCList':[],
+                    'lube':0,
+                    'score':0,
+                    'wechat':{'count':0, 'money':0},
+                    'alipay':{'count':0, 'money':0},
+                    'upay':{'count':0, 'money':0},
+                    'lubeList': [],
+                    'scoreList': [],
+                    'wechatList': [],
+                    'alipayList': [],
+                    'upayList': []
+                }
+            else:
+                areaList[o.saler_store.area_code[:8]]['POCount'] += 1
+                areaList[o.saler_store.area_code[:8]]['POAmount'] += o.price
+                areaList[o.saler_store.area_code[:8]]['POCList'].append(str(o.id))
+
+        return areaList
+
+    # 某时间段某地区 新添加的商店报表
+    def getNSReport(self, areaList, startTime, lastTime, code):
+        if code:
+            ft = (Store.active == 1) & (Store.created >= startTime) & (Store.created <= lastTime) & (Store.area_code % code)
+        else:
+            ft = (Store.active == 1) & (Store.created >= startTime) & (Store.created <= lastTime)
+        ss = Store.select().where(ft).order_by(Store.created)
+        for s in ss:
+            if len(code) != 9:
+                if s.area_code[:4] not in areaList:
+                    areaList[s.area_code[:4]] = {
+                        'province': Area.get(code=s.area_code[:4]).name,
+                        'city': '--',
+                        'newStoreC': 1,
+                        'newStoreList': [str(s.id)],
+                        'POCount': 0,
+                        'POAmount': 0,
+                        'POCList': [],
+                        'IOcount': 0,
+                        'IOamount': 0,
+                        'ioCList': [],
+                        'lube': 0,
+                        'score': 0,
+                        'wechat': {'count': 0, 'money': 0},
+                        'alipay': {'count': 0, 'money': 0},
+                        'upay': {'count': 0, 'money': 0},
+                        'lubeList': [],
+                        'scoreList': [],
+                        'wechatList': [],
+                        'alipayList': [],
+                        'upayList': []
+                    }
+                else:
+                    areaList[s.area_code[:4]]['newStoreC'] += 1
+                    areaList[s.area_code[:4]]['newStoreList'].append(str(s.id))
+            if s.area_code[:8] not in areaList:
+                areaList[s.area_code[:8]] = {
+                    'province': '--',
+                    'city': Area.get(code=s.area_code[:8]).name,
+                    'newStoreC': 1,
+                    'newStoreList': [str(s.id)],
+                    'POCount': 0,
+                    'POAmount': 0,
+                    'POCList': [],
+                    'IOcount': 0,
+                    'IOamount': 0,
+                    'ioCList': [],
+                    'lube': 0,
+                    'score': 0,
+                    'wechat': {'count': 0, 'money': 0},
+                    'alipay': {'count': 0, 'money': 0},
+                    'upay': {'count': 0, 'money': 0},
+                    'lubeList': [],
+                    'scoreList': [],
+                    'wechatList': [],
+                    'alipayList': [],
+                    'upayList': []
+                }
+            else:
+                areaList[s.area_code[:8]]['newStoreC'] += 1
+                areaList[s.area_code[:8]]['newStoreList'].append(str(s.id))
+        return areaList
+
+    def get(self):
+        startDate = self.get_argument("startDate", '')
+        lastDate = self.get_argument("lastDate", '')
+        province = self.get_argument("province", '')
+        city = self.get_argument("city", '')
+        if not province:
+            code = ''
+        elif city and (not city == '0'):
+            code = city+'%'
+        else:
+            code = province + '%'
+        startDate, lastDate, startTime, lastTime = getDate(startDate, lastDate)
+        print('----1--%s--' % time.strftime('%H:%M:%S', time.localtime()))
+        areaList = self.getIOReport(startTime, lastTime, code)
+        print('----2--%s--' % time.strftime('%H:%M:%S', time.localtime()))
+        areaList = self.getPOReport(areaList, startTime, lastTime, code)
+        print('----3--%s--' % time.strftime('%H:%M:%S', time.localtime()))
+        areaList = self.getNSReport(areaList, startTime, lastTime, code)
+        print('----4--%s--' % time.strftime('%H:%M:%S', time.localtime()))
+
+        amount = 0
+        for area_code in areaList:
+            areaList[area_code]['ioCList'] = ','.join(areaList[area_code]['ioCList'])
+            areaList[area_code]['lubeList'] = ','.join(areaList[area_code]['lubeList'])
+            areaList[area_code]['scoreList'] = ','.join(areaList[area_code]['scoreList'])
+            areaList[area_code]['wechatList'] = ','.join(areaList[area_code]['wechatList'])
+            areaList[area_code]['alipayList'] = ','.join(areaList[area_code]['alipayList'])
+            areaList[area_code]['upayList'] = ','.join(areaList[area_code]['upayList'])
+            areaList[area_code]['newStoreList'] = ','.join(areaList[area_code]['newStoreList'])
+            areaList[area_code]['POCList'] = ','.join(areaList[area_code]['POCList'])
+            if len(area_code) == 4:
+                amount = amount + areaList[area_code]['POAmount'] + areaList[area_code]['IOamount']
+        if (not amount) and (len(code)==9) and (code[:8] in areaList):
+            amount = areaList[area_code]['POAmount'] + areaList[area_code]['IOamount']
+        keys = sorted(areaList.keys())
+        items = Area.select().where(Area.pid >> None)
+
+        self.render("admin/report/area_order.html", areaList=areaList, active='areaReport', startDate=startDate,
+                    amount=amount, lastDate=lastDate, keys=keys, items=items,
+                    default_province=province, default_city=city)
 
 
 @route(r'/admin/store_liquidity/(\d+)', name='admin_store_liquidit')  #
