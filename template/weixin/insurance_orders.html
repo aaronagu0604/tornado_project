@@ -43,9 +43,9 @@
                 <div class="up">释放刷新</div>
                 <div class="refresh">正在刷新</div>
             </div>
-            <div id="taball" class="weui-tab__bd-item {{active=='all' and 'weui-tab__bd-item--active' or ''}}">
+            <div id="taball" class="weui-tab__bd-item {% active=='all' %} weui-tab__bd-item--active {% endif %}">
             </div>
-            <div id="tabunverify" class="weui-tab__bd-item {% active=='unverify'} weui-tab__bd-item--active {% endif %}">
+            <div id="tabunverify" class="weui-tab__bd-item {% active=='unverify' %} weui-tab__bd-item--active {% endif %}">
 
             </div>
             <div id="tabunpay" class="weui-tab__bd-item {% active=='unpay' %} weui-tab__bd-item--active {% endif %}">
