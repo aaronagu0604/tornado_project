@@ -405,6 +405,12 @@
                         console.log(data);
                         if (data.flag == 1) {
                             $("." + parent.id).attr('src', data.data);
+                            var insurance = JSON.parse(window.localStorage.getItem("insurance"));
+                            if (insurance == null) {
+                                var insurance = {};
+                            }
+                            insurance[parent.name] = data.data;
+                            window.localStorage.setItem("insurance", JSON.stringify(insurance));
                         } else {
                             $.toast(data.msg, "text");
                         }
