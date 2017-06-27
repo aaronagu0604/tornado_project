@@ -412,7 +412,7 @@ class UserAddressDetailHandler(WXBaseHandler):
         mobile = self.get_argument('mobile', None)
         province = self.get_argument('province', None)
         city = self.get_argument('city', None)
-        region = self.get_argument('district', None)
+        region = self.get_argument('region', None)
         address = self.get_argument('address', None)
         is_default = self.get_argument('is_default', None)
         created = int(time.time())

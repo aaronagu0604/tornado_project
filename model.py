@@ -189,7 +189,7 @@ class StoreAddress(db.Model):
     store = ForeignKeyField(Store, related_name='addresses', db_column='store_id')  # 店铺
     province = CharField(max_length=16, default='陕西')  # 省份
     city = CharField(max_length=16, default='西安')  # 城市
-    region = CharField(max_length=32, null='')  # 区域
+    region = CharField(max_length=32, default='')  # 区域
     address = CharField(max_length=128, null=True)  # 详细地址
     name = CharField(max_length=16, null=True)  # 收件人姓名
     mobile = CharField(max_length=11, null=True)  # 收件人电话
