@@ -423,7 +423,7 @@ class UserAddressDetailHandler(WXBaseHandler):
                     store_address.is_default = 0
                     store_address.save()
 
-        if store_address_id=='0':
+        if store_address_id!='0':
             sa = StoreAddress.get(id=store_address_id)
             sa.is_default = is_default
             if receiver:
