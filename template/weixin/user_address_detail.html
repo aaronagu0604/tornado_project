@@ -23,15 +23,15 @@
         </div>
         <div class="weui-cell">
           <div class="weui-cell__hd"><label class="weui-label wy-lab">省</label></div>
-          <div class="weui-cell__bd"><input name="province" class="weui-input" id="province" type="text" value="{{address.province}}" readonly="" ></div>
+          <div class="weui-cell__bd"><input name="province" class="weui-input" id="province" type="text" value="{{address.province}}"></div>
         </div>
         <div class="weui-cell">
           <div class="weui-cell__hd"><label class="weui-label wy-lab">市</label></div>
-          <div class="weui-cell__bd"><input name="city" class="weui-input" id="city" type="text" value="{{address.city}}" readonly="" ></div>
+          <div class="weui-cell__bd"><input name="city" class="weui-input" id="city" type="text" value="{{address.city}}"></div>
         </div>
         <div class="weui-cell">
           <div class="weui-cell__hd"><label class="weui-label wy-lab">区</label></div>
-          <div class="weui-cell__bd"><input name="region" class="weui-input" id="region" type="text" value="{{address.district}}" readonly="" ></div>
+          <div class="weui-cell__bd"><input name="region" class="weui-input" id="region" type="text" value="{{address.district}}"></div>
         </div>
         <div class="weui-cell">
           <div class="weui-cell__hd"><label class="weui-label wy-lab">详细地址</label></div>
@@ -55,8 +55,9 @@
 {% endblock %}
 {% block js %}
 <script>
-    $("#address").cityPicker({
-        title: "选择所在地区"
+    $("#province").cityPicker({
+        title: "省",
+
     });
 
 </script>
