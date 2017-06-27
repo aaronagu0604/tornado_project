@@ -161,7 +161,7 @@ class InsuranceOrderSuccessHandler(WXBaseHandler):
 @route(r'/wxapi/insurance_orders', name='wxapi_insurance_orders')  # html 保险订单列表
 class InsuranceOrdersHandler(WXBaseHandler):
     def get_mobile_mine(self,token,index,type):
-        url = "http://api.dev.test.520czj.com/mobile/insuranceorder"
+        url = "http://api.dev.test.520czj.com/mobile/insuranceorder?index=%s&type=%s"%(index,type)
         req = urllib2.Request(url)
         req.add_header('token', token)
         response = urllib2.urlopen(req)
