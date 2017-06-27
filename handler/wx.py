@@ -170,10 +170,10 @@ class WXApiInsuranceOrderNewHandler(WXBaseHandler):
         self.write(data)
 
 
-@route(r'/insurance_order_success', name='wx_insurance_order_success')  # html 保险下单成功提示页面
+@route(r'/insurance_order_success/(\d+)', name='wx_insurance_order_success')  # html 保险下单成功提示页面
 class InsuranceOrderSuccessHandler(WXBaseHandler):
-    def get(self):
-        self.render('weixin/insurance_order_success.html')
+    def get(self,id):
+        self.render('weixin/insurance_order_success.html',id=id)
 
 @route(r'/wxapi/insurance_orders', name='wxapi_insurance_orders')  # html 保险订单列表
 class InsuranceOrdersHandler(WXBaseHandler):
