@@ -95,12 +95,11 @@
 <div class="parent">
     <div class="weui-row">
         <div class="weui-col-60">
-            <img src="../../style/wximg/id_card.png" id="id_card_front">
+            <img class="id_card_front_div" src="../../style/wximg/id_card.png" id="id_card_front">
         </div>
         <div class="weui-col-40">
-            <a href="javascript:;" class="file">
+            <a href="javascript:;" class="file" id="id_card_front_div">
                 选择
-                <input type="file" name="id_card_front" accept="image/*">
             </a>
             <p class="name">
                 被保人身份证<br/>
@@ -114,14 +113,13 @@
     </div>
     <div class="weui-row">
         <div class="weui-col-60">
-            <img src="../../style/wximg/id_card.png" class="" id="id_card_back">
+            <img src="../../style/wximg/id_card.png" class="id_card_back_div" id="id_card_back">
         </div>
 
         <div class="weui-col-40">
-            <a href="javascript:;" class="file">
+            <a href="javascript:;" class="file" id="id_card_back_div">
                 选择
-                <input type="file" name="id_card_back"
-                       accept="image/*">
+
             </a>
             <p class="name">
                 被保人身份证<br/>
@@ -136,13 +134,12 @@
     </div>
     <div class="weui-row">
         <div class="weui-col-60">
-            <img src="../../style/wximg/id_card.png" id="drive_card_front">
+            <img class="drive_card_front_div" src="../../style/wximg/id_card.png" id="drive_card_front">
         </div>
 
         <div class="weui-col-40">
-            <a href="javascript:;" class="file">
+            <a href="javascript:;" class="file" id="drive_card_front_div">
                 选择
-                <input type="file" name="drive_card_front" accept="image/*">
             </a>
             <p class="name">
                 行驶证
@@ -156,13 +153,12 @@
     </div>
     <div class="weui-row">
         <div class="weui-col-60">
-            <img src="../../style/wximg/id_card.png" id="drive_card_back">
+            <img class="drive_card_back_div" src="../../style/wximg/id_card.png" id="drive_card_back">
         </div>
 
         <div class="weui-col-40">
-            <a href="javascript:;" class="file">
+            <a href="javascript:;" class="file" id="drive_card_back_div">
                 选择
-                <input type="file" name="drive_card_back" accept="image/*">
             </a>
             <p class="name">
                 行驶证(副本)
@@ -187,15 +183,12 @@
     <div class="owner">
         <div class="weui-row">
             <div class="weui-col-60">
-                <img src="../../style/wximg/id_card.png" id="id_card_front_owner">
+                <img class="id_card_front_owner_div" src="../../style/wximg/id_card.png" id="id_card_front_owner">
             </div>
 
             <div class="weui-col-40">
-                <a href="javascript:;" class="file">
+                <a href="javascript:;" class="file" id="id_card_front_owner_div">
                     选择
-                    <input type="file" name="id_card_front_owner"
-                           onchange="loadingImg(this,'id_card_front_owner_img')"
-                           accept="image/*">
                 </a>
                 <p class="name">
                     车主身份证<br/>
@@ -207,7 +200,7 @@
         </div>
         <div class="weui-row">
             <div class="weui-col-60">
-                <img src="../../style/wximg/id_card.png" id="id_card_back_owner">
+                <img class="id_card_back_owner_div" src="../../style/wximg/id_card.png" id="id_card_back_owner">
             </div>
 
             <div class="weui-col-40">
@@ -238,7 +231,7 @@
             $(".owner").show();
         }
 
-        $(':file').on("change", function () {
+        $('.file').on("change", function () {
             loadingImg(this);
         });
         $(document).on("click", "#next", function () {
@@ -377,54 +370,55 @@
 
     });
 
-wx.config({
-    debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-    appId: '{{ret["appid"]}}', // 必填，公众号的唯一标识
-    timestamp: '{{ret["timeStamp"]}}', // 必填，生成签名的时间戳
-    nonceStr: '{{ret["nonceStr"]}}', // 必填，生成签名的随机串
-    signature: '{{ret["signature"]}}',// 必填，签名，见附录1
-    jsApiList: ['chooseImage','uploadImage','downloadImage'] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
-});
-$('#id_card_back_owner_div').on('click', function () {
-    wx.chooseImage({
-          count: 1,
-        success: function (res) {
-            var localIds = res.localIds;
-            syncUpload(localIds);
-        }
+    wx.config({
+        debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+        appId: '{{ret["appid"]}}', // 必填，公众号的唯一标识
+        timestamp: '{{ret["timeStamp"]}}', // 必填，生成签名的时间戳
+        nonceStr: '{{ret["nonceStr"]}}', // 必填，生成签名的随机串
+        signature: '{{ret["signature"]}}',// 必填，签名，见附录1
+        jsApiList: ['chooseImage', 'uploadImage', 'downloadImage'] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
     });
-});
-var syncUpload = function(localIds){
-    var localId = localIds.pop();
-    wx.uploadImage({
-        localId: localId,
-        isShowProgressTips: 1,
-        success: function (res) {
-            var serverId = res.serverId; // 返回图片的服务器端ID
-            $.ajax({
-                type: "POST",
-                dataType:"json",
-                url: "http://img.520czj.com/upload/urlimage",
-                data: {
-                    media_id:serverId
-                },
-                success: function (data) {
-                    $.hideLoading();
+    $('.file').on('click', function () {
+        var parent = this;
+        wx.chooseImage({
+            count: 1,
+            success: function (res) {
+                var localIds = res.localIds;
+                syncUpload(localIds, parent);
+            }
+        });
+    });
+    var syncUpload = function (localIds, parent) {
+        var localId = localIds.pop();
+        wx.uploadImage({
+            localId: localId,
+            isShowProgressTips: 1,
+            success: function (res) {
+                var serverId = res.serverId; // 返回图片的服务器端ID
+                $.ajax({
+                    type: "POST",
+                    dataType: "json",
+                    url: "http://img.520czj.com/upload/urlimage",
+                    data: {
+                        media_id: serverId
+                    },
+                    success: function (data) {
+                        $.hideLoading();
 
-                    console.log(data);
-                    if (data.flag == 1) {
-                        $("#id_card_back_owner").attr('src', data.data);
-                    } else {
-                        $.toast(data.msg, "text");
+                        console.log(data);
+                        if (data.flag == 1) {
+                            $("." + parent.id).attr('src', data.data);
+                        } else {
+                            $.toast(data.msg, "text");
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        $.hideLoading();
+                        $.toast("上传失败，请检查网络后重试", "text");
                     }
-                },
-                error: function (XMLHttpRequest, textStatus, errorThrown) {
-                    $.hideLoading();
-                    $.toast("上传失败，请检查网络后重试", "text");
-                }
-            });
-        }
-    });
-};
+                });
+            }
+        });
+    };
 </script>
 {% endblock %}
