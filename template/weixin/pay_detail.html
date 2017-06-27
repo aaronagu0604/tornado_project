@@ -11,7 +11,7 @@ a {
 {% block content %}
     <div>
         <!--<a href="#" class="weui-btn weui-btn_primary" onclick="pay()">立即支付</a>-->
-        <img src="{{payinfo}}" alt="" />
+        <img src="{{payinfo and payinfo or ''}}" alt="" />
     </div>
 {% endblock %}
 {% block js %}
