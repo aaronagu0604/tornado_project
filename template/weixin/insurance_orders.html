@@ -95,11 +95,11 @@
                     var html = OrderItemToHtml(data.data[i]);
                     $('#' + current_tab).append(html);
                 }
-                if (data.data.length < 10) {
+                if (data.data.length < 20) {
                     $(".weui-loadmore").hide();
                     $(document.body).destroyInfinite();
                 }
-                if (data.data.length >= 10 && flag == 0) {
+                if (data.data.length >= 20 && flag == 0) {
                     $(document.body).destroyInfinite();
                     $(document.body).infinite().on("infinite", function () {
                         if (loading) return;
