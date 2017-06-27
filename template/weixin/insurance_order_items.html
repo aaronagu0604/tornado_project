@@ -62,7 +62,7 @@
         </div>
         <div class="weui-cell__ft">
 
-            <input class="weui-input" id="insurance_name" type="text">
+            <input class="weui-input" id="insurance_name" type="text" >
         </div>
     </div>
     <div class="insurance_parent">
@@ -276,6 +276,7 @@
             }
         });
         $("#insurance_name").val('{{selectinsurance}}');
+
         if ($('#damageI').is(':checked')) {
             $(".insurance_main_plus").show();
         } else {
@@ -345,7 +346,7 @@
                     insurance.wadeIPlus = "";
                     insurance.thirdSpecialI = "";
                 } else {
-                    insurance.damageI = "";
+                    insurance.damageI = "1";
                     if ($('#damageIPlus').is(':checked')) {
                         insurance.damageIPlus = "1";
                     } else {

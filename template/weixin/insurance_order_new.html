@@ -6,9 +6,11 @@
     .parent {
         background-color: #F1F1F1;
     }
-    div{
+
+    div {
         font-size: 15px;
     }
+
     .weui-cells__title {
         color: #000;
         background-color: #FFFFFF;
@@ -321,7 +323,8 @@
                     //var data = JSON.parse(data);
                     if (data.flag == 1) {
                         console.log(data);
-                        /*     document.location.href = "/insurance_success"*/
+                        localStorage.removeItem("insurance");
+                        document.location.href = "/insurance_success"
                     } else {
                         $.toast(data.msg, "text");
                         console.log(data);
