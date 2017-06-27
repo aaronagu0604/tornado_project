@@ -215,7 +215,7 @@ class InsuranceOrderDetailHandler(WXBaseHandler):
 
 
 
-@route(r'/insurance_order_price', name='wx_insurance_order_price')  # html 保险订单历史报价方案
+@route(r'/insurance_order_price/(\d+)', name='wx_insurance_order_price')  # html 保险订单历史报价方案
 class InsuranceOrderPriceHandler(WXBaseHandler):
     def get_mobile_insurance_order_price(self,token,id):
         url = "http://api.dev.test.520czj.com/mobile/insurance_method?id=%s"%(id)
