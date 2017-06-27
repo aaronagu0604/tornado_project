@@ -37,97 +37,58 @@
                 <span class="right">{{data['insuranceorderprice']['created']}}</span></div>
         </div>
         <div class="order-detail-content">
-            {% for i in data['insuranceorderprice']['iList'] %}
             <div class="weui-flex header">
                 <div class="weui-flex__item left">
-                    {{i['name']}}
+                    交强险
                 </div>
                 <div class="weui-flex__item right">
-                    <span class="order-price">￥{{i['price']}}</span>
+                    <span class="order-price">￥{{data['insuranceorderprice']['iList']['forceprice']}}</span>
+                </div>
+            </div>
+            <div class="weui-flex body">
+                <div class="weui-flex__item">
+                    车船税
+                </div>
+                <div class="weui-flex__item" style="text-align: right;">
+                    ￥{{data['insuranceorderprice']['iList']['vehicle_tax_price']}}
+                </div>
+            </div>
+            <div class="weui-flex header">
+                <div class="weui-flex__item left">
+                    商业险(主险)
+                </div>
+                <div class="weui-flex__item right">
+                    <span class="order-price">￥data['insuranceorderprice']['iList']['mainprice']}}</span>
+                </div>
+            </div>
+            {% for m in data['insuranceorderprice']['iList']['main'] %}
+            <div class="weui-flex body">
+                <div class="weui-flex__item">
+                    {{m['name']}}
+                </div>
+                <div class="weui-flex__item" style="text-align: right;">
+                    ￥{{m['price']}}
                 </div>
             </div>
             {% endfor %}
-            <!--<div class="weui-flex body">-->
-                <!--<div class="weui-flex__item">-->
-                    <!--车船税-->
-                <!--</div>-->
-                <!--<div class="weui-flex__item" style="text-align: right;">-->
-                    <!--￥1234-->
-                <!--</div>-->
-            <!--</div>-->
-            <!--<div class="weui-flex header">-->
-                <!--<div class="weui-flex__item left">-->
-                    <!--商业险(主险)-->
-                <!--</div>-->
-                <!--<div class="weui-flex__item right">-->
-                    <!--<span class="order-price">￥1234</span>-->
-                <!--</div>-->
-            <!--</div>-->
-            <!--<div class="weui-flex body">-->
-                <!--<div class="weui-flex__item">-->
-                    <!--车辆损失险-->
-                <!--</div>-->
-                <!--<div class="weui-flex__item" style="text-align: right;">-->
-                    <!--￥1234-->
-                <!--</div>-->
-            <!--</div>-->
-            <!--<div class="weui-flex body">-->
-                <!--<div class="weui-flex__item">-->
-                    <!--车辆损失险-->
-                <!--</div>-->
-                <!--<div class="weui-flex__item" style="text-align: right;">-->
-                    <!--￥1234-->
-                <!--</div>-->
-            <!--</div>-->
-            <!--<div class="weui-flex body">-->
-                <!--<div class="weui-flex__item">-->
-                    <!--车辆损失险-->
-                <!--</div>-->
-                <!--<div class="weui-flex__item" style="text-align: right;">-->
-                    <!--￥1234-->
-                <!--</div>-->
-            <!--</div>-->
-            <!--<div class="weui-flex body">-->
-                <!--<div class="weui-flex__item">-->
-                    <!--车辆损失险-->
-                <!--</div>-->
-                <!--<div class="weui-flex__item" style="text-align: right;">-->
-                    <!--￥1234-->
-                <!--</div>-->
-            <!--</div>-->
-            <!--<div class="weui-flex body">-->
-                <!--<div class="weui-flex__item">-->
-                    <!--车辆损失险-->
-                <!--</div>-->
-                <!--<div class="weui-flex__item" style="text-align: right;">-->
-                    <!--￥1234-->
-                <!--</div>-->
-            <!--</div>-->
-            <!--<div class="weui-flex header">-->
-                <!--<div class="weui-flex__item left">-->
-                    <!--商业险(附加险)-->
-                <!--</div>-->
-                <!--<div class="weui-flex__item right">-->
-                    <!--<span class="order-price">￥1234</span>-->
-                <!--</div>-->
-            <!--</div>-->
-
-            <!--<div class="weui-flex body">-->
-                <!--<div class="weui-flex__item">-->
-                    <!--玻璃单独损失险-->
-                <!--</div>-->
-                <!--<div class="weui-flex__item" style="text-align: right;">-->
-                    <!--￥1234-->
-                <!--</div>-->
-            <!--</div>-->
-            <!--<div class="weui-flex body">-->
-                <!--<div class="weui-flex__item">-->
-                    <!--玻璃单独损失险-->
-                <!--</div>-->
-                <!--<div class="weui-flex__item" style="text-align: right;">-->
-                    <!--￥1234-->
-                <!--</div>-->
-            <!--</div>-->
+            <div class="weui-flex header">
+                <div class="weui-flex__item left">
+                    商业险(附加险)
+                </div>
+                <div class="weui-flex__item right">
+                    <span class="order-price">￥data['insuranceorderprice']['iList']['subjoinprice']}}</span>
+                </div>
+            </div>
+            {% for m in data['insuranceorderprice']['iList']['subjoin'] %}
+            <div class="weui-flex body">
+                <div class="weui-flex__item">
+                    {{m['name']}}
+                </div>
+                <div class="weui-flex__item" style="text-align: right;">
+                    ￥{{m['price']}}
+                </div>
+            </div>
+            {% endfor %}
         </div>
     </div>
     <div class="weui-cells__title order-detail-title">证件信息</div>
