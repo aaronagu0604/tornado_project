@@ -1761,7 +1761,7 @@ class MobilNewInsuranceOrderHandler(MobileBaseHandler):
     @require_auth
     def post(self):
         result = {'flag': 0, 'msg': '', "data": {}}
-        logging.info(self.request)
+
         id_card_front = self.get_body_argument('id_card_front', None)
         id_card_back = self.get_body_argument('id_card_back', None)
         drive_card_front = self.get_body_argument('drive_card_front', None)
@@ -1798,7 +1798,15 @@ class MobilNewInsuranceOrderHandler(MobileBaseHandler):
         wadeI = self.get_body_argument('wadeI', '')
         wadeIPlus = self.get_body_argument('wadeIPlus', '')
         thirdSpecialI = self.get_body_argument('thirdSpecialI', '')
-
+        logging.info(id_card_front,id_card_back,drive_card_front,drive_card_back,
+                     is_same_person,id_card_front_owner,id_card_front_owner,
+                     id_card_back_owner)
+        logging.info(insurance,delivery_to,delivery_tel,delivery_province,
+                     delivery_city,delivery_district,delivery_address,gift_policy)
+        logging.info(forceI,damageI,damageIPlus,thirdDutyI,thirdDutyIPlus,robbingI,
+                    robbingIPlus,driverDutyI ,driverDutyIPlus,passengerDutyI,passengerDutyIPlus,glassI,
+                    scratchI,scratchIPlus,fireDamageI,fireDamageIPlus,wadeI,
+                    wadeIPlus,thirdSpecialI)
         user = self.get_user()
         if user and gift_policy and delivery_address and delivery_city and delivery_province and delivery_tel \
                 and delivery_to and insurance and drive_card_back and drive_card_front and id_card_back and \
