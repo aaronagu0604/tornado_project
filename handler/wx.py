@@ -406,9 +406,8 @@ class UserAddressDetailHandler(WXBaseHandler):
             address = None
         self.render('weixin/user_address_detail.html',address=address)
 
-    def post(self):
+    def post(self,store_address_id):
         user = self.get_current_user()
-        store_address_id = self.get_argument('store_address_id', None)
         receiver = self.get_argument('receiver', None)
         mobile = self.get_argument('mobile', None)
         province = self.get_argument('province', None)
@@ -424,7 +423,7 @@ class UserAddressDetailHandler(WXBaseHandler):
                     store_address.is_default = 0
                     store_address.save()
 
-        if store_address_id:
+        if store_address_id=='0':
             sa = StoreAddress.get(id=store_address_id)
             sa.is_default = is_default
             if receiver:
