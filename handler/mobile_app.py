@@ -1760,6 +1760,9 @@ class MobilNewInsuranceOrderHandler(MobileBaseHandler):
     def options(self):
         pass
 
+    def check_xsrf_cookie(self):
+        pass
+
     @require_auth
     def post(self):
         result = {'flag': 0, 'msg': '', "data": {}}
