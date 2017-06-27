@@ -231,9 +231,6 @@
             $(".owner").show();
         }
 
-        $('.file').on("change", function () {
-            loadingImg(this);
-        });
         $(document).on("click", "#next", function () {
 
             var insurance = JSON.parse(window.localStorage.getItem("insurance"));
