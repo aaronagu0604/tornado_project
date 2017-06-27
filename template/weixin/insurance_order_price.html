@@ -36,7 +36,7 @@
         {% for i in data %}
         <div class="weui-panel__bd">
         <div class="weui-media-box weui-media-box_text list-box">
-            <div class="row_container" >
+            <div class="row_container{% if i['status']==1 %}_active{% endif %}" >
                     <label class="weui-cell weui-check__label order_price_statue" for="x11">
                         <div class=" weui-cell__bd">
                             <input type="radio" name="radio1" class="weui-check" id="x11" checked="checked">
