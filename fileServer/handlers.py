@@ -10,6 +10,7 @@ import os
 import simplejson
 import random
 import urllib2
+import traceback
 
 
 class BaseHandler(RequestHandler):
@@ -56,11 +57,10 @@ class UploadImageHandler(BaseHandler):
         self.set_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
 
     def options(self):
-        self.set_status(204)
-        self.finish()
+        pass
 
     def get(self):
-        self.write('please upload a image file')
+        self.write('please upload a image url')
 
     def post(self):
         result = {}
@@ -131,7 +131,7 @@ class UploadImageFromUrlHandler(BaseHandler):
             result['data'] = setting.openHost+'/'+arr[0]+'/'+arr[1]+'/'+arr[2]+'/'+arr[3]+'/' + filename
             result['flag'] = 1
         except Exception, e:
-            logging.info('Error: upload image failing,%s' % str(e))
+            logging.info('Error: upload image failing,%s' % traceback.format_exc())
             result['flag'] = 0
             result['msg'] = 'fail in upload image'
         if is_admin:
