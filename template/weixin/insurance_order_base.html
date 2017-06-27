@@ -409,9 +409,6 @@ var syncUpload = function(localIds){
                 data: {
                     media_id:serverId
                 },
-                beforeSend: function (res) {
-                    res.setRequestHeader("Access-Control-Allow-Origin", "*");
-                },
                 success: function (data) {
                     $.hideLoading();
                     var data = JSON.parse(data);
