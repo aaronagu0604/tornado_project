@@ -116,11 +116,19 @@
     function OrderItemToHtml(data) {
         console.log(data);
         paystr = '';
+        paybtn = '';
         // 0待报价 1已核价/待支付 2已支付/待出单 3完成（已送积分/油） -1已删除(取消)
         if (data.status==0) {
             paystr = '待核价';
         } else if (data.status == 1) {
             paystr = '待付款';
+            paybtn = '<div class="weui-flex__item" style=" flex: 5;text-align: right;">\
+                           <a href="#" class="weui-btn weui-btn_mini weui-btn_primary">\
+                            立即支付</a>\
+                            <a href="/pay_detail/'+ data.id +'" class="weui-btn weui-btn_mini czj-btn-yellow"\
+                           style="margin-top: 0;">\
+                            扫码支付</a>\
+                      </div>'
         } else if (data.status == 2) {
             paystr = '待出单';
         } else if (data.status == 3) {
@@ -170,13 +178,7 @@
                                 <div class="weui-flex__item" style=" flex: 3;">\
                                     <span class="order_price_title">订单金额:</span><span style="font-size: 13px; color:red;">￥</span><span class="order_price">'+data.price+'</span>\
                                 </div>\
-                                <div class="weui-flex__item" style=" flex: 5;text-align: right;">\
-                                    <a href="#" class="weui-btn weui-btn_mini weui-btn_primary">\
-                                        立即支付</a>\
-                                    <a href="#" class="weui-btn weui-btn_mini czj-btn-yellow"\
-                                       style="margin-top: 0;">\
-                                        扫码支付</a>\
-                                </div>\
+                                '+paybtn+'\
                             </div>\
                         </div>\
                     </div>\
