@@ -169,7 +169,6 @@ class WXApiInsuranceOrderNewHandler(WXBaseHandler):
         logging.info(data)
         self.write(data)
 
-
 @route(r'/insurance_order_success/(\d+)', name='wx_insurance_order_success')  # html 保险下单成功提示页面
 class InsuranceOrderSuccessHandler(WXBaseHandler):
     def get(self,id):
@@ -213,8 +212,6 @@ class InsuranceOrderDetailHandler(WXBaseHandler):
         logging.info(data)
         self.render('weixin/insurance_order_detail.html',data=data['data'])
 
-
-
 @route(r'/insurance_order_price/(\d+)', name='wx_insurance_order_price')  # html 保险订单历史报价方案
 class InsuranceOrderPriceHandler(WXBaseHandler):
     def get_mobile_insurance_order_price(self,token,id):
@@ -229,7 +226,6 @@ class InsuranceOrderPriceHandler(WXBaseHandler):
         data = self.get_mobile_insurance_order_price(user.token,id)
         logging.info(data)
         self.render('weixin/insurance_order_price.html',data=data['data'])
-
 
 @route(r'/pay_detail/(\d+)', name='wx_pay_detail')  # html 微信公众号支付详情页面
 class PayDetailHandler(WXBaseHandler):
