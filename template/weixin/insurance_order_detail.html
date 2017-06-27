@@ -37,95 +37,97 @@
                 <span class="right">{{data['insuranceorderprice']['created']}}</span></div>
         </div>
         <div class="order-detail-content">
+            {% for i in data['insuranceorderprice']['iList'] %}
             <div class="weui-flex header">
                 <div class="weui-flex__item left">
-                    交强险
+                    {{i['name'}}
                 </div>
                 <div class="weui-flex__item right">
-                    <span class="order-price">￥1234</span>
+                    <span class="order-price">￥{{i['price']}}</span>
                 </div>
             </div>
-            <div class="weui-flex body">
-                <div class="weui-flex__item">
-                    车船税
-                </div>
-                <div class="weui-flex__item" style="text-align: right;">
-                    ￥1234
-                </div>
-            </div>
-            <div class="weui-flex header">
-                <div class="weui-flex__item left">
-                    商业险(主险)
-                </div>
-                <div class="weui-flex__item right">
-                    <span class="order-price">￥1234</span>
-                </div>
-            </div>
-            <div class="weui-flex body">
-                <div class="weui-flex__item">
-                    车辆损失险
-                </div>
-                <div class="weui-flex__item" style="text-align: right;">
-                    ￥1234
-                </div>
-            </div>
-            <div class="weui-flex body">
-                <div class="weui-flex__item">
-                    车辆损失险
-                </div>
-                <div class="weui-flex__item" style="text-align: right;">
-                    ￥1234
-                </div>
-            </div>
-            <div class="weui-flex body">
-                <div class="weui-flex__item">
-                    车辆损失险
-                </div>
-                <div class="weui-flex__item" style="text-align: right;">
-                    ￥1234
-                </div>
-            </div>
-            <div class="weui-flex body">
-                <div class="weui-flex__item">
-                    车辆损失险
-                </div>
-                <div class="weui-flex__item" style="text-align: right;">
-                    ￥1234
-                </div>
-            </div>
-            <div class="weui-flex body">
-                <div class="weui-flex__item">
-                    车辆损失险
-                </div>
-                <div class="weui-flex__item" style="text-align: right;">
-                    ￥1234
-                </div>
-            </div>
-            <div class="weui-flex header">
-                <div class="weui-flex__item left">
-                    商业险(附加险)
-                </div>
-                <div class="weui-flex__item right">
-                    <span class="order-price">￥1234</span>
-                </div>
-            </div>
+            {% endfor %}
+            <!--<div class="weui-flex body">-->
+                <!--<div class="weui-flex__item">-->
+                    <!--车船税-->
+                <!--</div>-->
+                <!--<div class="weui-flex__item" style="text-align: right;">-->
+                    <!--￥1234-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="weui-flex header">-->
+                <!--<div class="weui-flex__item left">-->
+                    <!--商业险(主险)-->
+                <!--</div>-->
+                <!--<div class="weui-flex__item right">-->
+                    <!--<span class="order-price">￥1234</span>-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="weui-flex body">-->
+                <!--<div class="weui-flex__item">-->
+                    <!--车辆损失险-->
+                <!--</div>-->
+                <!--<div class="weui-flex__item" style="text-align: right;">-->
+                    <!--￥1234-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="weui-flex body">-->
+                <!--<div class="weui-flex__item">-->
+                    <!--车辆损失险-->
+                <!--</div>-->
+                <!--<div class="weui-flex__item" style="text-align: right;">-->
+                    <!--￥1234-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="weui-flex body">-->
+                <!--<div class="weui-flex__item">-->
+                    <!--车辆损失险-->
+                <!--</div>-->
+                <!--<div class="weui-flex__item" style="text-align: right;">-->
+                    <!--￥1234-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="weui-flex body">-->
+                <!--<div class="weui-flex__item">-->
+                    <!--车辆损失险-->
+                <!--</div>-->
+                <!--<div class="weui-flex__item" style="text-align: right;">-->
+                    <!--￥1234-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="weui-flex body">-->
+                <!--<div class="weui-flex__item">-->
+                    <!--车辆损失险-->
+                <!--</div>-->
+                <!--<div class="weui-flex__item" style="text-align: right;">-->
+                    <!--￥1234-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="weui-flex header">-->
+                <!--<div class="weui-flex__item left">-->
+                    <!--商业险(附加险)-->
+                <!--</div>-->
+                <!--<div class="weui-flex__item right">-->
+                    <!--<span class="order-price">￥1234</span>-->
+                <!--</div>-->
+            <!--</div>-->
 
-            <div class="weui-flex body">
-                <div class="weui-flex__item">
-                    玻璃单独损失险
-                </div>
-                <div class="weui-flex__item" style="text-align: right;">
-                    ￥1234
-                </div>
-            </div>
-            <div class="weui-flex body">
-                <div class="weui-flex__item">
-                    玻璃单独损失险
-                </div>
-                <div class="weui-flex__item" style="text-align: right;">
-                    ￥1234
-                </div>
-            </div>
+            <!--<div class="weui-flex body">-->
+                <!--<div class="weui-flex__item">-->
+                    <!--玻璃单独损失险-->
+                <!--</div>-->
+                <!--<div class="weui-flex__item" style="text-align: right;">-->
+                    <!--￥1234-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="weui-flex body">-->
+                <!--<div class="weui-flex__item">-->
+                    <!--玻璃单独损失险-->
+                <!--</div>-->
+                <!--<div class="weui-flex__item" style="text-align: right;">-->
+                    <!--￥1234-->
+                <!--</div>-->
+            <!--</div>-->
         </div>
     </div>
     <div class="weui-cells__title order-detail-title">证件信息</div>
