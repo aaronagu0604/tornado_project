@@ -110,7 +110,6 @@ class UploadImageFromUrlHandler(BaseHandler):
         url = 'https://api.weixin.qq.com/cgi-bin/media/get?access_token=%s&media_id=%s' % (
         self.get_access_token(), media_id)
         data = urllib2.urlopen(url).read()
-        logging.info(data)
         return data
 
     def post(self):
