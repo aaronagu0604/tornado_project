@@ -201,7 +201,7 @@ class InsuranceOrdersHandler(WXBaseHandler):
 @route(r'/insurance_order_detail/(\d+)', name='wx_insurance_order_detail')  # html 保险订单详情
 class InsuranceOrderDetailHandler(WXBaseHandler):
     def get_mobile_insurance_order_detail(self,token,id):
-        url = "http://api.dev.test.520czj.com/mobile/insuranceorderdetail?id"%(id)
+        url = "http://api.dev.test.520czj.com/mobile/insuranceorderdetail?id=%s"%(id)
         req = urllib2.Request(url)
         req.add_header('token', token)
         response = urllib2.urlopen(req)
