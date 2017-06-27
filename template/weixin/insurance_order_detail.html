@@ -58,7 +58,7 @@
                     商业险(主险)
                 </div>
                 <div class="weui-flex__item right">
-                    <span class="order-price">￥data['insuranceorderprice']['iList']['mainprice']}}</span>
+                    <span class="order-price">￥{{data['insuranceorderprice']['iList']['mainprice']}}</span>
                 </div>
             </div>
             {% for m in data['insuranceorderprice']['iList']['main'] %}
@@ -76,7 +76,7 @@
                     商业险(附加险)
                 </div>
                 <div class="weui-flex__item right">
-                    <span class="order-price">￥data['insuranceorderprice']['iList']['subjoinprice']}}</span>
+                    <span class="order-price">￥{{data['insuranceorderprice']['iList']['subjoinprice']}}</span>
                 </div>
             </div>
             {% for m in data['insuranceorderprice']['iList']['subjoin'] %}
