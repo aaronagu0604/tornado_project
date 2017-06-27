@@ -211,7 +211,7 @@ class InsuranceOrderDetailHandler(WXBaseHandler):
         user = self.get_current_user()
         data = self.get_mobile_insurance_order_detail(user.token,id)
         logging.info(data)
-        self.render('weixin/insurance_order_detail.html',insurance=data['data'])
+        self.render('weixin/insurance_order_detail.html',data=data['data'])
 
 
 
