@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>销售代理</title>
+    <link rel="stylesheet" href="//g.alicdn.com/msui/sm/0.6.2/css/sm.min.css">
+    <style>
+        /*li{list-style-type:none;*/
+            /*height: 35px;*/
+            /*border-bottom: 1px #999;*/
+
+        /*}*/
+
+        .item-line{
+            margin-left: 10px;
+            height: 10px;
+            border-bottom: 1px solid #e5e5e5;
+            -webkit-transform-origin: 0 100%;
+            transform-origin: 0 100%;
+            -webkit-transform: scaleY(.5);
+            transform: scaleY(.5);
+            padding-bottom: 0px;
+        }
+        ul {
+            display: block;
+            list-style-type: none;
+            -webkit-margin-before: 0;
+            -webkit-margin-after: 0;
+            /*-webkit-margin-start: 0px;*/
+            /*-webkit-margin-end: 0px;*/
+            -webkit-padding-start: 0;
+
+        }
+        label{
+            margin-left: 10px;
+        }
+
+        .bars {
+            position: absolute;
+            right: 0;
+            left: 0;
+            z-index: 10;
+            height: 2.2rem;
+            padding-right: .5rem;
+            padding-left: .5rem;
+            background-color: #f7f7f8;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden
+        }
+        .bars:after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            right: auto;
+            top: auto;
+            height: 1px;
+            width: 100%;
+            background-color: #e7e7e7;
+            display: block;
+            z-index: 15;
+            -webkit-transform-origin: 50% 100%;
+            transform-origin: 50% 100%
+        }
+        .item-inner{
+            display: flex;
+        }
+        .input_select{
+            width: 80px;
+        }
+        .radio{
+            width:30px;
+        }
+        label{
+            width: 66px;
+        }
+        /*.custum_btn{*/
+            /*height: 35px;*/
+        /*}*/
+    </style>
+</head>
+<body>
+
+<div class="page-group">
+    <div id="page-title-bar-btns" class="page page-current">
+
+        <div class="content native-scroll" style="background-color: white">
+            <div>
+            <div class="row" data-offset="88" style="top: 0px; background-color: #eee;height: 44px">
+                <div class="col-33" style="margin-top: 10px">销售代理</div>
+                <div class="col-33" style="margin-top: 10px"><button class="button">
+                    分享销售推广</button>
+                </div>
+                  <div class="col-33" style="margin-top: 10px"><button class="button pull-right open-panel">
+                      筛选</button>
+                  </div>
+              </div>
+                <div class="item-inner row no-gutter" style="padding: 0;">
+                    <div class="col-15" style="text-align: center; font-weight: bold">姓名</div>
+                    <div class="col-25" style="text-align: center;font-weight: bold">电话</div>
+                    <div class="col-20" style="text-align: center;font-weight: bold">提交单数</div>
+                    <div class="col-20" style="text-align: center;font-weight: bold">成交单数</div>
+                    <div class="col-20" style="text-align: center;font-weight: bold">成交总价</div>
+
+                </div>
+                <div class="item-line"></div>
+              </div>
+              <ul>
+                  <li>
+                      <div class=" row " style="padding: 0;">
+                          <div class="col-15" style="text-align: center;">张三</div>
+                          <div class="col-25" style="text-align: center;">18289386767</div>
+                          <div class="col-20" style="text-align: center;">3</div>
+                          <div class="col-20" style="text-align: center;">2</div>
+                          <div class="col-20" style="text-align: center;">2345.00</div>
+                          <!--<div class="item-line"></div>-->
+                    </div>
+                    <div class="item-line"></div>
+                </li>
+                <li>
+                    <div class="item-inner row no-gutter" style="padding: 0;">
+                        <div class="col-15" style="text-align: center;">张三</div>
+                        <div class="col-25" style="text-align: center;">18289386767</div>
+                        <div class="col-20" style="text-align: center;">3</div>
+                        <div class="col-20" style="text-align: center;">2</div>
+                        <div class="col-20" style="text-align: center;">2345.00</div>
+                        <!--<div class="item-line"></div>-->
+                    </div>
+                    <div class="item-line"></div>
+                </li>
+                <li>
+                    <div class="item-inner row no-gutter" style="padding: 0;">
+                        <div class="col-15" style="text-align: center;">张三</div>
+                        <div class="col-25" style="text-align: center;">18289386767</div>
+                        <div class="col-20" style="text-align: center;">3</div>
+                        <div class="col-20" style="text-align: center;">2</div>
+                        <div class="col-20" style="text-align: center;">2345.00</div>
+                        <!--<div class="item-line"></div>-->
+                    </div>
+                    <div class="item-line"></div>
+                </li>
+                <li>
+                    <div class="item-inner row no-gutter" style="padding: 0;">
+                        <div class="col-15" style="text-align: center;">张三</div>
+                        <div class="col-25" style="text-align: center;">18289386767</div>
+                        <div class="col-20" style="text-align: center;">3</div>
+                        <div class="col-20" style="text-align: center;">2</div>
+                        <div class="col-20" style="text-align: center;">2345.00</div>
+                        <!--<div class="item-line"></div>-->
+                    </div>
+                    <div class="item-line"></div>
+                </li>
+            </ul>
+
+        </div>
+        <div class="panel-overlay"></div>
+        <div class="panel panel-right panel-cover" style="display: block; background-color: #eee">
+            <div class="content-block">
+                    <div>
+                        <div >
+                            <ul>
+                                <li>
+                                    <div class="item-content">
+                                        <div class="item-inner">
+                                            <label><input class="radio" name="date" type="radio" value="" />周 </label>
+                                            <div class="item-input">
+                                                <input type="text" class="input_select" placeholder=""  >
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="item-line"></div>
+                                </li>
+                                <li>
+                                    <div class="item-content">
+                                        <div class="item-inner">
+                                        <label><input name="date" class="radio" type="radio" value="" />月 </label>
+                                            <div class="item-input">
+                                                <input type="text" class="input_select" placeholder=""  >
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="item-line"></div>
+                                </li>
+                                <li>
+                                    <div class="item-content">
+                                        <div class="item-inner">
+                                        <label><input name="date" class="radio" type="radio" value="" />季度 </label>
+                                        <div class="item-input">
+                                            <input type="text" class="input_select" placeholder=""  data-toggle="date" readonly="">
+                                        </div>
+                                    </div>
+                        </div>
+                                    <div class="item-line"></div>
+                                </li>
+                                <li>
+                                    <div class="item-content">
+                                        <div class="item-inner">
+                                        <label><input name="date" class="radio" type="radio" value="" />年</label>
+                                            <div class="item-input">
+                                                <input type="text" class="input_select" placeholder=""  data-toggle="date" readonly="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="item-line"></div>
+                                </li>
+                                <li>
+                                    <div class="item-content">
+                                        <div class="item-inner">
+                                            <div class="item-title label">开始时间</div>
+                                            <div class="item-input">
+                                                <input type="text" class="input_select" placeholder=""  data-toggle="date" readonly="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="item-line"></div>
+                                </li>
+                                <li>
+                                    <div class="item-content">
+                                        <div class="item-inner">
+                                            <div class="item-title label">结束时间</div>
+                                            <div class="item-input">
+                                                <input type="text" class="input_select" data-toggle='date' readonly="" placeholder="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="item-line"></div>
+                                </li>
+                            </ul>
+                            <div class="content-block">
+                                <div class="row">
+                                    <div class="col-50 custum_btn"><a href="#" class="button button-fill button-success">提交</a></div>
+                                    <div class="col-50 close-panel custum_btn"><a href="#" class="button button-fill button-success">关闭</a></div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+            </div>
+        </div>
+        </div>
+    </div>
+
+</div>
+
+    <script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm-city-picker.js' charset='utf-8'></script>
+    <script type='text/javascript' src='//g.alicdn.com/sj/lib/zepto/zepto.min.js' charset='utf-8'></script>
+    <script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm.min.js' charset='utf-8'></script>
+<script>
+    $(document).on("click", ".my-btn", function() {
+        $.openPanel("#panel-js-demo");
+    });
+//    $(document).on("click", ".close-panel", function() {
+//        $.closePanel("#panel-js-demo");
+//    });
+</script>
+</body>
+</html>
