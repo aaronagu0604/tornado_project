@@ -308,14 +308,14 @@
             var insurance_list = JSON.parse('{{insurance_message}}');
             var company = $('#insurance_name').val();
             var insurance = JSON.parse(window.localStorage.getItem("insurance"));
+            if (insurance == null) {
+                var insurance = {};
+            }
             for (var i = 0; i < insurance_list.length; i++) {
                 if (insurance_list[i].name == company) {
                     insurance.insurance = insurance_list[i].id;
                     window.localStorage.setItem("insurance", JSON.stringify(insurance));
                 }
-            }
-            if (insurance == null) {
-                var insurance = {};
             }
             if (!$('#forceI').is(':checked')
                 && !$('#damageI').is(':checked')
