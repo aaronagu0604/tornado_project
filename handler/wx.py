@@ -113,8 +113,8 @@ class InsuranceOrderItemsHandler(WXBaseHandler):
         return simplejson.loads(response.read())['data']
 
     def get(self):
-        selectinsurance = self.get_argument('selectinsurance',1)
-        i = Insurance.get(id=int(selectinsurance))
+        selectinsurance = self.get_argument('selectinsurance','')
+        i = Insurance.get(name=selectinsurance)
         createprice = self.get_argument('createprice',0)
 
         user = self.get_current_user()
