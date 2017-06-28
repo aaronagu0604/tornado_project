@@ -212,6 +212,63 @@ class InsuranceOrderDetailHandler(WXBaseHandler):
         logging.info(data)
         self.render('weixin/insurance_order_detail.html',data=data['data'],ret = self.get_js_sdk_sign(setting.wxdomanName+'/insurance_order_detail/'+id))
 
+@route(r'/wxapi/update_insurance_order_img', name='wxapi_update_insurance_order_img')  # 修改保险订单证件图片（保险订单）
+class WXApiUpdateInsuranceOrderIMGHandler(WXBaseHandler):
+    """
+    @apiGroup mine
+    @apiVersion 1.0.0
+    @api {post} /mobile/update_insurance_order_img 12. 修改保险订单证件图片（保险订单）
+    @apiDescription 修改保险订单证件图片（保险订单）
+
+    @apiHeader {String} token 用户登录凭证
+
+    @apiParam {Int} id 保险订单id
+    @apiParam {String} imgurl 图片地址
+    @apiParam {String} imgtype 图片类型：icf:身份证前，icb：身份证后，dcf：行驶证前，dcb:行驶证后
+
+    @apiSampleRequest /mobile/update_insurance_order_img
+    """
+
+    def post(self):
+        result = {'flag': 0, 'msg': '', "data": []}
+        io_id = self.get_argument('id', '')
+        imgurl = self.get_argument('imgurl', '')
+        imgtype = self.get_argument('imgtype','')
+
+        if not (io_id and imgurl and imgtype):
+            result['msg'] = u'传入参数异常'
+            self.write(simplejson.dumps(result))
+            return
+        try:
+            io = InsuranceOrder.get(id=io_id)
+            result['flag'] = 1
+            if imgtype == 'icf':
+                io.id_card_front = imgurl
+                io.icfstatus = 0
+            elif imgtype == 'icb':
+                io.id_card_back = imgurl
+                io.icbstatus = 0
+            elif imgtype == 'icof':
+                io.id_card_front_owner = imgurl
+                io.icfostatus = 0
+            elif imgtype == 'icob':
+                io.id_card_back_owner = imgurl
+                io.icbostatus = 0
+            elif imgtype == 'dcf':
+                io.drive_card_front = imgurl
+                io.dcfstatus = 0
+            elif imgtype == 'dcb':
+                io.drive_card_back = imgurl
+                io.dcbstatus = 0
+            else:
+                result['flag'] = 0
+                result['msg'] = u'图片类型不匹配'
+            io.save()
+        except Exception, e:
+            result['msg'] = u'订单不存在'
+
+        self.write(simplejson.dumps(result))
+
 @route(r'/insurance_order_price/(\d+)', name='wx_insurance_order_price')  # html 保险订单历史报价方案
 class InsuranceOrderPriceHandler(WXBaseHandler):
     def get_mobile_insurance_order_price(self,token,id):
