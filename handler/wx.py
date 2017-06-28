@@ -14,6 +14,7 @@ import string
 import random as rand
 import traceback
 from lib.payment.wxPay import Qrcode_pub
+import lib.payment.ali_app_pay as alipay
 import hashlib
 import setting
 
@@ -308,9 +309,23 @@ class InsuranceOrderPriceHandler(WXBaseHandler):
 @route(r'/pay_detail/(\d+)', name='wx_pay_detail')  # html 微信公众号支付详情页面
 class PayDetailHandler(WXBaseHandler):
     def get(self,id):
+        type = self.get_argument('type',0)
+        if type=='wxqrcode':
+            typestr = '微信'
+        else:
+            typestr = '支付宝'
         io = InsuranceOrder.get(id=int(id))
-        payinfo = Qrcode_pub().getPayQrcode(io.ordernum, '车装甲微信测试付款', int(io.current_order_price.total_price * 100))
-        self.render('weixin/pay_detail.html', payinfo=payinfo)
+        log = u'车装甲保单'
+        if io.status == 1:  # 保单支付
+            log += u'支付'
+        elif io.status in [2, 3] and io.current_order_price.append_refund_status == 1:  # 保单补款
+            log += u'补款'
+        if type=='wxqrcode':
+            payinfo = Qrcode_pub().getPayQrcode(io.ordernum, log, int(io.current_order_price.total_price * 100))
+        else:
+            payinfo = pay_info = alipay.get_alipay_qrcode(io.current_order_price.total_price, log, log, io.ordernum)
+
+        self.render('weixin/pay_detail.html', payinfo=payinfo,type=typestr)
 
 @route(r'/wxapi/login', name='wx_api_login')  # html 登录
 class WXApiLoginHandler(BaseHandler):

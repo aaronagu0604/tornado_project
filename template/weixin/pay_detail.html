@@ -12,7 +12,7 @@ a {
     <div>
         <!--<a href="#" class="weui-btn weui-btn_primary" onclick="pay()">立即支付</a>-->
         <img src="{{payinfo and payinfo or ''}}" alt="" />
-        <p>请使用微信扫码上边二维码</p>
+        <p>请使用{{typestr}}扫码上边二维码</p>
     </div>
 {% endblock %}
 {% block js %}
