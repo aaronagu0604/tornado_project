@@ -310,16 +310,6 @@
     line-height: 25px;
 }
 
-.upload_btn {
-    width: 25px;
-    height: 25px;
-    right: 20px;
-    top: 1px;
-}
-.upload_btn input {
-    opacity: 0;
-}
-
 .wy-insurance-img-block {
     text-align: center;
     background-color: #fff;
