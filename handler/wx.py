@@ -210,7 +210,7 @@ class InsuranceOrderDetailHandler(WXBaseHandler):
         user = self.get_current_user()
         data = self.get_mobile_insurance_order_detail(user.token,id)
         logging.info(data)
-        self.render('weixin/insurance_order_detail.html',data=data['data'])
+        self.render('weixin/insurance_order_detail.html',data=data['data'],ret = self.get_js_sdk_sign(setting.wxdomanName+'/insurance_order_detail/'+id))
 
 @route(r'/insurance_order_price/(\d+)', name='wx_insurance_order_price')  # html 保险订单历史报价方案
 class InsuranceOrderPriceHandler(WXBaseHandler):

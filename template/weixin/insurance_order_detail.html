@@ -96,7 +96,7 @@
     <div class="weui-flex wy-insurance-img-block">
         <div class="weui-flex__item">
             <div>
-                <img id="own_id_card_font" class="img_card " src="../../style/wximg/id_card.png">
+                <img id="own_id_card_font" class="img_card " src="{{data['imgs']['id_card_front']}}">
             </div>
             <div class="display_block">
                 <div>
@@ -107,15 +107,14 @@
                         <span>(被保险人)</span>
                     </p>
                 </div>
-                <a href="javascript:" class="upload_btn">
-                    <input type="file" name="own_id_card_font"
-                           accept="image/*">
+                <a href="javascript:" class="file">
+
                 </a>
             </div>
         </div>
         <div class="weui-flex__item">
             <div>
-                <img id="own_id_card_back" class="img_card " src="../../style/wximg/id_card.png">
+                <img id="own_id_card_back" class="img_card " src="{{data['imgs']['own_id_card_back']}}">
             </div>
             <div class="display_block">
                 <div>
@@ -126,9 +125,8 @@
                         <span>(被保险人)</span>
                     </p>
                 </div>
-                <a href="javascript:" class="upload_btn">
-                    <input type="file" name="own_id_card_back"
-                           accept="image/*">
+                <a href="javascript:" class="file">
+
                 </a>
             </div>
         </div>
@@ -136,7 +134,7 @@
     <div class="weui-flex wy-insurance-img-block">
         <div class="weui-flex__item">
             <div>
-                <img id="driver_card_font" class="img_card " src="../../style/wximg/id_card.png">
+                <img id="driver_card_font" class="img_card " src="{{data['imgs']['driver_card_font']}}">
             </div>
             <div class="display_block">
                 <div>
@@ -144,15 +142,14 @@
                         <span>行驶证</span>
                     </p>
                 </div>
-                <a href="javascript:" class="upload_btn">
-                    <input type="file" name="driver_card_font"
-                           accept="image/*">
+                <a href="javascript:" class="file">
+
                 </a>
             </div>
         </div>
         <div class="weui-flex__item">
             <div>
-                <img id="driver_card_back" class="img_card " src="../../style/wximg/id_card.png">
+                <img id="driver_card_back" class="img_card " src="{{data['imgs']['driver_card_back']}}">
             </div>
             <div class="display_block">
                 <div>
@@ -160,9 +157,8 @@
                         <span>行驶证副本</span>
                     </p>
                 </div>
-                <a href="javascript:" class="upload_btn">
-                    <input type="file" name="driver_card_back"
-                           accept="image/*">
+                <a href="javascript:" class="file">
+
                 </a>
             </div>
         </div>
@@ -170,7 +166,7 @@
     <div class="weui-flex wy-insurance-img-block">
         <div class="weui-flex__item">
             <div>
-                <img id="id_card_font" class="img_card " src="../../style/wximg/id_card.png">
+                <img id="id_card_font" class="img_card " src="{{data['imgs']['id_card_front_owner']}}">
             </div>
             <div class="display_block">
                 <div>
@@ -178,15 +174,14 @@
                         <span>身份证正面</span>
                     </p>
                 </div>
-                <a href="javascript:" class="upload_btn">
-                    <input type="file" name="id_card_font"
-                           accept="image/*">
+                <a href="javascript:" class="file">
+
                 </a>
             </div>
         </div>
         <div class="weui-flex__item">
             <div>
-                <img id="id_card_back" class="img_card" src="../../style/wximg/id_card.png">
+                <img id="id_card_back" class="img_card" src="{{data['imgs']['id_card_back_owner']}}">
             </div>
             <div class="display_block">
                 <div>
@@ -234,53 +229,6 @@
 <script>
 
     $(document).ready(function () {
-
-        $(':file').on("change", function () {
-            loadingImg(this);
-        });
-
-        function loadingImg(parent) {
-            var file = parent.files[0];
-            $(parent).replaceWith('<input type="file" name="' + parent.name + '" accept="image/*">');
-            $('input[name="' + parent.name + '"]').on("change", function () {
-                loadingImg(this);
-            });
-            if (!/image\/\w+/.test(file.type)) {
-                $.toast("请确保文件为图像类型", "text");
-                return false;
-            }
-            var formData = new FormData();
-            formData.append("file", file);
-            $.ajax({
-                type: "POST",
-                url: "http://img.520czj.com/upload/image",
-                data: formData,
-                cache: false,
-                contentType: false,
-                processData: false,
-                beforeSend: function () {
-                    //页面loading, 不能再进行其他操作，适合比如提交按钮
-                    $.showLoading();
-                },
-                success: function (data) {
-                    $.hideLoading();
-                    console.log(data);
-                    var data = JSON.parse(data);
-                    if (data.flag == 1) {
-                        $("#" + parent.name).attr('src', data.data);
-                        //提交上传图片
-                    } else {
-                        $.toast(data.msg, "text");
-                    }
-                },
-                error: function (XMLHttpRequest, textStatus, errorThrown) {
-                    $.hideLoading();
-                    $.toast("上传失败，请检查网络后重试", "text");
-                }
-
-            });
-        }
-
         $(document).on("click", "#soon_pay", function () {
             $.actions({
                 title: "支付方式", actions: [{
@@ -299,11 +247,11 @@
             $.actions({
                 title: "扫码支付", actions: [{
                     text: "微信扫码", onclick: function () {
-                        document.location.href = "/pay_detail";
+                        document.location.href = "/pay_detail/{{data['id']}}";
                     }
                 }, {
                     text: "支付宝扫码", onclick: function () {
-                        document.location.href = "/pay_detail";
+                        document.location.href = "/pay_detail/{{data['id']}}";
                     }
                 }]
             });
@@ -320,6 +268,62 @@
 
     });
 
+wx.config({
+    debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+    appId: '{{ret["appid"]}}', // 必填，公众号的唯一标识
+    timestamp: '{{ret["timeStamp"]}}', // 必填，生成签名的时间戳
+    nonceStr: '{{ret["nonceStr"]}}', // 必填，生成签名的随机串
+    signature: '{{ret["signature"]}}',// 必填，签名，见附录1
+    jsApiList: ['chooseImage', 'uploadImage', 'downloadImage'] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+});
+$('.file').on('click', function () {
+    var parent = this;
+    wx.chooseImage({
+        count: 1,
+        success: function (res) {
+            var localIds = res.localIds;
+            syncUpload(localIds, parent);
+        }
+    });
+});
+var syncUpload = function (localIds, parent) {
+    var localId = localIds.pop();
+    wx.uploadImage({
+        localId: localId,
+        isShowProgressTips: 1,
+        success: function (res) {
+            var serverId = res.serverId; // 返回图片的服务器端ID
+            $.ajax({
+                type: "POST",
+                dataType: "json",
+                url: "http://img.520czj.com/upload/urlimage",
+                data: {
+                    media_id: serverId
+                },
+                success: function (data) {
+                    $.hideLoading();
+
+                    console.log(data);
+                    if (data.flag == 1) {
+                        $("." + parent.id).attr('src', data.data);
+                        var insurance = JSON.parse(window.localStorage.getItem("insurance"));
+                        if (insurance == null) {
+                            var insurance = {};
+                        }
+                        insurance[parent.id] = data.data;
+                        window.localStorage.setItem("insurance", JSON.stringify(insurance));
+                    } else {
+                        $.toast(data.msg, "text");
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    $.hideLoading();
+                    $.toast("上传失败，请检查网络后重试", "text");
+                }
+            });
+        }
+    });
+};
 </script>
 
 {% endblock %}
