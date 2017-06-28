@@ -353,7 +353,7 @@
             success: function (data) {
                 $.hideLoading();
                 if (data.flag == 1) {
-                    $("#" + type + "_img").attr('src', data.data);
+                    $("#" + type + "_img").attr('src', url);
                 } else {
                     $.toast(data.msg, "text");
                 }
