@@ -1335,6 +1335,7 @@ class MobileOrderBaseHandler(MobileBaseHandler):
                 product_list = StoreProductPrice.select().\
                     where((StoreProductPrice.active == 1) & (StoreProductPrice.id << sppids)).\
                     order_by(StoreProductPrice.store)
+                store_quantity = {}
                 for product_price in product_list:
                     products = {
                         'sppid': product_price.id,
@@ -1354,8 +1355,16 @@ class MobileOrderBaseHandler(MobileBaseHandler):
                             'products': [products]
                         })
                         stores.append(product_price.store.id)
+                        store_quantity[product_price.store.id] = spp_dicts[product_price.id]
                     else:
                         result['data']['store'][stores.index(product_price.store.id)]['products'].append(products)
+                        store_quantity[product_price.store.id] += spp_dicts[product_price.id]
+
+                for k,v in store_quantity.items():
+                    if v < 4:
+                        result['msg'] = u'单个店铺购买商品数量不能小于4'
+                        self.write(simplejson.dumps(result))
+                        return
                 result['flag'] = 1
             else:
                 result['msg'] = u'请登录后再购买'
