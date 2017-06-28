@@ -113,7 +113,7 @@
                 </div>
                 {% if data['imgs']['id_card_front_status']%}
                 <a href="javascript:" class="file" id="icf">
-                上传
+                    <img src="../../style/wximg/btn_photo_upload.png">
                 </a>
                 {% endif %}
             </div>
@@ -133,7 +133,7 @@
                 </div>
                 {% if data['imgs']['id_card_back_status']%}
                 <a href="javascript:" class="file" id="icb">
-                上传
+                    <img src="../../style/wximg/btn_photo_upload.png">
                 </a>
                 {% endif %}
             </div>
@@ -152,7 +152,7 @@
                 </div>
                 {% if data['imgs']['drive_card_front_status']%}
                 <a href="javascript:" class="file" id="dcf">
-                上传
+                    <img src="../../style/wximg/btn_photo_upload.png">
                 </a>
                 {% endif %}
             </div>
@@ -169,7 +169,7 @@
                 </div>
                 {% if data['imgs']['drive_card_back_status']%}
                 <a href="javascript:" class="file" id="dcb">
-                上传
+                    <img src="../../style/wximg/btn_photo_upload.png">
                 </a>
                 {% endif %}
             </div>
@@ -189,7 +189,7 @@
                 </div>
                 {% if data['imgs']['icfo_status']%}
                 <a href="javascript:" class="file" id="icof">
-                上传
+                    <img src="../../style/wximg/btn_photo_upload.png">
                 </a>
                 {% endif %}
             </div>
@@ -206,7 +206,7 @@
                 </div>
                 {% if data['imgs']['icbo_status']%}
                 <a href="javascript:" class="file" id="icbo">
-                上传
+                    <img src="../../style/wximg/btn_photo_upload.png">
                 </a>
                 {% endif %}
             </div>
@@ -236,7 +236,8 @@
     <div class="order-pay-bottom">
         <a id="soon_pay" class="weui-btn weui-btn_mini  czj-btn-yellow">立即支付</a>
         <a href="/pay_detail" class="weui-btn weui-btn_mini  weui-btn_primary">扫码支付</a>
-        <a href="/insurance_order_items?selectinsurance={{data['insuranceorderprice']['insurance']}}&createprice={{data['id']}}" class="weui-btn weui-btn_mini  weui-btn_default">重新报价</a>
+        <a href="/insurance_order_items?selectinsurance={{data['insuranceorderprice']['insurance']}}&createprice={{data['id']}}"
+           class="weui-btn weui-btn_mini  weui-btn_default">重新报价</a>
 
     </div>
     {% endif %}
