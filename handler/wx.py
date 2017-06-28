@@ -370,16 +370,6 @@ class MineHandler(WXBaseHandler):
         logging.info(data)
         self.render('weixin/mine.html', mine=data)
 
-@route(r'/bound_mobile', name='wx_bound_mobile')  # html 绑定手机号
-class BoundMobileHandler(WXBaseHandler):
-    def get(self):
-        self.render('weixin/bound_mobile.html')
-
-@route(r'/rake_back_setting', name='wx_rake_back_setting')  # html 返佣配置
-class RakeBackSettingHandler(WXBaseHandler):
-    def get(self):
-        self.render('weixin/rake_back_setting.html')
-
 @route(r'/user_address', name='wx_user_address')  # html 收货地址
 class UserAddressHandler(WXBaseHandler):
     def get_mobile_address(self,token):
@@ -455,33 +445,6 @@ class DeleteUserAddressDetailHandler(WXBaseHandler):
             StoreAddress.delete().where(StoreAddress.id == add_id).execute()
 
         self.redirect('/user_address')
-
-
-@route(r'/user_childrens', name='wx_user_childrens')  # 我的下线
-class UserChildrensHandler(WXBaseHandler):
-    def get(self):
-        self.render('weixin/user_childrens.html')
-
-@route(r'/user_income', name='wx_user_income')  # html 收入
-class UserIncomeHandler(WXBaseHandler):
-    def get(self):
-        self.render('weixin/user_income.html')
-
-@route(r'/user_income_record', name='wx_user_income_record')  # html 收入明细
-class UserIncomeRecordHandler(WXBaseHandler):
-    def get(self):
-        self.render('weixin/user_income_record.html')
-
-@route(r'/income_record_list', name='api_income_record_list')  # api 收入明细
-class IncomeRecordListHandler(WXBaseHandler):
-    def get(self):
-        result = {'flag':1,'msg':'','data':[]}
-        data = [{
-            'name': str(i),
-            'price': i
-        } for i in range(20)]
-        result['data'] = data
-        self.write(simplejson.dumps(result))
 
 @route(r'/demo_insurance_list', name='wx_demo_insurance_list')
 class UserIncomeRecord11Handler(WXBaseHandler):
