@@ -365,7 +365,7 @@
                     if (data.flag == 1) {
                         console.log(data);
                         localStorage.removeItem("insurance");
-                        document.location.href = "/insurance_order_success/" + data.data.order_id
+                        document.location.href = "/insurance_order_detail/" + data.data.order_id
                     } else {
                         $.toast(data.msg, "text");
                         console.log(data);
