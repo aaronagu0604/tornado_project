@@ -7,13 +7,12 @@
         border-top: 0;
     }
 
-    .file {
-        background-image: url("../../style/wximg/btn_photo_upload.png");
+    .upload_img {
         background-size: 25px 25px;
+        background-repeat: no-repeat;
         width: 25px;
+        position: absolute;
         height: 25px;
-        right: 20px;
-        top: 1px;
     }
 </style>
 {% endblock %}
@@ -122,6 +121,7 @@
                 </div>
                 {% if data['imgs']['id_card_front_status']%}
                 <a href="javascript:" class="file" id="icf">
+                    <img class="upload_img" src="../../style/wximg/btn_photo_upload.png">
                 </a>
                 {% endif %}
             </div>
@@ -141,6 +141,7 @@
                 </div>
                 {% if data['imgs']['id_card_back_status']%}
                 <a href="javascript:" class="file" id="icb">
+                    <img class="upload_img" src="../../style/wximg/btn_photo_upload.png">
                 </a>
                 {% endif %}
             </div>
@@ -159,6 +160,7 @@
                 </div>
                 {% if data['imgs']['drive_card_front_status']%}
                 <a href="javascript:" class="file" id="dcf">
+                    <img class="upload_img" src="../../style/wximg/btn_photo_upload.png">
                 </a>
                 {% endif %}
             </div>
@@ -175,6 +177,7 @@
                 </div>
                 {% if data['imgs']['drive_card_back_status']%}
                 <a href="javascript:" class="file" id="dcb">
+                    <img class="upload_img" src="../../style/wximg/btn_photo_upload.png">
                 </a>
                 {% endif %}
             </div>
@@ -194,6 +197,7 @@
                 </div>
                 {% if data['imgs']['icfo_status']%}
                 <a href="javascript:" class="file" id="icof">
+                    <img class="upload_img" src="../../style/wximg/btn_photo_upload.png">
                 </a>
                 {% endif %}
             </div>
@@ -210,6 +214,7 @@
                 </div>
                 {% if data['imgs']['icbo_status']%}
                 <a href="javascript:" class="file" id="icbo">
+                    <img class="upload_img" src="../../style/wximg/btn_photo_upload.png">
                 </a>
                 {% endif %}
             </div>
@@ -271,11 +276,11 @@
             $.actions({
                 title: "扫码支付", actions: [{
                     text: "微信扫码", onclick: function () {
-                        document.location.href = "/pay_detail/{{data['id']}}?type=wxqrcode";
+                        document.location.href = "/pay_detail/{{data['id']}}";
                     }
                 }, {
                     text: "支付宝扫码", onclick: function () {
-                        document.location.href = "/pay_detail/{{data['id']}}?type=zhifubao";
+                        document.location.href = "/pay_detail/{{data['id']}}";
                     }
                 }]
             });
