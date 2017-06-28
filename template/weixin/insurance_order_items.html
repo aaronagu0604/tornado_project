@@ -61,7 +61,6 @@
             保险公司
         </div>
         <div class="weui-cell__ft">
-
             <input class="weui-input" id="insurance_name" type="text">
         </div>
     </div>
@@ -259,13 +258,11 @@
 {% block js %}
 <script>
     $(document).ready(function () {
-
         var insurance_list = JSON.parse('{{insurance_message}}');
         var nameValues = [];
         for (var i = 0; i < insurance_list.length; i++) {
             nameValues.push(insurance_list[i].name);
         }
-
         $("#insurance_name").picker({
             title: "选择保险公司",
             cols: [{
