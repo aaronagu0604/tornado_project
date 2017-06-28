@@ -438,6 +438,7 @@
                         insurance.robbingIPlus = "";
                     }
                 }
+                insurance.order_id = '{{createprice}}';
                 window.localStorage.setItem("insurance", JSON.stringify(insurance));
                 console.log(insurance);
                 document.location.href = "/insurance_order_new?i_name=" + $('#insurance_name').val();

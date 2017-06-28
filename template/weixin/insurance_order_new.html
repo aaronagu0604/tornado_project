@@ -105,97 +105,101 @@
 {% endblock %}
 {% block content %}
 <div class="parent">
-    <div class="weui-cells__title">
-        地址选择
-    </div>
-    <div class="weui-cells weui-cells_radio">
-        <label class="weui-cell weui-check__label" for="default_addr">
-
-            <div class="weui-cell weui-check__label order_price_statue">
-
-                <input type="radio" name="radio1" class="weui-check" style="display: none" checked="checked"
-                       id="default_addr">
-                <span class="weui-icon-checked"></span>
-            </div>
-            <div class="weui-cell__bd">
-                <p> 默认地址</p>
-            </div>
-        </label>
-
-        <div class="default-addr">
-            <div class="hr">
-            </div>
-            <div class="weui-row">
-                <div class="weui-row-50">
-                    <p id="default_name">
-                        {{address["delivery_to"]}}
-                    </p>
-                </div>
-                <div class="weui-row-50">
-                    <p id="default_tel">
-                        {{address["delivery_tel"]}}
-                    </p>
-
-                </div>
-            </div>
-            <div class="weui-row">
-                <p id="default_detailed_address">
-                    {{address["delivery_province"]
-                    +address["delivery_city"]
-                    +address["delivery_district"]
-                    +address["delivery_address"]}}
-                </p>
-            </div>
-
+    <div id="select_address">
+        <div class="weui-cells__title">
+            地址选择
         </div>
-        <label class="weui-cell weui-check__label" for="write_addr">
+        <div class="weui-cells weui-cells_radio">
+            <label class="weui-cell weui-check__label" for="default_addr">
 
-            <div class="weui-cell weui-check__label order_price_statue">
-                <input type="radio" name="radio1" class="weui-check" style="display: none" id="write_addr">
-                <span class="weui-icon-checked"></span>
-            </div>
-            <div class="weui-cell__bd">
-                <p> 填写地址</p>
-            </div>
-        </label>
+                <div class="weui-cell weui-check__label order_price_statue">
 
-        <div class="write-addr">
-            <p/>
-            <div class="weui-cell">
-                <div class="weui-label">收货人</div>
-                <div class="weui-cell__bd">
-                    <input class="weui-input" id="name" type="input" placeholder="请输入收货人姓名">
-                </div>
-            </div>
-            <div class="weui-cell">
-                <div class="weui-label">联系电话</div>
-                <div class="weui-cell__bd">
-                    <input class="weui-input" id="tel" type="input" placeholder="请输入收货人电话">
-                </div>
-            </div>
-            <div class="weui-cell weui-cell">
-                <div class="weui-cell__hd">
-                    所在地区&#8195&#8195
+                    <input type="radio" name="radio1" class="weui-check" style="display: none" checked="checked"
+                           id="default_addr">
+                    <span class="weui-icon-checked"></span>
                 </div>
                 <div class="weui-cell__bd">
-                    <input class="weui-input" id="address" type="text" value="陕西省 西安市 碑林区" readonly>
+                    <p> 默认地址</p>
                 </div>
+            </label>
+
+            <div class="default-addr">
+                <div class="hr">
+                </div>
+                <div class="weui-row">
+                    <div class="weui-row-50">
+                        <p id="default_name">
+                            {{address["delivery_to"]}}
+                        </p>
+                    </div>
+                    <div class="weui-row-50">
+                        <p id="default_tel">
+                            {{address["delivery_tel"]}}
+                        </p>
+
+                    </div>
+                </div>
+                <div class="weui-row">
+                    <p id="default_detailed_address">
+                        {{address["delivery_province"]
+                        +address["delivery_city"]
+                        +address["delivery_district"]
+                        +address["delivery_address"]}}
+                    </p>
+                </div>
+
             </div>
-            <div class="hr">
-            </div>
-            <div class="weui-cells__title">
-                详细地址
-            </div>
-            <div class="weui-cells weui-cells_form">
+            <label class="weui-cell weui-check__label" for="write_addr">
+
+                <div class="weui-cell weui-check__label order_price_statue">
+                    <input type="radio" name="radio1" class="weui-check" style="display: none" id="write_addr">
+                    <span class="weui-icon-checked"></span>
+                </div>
+                <div class="weui-cell__bd">
+                    <p> 填写地址</p>
+                </div>
+            </label>
+
+            <div class="write-addr">
+                <p/>
                 <div class="weui-cell">
+                    <div class="weui-label">收货人</div>
                     <div class="weui-cell__bd">
-                        <textarea class="weui-textarea" id="detailed_address" placeholder="请输入详细地址" rows="2"></textarea>
+                        <input class="weui-input" id="name" type="input" placeholder="请输入收货人姓名">
+                    </div>
+                </div>
+                <div class="weui-cell">
+                    <div class="weui-label">联系电话</div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input" id="tel" type="input" placeholder="请输入收货人电话">
+                    </div>
+                </div>
+                <div class="weui-cell weui-cell">
+                    <div class="weui-cell__hd">
+                        所在地区&#8195&#8195
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input" id="address" type="text" value="陕西省 西安市 碑林区" readonly>
+                    </div>
+                </div>
+                <div class="hr">
+                </div>
+                <div class="weui-cells__title">
+                    详细地址
+                </div>
+                <div class="weui-cells weui-cells_form">
+                    <div class="weui-cell">
+                        <div class="weui-cell__bd">
+                            <textarea class="weui-textarea" id="detailed_address" placeholder="请输入详细地址"
+                                      rows="2"></textarea>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
+        </div>
     </div>
+
     <div class="gift_policy">
         <div class="weui-cells__title">
             <p>选择优惠方式</p>
@@ -232,6 +236,12 @@
 {% block js %}
 <script>
     $(document).ready(function () {
+        var insurance = JSON.parse(window.localStorage.getItem("insurance"));
+        if (insurance.order_id == 0) {
+            $("#select_address").show();
+        } else {
+            $("#select_address").hide();
+        }
 
         if ($('#write_addr').is(':checked')) {
             $(".write-addr").show();
@@ -271,48 +281,51 @@
                 console.log(window.localStorage.getItem("insurance"));
                 var insurance = JSON.parse(window.localStorage.getItem("insurance"));
                 insurance.gift_policy = list;
-                if (!$('#default_addr').is(':checked')) {
-                    var tel = $("#tel").val();
-                    var re = /^1\d{10}$/;
-                    if ($("#name").val() == "") {
-                        $.toast("请输入收货人姓名", "text");
-                    } else if (tel == "") {
-                        $.toast("请输入收货人电话", "text");
-                    } else if (!re.test(tel)) {
-                        $.toast("手机号格式错误", "text");
-                    } else if ($("#detailed_address").val() == "") {
-                        $.toast("请输入详细地址", "text");
+                if (insurance.order_id != 0) {
+                    toQuote(insurance);
+                } else {
+                    if (!$('#default_addr').is(':checked')) {
+                        var tel = $("#tel").val();
+                        var re = /^1\d{10}$/;
+                        if ($("#name").val() == "") {
+                            $.toast("请输入收货人姓名", "text");
+                        } else if (tel == "") {
+                            $.toast("请输入收货人电话", "text");
+                        } else if (!re.test(tel)) {
+                            $.toast("手机号格式错误", "text");
+                        } else if ($("#detailed_address").val() == "") {
+                            $.toast("请输入详细地址", "text");
+                        } else {
+                            insurance.delivery_to = $("#name").val();
+                            insurance.delivery_tel = $("#tel").val();
+                            insurance.delivery_address = $("#detailed_address").val();
+                            var address = $("#address").val();
+                            var arr = new Array();
+                            arr = address.split(' ');
+                            console.log(arr[0]);
+                            insurance.delivery_province = arr[0];
+                            insurance.delivery_city = arr[1];
+                            insurance.delivery_district = arr[2];
+                            window.localStorage.setItem("insurance", JSON.stringify(insurance));
+                            console.log(insurance);
+                            submit(insurance);
+                        }
                     } else {
-                        insurance.delivery_to = $("#name").val();
-                        insurance.delivery_tel = $("#tel").val();
-                        insurance.delivery_address = $("#detailed_address").val();
-                        var address = $("#address").val();
-                        var arr = new Array();
-                        arr = address.split(' ');
-                        console.log(arr[0]);
-                        insurance.delivery_province = arr[0];
-                        insurance.delivery_city = arr[1];
-                        insurance.delivery_district = arr[2];
+                        insurance.delivery_to = "{{address['delivery_to']}}";
+                        insurance.delivery_tel = "{{address['delivery_tel']}}";
+                        insurance.delivery_address = "{{address['delivery_address']}}";
+                        insurance.delivery_province = "{{address['delivery_province']}}";
+                        insurance.delivery_city = "{{address['delivery_city']}}";
+                        insurance.delivery_district = "{{address['delivery_district']}}";
                         window.localStorage.setItem("insurance", JSON.stringify(insurance));
                         console.log(insurance);
                         submit(insurance);
                     }
-                } else {
-                    insurance.delivery_to = "{{address['delivery_to']}}";
-                    insurance.delivery_tel = "{{address['delivery_tel']}}";
-                    insurance.delivery_address = "{{address['delivery_address']}}";
-                    insurance.delivery_province = "{{address['delivery_province']}}";
-                    insurance.delivery_city = "{{address['delivery_city']}}";
-                    insurance.delivery_district = "{{address['delivery_district']}}";
-                    window.localStorage.setItem("insurance", JSON.stringify(insurance));
-                    console.log(insurance);
-                    submit(insurance);
                 }
             }
         });
         function submit(insurance) {
             $.showLoading();
-
             $.ajax({
                 type: "POST",
                 url: "/wxapi/insurance_order_new",
@@ -324,7 +337,7 @@
                     if (data.flag == 1) {
                         console.log(data);
                         localStorage.removeItem("insurance");
-                        document.location.href = "/insurance_order_success/"+data.data.order_id
+                        document.location.href = "/insurance_order_success/" + data.data.order_id
                     } else {
                         $.toast(data.msg, "text");
                         console.log(data);
@@ -339,7 +352,35 @@
                 }
             });
         }
+
+        function toQuote(insurance) {
+            $.showLoading();
+            $.ajax({
+                type: "POST",
+                url: "/wxapi/insurance_order_create_price",
+                data: insurance,
+                dataType: 'json',
+                success: function (data) {
+                    $.hideLoading();
+                    if (data.flag == 1) {
+                        console.log(data);
+                        localStorage.removeItem("insurance");
+                        document.location.href = "/insurance_order_success/" + data.data.order_id
+                    } else {
+                        $.toast(data.msg, "text");
+                        console.log(data);
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    $.hideLoading();
+                    $.toast("网络异常，请检查网络", "text");
+
+                }
+            });
+        }
+
     });
+
 
 </script>
 {% endblock %}
