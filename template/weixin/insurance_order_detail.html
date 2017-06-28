@@ -111,9 +111,11 @@
                         <span>(被保险人)</span>
                     </p>
                 </div>
-                <a href="javascript:" class="file">
+                {% if data['imgs']['id_card_front_status']%}
+                <a href="javascript:" class="file" id="id_card_front_status">
 
                 </a>
+                {% endif %}
             </div>
         </div>
         <div class="weui-flex__item">
@@ -129,9 +131,11 @@
                         <span>(被保险人)</span>
                     </p>
                 </div>
-                <a href="javascript:" class="file">
+                 {% if data['imgs']['id_card_back_status']%}
+                <a href="javascript:" class="file" id="id_card_back_status">
 
                 </a>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -146,9 +150,11 @@
                         <span>行驶证</span>
                     </p>
                 </div>
-                <a href="javascript:" class="file">
+                 {% if data['imgs']['drive_card_front_status']%}
+                <a href="javascript:" class="file" id="drive_card_front_status">
 
                 </a>
+                {% endif %}
             </div>
         </div>
         <div class="weui-flex__item">
@@ -161,9 +167,11 @@
                         <span>行驶证副本</span>
                     </p>
                 </div>
-                <a href="javascript:" class="file">
+                {% if data['imgs']['drive_card_back_status']%}
+                <a href="javascript:" class="file" id="drive_card_back_status">
 
                 </a>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -178,9 +186,11 @@
                         <span>身份证正面</span>
                     </p>
                 </div>
-                <a href="javascript:" class="file">
+                {% if data['imgs']['icfo_status']%}
+                <a href="javascript:" class="file" id="icfo_status">
 
                 </a>
+                {% endif %}
             </div>
         </div>
         <div class="weui-flex__item">
@@ -193,9 +203,11 @@
                         <span>身份证背面</span>
                     </p>
                 </div>
-                <a href="javascript:" class="upload_btn">
+                {% if data['imgs']['icbo_status']%}
+                <a href="javascript:" class="file" id="icbo_status">
 
                 </a>
+                {% endif %}
             </div>
         </div>
     </div>
