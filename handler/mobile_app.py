@@ -1335,7 +1335,6 @@ class MobileOrderBaseHandler(MobileBaseHandler):
                 product_list = StoreProductPrice.select().\
                     where((StoreProductPrice.active == 1) & (StoreProductPrice.id << sppids)).\
                     order_by(StoreProductPrice.store)
-                store_quantity = {}
                 for product_price in product_list:
                     products = {
                         'sppid': product_price.id,
@@ -1355,16 +1354,9 @@ class MobileOrderBaseHandler(MobileBaseHandler):
                             'products': [products]
                         })
                         stores.append(product_price.store.id)
-                        store_quantity[product_price.store.id] = spp_dicts[product_price.id]
                     else:
                         result['data']['store'][stores.index(product_price.store.id)]['products'].append(products)
-                        store_quantity[product_price.store.id] += spp_dicts[product_price.id]
 
-                for k,v in store_quantity.items():
-                    if v < 4:
-                        result['msg'] = u'单个店铺购买商品数量不能小于4'
-                        self.write(simplejson.dumps(result))
-                        return
                 result['flag'] = 1
             else:
                 result['msg'] = u'请登录后再购买'
@@ -1401,7 +1393,9 @@ class MobileNewOrderHandler(MobileBaseHandler):
             db_total_price = 0
             for item in items:
                 db_store_price = 0
+                store_quantity = 0
                 for p in item['products']:
+                    store_quantity += int(p['quantity'])
                     spp = StoreProductPrice.get(id=p['sppid'])
                     if order_type == 1:
                         if spp.price == 0:
@@ -1417,6 +1411,8 @@ class MobileNewOrderHandler(MobileBaseHandler):
                 if not app_price == db_store_price:
                     logging.info('%s, %s' % (db_store_price, app_price))
                     return False, u'store价格有误！暂不能支付'
+                if store_quantity<4:
+                    return False, u'单个店铺所购商品数量小于4，不能支付'
                 db_total_price += db_store_price
             if total_price == db_total_price and total_price == 0:
                 return False, u'商品价格错误'
