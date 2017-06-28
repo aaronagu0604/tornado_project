@@ -217,6 +217,22 @@ class InsuranceOrderDetailHandler(WXBaseHandler):
         logging.info(data)
         self.render('weixin/insurance_order_detail.html',data=data['data'],ret = self.get_js_sdk_sign(setting.wxdomanName+'/insurance_order_detail/'+id))
 
+@route(r'/wxapi/insurance_order_create_price', name='wx_insurance_order_create_price')  # html 保险订单重新报价
+class InsuranceOrderDetailHandler(WXBaseHandler):
+    def post_mobile_insurance_order_create_price(self,token):
+        url = "http://api.dev.test.520czj.com/mobile/insuranceorderdetail"
+        logging.info(self.request.body)
+        req = urllib2.Request(url, self.request.body)
+        req.add_header('token', token)
+        response = urllib2.urlopen(req)
+        return response.read()
+
+    def post(self):
+        user = self.get_current_user()
+        data = self.post_mobile_insurance_order_create_price(user.token)
+        logging.info(data)
+        self.write(data)
+
 @route(r'/wxapi/update_insurance_order_img', name='wxapi_update_insurance_order_img')  # 修改保险订单证件图片（保险订单）
 class WXApiUpdateInsuranceOrderIMGHandler(WXBaseHandler):
     """
