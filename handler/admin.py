@@ -1653,6 +1653,11 @@ class ExportInsuranceThreeHandler(AdminBaseHandler):
                     archive=archive, InsuranceOrder=InsuranceOrder)
 
 
+def put_area_to_cash(self):
+    if not self.application.memcachedb.get('00270001'):
+        for area in Area.select().where(db.fn.Length(Area.code) == 8):
+            self.application.memcachedb.set(area.code, area.pid.name+area.name, 60*60)
+
 @route(r'/admin/export_referee', name='admin_export_referee')    # 推广人员统计
 class RefereeList(AdminBaseHandler):
     '''
@@ -1686,9 +1691,8 @@ class RefereeList(AdminBaseHandler):
 
     '''
     def getInsuranceOrder(self, startTime, lastTime, referees):
-        print time.strftime('%H:%M:%S', time.localtime())
         store_list = {}
-        for io in InsuranceOrder.select(InsuranceOrder.id, Store.id, Store.admin_code, InsuranceOrder.deal_time).\
+        for io in InsuranceOrder.select(InsuranceOrder.id, Store.id, Store.admin_code, InsuranceOrder.pay_time).\
                 join(Store).where(InsuranceOrder.status == 3).tuples():
             if io[1] not in store_list:
                 store_list[io[1]] = 1
@@ -1721,11 +1725,9 @@ class RefereeList(AdminBaseHandler):
                     elif store_list[io[1]] == 3:
                         referees[0]['third_io_count'] += 1
                         referees[0]['third_io_id'] += str(io[0]) + ','
-        print time.strftime('%H:%M:%S', time.localtime())
         return referees
 
     def get_store(self, startTime, lastTime):
-        print time.strftime('%H:%M:%S', time.localtime())
         referees = [{
             'name': u'无推广人员',
             'code': '000000',
@@ -1767,18 +1769,13 @@ class RefereeList(AdminBaseHandler):
 
         return referees
 
-    def put_area_to_cash(self):
-        if not self.application.memcachedb.get('00270001'):
-            for area in Area.select().where(db.fn.Length(Area.code) == 8):
-                self.application.memcachedb.set(area.code, area.pid.name+area.name, 60*60)
-
     def get(self):
         startDate = self.get_argument("startDate", '')
         lastDate = self.get_argument("lastDate", '')
         startDate, lastDate, startTime, lastTime = getDate(startDate, lastDate)
         referees = self.get_store(startTime, lastTime)
         referees = self.getInsuranceOrder(startTime, lastTime, referees)
-        self.put_area_to_cash()
+        put_area_to_cash(self)
 
         self.render("admin/report/referee_list.html", refereeList=referees, active='refereeReport',
                     startDate=startDate, lastDate=lastDate)
@@ -1806,7 +1803,7 @@ class ReportOrders(AdminBaseHandler):
                 join(Store, on=(Store.id == InsuranceOrder.store)).\
                 join(InsuranceOrderPrice, on=(InsuranceOrderPrice.id == InsuranceOrder.current_order_price)).\
                 join(Insurance, on=(Insurance.id == InsuranceOrderPrice.insurance)).\
-                where(ft).order_by(InsuranceOrder.deal_time).dicts()
+                where(ft).order_by(InsuranceOrder.pay_time).dicts()
         itList = [0, 0, 0, 0, 0]
         io_list = []
         for io in ios:
@@ -1997,8 +1994,8 @@ class ReportAreaOrder(AdminBaseHandler):
     # 某时间段某地区 保险报表
     def getIOReport(self, startTime, lastTime, code):
         if code:
-            ft = ((InsuranceOrder.status == 3) & (InsuranceOrder.deal_time >= startTime) &
-                  (InsuranceOrder.deal_time <= lastTime) & (Store.area_code % code))
+            ft = ((InsuranceOrder.status == 3) & (InsuranceOrder.pay_time >= startTime) &
+                  (InsuranceOrder.pay_time <= lastTime) & (Store.area_code % code))
             ios = InsuranceOrder.select(InsuranceOrder.id.alias('id'),
                                         InsuranceOrder.payment.alias('payment'),
                                         InsuranceOrderPrice.total_price.alias('total_price'),
@@ -2006,9 +2003,9 @@ class ReportAreaOrder(AdminBaseHandler):
                                         Store.area_code.alias('area_code')).\
                 join(Store, on=(Store.id == InsuranceOrder.store)).\
                 join(InsuranceOrderPrice, on=(InsuranceOrderPrice.id == InsuranceOrder.current_order_price)).\
-                where(ft).order_by(InsuranceOrder.deal_time.desc()).dicts()
+                where(ft).order_by(InsuranceOrder.pay_time.desc()).dicts()
         else:
-            ft = ((InsuranceOrder.status == 3) & (InsuranceOrder.deal_time >= startTime) & 
+            ft = ((InsuranceOrder.status == 3) & (InsuranceOrder.pay_time >= startTime) &
                   (InsuranceOrder.pay_time <= lastTime))
             ios = InsuranceOrder.select(InsuranceOrder.id.alias('id'),
                                         InsuranceOrder.payment.alias('payment'),
@@ -2121,7 +2118,7 @@ class ReportAreaOrder(AdminBaseHandler):
                     areaList[io['area_code'][:8]]['upay']['count'] += 1
                     areaList[io['area_code'][:8]]['upay']['money'] += io['total_price']
                     areaList[io['area_code'][:8]]['upayList'].append(str(io['id']))
-
+        # logging.info(areaList)
         return areaList
 
     # 某时间段某地区 普通商品报表
@@ -2129,7 +2126,7 @@ class ReportAreaOrder(AdminBaseHandler):
         if code:
             ft = (SubOrder.status << [1, 2, 3, 4]) & (Order.pay_time >= startTime) & \
                  (Order.pay_time <= lastTime) & (Store.area_code % code)
-            os = SubOrder.select().join(Store, on=(Store.id == SubOrder.saler_store)).join(Order).where(ft).order_by(SubOrder.paytime)
+            os = SubOrder.select().join(Store, on=(Store.id == SubOrder.saler_store)).join(Order).where(ft).order_by(Order.pay_time)
         else:
             ft = (SubOrder.status << [1, 2, 3, 4]) & (Order.pay_time > startTime) & (Order.pay_time <= lastTime)
             os = SubOrder.select().join(Order).where(ft).order_by(Order.pay_time)
@@ -2270,6 +2267,7 @@ class ReportAreaOrder(AdminBaseHandler):
             code = city+'%'
         else:
             code = province + '%'
+        put_area_to_cash(self)
         startDate, lastDate, startTime, lastTime = getDate(startDate, lastDate)
         areaList = self.getIOReport(startTime, lastTime, code)
         areaList = self.getPOReport(areaList, startTime, lastTime, code)
