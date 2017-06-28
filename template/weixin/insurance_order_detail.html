@@ -93,14 +93,14 @@
     </div>
     <div class="weui-cells__title order-detail-title">证件信息</div>
     {% if data['imgs']['id_card_front_status']==1 or data['imgs']['id_card_back_status']==1 or
-          data['imgs']['drive_card_front_status']==1 or data['imgs']['drive_card_back_status']==1 or
-          data['imgs']['icfo_status']==1 or data['imgs']['icbo_status']==1%}
+    data['imgs']['drive_card_front_status']==1 or data['imgs']['drive_card_back_status']==1 or
+    data['imgs']['icfo_status']==1 or data['imgs']['icbo_status']==1%}
     <p class="order_remind">图片不符合要求,请重新上传</p>
     {% endif %}
     <div class="weui-flex wy-insurance-img-block">
         <div class="weui-flex__item">
             <div>
-                <img id="own_id_card_font" class="img_card " src="{{data['imgs']['id_card_front']}}">
+                <img id="icf_img" class="img_card " src="{{data['imgs']['id_card_front']}}">
             </div>
             <div class="display_block">
                 <div>
@@ -112,7 +112,7 @@
                     </p>
                 </div>
                 {% if data['imgs']['id_card_front_status']%}
-                <a href="javascript:" class="file" id="id_card_front_status">
+                <a href="javascript:" class="file" id="icf">
 
                 </a>
                 {% endif %}
@@ -120,7 +120,7 @@
         </div>
         <div class="weui-flex__item">
             <div>
-                <img id="own_id_card_back" class="img_card " src="{{data['imgs']['own_id_card_back']}}">
+                <img id="icb_img" class="img_card " src="{{data['imgs']['own_id_card_back']}}">
             </div>
             <div class="display_block">
                 <div>
@@ -131,8 +131,8 @@
                         <span>(被保险人)</span>
                     </p>
                 </div>
-                 {% if data['imgs']['id_card_back_status']%}
-                <a href="javascript:" class="file" id="id_card_back_status">
+                {% if data['imgs']['id_card_back_status']%}
+                <a href="javascript:" class="file" id="icb">
 
                 </a>
                 {% endif %}
@@ -142,7 +142,7 @@
     <div class="weui-flex wy-insurance-img-block">
         <div class="weui-flex__item">
             <div>
-                <img id="driver_card_font" class="img_card " src="{{data['imgs']['driver_card_font']}}">
+                <img id="dcf_img" class="img_card " src="{{data['imgs']['driver_card_font']}}">
             </div>
             <div class="display_block">
                 <div>
@@ -150,8 +150,8 @@
                         <span>行驶证</span>
                     </p>
                 </div>
-                 {% if data['imgs']['drive_card_front_status']%}
-                <a href="javascript:" class="file" id="drive_card_front_status">
+                {% if data['imgs']['drive_card_front_status']%}
+                <a href="javascript:" class="file" id="dcf">
 
                 </a>
                 {% endif %}
@@ -159,7 +159,7 @@
         </div>
         <div class="weui-flex__item">
             <div>
-                <img id="driver_card_back" class="img_card " src="{{data['imgs']['driver_card_back']}}">
+                <img id="dcb_img" class="img_card " src="{{data['imgs']['driver_card_back']}}">
             </div>
             <div class="display_block">
                 <div>
@@ -168,7 +168,7 @@
                     </p>
                 </div>
                 {% if data['imgs']['drive_card_back_status']%}
-                <a href="javascript:" class="file" id="drive_card_back_status">
+                <a href="javascript:" class="file" id="dcb">
 
                 </a>
                 {% endif %}
@@ -179,7 +179,7 @@
     <div class="weui-flex wy-insurance-img-block">
         <div class="weui-flex__item">
             <div>
-                <img id="id_card_font" class="img_card " src="{{data['imgs']['id_card_front_owner']}}">
+                <img id="icof_img" class="img_card " src="{{data['imgs']['id_card_front_owner']}}">
             </div>
             <div class="display_block">
                 <div>
@@ -188,7 +188,7 @@
                     </p>
                 </div>
                 {% if data['imgs']['icfo_status']%}
-                <a href="javascript:" class="file" id="icfo_status">
+                <a href="javascript:" class="file" id="icof">
 
                 </a>
                 {% endif %}
@@ -196,7 +196,7 @@
         </div>
         <div class="weui-flex__item">
             <div>
-                <img id="id_card_back" class="img_card" src="{{data['imgs']['id_card_back_owner']}}">
+                <img id="icbo_img" class="img_card" src="{{data['imgs']['id_card_back_owner']}}">
             </div>
             <div class="display_block">
                 <div>
@@ -205,7 +205,7 @@
                     </p>
                 </div>
                 {% if data['imgs']['icbo_status']%}
-                <a href="javascript:" class="file" id="icbo_status">
+                <a href="javascript:" class="file" id="icbo">
 
                 </a>
                 {% endif %}
@@ -220,8 +220,11 @@
               <img src="../../style/wximg/img_location.png"/></span></div>
             <div class="weui-media-box__bd weui-cell weui-cell_access address-cell">
                 <a href="#" class="">
-                    <div class="address-name"><span>{{data['delivery']['name']}}</span><span>{{data['delivery']['mobile']}}</span></div>
-                    <div class="address-txt">{{data['delivery']['province']}}{{data['delivery']['city']}}{{data['delivery']['district']}}{{data['delivery']['address']}}</div>
+                    <div class="address-name"><span>{{data['delivery']['name']}}</span><span>{{data['delivery']['mobile']}}</span>
+                    </div>
+                    <div class="address-txt">
+                        {{data['delivery']['province']}}{{data['delivery']['city']}}{{data['delivery']['district']}}{{data['delivery']['address']}}
+                    </div>
                 </a>
                 <div class="weui-cell__ft"></div>
             </div>
@@ -229,7 +232,7 @@
         </div>
     </div>
 
-    {%  if data['insuranceorderprice']['status']==1 %}
+    {% if data['insuranceorderprice']['status']==1 %}
     <div class="order-pay-bottom">
         <a id="soon_pay" class="weui-btn weui-btn_mini  czj-btn-yellow">立即支付</a>
         <a href="/pay_detail" class="weui-btn weui-btn_mini  weui-btn_primary">扫码支付</a>
@@ -285,62 +288,84 @@
 
     });
 
-wx.config({
-    debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-    appId: '{{ret["appid"]}}', // 必填，公众号的唯一标识
-    timestamp: '{{ret["timeStamp"]}}', // 必填，生成签名的时间戳
-    nonceStr: '{{ret["nonceStr"]}}', // 必填，生成签名的随机串
-    signature: '{{ret["signature"]}}',// 必填，签名，见附录1
-    jsApiList: ['chooseImage', 'uploadImage', 'downloadImage'] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
-});
-$('.file').on('click', function () {
-    var parent = this;
-    wx.chooseImage({
-        count: 1,
-        success: function (res) {
-            var localIds = res.localIds;
-            syncUpload(localIds, parent);
-        }
+    wx.config({
+        debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+        appId: '{{ret["appid"]}}', // 必填，公众号的唯一标识
+        timestamp: '{{ret["timeStamp"]}}', // 必填，生成签名的时间戳
+        nonceStr: '{{ret["nonceStr"]}}', // 必填，生成签名的随机串
+        signature: '{{ret["signature"]}}',// 必填，签名，见附录1
+        jsApiList: ['chooseImage', 'uploadImage', 'downloadImage'] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
     });
-});
-var syncUpload = function (localIds, parent) {
-    var localId = localIds.pop();
-    wx.uploadImage({
-        localId: localId,
-        isShowProgressTips: 1,
-        success: function (res) {
-            var serverId = res.serverId; // 返回图片的服务器端ID
-            $.ajax({
-                type: "POST",
-                dataType: "json",
-                url: "http://img.520czj.com/upload/urlimage",
-                data: {
-                    media_id: serverId
-                },
-                success: function (data) {
-                    $.hideLoading();
+    $('.file').on('click', function () {
+        var parent = this;
+        wx.chooseImage({
+            count: 1,
+            success: function (res) {
+                var localIds = res.localIds;
+                syncUpload(localIds, parent);
+            }
+        });
+    });
+    var syncUpload = function (localIds, parent) {
+        var localId = localIds.pop();
+        wx.uploadImage({
+            localId: localId,
+            isShowProgressTips: 1,
+            success: function (res) {
+                var serverId = res.serverId; // 返回图片的服务器端ID
+                $.ajax({
+                    type: "POST",
+                    dataType: "json",
+                    url: "http://img.520czj.com/upload/urlimage",
+                    data: {
+                        media_id: serverId
+                    },
+                    success: function (data) {
+                        $.hideLoading();
 
-                    console.log(data);
-                    if (data.flag == 1) {
-                        $("." + parent.id).attr('src', data.data);
-                        var insurance = JSON.parse(window.localStorage.getItem("insurance"));
-                        if (insurance == null) {
-                            var insurance = {};
+                        console.log(data);
+                        if (data.flag == 1) {
+
+                            submitData(data.data, parent.id);
+                        } else {
+                            $.toast(data.msg, "text");
                         }
-                        insurance[parent.id] = data.data;
-                        window.localStorage.setItem("insurance", JSON.stringify(insurance));
-                    } else {
-                        $.toast(data.msg, "text");
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        $.hideLoading();
+                        $.toast("上传失败，请检查网络后重试", "text");
                     }
-                },
-                error: function (XMLHttpRequest, textStatus, errorThrown) {
-                    $.hideLoading();
-                    $.toast("上传失败，请检查网络后重试", "text");
+                });
+            }
+        });
+    };
+    var submitData = function (url, type) {
+        $.showLoading();
+        $.ajax({
+            type: "POST",
+            url: "//wxapi/update_insurance_order_img",
+            data: {
+                id: '{{data.id}}',
+                imgurl: url,
+                imgtype: type
+            },
+            dataType: 'json',
+            success: function (data) {
+                $.hideLoading();
+                if (data.flag == 1) {
+                    $("#" + type + "_img").attr('src', data.data);
+                } else {
+                    $.toast(data.msg, "text");
                 }
-            });
-        }
-    });
-};
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                $.hideLoading();
+                $.toast("网络异常，请检查网络", "text");
+
+            }
+        });
+    }
+
 </script>
 
 {% endblock %}
