@@ -2023,7 +2023,7 @@ class ReportAreaOrder(AdminBaseHandler):
             if len(code) != 9:
                 if io['area_code'][:4] not in areaList:
                     areaList[io['area_code'][:4]] = {
-                        'province': '',
+                        'province': Area.get(code=io['area_code'][:4]).name,
                         'city': '--',
                         'newStoreC': 0,
                         'newStoreList': [],
@@ -2069,7 +2069,7 @@ class ReportAreaOrder(AdminBaseHandler):
             if io['area_code'][:8] not in areaList:
                 areaList[io['area_code'][:8]] = {
                     'province': '--',
-                    'city': '',
+                    'city': self.application.memcachedb.get(io['area_code'][:8]),
                     'newStoreC': 0,
                     'newStoreList': [],
                     'POCount': 0,
@@ -2285,6 +2285,18 @@ class ReportAreaOrder(AdminBaseHandler):
         self.render("admin/report/area_order.html", areaList=areaList, active='areaReport', startDate=startDate,
                     amount=amount, lastDate=lastDate, keys=keys, items=items,
                     default_province=province, default_city=city)
+
+
+@route('/admin/export_product_orders', name='admin_report_productOreders')    # 普通商品订单们
+class ReportStores(AdminBaseHandler):
+    def get(self):
+        POCList = self.get_argument("POCList", '')
+        if POCList:
+            sList_int = [int(id) for id in POCList.split(',')]
+            orders = SubOrder.select().where((SubOrder.id << sList_int)).order_by(SubOrder.delivery_time.desc())
+        else:
+            orders = ''
+        self.render("admin/report/product_orders.html", orders=orders, time=time, active='areaReport')
 
 
 @route(r'/admin/store_liquidity/(\d+)', name='admin_store_liquidit')  #

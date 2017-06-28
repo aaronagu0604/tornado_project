@@ -1,0 +1,111 @@
+{% extends "layout/admin.html" %}
+{% block css %}
+<link href="/style/css/plugins/dataTables.bootstrap.css" rel="stylesheet">
+<link href="/style/css/select2.css" rel="stylesheet"/>
+{{xsrf()}}
+<style>
+#num{
+    width:130px;
+    height:30px;
+    border:1px solid #aaa;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+    transform:translateY(3px);
+    -webkit-transform:translateY(3px);
+}
+#btn{
+    height:30px;
+    line-height:15px;
+    background:#528ACB;
+    color:#fff;
+}
+</style>
+{% endblock %}
+{% block content %}
+
+<div class="row">
+    <nav>
+        <div>
+            <a class="navbar-brand" href="#">保单汇总</a>
+            <input type=button value=返回 style="background:#438bca;color:#fff;border:none;border-radius:4px;margin-top:10px;" onclick="window.history.back()">
+        </div>
+    </nav>
+</div>
+<div class="row">
+
+    <div class="panel panel-primary">
+        <div class="table-responsive">
+            <table class="table table-hover" id="tb_need_pay_back_orders" style="text-align:center;">
+                <thead>
+                <tr style="background:#528ACB;color:#fff;">
+                    <th style="text-align:center;">订单号</th>
+                    <th style="text-align:center;">下单门店</th>
+                    <th style="text-align:center;">经销商</th>
+                    <th style="text-align:center;">金额</th>
+                    <th style="text-align:center;">支付方式</th>
+                    <th style="text-align:center;">状态</th>
+                    <th style="text-align:center;">支付时间</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for o in orders %}
+                <tr>
+                    <td>{{ o.order.ordernum }}</td>
+                    <td>{{ o.buyer_store.name }}</td>
+                    <td>{{ o.saler_store.name }}</td>
+                    <td>{{ o.price }}</td>
+                    {% if o.order.payment==1 or o.order.payment==6 %}
+                    <td>支付宝</td>
+                    {% elif o.order.payment==2 or o.order.payment==7 %}
+                    <td>微信支付</td>
+                    {% elif o.order.payment==3 %}
+                    <td>银联支付</td>
+                    {% else %}
+                    <td>其它</td>
+                    {% endif %}
+                    {% if o.status == 1 %}
+                    <td> <font color="#FF0000">已支付</font> </td>
+                    {% elif o.status == 2 or o.status == 3 %}
+                    <td>待发货</td>
+                    {% elif o.status == 4 %}
+                    <td>已完成</td>
+                    {% endif %}
+                    <td>{{ time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(o.order.pay_time)) }}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <br/>
+    <br/>
+
+</div>
+{% endblock %}
+
+{% block js %}
+<script src="/style/js/jquery.twbsPagination.min.js"></script>
+<script type="text/javascript">
+	$(document).ready(function() {
+	    var xsrf='{{handler.xsrf_token}}';
+		$('#bt_export').bind('click', function () {
+            $.get("/ajax/orders/refereeOrder",{sql: JSON.stringify(sql), _xsrf: xsrf, keyword: '{{keyword}}'},
+            function (data) {
+                var obj = jQuery.parseJSON(data);
+                if (obj.err == 0) {
+                    alert('生成成功，点击下载连接，下载数据文件！');
+                    window.open("/upload/" + obj.msg);
+                }
+                else {
+                    alert('生成失败：' + obj.msg);
+                }
+            });
+        });
+    });
+
+</script>
+{% endblock %}
+
+

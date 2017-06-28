@@ -223,6 +223,9 @@
                             <li>
                                 <a {% if active=='refereeReport' %} class="active"{% endif %} href="/admin/export_referee">推广人员出单统计</a>
                             </li>
+                            <li>
+                                <a {% if active=='areaReport' %} class="active"{% endif %} href="/admin/export_areaorder">地区统计</a>
+                            </li>
                             {% if admin.roles=='D' %}
                             <li>
                                 <a {% if active=='tradelist' %}class="tradelist"{% endif %} href="/admin/export_trade_list">网站交易明细</a>
