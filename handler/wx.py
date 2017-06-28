@@ -87,8 +87,9 @@ class IndexHandler(WXBaseHandler):
         for i in insurance:
             index = i['link'].rfind('/')
             i['link'] = i['link'][:index].replace('czj://','/')
-
-        self.render('weixin/index.html',banner=banner, insurance=insurance)
+        msg = data['last_unread_price']
+        msg['link'] = msg['link'][5:]
+        self.render('weixin/index.html',banner=banner, insurance=insurance,msg=msg)
 
 @route(r'/insurance/(\d+)', name='wx_insurance')  # 保险公司详情页面
 class InsuranceHandler(WXBaseHandler):
