@@ -260,7 +260,7 @@
                     } else {
                         insurance.is_same_person = 0;
                         window.localStorage.setItem("insurance", JSON.stringify(insurance));
-                        document.location.href = "/insurance_order_items";
+                        document.location.href = "/insurance_order_items?selectinsurance={{insurance}}&createprice=0";
                     }
                 }
             }
