@@ -114,14 +114,12 @@
                 <div>
                     <p>
                         <span>身份证正面<br>(被保险人)</span>
-                        <span>(被保险人)</span>
+                        {% if data['imgs']['id_card_front_status']%}
+                        <a href="javascript:" class="file" id="icf">
+                            <img class="upload_btn" src="../../style/wximg/btn_photo_upload.png">
+                        </a>
+                        {% endif %}
                     </p>
-
-                    {% if data['imgs']['id_card_front_status']%}
-                <a href="javascript:" class="file" id="icf">
-                    <img class="upload_btn" src="../../style/wximg/btn_photo_upload.png">
-                </a>
-                {% endif %}
                 </div>
 
             </div>
