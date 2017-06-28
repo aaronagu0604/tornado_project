@@ -311,9 +311,6 @@
 }
 
 .upload_btn {
-    background-image: url("../../style/wximg/btn_photo_upload.png");
-    background-size: 25px 25px;
-    background-repeat: no-repeat;
     width: 25px;
     position: absolute;
     height: 25px;
