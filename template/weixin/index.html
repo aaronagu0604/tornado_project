@@ -15,6 +15,7 @@
         </div>
         <div class="swiper-pagination"></div>
     </div>
+    {% if msg['show'] == 1 %}
     <div class="notify-title">
         <div class="weui-panel__hd notify_no_padding">
             <a href="{{msg['link']}}" class="weui-cell weui-cell_access notify-wy">
@@ -27,6 +28,7 @@
             </a>
         </div>
     </div>
+    {% endif %}
     <div class="wy-Module">
         <div class="wy-Module-tit"><span>保险公司</span></div>
     </div>
