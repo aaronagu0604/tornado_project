@@ -6,6 +6,11 @@
     .address-cell:before {
         border-top: 0;
     }
+
+    .upload_img {
+        width: 25px;
+        height: 25px;
+    }
 </style>
 {% endblock %}
 {% block content %}
@@ -113,7 +118,7 @@
                 </div>
                 {% if data['imgs']['id_card_front_status']%}
                 <a href="javascript:" class="file" id="icf">
-                    <img class="upload_btn" src="../../style/wximg/btn_photo_upload.png">
+                    <img  class="upload_img" src="../../style/wximg/btn_photo_upload.png">
                 </a>
                 {% endif %}
             </div>
@@ -133,7 +138,7 @@
                 </div>
                 {% if data['imgs']['id_card_back_status']%}
                 <a href="javascript:" class="file" id="icb">
-                    <img class="upload_btn" src="../../style/wximg/btn_photo_upload.png">
+                    <img class="upload_img" src="../../style/wximg/btn_photo_upload.png">
                 </a>
                 {% endif %}
             </div>
@@ -152,7 +157,7 @@
                 </div>
                 {% if data['imgs']['drive_card_front_status']%}
                 <a href="javascript:" class="file" id="dcf">
-                    <img class="upload_btn" src="../../style/wximg/btn_photo_upload.png">
+                    <img class="upload_img" src="../../style/wximg/btn_photo_upload.png">
                 </a>
                 {% endif %}
             </div>
@@ -169,7 +174,7 @@
                 </div>
                 {% if data['imgs']['drive_card_back_status']%}
                 <a href="javascript:" class="file" id="dcb">
-                    <img class="upload_btn" src="../../style/wximg/btn_photo_upload.png">
+                    <img  class="upload_img"src="../../style/wximg/btn_photo_upload.png">
                 </a>
                 {% endif %}
             </div>
@@ -189,7 +194,7 @@
                 </div>
                 {% if data['imgs']['icfo_status']%}
                 <a href="javascript:" class="file" id="icof">
-                    <img class="upload_btn" src="../../style/wximg/btn_photo_upload.png">
+                    <img class="upload_img" src="../../style/wximg/btn_photo_upload.png">
                 </a>
                 {% endif %}
             </div>
@@ -206,7 +211,7 @@
                 </div>
                 {% if data['imgs']['icbo_status']%}
                 <a href="javascript:" class="file" id="icbo">
-                    <img class="upload_btn" src="../../style/wximg/btn_photo_upload.png">
+                    <img  class="upload_img" src="../../style/wximg/btn_photo_upload.png">
                 </a>
                 {% endif %}
             </div>
