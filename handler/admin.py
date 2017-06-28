@@ -2033,13 +2033,15 @@ class ReportAreaOrder(AdminBaseHandler):
                         'IOcount': 1,
                         'IOamount': io['total_price'],
                         'lube': 1 if io['gift_policy'] == 1 else 0,
-                        'score': 1 if io['gift_policy'] == 2 else 0,
+                        'cash': 1 if io['gift_policy'] == 2 else 0,
+                        'score': 1 if io['gift_policy'] == 3 else 0,
                         'wechat': {'count': 1 if (io['payment'] == 2 or io['payment'] == 7) else 0, 'money': io['total_price'] if (io['payment'] == 2 or io['payment'] == 7) else 0},
                         'alipay': {'count': 1 if (io['payment'] == 1 or io['payment'] == 6) else 0, 'money': io['total_price'] if (io['payment'] == 1 or io['payment'] == 6) else 0},
                         'upay': {'count': 1 if io['payment'] == 3 else 0, 'money': io['total_price'] if io['total_price'] == 3 else 0},
                         'ioCList': [str(io['id'])],
                         'lubeList': [str(io['id'])] if io['gift_policy'] == 1 else [],
-                        'scoreList': [str(io['id'])] if io['gift_policy'] == 2 else [],
+                        'cashList': [str(io['id'])] if io['gift_policy'] == 2 else [],
+                        'scoreList': [str(io['id'])] if io['gift_policy'] == 3 else [],
                         'wechatList': [str(io['id'])] if (io['payment'] == 2 or io['payment'] == 7) else [],
                         'alipayList': [str(io['id'])] if (io['payment'] == 1 or io['payment'] == 6) else [],
                         'upayList': [str(io['id'])] if io['payment'] == 3 else []
@@ -2052,6 +2054,9 @@ class ReportAreaOrder(AdminBaseHandler):
                         areaList[io['area_code'][:4]]['lube'] += 1
                         areaList[io['area_code'][:4]]['lubeList'].append(str(io['id']))
                     elif io['gift_policy'] == 2:
+                        areaList[io['area_code'][:4]]['cash'] += 1
+                        areaList[io['area_code'][:4]]['cashList'].append(str(io['id']))
+                    elif io['gift_policy'] == 3:
                         areaList[io['area_code'][:4]]['score'] += 1
                         areaList[io['area_code'][:4]]['scoreList'].append(str(io['id']))
                     if io['payment'] == 2 or io['payment'] == 7:
@@ -2078,13 +2083,15 @@ class ReportAreaOrder(AdminBaseHandler):
                     'IOcount': 1,
                     'IOamount': io['total_price'],
                     'lube': 1 if io['gift_policy'] == 1 else 0,
-                    'score': 1 if io['gift_policy'] == 2 else 0,
+                    'cash': 1 if io['gift_policy'] == 2 else 0,
+                    'score': 1 if io['gift_policy'] == 3 else 0,
                     'wechat': {'count': 1 if (io['payment'] == 2 or io['payment'] == 7) else 0, 'money': io['total_price'] if (io['payment'] == 2 or io['payment'] == 7) else 0},
                     'alipay': {'count': 1 if (io['payment'] == 1 or io['payment'] == 6) else 0, 'money': io['total_price'] if (io['payment'] == 1 or io['payment'] == 6) else 0},
                     'upay': {'count': 1 if io['payment'] == 3 else 0, 'money': io['total_price'] if io['payment'] == 3 else 0},
                     'ioCList':[str(io['id'])],
                     'lubeList': [str(io['id'])] if io['gift_policy'] == 1 else [],
-                    'scoreList': [str(io['id'])] if io['gift_policy'] == 2 else [],
+                    'cashList': [str(io['id'])] if io['gift_policy'] == 2 else [],
+                    'scoreList': [str(io['id'])] if io['gift_policy'] == 3 else [],
                     'wechatList': [str(io['id'])] if (io['payment'] == 2 or io['payment'] == 7) else [],
                     'alipayList': [str(io['id'])] if (io['payment'] == 1 or io['payment'] == 6) else [],
                     'upayList': [str(io['id'])] if io['payment'] == 3 else []
@@ -2097,6 +2104,9 @@ class ReportAreaOrder(AdminBaseHandler):
                     areaList[io['area_code'][:8]]['lube'] += 1
                     areaList[io['area_code'][:8]]['lubeList'].append(str(io['id']))
                 elif io['gift_policy'] == 2:
+                    areaList[io['area_code'][:8]]['cash'] += 1
+                    areaList[io['area_code'][:8]]['cashList'].append(str(io['id']))
+                elif io['gift_policy'] == 3:
                     areaList[io['area_code'][:8]]['score'] += 1
                     areaList[io['area_code'][:8]]['scoreList'].append(str(io['id']))
                 if io['payment'] == 2 or io['payment'] == 7:
@@ -2143,6 +2153,7 @@ class ReportAreaOrder(AdminBaseHandler):
                         'alipay':{'count':0, 'money':0},
                         'upay':{'count':0, 'money':0},
                         'lubeList': [],
+                        'cashList': [],
                         'scoreList': [],
                         'wechatList': [],
                         'alipayList': [],
@@ -2170,6 +2181,7 @@ class ReportAreaOrder(AdminBaseHandler):
                     'alipay':{'count':0, 'money':0},
                     'upay':{'count':0, 'money':0},
                     'lubeList': [],
+                    'cashList': [],
                     'scoreList': [],
                     'wechatList': [],
                     'alipayList': [],
@@ -2209,6 +2221,7 @@ class ReportAreaOrder(AdminBaseHandler):
                         'alipay': {'count': 0, 'money': 0},
                         'upay': {'count': 0, 'money': 0},
                         'lubeList': [],
+                        'cashList': [],
                         'scoreList': [],
                         'wechatList': [],
                         'alipayList': [],
@@ -2235,6 +2248,7 @@ class ReportAreaOrder(AdminBaseHandler):
                     'alipay': {'count': 0, 'money': 0},
                     'upay': {'count': 0, 'money': 0},
                     'lubeList': [],
+                    'cashList': [],
                     'scoreList': [],
                     'wechatList': [],
                     'alipayList': [],
@@ -2257,18 +2271,15 @@ class ReportAreaOrder(AdminBaseHandler):
         else:
             code = province + '%'
         startDate, lastDate, startTime, lastTime = getDate(startDate, lastDate)
-        print('----1--%s--' % time.strftime('%H:%M:%S', time.localtime()))
         areaList = self.getIOReport(startTime, lastTime, code)
-        print('----2--%s--' % time.strftime('%H:%M:%S', time.localtime()))
         areaList = self.getPOReport(areaList, startTime, lastTime, code)
-        print('----3--%s--' % time.strftime('%H:%M:%S', time.localtime()))
         areaList = self.getNSReport(areaList, startTime, lastTime, code)
-        print('----4--%s--' % time.strftime('%H:%M:%S', time.localtime()))
 
         amount = 0
         for area_code in areaList:
             areaList[area_code]['ioCList'] = ','.join(areaList[area_code]['ioCList'])
             areaList[area_code]['lubeList'] = ','.join(areaList[area_code]['lubeList'])
+            areaList[area_code]['cashList'] = ','.join(areaList[area_code]['cashList'])
             areaList[area_code]['scoreList'] = ','.join(areaList[area_code]['scoreList'])
             areaList[area_code]['wechatList'] = ','.join(areaList[area_code]['wechatList'])
             areaList[area_code]['alipayList'] = ','.join(areaList[area_code]['alipayList'])

@@ -69,6 +69,7 @@
                     <th style="text-align:center;">商品交易金额</th>
                     <th style="text-align:center;">出单数</th>
                     <th style="text-align:center;">返油</th>
+                    <th style="text-align:center;">返现</th>
                     <th style="text-align:center;">返积分</th>
                     <th style="text-align:center;">微信/金额</th>
                     <th style="text-align:center;">支付宝/金额</th>
@@ -87,6 +88,7 @@
                     <td>{{ areaList[ic]['POAmount'] }}</td>
                     <td><a href="/admin/export_orders?iIDList={{areaList[ic]['ioCList']}}">{{ areaList[ic]['IOcount'] }}</a></td>
                     <td><a href="/admin/export_orders?iIDList={{areaList[ic]['lubeList']}}">{{ areaList[ic]['lube'] }}</a></td>
+                    <td><a href="/admin/export_orders?iIDList={{areaList[ic]['cashList']}}">{{ areaList[ic]['cash'] }}</a></td>
                     <td><a href="/admin/export_orders?iIDList={{areaList[ic]['scoreList']}}">{{ areaList[ic]['score'] }}</a></td>
                     <td><a href="/admin/export_orders?iIDList={{areaList[ic]['wechatList']}}">{{ areaList[ic]['wechat']['count'] }}/ {{areaList[ic]['wechat']['money'] }}</a></td>
                     <td><a href="/admin/export_orders?iIDList={{areaList[ic]['alipayList']}}">{{ areaList[ic]['alipay']['count'] }}/{{areaList[ic]['alipay']['money'] }}</a></td>
