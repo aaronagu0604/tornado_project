@@ -123,11 +123,11 @@
         } else if (data.status == 1) {
             paystr = '待付款';
             paybtn = '<div class="weui-flex__item" style=" flex: 5;text-align: right;">\
-                           <a href="#" class="weui-btn weui-btn_mini weui-btn_primary">\
-                            立即支付</a>\
-                            <a href="/pay_detail/'+ data.id +'?type=qrcode'+'" class="weui-btn weui-btn_mini czj-btn-yellow"\
+                           <a href="/pay_detail/'+ data.id +'?type=alipayqrcode'+'" class="weui-btn weui-btn_mini weui-btn_primary">\
+                            支付宝扫码支付</a>\
+                            <a href="/pay_detail/'+ data.id +'?type=wxqrcode'+'" class="weui-btn weui-btn_mini czj-btn-yellow"\
                            style="margin-top: 0;">\
-                            扫码支付</a>\
+                            微信扫码支付</a>\
                       </div>'
         } else if (data.status == 2) {
             paystr = '待出单';

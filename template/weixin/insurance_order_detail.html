@@ -240,8 +240,8 @@
 
     {% if data['insuranceorderprice']['status']==1 %}
     <div class="order-pay-bottom">
-        <a id="soon_pay" class="weui-btn weui-btn_mini  czj-btn-yellow">立即支付</a>
-        <a href="/pay_detail" class="weui-btn weui-btn_mini  weui-btn_primary">扫码支付</a>
+        <a href="/pay_detail/{{data['id']}}?type=alipayqrcode" id="soon_pay" class="weui-btn weui-btn_mini  czj-btn-yellow">支付宝扫码支付</a>
+        <a href="/pay_detail/{{data['id']}}?type=wxqrcode" class="weui-btn weui-btn_mini  weui-btn_primary">微信扫码支付</a>
         <a href="/insurance_order_items?selectinsurance={{data['insuranceorderprice']['insurance']}}&createprice={{data['id']}}"
            class="weui-btn weui-btn_mini  weui-btn_default">重新报价</a>
 
