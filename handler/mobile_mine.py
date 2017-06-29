@@ -2315,7 +2315,7 @@ class MobileToolsHandler(MobileBaseHandler):
     """
 
     def get(self):
-        self.render('mobile/sales_agent.html')
+        self.render('mobile/sales_agent.html',token='mt:faf7c5e8-5935-4674-a18b-bcc10bf30254')#self.get_user().token)
 
 @route(r'/mobile/get_sales_agent', name='mobile_get_sales_agent')  # 下线api
 class MobileToolsHandler(MobileBaseHandler):
@@ -2332,29 +2332,39 @@ class MobileToolsHandler(MobileBaseHandler):
         result = {'flag': 0, 'msg': '', "data": []}
         begin_date  = self.get_argument('begin_date',None)
         end_date = self.get_argument('end_date',None)
-        index = self.get_argument('index',1)
-
+        index = self.get_argument('index',None)
+        token = self.get_argument('token',None)
+        store = User.get(token=token).store
+        index  = int(index) if index else 1
+        ft = User.role.contains('W') & (InsuranceOrder.status << [2,3]) & (User.store == store.id)
+        fts = None
+        fte = None
         if begin_date and end_date:
             begin_date = time.strptime(begin_date+" 00:00:00", "%Y-%m-%d %H:%M:%S")
+            fts = (InsuranceOrder.ordered >= begin_date)
             end_date = time.strptime((end_date + " 23:59:59"), "%Y-%m-%d %H:%M:%S")
+            fte = (InsuranceOrder.ordered < end_date)
+            ft &= fts
+            ft &= fte
 
 
-        users = User.select(User.id.alias('uname'),
+        users = User.select(User.id.alias('uid'),
                             User.mobile.alias('umobile'),
                             fn.count(InsuranceOrder.id).alias('orders'),
-                            fn.sum(InsuranceOrder.total_price).alias('total_price')). \
-            join(InsuranceOrder,on=(InsuranceOrder.user == User.id)).where(User.role.contains('W'),
-                                                                           InsuranceOrder.ordered >= begin_date,
-                                                                           InsuranceOrder.ordered < end_date,
-                                                                           InsuranceOrder.status << [2,3]).group_by(User.mobile). \
+                            fn.sum(InsuranceOrderPrice.total_price).alias('total_price')). \
+            join(InsuranceOrder,on=(InsuranceOrder.user == User.id)). \
+            join(InsuranceOrderPrice,on=(InsuranceOrder.current_order_price == InsuranceOrderPrice.id)). \
+            where(ft).group_by(User.mobile). \
             paginate(index, setting.MOBILE_PAGESIZE).tuples()
-        for uname,umobile,orders,total_price in users:
-            result.data.append({
-                'name':uname,
+
+        for uid,umobile,orders,total_price in users:
+            result['data'].append({
+                'id':uid,
                 'mobile':umobile,
                 'orders':orders,
-                'total_price':total_price
+                'total_price':round(total_price,2)
             })
+        result['flag'] = 1
         self.write(simplejson.dumps(result))
 
 

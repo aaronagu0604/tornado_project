@@ -86,15 +86,15 @@
              style="background-color: white; top: 5.8rem;">
             <div class="list-block">
                 <ul class="list-container">
-                    <li>
-                        <div class="row item-row  no-gutter">
-                            <div class="col-25">张三11</div>
-                            <div class="col-25">18289386767</div>
-                            <div class="col-25">2</div>
-                            <div class="col-25">2345.00</div>
-                        </div>
-                        <div class="item-line"></div>
-                    </li>
+                    <!--<li>-->
+                        <!--<div class="row item-row  no-gutter">-->
+                            <!--<div class="col-25">张三11</div>-->
+                            <!--<div class="col-25">18289386767</div>-->
+                            <!--<div class="col-25">2</div>-->
+                            <!--<div class="col-25">2345.00</div>-->
+                        <!--</div>-->
+                        <!--<div class="item-line"></div>-->
+                    <!--</li>-->
                 </ul>
             </div>
           <!-- 加载提示符 -->
@@ -107,7 +107,6 @@
 
 </div>
 
-
 <script type='text/javascript' src='//g.alicdn.com/sj/lib/zepto/zepto.min.js' charset='utf-8'></script>
 <script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm.min.js' charset='utf-8'></script>
 <script>
@@ -117,7 +116,8 @@ $("#start").calendar({
 $("#end").calendar({
     value: ['2015-12-05']
 });
-
+</script>
+<script>
 // 加载flag
 var loading = false;
 // 上次加载的序号
@@ -129,8 +129,8 @@ function addItems(item) {
 
       html = '<li>\
                   <div class="row item-row  no-gutter">\
-                      <div class="col-25">'+item.uname+'</div>\
-                      <div class="col-25">'+item.umobile+'</div>\
+                      <div class="col-25">'+item.id+'</div>\
+                      <div class="col-25">'+item.mobile+'</div>\
                       <div class="col-25">'+item.orders+'</div>\
                       <div class="col-25">'+item.total_price+'</div>\
                   </div>\
@@ -141,9 +141,7 @@ function addItems(item) {
       $('.infinite-scroll-bottom .list-container').append(html);
 
   }
-
-// 注册'infinite'事件处理函数
-$(document).on('infinite', '.infinite-scroll-bottom',function() {
+function get_data() {
 
   // 如果正在加载，则退出
   if (loading) return;
@@ -152,9 +150,11 @@ $(document).on('infinite', '.infinite-scroll-bottom',function() {
   loading = true;
 
   // 模拟1s的加载过程
-  jQuery.getJSON("/mobile/get_sales_agent", {
-            'index': index
-        }, function (data) {
+  $.getJSON("/mobile/get_sales_agent", {
+            'index': index,
+            'token':'{{token}}'
+        },
+        function (data) {
             console.log(data);
             if (data.flag == 1) {
                 if (index == 1) {
@@ -179,7 +179,10 @@ $(document).on('infinite', '.infinite-scroll-bottom',function() {
             }
             loading = false;
         });
-});
+}
+// 注册'infinite'事件处理函数
+$(document).on('infinite', '.infinite-scroll-bottom',get_data);
+get_data();
 </script>
 </body>
 </html>
