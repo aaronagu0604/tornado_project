@@ -47,23 +47,13 @@
             /*-webkit-margin-end: 0px;*/
             -webkit-padding-start: 0;
         }
-
-
     </style>
 </head>
 <body>
 
 <div class="page-group">
     <div class="page">
-        <!--<header class="bar bar-nav" style="background-color: #ffffff;">-->
-            <!--<a class="icon icon-left pull-left"></a>-->
-            <!--<h1 class="title">销售代理</h1>-->
-            <!--<a class="button button-nav pull-right">-->
-                <!--新建分享-->
-            <!--</a>-->
-        <!--</header>-->
-
-        <div class="bar bar-header-secondary" style="background-color: #ffffff;height:3.6rem; padding: 0px;">
+        <div class="bar" style="background-color: #ffffff;height:3.6rem;">
             <div class="item-line"></div>
             <div class="row" style="padding: 0 5px;">
                 <div class="search-input col-40">
@@ -78,12 +68,12 @@
             <div class="item-header row no-gutter">
                 <div class="col-25">编号</div>
                 <div class="col-25">电话</div>
-                <div class="col-25">成交单数</div>
-                <div class="col-25">成交总价</div>
+                <div onclick="SortTable('orders','orders_div')" id="orders_div" class="col-25">单数<span id="orders" style="display:inline-block;width:10px;height:10px;top:-12px" class="icon icon-down"></span></div>
+                <div onclick="SortTable('total_price','total_price_div')" id="total_price_div" class="col-25">总价<span id="total_price" style="display:inline-block;width:10px;height:10px;top:-12px" class="icon icon-down"></span></div>
             </div>
         </div>
         <div class="content infinite-scroll infinite-scroll-bottom" data-distance="100"
-             style="background-color: white; top: 5.8rem;">
+             style="background-color: white; top: 3.735rem;">
             <div class="list-block">
                 <ul class="list-container">
                     <!--<li>-->
@@ -121,7 +111,8 @@ $("#end").calendar({
 var loading = false;
 // 上次加载的序号
 var index = 1;
-
+var sort_type = 'orders'
+var sort_value = 'desc'
 function addItems(item) {
       // 生成新条目的HTML
       var html = '';
@@ -155,6 +146,8 @@ function get_data() {
             'index': index,
             'begin_date':start_date,
             'end_date':end_date,
+            'sort_type':sort_type,
+            'sort_value':sort_value,
             'token':'{{token}}'
         },
         function (data) {
@@ -192,11 +185,27 @@ function check_base_date(page) {
     get_data();
 }
 
-
+function SortTable(id,div) {
+    sort_type = id;
+    $('#total_price_div').css("color",'black');
+    $('#total_price_div').css("color",'black');
+    $('#'+div).css("color",'black');
+    if ($('#'+id).attr("class") == 'icon icon-up') {
+        $('#'+id).attr("class","icon icon-down");
+        sort_value = 'desc';
+    }
+    else {
+        $('#'+id).attr("class","icon icon-up");
+        sort_value = 'asc';
+    }
+    index = 1;
+    get_data();
+}
 // 注册'infinite'事件处理函数
 $(document).on('infinite', '.infinite-scroll-bottom',get_data);
 
 get_data();
+
 
 </script>
 </body>

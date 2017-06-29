@@ -2335,10 +2335,11 @@ class MobileToolsHandler(MobileBaseHandler):
         index = self.get_argument('index',None)
         token = self.get_argument('token',None)
         sort_type = self.get_argument('sort_type','orders')
-        sort_value = self.get_argument('sort_value','asc')
-        reverse = False
-        if sort_value=='des':
-            reverse = True
+        sort_value = self.get_argument('sort_value','desc')
+        reverse = True
+        if sort_value=='asc':
+            reverse = False
+
         store = User.get(token=token).store
         index  = int(index) if index else 1
         ft = User.role.contains('W') & (InsuranceOrder.status << [2,3]) & (User.store == store.id)
@@ -2373,14 +2374,14 @@ class MobileToolsHandler(MobileBaseHandler):
             agent[uid]['orders'] = orders
             agent[uid]['total_price'] = round(total_price,2)
         data = agent.values()
-
+        print data,reverse
         if sort_type=='orders':
-            data.sort(cmp=lambda x,y:x['orders']>=y['orders'],reverse=reverse)
+            data.sort(key=lambda x:x['orders'],reverse=reverse)
         elif sort_type=='total_price':
-            data.sort(cmp=lambda x, y: x['total_price'] >= y['total_price'], reverse=reverse)
+            data.sort(key=lambda x:x['total_price'], reverse=reverse)
         result['flag'] = 1
         result['data'] = data
-
+        print data
         self.write(simplejson.dumps(result))
 
 
