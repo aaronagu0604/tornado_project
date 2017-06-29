@@ -91,7 +91,11 @@
           <div class="infinite-scroll-preloader">
               <div class="preloader"></div>
           </div>
+        <!--<input id="linkurl" style="display:none" value="{{linkurl}}">-->
+        <!--<input id="imgurl" style="display:none" value="{{imgurl}}">-->
+        <!--<input id="title" style="display:none" value="{{title}}">-->
         </div>
+
     </div>
 </div>
 
@@ -207,7 +211,7 @@ $(document).on('infinite', '.infinite-scroll-bottom',get_data);
 get_data();
 
 function getShareInfo() {
-        return {'linkurl':{{linkurl}},'imgurl':{{imgurl},'tile':{{title}}}};
+        return { 'linkurl':'{{linkurl}}','imgurl':'{{imgurl}}','tile':'{{title}}' };
     }
 </script>
 </body>
