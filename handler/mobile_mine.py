@@ -2342,7 +2342,8 @@ class MobileToolsHandler(MobileBaseHandler):
         linkurl = self.create_url(store_id)
         imgurl = 'http://img.520czj.com/image/2017/06/29/server1_20170629170424FMnqzTtESLpuvbZQUjVdYkRA.png'
         title = '车装甲，人人卖车险'
-        self.render('mobile/sales_agent.html',token=self.get_user().token,
+        token = 'mt:faf7c5e8-5935-4674-a18b-bcc10bf30254'#self.get_user().token
+        self.render('mobile/sales_agent.html',token=token,
                     linkurl=linkurl,imgurl=imgurl,title=title)
 
 @route(r'/mobile/get_sales_agent', name='mobile_get_sales_agent')  # 下线api
