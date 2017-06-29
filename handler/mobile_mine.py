@@ -2368,7 +2368,7 @@ class MobileToolsHandler(MobileBaseHandler):
             join(InsuranceOrder,on=(InsuranceOrder.user == User.id)). \
             join(InsuranceOrderPrice,on=(InsuranceOrder.current_order_price == InsuranceOrderPrice.id)). \
             where(ft).group_by(User.mobile). \
-            paginate(index, setting.MOBILE_PAGESIZE).tuples()
+            tuples()
 
         for uid,umobile,orders,total_price in users:
             agent[uid]['orders'] = orders
@@ -2380,7 +2380,7 @@ class MobileToolsHandler(MobileBaseHandler):
         elif sort_type=='total_price':
             data.sort(key=lambda x:x['total_price'], reverse=reverse)
         result['flag'] = 1
-        result['data'] = data
+        result['data'] = data[(index-1)*setting.MOBILE_PAGESIZE:index*setting.MOBILE_PAGESIZE]
 
         self.write(simplejson.dumps(result))
 
