@@ -2338,13 +2338,15 @@ class MobileToolsHandler(MobileBaseHandler):
 
         return wx_url
     def get(self):
+        platform = self.get_argument('platform', 'android')
         store_id = self.get_user().store.id
         linkurl = self.create_url(store_id)
         imgurl = 'http://img.520czj.com/image/2017/06/29/server1_20170629170424FMnqzTtESLpuvbZQUjVdYkRA.png'
         title = '车装甲，人人卖车险'
         token = self.get_user().token
         self.render('mobile/sales_agent.html',token=token,
-                    linkurl=linkurl,imgurl=imgurl,title=title)
+                    linkurl=linkurl,imgurl=imgurl,title=title,
+                    platform=platform)
 
 @route(r'/mobile/get_sales_agent', name='mobile_get_sales_agent')  # 下线api
 class MobileToolsHandler(MobileBaseHandler):
