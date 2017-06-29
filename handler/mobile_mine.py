@@ -16,6 +16,9 @@ from lib.payment.wxPay import UnifiedOrder_pub
 from lib.route import route
 from model import *
 import logging
+import urllib2
+import urllib
+
 from bootloader import settings
 
 
@@ -2313,9 +2316,34 @@ class MobileToolsHandler(MobileBaseHandler):
 
     @apiSampleRequest /mobile/sales_agent
     """
+    def get_access_token(self):
+        self.weixin_app_id = 'wxf23313db028ab4bc'
+        self.weixin_secret = '8d75a7fa77dc0e5b2dc3c6dd551d87d6'
+        self.url_access_token = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s" % (
+        self.weixin_app_id, self.weixin_secret)
+        return simplejson.loads(urllib2.urlopen(self.url_access_token).read())["access_token"]
 
+    def create_url(self,store_id):
+        url = setting.wxdomanName + '/wxapi/login'
+        wxlogin_url = "https://open.weixin.qq.com/connect/oauth2/authorize"
+        appid = 'wxf23313db028ab4bc'
+        redirect_uri = urllib.urlencode({'url': url})
+        response_type = "code"
+        scope = "snsapi_base"
+
+        state = '%s00douhao00%s'%(str(store_id),'/index'.replace('/','00xiegang00'))
+        end = "#wechat_redirect"
+        wx_url = wxlogin_url + "?appid=" + appid + "&redirect_uri=" + redirect_uri[4:] + \
+                 "&response_type=" + response_type + "&scope=" + scope + "&state=" + state + end
+
+        return wx_url
     def get(self):
-        self.render('mobile/sales_agent.html',token=self.get_user().token)
+        store_id = self.get_user().store.id
+        linkurl = self.create_url(store_id)
+        imgurl = 'http://img.520czj.com/image/2017/06/29/server1_20170629170424FMnqzTtESLpuvbZQUjVdYkRA.png'
+        title = '车装甲，人人卖车险'
+        self.render('mobile/sales_agent.html',token=self.get_user().token,
+                    linkurl=linkurl,imgurl=imgurl,title=title)
 
 @route(r'/mobile/get_sales_agent', name='mobile_get_sales_agent')  # 下线api
 class MobileToolsHandler(MobileBaseHandler):
