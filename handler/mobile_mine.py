@@ -2334,6 +2334,11 @@ class MobileToolsHandler(MobileBaseHandler):
         end_date = self.get_argument('end_date',None)
         index = self.get_argument('index',None)
         token = self.get_argument('token',None)
+        sort_type = self.get_argument('sort_type','orders')
+        sort_value = self.get_argument('sort_value','asc')
+        reverse = False
+        if sort_value=='des':
+            reverse = True
         store = User.get(token=token).store
         index  = int(index) if index else 1
         ft = User.role.contains('W') & (InsuranceOrder.status << [2,3]) & (User.store == store.id)
@@ -2341,13 +2346,20 @@ class MobileToolsHandler(MobileBaseHandler):
         fte = None
         if begin_date and end_date:
             begin_date = time.strptime(begin_date+" 00:00:00", "%Y-%m-%d %H:%M:%S")
-            fts = (InsuranceOrder.ordered >= begin_date)
+            fts = (InsuranceOrder.ordered >= time.mktime(begin_date))
             end_date = time.strptime((end_date + " 23:59:59"), "%Y-%m-%d %H:%M:%S")
-            fte = (InsuranceOrder.ordered < end_date)
+            fte = (InsuranceOrder.ordered < time.mktime(end_date))
             ft &= fts
             ft &= fte
-
-
+        agent = {}
+        userlist = User.select().where(User.role.contains('W'),User.store == store.id)
+        for u in userlist:
+            agent[u.id] = {
+                'id':u.id,
+                'mobile':u.mobile,
+                'orders':0,
+                'total_price':0.0
+            }
         users = User.select(User.id.alias('uid'),
                             User.mobile.alias('umobile'),
                             fn.count(InsuranceOrder.id).alias('orders'),
@@ -2358,13 +2370,17 @@ class MobileToolsHandler(MobileBaseHandler):
             paginate(index, setting.MOBILE_PAGESIZE).tuples()
 
         for uid,umobile,orders,total_price in users:
-            result['data'].append({
-                'id':uid,
-                'mobile':umobile,
-                'orders':orders,
-                'total_price':round(total_price,2)
-            })
+            agent[uid]['orders'] = orders
+            agent[uid]['total_price'] = round(total_price,2)
+        data = agent.values()
+        print data
+        if sort_type=='orders':
+            data.sort(cmp=lambda x,y:x['orders']>=y['orders'],reverse=reverse)
+        elif sort_type=='total_price':
+            data.sort(cmp=lambda x, y: x['total_price'] >= y['total_price'], reverse=reverse)
         result['flag'] = 1
+        result['data'] = data
+        print data
         self.write(simplejson.dumps(result))
 
 
