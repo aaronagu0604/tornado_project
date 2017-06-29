@@ -87,14 +87,14 @@
             <div class="list-block">
                 <ul class="list-container">
                     <li>
-                    <div class="row item-row  no-gutter">
-                        <div class="col-25">张三11</div>
-                        <div class="col-25">18289386767</div>
-                        <div class="col-25">2</div>
-                        <div class="col-25">2345.00</div>
-                    </div>
-                    <div class="item-line"></div>
-                </li>
+                        <div class="row item-row  no-gutter">
+                            <div class="col-25">张三11</div>
+                            <div class="col-25">18289386767</div>
+                            <div class="col-25">2</div>
+                            <div class="col-25">2345.00</div>
+                        </div>
+                        <div class="item-line"></div>
+                    </li>
                 </ul>
             </div>
           <!-- 加载提示符 -->
@@ -127,7 +127,15 @@ function addItems(item) {
       // 生成新条目的HTML
       var html = '';
 
-      html += '<li class="item-content"><div class="item-inner"><div class="item-title">Item ' + 'sales_agent_name' + '</div></div></li>';
+      html = '<li>\
+                  <div class="row item-row  no-gutter">\
+                      <div class="col-25">'+item.uname+'</div>\
+                      <div class="col-25">'+item.umobile+'</div>\
+                      <div class="col-25">'+item.orders+'</div>\
+                      <div class="col-25">'+item.total_price+'</div>\
+                  </div>\
+                  <div class="item-line"></div>\
+              </li>';
 
       // 添加新条目
       $('.infinite-scroll-bottom .list-container').append(html);
