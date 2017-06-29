@@ -2374,14 +2374,14 @@ class MobileToolsHandler(MobileBaseHandler):
             agent[uid]['orders'] = orders
             agent[uid]['total_price'] = round(total_price,2)
         data = agent.values()
-        print data,reverse
+
         if sort_type=='orders':
             data.sort(key=lambda x:x['orders'],reverse=reverse)
         elif sort_type=='total_price':
             data.sort(key=lambda x:x['total_price'], reverse=reverse)
         result['flag'] = 1
         result['data'] = data
-        print data
+
         self.write(simplejson.dumps(result))
 
 
