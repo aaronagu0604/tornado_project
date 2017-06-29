@@ -72,11 +72,11 @@
                 <div class="search-input col-40">
                     <input type="search" id="end" placeholder="结束日期">
                 </div>
-                <a class="button button-primary col-20">查看</a>
+                <div onclick="check_base_date(1)" class="button button-primary col-20">查看</div>
             </div>
             <div class="item-line"></div>
             <div class="item-header row no-gutter">
-                <div class="col-25">姓名</div>
+                <div class="col-25">编号</div>
                 <div class="col-25">电话</div>
                 <div class="col-25">成交单数</div>
                 <div class="col-25">成交总价</div>
@@ -116,8 +116,7 @@ $("#start").calendar({
 $("#end").calendar({
     value: ['2015-12-05']
 });
-</script>
-<script>
+
 // 加载flag
 var loading = false;
 // 上次加载的序号
@@ -142,19 +141,25 @@ function addItems(item) {
 
   }
 function get_data() {
-
+   console.log('into get_data');
+   console.log(loading);
   // 如果正在加载，则退出
   if (loading) return;
 
   // 设置flag
   loading = true;
-
+  var start_date = $('#start').val()
+  var end_date = $('#end').val()
   // 模拟1s的加载过程
   $.getJSON("/mobile/get_sales_agent", {
             'index': index,
+            'start_date':start_date,
+            'end_date':end_date,
             'token':'{{token}}'
         },
         function (data) {
+            loading = false;
+            console.log(false);
             console.log(data);
             if (data.flag == 1) {
                 if (index == 1) {
@@ -167,7 +172,7 @@ function get_data() {
                     var html = addItems(data.data[i]);
                 }
                 if (data.data.length < 20) {
-                    $.detachInfiniteScroll($('.infinite-scroll'));
+                    //$.detachInfiniteScroll($('.infinite-scroll'));
                     // 删除加载提示符
                     $('.infinite-scroll-preloader').remove();
                     return;
@@ -177,12 +182,22 @@ function get_data() {
                     $.refreshScroller();
                 }
             }
-            loading = false;
+
         });
 }
+
+function check_base_date(page) {
+    console.log(page);
+    index = page;
+    get_data();
+}
+
+
 // 注册'infinite'事件处理函数
 $(document).on('infinite', '.infinite-scroll-bottom',get_data);
+
 get_data();
+
 </script>
 </body>
 </html>
