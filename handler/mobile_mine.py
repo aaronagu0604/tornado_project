@@ -2302,6 +2302,20 @@ class MobileVersionHandler(MobileBaseHandler):
             logging.info('Error: mobile/update/%s %s'%(client, e.message))
         self.write(simplejson.dumps(result))
 
+# ----------------------------------------代理入口---------------------------------------------------
+@route(r'/mobile/sales_agent', name='mobile_sales_agent')  # 工具箱页
+class MobileToolsHandler(MobileBaseHandler):
+    """
+    @apiGroup app
+    @apiVersion 1.0.0
+    @api {get} /mobile/tools 12. 工具箱
+    @apiDescription 工具箱页,返回html代码
+
+    @apiSampleRequest /mobile/tools
+    """
+
+    def get(self):
+        self.render('mobile/sales_agent.html')
 
 
 
