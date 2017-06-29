@@ -2315,7 +2315,7 @@ class MobileToolsHandler(MobileBaseHandler):
     """
 
     def get(self):
-        self.render('mobile/sales_agent.html',token='mt:faf7c5e8-5935-4674-a18b-bcc10bf30254')#self.get_user().token)
+        self.render('mobile/sales_agent.html',token=self.get_user().token)
 
 @route(r'/mobile/get_sales_agent', name='mobile_get_sales_agent')  # 下线api
 class MobileToolsHandler(MobileBaseHandler):
