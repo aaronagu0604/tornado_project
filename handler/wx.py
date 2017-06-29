@@ -101,7 +101,8 @@ class InsuranceHandler(WXBaseHandler):
 @route(r'/insurance_order_base/(\d+)', name='wx_insurance_order_base')  # 保险订单上传个人信息页面
 class InsuranceOrderBaseHandler(WXBaseHandler):
     def get(self,insurance):
-        self.render('weixin/insurance_order_base.html',insurance=insurance, ret = self.get_js_sdk_sign(setting.wxdomanName+'/insurance_order_base/'+insurance))
+        i = Insurance.get(id=insurance)
+        self.render('weixin/insurance_order_base.html',insurance=i, ret = self.get_js_sdk_sign(setting.wxdomanName+'/insurance_order_base/'+insurance))
 
 @route(r'/insurance_order_items', name='wx_insurance_order_items')  # html 保险下单选择保险条目页面
 class InsuranceOrderItemsHandler(WXBaseHandler):
@@ -115,7 +116,7 @@ class InsuranceOrderItemsHandler(WXBaseHandler):
 
     def get(self):
         selectinsurance = self.get_argument('selectinsurance','')
-        i = Insurance.get(id=selectinsurance)
+        i = Insurance.get(name=selectinsurance)
         createprice = self.get_argument('createprice',0)
 
         user = self.get_current_user()

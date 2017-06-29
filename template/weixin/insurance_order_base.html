@@ -251,7 +251,7 @@
                     insurance.id_card_front_owner="";
                     insurance.id_card_back_owner="";
                     window.localStorage.setItem("insurance", JSON.stringify(insurance));
-                    document.location.href = "/insurance_order_items?selectinsurance={{insurance}}&createprice=0";
+                    document.location.href = "/insurance_order_items?selectinsurance={{insurance.name}}&createprice=0";
                 } else {
                     if (insurance.id_card_front_owner == null) {
                         $.toast("请上传车主身份证(正面)", "text");
@@ -260,7 +260,7 @@
                     } else {
                         insurance.is_same_person = 0;
                         window.localStorage.setItem("insurance", JSON.stringify(insurance));
-                        document.location.href = "/insurance_order_items?selectinsurance={{insurance}}&createprice=0";
+                        document.location.href = "/insurance_order_items?selectinsurance={{insurance.name}}&createprice=0";
                     }
                 }
             }
