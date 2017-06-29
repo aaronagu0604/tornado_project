@@ -2303,7 +2303,7 @@ class MobileVersionHandler(MobileBaseHandler):
         self.write(simplejson.dumps(result))
 
 # ----------------------------------------代理入口---------------------------------------------------
-@route(r'/mobile/sales_agent', name='mobile_sales_agent')  # 工具箱页
+@route(r'/mobile/sales_agent', name='mobile_sales_agent')  # 下线页
 class MobileToolsHandler(MobileBaseHandler):
     """
     @apiGroup app
@@ -2316,6 +2316,46 @@ class MobileToolsHandler(MobileBaseHandler):
 
     def get(self):
         self.render('mobile/sales_agent.html')
+
+@route(r'/mobile/get_sales_agent', name='mobile_get_sales_agent')  # 下线api
+class MobileToolsHandler(MobileBaseHandler):
+    """
+    @apiGroup app
+    @apiVersion 1.0.0
+    @api {get} /mobile/tools 12. 工具箱
+    @apiDescription 工具箱页,返回html代码
+
+    @apiSampleRequest /mobile/tools
+    """
+
+    def get(self):
+        result = {'flag': 0, 'msg': '', "data": []}
+        begin_date  = self.get_argument('begin_date',None)
+        end_date = self.get_argument('end_date',None)
+        index = self.get_argument('index',1)
+
+        if begin_date and end_date:
+            begin_date = time.strptime(begin_date+" 00:00:00", "%Y-%m-%d %H:%M:%S")
+            end_date = time.strptime((end_date + " 23:59:59"), "%Y-%m-%d %H:%M:%S")
+
+
+        users = User.select(User.id.alias('uname'),
+                            User.mobile.alias('umobile'),
+                            fn.count(InsuranceOrder.id).alias('orders'),
+                            fn.sum(InsuranceOrder.total_price).alias('total_price')). \
+            join(InsuranceOrder,on=(InsuranceOrder.user == User.id)).where(User.role.contains('W'),
+                                                                           InsuranceOrder.ordered >= begin_date,
+                                                                           InsuranceOrder.ordered < end_date,
+                                                                           InsuranceOrder.status << [2,3]).group_by(User.mobile). \
+            paginate(index, setting.MOBILE_PAGESIZE).tuples()
+        for uname,umobile,orders,total_price in users:
+            result.data.append({
+                'name':uname,
+                'mobile':umobile,
+                'orders':orders,
+                'total_price':total_price
+            })
+        self.write(simplejson.dumps(result))
 
 
 
