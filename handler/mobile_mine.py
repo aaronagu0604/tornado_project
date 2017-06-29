@@ -2308,10 +2308,10 @@ class MobileToolsHandler(MobileBaseHandler):
     """
     @apiGroup app
     @apiVersion 1.0.0
-    @api {get} /mobile/tools 12. 工具箱
-    @apiDescription 工具箱页,返回html代码
+    @api {get} /mobile/sales_agent 12. 下线页面
+    @apiDescription 下线页面,返回html代码
 
-    @apiSampleRequest /mobile/tools
+    @apiSampleRequest /mobile/sales_agent
     """
 
     def get(self):
@@ -2322,10 +2322,10 @@ class MobileToolsHandler(MobileBaseHandler):
     """
     @apiGroup app
     @apiVersion 1.0.0
-    @api {get} /mobile/tools 12. 工具箱
-    @apiDescription 工具箱页,返回html代码
+    @api {get} /mobile/get_sales_agent 12. 下线api
+    @apiDescription 下线api
 
-    @apiSampleRequest /mobile/tools
+    @apiSampleRequest /mobile/get_sales_agent
     """
 
     def get(self):
