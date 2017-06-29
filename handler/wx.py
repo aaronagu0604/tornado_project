@@ -115,7 +115,7 @@ class InsuranceOrderItemsHandler(WXBaseHandler):
 
     def get(self):
         selectinsurance = self.get_argument('selectinsurance','')
-        i = Insurance.get(name=selectinsurance)
+        i = Insurance.get(id=selectinsurance)
         createprice = self.get_argument('createprice',0)
 
         user = self.get_current_user()
