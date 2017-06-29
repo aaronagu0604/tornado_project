@@ -212,7 +212,7 @@ get_data();
 
 function getShareInfo() {
     // 将来调用原生，进行分享
-        if ("{{product['platform']}}" == "android") {
+        if ("{{platform}}" == "android") {
             androidObj.share('{{linkurl}}', '{{imgurl}}','{{title}}');
         }
         else {
