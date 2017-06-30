@@ -330,7 +330,7 @@ class PayDetailHandler(WXBaseHandler):
         else:
             payinfo = pay_info = alipay.get_alipay_qrcode(io.current_order_price.total_price, log, log, io.ordernum)
 
-        self.render('weixin/pay_detail.html', payinfo=payinfo,type=typestr)
+        self.render('weixin/pay_detail.html', payinfo=payinfo,typestr=typestr)
 
 @route(r'/wxapi/login', name='wx_api_login')  # html 登录
 class WXApiLoginHandler(BaseHandler):
