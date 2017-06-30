@@ -232,9 +232,8 @@
                                    style="display: none" value="{{gift['type']}}">
                             <div class="checked_gift">{{gift['name']}}</div>
                         </div>
-
                     </label>
-                    <div class="weui_czj_gift">
+                    <div class="weui_czj_gift" style="display: none">
                         <a href="{{gift['link']}}"> {{gift['link_str']}}</a>
                     </div>
                 </div>
@@ -244,7 +243,7 @@
     </div>
     <div class="goto_next">
         <input id="token" style="display:none" value="{{token}}">
-        <a href="#" id="goto_next" class="weui-btn weui-btn_primary">完成</a>
+        <a href="javascript:;" id="goto_next" class="weui-btn weui-btn_primary">完成</a>
     </div>
 </div>
 
@@ -262,7 +261,8 @@
         if ($('#write_addr').is(':checked')) {
             $(".write-addr").show();
         } else {
-            $(".write-addr").hide();
+            $(".write-" +
+                "f").hide();
         }
         if ($(".gift_policy,input").length > 0) {
             $(".gift_policy").show();
