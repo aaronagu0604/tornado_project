@@ -33,28 +33,36 @@
             <div class="weui-flex">
                 <div class="weui-flex__item">
                     <a href="/insurance_orders?active=unverify" class="center-ordersModule">
+                        {% if mine['insurance_orders']['wait_quote']>0 %}
                         <span class="weui-badge" style="position: absolute;top:5px;right:10px; font-size:10px;">{{mine['insurance_orders']['wait_quote']}}</span>
+                        {% endif %}
                         <div class="imgicon"><img src="./../style/wximg/unverify.png"/></div>
                         <div class="name">待核价</div>
                     </a>
                 </div>
                 <div class="weui-flex__item">
                     <a href="/insurance_orders?active=unpay" class="center-ordersModule">
+                        {% if mine['insurance_orders']['wait_pay']>0 %}
                         <span class="weui-badge" style="position: absolute;top:5px;right:10px; font-size:10px;">{{mine['insurance_orders']['wait_pay']}}</span>
+                        {% endif %}
                         <div class="imgicon"><img src="./../style/wximg/unpay.png"/></div>
                         <div class="name">待支付</div>
                     </a>
                 </div>
                 <div class="weui-flex__item">
                     <a href="/insurance_orders?active=paid" class="center-ordersModule">
+                        {% if mine['insurance_orders']['wait_send']>0 %}
                         <span class="weui-badge" style="position: absolute;top:5px;right:10px; font-size:10px;">{{mine['insurance_orders']['wait_send']}}</span>
+                        {% endif %}
                         <div class="imgicon"><img src="./../style/wximg/paid.png"/></div>
                         <div class="name">待出单</div>
                     </a>
                 </div>
                 <div class="weui-flex__item">
                     <a href="/insurance_orders?active=success" class="center-ordersModule">
+                        {% if mine['insurance_orders']['finish']>0 %}
                         <span class="weui-badge" style="position: absolute;top:5px;right:10px; font-size:10px;">{{mine['insurance_orders']['finish']}}</span>
+                        {% endif %}
                         <div class="imgicon"><img src="./../style/wximg/success.png"/></div>
                         <div class="name">已完成</div>
                     </a>
