@@ -858,6 +858,7 @@ class InsuranceOrderPrice(db.Model):
 class InsuranceOrder(db.Model):
     id = PrimaryKeyField()
     ordernum = CharField(max_length=64, null=True)  # 订单号
+    platform = CharField(max_length=64, null=True)  # 发起平台
     user = ForeignKeyField(User, related_name='insurance_orders', db_column='user_id')  # 用户
     store = ForeignKeyField(Store, related_name='insurance_orders', db_column='store_id')  # 店铺
     current_order_price = ForeignKeyField(InsuranceOrderPrice, db_column='current_order_price_id', null=True)  # 最终报价ID

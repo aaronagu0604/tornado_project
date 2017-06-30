@@ -276,6 +276,7 @@
                 console.log(window.localStorage.getItem("insurance"));
                 var insurance = JSON.parse(window.localStorage.getItem("insurance"));
                 insurance.gift_policy = list;
+                insurance.platform = 'wx_b';
                 if (insurance.io_id != 0) {
                     toQuote(insurance);
                 } else {

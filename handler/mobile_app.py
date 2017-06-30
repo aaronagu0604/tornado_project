@@ -1765,6 +1765,7 @@ class MobilNewInsuranceOrderHandler(MobileBaseHandler):
     def post(self):
         result = {'flag': 0, 'msg': '', "data": {}}
         logging.info(self.request.body)
+        platform = self.get_body_argument('platform','')
         id_card_front = self.get_body_argument('id_card_front', None)
         id_card_back = self.get_body_argument('id_card_back', None)
         drive_card_front = self.get_body_argument('drive_card_front', None)
@@ -1817,6 +1818,7 @@ class MobilNewInsuranceOrderHandler(MobileBaseHandler):
                 and delivery_to and insurance and drive_card_back and drive_card_front and id_card_back and \
                 id_card_front:
             order = InsuranceOrder()
+            order.platform = platform if platform else ''
             order.user = user
             order.store = user.store
             order.id_card_front = id_card_front
