@@ -103,14 +103,15 @@
         font-size: 15px
     }
 
-    .weui-cells_radio_gift .weui-check:checked + .weui-icon-checked:before {
+    .weui-cells_radio_gift .weui-check:checked + .weui-icon-checked_gift:before {
         color: #09bb07;
         font-size: 15px
     }
 
-      .weui-cells_radio .weui-icon-checked:before {
+    .weui-cells_radio .weui-icon-checked_gift:before {
         color: #c9c9c9;
         font-size: 15px
+
     }
 
 </style>
@@ -217,7 +218,7 @@
                             <input type="radio" class="weui-check" name="radio2" id="{{gift['name']}}"
                                    style="display: none"
                                    value="{{gift['type']}}">
-                            <span class="weui-icon-checked">{{gift['name']}}</span>
+                            <span class="weui-icon-checked_gift">{{gift['name']}}</span>
                         </div>
 
                     </label>
