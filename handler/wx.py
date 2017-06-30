@@ -184,8 +184,8 @@ class InsuranceOrderSuccessHandler(WXBaseHandler):
 
 @route(r'/wxapi/insurance_orders', name='wxapi_insurance_orders')  # html 保险订单列表
 class InsuranceOrdersHandler(WXBaseHandler):
-    def get_mobile_mine(self,token,index,type):
-        url = "http://api.dev.test.520czj.com/mobile/insuranceorder?index=%s&type=%s"%(index,type)
+    def get_mobile_mine(self,token,index,type,platform):
+        url = "http://api.dev.test.520czj.com/mobile/insuranceorder?index=%s&type=%s&platform=%s"%(index,type,platform)
         req = urllib2.Request(url)
         req.add_header('token', token)
         response = urllib2.urlopen(req)
@@ -194,8 +194,9 @@ class InsuranceOrdersHandler(WXBaseHandler):
     def get(self):
         index = self.get_argument('index',1)
         type = self.get_argument('type','all')
+        platform = self.get_argument('platform','')
         user = self.get_current_user()
-        data = self.get_mobile_mine(user.token,index,type)
+        data = self.get_mobile_mine(user.token,index,type,platform)
         logging.info(data)
         self.write(simplejson.dumps(data))
 

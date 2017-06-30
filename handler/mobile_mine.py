@@ -577,9 +577,13 @@ class MobileInsuranceOrderHandler(MobileBaseHandler):
         result = {'flag': 0, 'msg': '', "data": []}
         type = self.get_argument("type", 'all')
         index = int(self.get_argument('index', 1))
-        store = self.get_user().store
-        self.dead_insurance_order_price(store)
-        ft = ((InsuranceOrder.store == store) & (InsuranceOrder.user_del == 0))
+        platform = self.get_argument('platform','')
+        user = self.get_user()
+        self.dead_insurance_order_price(user.store)
+        if platform=='wx_b':
+            ft = ((InsuranceOrder.user == user) & (InsuranceOrder.user_del == 0)) & (InsuranceOrder.platform == 'wx_b')
+        else:
+            ft = ((InsuranceOrder.store == user.store) & (InsuranceOrder.user_del == 0))
         # 0待报价 1已核价/待支付 2已支付/待出单 3完成（已送积分/油） -1已删除(取消)
         iop = False
         if type == 'all':  # 全部
@@ -615,6 +619,7 @@ class MobileInsuranceOrderHandler(MobileBaseHandler):
                 'ordernum': io.ordernum,
                 'iName': io.current_order_price.insurance.name,
                 'status': io.status,
+                'platform': io.platform,
                 'is_append': 1 if io.current_order_price.append_refund_status == 1 and io.current_order_price.append_refund_num > 0 else 0,
                 'append_num':  io.current_order_price.append_refund_num,
                 'append_reason': io.current_order_price.append_refund_reason,
@@ -722,6 +727,7 @@ class MobileInsuranceOrderDetailHandler(MobileBaseHandler):
         result['data'] = {
             'id': insuranceorder.id,
             'ordernum': insuranceorder.ordernum,
+            'platform': insuranceorder.platform,
             'ordereddate': time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(insuranceorder.ordered)),
             'hotline': '13912345678',
             'paytype': insuranceorder.payment,

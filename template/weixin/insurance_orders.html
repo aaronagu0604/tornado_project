@@ -81,7 +81,8 @@
 
         jQuery.getJSON("/wxapi/insurance_orders", {
             'index': index,
-            'type': type
+            'type': type,
+            'platform':'wx_b'
         }, function (data) {
             console.log(data);
             if (data.flag == 1) {
