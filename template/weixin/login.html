@@ -14,12 +14,14 @@ a {
 </style>
 {% endblock %}
 {% block content %}
-<div id="bound_logo" align="center" style="margin-top:10%">
+<div id="bound_logo" align="center" style="padding-top:50px; text-align: center;">
     <img src="../../style/images/logo.png" alt="" />
 </div>
-<div class="weui-cell weui-cell_vcode" style="margin-top:15%">
+<div style="margin-top: 4rem;">
+<div class="weui-cells weui-cells_form">
+<div class="weui-cell weui-cell_vcode">
     <div class="weui-cell__hd">
-        <label class="weui-label" style="width:2rem">手机</label>
+        <label class="weui-label">手机</label>
     </div>
     <div class="weui-cell__bd">
         <input id="cellphone" class="weui-input" type="tel" placeholder="请输入手机号">
@@ -28,21 +30,24 @@ a {
         <button class="weui-vcode-btn" onclick="getVcode('#cellphone')">验证码</button>
     </div>
 </div>
-<div class="weui-cell weui-cell_vcode">
+<div class="weui-cell">
     <div class="weui-cell__hd">
         <label class="weui-label">验证码</label>
     </div>
     <div class="weui-cell__bd">
         <input id="vcode" class="weui-input" type="number" placeholder="请输入验证码">
-        <input id="store_id" style="display:none" value="{{storeid}}">
-        <input id="nickname" style="display:none" value="{{nickname}}">
-        <input id="openid" style="display:none" value="{{openid}}">
-        <input id="subscribe" style="display:none" value="{{subscribe}}">
+
     </div>
 </div>
-<div id="bound_btn" class="weui_cell" align="center" style="margin-top:20%">
-    <button style="width:60%" class="weui-btn weui-btn_primary" onclick="register()">加入车装甲</button>
 </div>
+<input id="store_id" type="hidden" value="{{storeid}}">
+        <input id="nickname" type="hidden" value="{{nickname}}">
+        <input id="openid" type="hidden" value="{{openid}}">
+        <input id="subscribe" type="hidden" value="{{subscribe}}">
+<div id="bound_btn" class="weui_cell" align="center" style="margin:50px 10px;">
+    <button style="width:100%" class="weui-btn weui-btn_primary" onclick="register()">加入车装甲</button>
+</div>
+    </div>
 {% endblock %}
 {% block js %}
 <script>
