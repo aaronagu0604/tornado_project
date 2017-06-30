@@ -124,11 +124,8 @@
         } else if (data.status == 1) {
             paystr = '待付款';
             paybtn = '<div class="weui-flex__item" style=" flex: 5;text-align: right;">\
-                           <a href="/pay_detail/'+ data.id +'?type=alipayqrcode'+'" class="weui-btn weui-btn_mini weui-btn_primary">\
-                            支付宝扫码支付</a>\
-                            <a href="/pay_detail/'+ data.id +'?type=wxqrcode'+'" class="weui-btn weui-btn_mini czj-btn-yellow"\
-                           style="margin-top: 0;">\
-                            微信扫码支付</a>\
+                           <button id="code_pay" click="" class="weui-btn weui-btn_mini weui-btn_primary">\
+                            扫码支付</button>\
                       </div>'
         } else if (data.status == 2) {
             paystr = '待出单';
@@ -207,19 +204,19 @@
         });
     })
 
-    $(document).on("click", "#code_pay", function () {
+    function code_pay(oid) {
         $.actions({
             title: "扫码支付", actions: [{
                 text: "微信扫码", onclick: function () {
-                    document.location.href = "/pay_detail";
+                    document.location.href = "/pay_detail/"+oid+"?type=alipayqrcode";
                 }
             }, {
                 text: "支付宝扫码", onclick: function () {
-                    document.location.href = "/pay_detail";
+                    document.location.href = "/pay_detail/"+oid+"?type=wxqrcode";
                 }
             }]
         });
-    })
+    }
 
 </script>
 {% endblock %}
