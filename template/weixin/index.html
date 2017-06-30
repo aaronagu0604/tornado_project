@@ -8,7 +8,7 @@
     <div class="swiper-container swiper-banner">
         <div class="swiper-wrapper">
             {% for ad in banner %}
-            <div class="swiper-slide"><a href="#">
+            <div class="swiper-slide"><a href="{{ad['link']}}">
                 <img src="{{ad['img']}}"/></a>
             </div>
             {% endfor %}

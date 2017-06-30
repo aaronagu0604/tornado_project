@@ -80,6 +80,8 @@ class IndexHandler(WXBaseHandler):
         data = self.get_mobile_home_data(user.token)
         logging.info(data)
         banner = data['banner']
+        for i in banner:
+            i['link'] = i['link'].replace('czj://', '/')
         insurance = []
         for item in data['category']:
             if item['title'] == '保险业务':
