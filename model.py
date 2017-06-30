@@ -1358,7 +1358,7 @@ class PromotionAmbassadorPic(db.Model):
     setting = ForeignKeyField(PromotionAmbassador, db_column='setting')
     picAP = CharField()
     area_code = CharField(default='00')
-    wordColour = CharField(default='(0,0,0)')
+    wordColour = CharField(default='0,0,0')
     created = CharField()
     sort = IntegerField()
     active = IntegerField(default=1)    # 0失效，1有效

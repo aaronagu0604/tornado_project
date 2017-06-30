@@ -110,10 +110,16 @@
                     <td>{{o.current_order_price.insurance.name}}</td>
                     <td>
                         {{o.current_order_price.total_price}}</br>
+                        {% if '00240001' in o.store.area_code and o.current_order_price.insurance.id in [1] %}
                         {% if o.current_order_price.insurance_company_price %}
                         <div style="color:#59bfff">{{o.current_order_price.insurance_company_price}}</div>
                         {% else %}
-                        <a href="#" onclick="pop('添加返佣政策','/admin/store_privilege/{{o.store.id}}?iop_id={{o.current_order_price.id}}&price={{o.current_order_price.total_price}}&insurance={{o.current_order_price.insurance.id}}')">优惠</a>
+                        <a href="#" onclick="pop('添加返佣政策','/admin/store_privilege/{{o.store.id}}?' +
+                         'iop_id={{o.current_order_price.id}}&total_price={{o.current_order_price.total_price}}&' +
+                         'force_price={{o.current_order_price.force_price}}&' +
+                         'business_price={{o.current_order_price.business_price}}&' +
+                          'insurance={{o.current_order_price.insurance.id}}')">优惠</a>
+                        {% endif %}
                         {% endif %}
                     </td>
                     <td>
@@ -131,44 +137,44 @@
                     </td>
                     <td>
                         {% if o.status == 2 %}
-                            {% if o.current_order_price.gift_policy == 2 %}
-                            <a href="/admin/insurance_dispose/{{o.id}}?o_status={{o.status}}&status={{status}}&page={{page}}&dispose=finish"
-                               onclick="return confirm('确定现在返现？');" style="color:#990033;">{% if o.status == 2 %}* {% endif %}返现</a>
-                            {% elif o.current_order_price.gift_policy == 1 %}
-                            <a href="/admin/insurance_dispose/{{o.id}}?o_status={{o.status}}&status={{status}}&page={{page}}&dispose=finish"
-                               onclick="return confirm('确定现在送油？');" style="color:#00CC00;">{% if o.status == 2 %}* {% endif %}返油</a>
-                            {% elif o.current_order_price.gift_policy == 3 %}
-                            <a href="/admin/insurance_dispose/{{o.id}}?o_status={{o.status}}&status={{status}}&page={{page}}&dispose=finish"
-                               onclick="return confirm('确定现在返积分？');" style="color:#0071ceDD;">{% if o.status == 2 %}* {% endif %}返积分</a>
-                            {% else %}
-                            <div style="color:#000800;">无</div>
-                            {% endif %}
+                        {% if o.current_order_price.gift_policy == 2 %}
+                        <a href="/admin/insurance_dispose/{{o.id}}?o_status={{o.status}}&status={{status}}&page={{page}}&dispose=finish"
+                           onclick="return confirm('确定现在返现？');" style="color:#990033;">{% if o.status == 2 %}* {% endif %}返现</a>
+                        {% elif o.current_order_price.gift_policy == 1 %}
+                        <a href="/admin/insurance_dispose/{{o.id}}?o_status={{o.status}}&status={{status}}&page={{page}}&dispose=finish"
+                           onclick="return confirm('确定现在送油？');" style="color:#00CC00;">{% if o.status == 2 %}* {% endif %}返油</a>
+                        {% elif o.current_order_price.gift_policy == 3 %}
+                        <a href="/admin/insurance_dispose/{{o.id}}?o_status={{o.status}}&status={{status}}&page={{page}}&dispose=finish"
+                           onclick="return confirm('确定现在返积分？');" style="color:#0071ceDD;">{% if o.status == 2 %}* {% endif %}返积分</a>
                         {% else %}
-                            {% if o.current_order_price.gift_policy == 2 %}
-                            <a href="#" onclick="return alert('该订单状态不能返佣');" style="color:#990033;">{% if o.status == 2 %}* {% endif %}返现</a>
-                            {% elif o.current_order_price.gift_policy == 1 %}
-                            <a href="" onclick="return alert('该订单状态不能返佣'); cansole;" style="color:#00CC00;">{% if o.status == 2 %}* {% endif %}返油</a>
-                            {% elif o.current_order_price.gift_policy == 3 %}
-                            <a href="" onclick="return alert('该订单状态不能返佣'); cansole;" style="color:#0071ceDD;">{% if o.status == 2 %}* {% endif %}返积分</a>
-                            {% else %}
-                            <div style="color:#000800;">无</div>
-                            {% endif %}
+                        <div style="color:#000800;">无</div>
+                        {% endif %}
+                        {% else %}
+                        {% if o.current_order_price.gift_policy == 2 %}
+                        <a href="#" onclick="return alert('该订单状态不能返佣');" style="color:#990033;">{% if o.status == 2 %}* {% endif %}返现</a>
+                        {% elif o.current_order_price.gift_policy == 1 %}
+                        <a href="" onclick="return alert('该订单状态不能返佣'); cansole;" style="color:#00CC00;">{% if o.status == 2 %}* {% endif %}返油</a>
+                        {% elif o.current_order_price.gift_policy == 3 %}
+                        <a href="" onclick="return alert('该订单状态不能返佣'); cansole;" style="color:#0071ceDD;">{% if o.status == 2 %}* {% endif %}返积分</a>
+                        {% else %}
+                        <div style="color:#000800;">无</div>
+                        {% endif %}
                         {% endif %}
                     </td>
                     <td>
                         <!--# 支付方式  1支付宝  2微信 3银联 4余额 5积分 6支付宝二维码 7微信二维码-->
                         {% if o.status==2 or o.status==3 %}
-                            {% if o.payment==1 or o.payment==6 %}
-                            支付宝
-                            {% elif o.payment==2 or o.payment==7 %}
-                            微信
-                            {% elif o.payment==3 %}
-                            银联
-                            {% elif o.payment==4 %}
-                            余额
-                            {% elif o.payment==5 %}
-                            积分
-                            {%endif%}
+                        {% if o.payment==1 or o.payment==6 %}
+                        支付宝
+                        {% elif o.payment==2 or o.payment==7 %}
+                        微信
+                        {% elif o.payment==3 %}
+                        银联
+                        {% elif o.payment==4 %}
+                        余额
+                        {% elif o.payment==5 %}
+                        积分
+                        {%endif%}
                         {% else %}
                         --
                         {% endif %}
@@ -221,12 +227,12 @@
             next:'下一页',
             last:'尾页',
             totalPages: {{totalpage}},
-            startPage: {{page}},
-            visiblePages: 8,
+        startPage: {{page}},
+        visiblePages: 8,
             onPageClick: function (event, page) {
-                self.location="/admin/insurance_orders?archive={{archive}}&status={{status}}&begin_date={{begin_date or ''}}&end_date={{end_date or ''}}&keyword={{keyword or ''}}&province_code={{default_province or ''}}&city_code={{default_city or ''}}&page="+page;
-            }
-        });
+            self.location="/admin/insurance_orders?archive={{archive}}&status={{status}}&begin_date={{begin_date or ''}}&end_date={{end_date or ''}}&keyword={{keyword or ''}}&province_code={{default_province or ''}}&city_code={{default_city or ''}}&page="+page;
+        }
+    });
 
         $('#checkall').bind('click',function () {
             $('#tb_users :checkbox').prop('checked',this.checked);

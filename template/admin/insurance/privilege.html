@@ -23,14 +23,28 @@
                 </div>
                 {{xsrf()}}
                 <input value="{{item.id}}" type="hidden" name="page">
-                {% for key in item['privilege'] %}
-                <div class="col-xs-4">
+                <div class="col-xs-6">
                     <div class="form-group has-success">
-                        <label class="control-label">{{ item['privilege'][key]['name'] }} {{item['id'] or 0}}</label>
-                        <input type="text" name="{{key}}" class="form-control" value="{{item['privilege'][key]['rate'] or ''}}"  required placeholder="0.3" />
+                        <label class="control-label">{{ item['privilege']['reinsurance']['name'] }}</label>
+                        <input type="text" name="reinsurance_force_rate" class="form-control" value="{{item['privilege']['reinsurance']['force_rate'] or ''}}"  required placeholder="交强险返佣率" />
+                        <input type="text" name="reinsurance_force_tax" class="form-control" value="{{item['privilege']['reinsurance']['force_tax'] or ''}}"  required placeholder="交强险税率" />
+                        <input type="text" name="reinsurance_business_rate" class="form-control" value="{{item['privilege']['reinsurance']['business_rate'] or ''}}"  required placeholder="商业险返佣率" />
+                        <input type="text" name="reinsurance_business_tax" class="form-control" value="{{item['privilege']['reinsurance']['business_tax'] or ''}}"  required placeholder="商业险税率" />
                     </div>
                 </div>
-                {% endfor %}
+                <br/>
+                {% if item['privilege']['renewal'] %}
+                <div class="col-xs-6">
+                    <div class="form-group has-success">
+                        <label class="control-label">{{ item['privilege']['renewal']['name'] }}</label>
+                        <input type="text" name="renewal_force_rate" class="form-control" value="{{item['privilege']['renewal']['force_rate'] or ''}}"  required placeholder="交强险返佣率" />
+                        <input type="text" name="renewal_force_tax" class="form-control" value="{{item['privilege']['renewal']['force_tax'] or ''}}"  required placeholder="交强险税率" />
+                        <input type="text" name="renewal_business_rate" class="form-control" value="{{item['privilege']['renewal']['business_rate'] or ''}}"  required placeholder="商业险返佣率" />
+                        <input type="text" name="renewal_business_tax" class="form-control" value="{{item['privilege']['renewal']['business_tax'] or ''}}"  required placeholder="商业险税率" />
+                    </div>
+                </div>
+                <br/>
+                {% endif %}
             </form>
         </div>
     </div>

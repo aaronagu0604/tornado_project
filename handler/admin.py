@@ -2499,16 +2499,19 @@ class InsuranceOrderHandler(AdminBaseHandler):
 class StorePrivilegeHandler(AdminBaseHandler):
     def get(self, sid):
         insurance = self.get_argument('insurance', '')
-        price = self.get_argument('price', '')
+        total_price = self.get_argument('total_price', '')
+        force_price = self.get_argument('force_price', '')
+        business_price = self.get_argument('business_price', '')
         iop_id = self.get_argument('iop_id', '')
+
         result = {'store': '', 'addr': '', 'iop_id': '', 'privilege': []}
-        if insurance and price and iop_id:
+        if insurance and iop_id and total_price and force_price and business_price:
             iop_id = int(iop_id)
             sid = int(sid)
-            price = float(price)
+            total_price = float(total_price)
+            force_price = float(force_price)
+            business_price = float(business_price)
             insurance = int(insurance)
-        else:
-            self.render('admin/order/store_privilege.html', result=result)
         try:
             s = Store.get(id=sid)
             result['store'] = s.name
@@ -2516,15 +2519,16 @@ class StorePrivilegeHandler(AdminBaseHandler):
             result['iop_id'] = iop_id
             ssl = SSILubePolicy.get(SSILubePolicy.store == sid, SSILubePolicy.insurance == insurance)
             result['insurance'] = ssl.insurance.name
-            for privilege in simplejson.loads(ssl.privilege):
+            privilege = simplejson.loads(ssl.privilege)
+            for key in privilege:
                 result['privilege'].append({
-                    'name': privilege['name'],
-                    'rate': privilege['rate'],
-                    'new_price': privilege['rate'] * price
+                    'name': privilege[key]['name'],
+                    'new_price': (total_price -
+                                  (force_price * float(privilege[key]['force_rate']) * float(privilege[key]['force_tax'])) -
+                                  (business_price * float(privilege[key]['business_rate']) * float(privilege[key]['business_tax'])))
                 })
         except Exception, e:
-            print u'未配置: %s' % str(e)
-            msg = u'暂未配置'
+            logging.info(u'未配置: %s' % str(e))
 
         self.render('admin/order/store_privilege.html', result=result)
 
@@ -3154,25 +3158,47 @@ class InsurancePrivilege(AdminBaseHandler):
         iid = int(iid) if iid else 0
         sid = self.get_body_argument('sid', 0)
         sid = int(sid) if sid else 0
-        renewal_rate = self.get_body_argument('renewal', '')
-        reinsurance_rate = self.get_body_argument('reinsurance', '')
+
+        reinsurance_force_rate = self.get_body_argument("reinsurance_force_rate", '')
+        reinsurance_force_tax = self.get_body_argument("reinsurance_force_tax", '')
+        reinsurance_business_rate = self.get_body_argument("reinsurance_business_rate", '')
+        reinsurance_business_tax = self.get_body_argument("reinsurance_business_tax", '')
+
+        renewal_force_rate = self.get_body_argument("renewal_force_rate", '')
+        renewal_force_tax = self.get_body_argument("renewal_force_tax", '')
+        renewal_business_rate = self.get_body_argument("renewal_business_rate", '')
+        renewal_business_tax = self.get_body_argument("renewal_business_tax", '')
 
         if sid:
-            lube_policy = SSILubePolicy.get((SSILubePolicy.store == sid) & (SSILubePolicy.insurance == iid))
-            lube_policy.privilege = simplejson.dumps({
-                'reinsurance': {'rate': renewal_rate, 'name': u'转保/新保'},
-                'renewal': {'rate': reinsurance_rate, 'name': u'续保'}
-            })
-            lube_policy.save()
-            AdminUserLog.create(admin_user=self.get_admin_user(), created=int(time.time()),
-                                content=u'编辑保险返油返积分策略:ssip_id:%d' % lube_policy.id)
+            # lube_policy = SSILubePolicy.get((SSILubePolicy.store == sid) & (SSILubePolicy.insurance == iid))
+            # lube_policy.privilege = simplejson.dumps({
+            #     'reinsurance': {'rate': renewal_rate, 'name': u'转保/新保'},
+            #     'renewal': {'rate': reinsurance_rate, 'name': u'续保'}
+            # })
+            # lube_policy.save()
+            # AdminUserLog.create(admin_user=self.get_admin_user(), created=int(time.time()),
+            #                     content=u'编辑保险返油返积分策略:ssip_id:%d' % lube_policy.id)
             self.write(u'修改成功，请刷新！')
         else:
             item = InsuranceArea.get(id=exid)
-            item.privilege_policy = simplejson.dumps({
-                'reinsurance': {'rate': reinsurance_rate, 'name': u'转保/新保'},
-                'renewal': {'rate': renewal_rate, 'name': u'续保'}
-            })
+            result_dic = {'reinsurance': {}, 'renewal': {}}
+            if reinsurance_force_rate and reinsurance_force_tax and reinsurance_business_rate and reinsurance_business_tax:
+                result_dic['reinsurance'] = {
+                    'name': u'转保/新保',
+                    'force_rate': reinsurance_force_rate,
+                    "force_tax": reinsurance_force_tax,
+                    "business_rate": reinsurance_business_rate,
+                    "business_tax": reinsurance_business_tax
+                }
+            if renewal_force_rate and renewal_force_tax and renewal_business_rate and renewal_business_tax:
+                result_dic['renewal'] = {
+                    'name': u'续保',
+                    'force_rate': renewal_force_rate,
+                    "force_tax": renewal_force_tax,
+                    "business_rate": renewal_business_rate,
+                    "business_tax": renewal_business_tax
+                }
+            item.privilege_policy = simplejson.dumps(result_dic)
             item.save()
             AdminUserLog.create(admin_user=self.get_admin_user(), created=int(time.time()),
                                 content=u'编辑保险优惠策略:lp_id:%d' % item.id)

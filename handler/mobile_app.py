@@ -306,13 +306,6 @@ class MobileLoginHandler(MobileBaseHandler):
         self.finish()
 
 
-'''
-原保费总额 = 交强+商业+车船
-给中华联合支付金额： 原保费总额 -（（交强险 * 0.96 * 4%） + (商业险 *0.96 * 35%)）
-
-
-'''
-
 @route(r'/mobile/home', name='mobile_home')  # 首页数据
 class MobileHomeHandler(MobileBaseHandler):
     """
@@ -1921,7 +1914,20 @@ class MobilePayOrderHandler(MobileBaseHandler):
         else:
             order.current_order_price.status = order.status
             order.current_order_price.save()
-
+            # # to 客户
+            # sms = {'mobile': order.store.mobile, 'body': [order.store.name, addrs, ordernum, iName, paymentV, gift, summary],
+            #        'signtype': '1', 'isyzm': 'paySuccess'}
+            # create_msg(simplejson.dumps(sms), 'sms')
+            # # to 财务
+            # summary = u'订单总额 %s, 客户 %s' % (price, mobile)
+            # sms = {'mobile': mobiles, 'body': [storeName, addrs, ordernum, iName, paymentV, gift, summary],
+            #        'signtype': '1', 'isyzm': 'paySuccess'}
+            # create_msg(simplejson.dumps(sms), 'sms')
+            # if area_code.startswith('0004'):
+            #     sms = {'mobile': setting.ShanXiIphone,
+            #            'body': [storeName, addrs, ordernum, iName, paymentV, gift, summary],
+            #            'signtype': '1', 'isyzm': 'paySuccess'}
+            #     create_msg(simplejson.dumps(sms), 'sms')
         if order_type == 1:  # 1金钱订单
             money_record = MoneyRecord()
             money_record.user = user
