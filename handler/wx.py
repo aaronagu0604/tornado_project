@@ -91,7 +91,7 @@ class IndexHandler(WXBaseHandler):
             i['link'] = i['link'][:index].replace('czj://','/')
         msg = data['last_unread_price']
         msg['link'] = msg['link'][5:]
-        self.render('weixin/index.html',banner=banner, insurance=insurance,msg=msg)
+        self.render('weixin/index.html',banner=banner, insurance=insurance,msg=msg,tab_on='index')
 
 @route(r'/insurance/(\d+)', name='wx_insurance')  # 保险公司详情页面
 class InsuranceHandler(WXBaseHandler):
@@ -466,7 +466,7 @@ class MineHandler(WXBaseHandler):
         user = self.get_current_user()
         data = self.get_mobile_mine(user.token)
         logging.info(data)
-        self.render('weixin/mine.html', mine=data)
+        self.render('weixin/mine.html', mine=data,tab_on='mine')
 
 @route(r'/user_address', name='wx_user_address')  # html 收货地址
 class UserAddressHandler(WXBaseHandler):
