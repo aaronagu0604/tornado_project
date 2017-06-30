@@ -83,9 +83,11 @@
     .weui-cell {
         padding: 7px 10px;
     }
+
     .weui-cells_radio {
         padding-left: 15px;
     }
+
     .weui-cells_radio .weui-check:checked + .weui-icon-checked:before {
         display: block;
         content: "\EA06";
@@ -101,6 +103,15 @@
         font-size: 15px
     }
 
+    .weui-cells_radio_gift .weui-check:checked + .weui-icon-checked:before {
+        color: #09bb07;
+        font-size: 15px
+    }
+
+      .weui-cells_radio .weui-icon-checked:before {
+        color: #c9c9c9;
+        font-size: 15px
+    }
 
 </style>
 {% endblock %}
@@ -197,19 +208,18 @@
         <div class="weui-cells__title">
             <p>选择优惠方式</p>
         </div>
-        <div class="weui-cells weui-cells_radio">
+        <div class="weui-cells weui-cells_radio_gift">
             <div class="weui-row">
                 {% for gift in rake_back %}
                 <div class="weui-col-50">
                     <label class="weui-cell weui-check__label " for="{{gift['name']}}">
                         <div class="weui-cell__hd">
                             <input type="radio" class="weui-check" name="radio2" id="{{gift['name']}}"
+                                   style="display: none"
                                    value="{{gift['type']}}">
                             <span class="weui-icon-checked">{{gift['name']}}</span>
                         </div>
-                        <div class="weui-cell__bd">
-                            <p> </p>
-                        </div>
+
                     </label>
                     <div class="weui_czj_gift">
                         <a href="{{gift['link']}}"> {{gift['link_str']}}</a>
