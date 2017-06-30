@@ -406,7 +406,7 @@ class WXApiLoginHandler(BaseHandler):
             self.redirect(tourl)
         else:
             # 未关注太跳关注引导
-            self.render('weixin/focus_guide.html')
+            self.redirect('https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzIyNDMyODk2NQ==&scene=124#wechat_redirect')
 
 @route(r'/register', name='wx_register')  # html 登录
 class RegisterHandler(BaseHandler):
