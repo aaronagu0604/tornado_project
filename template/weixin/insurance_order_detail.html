@@ -6,16 +6,19 @@
     .address-cell:before {
         border-top: 0;
     }
+
     .img_card {
-        width:100px;
-        height:150px;
+        width: 100px;
+        height: 150px;
     }
+
     span {
-        top:15px;
+        top: 15px;
     }
+
     .upload_btn {
-        width:15px;
-        height:15px;
+        width: 15px;
+        height: 15px;
     }
 
 </style>
@@ -49,11 +52,11 @@
                 <span class="right">{{data['insuranceorderprice']['created']}}</span></div>
         </div>
         <div class="order-detail-content">
-            <div class="weui-flex header">
-                <div class="weui-flex__item left">
+            <div class="weui-flex header ">
+                <div class="weui-flex__item left weui-col-80">
                     交强险
                 </div>
-                <div class="weui-flex__item right">
+                <div class="weui-flex__item right  weui-col-20">
                     <span class="order-price">￥{{data['insuranceorderprice']['iList']['forceprice']}}</span>
                 </div>
             </div>
@@ -244,7 +247,7 @@
                         {{data['delivery']['province']}}{{data['delivery']['city']}}{{data['delivery']['district']}}{{data['delivery']['address']}}
                     </div>
                 </a>
-                <div class="weui-cell__ft"></div>
+                <div class="weui-cell__ft" style="display: none"></div>
             </div>
 
         </div>
@@ -252,7 +255,8 @@
 
     {% if data['insuranceorderprice']['status']==1 %}
     <div class="order-pay-bottom">
-        <a href="/pay_detail/{{data['id']}}?type=alipayqrcode" id="soon_pay" class="weui-btn weui-btn_mini  czj-btn-yellow">支付宝扫码支付</a>
+        <a href="/pay_detail/{{data['id']}}?type=alipayqrcode" id="soon_pay"
+           class="weui-btn weui-btn_mini  czj-btn-yellow">支付宝扫码支付</a>
         <a href="/pay_detail/{{data['id']}}?type=wxqrcode" class="weui-btn weui-btn_mini  weui-btn_primary">微信扫码支付</a>
         <a href="/insurance_order_items?selectinsurance={{data['insuranceorderprice']['insurance']}}&createprice={{data['id']}}"
            class="weui-btn weui-btn_mini  weui-btn_default">重新报价</a>
