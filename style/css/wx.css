@@ -296,14 +296,26 @@
 .order-detail-content .header .right {
     text-align: right;
 }
-.weui-row .weui-col-20 {
-    text-align: right;
+
+.header.weui-col-80 {
+    color: black;
 }
 
+.header .weui-col-20 {
+    text-align: right;
+}
 
 .order-detail-content .body {
     line-height: 20px;
     color: #999;
+}
+
+.body .weui-col-80 {
+    color: #999;
+}
+
+.body .weui-col-20 {
+    text-align: right;
 }
 
 .order_remind {

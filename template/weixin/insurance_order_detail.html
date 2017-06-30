@@ -53,53 +53,53 @@
         </div>
         <div class="order-detail-content">
             <div class="weui-flex header weui-row">
-                <div class="weui-flex__item  weui-col-80">
+                <div class="weui-col-80">
                     交强险
                 </div>
-                <div class="weui-flex__item  weui-col-20">
+                <div class="weui-col-20">
                     <span class="order-price">￥{{data['insuranceorderprice']['iList']['forceprice']}}</span>
                 </div>
             </div>
-            <div class="weui-flex body">
-                <div class="weui-flex__item">
+            <div class="weui-flex body weui-row">
+                <div class="weui-col-80">
                     车船税
                 </div>
-                <div class="weui-flex__item" style="text-align: right;">
+                <div class="weui-col-20" style="text-align: right;">
                     ￥{{data['insuranceorderprice']['iList']['vehicle_tax_price']}}
                 </div>
             </div>
-            <div class="weui-flex header">
-                <div class="weui-flex__item left">
+            <div class="weui-flex header weui-row">
+                <div class="weui-col-80">
                     商业险(主险)
                 </div>
-                <div class="weui-flex__item right">
+                <div class="weui-col-20">
                     <span class="order-price">￥{{data['insuranceorderprice']['iList']['mainprice']}}</span>
                 </div>
             </div>
             {% for m in data['insuranceorderprice']['iList']['main'] %}
-            <div class="weui-flex body">
-                <div class="weui-flex__item">
+            <div class="weui-flex body weui-row">
+                <div class="weui-col-80">
                     {{m['name']}}
                 </div>
-                <div class="weui-flex__item" style="text-align: right;">
+                <div class="weui-col-20" style="text-align: right;">
                     ￥{{m['price']}}
                 </div>
             </div>
             {% endfor %}
-            <div class="weui-flex header">
-                <div class="weui-flex__item left">
+            <div class="weui-flex header weui-row">
+                <div class="weui-col-80">
                     商业险(附加险)
                 </div>
-                <div class="weui-flex__item right">
+                <div class="weui-col-20">
                     <span class="order-price">￥{{data['insuranceorderprice']['iList']['subjoinprice']}}</span>
                 </div>
             </div>
             {% for m in data['insuranceorderprice']['iList']['subjoin'] %}
-            <div class="weui-flex body">
-                <div class="weui-flex__item">
+            <div class="weui-flex body weui-row">
+                <div class="weui-col-80">
                     {{m['name']}}
                 </div>
-                <div class="weui-flex__item" style="text-align: right;">
+                <div class="weui-col-20" style="text-align: right;">
                     ￥{{m['price']}}
                 </div>
             </div>
