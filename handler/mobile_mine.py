@@ -36,7 +36,7 @@ class MobileMineHandler(MobileBaseHandler):
     """
     def get(self):
         result = {'flag': 0, 'msg': '', "data": {}}
-
+        platform = self.get_argument('platform','')
         result['data']['login_flag'] = 0
         result['data']['store_name'] = ''
         result['data']['user_name'] = ''
@@ -97,8 +97,13 @@ class MobileMineHandler(MobileBaseHandler):
                         result['data']['product_orders']['wait_get'] += count
                     elif status == 3:
                         result['data']['product_orders']['finish'] += count
-            insurance_orders = InsuranceOrder.select().\
-                where(InsuranceOrder.status > -1, InsuranceOrder.user_del == 0, InsuranceOrder.store == user.store)
+            if platform=='wx_b':
+                insurance_orders = InsuranceOrder.select().\
+                    where(InsuranceOrder.status > -1, InsuranceOrder.user_del == 0,
+                          InsuranceOrder.user == user,InsuranceOrder.platform == 'wx_b')
+            else:
+                insurance_orders = InsuranceOrder.select(). \
+                    where(InsuranceOrder.status > -1, InsuranceOrder.user_del == 0, InsuranceOrder.store == user.store)
 
             # 0待报价 1已核价/待支付 2已支付/待出单 3完成（已送积分/油） -1已删除(取消)
             for item in insurance_orders:

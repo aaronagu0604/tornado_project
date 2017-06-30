@@ -454,7 +454,7 @@ class RegisterHandler(BaseHandler):
 @route(r'/mine', name='wx_mine')  # html 会员中心
 class MineHandler(WXBaseHandler):
     def get_mobile_mine(self, token):
-        url = "http://api.dev.test.520czj.com/mobile/mine"
+        url = "http://api.dev.test.520czj.com/mobile/mine?platform=wx_b"
         req = urllib2.Request(url)
         req.add_header('token', token)
         response = urllib2.urlopen(req)
