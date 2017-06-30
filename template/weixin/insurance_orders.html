@@ -124,8 +124,8 @@
         } else if (data.status == 1) {
             paystr = '待付款';
             paybtn = '<div class="weui-flex__item" style=" flex: 5;text-align: right;">\
-                           <button id="code_pay" click="code_pay('+data.id+')" class="weui-btn weui-btn_mini weui-btn_primary">\
-                            扫码支付</button>\
+                           <a id="code_pay" href="#" click="code_pay('+data.id+')" class="weui-btn weui-btn_mini weui-btn_primary">\
+                            扫码支付</a>\
                       </div>'
         } else if (data.status == 2) {
             paystr = '待出单';
