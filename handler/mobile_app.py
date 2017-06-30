@@ -559,7 +559,7 @@ class MobileHomeHandler(MobileBaseHandler):
             join(ProductRelease, on=(ProductRelease.product == Product.id)). \
             join(Store, on=(Store.id == ProductRelease.store)). \
             join(StoreProductPrice, on=(StoreProductPrice.product_release == ProductRelease.id)). \
-            where(ft).order_by(ProductRelease.sort.desc(), StoreProductPrice.created.desc()).limit(30).tuples()
+            where(ft).order_by(Product.hot.desc(), ProductRelease.sort.desc(), StoreProductPrice.created.desc()).limit(30).tuples()
         for id, name, cover, price, score, sname, brand in spps:
             items.append({
                 'img': cover,

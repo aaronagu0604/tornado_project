@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="/style/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/style/css/plugins/dataTables.bootstrap.css" rel="stylesheet">
+    <link id="layuicss-skinlayercss" rel="stylesheet" href="http://res.layui.com/layui/build/css/modules/layer/default/layer.css?v=3.0.3303" media="all">
+</head>
+<body>
+<div class="row" style="margin:5px 5px 0 5px;">
+    <div class="panel panel-primary">
+        <div class="panel-body">
+            <div class="row">
+                <form class="navbar-form" action="" method="post">
+                    {{xsrf()}}
+                    <div class="form-group has-success">
+                        <label class="control-label">店铺名：{{result['store']}}</label>
+                    </div>
+                    <br/>
+                    <div class="form-group has-success">
+                        <label class="control-label">地址: {{result['addr']}}</label>
+                    </div>
+                    <br/>
+
+                    <div class="form-group has-success">
+                        <label class="control-label">保险公司: {{result['insurance']}}</label>
+                    </div>
+                    <br/>
+
+                    <div class="form-group has-success">
+                        <label class="control-label">优惠策略: </label>
+                        <br/>
+                        {% for r in result['privilege'] %}
+                        <label class="checkbox-inline">
+                            <input type="radio" name="new_price" value="{{ r['new_price'] }}"> {{r['name']}} {{r['rate']}} {{ r['new_price'] }}
+                        </label>
+                        <br/>
+                        {% endfor %}
+                    </div>
+                    <br/>
+                        <button type="submit" type="submit" name="iop_id" id="price_g" value="{{result['iop_id']}}" class="btn btn-success">保存</button>
+                        <!--<button type="button" class="btn btn-default" onclick="reset_in();">取消</button>-->
+                        <!--<a class="layui-layer-btn1">残忍拒绝</a>-->
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<!--<script src="/style/js/jquery.twbsPagination.min.js"></script>-->
+<!--<script type="text/javascript" src="/style/js/layer/layer.js"></script>-->
+<!--<script>-->
+    <!--function reset_in() {-->
+        <!--console.log('-&#45;&#45;&#45;&#45;&#45;&#45;');-->
+        <!--layer.closeAll();-->
+    <!--}-->
+<!--</script>-->
+</html>
+
+
+

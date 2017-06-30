@@ -1546,7 +1546,7 @@ def getDate(startDate, lastDate):
         startDate = '%s-%s-1' % (year, month)
         lastDate = '%s-%s-1' % (today.year, today.month)
     startTime = int(time.mktime(time.strptime(startDate, '%Y-%m-%d')))
-    lastTime = int(time.mktime(time.strptime(lastDate, '%Y-%m-%d')))
+    lastTime = int(time.mktime(time.strptime(lastDate, '%Y-%m-%d'))) + 86400    # 本日的最后一秒
     return (startDate, lastDate, startTime, lastTime)
 
 
@@ -1658,6 +1658,7 @@ def put_area_to_cash(self):
         for area in Area.select().where(db.fn.Length(Area.code) == 8):
             self.application.memcachedb.set(area.code, area.pid.name+area.name, 60*60)
 
+
 @route(r'/admin/export_referee', name='admin_export_referee')    # 推广人员统计
 class RefereeList(AdminBaseHandler):
     '''
@@ -1693,7 +1694,9 @@ class RefereeList(AdminBaseHandler):
     def getInsuranceOrder(self, startTime, lastTime, referees):
         store_list = {}
         for io in InsuranceOrder.select(InsuranceOrder.id, Store.id, Store.admin_code, InsuranceOrder.pay_time).\
-                join(Store).where(InsuranceOrder.status == 3).tuples():
+                join(Store, on=(Store.id == InsuranceOrder.store)).\
+                join(InsuranceOrderPrice, on=(InsuranceOrderPrice.id == InsuranceOrder.current_order_price)).\
+                where((InsuranceOrder.status == 3) & (InsuranceOrderPrice.total_price > 1)).tuples():
             if io[1] not in store_list:
                 store_list[io[1]] = 1
             else:
@@ -1995,7 +1998,7 @@ class ReportAreaOrder(AdminBaseHandler):
     def getIOReport(self, startTime, lastTime, code):
         if code:
             ft = ((InsuranceOrder.status == 3) & (InsuranceOrder.pay_time >= startTime) &
-                  (InsuranceOrder.pay_time <= lastTime) & (Store.area_code % code))
+                  (InsuranceOrder.pay_time <= lastTime) & (Store.area_code % code) & (InsuranceOrderPrice.total_price > 1))
             ios = InsuranceOrder.select(InsuranceOrder.id.alias('id'),
                                         InsuranceOrder.payment.alias('payment'),
                                         InsuranceOrderPrice.total_price.alias('total_price'),
@@ -2006,7 +2009,7 @@ class ReportAreaOrder(AdminBaseHandler):
                 where(ft).order_by(InsuranceOrder.pay_time.desc()).dicts()
         else:
             ft = ((InsuranceOrder.status == 3) & (InsuranceOrder.pay_time >= startTime) &
-                  (InsuranceOrder.pay_time <= lastTime))
+                  (InsuranceOrder.pay_time <= lastTime) & (InsuranceOrderPrice.total_price > 1))
             ios = InsuranceOrder.select(InsuranceOrder.id.alias('id'),
                                         InsuranceOrder.payment.alias('payment'),
                                         InsuranceOrderPrice.total_price.alias('total_price'),
@@ -2492,6 +2495,51 @@ class InsuranceOrderHandler(AdminBaseHandler):
                     archive=archive, Area=Area)
 
 
+@route(r'/admin/store_privilege/(\d+)', name='_admin_store_privilege')
+class StorePrivilegeHandler(AdminBaseHandler):
+    def get(self, sid):
+        insurance = self.get_argument('insurance', '')
+        price = self.get_argument('price', '')
+        iop_id = self.get_argument('iop_id', '')
+        result = {'store': '', 'addr': '', 'iop_id': '', 'privilege': []}
+        if insurance and price and iop_id:
+            iop_id = int(iop_id)
+            sid = int(sid)
+            price = float(price)
+            insurance = int(insurance)
+        else:
+            self.render('admin/order/store_privilege.html', result=result)
+        try:
+            s = Store.get(id=sid)
+            result['store'] = s.name
+            result['addr'] = Area.get_detailed_address(s.area_code)
+            result['iop_id'] = iop_id
+            ssl = SSILubePolicy.get(SSILubePolicy.store == sid, SSILubePolicy.insurance == insurance)
+            result['insurance'] = ssl.insurance.name
+            for privilege in simplejson.loads(ssl.privilege):
+                result['privilege'].append({
+                    'name': privilege['name'],
+                    'rate': privilege['rate'],
+                    'new_price': privilege['rate'] * price
+                })
+        except Exception, e:
+            print u'未配置: %s' % str(e)
+            msg = u'暂未配置'
+
+        self.render('admin/order/store_privilege.html', result=result)
+
+    def post(self, sid):
+        iop_id = self.get_body_argument('iop_id', '')
+        new_price = self.get_body_argument('new_price', '')
+        try:
+            iop = InsuranceOrderPrice.get(id=iop_id)
+            iop.insurance_company_price = new_price
+            iop.save()
+        except Exception,e:
+            self.write(u'失败：%s' % str(e))
+        self.write(u'成功！')
+
+
 @route(r'/admin/insurance_order/(\d+)', name='admin_insurance_order_detail')  # 保险订单详情
 class InsuranceOrderDetailHandler(AdminBaseHandler):
     def get(self, oid):
@@ -2899,7 +2947,7 @@ class InsuranceList(AdminBaseHandler):
         areas = InsuranceArea.select().where(ft)
 
         self.render("admin/insurance/index.html", insurances=insurances, active='insurance',
-                    areas=areas, Area=Area, iid=iid,items=items)
+                    areas=areas, Area=Area, iid=iid, items=items)
 
     def post(self):
         iid = self.get_body_argument('insurance',0)
@@ -2952,13 +3000,16 @@ def update_area_policy(insurance_area):
     sss = SSILubePolicy.select().where((SSILubePolicy.insurance == insurance_area.insurance) & (SSILubePolicy.store << stores))
     has_i_stores = [item.store.id for item in sss]
     if has_i_stores:
-        SSILubePolicy.update(lube=insurance_area.lube_policy, cash=insurance_area.cash_policy,score=insurance_area.score_policy,dealer_store=insurance_area.dealer_store.id).\
+        SSILubePolicy.update(lube=insurance_area.lube_policy, cash=insurance_area.cash_policy,
+                             score=insurance_area.score_policy, dealer_store=insurance_area.dealer_store.id,
+                             privilege=insurance_area.privilege_policy).\
             where((SSILubePolicy.insurance == insurance_area.insurance.id) & (SSILubePolicy.store << has_i_stores)).execute()
     # 没有该保险公司政策的门店，create
     for s in stores:
         if s not in has_i_stores:
             SSILubePolicy.create(store=s, insurance=insurance_area.insurance, lube=insurance_area.lube_policy,
-                                 dealer_store=insurance_area.dealer_store, cash=insurance_area.cash_policy, score=insurance_area.score_policy)
+                                 dealer_store=insurance_area.dealer_store, cash=insurance_area.cash_policy,
+                                 score=insurance_area.score_policy, privilege=insurance_area.privilege_policy)
 
 
 @route(r'/admin/insurance/score', name='admin_insurance_score')  # 保险返积分策略
@@ -3071,6 +3122,60 @@ class InsuranceLube(AdminBaseHandler):
             item.save()
             AdminUserLog.create(admin_user=self.get_admin_user(), created=int(time.time()),
                                 content=u'编辑保险返油策略:lp_id:%d' % item.id)
+            update_area_policy(item)
+            self.write(u'修改成功，请刷新！')
+
+
+@route(r'/admin/insurance/privilege', name='admin_insurance_privilege')  # 优惠
+class InsurancePrivilege(AdminBaseHandler):
+    def get(self):
+        iid = int(self.get_argument('iid', 0))
+        area_code = self.get_argument('area_code', '0')
+        sid = self.get_argument('sid', '')
+        check = self.get_argument('check', '')
+        if sid:
+            try:
+                privilege = SSILubePolicy.get((SSILubePolicy.store == sid) & (SSILubePolicy.insurance == iid)).privilege
+            except Exception, e:
+                privilege = None
+            item = {'id': 0, 'policy': privilege}
+        else:
+            try:
+                lube_policy = InsuranceArea.get((InsuranceArea.insurance == iid) & (InsuranceArea.area_code == area_code))
+                item = {'id': lube_policy.id, 'privilege': simplejson.loads(lube_policy.privilege_policy)}
+            except Exception, e:
+                item = {'id': '', 'privilege': ''}
+        self.render("admin/insurance/privilege.html", item=item, iid=iid, area_code=area_code, sid=sid, check=check)
+
+    def post(self):
+        exid = self.get_body_argument('ia_id', '0')
+        exid = int(exid) if exid else 0
+        iid = self.get_argument('iid', 0)
+        iid = int(iid) if iid else 0
+        sid = self.get_body_argument('sid', 0)
+        sid = int(sid) if sid else 0
+        renewal_rate = self.get_body_argument('renewal', '')
+        reinsurance_rate = self.get_body_argument('reinsurance', '')
+
+        if sid:
+            lube_policy = SSILubePolicy.get((SSILubePolicy.store == sid) & (SSILubePolicy.insurance == iid))
+            lube_policy.privilege = simplejson.dumps({
+                'reinsurance': {'rate': renewal_rate, 'name': u'转保/新保'},
+                'renewal': {'rate': reinsurance_rate, 'name': u'续保'}
+            })
+            lube_policy.save()
+            AdminUserLog.create(admin_user=self.get_admin_user(), created=int(time.time()),
+                                content=u'编辑保险返油返积分策略:ssip_id:%d' % lube_policy.id)
+            self.write(u'修改成功，请刷新！')
+        else:
+            item = InsuranceArea.get(id=exid)
+            item.privilege_policy = simplejson.dumps({
+                'reinsurance': {'rate': reinsurance_rate, 'name': u'转保/新保'},
+                'renewal': {'rate': renewal_rate, 'name': u'续保'}
+            })
+            item.save()
+            AdminUserLog.create(admin_user=self.get_admin_user(), created=int(time.time()),
+                                content=u'编辑保险优惠策略:lp_id:%d' % item.id)
             update_area_policy(item)
             self.write(u'修改成功，请刷新！')
 

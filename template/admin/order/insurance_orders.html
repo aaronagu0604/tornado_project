@@ -108,7 +108,14 @@
                     <td>{{o.current_order_price.created|datetimeformat}}</td>
                     <td>{{o.pay_time|datetimeformat}}</td>
                     <td>{{o.current_order_price.insurance.name}}</td>
-                    <td>{{o.current_order_price.total_price}}</td>
+                    <td>
+                        {{o.current_order_price.total_price}}</br>
+                        {% if o.current_order_price.insurance_company_price %}
+                        <div style="color:#59bfff">{{o.current_order_price.insurance_company_price}}</div>
+                        {% else %}
+                        <a href="#" onclick="pop('添加返佣政策','/admin/store_privilege/{{o.store.id}}?iop_id={{o.current_order_price.id}}&price={{o.current_order_price.total_price}}&insurance={{o.current_order_price.insurance.id}}')">优惠</a>
+                        {% endif %}
+                    </td>
                     <td>
                         {% if o.status==0 %}
                         <div style="color:#FF0800;">待报价</div>
@@ -194,6 +201,7 @@
 {% endblock %}
 {% block js %}
 <script src="/style/js/jquery.twbsPagination.min.js"></script>
+<script type="text/javascript" src="/style/js/layer/layer.js"></script>
 <script>
     $(document).ready(function() {
         var province_code=$("#province_code").attr("data-default");
@@ -225,6 +233,18 @@
         });
         var xsrf='{{handler.xsrf_token}}';
     });
+
+    function pop(title, url) {
+        layer.open({
+            type: 2,
+            title: title,
+            shadeClose: true,
+            shade: 0.8,
+            area: ['50%', '50%'],
+            content: url,
+            end: function () { window.location.reload(); }
+        });
+    }
 
     function province_change(id, default_id){
         $("#city_code > option").remove();

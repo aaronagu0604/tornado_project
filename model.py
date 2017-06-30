@@ -668,6 +668,8 @@ class InsuranceArea(db.Model):
     cash_policy = TextField(default='')  # 返现政策的json串
     score_ok = IntegerField(default=1)  # 开通积分
     score_policy = TextField(default='')  # 返积分政策的json串
+    privilege_ok = IntegerField(default=1)  # 开通续保、转保优惠
+    privilege_policy = TextField(default='')  # 续保、转保优惠的json串
     sort = IntegerField(default=1)  # 显示顺序
     active = IntegerField(default=1)  # 状态 0删除 1有效
 
@@ -778,6 +780,7 @@ class InsuranceOrderPrice(db.Model):
     store_lube_num = IntegerField(default=0)  # 返修理厂油品数量
     cash = FloatField(default=0.0)  # 返现金额
     total_price = FloatField(default=0.0)  # 保险订单总价格
+    insurance_company_price = FloatField(default=0.0)  # 给保险公司支付的金额
     force_price = FloatField(default=0.0)  # 交强险 价格
     force_rate = FloatField(null=True)    # 交强险折扣
     business_price = FloatField(default=0.0)  # 商业险价格
@@ -1030,6 +1033,7 @@ class SSILubePolicy(db.Model):
     cash = TextField(default='')  # 返现政策的json串  # 返现政策
     lube = TextField(default='')  # 返油政策的json串  # 返油政策
     score = TextField(default='')  # 返油政策的json串  # 返积分政策
+    privilege = TextField(default='')  # 续保、转保优惠的json串
 
     class Meta:
         db_table = "tb_store_gift_policy"
