@@ -103,14 +103,14 @@
         font-size: 15px
     }
 
-    .weui-check_gift:checked + .weui-icon-checked_gift:before {
-        display: block;
+    .weui-check_gift:checked + .checked_gift {
+        display: inline-block;
         color: #09bb07;
         font-size: 15px
     }
 
-    .weui-icon-checked_gift:before {
-        display: block;
+    .checked_gift {
+        display: inline-block;
         color: #c9c9c9;
         font-size: 15px
 
@@ -219,7 +219,7 @@
                         <div class="weui-cell__hd">
                             <input type="radio" class="weui-check_gift" name="radio2" id="{{gift['name']}}"
                                    style="display: none" value="{{gift['type']}}">
-                            <span class="weui-icon-checked_gift">{{gift['name']}}</span>
+                            <span class="checked_gift">{{gift['name']}}</span>
                         </div>
 
                     </label>
