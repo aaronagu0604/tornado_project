@@ -291,10 +291,12 @@
 
 .order-detail-content .header .left {
     color: black;
+    width: 80%;
 }
 
 .order-detail-content .header .right {
     text-align: right;
+    width: 20%;
 }
 
 .order-detail-content .body {
