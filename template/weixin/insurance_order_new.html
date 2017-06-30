@@ -83,19 +83,19 @@
     .weui-cell {
         padding: 7px 10px;
     }
+
     .weui-cells_radio {
         padding-left: 15px;
     }
-    .weui-cells_radio .weui-cell__bd:checked + .weui-cell__bd:before {
+
+    .weui-cells_radio .weui-check:checked + .weui-icon-checked:before {
         display: block;
-        content: "\EA06";
         color: #09bb07;
         font-size: 15px
     }
 
-    .weui-cells_radio .weui-cell__bd:before {
+    .weui-cells_radio .weui-icon-checked:before {
         display: block;
-        content: "\EA01";
         color: #c9c9c9;
         adding-left: 10px;
         font-size: 15px
@@ -201,14 +201,14 @@
             <div class="weui-row">
                 {% for gift in rake_back %}
                 <div class="weui-col-50">
-                    <label class="weui-cell weui-check__label order_price_statue" for="{{gift['name']}}">
+                    <label class="weui-cell weui-check__label " for="{{gift['name']}}">
                         <div class="weui-cell__hd">
                             <input type="radio" class="weui-check" name="radio2" id="{{gift['name']}}"
                                    value="{{gift['type']}}">
-
+                            <span class="weui-icon-checked">{{gift['name']}}</span>
                         </div>
                         <div class="weui-cell__bd">
-                            <p> {{gift['name']}}</p>
+                            <p></p>
                         </div>
                     </label>
                     <div class="weui_czj_gift">
