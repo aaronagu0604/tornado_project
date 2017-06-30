@@ -111,6 +111,8 @@
         width: 100px;
         text-align: center;
         border: 1px solid #09bb07;
+        border-radius: 5px;
+        margin: auto;
     }
 
     .checked_gift {
@@ -121,6 +123,8 @@
         text-align: center;
         width: 100px;
         border: 1px solid #262626;
+        border-radius: 5px;
+        margin: auto;
     }
 
 </style>
@@ -226,7 +230,7 @@
                         <div class="weui-cell__hd">
                             <input type="radio" class="weui-check_gift" name="radio2" id="{{gift['name']}}"
                                    style="display: none" value="{{gift['type']}}">
-                            <span class="checked_gift">{{gift['name']}}</span>
+                            <div class="checked_gift">{{gift['name']}}</div>
                         </div>
 
                     </label>
