@@ -268,34 +268,6 @@
 <script>
 
     $(document).ready(function () {
-        $(document).on("click", "#soon_pay", function () {
-            $.actions({
-                title: "支付方式", actions: [{
-                    text: "微信", onclick: function () {
-
-                    }
-                }, {
-                    text: "支付宝", onclick: function () {
-
-                    }
-                }]
-            });
-        })
-
-        $(document).on("click", "#code_pay", function () {
-            $.actions({
-                title: "扫码支付", actions: [{
-                    text: "微信扫码", onclick: function () {
-                        document.location.href = "/pay_detail/{{data['id']}}";
-                    }
-                }, {
-                    text: "支付宝扫码", onclick: function () {
-                        document.location.href = "/pay_detail/{{data['id']}}";
-                    }
-                }]
-            });
-        });
-
         $(".img_card").on("click", function () {
             var pb = $.photoBrowser({
                 items: [
