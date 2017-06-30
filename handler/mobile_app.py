@@ -306,6 +306,13 @@ class MobileLoginHandler(MobileBaseHandler):
         self.finish()
 
 
+'''
+原保费总额 = 交强+商业+车船
+给中华联合支付金额： 原保费总额 -（（交强险 * 0.96 * 4%） + (商业险 *0.96 * 35%)）
+
+
+'''
+
 @route(r'/mobile/home', name='mobile_home')  # 首页数据
 class MobileHomeHandler(MobileBaseHandler):
     """
@@ -417,16 +424,21 @@ class MobileHomeHandler(MobileBaseHandler):
 
         # 推荐商品
         result_rec = []
+        # hot 产品
         tmp_code = area_code
+        recommends = self.get_recommend(tmp_code, hot=True)  # 热门产品放最前面
+        while len(recommends) == 0 and len(tmp_code) > 4:
+            tmp_code = tmp_code[0: -4]
+            recommends += self.get_recommend(tmp_code, hot=True)
+        result_rec = recommends
         # SK
+        tmp_code = area_code
         sk_brand_id = Brand.get(name='SK').id
         recommends = self.get_recommend(tmp_code, sk_brand_id)    # SK的品牌ID 15
         while len(recommends) == 0 and len(tmp_code) > 4:
             tmp_code = tmp_code[0: -4]
             recommends += self.get_recommend(tmp_code, sk_brand_id)
-        if recommends:
-            result_rec = recommends
-            recommends = []
+        result_rec += recommends
         # 嘉实多
         tmp_code = area_code
         jsd_brand_id = Brand.get(name='嘉实多').id
@@ -434,12 +446,7 @@ class MobileHomeHandler(MobileBaseHandler):
         while len(recommends) == 0 and len(tmp_code) > 4:
             tmp_code = tmp_code[0: -4]
             recommends += self.get_recommend(tmp_code, jsd_brand_id)
-        if recommends:
-            if result_rec:
-                result_rec = result_rec[:10] + recommends[:20]
-            else:
-                result_rec = recommends
-            recommends = []
+        result_rec += recommends
         # 道达尔
         tmp_code = area_code
         dde_brand_id = Brand.get(name='道达尔').id
@@ -447,11 +454,7 @@ class MobileHomeHandler(MobileBaseHandler):
         while len(recommends) == 0 and len(tmp_code) > 4:
             tmp_code = tmp_code[0: -4]
             recommends += self.get_recommend(tmp_code, dde_brand_id)
-        if recommends:
-            if result_rec:
-                result_rec = result_rec[:20] + recommends[:10]
-            else:
-                result_rec = recommends
+        result_rec += recommends
         if not (user and user.store.active == 1):
             result_rec = self.get_recommend(self.get_default_area_code(),sk_brand_id, user=False)
         result['data']['category'].append({'title': u'为您推荐', 'data': result_rec})
@@ -462,8 +465,6 @@ class MobileHomeHandler(MobileBaseHandler):
         while len(score_product) == 0 and len(tmp_code) > 4:
             tmp_code = tmp_code[0: -4]
             score_product = self.get_score_product(tmp_code)
-        # if len(score_product) == 0:
-        #     score_product = self.get_score_product(self.get_default_area_code())
         result['data']['category'].append({'title': u'积分兑换', 'data': score_product})
 
         result['flag'] = 1
@@ -540,9 +541,14 @@ class MobileHomeHandler(MobileBaseHandler):
 
         return items[:4]
 
-    def get_recommend(self, area_code, brand_id='', user=True):
+    def get_recommend(self, area_code, brand_id='', user=True, hot=False):
         items = []
-        ft = (StoreProductPrice.price > 0) & (StoreProductPrice.active == 1) & (ProductRelease.active == 1) & (Product.active == 1)
+        if hot:
+            ft = ((StoreProductPrice.price > 0) & (StoreProductPrice.active == 1) & (ProductRelease.active == 1) &
+                  (Product.active == 1) & (Product.hot == 1))
+        else:
+            ft = ((StoreProductPrice.price > 0) & (StoreProductPrice.active == 1) & (ProductRelease.active == 1) &
+                  (Product.active == 1) & (Product.hot != 1))
         if isinstance(area_code, list):
             ft &= (StoreProductPrice.area_code << area_code)
         else:
@@ -559,7 +565,7 @@ class MobileHomeHandler(MobileBaseHandler):
             join(ProductRelease, on=(ProductRelease.product == Product.id)). \
             join(Store, on=(Store.id == ProductRelease.store)). \
             join(StoreProductPrice, on=(StoreProductPrice.product_release == ProductRelease.id)). \
-            where(ft).order_by(Product.hot.desc(), ProductRelease.sort.desc(), StoreProductPrice.created.desc()).limit(30).tuples()
+            where(ft).order_by(ProductRelease.sort.desc(), StoreProductPrice.created.desc()).limit(12).tuples()
         for id, name, cover, price, score, sname, brand in spps:
             items.append({
                 'img': cover,
