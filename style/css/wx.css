@@ -291,13 +291,15 @@
 
 .order-detail-content .header .left {
     color: black;
-    width: 80%;
 }
 
 .order-detail-content .header .right {
     text-align: right;
-    width: 20%;
 }
+.weui-row .weui-col-20 {
+    text-align: right;
+}
+
 
 .order-detail-content .body {
     line-height: 20px;
@@ -346,47 +348,50 @@
 }
 
 .address-block {
-        margin-top: 5px;
-    padding:0 10px;
+    margin-top: 5px;
+    padding: 0 10px;
     background-color: #fff;
     margin-bottom: 60px;
-    }
-.address-block .icon-left {
-    width:20px;    margin-right: 0;
 }
-    .address-txt {
-        font-size: 13px;
-        color: #999;
-        line-height: 18px;
-    }
 
-    .address-name {
-        font-size: 16px;
-        padding-bottom: 4px;
-        color: #111;
+.address-block .icon-left {
+    width: 20px;
+    margin-right: 0;
+}
 
-    }
+.address-txt {
+    font-size: 13px;
+    color: #999;
+    line-height: 18px;
+}
 
-    .address-name span {
-        margin-right: 10px;
-    }
+.address-name {
+    font-size: 16px;
+    padding-bottom: 4px;
+    color: #111;
 
-    .promotion-label-tit img {
-        width: 80%;
-        border: 0;
-        vertical-align: middle;
-    }
+}
 
-    .order-pay-bottom {
-        text-align: center;
+.address-name span {
+    margin-right: 10px;
+}
+
+.promotion-label-tit img {
+    width: 80%;
+    border: 0;
+    vertical-align: middle;
+}
+
+.order-pay-bottom {
+    text-align: center;
     background-color: #fff;
-        height: 55px;
-        position: fixed;
-        bottom:0;
-        width:100%;
-    }
+    height: 55px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
 
-    .order-pay-bottom:before {
+.order-pay-bottom:before {
     content: " ";
     position: absolute;
     left: 0;
@@ -399,21 +404,25 @@
     transform-origin: 0 0;
     -webkit-transform: scaleY(.5);
     transform: scaleY(.5);
-    }
+}
 
-.row_container{
+.row_container {
     alignment: center;
     background-image: url("../../style/wximg/img_expired.png");
     background-repeat: no-repeat;
-    background-position:center;
-    background-origin:content-box;
+    background-position: center;
+    background-origin: content-box;
 }
-.order_price_base{
-    margin-top:0;
+
+.order_price_base {
+    margin-top: 0;
 }
-.order_price_statue{
+
+.order_price_statue {
     padding: 10px 0;
 }
-.order_price_right{
-    text-align: right;color: #999;
+
+.order_price_right {
+    text-align: right;
+    color: #999;
 }
