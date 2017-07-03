@@ -104,7 +104,7 @@ class InsuranceHandler(WXBaseHandler):
 class InsuranceOrderBaseHandler(WXBaseHandler):
     def get(self,insurance):
         if insurance=='0':
-            i=None
+            i=Insurance.get(id=13)
         else:
             i = Insurance.get(id=insurance)
         self.render('weixin/insurance_order_base.html',insurance=i, ret = self.get_js_sdk_sign(setting.wxdomanName+'/insurance_order_base/'+insurance))
