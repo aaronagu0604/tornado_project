@@ -211,13 +211,13 @@
                     text: "微信扫码",
                     onClick: function () {
                         console.log("/pay_detail/"+oid+"?type=alipayqrcode");
-                        window.location.href = "/pay_detail/"+oid+"?type=alipayqrcode"
+                        window.location.href = "/pay_detail/"+oid+"?type=wxqrcode"
                 }
                 }, {
                     text: "支付宝扫码",
                     onClick: function () {
                         console.log("/pay_detail/"+oid+"?type=wxqrcode");
-                        window.location.href  = "/pay_detail/"+oid+"?type=wxqrcode"
+                        window.location.href  = "/pay_detail/"+oid+"?type=alipayqrcode"
                     }
                 }]
         });
