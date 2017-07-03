@@ -30,7 +30,7 @@ if settings['debug'] == False:
 
 jinja_environment = Environment(
     loader=FileSystemLoader(settings['template_path']),
-    bytecode_cache=bcc,    # 缓存模板编译的结果到memcache
+    bytecode_cache=bcc,#缓存模板编译的结果到memcache
     auto_reload=settings['debug'],
     autoescape=False)
 

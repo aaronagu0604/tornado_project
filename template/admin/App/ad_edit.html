@@ -7,7 +7,7 @@
             return;
         $.get("/ajax/GetSubScoreAreas", { pcode: pcode,  t: Math.random() }, function (data) {
             data = jQuery.parseJSON(data);
-            if(data.flag==1){
+            if(data.flag==1)                {
                 isex=$("#span" + pcode).attr("data-ex");
                 code=$("#span"+ pcode).attr("data-code");
                 blank=$("#span"+ pcode).attr("data-blank");

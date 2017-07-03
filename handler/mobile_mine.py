@@ -2398,7 +2398,7 @@ class MobileToolsHandler(MobileBaseHandler):
             ft &= fts
             ft &= fte
         agent = {}
-        userlist = User.select().where(User.role.contains('W'),User.store == store.id)
+        userlist = User.select().where(User.role.contains('W'),User.store == store.id,~User.role.contains('1'),~User.role.contains('A'))
         for u in userlist:
             agent[u.id] = {
                 'id':u.id,
@@ -2416,8 +2416,9 @@ class MobileToolsHandler(MobileBaseHandler):
             tuples()
 
         for uid,umobile,orders,total_price in users:
-            agent[uid]['orders'] = orders
-            agent[uid]['total_price'] = round(total_price,2)
+            if uid in agent.keys():
+                agent[uid]['orders'] = orders
+                agent[uid]['total_price'] = round(total_price,2)
         data = agent.values()
 
         if sort_type=='orders':
