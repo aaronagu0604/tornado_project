@@ -64,7 +64,12 @@
                         交强险
                     </div>
                     <div class="weui-col-20" style="text-align: right;">
+                        {% if i['response']['status'] == 0 %}
                         <span class="order-price">￥{{i['forceprice']}}</span>
+                        {% else %}
+                        <span class="order-price">￥{{i['forceprice']}}</span>
+                        {% endif %}
+
                     </div>
                 </div>
                 <div class="weui-flex body weui-row">
