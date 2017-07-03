@@ -1548,7 +1548,10 @@ class MobileNewOrderHandler(MobileBaseHandler):
                     order_item.save()
                     storeProductNames += spp.product_release.product.name
                 # 给经销商发短信
-                sms = {'mobile': sub_order.saler_store.mobile, 'body': u'订单号：%s 所购商品：%s' % (order.ordernum, storeProductNames),
+                buyer_store_area = Area.get_detailed_address(user.store.area_code) + user.store.address
+                sms = {'mobile': sub_order.saler_store.mobile,
+                       'body': u'订单号：%s 买家：%s 地址：%s 电话：%s 所购商品：%s' %
+                               (order.ordernum, user.store.name, buyer_store_area, user.store.mobile, storeProductNames),
                        'signtype': '1', 'isyzm': 'placeOrderToServer'}  # 有客户下单请查看
                 create_msg(simplejson.dumps(sms), 'sms')  # 下单
             result['data']['order_id'] = order.id
