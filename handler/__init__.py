@@ -217,7 +217,7 @@ class WXBaseHandler(BaseHandler):
         logging.info('into wxbase prepare')
         user = self.get_current_user()
         if user:
-            if user.role.find('W') and user.token and user.openid:
+            if user.role.find('W')>=0 and user.token and user.openid:
                 pass
             else:
                 self.render('weixin/tips.html')
