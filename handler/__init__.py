@@ -214,6 +214,7 @@ class WXBaseHandler(BaseHandler):
         return ret
 
     def prepare(self):
+        logging.info('into wxbase prepare')
         if self.get_current_user():
             pass
         else:
