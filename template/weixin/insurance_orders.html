@@ -118,6 +118,7 @@
         console.log(data);
         paystr = '';
         paybtn = '';
+        price  = '';
         // 0待报价 1已核价/待支付 2已支付/待出单 3完成（已送积分/油） -1已删除(取消)
         if (data.status==0) {
             paystr = '待核价';
@@ -133,6 +134,12 @@
             paystr = '已完成';
         } else {
             paystr = '已删除';
+        }
+
+        if(data.price = 0 ){
+            price = '--';
+        }else{
+            price = data.price;
         }
 
         var html = '<a href="/insurance_order_detail/'+data.id+'">\
@@ -175,7 +182,7 @@
                 <div class="weui-panel__ft order-ft" style="background-color:#fff">\
                     <div class="weui-flex">\
                         <div class="weui-flex__item" style=" flex: 3;">\
-                            <span class="order_price_title">订单金额:</span><span style="font-size: 13px; color:red;">￥</span><span class="order_price">'+data.price+'</span>\
+                            <span class="order_price_title">订单金额:</span><span style="font-size: 13px; color:red;">￥</span><span class="order_price">'+price+'</span>\
                         </div>\
                         '+paybtn+'\
                     </div>\

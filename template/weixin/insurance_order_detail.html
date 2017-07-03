@@ -81,9 +81,17 @@
                 <div class="weui-col-80">
                     {{m['name']}}
                 </div>
+
+                {% if m['price'] == 0 %}
+                <div class="weui-col-20" style="text-align: right;">
+                    --
+                </div>
+                {% else %}
                 <div class="weui-col-20" style="text-align: right;">
                     ￥{{m['price']}}
                 </div>
+                {% endif %}
+
             </div>
             {% endfor %}
             <div class="weui-flex header weui-row">
@@ -99,9 +107,18 @@
                 <div class="weui-col-80">
                     {{m['name']}}
                 </div>
+
+
+                {% if m['price'] == 0 %}
+                <div class="weui-col-20" style="text-align: right;">
+                    --
+                </div>
+                {% else %}
                 <div class="weui-col-20" style="text-align: right;">
                     ￥{{m['price']}}
                 </div>
+                {% endif %}
+
             </div>
             {% endfor %}
         </div>
