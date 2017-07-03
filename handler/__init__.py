@@ -178,20 +178,6 @@ class WXBaseHandler(BaseHandler):
     def check_xsrf_cookie(self):
         pass
 
-    # def get_current_user(self):
-    #     user = User.get(mobile='13289269257')
-    #     token = user.token
-    #     if token:
-    #         data = self.application.memcachedb.get(token)
-    #         if data is None:
-    #             token = setting.user_token_prefix + str(uuid.uuid4())
-    #     else:
-    #         token = setting.user_token_prefix + str(uuid.uuid4())
-    #     user.token = token
-    #     user.save()
-    #     self.application.memcachedb.set(token, str(user.id), setting.user_expire)
-    #     return user
-
     def get_access_token(self):
         self.weixin_app_id = appid
         self.weixin_secret = secret
@@ -226,6 +212,7 @@ class WXBaseHandler(BaseHandler):
         ret = self.sign(ret)
         ret['appid'] = appid
         return ret
+
     def prepare(self):
         if self.get_current_user():
             pass
