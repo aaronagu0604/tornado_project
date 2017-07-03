@@ -215,8 +215,12 @@ class WXBaseHandler(BaseHandler):
 
     def prepare(self):
         logging.info('into wxbase prepare')
-        if self.get_current_user():
-            pass
+        user = self.get_current_user()
+        if user:
+            if user.role.find('W') and user.token and user.openid:
+                pass
+            else:
+                self.render('weixin/tips.html')
         else:
             self.render('weixin/tips.html')
 
