@@ -270,7 +270,7 @@ class MobileLoginHandler(MobileBaseHandler):
         if mobile and password:
             try:
                 user = User.get(User.mobile == mobile)
-                if user.role.find('A')<0 or user.role.find('1')<0:
+                if user.role.find('A')<0 and user.role.find('1')<0:
                     result['msg'] = u'登录失败:微信端用户不允许登录商户端app！'
                     self.write(simplejson.dumps(result))
                     return
