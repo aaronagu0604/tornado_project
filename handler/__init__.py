@@ -226,13 +226,13 @@ class WXBaseHandler(BaseHandler):
         ret = self.sign(ret)
         ret['appid'] = appid
         return ret
-    # def prepare(self):
-    #     if self.get_current_user():
-    #         pass
-    #     else:
-    #         self.render('404.html')
-	#
-    #     super(WXBaseHandler, self).prepare()
+    def prepare(self):
+        if self.get_current_user():
+            pass
+        else:
+            self.render('weixin/tips.html')
+
+        super(WXBaseHandler, self).prepare()
 
 def require_auth(method):
     @functools.wraps(method)
