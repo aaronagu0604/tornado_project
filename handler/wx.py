@@ -418,7 +418,15 @@ class RegisterHandler(BaseHandler):
             user = User.get(mobile=mobile)
             user.openid = openid
             user.role += 'W'
+            token = user.token
+            if token:
+                data = self.application.memcachedb.get(token)
+                if data is None:
+                    token = setting.user_token_prefix + str(uuid.uuid4())
+            else:
+                token = setting.user_token_prefix + str(uuid.uuid4())
             user.save()
+
             return user
         except Exception:
             try:
