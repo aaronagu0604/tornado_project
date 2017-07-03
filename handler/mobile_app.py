@@ -186,6 +186,7 @@ class MobileRegHandler(MobileBaseHandler):
         password = self.get_body_argument("password", None)
         store_type = self.get_body_argument("store_type", None)
         referee = self.get_body_argument("referee", None)
+        referee = referee.zfill(6) if referee else None
         companyName = self.get_body_argument("companyName", None)
         province = self.get_body_argument("province", None)
         city_tmp = self.get_body_argument("city", '')
