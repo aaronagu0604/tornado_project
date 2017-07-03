@@ -118,6 +118,7 @@
         console.log(data);
         paystr = '';
         paybtn = '';
+        priceLogo = '';
         price  = '';
         // 0待报价 1已核价/待支付 2已支付/待出单 3完成（已送积分/油） -1已删除(取消)
         if (data.status==0) {
@@ -137,8 +138,10 @@
         }
 
         if(data.price == 0 ){
+            priceLogo = '';
             price = '--';
         }else{
+            priceLogo = '￥';
             price = data.price;
         }
 
@@ -182,7 +185,7 @@
                 <div class="weui-panel__ft order-ft" style="background-color:#fff">\
                     <div class="weui-flex">\
                         <div class="weui-flex__item" style=" flex: 3;">\
-                            <span class="order_price_title">订单金额:</span><span style="font-size: 13px; color:red;">￥</span><span class="order_price">'+price+'</span>\
+                            <span class="order_price_title">订单金额:</span><span style="font-size: 13px; color:red;">'+priceLogo+'</span><span class="order_price">'+price+'</span>\
                         </div>\
                         '+paybtn+'\
                     </div>\
