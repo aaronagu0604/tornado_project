@@ -2065,15 +2065,31 @@ class WeiXinMenuHandler(BaseHandler):
                  },
 
                  {
-                   "name":"...",
+                   "name":"保险询价",
+                   "sub_button":[
+                    {
+                       "type":"view",
+                       "name":"立即前往",
+                       "url":"%s"
+                    }]
+                 },
+
+                 {
+                   "name":"更多",
                    "sub_button":[
                     {
                        "type":"view",
                        "name":"个人中心",
                        "url":"%s"
+                    },
+                    {
+                       "type":"view",
+                       "name":"操作指引",
+                       "url":"http://mp.weixin.qq.com/s/G8vhgM2xaj82Jga88jaPng"
                     }]
                   }
                 ]}'''%(self.create_url('/index'),
+                       self.create_url('/insurance/13'),
                        self.create_url('/mine'))
         print menu
         try:
