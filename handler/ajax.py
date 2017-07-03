@@ -2089,7 +2089,7 @@ class WeiXinMenuHandler(BaseHandler):
                     }]
                   }
                 ]}'''%(self.create_url('/index'),
-                       self.create_url('/insurance/13'),
+                       self.create_url('/insurance_order_base/0'),
                        self.create_url('/mine'))
         print menu
         try:
