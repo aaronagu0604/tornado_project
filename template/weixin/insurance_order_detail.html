@@ -42,7 +42,13 @@
                 <p>{{data['insuranceorderprice']['insurance']}}</p>
             </div>
             <div class="weui-cell__ft">
+
+                {% if data['insuranceorderprice']['status'] == 0 %}
+                <span class="right order-price">--</span></div>
+                {% else %}
                 <span class="right order-price">￥{{data['total_price']}}</span></div>
+                {% endif %}
+
         </div>
         <div class="weui-cell line">
             <div class="weui-cell__bd left">
@@ -57,7 +63,13 @@
                     交强险
                 </div>
                 <div class="weui-col-20" style="text-align: right;">
-                    <span class="order-price">￥{{data['insuranceorderprice']['iList']['forceprice']}}</span>
+
+                {% if data['insuranceorderprice']['status'] == 0 %}
+                    <span class="order-price">--</span>
+                {% else %}
+                <span class="order-price">￥{{data['insuranceorderprice']['iList']['forceprice']}}</span>
+                 {% endif %}
+
                 </div>
             </div>
             <div class="weui-flex body weui-row">
@@ -81,7 +93,11 @@
                     商业险(主险)
                 </div>
                 <div class="weui-col-20" style="text-align: right;">
+                    {% if data['insuranceorderprice']['status'] == 0 %}
+                    <span class="order-price">--</span>
+                    {% else %}
                     <span class="order-price">￥{{data['insuranceorderprice']['iList']['mainprice']}}</span>
+                    {% endif %}
                 </div>
             </div>
             {% for m in data['insuranceorderprice']['iList']['main'] %}
@@ -107,7 +123,11 @@
                     商业险(附加险)
                 </div>
                 <div class="weui-col-20" style="text-align: right;">
+                    {% if data['insuranceorderprice']['status'] == 0 %}
+                    <span class="order-price">--</span>
+                    {% else %}
                     <span class="order-price">￥{{data['insuranceorderprice']['iList']['subjoinprice']}}</span>
+                    {% endif %}
                 </div>
             </div>
             {% for m in data['insuranceorderprice']['iList']['subjoin'] %}
