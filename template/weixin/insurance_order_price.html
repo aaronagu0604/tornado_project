@@ -44,7 +44,11 @@
                             <span>{{i['insurancename']}}</span>
                         </div>
                         <div class="weui-cell__ft">
-                            <p class="row_right">待付款</p>
+                            {% if i['response'] == 0 %}
+                            <p class="row_right">待报价</p>
+                            {% else %}
+                            <p class="row_right">已报价</p>
+                            {% endif %}
                         </div>
                     </label>
                 <div class="order-split-line"></div>
