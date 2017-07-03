@@ -425,6 +425,7 @@ class RegisterHandler(BaseHandler):
                     token = setting.user_token_prefix + str(uuid.uuid4())
             else:
                 token = setting.user_token_prefix + str(uuid.uuid4())
+            user.token = token
             user.save()
 
             return user
