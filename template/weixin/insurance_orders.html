@@ -172,14 +172,15 @@
                         </div>\
                     </div>\
                 </a> \
-                <div class="weui-panel__ft order-ft" style="background-color:#fff">\
-                    <div class="weui-flex">\
-                        <div class="weui-flex__item" style=" flex: 3;">\
-                            <span class="order_price_title">订单金额:</span><span style="font-size: 13px; color:red;">￥</span><span class="order_price">'+data.price+'</span>\
+                    <div class="weui-panel__ft order-ft" style="background-color:#fff">\
+                        <div class="weui-flex">\
+                            <div class="weui-flex__item" style=" flex: 3;">\
+                                <span class="order_price_title">订单金额:</span><span style="font-size: 13px; color:red;">￥</span><span class="order_price">'+data.price+'</span>\
+                            </div>\
+                            '+paybtn+'\
                         </div>\
-                        '+paybtn+'\
-                    </div>\
-                </div>';
+                </div> \
+                <div class="order-split-line" style="margin:0px;padding:0px"></div>\';
         return html;
     }
 
