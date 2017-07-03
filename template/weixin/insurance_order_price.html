@@ -68,7 +68,7 @@
                         交强险
                     </div>
                     <div class="weui-col-20" style="text-align: right;">
-                        {% if i['response']['status'] == 0 %}
+                        {% if i['response'] == 0 %}
                         <span class="order-price">￥{{i['forceprice']}}</span>
                         {% else %}
                         <span class="order-price">￥{{i['forceprice']}}</span>
@@ -80,16 +80,26 @@
                     <div class="weui-col-80">
                         车船税
                     </div>
+
+                    {% if i['response'] == 0 %}
+                    <div class="weui-col-20" style="text-align: right;">--</div>
+                    {% else %}
                     <div class="weui-col-20" style="text-align: right;">
                         ￥{{i['vehicle_tax_price']}}
                     </div>
+                    {% endif %}
                 </div>
                 <div class="weui-flex header weui-row">
                     <div class="weui-col-80">
                         商业险(主险)
                     </div>
                     <div class="weui-col-20" style="text-align: right;">
+                        {% if i['response'] == 0 %}
+                        <span class="order-price">--</span>
+                        {% else %}
                         <span class="order-price">￥{{i['mainprice']}}</span>
+                        {% endif %}
+
                     </div>
                 </div>
                 {% for m in i['main'] %}
@@ -97,9 +107,14 @@
                     <div class="weui-col-80">
                         {{m['name']}}
                     </div>
+
+                    {% if i['response'] == 0 %}
+                    <div class="weui-col-20" style="text-align: right;">--</div>
+                    {% else %}
                     <div class="weui-col-20" style="text-align: right;">
                         ￥{{m['price']}}
                     </div>
+                    {% endif %}
                 </div>
                 {% endfor %}
                 <div class="header weui-row">
@@ -107,7 +122,11 @@
                         商业险(附加险)
                     </div>
                     <div class="weui-col-20" style="text-align: right;">
+                        {% if i['response'] == 0 %}
+                        <span class="order-price">--</span>
+                        {% else %}
                         <span class="order-price">￥{{i['subjoinprice']}}</span>
+                        {% endif %}
                     </div>
                 </div>
                 {% for m in i['subjoin'] %}
@@ -115,9 +134,13 @@
                     <div class="weui-col-80">
                         {{m['name']}}
                     </div>
+                    {% if i['response'] == 0 %}
+                    <div class="weui-col-20" style="text-align: right;">--</div>
+                    {% else %}
                     <div class="weui-col-20" style="text-align: right;">
                         ￥{{m['price']}}
                     </div>
+                    {% endif %}
                 </div>
                 {% endfor %}
             </div>
