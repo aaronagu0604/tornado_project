@@ -2065,16 +2065,6 @@ class WeiXinMenuHandler(BaseHandler):
                  },
 
                  {
-                   "name":"热门车险",
-                   "sub_button":[
-                    {
-                       "type":"view",
-                       "name":"人保",
-                       "url":"%s"
-                    }]
-                 },
-
-                 {
                    "name":"...",
                    "sub_button":[
                     {
@@ -2084,7 +2074,6 @@ class WeiXinMenuHandler(BaseHandler):
                     }]
                   }
                 ]}'''%(self.create_url('/index'),
-                       self.create_url('/insurance/13'),
                        self.create_url('/mine'))
         print menu
         try:
