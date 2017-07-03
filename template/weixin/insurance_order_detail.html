@@ -64,9 +64,17 @@
                 <div class="weui-col-80">
                     车船税
                 </div>
+
+                {% if float(data['insuranceorderprice']['iList']['vehicle_tax_price']) == 0 %}
+                <div class="weui-col-20" style="text-align: right;">
+                    --
+                </div>
+                {% else %}
                 <div class="weui-col-20" style="text-align: right;">
                     ￥{{data['insuranceorderprice']['iList']['vehicle_tax_price']}}
                 </div>
+                {% endif %}
+
             </div>
             <div class="weui-flex header weui-row">
                 <div class="weui-col-80">
@@ -82,7 +90,7 @@
                     {{m['name']}}
                 </div>
 
-                {% if m['price'] == '0' %}
+                {% if float(m['price']) == 0 %}
                 <div class="weui-col-20" style="text-align: right;">
                     --
                 </div>
@@ -108,8 +116,7 @@
                     {{m['name']}}
                 </div>
 
-
-                {% if m['price'] == '0' %}
+                {% if float(m['price']) == '0' %}
                 <div class="weui-col-20" style="text-align: right;">
                     --
                 </div>
