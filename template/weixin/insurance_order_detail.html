@@ -65,7 +65,7 @@
                     车船税
                 </div>
 
-                {% if float(data['insuranceorderprice']['iList']['vehicle_tax_price']) == 0 %}
+                {% if data['insuranceorderprice']['status'] == 0 %}
                 <div class="weui-col-20" style="text-align: right;">
                     --
                 </div>
@@ -90,7 +90,7 @@
                     {{m['name']}}
                 </div>
 
-                {% if float(m['price']) == 0 %}
+                {% if data['insuranceorderprice']['status'] == 0 %}
                 <div class="weui-col-20" style="text-align: right;">
                     --
                 </div>
@@ -116,7 +116,7 @@
                     {{m['name']}}
                 </div>
 
-                {% if float(m['price']) == '0' %}
+                {% if data['insuranceorderprice']['status'] == 0 %}
                 <div class="weui-col-20" style="text-align: right;">
                     --
                 </div>
