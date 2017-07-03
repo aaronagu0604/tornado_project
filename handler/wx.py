@@ -417,7 +417,10 @@ class RegisterHandler(BaseHandler):
         try:
             user = User.get(mobile=mobile)
             user.openid = openid
-            user.role += 'W'
+            if user.role.find('W') >=0:
+                pass
+            else:
+                user.role += 'W'
             token = user.token
             if token:
                 data = self.application.memcachedb.get(token)
