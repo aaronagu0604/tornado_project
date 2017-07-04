@@ -69,8 +69,8 @@
             <div class="item-header row no-gutter">
                 <div class="col-25">编号</div>
                 <div class="col-25">电话</div>
-                <div onclick="SortTable('orders','orders_div')" id="orders_div" class="col-25">单数<span id="orders" style="display:inline-block;width:10px;height:10px;top:-12px" class="icon-jiantou7"></span></div>
-                <div onclick="SortTable('total_price','total_price_div')" id="total_price_div" class="col-25">总价<span id="total_price" style="display:inline-block;width:10px;height:10px;top:-12px" class="icon-jiantou-s"></span></div>
+                <div onclick="SortTable('orders','orders_div')" id="orders_div" class="col-25">单数<span id="orders" style="display:inline-block;width:10px;height:10px;top:-12px" class="iconfont icon-jiantou7"></span></div>
+                <div onclick="SortTable('total_price','total_price_div')" id="total_price_div" class="col-25">总价<span id="total_price" style="display:inline-block;width:10px;height:10px;top:-12px" class="iconfont icon-jiantou7"></span></div>
             </div>
         </div>
         <div class="content infinite-scroll infinite-scroll-bottom" data-distance="100"
@@ -195,12 +195,12 @@ function SortTable(id,div) {
     $('#total_price_div').css("color",'black');
     $('#total_price_div').css("color",'black');
     $('#'+div).css("color",'black');
-    if ($('#'+id).attr("class") == 'icon icon-up') {
-        $('#'+id).attr("class","icon icon-down");
+    if ($('#'+id).attr("class") == 'iconfont icon-jiantou7') {
+        $('#'+id).attr("class","iconfont icon-jiantou-s");
         sort_value = 'desc';
     }
     else {
-        $('#'+id).attr("class","icon icon-up");
+        $('#'+id).attr("class","iconfont icon-jiantou7");
         sort_value = 'asc';
     }
     index = 1;
