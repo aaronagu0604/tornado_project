@@ -34,10 +34,10 @@ class RootHandler(WXBaseHandler):
 class Signature(BaseHandler):
     def get(self):
         token = 'wxczjplateform'
-        signature = self.get_argument('signature')
-        timestamp = self.get_argument('timestamp')
-        nonce = self.get_argument('nonce')
-        echostr = self.get_argument('echostr')
+        signature = self.get_argument('signature','')
+        timestamp = self.get_argument('timestamp','')
+        nonce = self.get_argument('nonce','')
+        echostr = self.get_argument('echostr','')
 
         keylist = [token, timestamp, nonce]
         keylist.sort()
