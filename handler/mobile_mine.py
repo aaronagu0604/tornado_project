@@ -2383,6 +2383,7 @@ class MobileToolsHandler(MobileBaseHandler):
         sort_type = self.get_argument('sort_type','orders')
         sort_value = self.get_argument('sort_value','desc')
         if not (index and token):
+            result['flag'] = 1
             self.write(simplejson.dumps(result))
             return
         reverse = True
