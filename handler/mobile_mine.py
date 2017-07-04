@@ -821,13 +821,6 @@ class MobileInsuranceOrderDetailHandler(MobileBaseHandler):
         wadeIPlus = self.get_body_argument('wadeIPlus', '')
         thirdSpecialI = self.get_body_argument('thirdSpecialI', '')
 
-        logging.info((io_id))
-        logging.info((insurance, gift_policy))
-        logging.info((forceI, damageI, damageIPlus, thirdDutyI, thirdDutyIPlus, robbingI,
-                      robbingIPlus, driverDutyI, driverDutyIPlus, passengerDutyI, passengerDutyIPlus, glassI,
-                      scratchI, scratchIPlus, fireDamageI, fireDamageIPlus, wadeI,
-                      wadeIPlus, thirdSpecialI))
-
         user = self.get_user()
         if user and gift_policy and insurance and io_id:
             order = InsuranceOrder.get(id = io_id)
