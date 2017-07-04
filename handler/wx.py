@@ -69,7 +69,7 @@ class Signature(BaseHandler):
 @route(r'/index', name='wx_index')  # 首页
 class IndexHandler(WXBaseHandler):
     def get_mobile_home_data(self,token):
-        url = "http://api.dev.test.520czj.com/mobile/home"
+        url = "http://api.520czj.com/mobile/home"
         req = urllib2.Request(url)
         req.add_header('token',token)
         response = urllib2.urlopen(req)
@@ -112,7 +112,7 @@ class InsuranceOrderBaseHandler(WXBaseHandler):
 @route(r'/insurance_order_items', name='wx_insurance_order_items')  # html 保险下单选择保险条目页面
 class InsuranceOrderItemsHandler(WXBaseHandler):
     def get_mobile_order_base(self,token):
-        url = "http://api.dev.test.520czj.com/mobile/insuranceorderbase"
+        url = "http://api.520czj.com/mobile/insuranceorderbase"
         req = urllib2.Request(url)
         req.add_header('token', token)
         print token
@@ -140,7 +140,7 @@ class InsuranceOrderItemsHandler(WXBaseHandler):
 @route(r'/insurance_order_new', name='wx_insurance_order_new')  # 保险下单选择地址优惠方式页面
 class InsuranceOrderNewHandler(WXBaseHandler):
     def get_mobile_order_base(self,token):
-        url = "http://api.dev.test.520czj.com/mobile/insuranceorderbase"
+        url = "http://api.520czj.com/mobile/insuranceorderbase"
         req = urllib2.Request(url)
         req.add_header('token', token)
         response = urllib2.urlopen(req)
@@ -169,7 +169,7 @@ class InsuranceOrderNewHandler(WXBaseHandler):
 @route(r'/wxapi/insurance_order_new', name='wxapi_insurance_order_new')  # wxapi 创建保险订单
 class WXApiInsuranceOrderNewHandler(WXBaseHandler):
     def post_mobile_insurnace_order_new(self,token):
-        url = "http://api.dev.test.520czj.com/mobile/newinsuranceorder"
+        url = "http://api.520czj.com/mobile/newinsuranceorder"
         logging.info(self.request.body)
         req = urllib2.Request(url,self.request.body)
         req.add_header('token', token)
@@ -190,7 +190,7 @@ class InsuranceOrderSuccessHandler(WXBaseHandler):
 @route(r'/wxapi/insurance_orders', name='wxapi_insurance_orders')  # html 保险订单列表
 class InsuranceOrdersHandler(WXBaseHandler):
     def get_mobile_mine(self,token,index,type,platform):
-        url = "http://api.dev.test.520czj.com/mobile/insuranceorder?index=%s&type=%s&platform=%s"%(index,type,platform)
+        url = "http://api.520czj.com/mobile/insuranceorder?index=%s&type=%s&platform=%s"%(index,type,platform)
         req = urllib2.Request(url)
         req.add_header('token', token)
         response = urllib2.urlopen(req)
@@ -214,7 +214,7 @@ class InsuranceOrdersHandler(WXBaseHandler):
 @route(r'/insurance_order_detail/(\d+)', name='wx_insurance_order_detail')  # html 保险订单详情
 class InsuranceOrderDetailHandler(WXBaseHandler):
     def get_mobile_insurance_order_detail(self,token,id):
-        url = "http://api.dev.test.520czj.com/mobile/insuranceorderdetail?id=%s"%(id)
+        url = "http://api.520czj.com/mobile/insuranceorderdetail?id=%s"%(id)
         req = urllib2.Request(url)
         req.add_header('token', token)
         response = urllib2.urlopen(req)
@@ -229,7 +229,7 @@ class InsuranceOrderDetailHandler(WXBaseHandler):
 @route(r'/wxapi/insurance_order_create_price', name='wx_insurance_order_create_price')  # html 保险订单重新报价
 class InsuranceOrderDetailHandler(WXBaseHandler):
     def post_mobile_insurance_order_create_price(self,token):
-        url = "http://api.dev.test.520czj.com/mobile/insuranceorderdetail"
+        url = "http://api.520czj.com/mobile/insuranceorderdetail"
         logging.info(self.request.body)
         req = urllib2.Request(url, self.request.body)
         req.add_header('token', token)
@@ -302,7 +302,7 @@ class WXApiUpdateInsuranceOrderIMGHandler(WXBaseHandler):
 @route(r'/insurance_order_price/(\d+)', name='wx_insurance_order_price')  # html 保险订单历史报价方案
 class InsuranceOrderPriceHandler(WXBaseHandler):
     def get_mobile_insurance_order_price(self,token,id):
-        url = "http://api.dev.test.520czj.com/mobile/insurance_method?id=%s"%(id)
+        url = "http://api.520czj.com/mobile/insurance_method?id=%s"%(id)
         req = urllib2.Request(url)
         req.add_header('token', token)
         response = urllib2.urlopen(req)
@@ -473,7 +473,7 @@ class RegisterHandler(BaseHandler):
 @route(r'/mine', name='wx_mine')  # html 会员中心
 class MineHandler(WXBaseHandler):
     def get_mobile_mine(self, token):
-        url = "http://api.dev.test.520czj.com/mobile/mine?platform=wx_b"
+        url = "http://api.520czj.com/mobile/mine?platform=wx_b"
         req = urllib2.Request(url)
         req.add_header('token', token)
         response = urllib2.urlopen(req)
@@ -488,7 +488,7 @@ class MineHandler(WXBaseHandler):
 @route(r'/user_address', name='wx_user_address')  # html 收货地址
 class UserAddressHandler(WXBaseHandler):
     def get_mobile_address(self,token):
-        url = "http://api.dev.test.520czj.com/mobile/receiveraddress"
+        url = "http://api.520czj.com/mobile/receiveraddress"
         req = urllib2.Request(url)
         req.add_header('token', token)
         response = urllib2.urlopen(req)
