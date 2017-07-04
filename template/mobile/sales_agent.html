@@ -8,7 +8,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <title>销售代理</title>
     <link rel="stylesheet" href="//g.alicdn.com/msui/sm/0.6.2/css/sm.min.css">
-    <link rel="stylesheet" href="//at.alicdn.com/t/font_ye9jg9cftdsa714i.css">
+    <link rel="stylesheet" href="/style/css/up_down_arrow.css">
     <style>
         .item-header {
             padding: 5px 0;
@@ -69,8 +69,8 @@
             <div class="item-header row no-gutter">
                 <div class="col-25">编号</div>
                 <div class="col-25">电话</div>
-                <div onclick="SortTable('orders','orders_div')" id="orders_div" class="col-25">单数<span id="orders" style="display:inline-block;width:10px;height:10px;top:-12px" class="iconfont icon-jiantou7"></span></div>
-                <div onclick="SortTable('total_price','total_price_div')" id="total_price_div" class="col-25">总价<span id="total_price" style="display:inline-block;width:10px;height:10px;top:-12px" class="iconfont icon-jiantou7"></span></div>
+                <div onclick="SortTable('orders','orders_div')" id="orders_div" class="col-25">单数<span id="orders" style="display:inline-block;width:10px;height:10px;top:-12px" class="iconfont icon-down"></span></div>
+                <div onclick="SortTable('total_price','total_price_div')" id="total_price_div" class="col-25">总价<span id="total_price" style="display:inline-block;width:10px;height:10px;top:-12px" class="iconfont icon-down"></span></div>
             </div>
         </div>
         <div class="content infinite-scroll infinite-scroll-bottom" data-distance="100"
@@ -195,12 +195,12 @@ function SortTable(id,div) {
     $('#total_price_div').css("color",'black');
     $('#total_price_div').css("color",'black');
     $('#'+div).css("color",'black');
-    if ($('#'+id).attr("class") == 'iconfont icon-jiantou7') {
-        $('#'+id).attr("class","iconfont icon-jiantou-s");
+    if ($('#'+id).attr("class") == 'iconfont icon-up') {
+        $('#'+id).attr("class","iconfont icon-down");
         sort_value = 'desc';
     }
     else {
-        $('#'+id).attr("class","iconfont icon-jiantou7");
+        $('#'+id).attr("class","iconfont icon-up");
         sort_value = 'asc';
     }
     index = 1;
