@@ -2343,14 +2343,22 @@ class MobileToolsHandler(MobileBaseHandler):
                  "&response_type=" + response_type + "&scope=" + scope + "&state=" + state + end
 
         return wx_url
+
     def get(self):
         platform = self.get_argument('platform', 'android')
         user = self.get_user()
-        linkurl = self.create_url(user.id)
-        imgurl = 'http://img.520czj.com/image/2017/06/29/server1_20170629170424FMnqzTtESLpuvbZQUjVdYkRA.png'
-        title = '车装甲，人人卖车险'
-        desc='正文描述......'
-        token = self.get_user().token
+        if user:
+            linkurl = self.create_url(user.id)
+            imgurl = 'http://img.520czj.com/image/2017/06/29/server1_20170629170424FMnqzTtESLpuvbZQUjVdYkRA.png'
+            title = '车装甲，人人卖车险'
+            desc='正文描述......'
+            token = user.token
+        else:
+            linkurl = ''
+            imgurl = ''
+            title = ''
+            desc = ''
+            token = ''
         self.render('mobile/sales_agent.html',token=token,
                     linkurl=linkurl,imgurl=imgurl,title=title,
                     desc=desc, platform=platform)
