@@ -95,7 +95,7 @@
 <div class="parent">
     <div class="weui-row">
         <div class="weui-col-60">
-            <img class="id_card_front" src="../../style/wximg/id_card.png" id="id_card_front_img">
+            <img class="id_card_front" src="../../style/wximg/id_card_front_front.png" id="id_card_front_img">
         </div>
         <div class="weui-col-40">
             <a href="javascript:;" class="file" id="id_card_front">
@@ -183,7 +183,7 @@
     <div class="owner">
         <div class="weui-row">
             <div class="weui-col-60">
-                <img class="id_card_front_owner" src="../../style/wximg/id_card.png" id="id_card_front_owner_img">
+                <img class="id_card_front_owner" src="../../style/wximg/id_card_front.png" id="id_card_front_owner_img">
             </div>
 
             <div class="weui-col-40">
@@ -248,8 +248,8 @@
             } else {
                 if ($('#switch_owner').is(':checked')) {
                     insurance.is_same_person = 1;
-                    insurance.id_card_front_owner="";
-                    insurance.id_card_back_owner="";
+                    insurance.id_card_front_owner = "";
+                    insurance.id_card_back_owner = "";
                     window.localStorage.setItem("insurance", JSON.stringify(insurance));
                     document.location.href = "/insurance_order_items?selectinsurance={{insurance and insurance.name or ''}}&createprice=0";
                 } else {
