@@ -150,6 +150,7 @@ class User(db.Model):
     id = PrimaryKeyField()  # 主键
     mobile = CharField(unique=True, max_length=64, null=False)  # 注册手机号/openid
     openid = CharField(unique=True, max_length=128, null=True)
+    parent_user = IntegerField(null=True) # 由那个用户推广而来
     password = CharField(max_length=32)  # 密码
     truename = CharField(max_length=32)  # 真实姓名/nickname
     role = CharField(max_length=8, null=False, default='A')  # 用户角色，考虑角色数量、类型:A 通过app注册的用户，W通过微信注册的用户

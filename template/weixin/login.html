@@ -40,7 +40,7 @@ a {
     </div>
 </div>
 </div>
-<input id="store_id" type="hidden" value="{{storeid}}">
+<input id="user_id" type="hidden" value="{{user_id}}">
         <input id="nickname" type="hidden" value="{{nickname}}">
         <input id="openid" type="hidden" value="{{openid}}">
         <input id="subscribe" type="hidden" value="{{subscribe}}">
@@ -81,11 +81,11 @@ function register() {
         },function(data) {
             var obj = JSON.parse(data);
             if (obj.flag == 1 ) {
-                var store_id = $('#store_id').val();
+                var user_id = $('#user_id').val();
                 var nickname = $('#nickname').val();
                 var openid = $('#openid').val();
                 var subscribe = $('#subscribe').val();
-                window.location.href = '/register?openid='+openid+'&store_id='+store_id+'&mobile='+mobile+'&subscribe='+subscribe;
+                window.location.href = '/register?openid='+openid+'&user_id='+user_id+'&mobile='+mobile+'&subscribe='+subscribe;
             }
             else {
                 $.toast('验证码错误');

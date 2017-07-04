@@ -2336,7 +2336,7 @@ class MobileToolsHandler(MobileBaseHandler):
         self.weixin_app_id, self.weixin_secret)
         return simplejson.loads(urllib2.urlopen(self.url_access_token).read())["access_token"]
 
-    def create_url(self,store_id):
+    def create_url(self,user_id):
         url = setting.wxdomanName + '/wxapi/login'
         wxlogin_url = "https://open.weixin.qq.com/connect/oauth2/authorize"
         appid = 'wxf23313db028ab4bc'
@@ -2344,7 +2344,7 @@ class MobileToolsHandler(MobileBaseHandler):
         response_type = "code"
         scope = "snsapi_base"
 
-        state = '%s00douhao00%s'%(str(store_id),'/index'.replace('/','00xiegang00'))
+        state = '%s00douhao00%s'%(str(user_id),'/index'.replace('/','00xiegang00'))
         end = "#wechat_redirect"
         wx_url = wxlogin_url + "?appid=" + appid + "&redirect_uri=" + redirect_uri[4:] + \
                  "&response_type=" + response_type + "&scope=" + scope + "&state=" + state + end
@@ -2352,8 +2352,8 @@ class MobileToolsHandler(MobileBaseHandler):
         return wx_url
     def get(self):
         platform = self.get_argument('platform', 'android')
-        store_id = self.get_user().store.id
-        linkurl = self.create_url(store_id)
+        user = self.get_user()
+        linkurl = self.create_url(user.id)
         imgurl = 'http://img.520czj.com/image/2017/06/29/server1_20170629170424FMnqzTtESLpuvbZQUjVdYkRA.png'
         title = '车装甲，人人卖车险'
         desc='正文描述......'

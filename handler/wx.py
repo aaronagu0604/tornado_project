@@ -373,7 +373,7 @@ class WXApiLoginHandler(BaseHandler):
         logging.info(parameters)
         parameters = parameters.split(',')
 
-        store_id = parameters[0]
+        user_id = parameters[0]
         tourl = parameters[1].replace('00xiegang00','/')
         openid,_ = self.get_access_token_from_code(code)
         access_token = self.get_access_token()
@@ -383,13 +383,13 @@ class WXApiLoginHandler(BaseHandler):
         if users.count() >= 1:
             user = users[0]
         else:
-            if store_id=='0':
+            if user_id=='0':
                 self.render('weixin/tips.html')
                 return
             nickname = '微信注册用户'
             if userinfo.has_key('nickname'):
                 nickname = userinfo['nickname']
-            self.render('weixin/login.html',storeid=store_id,nickname=nickname,openid=openid,subscribe=userinfo['subscribe'])
+            self.render('weixin/login.html',user_id=user_id,nickname=nickname,openid=openid,subscribe=userinfo['subscribe'])
             return
 
         self.session['user'] = user
@@ -413,7 +413,7 @@ class WXApiLoginHandler(BaseHandler):
 
 @route(r'/register', name='wx_register')  # html 登录
 class RegisterHandler(BaseHandler):
-    def create_user(self, openid, mobile, nickname, store_id=0):
+    def create_user(self, openid, mobile, nickname, user_id=0):
         try:
             user = User.get(mobile=mobile)
             user.openid = openid
@@ -435,8 +435,10 @@ class RegisterHandler(BaseHandler):
         except Exception:
             try:
                 logging.error(traceback.format_exc())
+                parent_user = User.get(id=int(user_id))
                 user = User()
-                user.store = int(store_id)
+                user.parent_user = parent_user.id
+                user.store = parent_user.store.id
                 user.truename = nickname
                 user.token = setting.user_token_prefix + str(uuid.uuid4())
                 user.mobile = mobile
@@ -455,9 +457,9 @@ class RegisterHandler(BaseHandler):
         openid = self.get_argument('openid','')
         mobile = self.get_argument('mobile', '')
         nickname = self.get_argument('nickname', '')
-        store_id = self.get_argument('store_id', 0)
+        user_id = self.get_argument('user_id', 0)
         subscribe = self.get_argument('subscribe', 0)
-        user = self.create_user(openid, mobile, nickname, store_id)
+        user = self.create_user(openid, mobile, nickname, user_id)
         self.session['user'] = user
         self.session.save()
         self.application.memcachedb.set(user.token, str(user.id), setting.user_expire)
