@@ -2119,12 +2119,18 @@ class WeiXinMenuHandler(BaseHandler):
                     },
                     {
                        "type":"view",
+                       "name":"推广分享",
+                       "url":"%s"
+                    },
+                    {
+                       "type":"view",
                        "name":"操作指引",
                        "url":"http://mp.weixin.qq.com/s/G8vhgM2xaj82Jga88jaPng"
                     }]
                   }
                 ]}'''%(self.create_url('/index'),
                        self.create_url('/insurance_order_base/0'),
+                       self.create_url('/share'),
                        self.create_url('/mine'))
         print menu
         try:
