@@ -758,7 +758,6 @@ class AdminRefereeEditHandler(AdminBaseHandler):
         roles = self.get_argument('roles', '')
         code = self.get_argument('code', '')
         active = self.get_argument('active', '')
-        print 'active=', active
         adminUser = AdminUser.get(id=admin_id)
         adminUser.username = username
         adminUser.realname = realname
@@ -1883,7 +1882,7 @@ class RefereeList(AdminBaseHandler):
         startDate, lastDate, startTime, lastTime = getDate(startDate, lastDate)
         referees, areaManager = self.get_store(startTime, lastTime)
         referees, areaManager = self.getInsuranceOrder(startTime, lastTime, referees, areaManager)
-        put_area_to_cash(self)
+        # put_area_to_cash(self)
 
         self.render("admin/report/referee_list.html", refereeList=referees, active='refereeReport',
                     startDate=startDate, lastDate=lastDate, areaManager=areaManager)
@@ -2377,7 +2376,7 @@ class ReportAreaOrder(AdminBaseHandler):
             code = city+'%'
         else:
             code = province + '%'
-        put_area_to_cash(self)
+        # put_area_to_cash(self)
         startDate, lastDate, startTime, lastTime = getDate(startDate, lastDate)
         areaList = self.getIOReport(startTime, lastTime, code)
         areaList = self.getPOReport(areaList, startTime, lastTime, code)
