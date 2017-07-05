@@ -19,7 +19,7 @@
     {% for ad in address %}
     <div class="weui-panel__bd">
       <div class="weui-media-box weui-media-box_text address-list-box">
-        {% if address['create_by'] == user %}
+        {% if ad['create_by'] == user %}
         <a href="/user_address_detail/{{ad['address_id']}}" class="address-edit"></a>
         {% endif %}
         <h4 class="weui-media-box__title"><span>{{ad['receiver']}}</span>&nbsp;&nbsp;<span>{{ad['mobile']}}</span></h4>
