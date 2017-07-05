@@ -498,6 +498,7 @@ class UserAddressHandler(WXBaseHandler):
         user = self.get_current_user()
         address = self.get_mobile_address(user.token)
         logging.info(address)
+        logging.info(user.id)
 
         self.render('weixin/user_address.html',address=address,user=user.id)
 
