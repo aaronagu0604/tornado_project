@@ -2166,7 +2166,8 @@ class MobileReceiverAddressHandler(MobileBaseHandler):
                 'address': address.address,
                 'receiver': address.name,
                 'mobile': address.mobile,
-                'is_default': address.is_default
+                'is_default': address.is_default,
+                'create_by': address.create_by
             })
         result['flag'] = 1
         self.write(simplejson.dumps(result))

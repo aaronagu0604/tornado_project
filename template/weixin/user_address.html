@@ -19,13 +19,13 @@
     {% for ad in address %}
     <div class="weui-panel__bd">
       <div class="weui-media-box weui-media-box_text address-list-box">
-        {% if address.create_by == user %}
+        {% if address['create_by'] == user %}
         <a href="/user_address_detail/{{ad['address_id']}}" class="address-edit"></a>
         {% endif %}
         <h4 class="weui-media-box__title"><span>{{ad['receiver']}}</span>&nbsp;&nbsp;<span>{{ad['mobile']}}</span></h4>
         <p class="weui-media-box__desc address-txt">{{ad['province']}}{{ad['city']}}{{ad['district']}}</p>
         <p class="weui-media-box__desc address-txt">{{ad['address']}}</p>
-        {% if ad.is_default == 1 %}
+        {% if ad['is_default'] == 1 %}
         <span class="default-add">默认地址</span>
         {% endif %}
       </div>

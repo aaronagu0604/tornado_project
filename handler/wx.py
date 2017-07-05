@@ -507,9 +507,11 @@ class UserAddressDetailHandler(WXBaseHandler):
         add_id = int(store_address_id) if store_address_id!='0' else 0
         if add_id:
             address = StoreAddress.get(id=add_id)
+            user_id = self.get_current_user().id
         else:
             address = None
-        self.render('weixin/user_address_detail.html',address=address,user=self.get_current_user().id)
+            user_id = None
+        self.render('weixin/user_address_detail.html',address=address,user=user_id)
 
     def post(self,store_address_id):
         user = self.get_current_user()
