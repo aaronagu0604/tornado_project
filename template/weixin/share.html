@@ -62,19 +62,13 @@
     function sharetoblog() {
         $.toast("into sharetoblocg", "text");
         wx.onMenuShareTimeline({
-            title: '',
+            title: 'czj',
             link: '',
             imgUrl: '',
             success: function () {
                 $.toast("分享成功", "text");
             },
             cancel: function () {
-                $.toast("分享失败", "text");
-            },
-            fail: function () {
-                $.toast("分享失败", "text");
-            },
-            complete: function () {
                 $.toast("分享失败", "text");
             }
         });

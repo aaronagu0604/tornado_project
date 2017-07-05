@@ -42,7 +42,7 @@ def runserver():
     http_server.listen(port)
     loop = tornado.ioloop.IOLoop.instance()
 
-    logging.info('WX Server running on http://127.0.0.1:%d/index' % port)
+    logging.info('WX Server running on http://127.0.0.1:%d' % port)
     loop.start()
 
 
