@@ -499,7 +499,7 @@ class UserAddressHandler(WXBaseHandler):
         address = self.get_mobile_address(user.token)
         logging.info(address)
 
-        self.render('weixin/user_address.html',address=address)
+        self.render('weixin/user_address.html',address=address,user=user.id)
 
 @route(r'/user_address_detail/(\d+)', name='wx_user_address_detail')  # html 编辑地址
 class UserAddressDetailHandler(WXBaseHandler):
@@ -509,7 +509,7 @@ class UserAddressDetailHandler(WXBaseHandler):
             address = StoreAddress.get(id=add_id)
         else:
             address = None
-        self.render('weixin/user_address_detail.html',address=address)
+        self.render('weixin/user_address_detail.html',address=address,user=self.get_current_user().id)
 
     def post(self,store_address_id):
         user = self.get_current_user()
