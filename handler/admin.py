@@ -216,7 +216,9 @@ class StoreDetailHandler(AdminBaseHandler):
         elif store.store_type == 2:
             active = 'store'
         policies = SSILubePolicy.select().where(SSILubePolicy.store == store)
-        self.render('admin/user/store_detail.html', s=store, active=active, areas=areas, policies=policies)
+        referees = AdminUser.select().where(AdminUser.active == 1, AdminUser.roles.contains('S'))
+        self.render('admin/user/store_detail.html', s=store, active=active, areas=areas, policies=policies,
+                    referees=referees)
 
     def post(self, store_id):
         name = self.get_argument('name', '')
@@ -233,6 +235,7 @@ class StoreDetailHandler(AdminBaseHandler):
         linkman = self.get_argument('linkman', '')
         mobile = self.get_argument('mobile', '')
         insurance_policy_code = self.get_argument('policy_code', '')
+        referee_code = self.get_argument('referee', '')
 
         area_code = province
         if district and not district == '':
@@ -252,6 +255,7 @@ class StoreDetailHandler(AdminBaseHandler):
         store.mobile = mobile
         store.store_type = store_type
         store.insurance_policy_code = insurance_policy_code
+        store.admin_code = referee_code
         store.save()
         AdminUserLog.create(admin_user=self.get_admin_user(), created=int(time.time()),
                             content='编辑经销商: store_id:%d'%store.id)
@@ -732,7 +736,8 @@ class AdminRefereeHandler(AdminBaseHandler):
             totalpage = total / pagesize
         referees = referees.paginate(page, pagesize)
 
-        self.render("admin/user/admin_referee.html", active='admin_referee', referees=referees)
+        self.render("admin/user/admin_referee.html", active='admin_referee', referees=referees,
+                    page=page, totalpage=totalpage, total=total)
 
 
 @route(r'/admin/admin_referee_edit/(\d+)', name='admin_referee_edit')  # 后台用户编辑
@@ -1746,7 +1751,7 @@ class RefereeList(AdminBaseHandler):
     '''
     def getInsuranceOrder(self, startTime, lastTime, referees, areaManager):
         store_list = {}
-        for io in InsuranceOrder.select(InsuranceOrder.id, Store.id, Store.admin_code, InsuranceOrder.pay_time).\
+        for io in InsuranceOrder.select(InsuranceOrder.id, Store.id, Store.admin_code, InsuranceOrder.pay_time, Store.area_code).\
                 join(Store, on=(Store.id == InsuranceOrder.store)).\
                 join(InsuranceOrderPrice, on=(InsuranceOrderPrice.id == InsuranceOrder.current_order_price)).\
                 where((InsuranceOrder.status == 3) & (InsuranceOrderPrice.total_price > 1)).tuples():
@@ -1756,6 +1761,7 @@ class RefereeList(AdminBaseHandler):
             else:
                 store_list[io[1]] += 1
             if (io[3] > startTime) and (io[3] <= lastTime):
+                no_ref = True
                 for referee in referees:
                     if io[2] == referee['code']:
                         referee['total_io_count'] += 1
@@ -1769,11 +1775,10 @@ class RefereeList(AdminBaseHandler):
                         elif store_list[io[1]] == 3:
                             referee['third_io_count'] += 1
                             referee['third_io_id'] += str(io[0]) + ','
+                        no_ref = False
                         break
-                else:
-                    no_ref = 1
                 for referee in areaManager:
-                    if (io[2] in referee['areas']) or (io[2] in referee['areas']) or (io[2] in referee['areas']):
+                    if (io[4] in referee['areas']) or (io[4] in referee['areas']) or (io[4] in referee['areas']):
                         referee['total_io_count'] += 1
                         referee['total_io_id'] += str(io[0]) + ','
                         if store_list[io[1]] == 1:
@@ -1785,9 +1790,8 @@ class RefereeList(AdminBaseHandler):
                         elif store_list[io[1]] == 3:
                             referee['third_io_count'] += 1
                             referee['third_io_id'] += str(io[0]) + ','
+                        no_ref = False
                         break
-                else:
-                    no_ref = 1
                 if no_ref:
                     referees[0]['total_io_count'] += 1
                     referees[0]['total_io_id'] += str(io[0]) + ','
@@ -1834,9 +1838,12 @@ class RefereeList(AdminBaseHandler):
             })
         areaManager = []
         for referee in AdminUser.select().where(AdminUser.active == 1, AdminUser.roles == 'SJ'):
+            area_tuples = [area[0] for area in AdminUserArea.select(Area.code).join(Area, on=(Area.id == AdminUserArea.area)).where(
+                AdminUserArea.admin_user == referee).tuples()]
             areaManager.append({
                 'name': referee.realname,
-                'areas': AdminUserArea.select(Area.code).join(Area, on=(Area.id == AdminUserArea.area)).where(AdminUserArea.admin_user == referee).tuples(),
+                'code': referee.code,
+                'areas': area_tuples,
                 'new_store': 0,
                 'new_store_id': '',
                 'total_io_count': 0,
@@ -1850,21 +1857,20 @@ class RefereeList(AdminBaseHandler):
             })
 
         for s in Store.select().where(Store.created > startTime, Store.created <= lastTime, Store.active == 1):
-            no_ref = 0
+            no_ref = True
             for referee in referees:
                 if s.admin_code == referee['code']:
                     referee['new_store'] += 1
                     referee['new_store_id'] += str(s.id) + ','
+                    no_ref = False
                     break
-            else:
-                no_ref = 1
             for referee in areaManager:
-                if (s.admin_code in referee['areas']) or (s.admin_code[:8] in referee['areas']) or (s.admin_code[:4] in referee['areas']):
+                if (s.area_code in referee['areas']) or (s.area_code[:8] in referee['areas']) or (s.area_code[:4] in referee['areas']):
                     referee['new_store'] += 1
                     referee['new_store_id'] += str(s.id) + ','
+                    no_ref = False
                     break
-            else:
-                no_ref = 1
+
             if no_ref:
                 referees[0]['new_store'] += 1
                 referees[0]['new_store_id'] += str(s.id) + ','
@@ -1956,7 +1962,8 @@ class ReportOrders(AdminBaseHandler):
                 'gift_policy': gift_policy,
                 'status': status,
                 's_name': io['s_name'],
-                's_addr': self.application.memcachedb.get(io['area_code'][:8]),
+                # 's_addr': self.application.memcachedb.get(io['area_code'][:8]),
+                's_addr': Area.get_detailed_address(io['area_code']),
                 'i_name': io['i_name'],
                 'total_price': io['total_price'],
                 'pay_time': time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(io['pay_time'])) if io['pay_time'] else '--'
@@ -1985,7 +1992,8 @@ class ReportStores(AdminBaseHandler):
                     'link_man': s.linkman,
                     'mobile': s.mobile,
                     'name': s.name,
-                    'addr': self.application.memcachedb.get(s.area_code[:8]),
+                    # 'addr': self.application.memcachedb.get(s.area_code[:8]),
+                    'addr': Area.get_detailed_address(s.area_code),
                     'addr_det': s.address,
                     'check_state': check_state,
                     'created': time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(s.created)) if s.created else '--'
@@ -2173,7 +2181,7 @@ class ReportAreaOrder(AdminBaseHandler):
             if io['area_code'][:8] not in areaList:
                 areaList[io['area_code'][:8]] = {
                     'province': '--',
-                    'city': self.application.memcachedb.get(io['area_code'][:8]),
+                    'city': Area.get_detailed_address(io['area_code'][:8]),
                     'newStoreC': 0,
                     'newStoreList': [],
                     'POCount': 0,

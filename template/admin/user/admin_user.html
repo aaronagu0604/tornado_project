@@ -1,10 +1,14 @@
 {% extends "layout/admin.html" %}
 {% block content %}
+<div class="mskeLayBg"></div>
 <div class="row">
-    <ol class="breadcrumb">
-        <li>后台用户管理</li>
-    </ol>
+    <nav>
+        <div class="navbar-header" style="float: left">
+            <a class="navbar-brand" href="#" style="font-weight:500;">后台用户管理</a>
+        </div>
+    </nav>
 </div>
+
 <div style="color: red; font-size: 0.6em; margin-bottom: 25px;">
     {% set messages=handler.get_flashed_messages() %}
     {% if messages %}
@@ -138,7 +142,7 @@ border-top-right-radius: 4px;padding-left:15px;
                                 <td>{{o.mobile}}</td>
                                 <td>{{o.code}}</td>
                                 <td>{{o.lsignined | datetimeformat}}</td>
-                                <td>{{o.isactive==0 and '<span style="color:#ff5231;">删除</span>' or '<span style="color:#438bca;">启用</span>'}}</td>
+                                <td>{{o.active==0 and '<span style="color:#ff5231;">删除</span>' or '<span style="color:#438bca;">启用</span>'}}</td>
                                 <td><a class="btn btn-outline btn-primary btn-xs" href="/admin/admin_user/{{o.id}}">编辑</a></td>
                             </tr>
                             {% endfor %}

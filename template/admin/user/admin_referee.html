@@ -1,10 +1,5 @@
 {% extends "layout/admin.html" %}
 {% block content %}
-<div class="row">
-    <ol class="breadcrumb">
-        <li>推广人员管理</li>
-    </ol>
-</div>
 <div style="color: red; font-size: 0.6em; margin-bottom: 25px;">
     {% set messages=handler.get_flashed_messages() %}
     {% if messages %}
@@ -15,54 +10,56 @@
     </div>
     {% endif %}
 </div>
+
+<div class="mskeLayBg"></div>
+<div class="row">
+    <nav>
+        <div class="navbar-header" style="float: left">
+            <a class="navbar-brand" href="#" style="font-weight:500;">推广人员管理</a>
+        </div>
+    </nav>
+</div>
 <form class="form-horizontal" id="form" method="post" action="/admin/referee">
     {{xsrf()}}
     <div class="row">
         {% if handler.vrole('AD') %}
-        <div class="col-md-12">
-            <div class="panel panel-primary">
-                <div class="panel-heading">
-                    <h3 class="panel-title">推广人员列表</h3>
-                </div>
-                <div class="panel-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover" id="tb_users" style="text-align:center;">
-                            <tbody>
-                            <tr>
-                                <th style="width:10%;text-align:center;">ID</th>
-                                <th style="width:10%;text-align:center;">用户名</th>
-                                <th style="width:10%;text-align:center;">真实姓名</th>
-                                <th style="width:10%;text-align:center;">用户角色</th>
-                                <th style="width:10%;text-align:center;">手机</th>
-                                <th style="width:10%;text-align:center;">推广代码</th>
-                                <th style="width:20%;text-align:center;">最后登录时间</th>
-                                <th style="width:10%;text-align:center;">帐户状态</th>
-                            </tr>
-                            {% for o in referees %}
-                            <tr>
-                                <td>{{o.id}}</td>
-                                <td><a href="/admin/admin_referee_edit/{{o.id}}">{{o.username}}</a></td>
-                                <td>{{o.realname}}</td>
-                                <td>{{o.roles}}</td>
-                                <td>{{o.mobile}}</td>
-                                <td>{{o.code}}</td>
-                                <td>{{o.lsignined | datetimeformat}}</td>
-                                <td>{{o.isactive==0 and '<span style="color:#ff5231;">删除</span>' or '<span style="color:#438bca;">启用</span>'}}</td>
-                            </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
-                        <div>
-                            <div class="col-sm-4">
-                                <div class="dataTables_info" role="alert" aria-live="polite" aria-relevant="all">
-                                    当前：第{{page}}页 / {{totalpage}}页，合计{{total}}条
-                                </div>
-                            </div>
-                            <div class="col-sm-8">
-                                <div class="dataTables_paginate paging_simple_numbers">
-                                    <ul class="pagination  pagination-sm" id="pageUl" />
-                                </div>
-                            </div>
+        <div class="panel panel-primary">
+            <div class="table-responsive">
+                <table class="table table-hover" id="tb_users" style="text-align:center;">
+                    <tbody>
+                    <tr style="background:#528acb;color:#fff;text-align:center;height:38px;line-height:38px;">
+                        <th style="width:10%;text-align:center;">ID</th>
+                        <th style="width:10%;text-align:center;">用户名</th>
+                        <th style="width:10%;text-align:center;">真实姓名</th>
+                        <th style="width:10%;text-align:center;">用户角色</th>
+                        <th style="width:10%;text-align:center;">手机</th>
+                        <th style="width:10%;text-align:center;">推广代码</th>
+                        <th style="width:20%;text-align:center;">最后登录时间</th>
+                        <th style="width:10%;text-align:center;">帐户状态</th>
+                    </tr>
+                    {% for o in referees %}
+                    <tr>
+                        <td>{{o.id}}</td>
+                        <td><a href="/admin/admin_referee_edit/{{o.id}}">{{o.username}}</a></td>
+                        <td>{{o.realname}}</td>
+                        <td>{{o.roles}}</td>
+                        <td>{{o.mobile}}</td>
+                        <td>{{o.code}}</td>
+                        <td>{{o.lsignined | datetimeformat}}</td>
+                        <td>{{o.active==0 and '<span style="color:#ff5231;">删除</span>' or '<span style="color:#438bca;">启用</span>'}}</td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <div>
+                    <div class="col-sm-4">
+                        <div class="dataTables_info" role="alert" aria-live="polite" aria-relevant="all">
+                            当前：第{{page}}页 / {{totalpage}}页，合计{{total}}条
+                        </div>
+                    </div>
+                    <div class="col-sm-8">
+                        <div class="dataTables_paginate paging_simple_numbers">
+                            <ul class="pagination  pagination-sm" id="pageUl" />
                         </div>
                     </div>
                 </div>
@@ -85,7 +82,7 @@
             startPage: {{page}},
             visiblePages: 8,
                 onPageClick: function (event, page) {
-                self.location="/admin/admin_user/"+{{adminUser and adminUser.id or 0}}+"?page="+page;//{{store.id}}/{{adminUser and adminUser.id or 0}}
+                self.location="/admin/admin_referee?page="+page;
             }
         });
     });
