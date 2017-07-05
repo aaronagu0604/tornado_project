@@ -574,3 +574,24 @@ class UserIncomeRecord11Handler(WXBaseHandler):
         demo.append(item2)
         self.write(simplejson.dumps(demo))
         self.finish()
+
+@route(r'/share', name='wx_share')  # 分享页面
+class InsuranceOrderBaseHandler(WXBaseHandler):
+    def create_url(self,user_id):
+        url = setting.wxdomanName + '/wxapi/login'
+        wxlogin_url = "https://open.weixin.qq.com/connect/oauth2/authorize"
+        appid = 'wxf23313db028ab4bc'
+        redirect_uri = urllib.urlencode({'url': url})
+        response_type = "code"
+        scope = "snsapi_base"
+
+        state = '%s00douhao00%s'%(str(user_id),'/index'.replace('/','00xiegang00'))
+        end = "#wechat_redirect"
+        wx_url = wxlogin_url + "?appid=" + appid + "&redirect_uri=" + redirect_uri[4:] + \
+                 "&response_type=" + response_type + "&scope=" + scope + "&state=" + state + end
+
+        return wx_url
+
+    def get(self):
+        self.render('weixin/share.html',ret = self.get_js_sdk_sign(setting.wxdomanName+'/share'),
+                    link=self.create_url(self.get_current_user().id))
