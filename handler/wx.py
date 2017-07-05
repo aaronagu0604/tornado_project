@@ -575,8 +575,8 @@ class UserIncomeRecord11Handler(WXBaseHandler):
         self.write(simplejson.dumps(demo))
         self.finish()
 
-@route(r'/share', name='wx_share')  # 分享页面
-class ShareHandler(WXBaseHandler):
+@route(r'/share/(\d+)', name='wx_share')  # 分享页面
+class ShareHandler(BaseHandler):
     def create_url(self,user_id):
         url = setting.wxdomanName + '/wxapi/login'
         wxlogin_url = "https://open.weixin.qq.com/connect/oauth2/authorize"
@@ -592,6 +592,7 @@ class ShareHandler(WXBaseHandler):
 
         return wx_url
 
-    def get(self):
+    def get(self,user_id):
+        user = User.get(id=int(user_id))
         self.render('weixin/share.html',ret = self.get_js_sdk_sign(setting.wxdomanName+'/share'),
-                    link=self.create_url(self.get_current_user().id))
+                    link=self.create_url(user.id))
