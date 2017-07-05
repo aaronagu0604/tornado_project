@@ -12,12 +12,12 @@
     </div>
     <div style="width:100%; text-align: center; margin-top:2rem;">
         <div class="weui-btn-area">
-            <button id="sharetofriend" class="weui-btn weui-btn_primary">分享给朋友</button>
+            <a href="javascript:;" onclick="sharetofriend()" class="weui-btn weui-btn_primary">朋友</a>
         </div>
     </div>
     <div style="width:100%; text-align: center; margin-top:2rem;">
         <div class="weui-btn-area">
-            <button id="sharetoblog" class="weui-btn weui-btn_primary">分享朋友圈</button>
+            <a href="javascript:;" onclick="sharetoblog()" class="weui-btn weui-btn_primary">朋友圈</a>
         </div>
     </div>
 {% endblock %}
@@ -32,7 +32,7 @@
         signature: '{{ret["signature"]}}',// 必填，签名，见附录1
         jsApiList: ['onMenuShareAppMessage', 'onMenuShareTimeline'] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
     });
-$('#sharetofriend').on('click', function () {
+ function sharetofriend() {
    wx.onMenuShareAppMessage({
     title: '车装甲', // 分享标题
     desc: '一个自主买车险，卖车险的地方', // 分享描述
@@ -49,8 +49,8 @@ $('#sharetofriend').on('click', function () {
         $.toast("分享失败", "text");
     }
     });
-});
-$('#sharetoblog').on('click', function () {
+}
+function sharetoblog() {
     wx.onMenuShareTimeline({
     title: '车装甲', // 分享标题
     link: '{{link}}', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
@@ -64,6 +64,6 @@ $('#sharetoblog').on('click', function () {
         $.toast("分享失败", "text");
     }
     });
-});
+}
 </script>
 {% endblock %}
