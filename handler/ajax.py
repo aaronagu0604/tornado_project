@@ -2131,7 +2131,7 @@ class WeiXinMenuHandler(BaseHandler):
                 ]}'''%(self.create_url('/index'),
                        self.create_url('/insurance_order_base/0'),
                        self.create_url('/mine'),
-                       self.create_url('/share'),)
+                       self.create_url('/share/0'),)
 
         print menu
         try:

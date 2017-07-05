@@ -593,6 +593,9 @@ class ShareHandler(BaseHandler):
         return wx_url
 
     def get(self,user_id):
-        user = User.get(id=int(user_id))
+        if user_id=='0':
+            user = self.get_current_user()
+        else:
+            user = User.get(id=int(user_id))
         self.render('weixin/share.html',ret = self.get_js_sdk_sign(setting.wxdomanName+'/share'),
                     link=self.create_url(user.id))
