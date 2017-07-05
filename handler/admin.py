@@ -717,6 +717,59 @@ class AdminUserHandler(AdminBaseHandler):
         self.redirect("/admin/admin_user/%s"%(adminUser.id))
 
 
+@route(r'/admin/admin_referee', name='admin_referee')  # 后台用户管理
+class AdminRefereeHandler(AdminBaseHandler):
+    def get(self):
+        page = self.get_argument("page", '1')
+        page = int(page) if page else 1
+        pagesize = setting.ADMIN_PAGESIZE
+        referees = AdminUser.select().where(AdminUser.roles.contains('S'))
+
+        total = referees.count()
+        if total % pagesize > 0:
+            totalpage = total / pagesize + 1
+        else:
+            totalpage = total / pagesize
+        referees = referees.paginate(page, pagesize)
+
+        self.render("admin/user/admin_referee.html", active='admin_referee', referees=referees)
+
+
+@route(r'/admin/admin_referee_edit/(\d+)', name='admin_referee_edit')  # 后台用户编辑
+class AdminRefereeEditHandler(AdminBaseHandler):
+    def get(self, a_id):
+        referee = AdminUser.get(id=a_id)
+        items = Area.select().where(Area.pid >> None)
+        aas = AdminUserArea.select().where(AdminUserArea.admin_user == referee)
+
+        self.render("admin/user/admin_referee_edit.html", active='admin_referee', referee=referee, items=items,
+                    aas=aas, a_id=a_id)
+
+    def post(self, admin_id):
+        admin_id = int(admin_id)
+        username = self.get_argument('username', '')
+        realname = self.get_argument('realname', '')
+        mobile = self.get_argument('mobile', '')
+        roles = self.get_argument('roles', '')
+        code = self.get_argument('code', '')
+        active = self.get_argument('active', '')
+        print 'active=', active
+        adminUser = AdminUser.get(id=admin_id)
+        adminUser.username = username
+        adminUser.realname = realname
+        adminUser.mobile = mobile
+        adminUser.roles = roles
+        adminUser.code = code
+        if active == '1':
+            adminUser.active = 1
+        else:
+            adminUser.active = 0
+        adminUser.save()
+        self.flash("提交成功")
+
+        self.redirect("/admin/admin_referee_edit/%s" % admin_id)
+
+
 # -----------------------------------------------------------商品管理---------------------------------------------------
 @route(r'/admin/category', name='admin_category')  # 商品分类
 class CategoryHandler(AdminBaseHandler):
@@ -1691,12 +1744,13 @@ class RefereeList(AdminBaseHandler):
     }}
 
     '''
-    def getInsuranceOrder(self, startTime, lastTime, referees):
+    def getInsuranceOrder(self, startTime, lastTime, referees, areaManager):
         store_list = {}
         for io in InsuranceOrder.select(InsuranceOrder.id, Store.id, Store.admin_code, InsuranceOrder.pay_time).\
                 join(Store, on=(Store.id == InsuranceOrder.store)).\
                 join(InsuranceOrderPrice, on=(InsuranceOrderPrice.id == InsuranceOrder.current_order_price)).\
                 where((InsuranceOrder.status == 3) & (InsuranceOrderPrice.total_price > 1)).tuples():
+            # 单次（首单、二单、三单）
             if io[1] not in store_list:
                 store_list[io[1]] = 1
             else:
@@ -1717,6 +1771,24 @@ class RefereeList(AdminBaseHandler):
                             referee['third_io_id'] += str(io[0]) + ','
                         break
                 else:
+                    no_ref = 1
+                for referee in areaManager:
+                    if (io[2] in referee['areas']) or (io[2] in referee['areas']) or (io[2] in referee['areas']):
+                        referee['total_io_count'] += 1
+                        referee['total_io_id'] += str(io[0]) + ','
+                        if store_list[io[1]] == 1:
+                            referee['first_io_count'] += 1
+                            referee['first_io_id'] += str(io[0]) + ','
+                        elif store_list[io[1]] == 2:
+                            referee['second_io_count'] += 1
+                            referee['second_io_id'] += str(io[0]) + ','
+                        elif store_list[io[1]] == 3:
+                            referee['third_io_count'] += 1
+                            referee['third_io_id'] += str(io[0]) + ','
+                        break
+                else:
+                    no_ref = 1
+                if no_ref:
                     referees[0]['total_io_count'] += 1
                     referees[0]['total_io_id'] += str(io[0]) + ','
                     if store_list[io[1]] == 1:
@@ -1728,7 +1800,7 @@ class RefereeList(AdminBaseHandler):
                     elif store_list[io[1]] == 3:
                         referees[0]['third_io_count'] += 1
                         referees[0]['third_io_id'] += str(io[0]) + ','
-        return referees
+        return referees, areaManager
 
     def get_store(self, startTime, lastTime):
         referees = [{
@@ -1745,7 +1817,7 @@ class RefereeList(AdminBaseHandler):
             'second_io_id': '',
             'third_io_id': ''
         }]
-        for referee in AdminUser.select().where(AdminUser.active == 1, AdminUser.roles.contains('S'), AdminUser.code % '00%'):
+        for referee in AdminUser.select().where(AdminUser.active == 1, AdminUser.roles == 'S'):
             referees.append({
                 'name': referee.realname,
                 'code': referee.code,
@@ -1760,28 +1832,55 @@ class RefereeList(AdminBaseHandler):
                 'second_io_id': '',
                 'third_io_id': ''
             })
+        areaManager = []
+        for referee in AdminUser.select().where(AdminUser.active == 1, AdminUser.roles == 'SJ'):
+            areaManager.append({
+                'name': referee.realname,
+                'areas': AdminUserArea.select(Area.code).join(Area, on=(Area.id == AdminUserArea.area)).where(AdminUserArea.admin_user == referee).tuples(),
+                'new_store': 0,
+                'new_store_id': '',
+                'total_io_count': 0,
+                'first_io_count': 0,
+                'second_io_count': 0,
+                'third_io_count': 0,
+                'total_io_id': '',
+                'first_io_id': '',
+                'second_io_id': '',
+                'third_io_id': ''
+            })
+
         for s in Store.select().where(Store.created > startTime, Store.created <= lastTime, Store.active == 1):
+            no_ref = 0
             for referee in referees:
                 if s.admin_code == referee['code']:
                     referee['new_store'] += 1
                     referee['new_store_id'] += str(s.id) + ','
                     break
             else:
+                no_ref = 1
+            for referee in areaManager:
+                if (s.admin_code in referee['areas']) or (s.admin_code[:8] in referee['areas']) or (s.admin_code[:4] in referee['areas']):
+                    referee['new_store'] += 1
+                    referee['new_store_id'] += str(s.id) + ','
+                    break
+            else:
+                no_ref = 1
+            if no_ref:
                 referees[0]['new_store'] += 1
                 referees[0]['new_store_id'] += str(s.id) + ','
 
-        return referees
+        return referees, areaManager
 
     def get(self):
         startDate = self.get_argument("startDate", '')
         lastDate = self.get_argument("lastDate", '')
         startDate, lastDate, startTime, lastTime = getDate(startDate, lastDate)
-        referees = self.get_store(startTime, lastTime)
-        referees = self.getInsuranceOrder(startTime, lastTime, referees)
+        referees, areaManager = self.get_store(startTime, lastTime)
+        referees, areaManager = self.getInsuranceOrder(startTime, lastTime, referees, areaManager)
         put_area_to_cash(self)
 
         self.render("admin/report/referee_list.html", refereeList=referees, active='refereeReport',
-                    startDate=startDate, lastDate=lastDate)
+                    startDate=startDate, lastDate=lastDate, areaManager=areaManager)
 
 
 @route('/admin/export_orders', name='admin_report_orders')    # 保险订单们

@@ -51,8 +51,9 @@
             <table class="table table-hover" id="tb_need_pay_back_orders" style="text-align:center;">
                 <thead>
                 <tr style="background:#528ACB;color:#fff;">
-                    <th style="text-align:center;">编号</th>
                     <th style="text-align:center;">姓名</th>
+                    <th style="text-align:center;">职位</th>
+                    <th style="text-align:center;">编号</th>
                     <th style="text-align:center;">开店数</th>
                     <th style="text-align:center;">总单数</th>
                     <th style="text-align:center;">首单数</th>
@@ -61,10 +62,23 @@
                 </tr>
                 </thead>
                 <tbody>
+                {% for r in areaManager %}
+                <tr>
+                    <td>{{ r['name'] }}</td>
+                    <td>区域经理</td>
+                    <td>{{ r['code'] }}</td>
+                    <td><a href="/admin/export_stores?sList={{r['new_store_id']}}">{{ r['new_store'] }}</a></td>
+                    <td><a href="/admin/export_orders?iIDList={{r['total_io_id']}}">{{ r['total_io_count'] }}</a></td>
+                    <td><a href="/admin/export_orders?iIDList={{r['first_io_id']}}">{{ r['first_io_count'] }}</a></td>
+                    <td><a href="/admin/export_orders?iIDList={{r['second_io_id']}}">{{ r['second_io_count'] }}</a></td>
+                    <td><a href="/admin/export_orders?iIDList={{r['third_io_id']}}">{{ r['third_io_count'] }}</a></td>
+                </tr>
+                {% endfor %}
                 {% for r in refereeList %}
                 <tr>
-                    <td>{{ r['code'] }}</td>
                     <td>{{ r['name'] }}</td>
+                    <td>推广员</td>
+                    <td>{{ r['code'] }}</td>
                     <td><a href="/admin/export_stores?sList={{r['new_store_id']}}">{{ r['new_store'] }}</a></td>
                     <td><a href="/admin/export_orders?iIDList={{r['total_io_id']}}">{{ r['total_io_count'] }}</a></td>
                     <td><a href="/admin/export_orders?iIDList={{r['first_io_id']}}">{{ r['first_io_count'] }}</a></td>

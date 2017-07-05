@@ -78,7 +78,7 @@
                 <ul class="nav" id="side-menu">
                     {% if admin.roles!='W' %}
                     <li {% if active=='saler' or active=='referee' or active=='store' or active=='admin_user'
-                        or active=='user'%} class="active"{% endif %} ">
+                        or active=='user' or active=="admin_referee"%} class="active"{% endif %} ">
                     <a href="#"><i class="fa fa-user fa-fw"></i>&nbsp;&nbsp;&nbsp;用户管理
                         <span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level">
@@ -93,6 +93,9 @@
                         </li>
                         <li>
                             <a {% if active=='admin_user' %}class="active" {% endif %}href="/admin/admin_user/{{handler.get_admin_user().id}}">后台用户</a>
+                        </li>
+                        <li>
+                            <a {% if active=='admin_referee' %}class="active" {% endif %}href="/admin/admin_referee">推广人员管理</a>
                         </li>
                     </ul>
                     </li>

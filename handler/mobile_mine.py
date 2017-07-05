@@ -2312,6 +2312,7 @@ class MobileVersionHandler(MobileBaseHandler):
             logging.info('Error: mobile/update/%s %s'%(client, e.message))
         self.write(simplejson.dumps(result))
 
+
 # ----------------------------------------代理入口---------------------------------------------------
 @route(r'/mobile/sales_agent', name='mobile_sales_agent')  # 下线页
 class MobileToolsHandler(MobileBaseHandler):

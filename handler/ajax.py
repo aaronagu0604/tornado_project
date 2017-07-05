@@ -774,6 +774,41 @@ class SaveIOPHandler(BaseHandler):
         self.write(simplejson.dumps(result))
 
 
+@route(r'/ajax/add_referee_area', name='ajax_add_referee_area')  # 添加推广人员管理地区
+class AddRefereeAreaHandler(BaseHandler):
+    def post(self):
+        result = {'flag': 0, 'msg': '', 'data': ''}
+        ad_id = self.get_body_argument('a_id', None)
+        codes = self.get_body_argument('codes', None)
+        if codes and ad_id:
+            ad_id = int(ad_id)
+            codes = codes.split(',')
+        else:
+            result['msg'] = u'参数不匹配'
+            self.write(simplejson.dumps(result))
+            return
+        for code in codes:
+            if AdminUserArea.select().join(Area).where(AdminUserArea.admin_user == ad_id, Area.code == code).count() > 0:
+                continue
+            else:
+                area = Area.get(code=code)
+                AdminUserArea.create(admin_user=ad_id, area=area)
+        result['flag'] = 1
+
+        self.write(simplejson.dumps(result))
+
+
+@route(r'/ajax/del_referee_area/(\d+)', name='ajax_del_referee_area')  # 添加推广人员管理地区
+class DelRefereeAreaHandler(BaseHandler):
+    def get(self, admin_id):
+        as_id = self.get_argument('as_id', None)
+        if admin_id and as_id:
+            as_id = int(as_id)
+            AdminUserArea.delete().where(AdminUserArea.id == as_id).execute()
+
+        self.redirect('/admin/admin_referee_edit/'+str(admin_id))
+
+
 @route(r'/ajax/save_io_summary', name='ajax_save_io_summary')  # 保存本地备注
 class SaveIOSummaryHandler(BaseHandler):
     def post(self):

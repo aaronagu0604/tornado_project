@@ -103,6 +103,15 @@ class AdminUser(db.Model):
         db_table = 'tb_admin_users'
 
 
+class AdminUserArea(db.Model):
+    id = PrimaryKeyField()  # 主键
+    admin_user = ForeignKeyField(AdminUser, db_column='admin_user_id')
+    area = ForeignKeyField(Area, db_column='area_id')  # 地区
+
+    class Meta:
+        db_table = 'tb_admin_user_area'
+
+
 # 管理员用户表
 class AdminUserLog(db.Model):
     id = PrimaryKeyField()  # 主键

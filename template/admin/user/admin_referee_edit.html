@@ -1,0 +1,250 @@
+{% extends "layout/admin.html" %}
+{% block content %}
+<link href="/style/css/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+<link href="/style/css/plugins/dataTables.bootstrap.css" rel="stylesheet">
+<div class="mskeLayBg"></div>
+<div class="row">
+    <nav>
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">修改广告</a>
+        </div>
+    </nav>
+</div>
+
+
+<div class="row">
+    <div class="col-xs-6">
+        <div class="panel panel-primary">
+            <div class="panel-body">
+                {%set messages=handler.get_flashed_messages() %}
+                {%if messages%}
+                <div class="msg">
+                    {% for type, msg in messages%}
+                    <span style="color:red;">{{msg}}</span>
+                    {% endfor %}
+                </div>
+                {%endif%}
+                <form  method="post" action="/admin/admin_referee_edit/{{a_id}}" enctype="multipart/form-data">
+                    {{xsrf()}}
+                    <div class="form-group has-success row">
+                        <div class="col-md-4" style="width:100%;">
+                            <label class="control-label" style="margin-top:7px;">账号</label>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" class="form-control"  name="username" value="{{referee.username}}" style="width:480px;" />
+                        </div>
+                    </div>
+
+                    <div class="form-group has-success row">
+                        <div class="col-md-4" style="width:100%;">
+                            <label class="control-label" style="margin-top:7px;">姓名</label>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" class="form-control"  name="realname" value="{{referee.realname}}" style="width:480px;" />
+                        </div>
+                    </div>
+
+                    <div class="form-group has-success row">
+                        <div class="col-md-4" style="width:100%;">
+                            <label class="control-label" style="margin-top:7px;">职位</label>
+                        </div>
+                        <div class="col-md-8">
+                            <select class="form-control" name="roles" style="width:230px;">
+                                <option value="Sj" {% if referee.roles=="Sj" %} selected {% endif %}>区域经理</option>
+                                <option value="S" {% if referee.roles=="S" %} selected {% endif %}>普通推广员</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group has-success row">
+                        <div class="col-md-4" style="width:100%;">
+                            <label class="control-label" style="margin-top:7px;">推广编号</label>
+                        </div>
+                        <div class=" col-md-8">
+                            <input type="text" class="form-control"  name="code" value="{{referee.code}}" style="width:480px;" >
+                        </div>
+                    </div>
+
+                    <div class="form-group has-success row">
+                        <div class=" col-md-1" style="width:100%;">
+                            <label class="control-label" style="margin-top:7px;">电话</label>
+                        </div>
+                        <div class=" col-md-4">
+                            <input type="text" class="form-control"  name="mobile" value="{{referee.mobile}}" style="width:480px;" />
+                        </div>
+                    </div>
+
+                    <div class="form-group has-success row">
+                        <div class=" col-md-2">
+                            <label class="control-label" style="margin-top:11px;">是否启用</label>
+                        </div>
+                        <div class=" col-md-1">
+                            <input type="checkbox" class="form-control" style="width:20px; text-align: left;" value="1" name="active"  {% if referee.active==1 %} checked='true' {%endif%}/>
+                        </div>
+                    </div>
+
+                    <div class="form-group has-success">
+                        <a class="btn btn-outline btn-warning btn-sm" href="/admin/admin_referee_edit/{{a_id}}" style="padding:7px 28px;border:1px solid #438bca;color:#438bca;border-radius:4px;font-size:16px;margin-right:30px;">取消</a>
+                        <input type="submit" value="保存" class="btn btn-outline btn-primary btn-sm" style="width:90px;height:32px;background:#438bca;color:#fff;border-radius:4px;border:none;font-size:16px;">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-3">
+        <div class="panel panel-primary">
+            <div class="panel-body">
+                <div>
+                    <span>发布范围</span>
+                    <a href="#" class="btn btn-xs btn-success" onclick="publish()">添加地区</a>
+                    <ul id="treeDemo" class="ztree"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-3">
+        <div class="panel panel-primary">
+            <div class="panel-body">
+                <div>
+                    <span>已发布地区</span>
+                    <br>
+                    {% for as in aas %}
+                    <div>
+                        <div>{{as.area.name}} <a href="/ajax/del_referee_area/{{as.admin_user.id}}?as_id={{as.id}}">删除</a></div>
+                    
+                        </div>
+                    <br>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<script type="text/javascript" src="/style/js/jquery.ztree.core.min.js"></script>
+<script type="text/javascript" src="/style/js/jquery.ztree.excheck.min.js"></script>
+<script type="text/javascript" src="/style/js/layer/layer.js"></script>
+<script src="/style/js/jquery.twbsPagination.min.js"></script>
+<script>
+    var xsrf='{{handler.xsrf_token}}';
+    $(document).ready(function() {
+        var setting = {
+            async: {
+                enable: true,
+                type:"get",
+                contentType: "application/json",
+                url:"/ajax/area_tree?type=blockitem",
+                dataFilter: filter
+            },
+            data: {
+                simpleData: {
+                    enable: true
+                }
+            },
+            check: {
+                enable: true
+            },
+        };
+
+        function filter(treeId, parentNode, childNodes) {
+            if (!childNodes) return null;
+            for (var i=0, l=childNodes.length; i<l; i++) {
+                childNodes[i].name = childNodes[i].name.replace(/\.n/g, '.');
+            }
+            return childNodes;
+        }
+        $.fn.zTree.init($("#treeDemo"), setting);
+    });
+
+    function publish() {
+        var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+        var nodes = zTree.getCheckedNodes(true);
+        var check_list = [];
+        var codes = [];
+        for (var i=0; i<nodes.length; i++) {
+            if(nodes[i].check_Child_State==-1 | nodes[i].check_Child_State==2)
+            {
+                if(nodes[i].data.length == 12) {
+                    if(check_list.indexOf(nodes[i].data.substring(0, 4)) == -1 &&
+                        check_list.indexOf(nodes[i].data.substring(0, 8)) == -1)
+                    {
+                        codes.push(nodes[i].data);
+                    }
+                }
+                else if(nodes[i].data.length == 8){
+                    if(check_list.indexOf(nodes[i].data.substring(0, 4)) == -1 &&
+                        check_list.indexOf(nodes[i].data) == -1)
+                    {
+                        check_list.push(nodes[i].data);
+                        codes.push(nodes[i].data);
+                    }
+                }
+                else if(nodes[i].data.length == 4){
+                    check_list.push(nodes[i].data);
+                    codes.push(nodes[i].data);
+                }
+            }
+        }
+        if(codes.length > 0) {
+            $.ajax({
+                url : "/ajax/add_referee_area",
+                type : "post",
+                data : {'a_id': {{a_id}}, 'codes': codes.toString(), '_xsrf': xsrf},
+                dataType: "text",
+                success: function(result) {
+                    if (result.falg=1) {
+                        layer.alert('发布成功');
+                        window.location.reload();
+                    } else {
+                        layer.alert('发布失败'+result);
+                    }
+                },
+                error: function(result){
+                    layer.alert('Error:'+result['msg']);
+                }
+            })
+        }
+        else {
+            layer.alert('请选择要发布的地区');
+        }
+    }
+    function ad_link() {
+        var ad_link = document.getElementById('ad_link').value;
+        if (ad_link == 'activity'){
+            var title = '广告链接' + ' - 活动';
+        } else if (ad_link == 'product'){
+            var title = '广告链接' + ' - 商品';
+        } else if (ad_link == 'insurance'){
+            var title = '广告链接' + ' - 保险';
+        } else if (ad_link == 'lube'){
+            var title = '广告链接' + ' - 返油政策';
+        } else {
+            return
+        }
+        var url = '/admin/ad_link?type=' + ad_link;
+        pop(title, url);
+    }
+    function pop(title, url) {
+        layer.open({
+            type: 2,
+            title: title,
+            shadeClose: true,
+            shade: 0.8,
+            area: ['90%', '90%'],
+            content: url
+        });
+    }
+    function change_ad_type(ad_type) {
+        var product_id_0 = document.getElementById('product_id_0');
+        var product_id_1 = document.getElementById('product_id_1');
+        if(ad_type == "insurance"){
+            product_id_0.style.display="none";
+            product_id_1.style.display="";
+        } else {
+            product_id_1.style.display="none";
+            product_id_0.style.display="";
+        }
+    }
+</script>
+{% endblock %}
