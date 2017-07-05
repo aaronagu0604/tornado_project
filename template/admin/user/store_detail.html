@@ -147,7 +147,7 @@
                         <div class="input-group">
                             <select name="referee" style="width:160px;height:32px;border-radius: 4px;margin-right:15px;">
                                 {% for referee in referees %}
-                                <option value="{{referee.code}}">{{referee.realname}}</option>
+                                <option value="{{referee.code}}"{% if s.admin_code == referee.code %} selected="selected" {% endif %}>{{referee.realname}}</option>
                                 {% endfor %}
                             </select>
                         </div>
