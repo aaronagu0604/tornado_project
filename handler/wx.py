@@ -500,7 +500,7 @@ class UserAddressHandler(WXBaseHandler):
         logging.info(address)
         logging.info(user.id)
 
-        self.render('weixin/user_address.html',address=address,user=user.id)
+        self.render('weixin/user_address.html',address=address,user_id=user.id)
 
 @route(r'/user_address_detail/(\d+)', name='wx_user_address_detail')  # html 编辑地址
 class UserAddressDetailHandler(WXBaseHandler):
@@ -512,7 +512,7 @@ class UserAddressDetailHandler(WXBaseHandler):
         else:
             address = None
             user_id = None
-        self.render('weixin/user_address_detail.html',address=address,user=user_id)
+        self.render('weixin/user_address_detail.html',address=address,user_id=user_id)
 
     def post(self,store_address_id):
         user = self.get_current_user()

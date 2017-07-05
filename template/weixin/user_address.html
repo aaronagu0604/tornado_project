@@ -19,8 +19,8 @@
     {% for ad in address %}
     <div class="weui-panel__bd">
       <div class="weui-media-box weui-media-box_text address-list-box">
-        {% if ad['create_by'] == user %}
-        <a href="/user_address_detail/{{ad['address_id']}}" class="address-edit"></a>
+        {% if ad['create_by'] == user_id %}
+            <a href="/user_address_detail/{{ad['address_id']}}" class="address-edit"></a>
         {% endif %}
         <h4 class="weui-media-box__title"><span>{{ad['receiver']}}</span>&nbsp;&nbsp;<span>{{ad['mobile']}}</span></h4>
         <p class="weui-media-box__desc address-txt">{{ad['province']}}{{ad['city']}}{{ad['district']}}</p>
@@ -42,9 +42,5 @@
 {% endblock %}
 {% block js %}
 <script>
-    var page = 1,offset = 1;
-    var loading = false; //上拉状态标记
-    var toend = false; //数据加载完标记
-
 </script>
 {% endblock %}
