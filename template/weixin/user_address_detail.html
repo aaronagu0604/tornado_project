@@ -47,7 +47,7 @@
       <div class="weui-btn-area">
          <input id="address_id" style="display:none" value="{{address.id and address.id or 0}}">
         <button class="weui-btn weui-btn_primary" type="submit">保存此地址</button>
-        {% if address.create_by == user_id %}
+        {% if address.create_by.id == user_id %}
         <a href="/delete_address/{{address.id}}" class="weui-btn weui-btn_warn">删除此地址</a>
         {% endif %}
       </div>
