@@ -576,7 +576,7 @@ class UserIncomeRecord11Handler(WXBaseHandler):
         self.finish()
 
 @route(r'/share', name='wx_share')  # 分享页面
-class InsuranceOrderBaseHandler(WXBaseHandler):
+class ShareHandler(WXBaseHandler):
     def create_url(self,user_id):
         url = setting.wxdomanName + '/wxapi/login'
         wxlogin_url = "https://open.weixin.qq.com/connect/oauth2/authorize"
