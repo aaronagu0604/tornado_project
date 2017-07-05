@@ -6,11 +6,10 @@
 <div class="row">
     <nav>
         <div class="navbar-header">
-            <a class="navbar-brand" href="#">修改广告</a>
+            <a class="navbar-brand" href="#">推广人员</a>
         </div>
     </nav>
 </div>
-
 
 <div class="row">
     <div class="col-xs-6">
@@ -95,7 +94,7 @@
         <div class="panel panel-primary">
             <div class="panel-body">
                 <div>
-                    <span>发布范围</span>
+                    <span>服务地区</span>
                     <a href="#" class="btn btn-xs btn-success" onclick="publish()">添加地区</a>
                     <ul id="treeDemo" class="ztree"></ul>
                 </div>
@@ -106,14 +105,12 @@
         <div class="panel panel-primary">
             <div class="panel-body">
                 <div>
-                    <span>已发布地区</span>
+                    <span>已添加地区</span>
                     <br>
                     {% for as in aas %}
                     <div>
-                        <div>{{as.area.name}} <a href="/ajax/del_referee_area/{{as.admin_user.id}}?as_id={{as.id}}">删除</a></div>
-                    
-                        </div>
-                    <br>
+                        <div>{{as.area.name}}<a href="/ajax/del_referee_area/{{as.admin_user.id}}?as_id={{as.id}}">删除</a></div>
+                    </div>
                     {% endfor %}
                 </div>
             </div>
