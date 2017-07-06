@@ -2,16 +2,21 @@
 {% extends "weixin/none_foot_nav_tab.html" %}
 {% block css %}
 <title>车装甲推广分享</title>
+<style>
+    html,body {
+        height:110%;
+		margin:0rem;
+        padding:0rem;
+        background:url("/style/wximg/share_background.png");
+        background-repeat: no-repeat;
+		background-size:100%;
+    }
+    
+</style>
 {% endblock %}
 {% block content %}
-<div align="center" style="padding-top: 2rem;">
-    <img style="width:80%" src="http://admin.520czj.com/style/images/logo.png">
-</div>
-<div align="center" style="padding-top: 2rem;">
-    <img style="width:80%" src="{{link}}">
-</div>
-<div class="content-padded">
-    <p style="text-algin:center;margin:0.8rem">一个自主买车险，卖车险的地方。扫描二维码即可加入！</p>
+<div align="center">
+    <img style="padding-top:85%;width:6rem;height:6rem" src="{{link}}">
 </div>
 {% endblock %}
 {% block js %}
