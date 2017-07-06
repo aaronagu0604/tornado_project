@@ -595,7 +595,10 @@ class ShareHandler(BaseHandler):
     def get(self,user_id):
         if user_id=='0':
             user = self.get_current_user()
-            self.redirect('/share/%d'%user.id)
+            if user:
+                self.redirect('/share/%d'%user.id)
+            else:
+                self.render('weixin/tips.html')
             return
         else:
             user = User.get(id=int(user_id))
