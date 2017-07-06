@@ -39,7 +39,7 @@
                 <select class="form-control" name="sp_area">
                     <option value="">全部</option>
                     {% for a in area_select %}
-                    <option value="{{ a['code'] }}" {% if a["name"]==sp_area %} selected {% endif %}>
+                    <option value="{{ a['code'] }}" {% if a["code"]==sp_area %} selected {% endif %}>
                         {{ a["name"] }}
                     </option>
                     {% endfor %}
