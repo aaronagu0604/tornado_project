@@ -40,7 +40,7 @@
 					<button class="btn" type="submit" value="{{keyword or ''}}" id="btn">查询</button>
             		</span>
                 </div>
-                <input id="bt_export" class="btn btn-info" type="button" value="导出EXCEL" style="margin-top:1px;" />
+                <a class="btn btn-info" href="/admin/export_referee?write_excel=true">导出EXCEL</a>
             </form>
         </div>
     </nav>
@@ -94,7 +94,7 @@
 {% endblock %}
 
 {% block js %}
-<script src="/style2/js/jquery.twbsPagination.min.js"></script>
+<script src="/style/js/jquery.twbsPagination.min.js"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
 	    var xsrf='{{handler.xsrf_token}}';

@@ -16,6 +16,7 @@ from tornado.concurrent import run_on_executor
 from concurrent.futures import ThreadPoolExecutor
 from lib.mqhelper import create_msg
 import datetime
+import xlwt
 
 
 @route(r'/',name='admin root')
@@ -1101,7 +1102,6 @@ class ProductHandler(AdminBaseHandler):
         sp_area = self.get_argument('sp_area', '')
         pagesize = setting.ADMIN_PAGESIZE
         is_score = int(is_score)
-
         if active == -1:
             ft = (Product.active << [-1,0,1])
         else:
@@ -1766,6 +1766,20 @@ class RefereeList(AdminBaseHandler):
     }}
 
     '''
+    def get(self):
+        startDate = self.get_argument("startDate", '')
+        lastDate = self.get_argument("lastDate", '')
+        write_excel = self.get_argument("write_excel", '')
+        startDate, lastDate, startTime, lastTime = getDate(startDate, lastDate)
+        referees, areaManager = self.get_store(startTime, lastTime)
+        referees, areaManager = self.getInsuranceOrder(startTime, lastTime, referees, areaManager)
+        if write_excel:
+            self.write_excel(referees, areaManager)
+            self.redirect('/upload/referee.xls')
+
+        self.render("admin/report/referee_list.html", refereeList=referees, active='refereeReport',
+                    startDate=startDate, lastDate=lastDate, areaManager=areaManager)
+
     def getInsuranceOrder(self, startTime, lastTime, referees, areaManager):
         store_list = {}
         for io in InsuranceOrder.select(InsuranceOrder.id, Store.id, Store.admin_code, InsuranceOrder.pay_time, Store.area_code).\
@@ -1894,16 +1908,76 @@ class RefereeList(AdminBaseHandler):
 
         return referees, areaManager
 
-    def get(self):
-        startDate = self.get_argument("startDate", '')
-        lastDate = self.get_argument("lastDate", '')
-        startDate, lastDate, startTime, lastTime = getDate(startDate, lastDate)
-        referees, areaManager = self.get_store(startTime, lastTime)
-        referees, areaManager = self.getInsuranceOrder(startTime, lastTime, referees, areaManager)
-        # put_area_to_cash(self)
+    def set_style(self, name, height, bold=False):
+        style = xlwt.XFStyle()  # 初始化样式
+        font = xlwt.Font()  # 为样式创建字体
+        font.name = name  # 'Times New Roman'
+        font.bold = bold
+        font.color_index = 4
+        font.height = height
+        style.font = font
+        return style
 
-        self.render("admin/report/referee_list.html", refereeList=referees, active='refereeReport',
-                    startDate=startDate, lastDate=lastDate, areaManager=areaManager)
+    # 写excel
+    def write_excel(self, referees, areaManager):
+        f = xlwt.Workbook()  # 创建工作簿
+        sheet1 = f.add_sheet(u'sheet1', cell_overwrite_ok=True)  # 创建sheet
+        row0 = [u'姓名', u'职位', u'编号', u'开店数', u'总单数', u'首单数', u'二单数', u'三单数']
+        for i in range(0, len(row0)):
+            sheet1.write(0, i, row0[i], self.set_style('Times New Roman', 220, True))
+        # sheet2
+        sheet2 = f.add_sheet(u'sheet2', cell_overwrite_ok=True)  # 创建sheet
+        row0 = [u'推广员', u'店名', u'地址', u'电话', u'开店时间']
+        for i in range(0, len(row0)):
+            sheet2.write(0, i, row0[i], self.set_style('Times New Roman', 220, True))
+        # sheet3
+        sheet3 = f.add_sheet(u'sheet3', cell_overwrite_ok=True)  # 创建sheet
+        row0 = [u'推广员', u'单号', u'单次', u'下单时间']
+        for i in range(0, len(row0)):
+            sheet3.write(0, i, row0[i], self.set_style('Times New Roman', 220, True))
+        # 生成数据行
+        sheet2_line = sheet3_line = 1
+        default_style = xlwt.easyxf('font: name Arial;')
+        for i, referee in enumerate(referees + areaManager):
+            for j, key in enumerate(['name', 'areas', 'code', 'new_store', 'total_io_count',
+                                     'first_io_count', 'second_io_count', 'third_io_count']):
+                if key == 'areas':
+                    if key in referee:
+                        data = u'区域经理'
+                    else:
+                        data = u'普通推广员'
+                else:
+                    data = referee[key]
+                sheet1.write(i+1, j, data, default_style)
+            if referee['new_store_id']:
+                for s_id in referee['new_store_id'].strip(',').split(','):
+                    sheet2.write(sheet2_line, 0, referee['name'], default_style)
+                    store = Store.get(id=s_id)
+                    sheet2.write(sheet2_line, 1, store.name, default_style)
+                    sheet2.write(sheet2_line, 2, Area.get_detailed_address(store.area_code)+store.address, default_style)
+                    sheet2.write(sheet2_line, 3, store.mobile, default_style)
+                    sheet2.write(sheet2_line, 4, time.strftime('%Y-%m-%d', time.localtime(store.created)), default_style)
+                    sheet2_line += 1
+            if referee['total_io_id']:
+                first_io_id = referee['first_io_id'].strip(',').split(',')
+                second_io_id = referee['second_io_id'].strip(',').split(',')
+                third_io_id = referee['third_io_id'].strip(',').split(',')
+                for io_id in referee['total_io_id'].strip(',').split(','):
+                    sheet3.write(sheet3_line, 0, referee['name'], default_style)
+                    io = InsuranceOrder.get(id=io_id)
+                    sheet3.write(sheet3_line, 1, io.ordernum, default_style)
+                    if io_id in first_io_id:
+                        io_count = u'首单'
+                    elif io_id in second_io_id:
+                        io_count = u'二单'
+                    elif io_id in third_io_id:
+                        io_count = u'三单'
+                    else:
+                        io_count = ''
+                    sheet3.write(sheet3_line, 2, io_count, default_style)
+                    sheet3.write(sheet3_line, 3, time.strftime('%Y-%m-%d', time.localtime(io.pay_time)), default_style)
+                    sheet3_line += 1
+        f.save('/home/www/workspace/czj/upload/referee.xls')  # 保存文件
 
 
 @route('/admin/export_orders', name='admin_report_orders')    # 保险订单们
