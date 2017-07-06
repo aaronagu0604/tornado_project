@@ -1191,7 +1191,7 @@ class InsuranceThreeHandler(BaseHandler):
                     gift = '--'
 
                 line = str(s.id) + u',' + \
-                    u'%s' % time.strftime('%Y-%m-%d', time.localtime(s.deal_time)) + u',' + \
+                    u'%s' % time.strftime('%Y-%m-%d', time.localtime(s.ordered)) + u',' + \
                     s.store.mobile + u',' + \
                     Area.get_detailed_address(s.store.area_code)+ u',' + \
                     s.store.name + u',' + \
