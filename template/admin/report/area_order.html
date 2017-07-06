@@ -1,25 +1,25 @@
 {% extends "layout/admin.html" %}
 {% block css %}
-<link href="/style2/css/plugins/dataTables.bootstrap.css" rel="stylesheet">
-<link href="/style2/css/select2.css" rel="stylesheet"/>
+<link href="/style/css/plugins/dataTables.bootstrap.css" rel="stylesheet">
+<link href="/style/css/select2.css" rel="stylesheet"/>
 {{xsrf()}}
 <style>
-#num{
-    width:130px;
-    height:30px;
-    border:1px solid #aaa;
-    -moz-border-radius: 4px;
-    -webkit-border-radius: 4px;
-    border-radius: 4px;
-    transform:translateY(3px);
-    -webkit-transform:translateY(3px);
-}
-#btn{
-    height:30px;
-    line-height:15px;
-    background:#528ACB;
-    color:#fff;
-}
+    #num{
+        width:130px;
+        height:30px;
+        border:1px solid #aaa;
+        -moz-border-radius: 4px;
+        -webkit-border-radius: 4px;
+        border-radius: 4px;
+        transform:translateY(3px);
+        -webkit-transform:translateY(3px);
+    }
+    #btn{
+        height:30px;
+        line-height:15px;
+        background:#528ACB;
+        color:#fff;
+    }
 </style>
 {% endblock %}
 {% block content %}
@@ -41,7 +41,6 @@
                 <select name="city" id="city_code" data-default="{{default_city}}" style="width:120px;height:33px;">
                     <option value="">--请选择城市--</option>
                 </select>
-
                 <div class="input-group custom-search-form">
                     <span class="input-group-addon">起始日期</span>
                     <input type="text" name="startDate" id="startDate" value="{{startDate}}" class="Wdate form-control"  onClick="WdatePicker()" style="width:135px; height: 34px;"  placeholder="起始日期" />
@@ -51,7 +50,7 @@
 					<button class="btn" type="submit" value="{{keyword or ''}}" id="btn">查询</button>
             		</span>
                 </div>
-                <input id="bt_export" class="btn btn-info" type="button" value="导出EXCEL" style="margin-top:1px;" />
+                <button class="btn btn-info" type="submit" name="write_excel" value="true">导出EXCEL</button>
             </form>
         </div>
     </nav>
@@ -111,7 +110,7 @@
 {% block js %}
 <script src="/style/js/jquery.twbsPagination.min.js"></script>
 <script type="text/javascript">
-	$(document).ready(function() {
+    $(document).ready(function() {
 
         var province_code=$("#province_code").attr("data-default");
         var city_code=$("#city_code").attr("data-default");
@@ -119,19 +118,19 @@
             province_change(province_code, city_code);
         }
 
-	    var xsrf='{{handler.xsrf_token}}';
-		$('#bt_export').bind('click', function () {
+        var xsrf='{{handler.xsrf_token}}';
+        $('#bt_export').bind('click', function () {
             $.get("/ajax/orders/refereeOrder",{sql: JSON.stringify(sql), _xsrf: xsrf, keyword: '{{keyword}}'},
-            function (data) {
-                var obj = jQuery.parseJSON(data);
-                if (obj.err == 0) {
-                    alert('生成成功，点击下载连接，下载数据文件！');
-                    window.open("/upload/" + obj.msg);
-                }
-                else {
-                    alert('生成失败：' + obj.msg);
-                }
-            });
+                function (data) {
+                    var obj = jQuery.parseJSON(data);
+                    if (obj.err == 0) {
+                        alert('生成成功，点击下载连接，下载数据文件！');
+                        window.open("/upload/" + obj.msg);
+                    }
+                    else {
+                        alert('生成失败：' + obj.msg);
+                    }
+                });
         });
     });
 

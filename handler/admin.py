@@ -1773,7 +1773,7 @@ class RefereeList(AdminBaseHandler):
         startDate, lastDate, startTime, lastTime = getDate(startDate, lastDate)
         referees, areaManager = self.get_store(startTime, lastTime)
         referees, areaManager = self.getInsuranceOrder(startTime, lastTime, referees, areaManager)
-        if write_excel:
+        if write_excel == 'true':
             self.write_excel(referees, areaManager)
             self.redirect('/upload/referee.xls')
 
@@ -2179,6 +2179,7 @@ class ReportAreaOrder(AdminBaseHandler):
             'IOcount':1,
             'IOamount':io['total_price'],
             'lube':1 if io['gift_policy']==1 else 0,
+            'cash': 1 if io['gift_policy']==3 else 0,
             'score':1 if io['gift_policy']==2 else 0,
             'wechat':{'count':1 if io['payment']==6 else 0, 'money':io['total_price'] if io['payment']==6 else 0},
             'alipay':{'count':1 if io['payment']==1 else 0, 'money':io['total_price'] if io['payment']==1 else 0},
@@ -2192,6 +2193,48 @@ class ReportAreaOrder(AdminBaseHandler):
         }
     }
     '''
+    def get(self):
+        startDate = self.get_argument("startDate", '')
+        lastDate = self.get_argument("lastDate", '')
+        province = self.get_argument("province", '')
+        city = self.get_argument("city", '')
+        write_excel = self.get_argument("write_excel", '')
+        if not province:
+            code = ''
+        elif city and (not city == '0'):
+            code = city+'%'
+        else:
+            code = province + '%'
+        startDate, lastDate, startTime, lastTime = getDate(startDate, lastDate)
+        areaList = self.getIOReport(startTime, lastTime, code)
+        areaList = self.getPOReport(areaList, startTime, lastTime, code)
+        areaList = self.getNSReport(areaList, startTime, lastTime, code)
+        if write_excel == 'true':
+            self.write_excel(areaList)
+            self.redirect('/upload/area_record.xls')
+            return
+        amount = 0
+        for area_code in areaList:
+            areaList[area_code]['ioCList'] = ','.join(areaList[area_code]['ioCList'])
+            areaList[area_code]['lubeList'] = ','.join(areaList[area_code]['lubeList'])
+            areaList[area_code]['cashList'] = ','.join(areaList[area_code]['cashList'])
+            areaList[area_code]['scoreList'] = ','.join(areaList[area_code]['scoreList'])
+            areaList[area_code]['wechatList'] = ','.join(areaList[area_code]['wechatList'])
+            areaList[area_code]['alipayList'] = ','.join(areaList[area_code]['alipayList'])
+            areaList[area_code]['upayList'] = ','.join(areaList[area_code]['upayList'])
+            areaList[area_code]['newStoreList'] = ','.join(areaList[area_code]['newStoreList'])
+            areaList[area_code]['POCList'] = ','.join(areaList[area_code]['POCList'])
+            if len(area_code) == 4:
+                amount = amount + areaList[area_code]['POAmount'] + areaList[area_code]['IOamount']
+        if (not amount) and (len(code)==9) and (code[:8] in areaList):
+            amount = areaList[area_code]['POAmount'] + areaList[area_code]['IOamount']
+        keys = sorted(areaList.keys())
+        items = Area.select().where(Area.pid >> None)
+
+        self.render("admin/report/area_order.html", areaList=areaList, active='areaReport', startDate=startDate,
+                    amount=amount, lastDate=lastDate, keys=keys, items=items,
+                    default_province=province, default_city=city)
+
     # 某时间段某地区 保险报表
     def getIOReport(self, startTime, lastTime, code):
         if code:
@@ -2414,6 +2457,7 @@ class ReportAreaOrder(AdminBaseHandler):
                         'IOamount': 0,
                         'ioCList': [],
                         'lube': 0,
+                        'cash': 0,
                         'score': 0,
                         'wechat': {'count': 0, 'money': 0},
                         'alipay': {'count': 0, 'money': 0},
@@ -2441,6 +2485,7 @@ class ReportAreaOrder(AdminBaseHandler):
                     'IOamount': 0,
                     'ioCList': [],
                     'lube': 0,
+                    'cash': 0,
                     'score': 0,
                     'wechat': {'count': 0, 'money': 0},
                     'alipay': {'count': 0, 'money': 0},
@@ -2457,44 +2502,37 @@ class ReportAreaOrder(AdminBaseHandler):
                 areaList[s.area_code[:8]]['newStoreList'].append(str(s.id))
         return areaList
 
-    def get(self):
-        startDate = self.get_argument("startDate", '')
-        lastDate = self.get_argument("lastDate", '')
-        province = self.get_argument("province", '')
-        city = self.get_argument("city", '')
-        if not province:
-            code = ''
-        elif city and (not city == '0'):
-            code = city+'%'
-        else:
-            code = province + '%'
-        # put_area_to_cash(self)
-        startDate, lastDate, startTime, lastTime = getDate(startDate, lastDate)
-        areaList = self.getIOReport(startTime, lastTime, code)
-        areaList = self.getPOReport(areaList, startTime, lastTime, code)
-        areaList = self.getNSReport(areaList, startTime, lastTime, code)
+    def set_style(self, name, height, bold=False):
+        style = xlwt.XFStyle()  # 初始化样式
+        font = xlwt.Font()  # 为样式创建字体
+        font.name = name  # 'Times New Roman'
+        font.bold = bold
+        font.color_index = 4
+        font.height = height
+        style.font = font
+        return style
 
-        amount = 0
-        for area_code in areaList:
-            areaList[area_code]['ioCList'] = ','.join(areaList[area_code]['ioCList'])
-            areaList[area_code]['lubeList'] = ','.join(areaList[area_code]['lubeList'])
-            areaList[area_code]['cashList'] = ','.join(areaList[area_code]['cashList'])
-            areaList[area_code]['scoreList'] = ','.join(areaList[area_code]['scoreList'])
-            areaList[area_code]['wechatList'] = ','.join(areaList[area_code]['wechatList'])
-            areaList[area_code]['alipayList'] = ','.join(areaList[area_code]['alipayList'])
-            areaList[area_code]['upayList'] = ','.join(areaList[area_code]['upayList'])
-            areaList[area_code]['newStoreList'] = ','.join(areaList[area_code]['newStoreList'])
-            areaList[area_code]['POCList'] = ','.join(areaList[area_code]['POCList'])
-            if len(area_code) == 4:
-                amount = amount + areaList[area_code]['POAmount'] + areaList[area_code]['IOamount']
-        if (not amount) and (len(code)==9) and (code[:8] in areaList):
-            amount = areaList[area_code]['POAmount'] + areaList[area_code]['IOamount']
-        keys = sorted(areaList.keys())
-        items = Area.select().where(Area.pid >> None)
-
-        self.render("admin/report/area_order.html", areaList=areaList, active='areaReport', startDate=startDate,
-                    amount=amount, lastDate=lastDate, keys=keys, items=items,
-                    default_province=province, default_city=city)
+    # 写excel
+    def write_excel(self, areaList):
+        f = xlwt.Workbook()  # 创建工作簿
+        sheet1 = f.add_sheet(u'sheet1', cell_overwrite_ok=True)  # 创建sheet
+        row0 = [u'省', u'市', u'新增商家', u'商品单量', u'商品交易额', u'保单数', u'保险交易额', u'返油单量',
+                u'返现单量', u'返积分单量', u'微信单量/金额', u'支付宝单量/金额', u'银联单量/金额', u'总额']
+        for i in range(0, len(row0)):
+            sheet1.write(0, i, row0[i], self.set_style('Times New Roman', 220, True))
+        default_style = xlwt.easyxf('font: name Arial;')
+        for i, key in enumerate(sorted(areaList)):
+            for j, key2 in enumerate(['province', 'city', 'newStoreC', 'POCount', 'POAmount', 'IOcount',
+                                      'IOamount', 'lube', 'cash', 'score', 'wechat', 'alipay', 'upay']):
+                if isinstance(areaList[key][key2], dict) and 'count' in areaList[key][key2]:
+                    data = '%s/%s' % (areaList[key][key2]['count'], str(areaList[key][key2]['money']))
+                else:
+                    data = areaList[key][key2]
+                sheet1.write(i+1, j, data, default_style)
+            data = str(areaList[key]['POAmount'] + areaList[key]['IOamount'])
+            sheet1.write(i+1, j+1, data, default_style)
+        # f.save('C:\Users\\agu\Desktop\\tmp\\area.xls')
+        f.save('/home/www/workspace/czj/upload/area_record.xls')  # 保存文件
 
 
 @route('/admin/export_product_orders', name='admin_report_productOreders')    # 普通商品订单们
