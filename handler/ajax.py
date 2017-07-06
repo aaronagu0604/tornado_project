@@ -2110,7 +2110,7 @@ class WeiXinMenuHandler(BaseHandler):
                  },
 
                  {
-                   "name":"更多",
+                   "name":"推广",
                    "sub_button":[
                     {
                        "type":"view",
