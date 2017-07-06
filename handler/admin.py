@@ -1097,8 +1097,11 @@ class ProductHandler(AdminBaseHandler):
         category = self.get_argument('category', 1)
         keyword = self.get_argument("keyword", None)
         active = int(self.get_argument("status", 1))
+        sp_store = self.get_argument('sp_store','')
+        sp_area = self.get_argument('sp_area', '')
         pagesize = setting.ADMIN_PAGESIZE
         is_score = int(is_score)
+
         if active == -1:
             ft = (Product.active << [-1,0,1])
         else:
@@ -1113,6 +1116,10 @@ class ProductHandler(AdminBaseHandler):
         print category
         if category:
             ft = ft & (Product.category == category)
+        if sp_store:
+            ft = ft & (Store.name == sp_store )
+        if sp_area:
+            ft = ft & (StoreProductPrice.area_code == sp_area)
         products = StoreProductPrice.select(). \
             join(Store, on=(Store.id == StoreProductPrice.store)). \
             join(ProductRelease, on=(ProductRelease.id == StoreProductPrice.product_release)). \
@@ -1123,13 +1130,24 @@ class ProductHandler(AdminBaseHandler):
             totalpage = total / pagesize + 1
         else:
             totalpage = total / pagesize
+        store_select = []
+        area_select = []
+        area_list = []
+        for item in products:
+            if item.store.name not in store_select:
+                store_select.append(item.store.name)
+            area_name = Area.get_detailed_address(item.area_code)
+            if area_name not in area_list:
+                area_list.append(area_name)
+                area_select.append({'name':area_name,'code':item.area_code})
         products = products.order_by(StoreProductPrice.created.desc()).paginate(page, pagesize).aggregate_rows()
         categories = Category.select().where(Category.id == 1)
         product_type = 'product_s' if is_score else 'product_n'
 
         self.render('admin/product/product.html', active=product_type, products=products, total=total, page=page,
                     c_id=int(category) if category else '', pagesize=pagesize, totalpage=totalpage, keyword=keyword, status=active,
-                    categories=categories, is_score=is_score,pid=[], Area=Area)
+                    categories=categories, is_score=is_score,pid=[], Area=Area,store_select=store_select,sp_store=sp_store,
+                    area_select=area_select,sp_area=sp_area)
 
 
 @route(r'/admin/edit_product/(\d+)', name='admin_edit_product')  # 修改商品
