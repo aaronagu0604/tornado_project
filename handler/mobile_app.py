@@ -2138,7 +2138,10 @@ class MobilInsuranceOrderQuoteInfoHandler(MobileBaseHandler):
                 data['passengerDutyIPlus'] = True if getattr(iop,'passengerDutyIPlus') == '1' else False
                 data['robbingI'] = True if getattr(iop,'robbingI') == '1' else False
                 data['robbingIPlus'] = True if getattr(iop,'robbingIPlus') == '1' else False
-                data['glassI'] = '国产玻璃' if uci.car_glass_type==0 else '进口玻璃'
+                if iop.glassI == '1':
+                    data['glassI'] = '国产玻璃' if uci.car_glass_type==0 else '进口玻璃'
+                else:
+                    data['glassI'] = ''
                 data['fireDamageI'] = True if getattr(iop,'fireDamageI') == '1' else False
                 data['fireDamageIPlus'] = True if getattr(iop,'fireDamageIPlus') == '1' else False
                 data['scratchI'] = getattr(iop,'fireDamageIPlus')
