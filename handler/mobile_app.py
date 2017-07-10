@@ -1632,11 +1632,11 @@ class MobilInsuranceOrderBaseHandler(MobileBaseHandler):
     def get_store_policies(self, store):
         insurance_list = []
         store_policies = SSILubePolicy.select().where(SSILubePolicy.store == store)
-        insurance_active = [1,8,12,10,6,9]
+
         for sp in store_policies:
             rake_back = []
             hasoil = True
-            if sp.score and (sp.store.area_code.find('00270001')>=0) and (sp.insurance.id in insurance_active):
+            if sp.score:
                 hasoil = False
                 rake_back.append({
                     'name': "积分/油品",
@@ -2041,7 +2041,7 @@ class MobilePayOrderHandler(MobileBaseHandler):
         self.finish()
 
 
-# -----------------------------------------------------工具箱-------------------------------------------------------------
+# -----------------------------------------------------工具箱------------------------------------------------------------
 @route(r'/mobile/tools', name='mobile_tools')  # 工具箱页
 class MobileToolsHandler(MobileBaseHandler):
     """
