@@ -1250,6 +1250,45 @@ class MobileDeliveryOrderHandler(MobileBaseHandler):
         self.write(simplejson.dumps(result))
 
 
+@route(r'/mobile/change_order_price', name='mobile_change_order_price')  # 手机端 经销商修改订单价格
+class ChangeOrderPriceHandler(MobileBaseHandler):
+    """
+    @apiGroup mine
+    @apiVersion 1.0.0
+    @api {post} /mobile/change_order_price 15. 经销商修改订单价格
+    @apiDescription 经销商修改订单价格
+
+    @apiHeader {String} token 用户登录凭证
+
+    @apiParam {Int} soid 子订单id
+    @apiParam {Int} sub_order_price 子订单原价
+    @apiParam {Int} sub_order_price_new 子订单修改后价格
+
+    @apiSampleRequest /mobile/change_order_price
+    """
+    @require_auth
+    def post(self):
+        result = {'flag': 0, 'msg': '', 'data': ''}
+        soid = self.get_body_argument('soid', None)
+        sub_order_price = self.get_body_argument('sub_order_price', None)
+        sub_order_price_new = self.get_body_argument('sub_order_price_new', None)
+        user = self.get_user()
+        sub_order = SubOrder.get(id=soid)
+        if sub_order.price == sub_order_price and sub_order.saler_store == user.store:
+            sub_order.price = sub_order_price_new
+            order_price = sub_order.order.total_price
+            sub_order.order.total_price -= (sub_order.price-sub_order_price_new)
+            sub_order.order.save()
+            sub_order.save()
+            now = int(time.time())
+            log = u'门店:%s将订单%s价格由%s修改为%s' % (user.store.name, sub_order.order.ordernum, sub_order_price,
+                                             sub_order_price_new)
+            OrderRepriceRecord.create(order=sub_order.order, sub_order=sub_order, order_price=order_price,
+                                      sub_order_price=sub_order_price, user=user, log=log, created=now)
+
+        self.write(simplejson.dumps(result))
+
+
 # ----------------------------------------------------积分--------------------------------------------------------------
 @route(r'/mobile/score', name='mobile_score')  # 积分入口
 class MobileScoreHandler(MobileBaseHandler):

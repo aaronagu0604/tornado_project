@@ -651,6 +651,21 @@ class OrderItem(db.Model):
         db_table = 'tb_order_items'
 
 
+# 修改订单历史
+class OrderRepriceRecord(db.Model):
+    id = PrimaryKeyField()
+    order = ForeignKeyField(Order, db_column='order_id')  # 所属订单
+    sub_order = ForeignKeyField(SubOrder, db_column='sub_order_id')  # 所属子订单
+    order_price = FloatField(default=0)  # 购买时产品价格或积分
+    sub_order_price = FloatField(default=0)  # 购买时产品价格或积分
+    user = ForeignKeyField(User, db_column='user_id')
+    log = CharField(default='', max_length=1024)
+    created = IntegerField(default=0)  # 创建时间
+
+    class Meta:
+        db_table = 'tb_order_reprice_record'
+
+
 # 保险公司
 class Insurance(db.Model):
     id = PrimaryKeyField()
