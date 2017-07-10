@@ -386,7 +386,7 @@ class MobileHomeHandler(MobileBaseHandler):
                                   'link': 'czj://insurance/' + str(insurance.id) + '/' + insurance.name
                               } for insurance in all]
                 self.application.memcachedb.set('insurances_no_login', insurances)
-        result['data']['category'] = [{'title': u'保险业务', 'data': insurances[:8]}]
+        result['data']['category'] = [{'title': u'保险业务', 'data': insurances}]
 
         # 热门分类
         # tmp_code = area_code
