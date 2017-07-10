@@ -1285,6 +1285,9 @@ class ChangeOrderPriceHandler(MobileBaseHandler):
                                              sub_order_price_new)
             OrderRepriceRecord.create(order=sub_order.order, sub_order=sub_order, order_price=order_price,
                                       sub_order_price=sub_order_price, user=user, log=log, created=now)
+            result['flag'] = 1
+        else:
+            result['msg'] = u'订单价格不一致，刷新后重试'
 
         self.write(simplejson.dumps(result))
 
