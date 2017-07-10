@@ -1274,6 +1274,14 @@ class ChangeOrderPriceHandler(MobileBaseHandler):
         sub_order_price_new = self.get_body_argument('sub_order_price_new', None)
         user = self.get_user()
         sub_order = SubOrder.get(id=soid)
+        if soid and sub_order_price and sub_order_price_new:
+            soid = int(soid)
+            sub_order_price = float(sub_order_price)
+            sub_order_price_new = float(sub_order_price_new)
+        else:
+            result['msg'] = u'传入参数有误'
+            self.write(simplejson.dumps(result))
+            return
         if sub_order.price == sub_order_price and sub_order.saler_store == user.store:
             sub_order.price = sub_order_price_new
             order_price = sub_order.order.total_price
