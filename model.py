@@ -126,7 +126,7 @@ class AdminUserLog(db.Model):
 # 门店
 class Store(db.Model):
     id = PrimaryKeyField()
-    store_type = IntegerField(default=1)  # 门店类型 1经销商 2社会修理厂（门店）
+    store_type = IntegerField(default=1)  # 门店类型 1经销商 2社会修理厂（门店）3 其它
     admin_code = CharField(max_length=20, null=True)  # 业务推广人员编号
     franchiser = IntegerField(default=0)  # 如果门店是修理厂，该字段是给修理厂返油的经销商
     admin_user = ForeignKeyField(AdminUser, related_name='stores', db_column='admin_user_id', null=True)  # 业务推广人员
