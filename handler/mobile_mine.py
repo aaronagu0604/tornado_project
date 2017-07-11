@@ -412,9 +412,9 @@ class MobileSellOrderHandler(MobileBaseHandler):
         sos = SubOrder.select().where(ft).order_by(SubOrder.id.desc()).paginate(index, setting.MOBILE_PAGESIZE)
         for so in sos:
             items = []
-            totalprice = 0.0
+            # totalprice = 0.0
             for soi in so.items:
-                totalprice += soi.price*soi.quantity
+                # totalprice += soi.price*soi.quantity
                 items.append(
                     {
                         'product': soi.product.name,
@@ -433,8 +433,8 @@ class MobileSellOrderHandler(MobileBaseHandler):
                 'saler_store': so.saler_store.name,
                 'buyer_store': so.buyer_store.name,
                 'order_type': so.order.order_type,
-                'price': totalprice,
-                'score': int(totalprice),
+                'price': so.price,
+                'score': so.score,
                 'status': so.status,
                 'items': items,
                 'ordered': time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(so.order.ordered)),
@@ -494,7 +494,7 @@ class MobileSubOrderDetailHandler(MobileBaseHandler):
         result['data']['ordered'] = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(suborder.order.ordered))
 
         items = []
-        total_price = 0.0
+        # total_price = 0.0
         for product in suborder.items:
             pics = [item.pic for item in product.product.pics]
             pic = None
@@ -502,7 +502,7 @@ class MobileSubOrderDetailHandler(MobileBaseHandler):
                 pic = pics[0]
             # productattibute = ProductAttributeValue.get(ProductAttributeValue.product == product.product)
             # attribute = "%s %s" % (productattibute.attribute.name, productattibute.value)
-            total_price += product.price*product.quantity
+            # total_price += product.price*product.quantity
             items.append({
                 'img': pic,
                 'name': product.product.name,
@@ -513,7 +513,7 @@ class MobileSubOrderDetailHandler(MobileBaseHandler):
         if items:
             result['flag'] = 1
         result['data']['items'] = items
-        result['data']['totalprice'] = total_price
+        # result['data']['totalprice'] = total_price
         self.write(simplejson.dumps(result))
 
 
@@ -1273,7 +1273,6 @@ class ChangeOrderPriceHandler(MobileBaseHandler):
         sub_order_price = self.get_body_argument('sub_order_price', None)
         sub_order_price_new = self.get_body_argument('sub_order_price_new', None)
         user = self.get_user()
-        sub_order = SubOrder.get(id=soid)
         if soid and sub_order_price and sub_order_price_new:
             soid = int(soid)
             sub_order_price = float(sub_order_price)
@@ -1282,6 +1281,7 @@ class ChangeOrderPriceHandler(MobileBaseHandler):
             result['msg'] = u'传入参数有误'
             self.write(simplejson.dumps(result))
             return
+        sub_order = SubOrder.get(id=soid)
         if sub_order.price == sub_order_price and sub_order.saler_store == user.store:
             sub_order.price = sub_order_price_new
             order_price = sub_order.order.total_price
