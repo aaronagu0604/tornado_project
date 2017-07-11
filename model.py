@@ -132,7 +132,7 @@ class Store(db.Model):
     admin_user = ForeignKeyField(AdminUser, related_name='stores', db_column='admin_user_id', null=True)  # 业务推广人员
     name = CharField(max_length=100)  # 门店名称
     area_code = CharField(max_length=40)  # 区域编码
-    insurance_policy_code = CharField(max_length=40,null=True)  # 返佣策略区域编码
+    insurance_policy_code = CharField(max_length=40, null=True)  # 返佣策略区域编码
     address = CharField(max_length=128, null=True)  # 详细地址
     legal_person = CharField(max_length=28, null=True)  # 法人
     license_code = CharField(max_length=128, null=True)  # 营业执照注册号

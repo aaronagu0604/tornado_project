@@ -235,6 +235,7 @@ class StoreDetailHandler(AdminBaseHandler):
         license_code = self.get_argument('license_code', '')
         linkman = self.get_argument('linkman', '')
         mobile = self.get_argument('mobile', '')
+        policy_code_province = self.get_argument('policy_code_province', '')
         insurance_policy_code = self.get_argument('policy_code', '')
         referee_code = self.get_argument('referee', '')
 
@@ -255,7 +256,7 @@ class StoreDetailHandler(AdminBaseHandler):
         store.linkman = linkman
         store.mobile = mobile
         store.store_type = store_type
-        store.insurance_policy_code = insurance_policy_code
+        store.insurance_policy_code = insurance_policy_code if insurance_policy_code else policy_code_province
         store.admin_code = referee_code
         store.save()
         AdminUserLog.create(admin_user=self.get_admin_user(), created=int(time.time()),

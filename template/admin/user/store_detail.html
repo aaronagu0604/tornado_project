@@ -53,8 +53,7 @@
                                     style="width:160px;height:32px;border-radius: 4px;margin-right:15px;">
                                 <option value="">--所有城市--</option>
                             </select>
-                            <select name="district" id="district"
-                                    style="width:160px;height:32px;border-radius: 4px;margin-right:15px;">
+                            <select name="district" id="district" style="width:160px;height:32px;border-radius: 4px;margin-right:15px;">
                                 <option value="">--所有区县--</option>
                             </select>
                         </div>
@@ -134,12 +133,23 @@
                             <input type="text" name="mobile" class="form-control" value="{{s.mobile or ''}}"  required placeholder="联系人手机号" />
                         </div>
                     </div>
-                    <div class="col-sm-4">
+                    <div class="col-sm-12">
                         <div class="form-group has-success">
-                            <label class="control-label">返佣策略区域</label>
-                            <input type="text" name="policy_code" class="form-control" value="{{s.insurance_policy_code or ''}}"  required placeholder="" />
+                        <label class="control-label">返佣策略区域</label>
+                        <div class="input-group">
+                            <select name="policy_code_province" id="province2" onchange="GetSubAreas(this.value, 'city2', '')" style="width:160px;height:32px;border-radius: 4px;margin-right:15px;">
+                                <option value="">--所有省份--</option>
+                                {% for area in areas %}
+                                <option value="{{area.code}}" {{ 'selected' if area.code==s.insurance_policy_code[:4] else ''}}>{{area.name}}</option>
+                                {% endfor %}
+                            </select>
+                            <select name="policy_code" id="city2" style="width:160px;height:32px;border-radius: 4px;margin-right:15px;">
+                                <option value="">--所有城市--</option>
+                            </select>
                         </div>
                     </div>
+                    </div>
+
                     {% if 'A' in admin.roles or 'D' in admin.roles %}
                     <div class="col-sm-4">
                     <div class="form-group has-success">
@@ -230,7 +240,6 @@
                                 </tr>
                                 {% endfor %}
                                 </thead>
-
                             </table>
                         </div>
                     </div>
@@ -284,11 +293,15 @@
 <script>
     $(document).ready(function() {
         // 页面初始化时绑定地址信息：省、市、区
-        if("{{s.area_code}}".length >= 8) {
+        if("{{s.area_code}}".length >= 4) {
             GetSubAreas("{{s.area_code[:4]}}", "city", "{{s.area_code[:8]}}");
             if("{{s.area_code}}".length >= 12) {
                 GetSubAreas("{{s.area_code[:8]}}", "district", "{{s.area_code[:12]}}");
             }
+        }
+
+        if("{{s.insurance_policy_code}}".length >= 4) {
+            GetSubAreas("{{s.insurance_policy_code[:4]}}", "city2", "{{s.insurance_policy_code[:8]}}");
         }
     });
 
@@ -306,11 +319,17 @@
 
     function GetSubAreas(parent_code, ddl_id, seleted_code) {
         if(parent_code.length == 0) {
-            $("#city").html('');
-            $("#city").append("<option value=''>--所有城市--</option>");
-            $("#district").html('');
-            $("#district").append("<option value=''>--所有区县--</option>");
-            return;
+            if(ddl_id == "city" | ddl_id == "district"){
+                $("#city").html('');
+                $("#city").append("<option value=''>--所有城市--</option>");
+                $("#district").html('');
+                $("#district").append("<option value=''>--所有区县--</option>");
+                return;
+            } else if(ddl_id == "city2"){
+                $("#city2").html('');
+                $("#city2").append("<option value=''>--所有城市--</option>");
+                return;
+            }
         }
         $.get("/ajax/GetSubAreas", { pcode: parent_code,  t: Math.random() }, function (data) {
             data = jQuery.parseJSON(data);
