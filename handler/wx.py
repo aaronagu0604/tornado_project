@@ -586,6 +586,18 @@ class UserIncomeRecord11Handler(WXBaseHandler):
         cards = CarServiceCard.select().where(CarServiceCard.user==user.id,CarServiceCard.status==1)
         self.render('weixin/user_car_service_cards.html', cards=cards)
 
+@route(r'/car_service_card_detail/(\d+)', name='wx_car_service_card_detail')  # 汽车保养券详情
+class UserIncomeRecord11Handler(WXBaseHandler):
+    def get(self,card_id):
+        try:
+            card = CarServiceCard.get(id=int(card_id))
+            user = self.get_current_user()
+            stores = Store.select().where(Store.area_code == user.store.area_code,Store.process_car_service==1)
+        except Exception:
+            card = None
+        self.render('weixin/user_car_service_card_detail.html', card=card,stores = stores)
+
+
 # -----------------------------------------------分享推广----------------------------------------------------------------
 @route(r'/share/(\d+)', name='wx_share')  # 分享页面
 class ShareHandler(BaseHandler):
