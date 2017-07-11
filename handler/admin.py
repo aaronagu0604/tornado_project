@@ -345,6 +345,24 @@ class DeletePolicyHandler(AdminBaseHandler):
 
         self.redirect('/admin/store_detail/%s'%store_id)
 
+@route(r'/admin/car_service_cards', name='admin_car_service_cards')  # 服务券核销历史
+class CarServiceCardsHandler(AdminBaseHandler):
+    def get(self):
+        page = int(self.get_argument("page", '1') if len(self.get_argument("page", '1')) > 0 else '1')
+        pagesize = self.settings['admin_pagesize']
+        store_id = int(self.get_argument("store_id", '-1'))
+
+        cfs = CarServiceCard.select().where((CarServiceCard.service_store == store_id))
+        total = cfs.count()
+        if total % pagesize > 0:
+            totalpage = total / pagesize + 1
+        else:
+            totalpage = total / pagesize if (total / pagesize) > 0 else 1
+        cfs = cfs.order_by(CarServiceCard.created.desc()).paginate(page, pagesize)
+
+        self.render('admin/user/car_service_card_history.html', list=cfs, total=total, page=page, pagesize=pagesize,
+                    totalpage=totalpage, store_id=store_id)
+
 
 @route(r'/admin/score_history', name='admin_score_history')  # 积分消费历史
 class ScoreHistoryHandler(AdminBaseHandler):

@@ -184,6 +184,11 @@
                     <div class="col-sm-6"><label>商品购买订单：{{s.orders.count()}}(<a href='#' onclick="pop('采购订单历史','/admin/order_history?store_id={{s.id}}')">查看详情</a>)</label></div>
                     {% endif %}
                 </div>
+                {% if s.process_car_service == 1 %}
+                <div class="row">
+                    <div class="col-sm-6"><label>核销服务券：{{s.store_service_cards.count()}} (<a href='#' onclick="pop('核销服务券记录','/admin/car_service_cards?store_id={{s.id}}')">查看记录</a>)</label></div>
+                </div>
+                {% endif %}
                 <br>
                 <div class="panel panel-success">
                     <div class="panel-heading">
