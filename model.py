@@ -160,7 +160,7 @@ class CarServiceType(db.Model):
     id = PrimaryKeyField()
     type = IntegerField(default=1) # 保养服务类型：1洗车券，2精洗券，3打蜡保养......
     name = CharField(max_length=64,null=True) # 标题
-    desc = CharField(max_length=256,nul=True) # 描述
+    desc = CharField(max_length=256,null=True) # 描述
 
     class Meta:
         db_table = 'tb_car_service_type'
@@ -168,13 +168,13 @@ class CarServiceType(db.Model):
 # 汽车保养券
 class CarServiceCard(db.Model):
     id = PrimaryKeyField()
-    create_store = ForeignKeyField(Store, related_name='addresses', db_column='create_store_id')  # 发放店铺
-    service_store = ForeignKeyField(Store, related_name='addresses', db_column='service_store_id',null=True)  # 消费店铺
+    create_store = ForeignKeyField(Store, related_name='store_create_cards', db_column='create_store_id')  # 发放店铺
+    service_store = ForeignKeyField(Store, related_name='store_service_cards', db_column='service_store_id',null=True)  # 消费店铺
 
     # 服务券信息采用复制保存副本，预防服务券类型变更引起用户持有服务券信息同步变更
     type = IntegerField(default=1)  # 保养服务类型：1洗车券，2精洗券，3打蜡保养......
     name = CharField(max_length=64, null=True)  # 标题
-    desc = CharField(max_length=256, nul=True)  # 描述
+    desc = CharField(max_length=256, null=True)  # 描述
     created = IntegerField(default=0)  # 创建时间
 
     class Meta:
