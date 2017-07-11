@@ -155,6 +155,28 @@ class MobileCheckVCodeAppHandler(MobileBaseHandler):
         self.write(simplejson.dumps(result))
 
 
+@route(r'/mobile/get_referee_code', name='mobile_get_referee_code')  # 手机端 获取推广人员编号
+class GetRefereeCodeRegHandler(MobileBaseHandler):
+    """
+    @apiGroup auth
+    @apiVersion 1.0.0
+    @api {get} /mobile/get_referee_code 03. 获取推广人员编号
+    @apiDescription 获取推广人员编号
+
+    @apiSampleRequest /mobile/get_referee_code
+    """
+
+    def get(self):
+        result = {'flag': 0, 'msg': '', 'data': []}
+        for referee in AdminUser.select().where(AdminUser.active == 1, AdminUser.roles.contains('S')):
+            result['data'].append({
+                'name': referee.realname,
+                'code': referee.code,
+            })
+        result['flag'] = 1
+        self.write(simplejson.dumps(result))
+
+
 @route(r'/mobile/reg', name='mobile_reg')  # 手机端注册
 class MobileRegHandler(MobileBaseHandler):
     """
@@ -165,7 +187,7 @@ class MobileRegHandler(MobileBaseHandler):
 
     @apiParam {String} mobile 电话号码
     @apiParam {String} password 密码
-    @apiParam {Int}     store_type 门店类型 0其它 1经销商 2社会修理厂（门店）
+    @apiParam {Int}     store_type 门店类型 1经销商 2社会修理厂（门店）3其它
     @apiParam {String}    referee 推广人编号
     @apiParam {String}    companyName 公司名称
     @apiParam {String}     province 省
