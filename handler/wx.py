@@ -24,12 +24,13 @@ secret = '8d75a7fa77dc0e5b2dc3c6dd551d87d6'
 '''                   
 https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf23313db028ab4bc&redirect_uri=http%3A%2F%2Fwx.dev.520czj.com%2Fwxapi%2Flogin&response_type=code&scope=snsapi_base&state=1#wechat_redirect
 '''
-
+# -----------------------------------------------微信配置----------------------------------------------------------------
 @route(r'/', name='wx root') # 根域名重定向
 class RootHandler(WXBaseHandler):
     def get(self):
         self.redirect('/index')
 
+# --------------------------------------------------首页----------------------------------------------------------------
 @route(r'/signature', name='wx signature') # 公众号服务器验证
 class Signature(BaseHandler):
     def get(self):
@@ -93,6 +94,7 @@ class IndexHandler(WXBaseHandler):
         msg['link'] = msg['link'][5:]
         self.render('weixin/index.html',banner=banner, insurance=insurance,msg=msg,tab_on='index')
 
+# -----------------------------------------------创建保险流程------------------------------------------------------------
 @route(r'/insurance/(\d+)', name='wx_insurance')  # 保险公司详情页面
 class InsuranceHandler(WXBaseHandler):
     def get(self,id):
@@ -335,6 +337,7 @@ class PayDetailHandler(WXBaseHandler):
 
         self.render('weixin/pay_detail.html', payinfo=payinfo,typestr=typestr)
 
+# -----------------------------------------------第三方登录：微信---------------------------------------------------------
 @route(r'/wxapi/login', name='wx_api_login')  # html 登录
 class WXApiLoginHandler(BaseHandler):
     def get_access_token_from_code(self,code):
@@ -470,6 +473,7 @@ class RegisterHandler(BaseHandler):
             # 未关注太跳关注引导
             self.redirect('https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzIyNDMyODk2NQ==&scene=124#wechat_redirect')
 
+# -----------------------------------------------个人中心----------------------------------------------------------------
 @route(r'/mine', name='wx_mine')  # html 会员中心
 class MineHandler(WXBaseHandler):
     def get_mobile_mine(self, token):
@@ -575,6 +579,14 @@ class UserIncomeRecord11Handler(WXBaseHandler):
         self.write(simplejson.dumps(demo))
         self.finish()
 
+@route(r'/car_service_cards', name='wx_car_service_cards') # 汽车保养券列表
+class UserIncomeRecord11Handler(WXBaseHandler):
+    def get(self):
+        user = self.get_current_user()
+        cards = CarServiceCard.select().where(CarServiceCard.user==user.id,CarServiceCard.status==1)
+        self.render('weixin/user_car_service_cards.html', cards=cards)
+
+# -----------------------------------------------分享推广----------------------------------------------------------------
 @route(r'/share/(\d+)', name='wx_share')  # 分享页面
 class ShareHandler(BaseHandler):
     def create_url(self,user_id):
