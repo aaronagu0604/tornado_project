@@ -156,14 +156,16 @@ class Store(db.Model):
         db_table = "tb_store"
 
 
+# 优惠券类型
 class CarServiceType(db.Model):
     id = PrimaryKeyField()
-    type = IntegerField(default=1) # 保养服务类型：1洗车券，2精洗券，3打蜡保养......
-    name = CharField(max_length=64,null=True) # 标题
-    desc = CharField(max_length=256,null=True) # 描述
+    type = IntegerField(default=1)    # 保养服务类型：1洗车券，2精洗券，3打蜡保养......
+    name = CharField(max_length=64,null=True)    # 标题
+    desc = CharField(max_length=256,null=True)    # 描述
 
     class Meta:
         db_table = 'tb_car_service_type'
+
 
 # 用户表
 class User(db.Model):
@@ -203,7 +205,8 @@ class User(db.Model):
     class Meta:
         db_table = 'tb_users'
 
-# 汽车保养券
+
+# 汽车保养券 优惠券
 class CarServiceCard(db.Model):
     id = PrimaryKeyField()
     create_store = ForeignKeyField(Store, related_name='store_create_cards', db_column='create_store_id')  # 发放店铺
@@ -215,6 +218,7 @@ class CarServiceCard(db.Model):
     name = CharField(max_length=64, null=True)  # 标题
     desc = CharField(max_length=256, null=True)  # 描述
     created = IntegerField(default=0)  # 创建时间
+    overdue_time = IntegerField(default=0)  # 过期时间
     deal_time = IntegerField(null=True)  # 消费时间
     status = IntegerField(default=1)  # 状态：-1无效，1有效，2使用，
 
@@ -1087,6 +1091,7 @@ class SSILubePolicy(db.Model):
     cash = TextField(default='')  # 返现政策的json串  # 返现政策
     lube = TextField(default='')  # 返油政策的json串  # 返油政策
     score = TextField(default='')  # 返油政策的json串  # 返积分政策
+    # saver_ticket = TextField(default='')  # 优惠券json串  # 返积分政策
     privilege = TextField(default='')  # 续保、转保优惠的json串
 
     class Meta:
@@ -1169,6 +1174,7 @@ class Feedback(db.Model):
         db_table = "tb_feedback"
 
 
+# 移动app更新
 class MobileUpdate(db.Model):
     id = PrimaryKeyField()
     name = CharField(max_length=64, default='')  # 版本名称

@@ -1065,6 +1065,8 @@
                                                 <div class="col-xs-3 rightTxt"><input name="profit" {% if isG %} disabled="disabled" {% endif %} value="" class="form-control"/></div>
                                                 <div style="color:#B94FFF;" class="col-xs-3 leftTxt"><span>返现：</span></div>
                                                 <div class="col-xs-3 rightTxt"><input name="cash" {% if isG %} disabled="disabled" {% endif %} value="{{program['cash']}}" class="form-control"/></div>
+                                                <div class="col-xs-3 leftTxt"></div>
+                                                <div class="col-xs-12 leftTxt"><span>说明：所有返现先乘以0.94再计算返佣</span></div>
                                             </div>
                                             <!--返油策略-->
                                             <div>
@@ -1582,7 +1584,6 @@
             document.getElementById(pid+'1').style.display="";
             document.getElementById(pid+'2').style.display="none";
             document.getElementById(pid+'3').style.display="none";
-            console.log(forceIPrice*1, business_price*1, iid);
             // 获取数据
             $.get("/ajax/calculate_gift_oil", { _xsrf:xsrf, iopid:pid, insurance:iid, business:business_price, force:forceIPrice}, function (data) {
                 var obj = jQuery.parseJSON(data);
@@ -1622,7 +1623,7 @@
                     var profit = $(program).find('input[name="profit"]').val();    // 利润率
                     var business_tax = $(program).find('input[name="business_tax"]').val();    // 商业险税率
                     var force_tax = $(program).find('input[name="force_tax"]').val();    // 交强险税率
-                    var cash = business_price*(1-business_tax/100)*business_s/100 + forceIPrice*(1-force_tax/100)*force_s/100 - total_price*(ali_rate/100+profit/100);
+                    var cash = business_price*0.94*(1-business_tax/100)*business_s/100 + forceIPrice*0.94*(1-force_tax/100)*force_s/100 - total_price*(ali_rate/100+profit/100);
                     $(program).find('input[name="cash"]').val(cash.toFixed(2));
                 }
                 else {
@@ -2022,8 +2023,6 @@
             glassIPrice*1+scratchIPrice*1+scratchIPlusPrice*1+fireDamageIPrice*1+fireDamageIPlusPrice*1+wadeIPrice*1+
             wadeIPlusPrice*1+thirdSpecialIPrice*1).toFixed(2);
         var total_price = (forceIPrice*1 + total_business*1 + vehicle_tax_price*1).toFixed(2);
-        console.log(total_business);
-        console.log(total_price);
         // 回填
         if(business_price*1 != total_business){
             $(program).find('span[name="check_result"]').text('商业险总额错误！');
