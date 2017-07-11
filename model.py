@@ -140,6 +140,8 @@ class Store(db.Model):
     store_image = CharField(max_length=128)  # 门店图片
     lng = CharField(max_length=12, null=True)  # 经度坐标
     lat = CharField(max_length=12, null=True)  # 纬度坐标
+    process_car_service = IntegerField(default=0) # 店铺是否允许提供保养服务：0否，1是
+    store_rake_back_policy = TextField(default='')  # 店铺返佣政策（汽车服务卡券）的json串：模仿返油。实现。
     pay_password = CharField(max_length=128, null=True)  # 支付密码
     intro = TextField()  # 店铺介绍 -------------，后台使用
     linkman = CharField(max_length=32)  # 联系人 -------------，默认为法人
@@ -152,6 +154,31 @@ class Store(db.Model):
 
     class Meta:
         db_table = "tb_store"
+
+
+class CarServiceType(db.Model):
+    id = PrimaryKeyField()
+    type = IntegerField(default=1) # 保养服务类型：1洗车券，2精洗券，3打蜡保养......
+    name = CharField(max_length=64,null=True) # 标题
+    desc = CharField(max_length=256,nul=True) # 描述
+
+    class Meta:
+        db_table = 'tb_car_service_type'
+
+# 汽车保养券
+class CarServiceCard(db.Model):
+    id = PrimaryKeyField()
+    create_store = ForeignKeyField(Store, related_name='addresses', db_column='create_store_id')  # 发放店铺
+    service_store = ForeignKeyField(Store, related_name='addresses', db_column='service_store_id',null=True)  # 消费店铺
+
+    # 服务券信息采用复制保存副本，预防服务券类型变更引起用户持有服务券信息同步变更
+    type = IntegerField(default=1)  # 保养服务类型：1洗车券，2精洗券，3打蜡保养......
+    name = CharField(max_length=64, null=True)  # 标题
+    desc = CharField(max_length=256, nul=True)  # 描述
+    created = IntegerField(default=0)  # 创建时间
+
+    class Meta:
+        db_table = 'tb_car_service_card'
 
 
 # 用户表
