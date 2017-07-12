@@ -213,6 +213,9 @@ class WXBaseHandler(BaseHandler):
         ret['appid'] = appid
         return ret
 
+    def get_current_user(self):
+        return User.get(id=1)
+
     def prepare(self):
         logging.info('into wxbase prepare')
         user = self.get_current_user()
