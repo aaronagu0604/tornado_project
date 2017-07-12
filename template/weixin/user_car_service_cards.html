@@ -9,7 +9,26 @@
 .address-box .weui-panel__bd{border-bottom:10px solid #f5f5f5;}
 .default-add{color:#fff; padding:0 5px; font-size:13px; margin-top:5px; display:inline-block; background:#e21323;}
 
-
+.cards_container {
+    alignment: center;
+    background-image: url("../../style/images/card_bg.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-origin: content-box;
+    background-size: cover;
+    height: 90px;
+}
+    .card_use{
+        width: 10px;
+    }
+    p{
+        text-align: center;
+        color: #fff
+    }
+    .card_use{
+        margin-right: 25px;
+        color: #fff;
+    }
 </style>
 {% endblock %}
 {% block content %}
@@ -18,9 +37,15 @@
         {% for card in cards %}
         <div class="weui-panel__bd">
             <div class="weui-media-box weui-media-box_text address-list-box">
-                <p class="weui-media-box__desc address-txt">{{card.name}}</p>
-                <p class="weui-media-box__desc address-txt">{{card.desc}}</p>
-                <a href="/car_service_card_detail/{{card.id}}" class="address-edit">使用</a>
+                <div class="weui-cell cards_container">
+                    <div class="weui-cell__bd cell_left">
+                        <p style="font-size: 24px">{{card.name}}</p>
+                        <p style="font-size: 12px">{{card.desc}}</p>
+                        <p style="font-size: 12px">有效日期:2017-12-20</p>
+                    </div>
+                    <a class="weui-cell__ft card_use" href="/car_service_card_detail/1">立即使用</a>
+                </di>
+
             </div>
         </div>
         {% endfor %}
