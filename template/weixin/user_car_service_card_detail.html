@@ -3,17 +3,55 @@
 <title>添加收货地址</title>
 
 <style>
-    .wy-address-edit {
-    font-size: 14px;
+
+    .weui-cells_radio .weui-check:checked+.weui-icon-checked:before {
+        display: block;
+        content: "\EA06";
+        color: #09bb07;
+        font-size: 23px
+    }
+    .weui-cells_radio .weui-icon-checked:before {
+        display: block;
+        content: "\EA01";
+        color: #c9c9c9;
+        font-size: 23px
     }
 </style>
 {% endblock %}
 {% block content %}
 
 <div class="weui-content">
-  <form action="" method="post" enctype="multipart/form-data">
-
-  </form>
+      <div class="mine-center-top">
+          <div class="weui-media-box weui-media-box_appmsg">
+              <div class="weui-media-box__hd">
+                    <p>{{card.name}}</p>
+                    <p>{{card.deal_time}}</p>
+              </div>
+              <div class="weui-media-box__bd">
+                  <p>{{card.desc}}</p>
+              </div>
+          </div>
+      </div>
+    <div  class="weui-cells weui-cells_radio order_price_base">
+        <div id="list" class="weui-panel row-box">
+            {{ set setdefault = False }}
+            {% for s in stores %}
+            <div class="weui-panel__bd">
+                <div class="weui-media-box weui-media-box_text list-box">
+                        <label class="weui-cell weui-check__label order_price_statue" for="{{s.id}}">
+                            <div class=" weui-cell__bd">
+                                <input type="radio" name="radio1" class="weui-check" id="{{s.id}}" {% if not setdefault %} checked = "checked" {{ set setdefault = True }} {% endif %}>
+                                <span class="weui-icon-checked"></span>
+                                <span>{{s['name']}}</span>
+                            </div>
+                        </label>
+                        <p>{{s.address}}</p>
+                        <p>{{s.mobile}}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
 </div>
 
 {% endblock %}
