@@ -594,7 +594,7 @@ class UserIncomeRecord11Handler(WXBaseHandler):
             user = self.get_current_user()
             #stores = Store.select().where(Store.area_code == user.store.area_code,Store.process_car_service==1)
             stores = Store.select().where(Store.id << [1,2,3])
-            print "---",stores.first.id
+
         except Exception:
             card = None
         self.render('weixin/user_car_service_card_detail.html', card=card,stores = stores)
