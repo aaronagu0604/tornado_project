@@ -14,9 +14,9 @@
 <div style="background: #f1f1f1;padding-top: 20px">
     {% for i in tickets %}
     <div style="background: #FFFFFF">
-        <p style="font-size: 24px">{{tickets.name}}</p>
-        <p style="font-size: 12px">{{tickets.desc}}</p>
-        <p style="font-size: 12px">使用时间：{{tickets.deal_time}}</p>
+        <p style="font-size: 24px">{{i.name}}</p>
+        <p style="font-size: 12px">{{i.desc}}</p>
+        <p style="font-size: 12px">使用时间：{{i.deal_time}}</p>
     </div>
     {% endfor %}
 </div>
