@@ -286,6 +286,42 @@
             </div>
         </div>
     </div>
+
+
+    <div class="col-sm-12 col-md-6">
+        <div class="panel panel-primary">
+            <div class="panel-body">
+                <h4>优惠券配置</h4>
+                <div class="panel panel-success">
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover" cellpadding="0" cellspacing="0" border="0" style="text-align:center;">
+                                <thead>
+                                <tr>
+                                    <th style="width:10%;text-align:center;">险种</th>
+                                    <th style="width:15%;text-align:center;">最低金额</th>
+                                    <th style="width:15%;text-align:center;">最高金额</th>
+                                    <th style="width:15%;text-align:center;">优惠券</th>
+                                    <th style="width:10%;text-align:center;">操作</th>
+                                </tr>
+                                {% for ticket in saver_ticket %}
+                                <tr>
+                                    <td>{{ticket['name']}}</td>
+                                    <td><a href="#" onclick="pop('优惠券政策','/admin/edit_saver_ticket?ic_id={{ticket['ic_id']}}&sid={{s.id}}')">查看/修改</a></td>
+                                    <td>
+                                        <a href="/admin/del_saver_ticket/{{s.id}}?ic_id={{ticket['ic_id']}}" onclick="return confirm('确定删除此优惠券政策?')" style="padding:4px 5px;border:1px solid #438bca;color:#438bca;border-radius:4px;font-size:12px;text-decoration:none;">删除</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                                </thead>
+                            </table>
+                        </div>
+                        <td><a href="#" onclick="pop('添加优惠券','/admin/add_policy/{{s.id}}')" style="padding:4px 5px;border:1px solid #438bca;color:#438bca;border-radius:4px;font-size:12px;text-decoration:none;">新增</a></td>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
 {% block js %}

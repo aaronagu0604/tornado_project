@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="/style/css/bootstrap.min.css" rel="stylesheet">
+    <script src="/style/js/jquery-1.11.1.min.js"></script>
+    <script src="/style/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/style/js/layer/layer.js"></script>
+</head>
+<body>
+<div class="row" style="margin:5px 5px 0 5px;">
+    <div class="panel panel-primary">
+        <div class="panel-body">
+            <div class="row">
+                <form action="/admin/insurance/lube" method="post" style="margin-top:10px;">
+                    {{xsrf()}}
+                    <input type="hidden" name="exid" value="{{item['id'] or '0'}}">
+                    <input type="hidden" name="iid" value="{{iid}}">
+                    <input type="hidden" name="sid" value="{{sid}}">
+                    <input type="hidden" name="json" id="json" value='{{data}}'>
+                    <input type="hidden" name="area_code" value="{{area_code}}">
+                    <div class="col-sm-12">
+                        <input class="btn btn-primary" type="submit" value="保存" onclick="javascript:return saveData();"/>
+                        <input class="btn btn-primary" type="button" value="增加礼品组" onclick="addGroup()"/>
+                    </div>
+                </form>
+                <div class="col-sm-12" style="margin-top: 5px;" id="giftGroup"></div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+<script>
+    $(document).ready(function() {
+        var json = $('#json').val();
+        if(json.length > 1) {
+            console.debug(json);
+            var groups = JSON.parse(json);
+            for(var i=0; i<groups.length; i++) {
+                var html = '<div class="panel panel-default" name="gift_item"> <div class="panel-heading"> <h3 class="panel-title" style="height:20px;">';
+                html += '<span class="pull-left">' + groups[i].gift + '</span>';
+                html += '<span class="pull-right" > {% if check != 'on' %}<a href="#" style="font-size:8px;" onclick="removeGroup(this)">删除组</a>{% endif %}';
+                html += '{% if check != 'on' %}<a href="#" style="font-size:8px; margin:0px 20px;" onclick="addLine(this)">增加行</a>{% endif %}</span></h3></div><table class="table">';
+
+                html += '<th>显示文本</th><th>起始价格</th><th>上限价格</th><th>车主礼品数</th><th>门店礼品数</th><th>所购险种</th> ';
+                for(var j=0; j<groups[i].items.length; j++) {
+                    html += '<tr><td> <input type="text" class="form-control" name="display_text" placeholder="显示文本" value="'+groups[i].items[j].name+'"></td>';
+                    html+='<td><input type="text" class="form-control" name="minprice" placeholder="起始价格" value="'+groups[i].items[j].minprice+'"></td>';
+                    html+='<td><input type="text" class="form-control" name="maxprice" placeholder="上限价格" value="'+groups[i].items[j].maxprice+'"></td>';
+                    html+='<td><input type="text" class="form-control" name="gift_driver" placeholder="车主礼品数" value="'+groups[i].items[j].driver+'"></td>';
+                    html+='<td><input type="text" class="form-control" name="gift_store" placeholder="门店礼品数" value="'+groups[i].items[j].store+'"></td>';
+                    html+='<td><select class="form-control">' + getOption("1",groups[i].items[j].flag) +
+                        getOption('2',groups[i].items[j].flag) +
+                        getOption('3',groups[i].items[j].flag) +
+                        '</select> </td> ';
+                    html += '<td>{% if check != 'on' %}<a href="#" style="font-size:8px;" onclick="removeLine(this)">减少行</a>{% endif %}</td></tr>';
+                }
+                html+='</table> </div>';
+                $('#giftGroup').append(html);
+            }
+        }
+    });
+
+    function getOption(defaultflag, currentflag) {
+        if (defaultflag == '1'){
+            if (currentflag == defaultflag) {
+                return '<option value="1" selected>单交强险</option>';
+            }
+            else {
+                return '<option value="1">单交强险</option>'
+            }
+        }
+        else if (defaultflag == '2'){
+            if (currentflag == defaultflag) {
+                return '<option value="2" selected>单商业险</option>';
+            }
+            else {
+                return '<option value="2">单商业险</option>'
+            }
+        }
+        else if (defaultflag == '3'){
+            if (currentflag == defaultflag) {
+                return '<option value="3" selected>交强险+商业险</option>';
+            }
+            else {
+                return '<option value="3">交强险+商业险</option>'
+            }
+        }
+    }
+
+    function addGroup() {
+        var html = '<div class="panel panel-default" name="gift_item"> <div class="panel-heading"> <h3 class="panel-title" style="height:20px;">';
+        html += '<span class="pull-left">' + $('#gift').val() + '</span>';
+        html += '<span class="pull-right" > <a href="#" style="font-size:8px;" onclick="removeGroup(this)">删除组</a>';
+        html += '<a href="#" style="font-size:8px; margin:0px 20px;" onclick="addLine(this)">增加行</a>';
+        html += '<a href="#" style="font-size:8px;" onclick="removeLine(this)">减少行</a></span></h3></div><table class="table">';
+        html += '<th>显示文本</th><th>起始价格</th><th>上限价格</th><th>车主礼品数</th><th>门店礼品数</th><th>所购险种</th> </table> </div>';
+        $('#giftGroup').append(html);
+    }
+
+    function removeGroup(obj) {
+        if(confirm("您是否要删除该组？")){
+            $(obj).parent().parent().parent().parent().remove();
+        }
+    }
+
+    function addLine(obj) {
+        var html = '<tr><td> <input type="text" class="form-control" name="display_text" placeholder="显示文本"></td>';
+        html+='<td><input type="text" class="form-control" name="minprice" placeholder="起始价格"></td>';
+        html+='<td><input type="text" class="form-control" name="maxprice" placeholder="上限价格"></td>';
+        html+='<td><input type="text" class="form-control" name="gift_driver" placeholder="车主礼品数"></td>';
+        html+='<td><input type="text" class="form-control" name="gift_store" placeholder="门店礼品数"></td>';
+        html+='<td><select class="form-control"> <option value="1">单交强险</option> ' +
+            '<option value="2">单商业险</option> <option value="3">交强险+商业险</option> ' +
+            '</select> </td> </tr>';
+        $(obj).parent().parent().parent().parent().find('table').append(html);
+    }
+
+    function removeLine(obj) {
+        var line = $(obj).parent().parent();
+        console.log(line);
+        line.remove();
+    }
+
+    function saveData() {
+        var groups = [];
+        $('div[name="gift_item"]').each(function(index,element){
+            var group = {};
+            group.gift = $(element).find('span[class="pull-left"]').html();
+            group.items = [];
+            $(element).find('table tr').each(function(index2, element2){
+                if (index2 > 0) {
+                    var item = {};
+                    item.name = $(element2).find('input[name="display_text"]').val();
+                    item.driver = $(element2).find('input[name="gift_driver"]').val();
+                    item.store = $(element2).find('input[name="gift_store"]').val();
+                    item.minprice = $(element2).find('input[name="minprice"]').val();
+                    item.maxprice = $(element2).find('input[name="maxprice"]').val();
+                    item.flag = $(element2).find('select').val();
+                    group.items.push(item);
+                }
+            });
+            groups.push(group);
+        });
+        $('#json').val(JSON.stringify(groups));
+        return true;
+    }
+</script>

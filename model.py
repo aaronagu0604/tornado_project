@@ -140,7 +140,14 @@ class Store(db.Model):
     store_image = CharField(max_length=128)  # 门店图片
     lng = CharField(max_length=12, null=True)  # 经度坐标
     lat = CharField(max_length=12, null=True)  # 纬度坐标
-    process_car_service = IntegerField(default=0) # 店铺是否允许提供保养服务：0否，1是
+    process_car_service = IntegerField(default=0)  # 店铺是否允许提供保养服务：0否，1是
+    ''' 优惠券 json 结构
+    [
+        {"name": u"单交强险", "flag": "1", "minprice":"", "maxprice":"", "ticket": [{'CarServiceType_id': "1", 'count': "2"}]},
+        {"name": u"单商业险", "flag": "2", "minprice":"", "maxprice":"", "ticket": [{'CarServiceType_id': "1", 'count': "2"}]},
+        {"name": u"交强险+商业险（1200-1399）", "flag": "3", "minprice":"","maxprice":"", "ticket": [{'CarServiceType_id': "1", 'count': "2"}]}
+    ]
+    '''
     store_rake_back_policy = TextField(default='')  # 店铺返佣政策（汽车服务卡券）的json串：模仿返油。实现。
     pay_password = CharField(max_length=128, null=True)  # 支付密码
     intro = TextField()  # 店铺介绍 -------------，后台使用
@@ -160,8 +167,9 @@ class Store(db.Model):
 class CarServiceType(db.Model):
     id = PrimaryKeyField()
     type = IntegerField(default=1)    # 保养服务类型：1洗车券，2精洗券，3打蜡保养......
-    name = CharField(max_length=64,null=True)    # 标题
-    desc = CharField(max_length=256,null=True)    # 描述
+    name = CharField(max_length=64, null=True)    # 标题
+    desc = CharField(max_length=256, null=True)    # 描述
+    price = FloatField(default=0)
 
     class Meta:
         db_table = 'tb_car_service_type'
@@ -1091,7 +1099,6 @@ class SSILubePolicy(db.Model):
     cash = TextField(default='')  # 返现政策的json串  # 返现政策
     lube = TextField(default='')  # 返油政策的json串  # 返油政策
     score = TextField(default='')  # 返油政策的json串  # 返积分政策
-    # saver_ticket = TextField(default='')  # 优惠券json串  # 返积分政策
     privilege = TextField(default='')  # 续保、转保优惠的json串
 
     class Meta:

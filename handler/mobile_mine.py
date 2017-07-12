@@ -2488,6 +2488,30 @@ class MobileToolsHandler(MobileBaseHandler):
         self.write(simplejson.dumps(result))
 
 
+# ----------------------------------------优惠券---------------------------------------------------
+@route(r'/mobile/saver_tickets', name='mobile_saver_tickets')  # 门店端 优惠券列表
+class SaverTicketHandler(MobileBaseHandler):
+    """
+    @apiGroup app
+    @apiVersion 1.0.0
+    @api {get} /mobile/saver_tickets 12. 门店端 优惠券列表
+    @apiDescription 门店端 优惠券列表
 
+    @apiSampleRequest /mobile/saver_tickets
+    """
+    @require_auth
+    def get(self):
+        store = self.get_user().store
+        tickets = []
+        for ticket in store.store_service_cards:
+            if ticket.status == 2:
+                tickets.append({
+                    'type': ticket.type,
+                    'name': ticket.name,
+                    'desc': ticket.desc,
+                    'deal_time': ticket.deal_time,
+                })
+
+        self.render('mobile/store_saver_tickets.html', tickets=tickets)
 
 

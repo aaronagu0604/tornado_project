@@ -218,8 +218,10 @@ class StoreDetailHandler(AdminBaseHandler):
             active = 'store'
         policies = SSILubePolicy.select().where(SSILubePolicy.store == store)
         referees = AdminUser.select().where(AdminUser.active == 1, AdminUser.roles.contains('S'))
+        print store.store_rake_back_policy
+        saver_ticket = simplejson.loads(store.store_rake_back_policy)
         self.render('admin/user/store_detail.html', s=store, active=active, areas=areas, policies=policies,
-                    referees=referees)
+                    referees=referees, saver_ticket=saver_ticket)
 
     def post(self, store_id):
         name = self.get_argument('name', '')
@@ -281,6 +283,33 @@ class ChangePolicyHandler(AdminBaseHandler):
             policy.insurance = insurance
             policy.dealer_store = dealer_store
             policy.save()
+            msg = u'修改成功，请关闭页面！'
+            AdminUserLog.create(admin_user=self.get_admin_user(),
+                                created=int(time.time()),
+                                content='编辑用户所属经销商:ssipl_id:%s,dealer_store:%s'%(policy_id,dealer_store))
+        except Exception, e:
+            msg = u'修改失败：%s' % e.message
+
+        self.write(msg)
+
+
+@route(r'/admin/edit_saver_ticket', name='admin_edit_saver_ticket')  # 修改用户的优惠券政策
+class EditSaverTicketHandler(AdminBaseHandler):
+    def get(self):
+        sid = self.get_argument('sid', '')
+        ic_id = self.get_argument('ic_id', '')
+        data = simplejson.loads(Store.get(id=sid).store_rake_back_policy)
+
+        self.render("admin/user/change_policy.html", data=data)
+
+    def post(self, policy_id):
+        sid = self.get_argument('sid', '')
+        ic_id = self.get_argument('ic_id', '')
+        data = simplejson.loads(Store.get(id=sid).store_rake_back_policy)
+        try:
+            for d in data:
+                if d['ic_id'] == ic_id:
+                    d['']
             msg = u'修改成功，请关闭页面！'
             AdminUserLog.create(admin_user=self.get_admin_user(),
                                 created=int(time.time()),
