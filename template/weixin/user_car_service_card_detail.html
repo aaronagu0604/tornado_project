@@ -23,9 +23,15 @@
         padding: 5px;
         position: relative;
     }
-    .card_bottom{
-        margin-left: 32px;
+    .card_butn{
+        margin-left: 15px;
+        margin-right: 15px;
+        margin-top: 5px;
     }
+    .list-box{
+        margin-top: 15px;
+    }
+
 </style>
 {% endblock %}
 {% block content %}
@@ -34,10 +40,10 @@
       <div class="mine-center-top">
           <div class="weui-media-box weui-media-box_appmsg">
               <div class="weui-media-box__hd">
-                    <p>{{card.name}}</p>
-                    <p>{{card.deal_time}}</p>
+                    <p style="font-size: 28px">{{card.name}}</p>
               </div>
               <div class="weui-media-box__bd">
+                  <p>有效日期:2017-9-20</p>
                   <p>{{card.desc}}</p>
               </div>
           </div>
@@ -46,22 +52,28 @@
         <div id="list" class="weui-panel row-box">
             {% for s in stores %}
             <div class="weui-cell">
-                <div class="weui-media-box weui-media-box_text list-box">
+                <div class="weui-flex weui-cell__bd">
+                    <div class="weui-col-20">
+                        <div class="weui-media-box weui-media-box_text list-box">
                         <label class=" weui-check__label" for="{{s.id}}">
-                            <div class=" weui-cell__bd">
-                                <input type="radio" name="radio1" class="weui-check" id="{{s.id}}" {% if loop.first %} checked = "checked"{% endif %}>
-                                <span class="weui-icon-checked iconfont mendian"></span>
-                                <span>{{s.name}}</span>
-                            </div>
+                            <input type="radio" name="radio1" class="weui-check" id="{{s.id}}"  {% if loop.first %} checked = "checked"{% endif %}>
+                            <span class="weui-icon-checked iconfont mendian"></span>
                         </label>
-                    <div class="card_bottom">
-                        <p>地址:{{s.address}}</p>
-                        <p>电话:{{s.mobile}}</p>
+                        </div>
+                    </div>
+                    <div class="weui-col-70">
+                        <p>店名:车装甲测试</p>
+                        <p>地址:金花南路</p>
+                        <p>电话:13289269257</p>
                     </div>
                 </div>
+                <div class="weui-cell__ft">前往</div>
             </div>
             {% endfor %}
         </div>
+    </div>
+    <div class="order-pay-bottom">
+        <a class="weui-btn weui-btn_primary card_butn" id="showTooltips">使用</a>
     </div>
 </div>
 
@@ -72,3 +84,4 @@
 </script>
 <script src="//cdn.bootcss.com/jquery-weui/1.0.1/js/city-picker.min.js"></script>
 {% endblock %}
+
