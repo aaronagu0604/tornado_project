@@ -1,18 +1,18 @@
 {% extends "weixin/none_foot_nav_tab.html" %}
 {% block css %}
 <title>可使用优惠券店铺</title>
-
+<link rel="stylesheet" href="//at.alicdn.com/t/font_5okja9vm5ta6pqfr.css">
 <style>
 
     .weui-cells_radio .weui-check:checked+.weui-icon-checked:before {
         display: block;
-        content: "\EA06";
+        content: "\E61D";
         color: #09bb07;
         font-size: 23px
     }
     .weui-cells_radio .weui-icon-checked:before {
         display: block;
-        content: "\EA01";
+        content: "\E61D";
         color: #c9c9c9;
         font-size: 23px
     }
@@ -50,7 +50,7 @@
                         <label class=" weui-check__label" for="{{s.id}}">
                             <div class=" weui-cell__bd">
                                 <input type="radio" name="radio1" class="weui-check" id="{{s.id}}" {% if loop.first %} checked = "checked"{% endif %}>
-                                <span class="weui-icon-checked"></span>
+                                <span class="weui-icon-checked iconfont mendian"></span>
                                 <span>{{s.name}}</span>
                             </div>
                         </label>
