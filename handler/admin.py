@@ -209,7 +209,7 @@ class UsersHandler(AdminBaseHandler):
 @route(r'/admin/store_detail/(\d+)', name='admin_store_detail')  # 修改经销商或门店
 class StoreDetailHandler(AdminBaseHandler):
     def get(self, store_id):
-        areas = Area.select().where((Area.is_delete == 0) & (Area.pid >> None)).order_by(Area.spell_abb, Area.sort)
+        areas = Area.select().where(Area.pid >> None).order_by(Area.spell_abb, Area.sort)
         store = Store.get(id=store_id)
         active = 'saler'
         if store.store_type == 1:
@@ -218,8 +218,10 @@ class StoreDetailHandler(AdminBaseHandler):
             active = 'store'
         policies = SSILubePolicy.select().where(SSILubePolicy.store == store)
         referees = AdminUser.select().where(AdminUser.active == 1, AdminUser.roles.contains('S'))
-        print store.store_rake_back_policy
-        saver_ticket = simplejson.loads(store.store_rake_back_policy)
+        try:
+            saver_ticket = simplejson.loads(store.store_rake_back_policy)
+        except:
+            saver_ticket = []
         self.render('admin/user/store_detail.html', s=store, active=active, areas=areas, policies=policies,
                     referees=referees, saver_ticket=saver_ticket)
 
@@ -296,27 +298,30 @@ class ChangePolicyHandler(AdminBaseHandler):
 @route(r'/admin/edit_saver_ticket', name='admin_edit_saver_ticket')  # 修改用户的优惠券政策
 class EditSaverTicketHandler(AdminBaseHandler):
     def get(self):
-        sid = self.get_argument('sid', '')
-        ic_id = self.get_argument('ic_id', '')
-        data = simplejson.loads(Store.get(id=sid).store_rake_back_policy)
+        sid = int(self.get_argument('sid'))
+        id = int(self.get_argument('id', ''))
+        for t in simplejson.loads(Store.get(id=sid).store_rake_back_policy):
+            if t['id'] == id:
+                data = t['ticket']
+                break
+        car_types = CarServiceType.select()
+        self.render("admin/user/change_ticket.html", data=data, sid=sid, id=id, car_types=car_types, int=int)
 
-        self.render("admin/user/change_policy.html", data=data)
-
-    def post(self, policy_id):
-        sid = self.get_argument('sid', '')
-        ic_id = self.get_argument('ic_id', '')
-        data = simplejson.loads(Store.get(id=sid).store_rake_back_policy)
-        try:
-            for d in data:
-                if d['ic_id'] == ic_id:
-                    d['']
-            msg = u'修改成功，请关闭页面！'
-            AdminUserLog.create(admin_user=self.get_admin_user(),
-                                created=int(time.time()),
-                                content='编辑用户所属经销商:ssipl_id:%s,dealer_store:%s'%(policy_id,dealer_store))
-        except Exception, e:
-            msg = u'修改失败：%s' % e.message
-
+    def post(self):
+        sid = int(self.get_argument('sid', ''))
+        ticket_id = int(self.get_argument('ticket_id', ''))
+        json = self.get_argument('json', '')
+        ticket = simplejson.loads(json)
+        store = Store.get(id=sid)
+        saver_ticket = simplejson.loads(store.store_rake_back_policy)
+        for t in saver_ticket:
+            if t['id'] == ticket_id:
+                t['ticket'] = ticket
+                print('ticket: %s' % t['ticket'])
+        print saver_ticket
+        store.store_rake_back_policy = simplejson.dumps(saver_ticket)
+        store.save()
+        msg = u'成功'
         self.write(msg)
 
 
@@ -360,6 +365,46 @@ class ClonePolicyHandler(AdminBaseHandler):
             AdminUserLog.create(admin_user=self.get_admin_user(), created=int(time.time()),
                                 content='添加保险公司返油返积分策略:ssilp_id:%d'%ssilp.id)
             msg = u'添加成功，请关闭本窗口'
+        self.write(msg)
+
+
+@route(r'/admin/add_ticket/(\d+)', name='admin_add_ticket')  # 新增用户的政策（保险公司、服务商）
+class AddTicketHandler(AdminBaseHandler):
+    def get(self, store_id):
+        self.render("admin/user/add_ticket.html")
+
+    def post(self, store_id):
+        flag = self.get_body_argument('flag')
+        minprice = self.get_body_argument('minprice')
+        maxprice = self.get_body_argument('maxprice')
+        store = Store.get(id=store_id)
+        try:
+            store_rake_back_policy = simplejson.loads(store.store_rake_back_policy)
+        except:
+            store_rake_back_policy = []
+        max_id = 0
+        for sr in store_rake_back_policy:
+            if sr['id'] > max_id:
+                max_id = sr['id']
+        if flag == '1':
+            name = u'单交强险'
+        elif flag == '2':
+            name = u'单商业险'
+        elif flag == '3':
+            name = u'交强险+商业险'
+        else:
+            name = u''
+        store_rake_back_policy.append({
+            'id': max_id + 1,
+            'name': name,
+            'flag': flag,
+            'minprice': minprice,
+            'maxprice': maxprice,
+            'ticket': []
+        })
+        store.store_rake_back_policy = simplejson.dumps(store_rake_back_policy)
+        store.save()
+        msg = u'成功'
         self.write(msg)
 
 

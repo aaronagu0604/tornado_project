@@ -139,8 +139,13 @@
                         <div class="input-group">
                             <select name="policy_code_province" id="province2" onchange="GetSubAreas(this.value, 'city2', '')" style="width:160px;height:32px;border-radius: 4px;margin-right:15px;">
                                 <option value="">--所有省份--</option>
+                                {% if s.insurance_policy_code %}
+                                {% set insurance_policy_code = s.insurance_policy_code[:4] %}
+                                {% else %}
+                                {% set insurance_policy_code = '' %}
+                                {% endif %}
                                 {% for area in areas %}
-                                <option value="{{area.code}}" {{ 'selected' if area.code==s.insurance_policy_code[:4] else ''}}>{{area.name}}</option>
+                                <option value="{{area.code}}" {{ 'selected' if area.code==insurance_policy_code else ''}}>{{area.name}}</option>
                                 {% endfor %}
                             </select>
                             <select name="policy_code" id="city2" style="width:160px;height:32px;border-radius: 4px;margin-right:15px;">
@@ -283,14 +288,6 @@
                         <td><a href="#" onclick="pop('添加返佣政策','/admin/add_policy/{{s.id}}')" style="padding:4px 5px;border:1px solid #438bca;color:#438bca;border-radius:4px;font-size:12px;text-decoration:none;">新增</a></td>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-
-
-    <div class="col-sm-12 col-md-6">
-        <div class="panel panel-primary">
-            <div class="panel-body">
                 <h4>优惠券配置</h4>
                 <div class="panel panel-success">
                     <div class="panel-body">
@@ -299,15 +296,17 @@
                                 <thead>
                                 <tr>
                                     <th style="width:10%;text-align:center;">险种</th>
-                                    <th style="width:15%;text-align:center;">最低金额</th>
-                                    <th style="width:15%;text-align:center;">最高金额</th>
-                                    <th style="width:15%;text-align:center;">优惠券</th>
+                                    <th style="width:10%;text-align:center;">最低金额</th>
+                                    <th style="width:10%;text-align:center;">最高金额</th>
+                                    <th style="width:10%;text-align:center;">优惠券</th>
                                     <th style="width:10%;text-align:center;">操作</th>
                                 </tr>
                                 {% for ticket in saver_ticket %}
                                 <tr>
                                     <td>{{ticket['name']}}</td>
-                                    <td><a href="#" onclick="pop('优惠券政策','/admin/edit_saver_ticket?ic_id={{ticket['ic_id']}}&sid={{s.id}}')">查看/修改</a></td>
+                                    <td>{{ticket['minprice']}}</td>
+                                    <td>{{ticket['maxprice']}}</td>
+                                    <td><a href="#" onclick="pop('优惠券','/admin/edit_saver_ticket?id={{ticket['id']}}&sid={{s.id}}')">查看/修改</a></td>
                                     <td>
                                         <a href="/admin/del_saver_ticket/{{s.id}}?ic_id={{ticket['ic_id']}}" onclick="return confirm('确定删除此优惠券政策?')" style="padding:4px 5px;border:1px solid #438bca;color:#438bca;border-radius:4px;font-size:12px;text-decoration:none;">删除</a>
                                     </td>
@@ -316,12 +315,13 @@
                                 </thead>
                             </table>
                         </div>
-                        <td><a href="#" onclick="pop('添加优惠券','/admin/add_policy/{{s.id}}')" style="padding:4px 5px;border:1px solid #438bca;color:#438bca;border-radius:4px;font-size:12px;text-decoration:none;">新增</a></td>
+                        <td><a href="#" onclick="pop('添加优惠券','/admin/add_ticket/{{s.id}}')" style="padding:4px 5px;border:1px solid #438bca;color:#438bca;border-radius:4px;font-size:12px;text-decoration:none;">新增</a></td>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
 </div>
 {% endblock %}
 {% block js %}
@@ -335,10 +335,11 @@
                 GetSubAreas("{{s.area_code[:8]}}", "district", "{{s.area_code[:12]}}");
             }
         }
-
+        {% if s.insurance_policy_code %}
         if("{{s.insurance_policy_code}}".length >= 4) {
             GetSubAreas("{{s.insurance_policy_code[:4]}}", "city2", "{{s.insurance_policy_code[:8]}}");
         }
+        {% endif %}
     });
 
     function pop(title, url) {

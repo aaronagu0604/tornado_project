@@ -143,9 +143,9 @@ class Store(db.Model):
     process_car_service = IntegerField(default=0)  # 店铺是否允许提供保养服务：0否，1是
     ''' 优惠券 json 结构
     [
-        {"name": u"单交强险", "flag": "1", "minprice":"", "maxprice":"", "ticket": [{'CarServiceType_id': "1", 'count': "2"}]},
-        {"name": u"单商业险", "flag": "2", "minprice":"", "maxprice":"", "ticket": [{'CarServiceType_id': "1", 'count': "2"}]},
-        {"name": u"交强险+商业险（1200-1399）", "flag": "3", "minprice":"","maxprice":"", "ticket": [{'CarServiceType_id': "1", 'count': "2"}]}
+        {"id": 1, "name": u"单交强险", "flag": 1, "minprice":"", "maxprice":"", "ticket": [{'CarServiceType_id': 1, 'count': 2}]},
+        {"id": 2, "name": u"单商业险", "flag": 2, "minprice":"", "maxprice":"", "ticket": [{'CarServiceType_id': 1, 'count': 2}]},
+        {"id": 3, "name": u"交强险+商业险", "flag": 3, "minprice":"","maxprice":"", "ticket": [{'CarServiceType_id': 1, 'count': 2}]}
     ]
     '''
     store_rake_back_policy = TextField(default='')  # 店铺返佣政策（汽车服务卡券）的json串：模仿返油。实现。
@@ -220,7 +220,7 @@ class CarServiceCard(db.Model):
     create_store = ForeignKeyField(Store, related_name='store_create_cards', db_column='create_store_id')  # 发放店铺
     service_store = ForeignKeyField(Store, related_name='store_service_cards', db_column='service_store_id',
                                     null=True)  # 消费店铺
-    user = ForeignKeyField(User, related_name='user_cards', db_column='car_user_id')  # 发放店铺
+    user = ForeignKeyField(User, related_name='user_cards', db_column='car_user_id')  # 使用者
     # 服务券信息采用复制保存副本，预防服务券类型变更引起用户持有服务券信息同步变更
     type = IntegerField(default=1)  # 保养服务类型：1洗车券，2精洗券，3打蜡保养......
     name = CharField(max_length=64, null=True)  # 标题

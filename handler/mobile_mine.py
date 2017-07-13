@@ -2497,9 +2497,11 @@ class SaverTicketHandler(MobileBaseHandler):
     @api {get} /mobile/saver_tickets 12. 门店端 优惠券列表
     @apiDescription 门店端 优惠券列表
 
+    @apiHeader {String} token 用户登录凭证
+
     @apiSampleRequest /mobile/saver_tickets
     """
-    @require_auth
+    # @require_auth
     def get(self):
         store = self.get_user().store
         tickets = []
@@ -2510,6 +2512,7 @@ class SaverTicketHandler(MobileBaseHandler):
                     'name': ticket.name,
                     'desc': ticket.desc,
                     'deal_time': ticket.deal_time,
+                    'user': ticket.user.truename
                 })
 
         self.render('mobile/store_saver_tickets.html', tickets=tickets)
