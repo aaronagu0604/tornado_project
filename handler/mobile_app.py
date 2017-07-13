@@ -409,7 +409,10 @@ class MobileHomeHandler(MobileBaseHandler):
                               } for insurance in all]
                 self.application.memcachedb.set('insurances_no_login', insurances)
         result['data']['category'] = [{'title': u'保险业务', 'data': insurances}]
-
+        if user.store.store_type == 3:
+            result['flag'] = 1
+            self.write(simplejson.dumps(result))
+            return
         # 热门分类
         # tmp_code = area_code
         # categories = self.get_category(tmp_code)
@@ -1075,7 +1078,8 @@ class MobileCategoryHandler(MobileBaseHandler):
                 'link': 'czj://category/0/brand/' + str(ii.id)
             })
 
-        self.render('mobile/category.html', type=t, f=f, insurances=insurances, brands=brands)
+        self.render('mobile/category.html', type=t, f=f, insurances=insurances, brands=brands,
+                    store_type=user.store.store_type)
 
 
 @route(r'/mobile/product', name='mobile_product')  # 产品详情页
