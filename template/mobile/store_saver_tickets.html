@@ -14,9 +14,9 @@
 <div style="background: #f1f1f1">
     {% for i in tickets %}
     <div  class="row" style="background: #FFFFFF;margin-top: 1px;padding: 5px;">
-        <div class="col-30" style="font-size: 12px;line-height:20px;">{{i.name}}</div>
-        <div  class="col-30" style="font-size: 12px;line-height:20px;">{{i.user}}</div>
-        <div  class="col-40" style="font-size: 12px;line-height:20px;">{{i.deal_time}}</div>
+        <div class="col-30" style="font-size: 12px;">类型：{{i.name}}</div>
+        <div  class="col-30" style="font-size: 12px;">使用者：{{i.user}}</div>
+        <div  class="col-40" style="font-size: 12px;">使用时间：{{i.deal_time}}</div>
     </div>
     {% endfor %}
 </div>
