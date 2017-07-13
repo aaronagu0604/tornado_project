@@ -13,10 +13,10 @@
 <body>
 <div style="background: #f1f1f1">
     {% for i in tickets %}
-    <div style="background: #FFFFFF;margin-top: 1px">
-        <span style="font-size: 12px;width: 30%;text-align: center">{{i.name}}</span>
-        <span style="font-size: 12px;width: 30%;text-align: center">{{i.user}}</span>
-        <span style="font-size: 12px;width: 40%;text-align: center">{{i.deal_time}}</span>
+    <div  class="row" style="background: #FFFFFF;margin-top: 1px;padding: 5px;">
+        <div class="col-30" style="font-size: 12px;line-height:20px;">{{i.name}}</div>
+        <div  class="col-30" style="font-size: 12px;line-height:20px;">{{i.user}}</div>
+        <div  class="col-40" style="font-size: 12px;line-height:20px;">{{i.deal_time}}</div>
     </div>
     {% endfor %}
 </div>
