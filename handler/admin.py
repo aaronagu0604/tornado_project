@@ -234,7 +234,7 @@ class StoreDetailHandler(AdminBaseHandler):
         active = int(self.get_argument('active', 0))
         store_type = int(self.get_argument('store_type', 1))
         process_insurance = int(self.get_argument('process_insurance', 0))
-
+        process_car_service = int(self.get_argument('process_car_service', 0))
         legal_person = self.get_argument('legal_person', '')
         license_code = self.get_argument('license_code', '')
         linkman = self.get_argument('linkman', '')
@@ -262,6 +262,7 @@ class StoreDetailHandler(AdminBaseHandler):
         store.store_type = store_type
         store.insurance_policy_code = insurance_policy_code if insurance_policy_code else policy_code_province
         store.admin_code = referee_code
+        store.process_car_service = process_car_service
         store.save()
         AdminUserLog.create(admin_user=self.get_admin_user(), created=int(time.time()),
                             content='编辑经销商: store_id:%d'%store.id)

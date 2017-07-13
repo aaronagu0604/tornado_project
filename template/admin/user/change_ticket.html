@@ -20,7 +20,6 @@
                     <input type="hidden" name="json" id="json" value='{{data}}'>
                     <div class="col-sm-12">
                         <input class="btn btn-primary" type="submit" value="保存" onclick="javascript:return saveData();"/>
-                        <input class="btn btn-primary" type="button" value="增加礼品组" onclick="addGroup()"/>
                     </div>
                 </form>
 
@@ -63,33 +62,6 @@
 </body>
 </html>
 <script>
-    function getOption(defaultflag, currentflag) {
-        if (defaultflag == '1'){
-            if (currentflag == defaultflag) {
-                return '<option value="1" selected>单交强险</option>';
-            }
-            else {
-                return '<option value="1">单交强险</option>'
-            }
-        }
-        else if (defaultflag == '2'){
-            if (currentflag == defaultflag) {
-                return '<option value="2" selected>单商业险</option>';
-            }
-            else {
-                return '<option value="2">单商业险</option>'
-            }
-        }
-        else if (defaultflag == '3'){
-            if (currentflag == defaultflag) {
-                return '<option value="3" selected>交强险+商业险</option>';
-            }
-            else {
-                return '<option value="3">交强险+商业险</option>'
-            }
-        }
-    }
-
     function addLine(obj) {
         var html = '<tr><td><select class="form-control">' +
             '{% for car_type in car_types %}'+

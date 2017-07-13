@@ -86,6 +86,15 @@
                             <input type="radio" name="process_insurance" value="0" {{ 'checked' if s.process_insurance ==0 else ''}}> 关闭
                         </label>
                     </div>
+                    <div class="form-group has-success">
+                        <label class="control-label">开通优惠券</label>
+                        <label class="checkbox-inline">
+                            <input type="radio" name="process_car_service" value="1" {{ 'checked' if s.process_car_service ==1 else ''}}> 开通
+                        </label>
+                        <label class="checkbox-inline">
+                            <input type="radio" name="process_car_service" value="0" {{ 'checked' if s.process_car_service ==0 else ''}}> 拒绝
+                        </label>
+                    </div>
                     <div class="aa"></div>
                     <div class="mskelayBox">
                         <div class="mske_html"></div>
@@ -288,6 +297,7 @@
                         <td><a href="#" onclick="pop('添加返佣政策','/admin/add_policy/{{s.id}}')" style="padding:4px 5px;border:1px solid #438bca;color:#438bca;border-radius:4px;font-size:12px;text-decoration:none;">新增</a></td>
                     </div>
                 </div>
+                {% if s.process_car_service == 1 %}
                 <h4>优惠券配置</h4>
                 <div class="panel panel-success">
                     <div class="panel-body">
@@ -318,6 +328,7 @@
                         <td><a href="#" onclick="pop('添加优惠券','/admin/add_ticket/{{s.id}}')" style="padding:4px 5px;border:1px solid #438bca;color:#438bca;border-radius:4px;font-size:12px;text-decoration:none;">新增</a></td>
                     </div>
                 </div>
+                {% endif %}
             </div>
         </div>
     </div>
