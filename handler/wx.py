@@ -17,6 +17,7 @@ from lib.payment.wxPay import Qrcode_pub
 import lib.payment.ali_app_pay as alipay
 import hashlib
 import setting
+from lib.mqhelper import create_msg
 
 appid = 'wxf23313db028ab4bc'
 secret = '8d75a7fa77dc0e5b2dc3c6dd551d87d6'
@@ -615,6 +616,9 @@ class CarServiceCardDetailHandler(WXBaseHandler):
             card.service_store = store.id
             card.status = 2
             card.save()
+            sms = {'apptype': 1, 'body': '您收到微信用户：%s的%s,请其提供响应的服务！'%(card.user.mobile,card.type), 'jpushtype': 'alias', 'alias': store.mobile,
+                   'images': '', 'extras': {'link': 'czj://car_service_cards'}}
+            create_msg(simplejson.dumps(sms), 'jpush')
             self.self.render('weixin/result.html', msg='使用成功，请联系店铺工作人员核对，并享受对应保养服务')
         except CarServiceCard.DoesNotExist:
             self.render('weixin/result.html',msg='保养券不存在')
