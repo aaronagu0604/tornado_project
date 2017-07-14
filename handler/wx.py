@@ -630,7 +630,6 @@ class UserStoreDetailHandler(WXBaseHandler):
             store = None
         self.render('weixin/user_store_detail.html', store=store)
 
-
 # -----------------------------------------------分享推广----------------------------------------------------------------
 @route(r'/share/(\d+)', name='wx_share')  # 分享页面
 class ShareHandler(BaseHandler):
