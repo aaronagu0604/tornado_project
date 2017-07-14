@@ -9,11 +9,10 @@
 <div class='weui-content czj_wx_body'>
     <div class="mine-center-top">
         <div class="weui-media-box weui-media-box_appmsg">
-            <div class="weui-media-box__hd"><img class="weui-media-box__thumb radius"
-                                                 src="./../style/wximg/img_mine_head.png" alt=""></div>
+            <div class="weui-media-box__hd"><img class="weui-media-box__thumb radius" src="{{ store.store_image }}" alt=""></div>
             <div class="weui-media-box__bd">
                 <h4 class="weui-media-box__title mine-user-name">用户名</h4>
-                <p class="mine-user-grade">门店：{{store.name}}</p>
+                <p class="mine-user-grade">门店：{{store and 1 or store}}</p>
             </div>
         </div>
     </div>

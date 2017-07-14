@@ -627,7 +627,8 @@ class UserStoreDetailHandler(WXBaseHandler):
         try:
             store = Store.get(id=int(store_id))
         except Exception:
-            store = None
+            traceback.print_exc()
+
         self.render('weixin/user_store_detail.html', store=store)
 
 # -----------------------------------------------分享推广----------------------------------------------------------------
