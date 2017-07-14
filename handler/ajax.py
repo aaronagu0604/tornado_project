@@ -2080,7 +2080,7 @@ class WeiXinMenuHandler(BaseHandler):
         response_type = "code"
         scope = "snsapi_base"
 
-        state = '000douhao00%s'%(tourl.replace('/','00xiegang00'))
+        state = '100douhao00%s'%(tourl.replace('/','00xiegang00'))
         end = "#wechat_redirect"
         wx_url = wxlogin_url + "?appid=" + appid + "&redirect_uri=" + redirect_uri[4:] + \
                  "&response_type=" + response_type + "&scope=" + scope + "&state=" + state + end
