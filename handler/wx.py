@@ -586,14 +586,49 @@ class CarServiceCardsHandler(WXBaseHandler):
         cards = CarServiceCard.select().where(CarServiceCard.user==user.id,CarServiceCard.status==1)
         self.render('weixin/user_car_service_cards.html', cards=cards)
 
-@route(r'/car_service_store_detail/(\d+)', name='wx_car_service_store_detail')  # 汽车服务店铺详情
-class CarServcieStoreDetailHandler(WXBaseHandler):
-    def get(self,store_id):
+@route(r'/car_service_card_detail/(\d+)', name='wx_car_service_card_detail')  # 汽车保养券详情
+class CarServiceCardDetailHandler(WXBaseHandler):
+    def get(self,card_id):
+        try:
+            card = CarServiceCard.get(id=int(card_id))
+            user = self.get_current_user()
+            #stores = Store.select().where(Store.area_code == user.store.area_code,Store.process_car_service==1)
+            stores = Store.select().where(Store.id << [1,2,3])
+
+        except Exception:
+            card = None
+        self.render('weixin/user_car_service_card_detail.html', card=card,stores = stores)
+
+    def post(self):
+        store_id = self.get_body_argument('store_id',None)
+        card_id = self.get_body_argument('card_id',None)
+
+        store_id = int(store_id) if store_id else 0
+        card_id = int(card_id) if card_id else 0
+        if not (store_id and card_id):
+            self.render('weixin/result.html',msg='参数有无，无法使用该优惠券')
+        try:
+            card = CarServiceCard.get(id=card_id)
+            if card.status in [-1,2]:
+                self.render('weixin/result.html', msg='无效的保养券')
+            store = Store.get(id=store_id)
+            card.service_store = store.id
+            card.status = 2
+            card.save()
+            self.self.render('weixin/result.html', msg='使用成功，请联系店铺工作人员核对，并享受对应保养服务')
+        except CarServiceCard.DoesNotExist:
+            self.render('weixin/result.html',msg='保养券不存在')
+        except Store.DoesNotExist:
+            self.render('weixin/result.html',msg='店铺不存在')
+
+@route(r'/user_store_detail/(\d+)', name='wx_user_store_detail')  # 汽车保养券详情
+class UserStoreDetailHandler(WXBaseHandler):
+    def get(self, store_id):
         try:
             store = Store.get(id=int(store_id))
         except Exception:
             store = None
-        self.render('weixin/user_store_detail.html', store = store)
+        self.render('weixin/user_store_detail.html', store=store)
 
 
 # -----------------------------------------------分享推广----------------------------------------------------------------
