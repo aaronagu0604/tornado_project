@@ -142,6 +142,10 @@ class StoresHandler(AdminBaseHandler):
         page = int(self.get_argument("page", '1') if len(self.get_argument("page", '1')) > 0 else '1')
         pagesize = self.settings['admin_pagesize']
         status = int(self.get_argument("status", '-1'))
+        download = self.get_argument('download', '')
+        begin_date = self.get_argument('begin_date', '')
+        end_date = self.get_argument('end_date', '')
+
         default_province = ''
         default_city = ''
         default_district = ''
@@ -165,7 +169,24 @@ class StoresHandler(AdminBaseHandler):
             ft &= (Store.area_code % province)
         if keyword:
             ft &= ((Store.name.contains(keyword)) | (Store.mobile.contains(keyword)))
+        if begin_date:
+            begin_date = time.mktime(time.strptime(begin_date, '%Y-%m-%d'))
+            if end_date:
+                end_date = time.mktime(time.strptime(end_date, '%Y-%m-%d'))
+            else:
+                end_date = int(time.time())
+            ft &= (Store.created >= begin_date) & (Store.created < end_date)
         cfs = Store.select().where(ft).order_by(Store.created.desc())
+        if download == '1':
+            fp = open('/home/www/workspace/czj/upload/stores.csv', 'w')
+            fp.write(u'店名,电话,地址,自注册起出单数\n'.encode('gb18030'))
+            for store in cfs:
+                io_count = InsuranceOrder.select().where(InsuranceOrder.store == store, InsuranceOrder.status == 3).count()
+                string = '%s,%s,%s,%s\n' % (store.name, store.mobile, Area.get_detailed_address(store.area_code) + store.address, io_count)
+                fp.write(string.encode('gb18030'))
+            fp.close()
+            self.redirect('/upload/stores.csv')
+
         total = cfs.count()
         if total % pagesize > 0:
             totalpage = total / pagesize + 1

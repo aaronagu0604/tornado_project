@@ -5,16 +5,28 @@
 <script type="text/javascript" src="/style/js/jquery-1.11.1.min.js"></script>
 <script type="text/javascript" src="/style/js/bigimg.js"></script>
 
+<style>
+    #province,#city{
+        height:34px;
+        margin-left: 0px;
+        transform:translateY(2px);
+        -webkit-transform:translateY(2px);
+        border-radius:4px;
+        border-color:#ccc;
+    }
+    .table th{
+        text-align:center;
+    }
+</style>
 {% endblock %}
 {% block content %}
 <div class="mskeLayBg"></div>
+
 <div class="row">
     <nav>
-        <div class="navbar-header" style="float: left">
-            <a class="navbar-brand" href="#" style="font-weight:500;">修理厂管理</a>
-        </div>
+        <div><a class="navbar-brand" href="#">修理厂管理</a></div>
         <div class="pull-right">
-            <form class="navbar-form navbar-left" action="" >
+            <form class="navbar-form navbar-left" action="" method="get" role="search">
                 <label class="num">状态：&nbsp;</label>
                 <select class="form-control" id="status" name="status">
                     <option value="-1" {{status==-1 and 'selected'}} >全部</option>
@@ -22,32 +34,28 @@
                     <option value="1" {{status==1 and 'selected'}}>已通过</option>
                     <option value="2" {{status==2 and 'selected'}}>未通过</option>
                 </select>
-                <label class="num">地区：&nbsp;</label>
-                <select name="province" id="province" onchange="GetSubAreas(this.value, 'city', '')"
-                        style="height:28px;margin-left: -10px;margin-top: 10px;border-radius:4px;">
+                <label class="num">地区：</label>
+                <select name="province" id="province" onchange="GetSubAreas(this.value, 'city', '')" data-default="{{default_province}}" style="width:120px;">
                     <option value="">--所有省份--</option>
                     {% for area in items %}
                     <option value="{{area.code}}" {{ 'selected' if area.code==province else ''}}>{{area.name}}</option>
                     {% endfor %}
                 </select>
-                <select name="city" id="city" onchange="GetSubAreas(this.value, 'district', '')"
-                        style="height:28px;margin-left: 10px;margin-top: 10px;border-radius:4px;">
-                    <option value="">--所有城市--</option>
+                <select name="city" id="city" onchange="GetSubAreas(this.value, 'district', '')" style="width:120px;">
+                    <option value="">--选择城市--</option>
                 </select>
-                <select name="district" id="district"
-                        style="height:28px;margin-left: 10px;margin-top: 10px;border-radius:4px;">
-                    <option value="">--所有区县--</option>
-                </select>
-                <div class="input-group custom-search-form">
-                    <input type="text" id="keyword" name="keyword" class="form-control" style="width:150px;" value="{{keyword}}" placeholder="门店名/手机号">
+                <div class="input-group">
+                    <input type="text" name="begin_date" id="begin_date" value="{{begin_date}}" class="Wdate form-control"  onClick="WdatePicker()" style="width:110px; height: 34px;margin-right:5px;border:1px solid #ccc;border-radius:4px;" placeholder="开始日期"/>
+                    <input type="text" name="end_date" id="end_date" value="{{end_date}}" class="Wdate form-control" onClick="WdatePicker()" style="width:110px; height:34px;margin-right:5px;border:1px solid #ccc;border-radius:4px;" placeholder="截止日期"/>
+                    <input type="text" name="keyword" class="form-control" placeholder="店名/手机号" value="{{keyword or ''}}" style="width:145px;height:34px;border:1px solid #ccc;border-bottom-left-radius:4px;border-top-left-radius:4px;" />
                     <span class="input-group-btn">
-                     <button class="btn btn-default" type="submit">
-                         <i class="fa fa-search"></i>
-                     </button>
-                     <button class="btn btn-default" type="button" id='bt_export'>
-                         <i class="fa fa-download"></i>
-                     </button>
-                 </span>
+                        <button class="btn btn-default" type="submit">
+                            <i class="fa fa-search"></i>
+                        </button>
+                        <button class="btn btn-default" type="submit" name="download" value="1">
+                            <i class="fa fa-download"></i>
+                        </button>
+                    </span>
                 </div>
             </form>
         </div>

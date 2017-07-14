@@ -715,7 +715,6 @@ class MobileHotSearchHandler(MobileBaseHandler):
 
 
 # -----------------------------------------------------普通商品---------------------------------------------------------
-
 @route(r'/mobile/filter', name='mobile_filter')  # 普通商品筛选界面
 class MobileFilterHandler(MobileBaseHandler):
     """
