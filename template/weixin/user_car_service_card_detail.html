@@ -52,7 +52,7 @@
     <div  class="weui-cells weui-cells_radio order_price_base">
         <div id="list" class="weui-panel row-box">
             {% for s in stores %}
-            <a class="weui-cell  weui-cell_access" href="/car_service_store_detail/{{s.id}}">
+            <a class="weui-cell  weui-cell_access" href="/user_store_detail/1">
                 <div class="weui-flex weui-cell__bd">
                     <div class="weui-col-20">
                         <div class="weui-media-box weui-media-box_text list-box">
@@ -63,9 +63,9 @@
                         </div>
                     </div>
                     <div class="weui-col-70">
-                        <p>店名:车装甲测试</p>
-                        <p>地址:金花南路</p>
-                        <p>电话:13289269257</p>
+                        <p>店名:{{s.name}}</p>
+                        <p>地址:{{s.address}}</p>
+                        <p>电话:{{s.mobile}}</p>
                     </div>
                 </div>
                 <div class="weui-cell__ft">前往</div>

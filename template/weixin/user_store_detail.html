@@ -13,7 +13,7 @@
                                                  src="./../style/wximg/img_mine_head.png" alt=""></div>
             <div class="weui-media-box__bd">
                 <h4 class="weui-media-box__title mine-user-name">用户名</h4>
-                <p class="mine-user-grade">门店：名称</p>
+                <p class="mine-user-grade">门店：{{store.name}}</p>
             </div>
         </div>
     </div>
@@ -26,7 +26,7 @@
                         <div class="weui-cell__hd"><img src="./../style/wximg/address.png" alt=""
                                                         class="center-list-icon"></div>
                         <div class="weui-cell__bd weui-cell_primary">
-                            <p class="center-list-txt">地址</p>
+                            <p class="center-list-txt">地址:{{store.address}}</p>
                         </div>
                         <span class="weui-cell__ft"></span>
                     </a>
@@ -34,7 +34,7 @@
                         <div class="weui-cell__hd"><img src="./../style/wximg/address.png" alt=""
                                                         class="center-list-icon"></div>
                         <div class="weui-cell__bd weui-cell_primary">
-                            <p class="center-list-txt">简介</p>
+                            <p class="center-list-txt">电话:{{store.mobile}}</p>
                         </div>
                         <span class="weui-cell__ft"></span>
                     </a>
@@ -42,7 +42,7 @@
                         <div class="weui-cell__hd"><img src="./../style/wximg/img_call.png" alt=""
                                                         class="center-list-icon"></div>
                         <div class="weui-cell__bd weui-cell_primary">
-                            <p class="center-list-txt">电话</p>
+                            <p class="center-list-txt">简介</p>
                         </div>
                         <span class="weui-cell__ft"></span>
                     </a>
