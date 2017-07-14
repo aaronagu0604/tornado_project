@@ -629,7 +629,7 @@ class UserStoreDetailHandler(WXBaseHandler):
         except Exception:
             traceback.print_exc()
 
-        self.render('weixin/user_store_detail.html', store=store)
+        self.render('weixin/user_store_detail.html', store_info=store)
 
 # -----------------------------------------------分享推广----------------------------------------------------------------
 @route(r'/share/(\d+)', name='wx_share')  # 分享页面
