@@ -1363,6 +1363,19 @@ class JPushMsg(db.Model):
     class Meta:
         db_table = 'tb_jpush_msg'
 
+# 极光推送历史
+class JPushHistory(db.Model):
+    id = PrimaryKeyField()
+    user = ForeignKeyField(User, related_name='user_history', db_column='user_id') # 目标用户
+    title = CharField(default='') # 推送标题
+    content = TextField(default='') # 推送内容
+    img_url = CharField(default='') # 推送图片
+    link = CharField(default='', max_length=240)  # 动态模板link地址
+    created = IntegerField(default=0) # 创建时间
+    status = IntegerField(default=0)  # 状态：0未读 已读
+
+    class Meta:
+        db_table = 'tb_jpush_history'
 
 # 极光推送计划
 class JPushPlan(db.Model):
