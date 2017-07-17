@@ -1338,7 +1338,7 @@ class Message(db.Model):
         db_table = 'tb_message'
 
 
-# 极光推送内容
+# 极光推送解释内容
 class JPushActive(db.Model):
     id = PrimaryKeyField()
     title = CharField(default='')
