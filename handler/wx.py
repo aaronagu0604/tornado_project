@@ -154,6 +154,7 @@ class InsuranceOrderNewHandler(WXBaseHandler):
         user = self.get_current_user()
         data = self.get_mobile_order_base(user.token)
         logging.info(simplejson.dumps(data))
+        hasservicecard=False
         address = {}
         address["delivery_address"]=data["delivery_address"]
         address["delivery_city"]= data["delivery_city"]
@@ -167,7 +168,7 @@ class InsuranceOrderNewHandler(WXBaseHandler):
             if item['name'] == i_name:
                 insurance_policy = item['rake_back']
 
-        self.render('weixin/insurance_order_new.html', address=address, rake_back=insurance_policy,token=user.token)
+        self.render('weixin/insurance_order_new.html', address=address, rake_back=insurance_policy,token=user.token,hasservicecard=hasservicecard)
 
 @route(r'/wxapi/insurance_order_new', name='wxapi_insurance_order_new')  # wxapi 创建保险订单
 class WXApiInsuranceOrderNewHandler(WXBaseHandler):
